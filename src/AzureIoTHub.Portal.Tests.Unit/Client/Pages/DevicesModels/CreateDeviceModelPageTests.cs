@@ -308,7 +308,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                         thingTypeName.Equals(thingType.ThingTypeName, StringComparison.Ordinal)
                         && ThingTypeDescription.Equals(thingType.ThingTypeDescription, StringComparison.Ordinal)
                         )))
-                .Returns(Task.CompletedTask);
+                .Returns((Task.FromResult(Guid.NewGuid().ToString())));
 
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -367,7 +367,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockThingTypeClientService.Setup(service =>
                     service.CreateThingType(It.IsAny<ThingTypeDto>()))
-                .Returns(Task.CompletedTask);
+                .Returns((Task.FromResult(Guid.NewGuid().ToString())));
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
@@ -407,7 +407,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockThingTypeClientService.Setup(service =>
                     service.CreateThingType(It.IsAny<ThingTypeDto>()))
-                .Returns(Task.CompletedTask);
+                .Returns((Task.FromResult(Guid.NewGuid().ToString())));
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 

@@ -41,20 +41,17 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
         {
             this.logger.LogInformation($"Uploading Image to AWS S3 storage");
 
-            var currentAssembly = Assembly.GetExecutingAssembly();
-            var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
+            var key = $"{deviceModelId}.png";
 
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
-                Key = deviceModelId,
-                InputStream = stream??defaultImageStream,
+                Key = key,
+                InputStream = stream,
                 ContentType = "image/*",
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
             };
-
             var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
 
             if (putObjectResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
@@ -63,7 +60,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                 var putAclRequest = new PutACLRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
-                    Key = deviceModelId,
+                    Key = key,
                     CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
                 };
                 var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
@@ -76,7 +73,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
             {
                 throw new InternalServerErrorException("Error by uploading the image in S3 Storage");
             }
-
         }
 
         public Uri ComputeImageUri(string deviceModelId)
@@ -86,7 +82,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
         public string ComputeImageUrl(string deviceModelId)
         {
-            return $"https://{this.configHandler.AWSBucketName}.s3.{RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion)}.amazonaws.com/{deviceModelId}";
+            return $"https://{this.configHandler.AWSBucketName}.s3.{RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion)}.amazonaws.com/{deviceModelId}.png";
         }
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
         {
@@ -116,12 +112,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
             var defaultImageStream = currentAssembly
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
 
+            var key = $"{deviceModelId}.png";
 
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
-                Key = deviceModelId,
+                Key = key,
                 InputStream = defaultImageStream,
                 ContentType = "image/*", // image content type
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
@@ -136,7 +133,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                 var putAclRequest = new PutACLRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
-                    Key = deviceModelId,
+                    Key = key,
                     CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
                 };
                 var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);

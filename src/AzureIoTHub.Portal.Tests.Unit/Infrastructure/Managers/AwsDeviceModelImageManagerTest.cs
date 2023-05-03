@@ -88,7 +88,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
+            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}.png";
 
 
             // Act
@@ -234,7 +234,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
+            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}.png";
 
 
             // Act

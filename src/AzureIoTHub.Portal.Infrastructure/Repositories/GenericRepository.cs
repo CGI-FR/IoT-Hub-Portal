@@ -53,7 +53,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
         public async Task InsertAsync(T obj)
         {
             _ = await this.context.Set<T>()
-                    .AddAsync(obj);
+                .AddAsync(obj);
         }
 
         public void Update(T obj)
@@ -114,6 +114,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
         public async Task<bool> ExistsAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
         {
             return await this.context.Set<T>().AnyAsync(expression, cancellationToken: cancellationToken);
+        }
+
+        public async Task<string> InsertAndGetIdAsync(T obj)
+        {
+            var addedEntity =  await this.context.Set<T>().AddAsync(obj);
+            return addedEntity.Entity.Id;
         }
     }
 }

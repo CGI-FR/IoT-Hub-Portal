@@ -9,12 +9,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Controllers.v1._0.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
+    using FluentAssertions;
+    using AutoFixture;
+    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
 
     [TestFixture]
-    public class ThingTypeControllerTest
+    public class ThingTypeControllerTest : BackendUnitTest
     {
         private MockRepository mockRepository;
 
@@ -40,6 +44,64 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
                 Url = this.mockUrlHelper.Object
             };
         }
+        /*******======== Test for the avatar=========**********/
+
+        [Test]
+        public async Task GetAvatarShouldReturnTheComputedThingTypeAvatarUri()
+        {
+            // Arrange
+            // Arrange
+            var thingTypeController = CreateThingTypeController();
+            var thingType = Fixture.Create<ThingTypeDto>();
+            var expectedAvatar = Fixture.Create<string>();
+
+            _ = this.mockThingTypeService.Setup(service => service.GetThingTypeAvatar(thingType.ThingTypeID))
+                .ReturnsAsync(expectedAvatar);
+
+            // Act
+            var response = await thingTypeController.GetAvatar(thingType.ThingTypeID);
+
+            // Assert
+            _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(expectedAvatar);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ChangeAvatarShouldChangeThingTypeImageStream()
+        {
+            // Arrange
+            var thingTypeController = CreateThingTypeController();
+            var thingType = Fixture.Create<ThingTypeDto>();
+            var expectedAvatar = Fixture.Create<string>();
+
+            _ = this.mockThingTypeService.Setup(service => service.UpdateThingTypeAvatar(thingType.ThingTypeID, It.IsAny<IFormFile>()))
+                .ReturnsAsync(expectedAvatar);
+
+            // Act
+            var response = await thingTypeController.ChangeAvatar(thingType.ThingTypeID, MockRepository.Create<IFormFile>().Object);
+
+            // Assert
+            _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(expectedAvatar);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteAvatarShouldRemoveModelImage()
+        {
+            // Arrange
+            var thingTypeController = CreateThingTypeController();
+            var thingType = Fixture.Create<ThingTypeDto>();
+
+            _ = this.mockThingTypeService.Setup(service => service.DeleteThingTypeAvatar(thingType.ThingTypeID))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            _ = await thingTypeController.DeleteAvatar(thingType.ThingTypeID);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
 
         [Test]
         public async Task CreateAThingTypeShouldReturnOK()
@@ -54,26 +116,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
 
             _ = this.mockThingTypeService
                 .Setup(x => x.CreateThingType(It.Is<ThingTypeDto>(c => c.ThingTypeID.Equals(thingType.ThingTypeID, StringComparison.Ordinal))))
-                .ReturnsAsync(thingType);
+                .ReturnsAsync(thingType.ThingTypeID);
 
             // Act
-            var result = await thingTypeController.CreateThingTypeAsync(thingType);
+            var response = await thingTypeController.CreateThingTypeAsync(thingType);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<OkObjectResult>(result);
 
-            var okObjectResult = result as ObjectResult;
-
-            Assert.IsNotNull(okObjectResult);
-            Assert.AreEqual(200, okObjectResult.StatusCode);
-
-            Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<ThingTypeDto>(okObjectResult.Value);
-
-            var thingTypeObject = okObjectResult.Value as ThingTypeDto;
-            Assert.IsNotNull(thingTypeObject);
-            Assert.AreEqual(thingType.ThingTypeID, thingTypeObject.ThingTypeID);
+            _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(thingType.ThingTypeID);
 
             this.mockRepository.VerifyAll();
         }

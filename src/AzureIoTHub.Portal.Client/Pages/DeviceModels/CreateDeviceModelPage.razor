@@ -34,28 +34,25 @@ else
 <MudForm Model="@Model" @ref="form" id="form">
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
-            @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
-            {
-                <MudCard>
-                    <MudCardContent>
-                        <div class="d-flex justify-center mb-4">
-                            <MudAvatar Image="@imageDataUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
-                        </div>
-                    </MudCardContent>
-                    <MudCardActions Class="d-flex justify-center">
-                        @if (imageDataUrl != null)
-                        {
-                            <MudButton OnClick="DeleteAvatar" Color="Color.Error">Delete Picture</MudButton>
-                        }
-                        else
-                        {
-                            <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
-                            <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">Change Picture</MudButton>
-                        }
-                    </MudCardActions>
-                </MudCard>
-            }
-
+            <MudCard>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        <MudAvatar Image="@imageDataUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                    </div>
+                </MudCardContent>
+                <MudCardActions Class="d-flex justify-center">
+                    @if (imageDataUrl != null)
+                    {
+                        <MudButton OnClick="DeleteAvatar" Color="Color.Error">Delete Picture</MudButton>
+                    }
+                    else
+                    {
+                        <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
+                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">Change Picture</MudButton>
+                    }
+                </MudCardActions>
+            </MudCard>
+            
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton" Disabled="isProcessing">Save Changes</MudButton>
             </MudItem>
@@ -535,7 +532,13 @@ else
             ThingType.Tags = this.ThingTypeTags;
             ThingType.ThingTypeSearchableAttDtos = searchableAtt;
 
-            await ThingTypeClientService.CreateThingType(ThingType);
+            var GetThingTypeId = await ThingTypeClientService.CreateThingType(ThingType);
+
+            if (content is not null)
+            {
+                _ = this.ThingTypeClientService.ChangeAvatar(GetThingTypeId, content);
+            }
+
             Snackbar.Add("Thing Type successfully created.", Severity.Success);
 
             // Go back to the list of devices

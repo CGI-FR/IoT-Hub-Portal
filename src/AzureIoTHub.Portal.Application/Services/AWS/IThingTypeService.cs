@@ -4,10 +4,17 @@
 namespace AzureIoTHub.Portal.Application.Services.AWS
 {
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using Microsoft.AspNetCore.Http;
 
     public interface IThingTypeService
     {
         //Create a thing type
-        Task<ThingTypeDto> CreateThingType(ThingTypeDto thingType);
+        Task<string> CreateThingType(ThingTypeDto thingType);
+
+        Task<string> GetThingTypeAvatar(string thingTypeId);
+
+        Task<string> UpdateThingTypeAvatar(string thingTypeId, IFormFile file);
+
+        Task DeleteThingTypeAvatar(string thingTypeId);
     }
 }

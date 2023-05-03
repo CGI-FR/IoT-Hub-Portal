@@ -15,9 +15,25 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
             this.http = http;
         }
 
-        public Task CreateThingType(ThingTypeDto thingType)
+        public async Task<string> CreateThingType(ThingTypeDto thingType)
         {
-            return this.http.PostAsJsonAsync("api/aws/thingtypes", thingType);
+            var response = await this.http.PostAsJsonAsync("api/aws/thingtypes", thingType);
+            _ = response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsStringAsync();
         }
+
+        public Task<string> GetAvatarUrl(string thingTypeId)
+        {
+            return this.http.GetStringAsync($"api/aws/thingtypes/{thingTypeId}/avatar");
+        }
+
+        public async Task ChangeAvatar(string thingTypeId, MultipartFormDataContent avatar)
+        {
+            var result = await this.http.PostAsync($"api/aws/thingtypes/{thingTypeId}/avatar", avatar);
+
+            _ = result.EnsureSuccessStatusCode();
+        }
+
     }
 }

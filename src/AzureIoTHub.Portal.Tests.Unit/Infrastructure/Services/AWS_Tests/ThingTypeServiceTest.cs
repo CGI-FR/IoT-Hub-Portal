@@ -12,11 +12,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using Amazon.IoT.Model;
     using AutoFixture;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
@@ -31,6 +33,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         private Mock<IThingTypeRepository> mockThingTypeRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IAmazonIoT> amazonIotClient;
+        private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
+
 
         private IThingTypeService thingTypeService;
 
@@ -41,11 +45,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             this.mockThingTypeRepository = MockRepository.Create<IThingTypeRepository>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.amazonIotClient = MockRepository.Create<IAmazonIoT>();
+            this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
 
             _ = ServiceCollection.AddSingleton(this.mockThingTypeRepository.Object);
             _ = ServiceCollection.AddSingleton(this.amazonIotClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton<IThingTypeService, ThingTypeService>();
 
             Services = ServiceCollection.BuildServiceProvider();
@@ -58,6 +64,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         public async Task CreateAThingTypeShouldReturnAValue()
         {
             // Arrange
+            var expectedAvatarUrl = Fixture.Create<string>();
             var thingDevice = new ThingTypeDto()
             {
                 ThingTypeID = Fixture.Create<string>(),
@@ -77,22 +84,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.amazonIotClient.Setup(s3 => s3.CreateThingTypeAsync(It.IsAny<CreateThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateThingTypeResponse
                 {
+                    ThingTypeId = Fixture.Create<string>(),
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
 
-            _ = this.mockThingTypeRepository.Setup(repository => repository.InsertAsync(It.IsAny<ThingType>()))
-                .Returns(Task.CompletedTask);
+            _ = this.mockThingTypeRepository.Setup(repository => repository.InsertAndGetIdAsync(It.IsAny<ThingType>()))
+                .Returns(Task.FromResult(Fixture.Create<string>()));
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceModelImageManager.Setup(manager =>
+                    manager.SetDefaultImageToModel(thingDevice.ThingTypeID))
+                .ReturnsAsync(expectedAvatarUrl);
 
             //Act
             var result = await this.thingTypeService.CreateThingType(thingDevice);
 
             //Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(thingDevice.ThingTypeID, result.ThingTypeID);
+            Assert.AreEqual(thingDevice.ThingTypeID, result);
 
             MockRepository.VerifyAll();
         }
@@ -130,7 +141,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 
             //Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(thingDevice.ThingTypeID, result.ThingTypeID);
+            Assert.AreEqual(thingDevice.ThingTypeID, result);
 
             MockRepository.VerifyAll();
         }

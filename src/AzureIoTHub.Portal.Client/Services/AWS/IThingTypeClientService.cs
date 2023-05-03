@@ -7,7 +7,11 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
 
     public interface IThingTypeClientService
     {
-        Task CreateThingType(ThingTypeDto thingType);
+        Task<string> CreateThingType(ThingTypeDto thingType);
+
+        Task<string> GetAvatarUrl(string thingTypeId);
+
+        Task ChangeAvatar(string thingTypeId, MultipartFormDataContent avatar);
 
     }
 }
