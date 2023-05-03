@@ -187,15 +187,6 @@ Resources:
                   - 'ecr:GetAuthorizationToken'
                   - 'ecr:BatchCheckLayerAvailability'
                 Resource: '*'
-        - PolicyName: ECR-all
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - 'ecr:*'
-                  - 'ecr-public:*'
-                Resource: '*'
 
 # AWS Secrets Manager
   SMAWSKey:
