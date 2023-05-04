@@ -4,6 +4,10 @@ coverage:
       default:
         target: auto  # auto compares coverage to the previous base commit
         informational: true
+    patch:
+      default:
+        target: auto  # auto compares coverage to the previous base commit
+        informational: true
 ignore: 
    - "**/Startup.cs"
    - "**/Startup/*.cs"
