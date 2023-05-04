@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Models.v10.AWS
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
@@ -15,6 +16,7 @@ namespace AzureIoTHub.Portal.Models.v10.AWS
         public string ThingTypeDescription { get; set; }
         public List<ThingTypeTagDto> Tags { get; set; }
         public List<ThingTypeSearchableAttDto> ThingTypeSearchableAttDtos { get; set; }
+        public Uri ImageUrl { get; set; } = default!;
 
     }
 }

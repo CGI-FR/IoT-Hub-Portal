@@ -21,9 +21,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using FluentAssertions;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
+    using Stream = System.IO.Stream;
 
     [TestFixture]
     public class ThingTypeServiceTest : BackendUnitTest
@@ -196,6 +199,64 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 
             }, "Null pointer Exception");
 
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetThingTypeAvatarShouldReturnThingTypeAvatar()
+        {
+            // Arrange
+            var thingTypeDto = Fixture.Create<ThingTypeDto>();
+            var expectedAvatarUrl = Fixture.Create<Uri>();
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(thingTypeDto.ThingTypeID))
+                .Returns(expectedAvatarUrl);
+
+            // Act
+            var result = await this.thingTypeService.GetThingTypeAvatar(thingTypeDto.ThingTypeID);
+
+            // Assert
+            _ = result.Should().Be(expectedAvatarUrl.ToString());
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateThingTypeAvatarShouldUpdateThingTypeAvatar()
+        {
+            // Arrange
+            var thingTypeDto = Fixture.Create<ThingTypeDto>();
+            var expectedAvatarUrl = Fixture.Create<string>();
+
+            var mockFormFile = MockRepository.Create<IFormFile>();
+
+            _ = this.mockDeviceModelImageManager.Setup(manager =>
+                    manager.ChangeDeviceModelImageAsync(thingTypeDto.ThingTypeID, It.IsAny<Stream>()))
+                .ReturnsAsync(expectedAvatarUrl);
+
+            _ = mockFormFile.Setup(file => file.OpenReadStream())
+                .Returns(Stream.Null);
+
+            // Act
+            var result = await this.thingTypeService.UpdateThingTypeAvatar(thingTypeDto.ThingTypeID, mockFormFile.Object);
+
+            // Assert
+            _ = result.Should().Be(expectedAvatarUrl);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteThingTypeAvatarShouldDeleteThingTypeAvatar()
+        {
+            // Arrange
+            var thingTypeDto = Fixture.Create<ThingTypeDto>();
+
+            _ = this.mockDeviceModelImageManager
+                .Setup(manager => manager.DeleteDeviceModelImageAsync(thingTypeDto.ThingTypeID))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.thingTypeService.DeleteThingTypeAvatar(thingTypeDto.ThingTypeID);
+
+            // Assert
             MockRepository.VerifyAll();
         }
     }

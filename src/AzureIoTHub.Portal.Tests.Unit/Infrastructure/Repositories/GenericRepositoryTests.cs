@@ -14,7 +14,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using Microsoft.EntityFrameworkCore;
     using NUnit.Framework;
     using AzureIoTHub.Portal.Domain.Entities.AWS;
-    using AzureIoTHub.Portal.Models.v10.AWS;
 
     [TestFixture]
     public class GenericRepositoryTests : RepositoryTestBase

@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
     using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Models.v10.AWS;
     using FluentAssertions;
+    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Helpers;
 
     [TestFixture]
     public class ThingTypeClientServiceTests : BlazorUnitTest
@@ -47,6 +48,48 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
 
             // Act
             _ = await this.thingTypeClientService.CreateThingType(thingType);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+
+        [Test]
+        public async Task GetAvatarUrlShouldReturnAvatarUrl()
+        {
+            // Arrange
+            var thingType = Fixture.Create<ThingTypeDto>();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/aws/thingtypes/{thingType.ThingTypeID}/avatar")
+                .RespondJson(thingType.ImageUrl.ToString());
+
+            // Act
+            var result = await this.thingTypeClientService.GetAvatarUrl(thingType.ThingTypeID);
+
+            // Assert
+            _ = result.Should().Contain(thingType.ImageUrl.ToString());
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ChangeAvatarPropertiesShouldChangeAvatar()
+        {
+            // Arrange
+            var thingType = Fixture.Create<ThingTypeDto>();
+            using var content = new MultipartFormDataContent();
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/aws/thingtypes/{thingType.ThingTypeID}/avatar")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeEquivalentTo(content);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.thingTypeClientService.ChangeAvatar(thingType.ThingTypeID, content);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();
