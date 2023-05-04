@@ -4,8 +4,8 @@
 namespace AzureIoTHub.Portal.Infrastructure.Managers
 {
     using System;
+    using System.Reflection;
     using System.Threading.Tasks;
-    using Amazon;
     using Amazon.S3;
     using Amazon.S3.Model;
     using Azure;
@@ -40,6 +40,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
         {
             this.logger.LogInformation($"Uploading Image to AWS S3 storage");
 
+
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
             {
@@ -49,7 +50,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                 ContentType = "image/*",
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
             };
-
             var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
 
             if (putObjectResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
@@ -64,25 +64,21 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                 var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
 
                 return putACLResponse.HttpStatusCode == System.Net.HttpStatusCode.OK
-                    ? ComputeImageUrl(deviceModelId)
+                    ? ComputeImageUri(deviceModelId).ToString()
                     : throw new InternalServerErrorException("Error by setting the image access to public and read-only");
             }
             else
             {
                 throw new InternalServerErrorException("Error by uploading the image in S3 Storage");
             }
-
         }
 
         public Uri ComputeImageUri(string deviceModelId)
         {
-            throw new NotImplementedException();
+            var url = $"https://{this.configHandler.AWSBucketName}.s3.{this.configHandler.AWSRegion}.amazonaws.com/{deviceModelId}";
+            return new Uri(url);
         }
 
-        private string ComputeImageUrl(string deviceModelId)
-        {
-            return $"https://{this.configHandler.AWSBucketName}.s3.{RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion)}.amazonaws.com/{deviceModelId}";
-        }
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
         {
 
@@ -107,13 +103,17 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
         public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
             this.logger.LogInformation($"Uploading Default Image to AWS S3 storage");
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            var defaultImageStream = currentAssembly
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
+
 
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
                 Key = deviceModelId,
-                FilePath = $"../Resources/{this.imageOptions.Value.DefaultImageName}",
+                InputStream = defaultImageStream,
                 ContentType = "image/*", // image content type
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 
@@ -133,7 +133,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                 var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
 
                 return putACLResponse.HttpStatusCode == System.Net.HttpStatusCode.OK
-                    ? ComputeImageUrl(deviceModelId)
+                    ? ComputeImageUri(deviceModelId).ToString()
                     : throw new InternalServerErrorException("Error by setting the image access to public and read-only");
             }
             else
@@ -148,11 +148,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
             this.logger.LogInformation($"Initializing default Image to AWS S3 storage");
 
+            var currentAssembly = Assembly.GetExecutingAssembly();
+
+            var defaultImageStream = currentAssembly
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
                 Key = this.imageOptions.Value.DefaultImageName,
-                FilePath = $"../Resources/{this.imageOptions.Value.DefaultImageName}",
+                InputStream = defaultImageStream,
                 ContentType = "image/*", // image content type
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 

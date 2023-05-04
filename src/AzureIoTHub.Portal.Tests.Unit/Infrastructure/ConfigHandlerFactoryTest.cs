@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 {
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
+    using AzureIoTHub.Portal.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure;
     using FluentAssertions;
     using Microsoft.Extensions.Configuration;

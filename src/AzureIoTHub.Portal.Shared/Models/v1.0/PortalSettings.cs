@@ -29,5 +29,10 @@ namespace AzureIoTHub.Portal.Models.v10
         public string CopyrightYear { get; set; } = default!;
 
         public bool IsIdeasFeatureEnabled { get; set; }
+
+        /// <summary>
+        /// The poral cloudProvider.
+        /// </summary>
+        public string CloudProvider { get; set; } = default!;
     }
 }

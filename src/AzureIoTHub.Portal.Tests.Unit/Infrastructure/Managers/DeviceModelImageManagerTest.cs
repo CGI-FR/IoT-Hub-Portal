@@ -284,5 +284,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             // Assert
             MockRepository.VerifyAll();
         }
+
     }
 }

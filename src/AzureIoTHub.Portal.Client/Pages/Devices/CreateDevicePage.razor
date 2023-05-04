@@ -8,7 +8,7 @@
 @using AzureIoTHub.Portal.Shared.Models
 @using AzureIoTHub.Portal.Shared.Models.v10;
 @using AzureIoTHub.Portal.Shared.Models.v10.Filters;
-@using Microsoft.AspNetCore.Components
+@using AzureIoTHub.Portal.Shared.Constants;
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
@@ -21,6 +21,7 @@
 @inject IDeviceLayoutService DeviceLayoutService
 
 @implements IDisposable
+
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
 <MudForm Model="@Device" @ref="form">
