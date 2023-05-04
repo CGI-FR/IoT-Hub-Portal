@@ -3,6 +3,12 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 {
+    using System;
+    using System.Linq.Expressions;
+    using System.Linq;
+    using System.Linq.Dynamic.Core;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using AutoMapper;
@@ -12,8 +18,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
+
 
     public class ThingTypeService : IThingTypeService
     {
@@ -38,6 +48,35 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             this.unitOfWork = unitOfWork;
             this.amazonIoTClient = amazonIoTClient;
             this.thingTypeImageManager = thingTypeImageManager;
+        }
+
+        public async Task<PaginatedResult<ThingTypeDto>> GetThingTypes(DeviceModelFilter deviceModelFilter)
+        {
+            var thingTypePredicate = PredicateBuilder.True<ThingType>();
+
+            if (!string.IsNullOrWhiteSpace(deviceModelFilter.SearchText))
+            {
+                thingTypePredicate = thingTypePredicate.And(thingType => thingType.Name.ToLower().Contains(deviceModelFilter.SearchText.ToLower())
+                || thingType.Description.ToLower().Contains(deviceModelFilter.SearchText.ToLower()
+                //|| thingType.Tags.Select(c => c.Value.Contains(deviceModelFilter.SearchText.ToLower()))
+                //|| thingType.ThingTypeSearchableAttributes.Select(s => s.Name.Contains(deviceModelFilter.SearchText.ToLower()))
+                ));
+            }
+
+            var paginatedThingType = await this.thingTypeRepository.GetPaginatedListAsync(deviceModelFilter.PageNumber, deviceModelFilter.PageSize, deviceModelFilter.OrderBy, thingTypePredicate, includes: new Expression<Func<ThingType, object>>[] { d => d.ThingTypeSearchableAttributes});
+
+            var paginatedThingTypeDto = new PaginatedResult<ThingTypeDto>
+            {
+                Data = paginatedThingType.Data.Select(x => this.mapper.Map<ThingTypeDto>(x, opts =>
+                {
+                    opts.AfterMap((src, dest) => dest.ImageUrl = this.thingTypeImageManager.ComputeImageUri(x.Id));
+                })).ToList(),
+                TotalCount = paginatedThingType.TotalCount,
+                CurrentPage = paginatedThingType.CurrentPage,
+                PageSize = deviceModelFilter.PageSize
+            };
+
+            return new PaginatedResult<ThingTypeDto>(paginatedThingTypeDto.Data, paginatedThingTypeDto.TotalCount, paginatedThingTypeDto.CurrentPage, paginatedThingType.PageSize);
         }
 
         public async Task<string> CreateThingType(ThingTypeDto thingType)
