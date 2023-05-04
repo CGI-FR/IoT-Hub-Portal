@@ -121,5 +121,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                 _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
             }
         }
+
     }
 }

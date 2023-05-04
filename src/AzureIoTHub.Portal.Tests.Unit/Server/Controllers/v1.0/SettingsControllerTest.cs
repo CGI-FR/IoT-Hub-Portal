@@ -90,6 +90,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 .SetupGet(c => c.IdeasEnabled)
                 .Returns(false);
 
+            _ = this.mockConfigHandler
+                .SetupGet(c => c.CloudProvider)
+                .Returns(string.Empty);
             var controller = CreateController();
 
             // Act
@@ -131,6 +134,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             _ = this.mockConfigHandler
                 .SetupGet(c => c.IdeasEnabled)
                 .Returns(false);
+
+            _ = this.mockConfigHandler
+                .SetupGet(c => c.CloudProvider)
+                .Returns(string.Empty);
 
             var controller = CreateController();
 

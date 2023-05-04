@@ -39,5 +39,9 @@
   <ItemGroup>
     <ProjectReference Include="..\AzureIoTHub.Portal.Shared\AzureIoTHub.Portal.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\AWS\" />
+  </ItemGroup>
   
 </Project>

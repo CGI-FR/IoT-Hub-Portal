@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Startup;
+    using AzureIoTHub.Portal.Shared.Constants;
     using Domain;
     using Domain.Exceptions;
     using EntityFramework.Exceptions.Common;
@@ -319,6 +320,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
             _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
         }
+
 
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
         {
