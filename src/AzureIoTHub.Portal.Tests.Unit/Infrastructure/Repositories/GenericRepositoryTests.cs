@@ -13,6 +13,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using FluentAssertions;
     using Microsoft.EntityFrameworkCore;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Domain.Entities.AWS;
+    using AzureIoTHub.Portal.Models.v10.AWS;
 
     [TestFixture]
     public class GenericRepositoryTests : RepositoryTestBase
@@ -433,6 +435,33 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 
             // Assert
             _ = result.Count().Should().Be(1);
+        }
+
+        [Test]
+        public async Task InsertAndGetIdAsyncTest()
+        {
+            // Arrange
+            var id = Guid.NewGuid().ToString();
+
+            var name = Guid.NewGuid().ToString();
+
+            var context = SetupDbContext();
+            var instance = new GenericRepository<ThingType>(context);
+
+            // Act
+            var response = await instance.InsertAndGetIdAsync(new ThingType()
+            {
+                Id = id,
+                Name = name,
+                Description = string.Empty,
+                Tags = null,
+                ThingTypeSearchableAttributes = null
+            });
+
+            // Assert
+            var result = await context.SaveChangesAsync();
+            Assert.AreEqual(1, result);
+            Assert.AreEqual(response, id);
         }
     }
 }
