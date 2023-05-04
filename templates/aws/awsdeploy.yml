@@ -1,0 +1,278 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: AWS S3 storage template | PostgreSQL database storage template | Application Runner template
+
+Parameters:
+  UniqueSolutionPrefix:
+    Type: String
+    Description: Prefix used for resource names. Should be unique as this will also be used for bucket and database name. Should not contain uppercase letters
+    MinLength: '1'
+    MaxLength: '20'
+    ConstraintDescription: Should be less than 20 letters
+    AllowedPattern: '^[a-z]+$'
+  pgsqlAdminLogin:
+      Type: String
+      Description: PostgreSQL user
+      MinLength: '1'
+      MaxLength: '30'
+  pgsqlAdminPassword:
+      Type: String
+      NoEcho: 'true'
+      Description: PostgreSQL password
+      MinLength: '8'
+      MaxLength: '41'
+  awsAccess:
+    Type: String
+    Description: AWS Access Sectet
+  awsAccessSecretkey:
+    Type: String
+    Description: AWS Access Secret Key
+  openIdApiClientId:
+    Type: String 
+    Description: The Open ID API client ID for the B2C tenant
+    Default: iot-portal-api
+  openIdClientId:
+    Type: String 
+    Description: The Open ID client ID for the B2C tenant
+    Default: iot-portal
+  openIdAuthority:
+    Type: String 
+    Description: The Open ID Authority
+    Default: https://cgigeiotdemoauth.azurewebsites.net/auth/realms/iot-portal
+  openIdMetadataURL:
+    Type: String 
+    Description: The Open ID metadata Url from the Identity provider
+    Default: https://cgigeiotdemoauth.azurewebsites.net/auth/realms/iot-portal/.well-known/openid-configuration
+  openIdScopeName:
+    Type: String 
+    Description: The Open ID Scope name
+    Default: iot_access
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  Subnet1:
+    Type: AWS::EC2::Subnet::Id
+  Subnet2:
+    Type: AWS::EC2::Subnet::Id
+  Subnet3:
+    Type: AWS::EC2::Subnet::Id
+
+
+Resources:
+#======== S3 Storage ==========
+  s3Bucket:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: !Join [ "-", [!Ref UniqueSolutionPrefix, "bucket"] ] 
+        PublicAccessBlockConfiguration:
+              BlockPublicAcls: false
+              IgnorePublicAcls: false
+              BlockPublicPolicy: false
+              RestrictPublicBuckets: false
+        OwnershipControls:
+          Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+        AccessControl: AwsExecRead
+#======== PostgreSQL database ==========
+  PostgreSQLDB:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      DBInstanceIdentifier: !Join [ "-", [!Ref UniqueSolutionPrefix, "pgdbinstance"] ] 
+      AllocatedStorage: '20' 
+      DBInstanceClass: 'db.t2.micro' # A voir quel instance utilisé : https://instances.vantage.sh/rds/
+      Engine: postgres
+      EngineVersion: 12
+      LicenseModel: postgresql-license
+      MasterUsername: !Ref pgsqlAdminLogin
+      MasterUserPassword: !Ref pgsqlAdminPassword
+      DBName: !Join [ "_", [!Ref UniqueSolutionPrefix, "cgigeiotdemo"] ] 
+      VPCSecurityGroups:
+        - !Ref PgSQLSecurityGroup
+      DBSubnetGroupName: !Ref PgSQLSubnetGroup
+  PgSQLSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable access to the database instance
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: 0.0.0.0/0
+  PgSQLSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupName: !Join [ "-", [!Ref UniqueSolutionPrefix, "pgSqlsubnetgroup"] ]
+      DBSubnetGroupDescription: Subnets available for the database
+      SubnetIds: # A voir le nombre de subnets qu'on veut dans le groupe
+        - !Ref Subnet1
+        - !Ref Subnet2
+        - !Ref Subnet3 
+
+#InstanceRoleArn
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join [ "-", [!Ref UniqueSolutionPrefix, "AWSAppRunner"] ]
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apprunner.amazonaws.com
+                - tasks.apprunner.amazonaws.com
+                - build.apprunner.amazonaws.com
+                - cloudformation.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: SMPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Join
+                  - ''
+                  - - !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:'
+                    - !Ref UniqueSolutionPrefix
+                    - '-*'
+        - PolicyName: AmazonElasticContainerRegistryPublicReadOnly
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ecr-public:GetAuthorizationToken'
+                  - 'sts:GetServiceBearerToken'
+                  - 'ecr-public:BatchCheckLayerAvailability'
+                  - 'ecr-public:GetRepositoryPolicy'
+                  - 'ecr-public:DescribeRepositories'
+                  - 'ecr-public:DescribeRegistries'
+                  - 'ecr-public:DescribeImages'
+                  - 'ecr-public:DescribeImageTags'
+                  - 'ecr-public:GetRepositoryCatalogData'
+                  - 'ecr-public:GetRegistryCatalogData'
+                Resource: '*'
+        - PolicyName: AWSAppRunnerFullAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 'iam:CreateServiceLinkedRole'
+                Resource: 'arn:aws:iam::*:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner'
+                Condition:
+                  StringLike:
+                    iam:AWSServiceName: 'apprunner.amazonaws.com'
+              - Effect: Allow
+                Action: 'iam:PassRole'
+                Resource: '*'
+                Condition:
+                  StringLike:
+                    iam:PassedToService: 'apprunner.amazonaws.com'
+              - Sid: AppRunnerAdminAccess
+                Effect: Allow
+                Action: 'apprunner:*'
+                Resource: '*'
+        - PolicyName: AWSAppRunnerServicePolicyForECRAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ecr:GetDownloadUrlForLayer'
+                  - 'ecr:BatchGetImage'
+                  - 'ecr:DescribeImages'
+                  - 'ecr:GetAuthorizationToken'
+                  - 'ecr:BatchCheckLayerAvailability'
+                Resource: '*'
+
+# AWS Secrets Manager
+  SMAWSKey:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      Name: !Join [ "-", [!Ref UniqueSolutionPrefix, "SMAWSKey"] ]
+      SecretString: !Sub '${awsAccess}'
+  SMAWSSecretKey:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      Name: !Join [ "-", [!Ref UniqueSolutionPrefix, "SMAWSSecretKey"] ]
+      SecretString: !Sub '${awsAccessSecretkey}'
+  SMPostgreConnection:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      Name: !Join [ "-", [!Ref UniqueSolutionPrefix, "SMPostgreConnection"] ]
+      SecretString: !Join
+          - ""
+          - - 'Server='
+            - !GetAtt PostgreSQLDB.Endpoint.Address
+            - !Sub ';Database=${UniqueSolutionPrefix}_cgigeiotdemo;Port=5432;User Id=${pgsqlAdminLogin};Password=${pgsqlAdminPassword};Pooling=true;Connection Lifetime=0;Command Timeout=0;'
+  SMAWSStorageConnection:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      Name: !Join [ "-", [!Ref UniqueSolutionPrefix, "SMAWSStorageConnection"] ]
+      SecretString: !Join
+          - ""
+          - - !Sub 'https://s3.${AWS::Region}.amazonaws.com/'
+            - !Ref UniqueSolutionPrefix
+            - '-bucket'
+            
+
+#============= App Runner - To Lunch the App ==============
+  AppRunnerService:
+    Type: AWS::AppRunner::Service
+    Properties:
+      ServiceName: !Join [ "-", [!Ref UniqueSolutionPrefix, "appRunner"] ]
+      InstanceConfiguration:
+        Cpu: 1 vCPU
+        Memory: 2 GB
+        InstanceRoleArn: !GetAtt InstanceRole.Arn
+      HealthCheckConfiguration:
+        Protocol: "HTTP"
+        Path: "/"
+        Interval: 20
+        Timeout: 5
+        HealthyThreshold: 2
+        UnhealthyThreshold: 5
+      SourceConfiguration:
+        AutoDeploymentsEnabled: false
+        AuthenticationConfiguration:
+          AccessRoleArn: !GetAtt InstanceRole.Arn
+        ImageRepository: 
+          ImageConfiguration: 
+            Port: 80 # This is The port that your application listens to in the container. It can be changed (To see)
+            RuntimeEnvironmentSecrets: 
+              - Name: AWS__Access
+                Value: !Ref SMAWSKey
+              - Name: AWS__AccessSecret
+                Value: !Ref SMAWSSecretKey
+              - Name: PostgreSQL__ConnectionString
+                Value: !Ref SMPostgreConnection
+              - Name: AWS__S3Storage__ConnectionString
+                Value: !Ref SMAWSStorageConnection
+            RuntimeEnvironmentVariables: 
+              - Name: OIDC__ApiClientId
+                Value: !Sub '${openIdApiClientId}'
+              - Name: OIDC__ClientId
+                Value: !Sub '${openIdClientId}'
+              - Name: OIDC__Authority
+                Value: !Sub '${openIdAuthority}'
+              - Name: OIDC__MetadataUrl
+                Value: !Sub '${openIdMetadataURL}'
+              - Name: OIDC__Scope
+                Value: !Sub '${openIdScopeName}'
+              - Name: CloudProvider
+                Value: AWS
+              - Name: PortalName
+                Value: IoT Portal DEMO - AWS
+          ImageIdentifier: !Sub '${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/iot-hub-portal:latest'
+          ImageRepositoryType: ECR
