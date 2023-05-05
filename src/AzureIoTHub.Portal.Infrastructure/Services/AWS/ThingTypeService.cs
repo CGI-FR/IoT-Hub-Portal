@@ -63,6 +63,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     || tag.Value.ToLower().Contains(deviceModelFilter.SearchText.ToLower()))
                 || thingType.ThingTypeSearchableAttributes.Any(
                     attr => attr.Name.ToLower().Contains(deviceModelFilter.SearchText.ToLower())
+
                 ));
             }
 
