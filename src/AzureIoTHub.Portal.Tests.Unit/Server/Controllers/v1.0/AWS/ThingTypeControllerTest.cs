@@ -16,11 +16,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
     using FluentAssertions;
     using AutoFixture;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Mvc.Routing;
-    using System.Collections.Generic;
     using System.Linq;
 
     [TestFixture]

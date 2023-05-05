@@ -3,6 +3,8 @@
 
 namespace AzureIoTHub.Portal.Client.Services.AWS
 {
+    using System.Collections.Generic;
+    using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.AWS;
@@ -40,7 +42,6 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
         public async Task<string> CreateThingType(ThingTypeDto thingType)
         {
             var response = await this.http.PostAsJsonAsync("api/aws/thingtypes", thingType);
-            _ = response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsStringAsync();
         }
