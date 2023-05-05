@@ -57,9 +57,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             if (!string.IsNullOrWhiteSpace(deviceModelFilter.SearchText))
             {
                 thingTypePredicate = thingTypePredicate.And(thingType => thingType.Name.ToLower().Contains(deviceModelFilter.SearchText.ToLower())
-                || thingType.Description.ToLower().Contains(deviceModelFilter.SearchText.ToLower()
-                //|| thingType.Tags.Select(c => c.Value.Contains(deviceModelFilter.SearchText.ToLower()))
-                //|| thingType.ThingTypeSearchableAttributes.Select(s => s.Name.Contains(deviceModelFilter.SearchText.ToLower()))
+                || thingType.Description.ToLower().Contains(deviceModelFilter.SearchText.ToLower())
+                || thingType.Tags.Any(
+                    tag => tag.Key.ToLower().Contains(deviceModelFilter.SearchText.ToLower())
+                    || tag.Value.ToLower().Contains(deviceModelFilter.SearchText.ToLower()))
+                || thingType.ThingTypeSearchableAttributes.Any(
+                    attr => attr.Name.ToLower().Contains(deviceModelFilter.SearchText.ToLower())
                 ));
             }
 
@@ -67,7 +70,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             var paginatedThingTypeDto = new PaginatedResult<ThingTypeDto>
             {
-                Data = paginatedThingType.Data.Select(x => this.mapper.Map<ThingTypeDto>(x, opts =>
+                Data = paginatedThingType?.Data?.Select(x => this.mapper.Map<ThingTypeDto>(x, opts =>
                 {
                     opts.AfterMap((src, dest) => dest.ImageUrl = this.thingTypeImageManager.ComputeImageUri(x.Id));
                 })).ToList(),

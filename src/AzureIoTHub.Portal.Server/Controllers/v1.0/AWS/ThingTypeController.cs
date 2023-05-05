@@ -6,9 +6,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
 
     [Authorize]
     [ApiController]
@@ -22,6 +24,41 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
         public ThingTypeController(IThingTypeService thingTypeService)
         {
             this.thingTypeService = thingTypeService;
+        }
+
+        /// <summary>
+        /// Gets the Thing type list.
+        /// </summary>
+        /// <returns>An array representing the Thing type.</returns>
+        [HttpGet(Name = "GET Thing type list")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginationResult<ThingTypeDto>>> GetThingTypes([FromQuery] DeviceModelFilter deviceModelFilter)
+        {
+            var paginatedThingType = await this.thingTypeService.GetThingTypes(deviceModelFilter);
+
+            var nextPage = string.Empty;
+
+            if (paginatedThingType.HasNextPage)
+            {
+                nextPage = Url.RouteUrl(new UrlRouteContext
+                {
+                    RouteName = "GET Thing Type list",
+                    Values = new
+                    {
+                        deviceModelFilter.SearchText,
+                        deviceModelFilter.PageSize,
+                        pageNumber = deviceModelFilter.PageNumber + 1,
+                        deviceModelFilter.OrderBy
+                    }
+                });
+            }
+
+            return Ok(new PaginationResult<ThingTypeDto>
+            {
+                Items = paginatedThingType.Data,
+                TotalItems = paginatedThingType.TotalCount,
+                NextPage = nextPage
+            });
         }
 
         /// <summary>

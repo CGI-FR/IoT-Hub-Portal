@@ -4,9 +4,12 @@
 namespace AzureIoTHub.Portal.Client.Services.AWS
 {
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 
     public interface IThingTypeClientService
     {
+        Task<PaginationResult<ThingTypeDto>> GetThingTypes(DeviceModelFilter? deviceModelFilter = null);
+
         Task<string> CreateThingType(ThingTypeDto thingType);
 
         Task<string> GetAvatarUrl(string thingTypeId);

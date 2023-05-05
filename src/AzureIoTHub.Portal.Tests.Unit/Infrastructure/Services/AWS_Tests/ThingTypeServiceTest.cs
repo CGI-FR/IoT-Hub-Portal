@@ -5,6 +5,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
@@ -20,6 +22,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
@@ -60,6 +63,53 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 
             this.thingTypeService = Services.GetRequiredService<IThingTypeService>();
             Mapper = Services.GetRequiredService<IMapper>();
+        }
+
+        [Test]
+        public async Task GetThingTypesShouldReturnExpectedThingTypes()
+        {
+            // Arrange
+            var expectedThingTypes = Fixture.CreateMany<ThingType>(3).ToList();
+            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedThingTypeDto = expectedThingTypes.Select(thingType =>
+            {
+                var thingTypeDto = Mapper.Map<ThingTypeDto>(thingType);
+                thingTypeDto.ImageUrl = expectedImageUri;
+                return thingTypeDto;
+            }).ToList();
+
+            var filter = new DeviceModelFilter
+            {
+                SearchText = Fixture.Create<string>(),
+                PageNumber = 1,
+                PageSize = 10,
+                OrderBy = new string[]
+                {
+                    null
+                }
+            };
+
+            _ = this.mockThingTypeRepository.Setup(repository => repository.GetPaginatedListAsync(filter.PageNumber, filter.PageSize, filter.OrderBy, It.IsAny<Expression<Func<ThingType, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<ThingType, object>>[]>()))
+                .ReturnsAsync(new Shared.Models.v1._0.PaginatedResult<ThingType>
+                {
+                    Data = expectedThingTypes,
+                    PageSize = filter.PageSize,
+                    CurrentPage = filter.PageNumber,
+                    TotalCount = 10
+                });
+
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(expectedImageUri);
+
+            // Act
+            var result = await this.thingTypeService.GetThingTypes(filter);
+
+            // Assert
+            _ = result.Data.Should().BeEquivalentTo(expectedThingTypeDto);
+            _ = result.CurrentPage.Should().Be(filter.PageNumber);
+            _ = result.PageSize.Should().Be(filter.PageSize);
+            _ = result.TotalCount.Should().Be(10);
+            MockRepository.VerifyAll();
         }
 
         [Test]

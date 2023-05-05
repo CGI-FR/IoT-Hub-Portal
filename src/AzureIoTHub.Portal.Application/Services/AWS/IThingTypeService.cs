@@ -4,10 +4,16 @@
 namespace AzureIoTHub.Portal.Application.Services.AWS
 {
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
 
     public interface IThingTypeService
     {
+        //Get All Thing Types
+        Task<PaginatedResult<ThingTypeDto>> GetThingTypes(DeviceModelFilter deviceModelFilter);
+
+
         //Create a thing type
         Task<string> CreateThingType(ThingTypeDto thingType);
 

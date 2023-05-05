@@ -3,17 +3,39 @@
 
 namespace AzureIoTHub.Portal.Client.Services.AWS
 {
+    using System.Net.Http.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using Microsoft.AspNetCore.WebUtilities;
 
     public class ThingTypeClientService : IThingTypeClientService
     {
         private readonly HttpClient http;
+        private readonly string apiUrlBase = "api/aws/thingtypes";
+
 
         public ThingTypeClientService(HttpClient http)
         {
             this.http = http;
         }
+
+        public async Task<PaginationResult<ThingTypeDto>> GetThingTypes(DeviceModelFilter? deviceModelFilter = null)
+        {
+            var query = new Dictionary<string, string>
+            {
+                { nameof(DeviceModelFilter.SearchText), deviceModelFilter?.SearchText ?? string.Empty },
+#pragma warning disable CA1305
+                { nameof(DeviceModelFilter.PageNumber), deviceModelFilter?.PageNumber.ToString() ?? string.Empty },
+                { nameof(DeviceModelFilter.PageSize), deviceModelFilter?.PageSize.ToString() ?? string.Empty },
+#pragma warning restore CA1305
+                { nameof(DeviceModelFilter.OrderBy), string.Join("", deviceModelFilter?.OrderBy!) ?? string.Empty }
+            };
+
+            var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
+            return await this.http.GetFromJsonAsync<PaginationResult<ThingTypeDto>>(uri) ?? new PaginationResult<ThingTypeDto>();
+        }
+
 
         public async Task<string> CreateThingType(ThingTypeDto thingType)
         {
