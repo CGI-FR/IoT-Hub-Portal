@@ -63,7 +63,7 @@
     <PackageReference Include="Microsoft.Graph" Version="5.9.0" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.6.4" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="2.9.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.10.0" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.9.0" />
     <PackageReference Include="MudBlazor" Version="6.2.3" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.18.0" />
