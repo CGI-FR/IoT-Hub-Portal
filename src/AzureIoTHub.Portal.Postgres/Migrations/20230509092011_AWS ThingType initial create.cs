@@ -1,11 +1,11 @@
 
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 #nullable disable
 namespace AzureIoTHub.Portal.Postgres.Migrations
 {
     using Microsoft.EntityFrameworkCore.Migrations;
-
     /// <inheritdoc />
     public partial class AWSThingTypeinitialcreate : Migration
     {
@@ -18,7 +18,8 @@ namespace AzureIoTHub.Portal.Postgres.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true)
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    deprecated = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,7 +56,8 @@ namespace AzureIoTHub.Portal.Postgres.Migrations
                 constraints: table =>
                 {
                     _ = table.PrimaryKey("PK_ThingTypeTags", x => x.Id);
-                    _ = table.ForeignKey(name: "FK_ThingTypeTags_ThingTypes_ThingTypeId", column: x => x.ThingTypeId, principalTable: "ThingTypes", principalColumn: "Id");
+                    _ = table.ForeignKey(name: "FK_ThingTypeTags_ThingTypes_ThingTypeId",
+                        column: x => x.ThingTypeId, principalTable: "ThingTypes", principalColumn: "Id");
                 });
 
             _ = migrationBuilder.CreateIndex(
@@ -72,9 +74,11 @@ namespace AzureIoTHub.Portal.Postgres.Migrations
             _ = migrationBuilder.DropTable(
                 name: "ThingTypeSearchableAttributes");
 
-            _ = migrationBuilder.DropTable(name: "ThingTypeTags");
+            _ = migrationBuilder.DropTable(
+                name: "ThingTypeTags");
 
-            _ = migrationBuilder.DropTable(name: "ThingTypes");
+            _ = migrationBuilder.DropTable(
+                name: "ThingTypes");
         }
     }
 }

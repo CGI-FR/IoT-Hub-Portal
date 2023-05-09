@@ -38,6 +38,11 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
             return await this.http.GetFromJsonAsync<PaginationResult<ThingTypeDto>>(uri) ?? new PaginationResult<ThingTypeDto>();
         }
 
+        public async Task<ThingTypeDto> GetThingType(string thingTypeId)
+        {
+            return await this.http.GetFromJsonAsync<ThingTypeDto>($"api/aws/thingtypes/{thingTypeId}")!;
+        }
+
 
         public async Task<string> CreateThingType(ThingTypeDto thingType)
         {
@@ -46,6 +51,13 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
             return await response.Content.ReadAsStringAsync();
         }
 
+        public async Task DeprecateThingType(ThingTypeDto thingType)
+        {
+            var result = await this.http.PutAsJsonAsync("api/aws/thingtypes", thingType);
+
+            _ = result.EnsureSuccessStatusCode();
+
+        }
         public Task<string> GetAvatarUrl(string thingTypeId)
         {
             return this.http.GetStringAsync($"api/aws/thingtypes/{thingTypeId}/avatar");

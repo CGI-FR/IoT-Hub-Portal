@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ThingTypeID))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName))
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.ThingTypeDescription))
+                .ForMember(dest => dest.deprecated, opts => opts.MapFrom(src => src.Deprecated))
                 .ForMember(dest => dest.ThingTypeSearchableAttributes, opts => opts.MapFrom(src => src.ThingTypeSearchableAttDtos.Select(pair => new ThingTypeSearchableAtt
                 {
                     Name = pair.Name
@@ -29,6 +30,7 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
                 .ForMember(dest => dest.ThingTypeID, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ThingTypeDescription, opts => opts.MapFrom(src => src.Description))
+                .ForMember(dest => dest.Deprecated, opts => opts.MapFrom(src => src.deprecated))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags != null ? src.Tags.ToList() : null))
                 .ForMember(dest => dest.ThingTypeSearchableAttDtos, opts => opts.MapFrom(
                     src => src.ThingTypeSearchableAttributes != null ? src.ThingTypeSearchableAttributes.ToList() : null));

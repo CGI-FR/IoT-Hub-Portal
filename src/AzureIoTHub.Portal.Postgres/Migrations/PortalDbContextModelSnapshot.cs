@@ -34,6 +34,9 @@ namespace AzureIoTHub.Portal.Postgres.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("deprecated")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
                     b.ToTable("ThingTypes");

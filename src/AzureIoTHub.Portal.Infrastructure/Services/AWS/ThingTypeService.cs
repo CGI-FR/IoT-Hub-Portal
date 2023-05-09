@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
-
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class ThingTypeService : IThingTypeService
     {
@@ -83,6 +83,18 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             return new PaginatedResult<ThingTypeDto>(paginatedThingTypeDto.Data, paginatedThingTypeDto.TotalCount, paginatedThingTypeDto.CurrentPage, paginatedThingType.PageSize);
         }
 
+        public async Task<ThingTypeDto> GetThingType(string thingTypeId)
+        {
+            var getThingType = await this.thingTypeRepository.GetByIdAsync(thingTypeId);
+            if (getThingType == null)
+            {
+                throw new ResourceNotFoundException($"The thing type with id {thingTypeId} doesn't exist");
+
+            }
+            var thingTypeDto = this.mapper.Map<ThingTypeDto>(getThingType);
+
+            return thingTypeDto;
+        }
         public async Task<string> CreateThingType(ThingTypeDto thingType)
         {
             ArgumentNullException.ThrowIfNull(thingType, nameof(thingType));
@@ -113,6 +125,34 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             return await GetThingType;
         }
 
+        public async Task DeprecateThingType(ThingTypeDto thingType)
+        {
+
+            var deprecated = new DeprecateThingTypeRequest()
+            {
+                ThingTypeName = thingType.ThingTypeName,
+                UndoDeprecate = false
+            };
+
+            var response = await this.amazonIoTClient.DeprecateThingTypeAsync(deprecated);
+
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException("The deprecation of the thing type failed due to an error in the Amazon IoT API.");
+            }
+            else
+            {
+                var GetThingType = await this.thingTypeRepository.GetByIdAsync(thingType.ThingTypeID);
+                if (GetThingType == null)
+                {
+                    throw new ResourceNotFoundException($"The thing type with name {thingType?.ThingTypeName} doesn't exist");
+
+                }
+                GetThingType.deprecated = true;
+                this.thingTypeRepository.Update(GetThingType);
+                await this.unitOfWork.SaveAsync();
+            }
+        }
         public Task<string> GetThingTypeAvatar(string thingTypeId)
         {
             return Task.Run(() => this.thingTypeImageManager.ComputeImageUri(thingTypeId).ToString());

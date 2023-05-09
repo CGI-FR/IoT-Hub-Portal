@@ -295,6 +295,10 @@
     {
         navigationManager.NavigateTo($"/device-models/{item.ModelId}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
     }
+    private void GoToThingTypeDetails(ThingTypeDto thingType)
+    {
+        navigationManager.NavigateTo($"/device-models/{thingType.ThingTypeID}");
+    }
 
     private async Task Search(DeviceModelSearchInfo? deviceModelSearchInfo = null)
     {

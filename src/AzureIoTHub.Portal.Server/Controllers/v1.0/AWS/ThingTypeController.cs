@@ -62,6 +62,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
         }
 
         /// <summary>
+        /// Gets a thing type.
+        /// </summary>
+        /// <returns>An array representing the Thing type.</returns>
+        [HttpGet("{id}", Name = "GET A Thing type")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ThingTypeDto>> GetThingType(string id)
+        {
+            return Ok(await thingTypeService.GetThingType(id));
+        }
+
+        /// <summary>
         /// Creates the Thing type.
         /// </summary>
         /// <param name="thingtype">The thing type.</param>
@@ -74,6 +85,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
             return Ok(await this.thingTypeService.CreateThingType(thingtype));
         }
 
+        /// <summary>
+        /// Deprecate the Thing type.
+        /// </summary>
+        /// <param name="thingtype">The thing type.</param>
+        [HttpPut(Name = "PUT Create AWS Thing type")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeprecateThingTypeAsync(ThingTypeDto thingtype)
+        {
+            await this.thingTypeService.DeprecateThingType(thingtype);
+            return Ok();
+        }
         /// <summary>
         /// Gets the thing type avatar.
         /// </summary>

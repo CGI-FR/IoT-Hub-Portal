@@ -13,9 +13,12 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
         //Get All Thing Types
         Task<PaginatedResult<ThingTypeDto>> GetThingTypes(DeviceModelFilter deviceModelFilter);
 
-
+        //Get a thing type
+        Task<ThingTypeDto> GetThingType(string thingTypeId);
         //Create a thing type
         Task<string> CreateThingType(ThingTypeDto thingType);
+        Task DeprecateThingType(ThingTypeDto thingType);
+
 
         Task<string> GetThingTypeAvatar(string thingTypeId);
 

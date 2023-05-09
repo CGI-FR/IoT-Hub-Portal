@@ -9,8 +9,10 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
     public interface IThingTypeClientService
     {
         Task<PaginationResult<ThingTypeDto>> GetThingTypes(DeviceModelFilter? deviceModelFilter = null);
+        Task<ThingTypeDto> GetThingType(string thingTypeId);
 
         Task<string> CreateThingType(ThingTypeDto thingType);
+        Task DeprecateThingType(ThingTypeDto thingType);
 
         Task<string> GetAvatarUrl(string thingTypeId);
 

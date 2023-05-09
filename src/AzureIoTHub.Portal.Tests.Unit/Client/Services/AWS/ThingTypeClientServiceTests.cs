@@ -92,6 +92,29 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
             _ = response.Should().NotBeNull();
         }
 
+        [Test]
+        public async Task DeprecateAThingTypeShoukdDeprecateThingType()
+        {
+            // Arrange
+            var thingType = Fixture.Create<ThingTypeDto>();
+
+            _ = MockHttpClient.When(HttpMethod.Put, "/api/aws/thingtypes")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<ThingTypeDto>>();
+                    var body = m.Content as ObjectContent<ThingTypeDto>;
+                    _ = body.Value.Should().BeEquivalentTo(thingType);
+
+                    return true;
+                });
+
+            // Act
+            await this.thingTypeClientService.DeprecateThingType(thingType);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
 
         [Test]
         public async Task GetAvatarUrlShouldReturnAvatarUrl()
