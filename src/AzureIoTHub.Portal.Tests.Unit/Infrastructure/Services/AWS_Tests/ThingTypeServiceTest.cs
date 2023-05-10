@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Domain.Repositories.AWS;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
@@ -36,6 +37,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     {
 
         private Mock<IThingTypeRepository> mockThingTypeRepository;
+        private Mock<IThingTypeTagRepository> mockThingTypeTagRepository;
+        private Mock<IThingTypeSearchableAttRepository> mockThingTypeSearchableAttrRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IAmazonIoT> amazonIotClient;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
@@ -48,11 +51,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         {
             base.Setup();
             this.mockThingTypeRepository = MockRepository.Create<IThingTypeRepository>();
+            this.mockThingTypeTagRepository = MockRepository.Create<IThingTypeTagRepository>();
+            this.mockThingTypeSearchableAttrRepository = MockRepository.Create<IThingTypeSearchableAttRepository>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.amazonIotClient = MockRepository.Create<IAmazonIoT>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
 
             _ = ServiceCollection.AddSingleton(this.mockThingTypeRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockThingTypeTagRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockThingTypeSearchableAttrRepository.Object);
             _ = ServiceCollection.AddSingleton(this.amazonIotClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
@@ -266,7 +273,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            _ = this.mockThingTypeRepository.Setup(repository => repository.GetByIdAsync(thingTypeID)).ReturnsAsync(thingType);
+            _ = this.mockThingTypeRepository.Setup(repository => repository.GetByIdAsync(thingTypeID, d => d.Tags, d => d.ThingTypeSearchableAttributes)).ReturnsAsync(thingType);
             _ = this.mockThingTypeRepository.Setup(repository => repository.Update(It.IsAny<ThingType>()));
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())

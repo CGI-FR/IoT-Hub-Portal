@@ -57,6 +57,13 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
             _ = result.EnsureSuccessStatusCode();
 
         }
+
+        public async Task DeleteThingType(string thingTypeId)
+        {
+            var result = await this.http.DeleteAsync($"api/aws/thingtypes/{thingTypeId}");
+            _ = result.EnsureSuccessStatusCode();
+
+        }
         public Task<string> GetAvatarUrl(string thingTypeId)
         {
             return this.http.GetStringAsync($"api/aws/thingtypes/{thingTypeId}/avatar");

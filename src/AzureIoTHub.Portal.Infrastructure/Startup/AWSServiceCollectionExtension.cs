@@ -11,11 +11,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Infrastructure.Managers;
     using Microsoft.Extensions.DependencyInjection;
+    using AzureIoTHub.Portal.Domain.Repositories.AWS;
+    using AzureIoTHub.Portal.Infrastructure.Repositories.AWS;
 
     public static class AWSServiceCollectionExtension
     {
@@ -60,6 +61,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureAWSRepositories(this IServiceCollection services)
         {
             _ = services.AddScoped<IThingTypeRepository, ThingTypeRepository>();
+            _ = services.AddScoped<IThingTypeTagRepository, ThingTypeTagRepository>();
+            _ = services.AddScoped<IThingTypeSearchableAttRepository, ThingTypeSearchableAttributeRepository>();
 
             return services;
         }

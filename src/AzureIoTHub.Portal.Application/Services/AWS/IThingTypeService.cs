@@ -17,9 +17,10 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
         Task<ThingTypeDto> GetThingType(string thingTypeId);
         //Create a thing type
         Task<string> CreateThingType(ThingTypeDto thingType);
+        //Deprecate a thing type
         Task<ThingTypeDto> DeprecateThingType(string thingTypeId);
-
-
+        //Delete a thing type
+        Task DeleteThingType(string thingTypeId);
         Task<string> GetThingTypeAvatar(string thingTypeId);
 
         Task<string> UpdateThingTypeAvatar(string thingTypeId, IFormFile file);

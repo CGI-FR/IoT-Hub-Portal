@@ -188,15 +188,15 @@ else
                     </MudCardContent>
                 </MudCard>
                 <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteThingType" id="deleteButton" Disabled="isProcessing">Delete thing type</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteThingType" id="deleteButton" Disabled="isProcessing">Delete</MudButton>
                     @if (ThingType.Deprecated)
                     {
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Deprecate" id="deprecateButton" Disabled="true">Deprecate thing type</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Deprecate" id="deprecateButton" Disabled="true">Deprecate</MudButton>
 
                     }
                     else
                     {
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Deprecate" id="deprecateButton" Disabled="isProcessing">Deprecate thing type</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Deprecate" id="deprecateButton" Disabled="isProcessing">Deprecate</MudButton>
                         
                     }
                 </MudItem>
@@ -229,27 +229,31 @@ else
                                         <TitleContent><MudText Typo="Typo.h6">Tags</MudText></TitleContent>
                                         <ChildContent>
                                             <MudItem xs="12">
-                                                @foreach (var tag in ThingType.Tags)
+                                                @if (ThingType.Tags != null)
                                                 {
-                                                    <MudGrid id="@($"tag-{tag.Key}")">
-                                                        <MudItem md="4" xs="12">
-                                                            <MudTextField id="@nameof(tag.Key)"
-                                                                    Label="Key"
-                                                                    @bind-Value="@tag.Key"
-                                                                    Variant="Variant.Outlined"
-                                                                    For="@(()=> tag.Key)"
-                                                                    Disabled="true"/>
-                                                        </MudItem>
-                                                        <MudItem md="3" xs="12">
-                                                            <MudTextField id="@nameof(tag.Value)"
-                                                                    Label="Value"
-                                                                    @bind-Value="@tag.Value"
-                                                                    Variant="Variant.Outlined"
-                                                                    For="@(()=> tag.Value)"
-                                                                    Disabled="true"/>
-                                                        </MudItem>
-                                                    </MudGrid>
+                                                    @foreach (var tag in ThingType.Tags)
+                                                    {
+                                                        <MudGrid id="@($"tag-{tag.Key}")">
+                                                            <MudItem md="4" xs="12">
+                                                                <MudTextField id="@nameof(tag.Key)"
+                                                                  Label="Key"
+                                                                  @bind-Value="@tag.Key"
+                                                                  Variant="Variant.Outlined"
+                                                                  For="@(()=> tag.Key)"
+                                                                  Disabled="true" />
+                                                            </MudItem>
+                                                            <MudItem md="3" xs="12">
+                                                                <MudTextField id="@nameof(tag.Value)"
+                                                                  Label="Value"
+                                                                  @bind-Value="@tag.Value"
+                                                                  Variant="Variant.Outlined"
+                                                                  For="@(()=> tag.Value)"
+                                                                  Disabled="true" />
+                                                            </MudItem>
+                                                        </MudGrid>
+                                                    }
                                                 }
+                                               
                                             </MudItem>
                                         </ChildContent>
                                     </MudExpansionPanel>
@@ -263,18 +267,22 @@ else
                                         <ChildContent>
                                             <MudItem xs="12" md="6">
                                                 <MudItem xs="12">
-                                                    @foreach (var search in ThingType.ThingTypeSearchableAttDtos)
+                                                    @if (ThingType.ThingTypeSearchableAttDtos != null)
                                                     {
-                                                        <MudGrid id="@($"search-{search.Name}")">
-                                                            <MudItem md="4" xs="12">
-                                                                <MudTextField id="@nameof(search.Name)"
-                                                                        Label="Name"
-                                                                        @bind-Value="@search.Name"
-                                                                        Variant="Variant.Outlined"
-                                                                        For="@(()=> search.Name)" />
-                                                            </MudItem>
-                                                        </MudGrid>
-                                                    }
+                                                        @foreach (var search in ThingType.ThingTypeSearchableAttDtos)
+                                                        {
+                                                            <MudGrid id="@($"search-{search.Name}")">
+                                                                <MudItem md="4" xs="12">
+                                                                    <MudTextField id="@nameof(search.Name)"
+                                                                      Label="Name"
+                                                                      @bind-Value="@search.Name"
+                                                                      Variant="Variant.Outlined"
+                                                                      For="@(()=> search.Name)"
+                                                                      Disabled="true" />
+                                                                </MudItem>
+                                                            </MudGrid>
+                                                        }
+                                                    }                                                    
                                                 </MudItem>
                                             </MudItem>
                                         </ChildContent>
@@ -384,6 +392,7 @@ else
             if (Portal.CloudProvider.Equals("AWS"))
             {
                 ThingType = await ThingClientService.GetThingType(ModelID);
+                imageDataUrl = await ThingClientService.GetAvatarUrl(ThingType.ThingTypeID);
             }
             else
             {
@@ -549,7 +558,24 @@ else
 
     private async Task DeleteThingType()
     {
+        isProcessing = true;
 
+        var parameters = new DialogParameters
+        {
+            {"thingTypeID", ThingType.ThingTypeID},
+            {"thingTypeName", ThingType.ThingTypeName}
+        };
+        var result = await DialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
+
+        isProcessing = false;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        // Go back to the list of devices after the deletion
+        NavigationManager.NavigateTo("device-models");
     }
     private async Task Deprecate()
     {
@@ -558,7 +584,7 @@ else
         try
         {
             await ThingClientService.DeprecateThingType(ThingType.ThingTypeID);
-            Snackbar.Add("Thing Type successfully deprecated.", Severity.Success);
+            Snackbar.Add($"The {ThingType.ThingTypeName} object type has been been successfully deprecated. You have to wait about 5 minutes before you can delete the object type.", Severity.Success);
 
             // Go back to the list of devices models
             NavigationManager.NavigateTo("device-models");

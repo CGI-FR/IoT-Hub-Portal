@@ -7,7 +7,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Domain.Entities.AWS;
-    using AzureIoTHub.Portal.Infrastructure.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Repositories.AWS;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using NUnit.Framework;

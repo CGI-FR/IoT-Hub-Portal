@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
 
         Task<string> CreateThingType(ThingTypeDto thingType);
         Task DeprecateThingType(string thingTypeId);
-
+        Task DeleteThingType(string thingTypeId);
         Task<string> GetAvatarUrl(string thingTypeId);
 
         Task ChangeAvatar(string thingTypeId, MultipartFormDataContent avatar);

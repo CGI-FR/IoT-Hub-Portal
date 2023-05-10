@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
         {
             _ = CreateMap<ThingTypeTag, ThingTypeTagDto>()
                 .ForMember(dest => dest.Key, opts => opts.MapFrom(src => src.Key))
-                .ForMember(dest => dest.Key, opts => opts.MapFrom(src => src.Key))
+                .ForMember(dest => dest.Value, opts => opts.MapFrom(src => src.Value))
                 .ReverseMap();
 
         }

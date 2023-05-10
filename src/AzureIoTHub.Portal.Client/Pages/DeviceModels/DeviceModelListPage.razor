@@ -132,7 +132,7 @@
                     </MudTd>
                     <MudTd DataLabel="Delete" Style="text-align: center">
                         <MudTooltip Text="Delete thing type">
-                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(null))" id="deleteButton"></MudIconButton>
+                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteThingType(context))" id="deleteButton"></MudIconButton>
                         </MudTooltip>
                     </MudTd>
                 </RowTemplate>
@@ -290,6 +290,24 @@
         // await LoadDeviceModels();
         await Search();
     }
+
+    private async Task DeleteThingType(ThingTypeDto thingType)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("thingTypeID", thingType.ThingTypeID);
+        parameters.Add("thingTypeName", thingType.ThingTypeName);
+        var result = await dialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        // Update the list of devices after the deletion
+        // await LoadDeviceModels();
+        await Search();
+    }
+
 
     private void GoToDetails(DeviceModelDto item)
     {

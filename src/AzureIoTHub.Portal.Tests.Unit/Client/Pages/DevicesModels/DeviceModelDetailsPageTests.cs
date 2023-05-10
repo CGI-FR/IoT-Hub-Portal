@@ -24,6 +24,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using MudBlazor.Services;
     using NUnit.Framework;
     using UnitTests.Mocks;
+    using AzureIoTHub.Portal.Client.Services.AWS;
 
     [TestFixture]
     public class DeviceModelDetaislPageTests : BlazorUnitTest
@@ -31,6 +32,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
+        private Mock<IThingTypeClientService> mockThingTypeClientService;
         private Mock<ILoRaWanDeviceModelsClientService> mockLoRaWanDeviceModelsClientService;
 
         private readonly string mockModelId = Guid.NewGuid().ToString();
@@ -42,11 +44,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockThingTypeClientService = MockRepository.Create<IThingTypeClientService>();
             this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockThingTypeClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
@@ -64,6 +68,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     Name = Guid.NewGuid().ToString(),
                     PropertyType = DevicePropertyType.Double
                 }).ToArray();
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
 
@@ -103,6 +109,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     PropertyType = DevicePropertyType.Double
                 }).ToArray();
 
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -135,6 +143,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     PropertyType = DevicePropertyType.Double
                 }).ToArray();
 
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
+
             _ = SetupMockDeviceModel(properties: expectedProperties);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -166,6 +177,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     ModelId = this.mockModelId,
                     Name = Guid.NewGuid().ToString()
                 });
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(this.mockModelId))
@@ -212,6 +226,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void ClickOnRemovePropertyShouldRemoveTheProperty()
         {
             // Arrange
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(this.mockModelId))
                 .ReturnsAsync(new DeviceModelDto
@@ -260,6 +277,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void WhenPresentModelDetailsShouldDisplayProperties()
         {
             // Arrange
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var properties = Enumerable.Range(0, 10)
                 .Select(_ => new DeviceProperty
                 {
@@ -298,6 +318,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = SetupMockDeviceModel();
 
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>
@@ -318,6 +339,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         {
             // Arrange
             _ = SetupMockLoRaWANDeviceModel();
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>(
@@ -340,6 +363,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         {
             // Arrange
             _ = SetupMockLoRaWANDeviceModelThrowingException();
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>(
@@ -428,6 +454,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = SetupMockDeviceModel();
 
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>(ComponentParameter.CreateParameter("ModelId", this.mockModelId ));
             var returnButton = cut.WaitForElement("#returnButton");
@@ -444,6 +472,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         {
             // Arrange
             _ = SetupMockDeviceModel();
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             var cut = RenderComponent<DeviceModelDetailPage>
                 (ComponentParameter.CreateParameter(nameof(DeviceModelDetailPage.ModelID), this.mockModelId));
@@ -467,6 +497,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         {
             // Arrange
             _ = SetupMockDeviceModel();
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));

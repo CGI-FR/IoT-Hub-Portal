@@ -96,6 +96,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
         {
             return Ok(await this.thingTypeService.DeprecateThingType(id));
         }
+
+        /// <summary>
+        /// Deletes the thing type.
+        /// </summary>
+        /// <param name="id">The thing type identifier.</param>
+        [HttpDelete("{id}", Name = "DELETE the thing type")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteThingTypeAsync(string id)
+        {
+            await this.thingTypeService.DeleteThingType(id);
+            return NoContent();
+        }
+
         /// <summary>
         /// Gets the thing type avatar.
         /// </summary>
