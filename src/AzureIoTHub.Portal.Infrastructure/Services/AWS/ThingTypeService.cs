@@ -125,12 +125,17 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             return await GetThingType;
         }
 
-        public async Task DeprecateThingType(ThingTypeDto thingType)
+        public async Task<ThingTypeDto> DeprecateThingType(string thingTypeId)
         {
+            var getThingType = await this.thingTypeRepository.GetByIdAsync(thingTypeId);
+            if (getThingType == null)
+            {
+                throw new ResourceNotFoundException($"The thing type with id {thingTypeId} doesn't exist");
 
+            }
             var deprecated = new DeprecateThingTypeRequest()
             {
-                ThingTypeName = thingType.ThingTypeName,
+                ThingTypeName = getThingType.Name,
                 UndoDeprecate = false
             };
 
@@ -142,15 +147,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             }
             else
             {
-                var GetThingType = await this.thingTypeRepository.GetByIdAsync(thingType.ThingTypeID);
-                if (GetThingType == null)
-                {
-                    throw new ResourceNotFoundException($"The thing type with name {thingType?.ThingTypeName} doesn't exist");
-
-                }
-                GetThingType.deprecated = true;
-                this.thingTypeRepository.Update(GetThingType);
+                getThingType.deprecated = true;
+                this.thingTypeRepository.Update(getThingType);
                 await this.unitOfWork.SaveAsync();
+
+                return this.mapper.Map<ThingTypeDto>(getThingType);
             }
         }
         public Task<string> GetThingTypeAvatar(string thingTypeId)

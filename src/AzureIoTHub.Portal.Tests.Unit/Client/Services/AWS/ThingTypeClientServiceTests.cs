@@ -96,20 +96,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
         public async Task DeprecateAThingTypeShoukdDeprecateThingType()
         {
             // Arrange
-            var thingType = Fixture.Create<ThingTypeDto>();
+            var thingTypeId = Fixture.Create<string>();
 
-            _ = MockHttpClient.When(HttpMethod.Put, "/api/aws/thingtypes")
-                .With(m =>
-                {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<ThingTypeDto>>();
-                    var body = m.Content as ObjectContent<ThingTypeDto>;
-                    _ = body.Value.Should().BeEquivalentTo(thingType);
-
-                    return true;
-                });
+            _ = MockHttpClient.When(HttpMethod.Put, $"/api/aws/thingtypes/{thingTypeId}")
+                .Respond(HttpStatusCode.OK);
 
             // Act
-            await this.thingTypeClientService.DeprecateThingType(thingType);
+            await this.thingTypeClientService.DeprecateThingType(thingTypeId);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();

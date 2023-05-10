@@ -253,15 +253,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         }
 
         [Test]
-        public async Task DeprrecateAThingTypeShouldReturnAValue()
+        public async Task DeprecateAThingTypeShouldReturnAValue()
         {
             // Arrange
-            var ThingTypeID = Fixture.Create<string>();
-            var thingTypeDto = new ThingTypeDto()
-            {
-                ThingTypeID = ThingTypeID,
-                ThingTypeName = Fixture.Create<string>()
-            };
+            var thingTypeID = Fixture.Create<string>();
+
             var thingType = Fixture.Create<ThingType>();
 
             _ = this.amazonIotClient.Setup(s3 => s3.DeprecateThingTypeAsync(It.IsAny<DeprecateThingTypeRequest>(), It.IsAny<CancellationToken>()))
@@ -270,7 +266,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            _ = this.mockThingTypeRepository.Setup(repository => repository.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(thingType);
+            _ = this.mockThingTypeRepository.Setup(repository => repository.GetByIdAsync(thingTypeID)).ReturnsAsync(thingType);
             _ = this.mockThingTypeRepository.Setup(repository => repository.Update(It.IsAny<ThingType>()));
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
@@ -278,7 +274,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 
 
             //Act
-            await this.thingTypeService.DeprecateThingType(thingTypeDto);
+            var result = await this.thingTypeService.DeprecateThingType(thingTypeID);
+
+            //Assert
+            _ = result.Deprecated.Should().Be(true);
 
             MockRepository.VerifyAll();
         }

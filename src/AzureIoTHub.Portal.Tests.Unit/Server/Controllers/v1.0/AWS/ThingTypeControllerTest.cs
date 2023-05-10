@@ -174,25 +174,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
 
 
         [Test]
-        public async Task DeprrecateAThingTypeShouldReturnOK()
+        public async Task DeprecateAThingTypeShouldReturnOK()
         {
             // Arrange
             var thingTypeController = CreateThingTypeController();
-
-            var thingType = new ThingTypeDto()
-            {
-                ThingTypeName = "iot_hub"
-            };
+            var thingTypeId = Fixture.Create<string>();
 
             _ = this.mockThingTypeService
-                .Setup(x => x.DeprecateThingType(It.Is<ThingTypeDto>(c => c.ThingTypeName.Equals(thingType.ThingTypeName, StringComparison.Ordinal)))).Returns(Task.CompletedTask);
+                .Setup(x => x.DeprecateThingType(thingTypeId)).ReturnsAsync(new ThingTypeDto { ThingTypeID = thingTypeId, Deprecated = true });
 
             // Act
-            var response = await thingTypeController.DeprecateThingTypeAsync(thingType);
+            var response = await thingTypeController.DeprecateThingTypeAsync(thingTypeId);
 
             // Assert
 
-            _ = ((OkResult)response)?.StatusCode.Should().Be(200);
+            _ = ((OkObjectResult)response.Result).StatusCode.Should().Be(200);
 
             this.mockRepository.VerifyAll();
         }

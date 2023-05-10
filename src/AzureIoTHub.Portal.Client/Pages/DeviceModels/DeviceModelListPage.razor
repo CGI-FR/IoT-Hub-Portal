@@ -86,7 +86,7 @@
         }
         else
         {
-            <MudTable T="ThingTypeDto" ServerData=@LoadThingTypes Loading="@IsLoading" @ref="thingTypeTable" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(null))" RowStyle="cursor: pointer;">
+            <MudTable T="ThingTypeDto" ServerData=@LoadThingTypes Loading="@IsLoading" @ref="thingTypeTable" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToThingTypeDetails(e.Item))" RowStyle="cursor: pointer;">
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 30%;" />
@@ -127,7 +127,7 @@
                     </MudTd>
                     <MudTd DataLabel="Details" Style="text-align: center">
                         <MudTooltip Text="Detail Thing Type ">
-                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(null))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToThingTypeDetails(context))" />
                         </MudTooltip>
                     </MudTd>
                     <MudTd DataLabel="Delete" Style="text-align: center">

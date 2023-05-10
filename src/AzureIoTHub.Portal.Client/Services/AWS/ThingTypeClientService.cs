@@ -51,10 +51,9 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task DeprecateThingType(ThingTypeDto thingType)
+        public async Task DeprecateThingType(string thingTypeId)
         {
-            var result = await this.http.PutAsJsonAsync("api/aws/thingtypes", thingType);
-
+            var result = await this.http.PutAsync($"api/aws/thingtypes/{thingTypeId}", null);
             _ = result.EnsureSuccessStatusCode();
 
         }

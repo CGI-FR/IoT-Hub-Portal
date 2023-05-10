@@ -88,14 +88,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
         /// <summary>
         /// Deprecate the Thing type.
         /// </summary>
-        /// <param name="thingtype">The thing type.</param>
-        [HttpPut(Name = "PUT Create AWS Thing type")]
+        /// <param name="id">The thing type.</param>
+        [HttpPut("{id}", Name = "PUT Create AWS Thing type")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeprecateThingTypeAsync(ThingTypeDto thingtype)
+        public async Task<ActionResult<ThingTypeDto>> DeprecateThingTypeAsync(string id)
         {
-            await this.thingTypeService.DeprecateThingType(thingtype);
-            return Ok();
+            return Ok(await this.thingTypeService.DeprecateThingType(id));
         }
         /// <summary>
         /// Gets the thing type avatar.
