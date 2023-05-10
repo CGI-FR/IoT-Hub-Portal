@@ -107,7 +107,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.8.0" />
-    <PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.0" />
+    <PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.1" />
     <PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.9.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
     <PackageReference Include="CsvHelper" Version="30.0.1" />
