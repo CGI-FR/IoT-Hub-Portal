@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Infrastructure.Managers;
     using Microsoft.Extensions.DependencyInjection;
+    using Amazon.GreengrassV2;
     using AzureIoTHub.Portal.Domain.Repositories.AWS;
     using AzureIoTHub.Portal.Infrastructure.Repositories.AWS;
 
@@ -48,6 +49,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
             _ = services.AddSingleton<IAmazonS3>(new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
+            _ = services.AddSingleton(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
             return services;
         }
 
