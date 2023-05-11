@@ -5,6 +5,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
@@ -18,8 +20,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Domain.Repositories.AWS;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
@@ -33,6 +37,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     {
 
         private Mock<IThingTypeRepository> mockThingTypeRepository;
+        private Mock<IThingTypeTagRepository> mockThingTypeTagRepository;
+        private Mock<IThingTypeSearchableAttRepository> mockThingTypeSearchableAttrRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IAmazonIoT> amazonIotClient;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
@@ -45,11 +51,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         {
             base.Setup();
             this.mockThingTypeRepository = MockRepository.Create<IThingTypeRepository>();
+            this.mockThingTypeTagRepository = MockRepository.Create<IThingTypeTagRepository>();
+            this.mockThingTypeSearchableAttrRepository = MockRepository.Create<IThingTypeSearchableAttRepository>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.amazonIotClient = MockRepository.Create<IAmazonIoT>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
 
             _ = ServiceCollection.AddSingleton(this.mockThingTypeRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockThingTypeTagRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockThingTypeSearchableAttrRepository.Object);
             _ = ServiceCollection.AddSingleton(this.amazonIotClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
@@ -60,6 +70,53 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 
             this.thingTypeService = Services.GetRequiredService<IThingTypeService>();
             Mapper = Services.GetRequiredService<IMapper>();
+        }
+
+        [Test]
+        public async Task GetThingTypesShouldReturnExpectedThingTypes()
+        {
+            // Arrange
+            var expectedThingTypes = Fixture.CreateMany<ThingType>(3).ToList();
+            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedThingTypeDto = expectedThingTypes.Select(thingType =>
+            {
+                var thingTypeDto = Mapper.Map<ThingTypeDto>(thingType);
+                thingTypeDto.ImageUrl = expectedImageUri;
+                return thingTypeDto;
+            }).ToList();
+
+            var filter = new DeviceModelFilter
+            {
+                SearchText = Fixture.Create<string>(),
+                PageNumber = 1,
+                PageSize = 10,
+                OrderBy = new string[]
+                {
+                    null
+                }
+            };
+
+            _ = this.mockThingTypeRepository.Setup(repository => repository.GetPaginatedListAsync(filter.PageNumber, filter.PageSize, filter.OrderBy, It.IsAny<Expression<Func<ThingType, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<ThingType, object>>[]>()))
+                .ReturnsAsync(new Shared.Models.v1._0.PaginatedResult<ThingType>
+                {
+                    Data = expectedThingTypes,
+                    PageSize = filter.PageSize,
+                    CurrentPage = filter.PageNumber,
+                    TotalCount = 10
+                });
+
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(expectedImageUri);
+
+            // Act
+            var result = await this.thingTypeService.GetThingTypes(filter);
+
+            // Assert
+            _ = result.Data.Should().BeEquivalentTo(expectedThingTypeDto);
+            _ = result.CurrentPage.Should().Be(filter.PageNumber);
+            _ = result.PageSize.Should().Be(filter.PageSize);
+            _ = result.TotalCount.Should().Be(10);
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -199,6 +256,116 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 
             }, "Null pointer Exception");
 
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAThingTypeShouldReturnAValue()
+        {
+            // Arrange
+            var thingTypeID = Fixture.Create<string>();
+            var expectedAvatarUrl = Fixture.Create<Uri>();
+
+            var thingType = Fixture.Create<ThingType>();
+
+            _ = this.mockThingTypeRepository.Setup(repository => repository.GetByIdAsync(thingTypeID, d => d.Tags, d => d.ThingTypeSearchableAttributes)).ReturnsAsync(thingType);
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(thingTypeID))
+                .Returns(expectedAvatarUrl);
+
+
+            //Act
+            var result = await this.thingTypeService.GetThingType(thingTypeID);
+
+            //Assert
+            _ = result.Should().NotBeNull();
+            Assert.AreEqual(expectedAvatarUrl, result.ImageUrl);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeprecateAThingTypeShouldReturnAValue()
+        {
+            // Arrange
+            var thingTypeID = Fixture.Create<string>();
+
+            var thingType = Fixture.Create<ThingType>();
+
+            _ = this.amazonIotClient.Setup(s3 => s3.DeprecateThingTypeAsync(It.IsAny<DeprecateThingTypeRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DeprecateThingTypeResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockThingTypeRepository.Setup(repository => repository.GetByIdAsync(thingTypeID, d => d.Tags, d => d.ThingTypeSearchableAttributes)).ReturnsAsync(thingType);
+            _ = this.mockThingTypeRepository.Setup(repository => repository.Update(It.IsAny<ThingType>()));
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+
+            //Act
+            var result = await this.thingTypeService.DeprecateThingType(thingTypeID);
+
+            //Assert
+            _ = result.Deprecated.Should().Be(true);
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteAThingTypeShouldReturnAValue()
+        {
+            // Arrange
+            var thingTypeID = Fixture.Create<string>();
+
+            var thingType = new ThingType
+            {
+                Id = thingTypeID,
+                Name = Fixture.Create<string>(),
+                Description = Fixture.Create<string>(),
+                Deprecated = true,
+                Tags = new List<ThingTypeTag>
+                {
+                    new ThingTypeTag {Key = Fixture.Create<string>(), Value = Fixture.Create<string>()}
+                },
+                ThingTypeSearchableAttributes = new List<ThingTypeSearchableAtt>
+                {
+                    new ThingTypeSearchableAtt {Name = Fixture.Create<string>()}
+                }
+            };
+
+
+            _ = this.amazonIotClient.Setup(s3 => s3.DeleteThingTypeAsync(It.IsAny<DeleteThingTypeRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DeleteThingTypeResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockThingTypeRepository.Setup(repository => repository.GetByIdAsync(thingTypeID, d => d.Tags, d => d.ThingTypeSearchableAttributes)).ReturnsAsync(thingType);
+
+            foreach (var tag in thingType.Tags)
+            {
+                _ = this.mockThingTypeTagRepository.Setup(repository => repository.Delete(tag.Id));
+
+            }
+            foreach (var search in thingType.ThingTypeSearchableAttributes)
+            {
+                _ = this.mockThingTypeSearchableAttrRepository.Setup(repository => repository.Delete(search.Id));
+
+            }
+
+            _ = this.mockThingTypeRepository.Setup(repository => repository.Delete(thingType.Id));
+
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.DeleteDeviceModelImageAsync(thingTypeID)).Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+
+            //Act
+            await this.thingTypeService.DeleteThingType(thingTypeID);
+
+            //Assert
             MockRepository.VerifyAll();
         }
 

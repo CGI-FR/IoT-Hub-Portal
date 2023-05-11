@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Domain.Repositories.AWS
 {
     using AzureIoTHub.Portal.Domain.Entities.AWS;
 
-    internal interface IThingTypeTagRepository : IRepository<ThingTypeTag>
+    public interface IThingTypeTagRepository : IRepository<ThingTypeTag>
     {
     }
 }
