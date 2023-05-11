@@ -25,6 +25,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using NUnit.Framework;
     using UnitTests.Mocks;
     using AzureIoTHub.Portal.Client.Services.AWS;
+    using AzureIoTHub.Portal.Models.v10.AWS;
+    using System.Net.Http;
 
     [TestFixture]
     public class DeviceModelDetaislPageTests : BlazorUnitTest
@@ -519,7 +521,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         }
 
         /* *============================= AWS tests=======================**/
-        /*[Test]
+        [Test]
         public void ClickOnSaveShouldUpdateImage()
         {
             // Arrange
@@ -528,7 +530,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var thingTypeDto = new ThingTypeDto
             {
                 ThingTypeID = Guid.NewGuid().ToString(),
-                ThingTypeName = Guid.NewGuid().ToString()
+                ThingTypeName = Guid.NewGuid().ToString(),
+                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}")
             };
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
 
@@ -539,12 +542,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockThingTypeClientService.Setup(service =>
                     service.GetAvatarUrl(thingTypeDto.ThingTypeID))
-                .ReturnsAsync(string.Empty);
-
-
-            _ = this.mockThingTypeClientService.Setup(service =>
-                    service.ChangeAvatar(mockModelId, content));
-
+                .ReturnsAsync(thingTypeDto.ImageUrl.ToString());
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
@@ -560,6 +558,45 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
+
+        [Test]
+        public void ClickOnDeleteThingTypeShouldDisplayConfirmationDialogAndRedirectIfConfirmed()
+        {
+            // Arrange
+            var thingTypeDto = new ThingTypeDto
+            {
+                ThingTypeID = Guid.NewGuid().ToString(),
+                ThingTypeName = Guid.NewGuid().ToString(),
+                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}")
+            };
+
+            _ = this.mockThingTypeClientService.Setup(service =>
+                service.GetThingType(mockModelId))
+            .ReturnsAsync(thingTypeDto);
+
+            _ = this.mockThingTypeClientService.Setup(service =>
+                service.GetAvatarUrl(thingTypeDto.ThingTypeID))
+            .ReturnsAsync(thingTypeDto.ImageUrl.ToString());
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+            _ = this.mockDialogService.Setup(c => c.Show<DeleteDeviceModelPage>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference.Object);
+
+            // Act
+            var cut = RenderComponent<DeviceModelDetailPage>
+                (ComponentParameter.CreateParameter(nameof(DeviceModelDetailPage.ModelID), this.mockModelId));
+
+            var deleteButton = cut.WaitForElement("#deleteButton");
+            deleteButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
         [Test]
         public void ClickOnDeprecateButtonShouldDeprecateThingType()
         {
@@ -567,7 +604,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var thingTypeDto = new ThingTypeDto
             {
                 ThingTypeID = Guid.NewGuid().ToString(),
-                ThingTypeName = Guid.NewGuid().ToString()
+                ThingTypeName = Guid.NewGuid().ToString(),
+                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}"),
+                Deprecated = false
             };
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
 
@@ -577,11 +616,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockThingTypeClientService.Setup(service =>
                     service.GetAvatarUrl(thingTypeDto.ThingTypeID))
-                .ReturnsAsync(string.Empty);
+                .ReturnsAsync(thingTypeDto.ImageUrl.ToString());
 
             _ = this.mockThingTypeClientService.Setup(service =>
-                    service.DeprecateThingType(mockModelId));
-
+                service.DeprecateThingType(thingTypeDto.ThingTypeID)).Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
@@ -595,8 +633,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Assert
             cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
-        }    :
-    */
+        }
+
     }
 
 }
