@@ -92,7 +92,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         public async Task<ThingTypeDto> GetThingType(string thingTypeId)
         {
-            var getThingType = await this.thingTypeRepository.GetByIdAsync(thingTypeId, d => d.Tags, d => d.ThingTypeSearchableAttributes);
+            var getThingType = await this.thingTypeRepository.GetByIdAsync(thingTypeId, d => d.Tags!, d => d.ThingTypeSearchableAttributes!);
             if (getThingType == null)
             {
                 throw new ResourceNotFoundException($"The thing type with id {thingTypeId} doesn't exist");
@@ -137,7 +137,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         public async Task<ThingTypeDto> DeprecateThingType(string thingTypeId)
         {
-            var getThingType = await this.thingTypeRepository.GetByIdAsync(thingTypeId, d => d.Tags, d => d.ThingTypeSearchableAttributes);
+            var getThingType = await this.thingTypeRepository.GetByIdAsync(thingTypeId, d => d.Tags!, d => d.ThingTypeSearchableAttributes!);
             if (getThingType == null)
             {
                 throw new ResourceNotFoundException($"The thing type with id {thingTypeId} doesn't exist");
@@ -167,7 +167,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         public async Task DeleteThingType(string thingTypeId)
         {
-            var getThingType = await this.thingTypeRepository.GetByIdAsync(thingTypeId, d => d.Tags, d => d.ThingTypeSearchableAttributes);
+            var getThingType = await this.thingTypeRepository.GetByIdAsync(thingTypeId, d => d.Tags!, d => d.ThingTypeSearchableAttributes!);
             if (getThingType == null)
             {
                 throw new ResourceNotFoundException($"The thing type with id {thingTypeId} doesn't exist");
