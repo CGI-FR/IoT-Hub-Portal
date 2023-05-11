@@ -157,7 +157,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             }
             else
             {
-                getThingType.deprecated = true;
+                getThingType.Deprecated = true;
                 this.thingTypeRepository.Update(getThingType);
                 await this.unitOfWork.SaveAsync();
 

@@ -110,6 +110,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
         }
 
         [Test]
+        public async Task DeleteAThingTypeShoukdDeprecateThingType()
+        {
+            // Arrange
+            var thingTypeId = Fixture.Create<string>();
+
+            _ = MockHttpClient.When(HttpMethod.Delete, $"/api/aws/thingtypes/{thingTypeId}")
+                .Respond(HttpStatusCode.OK);
+
+            // Act
+            await this.thingTypeClientService.DeleteThingType(thingTypeId);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+
+        [Test]
         public async Task GetAvatarUrlShouldReturnAvatarUrl()
         {
             // Arrange

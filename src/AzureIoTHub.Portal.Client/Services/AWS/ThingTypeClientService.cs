@@ -75,6 +75,5 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
 
             _ = result.EnsureSuccessStatusCode();
         }
-
     }
 }

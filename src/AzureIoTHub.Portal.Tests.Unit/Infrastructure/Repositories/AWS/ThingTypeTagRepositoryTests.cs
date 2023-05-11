@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
+namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories.AWS
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,32 +12,32 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using FluentAssertions;
     using NUnit.Framework;
 
-    public class ThingTypeRepositoryTests : BackendUnitTest
+    public class ThingTypeTagRepositoryTests : BackendUnitTest
     {
-        private ThingTypeRepository thingTypeRepository;
+        private ThingTypeTagRepository thingTypeTagRepository;
 
         public override void Setup()
         {
             base.Setup();
 
-            this.thingTypeRepository = new ThingTypeRepository(DbContext);
+            this.thingTypeTagRepository = new ThingTypeTagRepository(DbContext);
         }
 
         [Test]
         public async Task GetAllShouldReturnExpectedThingTypelCommands()
         {
             // Arrange
-            var expectedThingType = Fixture.CreateMany<ThingType>(5).ToList();
+            var expectedThingTypeTag = Fixture.CreateMany<ThingTypeTag>(5).ToList();
 
-            await DbContext.AddRangeAsync(expectedThingType);
+            await DbContext.AddRangeAsync(expectedThingTypeTag);
 
             _ = await DbContext.SaveChangesAsync();
 
             // Act
-            var result = this.thingTypeRepository.GetAll().ToList();
+            var result = this.thingTypeTagRepository.GetAll().ToList();
 
             // Assert
-            _ = result.Should().BeEquivalentTo(expectedThingType);
+            _ = result.Should().BeEquivalentTo(expectedThingTypeTag);
         }
     }
 }

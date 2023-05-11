@@ -186,9 +186,24 @@ else
                             <MudAvatar Image="@imageDataUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
                         </div>
                     </MudCardContent>
+                    <MudCardActions Class="d-flex justify-center">
+                        @if (imageDataUrl != null)
+                        {
+                            <MudButton OnClick="DeleteAvatar" Color="Color.Error" Disabled="Model.IsBuiltin">Delete Picture</MudButton>
+                        }
+                        else
+                        {
+                            <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
+                            <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" Disabled="Model.IsBuiltin">Change Picture</MudButton>
+                        }
+                    </MudCardActions>
                 </MudCard>
                 <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ChangeThingTypeImage" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+                </MudItem>
+                <MudItem xs="12" Class="d-flex justify-space-around py-1 px-1 mt-4">
                     <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteThingType" id="deleteButton" Disabled="isProcessing">Delete</MudButton>
+
                     @if (ThingType.Deprecated)
                     {
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Deprecate" id="deprecateButton" Disabled="true">Deprecate</MudButton>
@@ -409,7 +424,7 @@ else
                     imageDataUrl = await DeviceModelsClientService.GetAvatarUrl(ModelID);
                 }
             }
-            
+
         }
         catch (ProblemDetailsException exception)
         {
@@ -532,6 +547,31 @@ else
             isProcessing = false;
         }
 
+    }
+
+    private async Task ChangeThingTypeImage()
+    {
+        try
+        {
+
+            if (content is not null)
+            {
+                await this.ThingClientService.ChangeAvatar(ThingType.ThingTypeID, content);
+            }
+
+            Snackbar.Add("Thing Type image successfully updated.", Severity.Success);
+
+            // Go back to the list of devices models
+            NavigationManager.NavigateTo("device-models");
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
     }
 
     private async Task DeleteDeviceModel()

@@ -56,6 +56,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
         }
 
+        /* *============================= Azure tests=======================**/
         [Test]
         public void ClickOnSaveShouldPostDeviceModelData()
         {
@@ -516,5 +517,86 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        /* *============================= AWS tests=======================**/
+        /*[Test]
+        public void ClickOnSaveShouldUpdateImage()
+        {
+            // Arrange
+            var content = new MultipartFormDataContent();
+
+            var thingTypeDto = new ThingTypeDto
+            {
+                ThingTypeID = Guid.NewGuid().ToString(),
+                ThingTypeName = Guid.NewGuid().ToString()
+            };
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+
+            _ = this.mockThingTypeClientService.Setup(service =>
+                    service.GetThingType(mockModelId))
+                .ReturnsAsync(thingTypeDto);
+
+            _ = this.mockThingTypeClientService.Setup(service =>
+                    service.GetAvatarUrl(thingTypeDto.ThingTypeID))
+                .ReturnsAsync(string.Empty);
+
+
+            _ = this.mockThingTypeClientService.Setup(service =>
+                    service.ChangeAvatar(mockModelId, content));
+
+
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
+
+            // Act
+            var cut = RenderComponent<DeviceModelDetailPage>
+                    (ComponentParameter.CreateParameter(nameof(DeviceModelDetailPage.ModelID), this.mockModelId));
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnDeprecateButtonShouldDeprecateThingType()
+        {
+            // Arrange
+            var thingTypeDto = new ThingTypeDto
+            {
+                ThingTypeID = Guid.NewGuid().ToString(),
+                ThingTypeName = Guid.NewGuid().ToString()
+            };
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            _ = this.mockThingTypeClientService.Setup(service =>
+                    service.GetThingType(mockModelId))
+                .ReturnsAsync(thingTypeDto);
+
+            _ = this.mockThingTypeClientService.Setup(service =>
+                    service.GetAvatarUrl(thingTypeDto.ThingTypeID))
+                .ReturnsAsync(string.Empty);
+
+            _ = this.mockThingTypeClientService.Setup(service =>
+                    service.DeprecateThingType(mockModelId));
+
+
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
+
+            // Act
+            var cut = RenderComponent<DeviceModelDetailPage>
+                    (ComponentParameter.CreateParameter(nameof(DeviceModelDetailPage.ModelID), this.mockModelId));
+            var saveButton = cut.WaitForElement("#deprecateButton");
+
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }    :
+    */
     }
+
 }
