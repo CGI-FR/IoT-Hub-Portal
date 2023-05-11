@@ -22,12 +22,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using System.Collections.Generic;
     using System.Linq;
+    using AzureIoTHub.Portal.Client.Services.AWS;
+    using AzureIoTHub.Portal.Models.v10.AWS;
 
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
+        private Mock<IThingTypeClientService> mockThingTypeClientService;
 
         public override void Setup()
         {
@@ -35,11 +38,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockThingTypeClientService = MockRepository.Create<IThingTypeClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockThingTypeClientService.Object);
         }
 
+        /***============= Test for Azure ===============***/
         [Test]
         public void WhenLoraFeatureDisableClickToItemShouldRedirectToDeviceDetailsPage()
         {
@@ -49,7 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = false } } });
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             var cut = RenderComponent<DeviceModelListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -71,7 +77,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = true } } });
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             var cut = RenderComponent<DeviceModelListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -97,7 +103,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 }
                 });
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
@@ -122,7 +128,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
@@ -140,7 +146,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
@@ -159,7 +165,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
@@ -185,7 +191,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
@@ -211,7 +217,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
@@ -235,7 +241,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var expectedSearchText = Fixture.Create<string>();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.SearchText)))).ReturnsAsync(new PaginationResult<DeviceModelDto>
             {
@@ -273,7 +279,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void ClickOnSortLabel()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
@@ -305,7 +311,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void SortClickOnSortNameDescDeviceModelsSorted()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.OrderBy.First()))))
@@ -333,6 +339,131 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             cut.WaitForElement("#NameLabel").Click();
 
             // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        /***============= Test for AWS ===============***/
+        [Test]
+        public void ThingTypeListPageRendersCorrectly()
+        {
+            // Arrange
+            _ = this.mockThingTypeClientService.Setup(service => service.GetThingTypes(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<ThingTypeDto>
+                {
+                    Items = new[] {
+                    new ThingTypeDto { ThingTypeID = Guid.NewGuid().ToString() },
+                    new ThingTypeDto{  ThingTypeID = Guid.NewGuid().ToString() }
+                }
+                });
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            // Act
+            var cut = RenderComponent<DeviceModelListPage>();
+            var grid = cut.WaitForElement("div.mud-grid");
+
+            Assert.IsNotNull(cut.Markup);
+            Assert.IsNotNull(grid.InnerHtml);
+            cut.WaitForAssertion(() => Assert.AreEqual("Thing Types", cut.Find(".mud-typography-h6").TextContent));
+            cut.WaitForAssertion(() => Assert.AreEqual(3, cut.FindAll("tr").Count));
+            cut.WaitForAssertion(() => Assert.IsNotNull(cut.Find(".mud-table-container")));
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void WhenAddNewThingTypeClickShouldNavigateToNewDeviceModelPage()
+        {
+            // Arrange
+            var thingTypeId = Guid.NewGuid().ToString();
+
+            _ = this.mockThingTypeClientService.Setup(service => service.GetThingTypes(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<ThingTypeDto> { Items = new[] { new ThingTypeDto { ThingTypeID = thingTypeId } } });
+
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "AWS" });
+
+            // Act
+            var cut = RenderComponent<DeviceModelListPage>();
+            cut.WaitForElement("#addDeviceModelButton").Click();
+            cut.WaitForState(() => Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("device-models/new", StringComparison.OrdinalIgnoreCase));
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void SortClickOnSortNameThingTypeSorted()
+        {
+            // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            _ = this.mockThingTypeClientService.Setup(service =>
+                    service.GetThingTypes(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.OrderBy.First()))))
+                .ReturnsAsync(new PaginationResult<ThingTypeDto>
+                {
+                    Items = new List<ThingTypeDto>()
+                });
+            _ = this.mockThingTypeClientService.Setup(service =>
+                    service.GetThingTypes(It.Is<DeviceModelFilter>(x => "Name asc".Equals(x.OrderBy.First()))))
+                .ReturnsAsync(new PaginationResult<ThingTypeDto>
+                {
+                    Items = new List<ThingTypeDto>()
+                });
+            _ = this.mockThingTypeClientService.Setup(service =>
+                    service.GetThingTypes(It.Is<DeviceModelFilter>(x => "Name desc".Equals(x.OrderBy.First()))))
+                .ReturnsAsync(new PaginationResult<ThingTypeDto>
+                {
+                    Items = new List<ThingTypeDto>()
+                });
+
+            var cut = RenderComponent<DeviceModelListPage>();
+
+            // Act
+            cut.WaitForElement("#NameLabel").Click();
+            cut.WaitForElement("#NameLabel").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnSearchShouldSearchThingTypes()
+        {
+            // Arrange
+            var expectedSearchText = Fixture.Create<string>();
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            _ = this.mockThingTypeClientService.Setup(service => service.GetThingTypes(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.SearchText)))).ReturnsAsync(new PaginationResult<ThingTypeDto>
+            {
+                Items = new List<ThingTypeDto>()
+                {
+                    new(),
+                    new()
+                }
+            });
+
+            _ = this.mockThingTypeClientService.Setup(service => service.GetThingTypes(It.Is<DeviceModelFilter>(x => expectedSearchText.Equals(x.SearchText)))).ReturnsAsync(new PaginationResult<ThingTypeDto>
+            {
+                Items = new List<ThingTypeDto>()
+                {
+                    new()
+                }
+            });
+
+            var cut = RenderComponent<DeviceModelListPage>();
+
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
+            cut.WaitForElement("#searchText").Change(expectedSearchText);
+
+            // Act
+            cut.WaitForElement("#searchButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(1));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

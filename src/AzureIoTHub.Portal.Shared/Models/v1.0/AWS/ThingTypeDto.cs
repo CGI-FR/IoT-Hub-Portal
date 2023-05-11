@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Models.v10.AWS
         [Required(ErrorMessage = "The thing type should have a name.")]
         public string ThingTypeName { get; set; }
         public string ThingTypeDescription { get; set; }
+        public bool Deprecated { get; set; }
         public List<ThingTypeTagDto> Tags { get; set; }
         public List<ThingTypeSearchableAttDto> ThingTypeSearchableAttDtos { get; set; }
         public Uri ImageUrl { get; set; } = default!;

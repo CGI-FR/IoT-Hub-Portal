@@ -16,6 +16,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
     using FluentAssertions;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Helpers;
 
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using System.Linq;
+
     [TestFixture]
     public class ThingTypeClientServiceTests : BlazorUnitTest
     {
@@ -31,6 +34,38 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
         }
 
         [Test]
+        public async Task GetThingTypesShouldReturnThingTypes()
+        {
+            // Arrange
+            var expectedThingTypes = new PaginationResult<ThingTypeDto>()
+            {
+                Items = Fixture.Build<ThingTypeDto>().CreateMany(3).ToList()
+            };
+
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/aws/thingtypes?SearchText=&PageNumber=1&PageSize=10&OrderBy=")
+                .RespondJson(expectedThingTypes);
+
+            var filter = new DeviceModelFilter
+            {
+                SearchText = string.Empty,
+                PageNumber = 1,
+                PageSize = 10,
+                OrderBy = new string[]
+                {
+                    null
+                }
+            };
+
+            // Act
+            var result = await this.thingTypeClientService.GetThingTypes(filter);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedThingTypes);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
         public async Task CreateThingTypeShouldCreateThingType()
         {
             // Arrange
@@ -42,12 +77,49 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<ThingTypeDto>>();
                     var body = m.Content as ObjectContent<ThingTypeDto>;
                     _ = body.Value.Should().BeEquivalentTo(thingType);
+
                     return true;
                 })
                 .Respond(HttpStatusCode.Created);
 
             // Act
-            _ = await this.thingTypeClientService.CreateThingType(thingType);
+            var response = await thingTypeClientService.CreateThingType(thingType);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+
+            _ = response.Should().NotBeNull();
+        }
+
+        [Test]
+        public async Task DeprecateAThingTypeShoukdDeprecateThingType()
+        {
+            // Arrange
+            var thingTypeId = Fixture.Create<string>();
+
+            _ = MockHttpClient.When(HttpMethod.Put, $"/api/aws/thingtypes/{thingTypeId}")
+                .Respond(HttpStatusCode.OK);
+
+            // Act
+            await this.thingTypeClientService.DeprecateThingType(thingTypeId);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task DeleteAThingTypeShoukdDeprecateThingType()
+        {
+            // Arrange
+            var thingTypeId = Fixture.Create<string>();
+
+            _ = MockHttpClient.When(HttpMethod.Delete, $"/api/aws/thingtypes/{thingTypeId}")
+                .Respond(HttpStatusCode.OK);
+
+            // Act
+            await this.thingTypeClientService.DeleteThingType(thingTypeId);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();
