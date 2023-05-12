@@ -8,8 +8,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     using Amazon.IoT.Model;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Infrastructure.Repositories.AWS;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10.AWS;
     using Microsoft.Extensions.Logging;
     using Quartz;
@@ -17,14 +18,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     [DisallowConcurrentExecution]
     public class SyncThingTypesJob : IJob
     {
-        private readonly ThingTypeRepository thingTypeRepository;
+        private readonly IThingTypeRepository thingTypeRepository;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly ILogger<SyncThingTypesJob> logger;
 
         public SyncThingTypesJob(
-            ThingTypeRepository thingTypeRepository,
+            IThingTypeRepository thingTypeRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IAmazonIoT amazonIoTClient,
@@ -56,8 +57,18 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
         private async Task SyncThingTypes()
         {
-            //var getAllAWSThingTypes = await GetAllAWSThingTypes();
-            _ = await GetAllAWSThingTypes();
+            var getAllAWSThingTypes = await GetAllAWSThingTypes();
+            foreach (var thingTYpe in getAllAWSThingTypes)
+            {
+                await CreateOrUpdateThingType(thingTYpe);
+            }
+
+            foreach (var thingType in (await this.thingTypeRepository.GetAllAsync()).Where(thingType => !getAllAWSThingTypes.Exists(x => x.ThingTypeID == thingType.Id)))
+            {
+                this.thingTypeRepository.Delete(thingType.Id);
+            }
+
+            await this.unitOfWork.SaveAsync();
         }
 
         private async Task<List<ThingTypeDto>> GetAllAWSThingTypes()
@@ -78,7 +89,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 {
                     var requestDescribeThingType = new DescribeThingTypeRequest
                     {
-                        ThingTypeName = thingType.ThingTypeName
+                        ThingTypeName = thingType.ThingTypeName,
                     };
                     var responseDescribeThingType  = await amazonIoTClient.DescribeThingTypeAsync(requestDescribeThingType);
 
@@ -90,12 +101,19 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                     else
                     {
                         var getAllSearchableAttribute = GetAllSearchableAttributes(responseDescribeThingType);
+
+                        //get All tags from ResourceArn
+                        //Because we do not have possiblity to retreive the Tag from DescribeThingTypeResponse and ListThingTypesResponse too.
+                        var tags = await GetAllThingTypeTags(responseDescribeThingType);
+
                         var getThingType = new ThingTypeDto
                         {
                             ThingTypeID = responseDescribeThingType.ThingTypeId,
                             ThingTypeName = responseDescribeThingType.ThingTypeName,
                             ThingTypeDescription = responseDescribeThingType.ThingTypeProperties.ThingTypeDescription,
-                            ThingTypeSearchableAttDtos = getAllSearchableAttribute
+                            ThingTypeSearchableAttDtos = getAllSearchableAttribute,
+                            Deprecated = responseDescribeThingType.ThingTypeMetadata.Deprecated,
+                            Tags = tags
                         };
 
                         thingTypes.Add(getThingType);
@@ -121,6 +139,46 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             }
 
             return searchableAttrDtos;
+        }
+
+        //To Get All tags for a thing types
+        private async Task<List<ThingTypeTagDto>> GetAllThingTypeTags(DescribeThingTypeResponse thingType)
+        {
+            var listTagRequets = new ListTagsForResourceRequest
+            {
+                ResourceArn = thingType.ThingTypeArn
+            };
+
+            var thingTypeTags = await this.amazonIoTClient.ListTagsForResourceAsync(listTagRequets);
+
+            var tags = new List<ThingTypeTagDto>();
+
+            foreach (var tag in thingTypeTags.Tags)
+            {
+                var newTag = new ThingTypeTagDto
+                {
+                    Key = tag.Key,
+                    Value = tag.Value
+                };
+                tags.Add(newTag);
+            }
+
+            return tags;
+        }
+
+        private async Task CreateOrUpdateThingType(ThingTypeDto thingTypeDto)
+        {
+            var existingTHingType = await this.thingTypeRepository.GetByIdAsync(thingTypeDto.ThingTypeID);
+            var thingType = this.mapper.Map<ThingType>(thingTypeDto);
+
+            if (existingTHingType == null)
+            {
+                await this.thingTypeRepository.InsertAsync(thingType);
+            }
+            else
+            {
+                this.thingTypeRepository.Update(thingType);
+            }
         }
 
     }

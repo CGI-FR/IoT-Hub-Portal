@@ -12,8 +12,6 @@ namespace AzureIoTHub.Portal.Domain.Entities.AWS
         public string Name { get; set; } = default!;
         public string? Description { get; set; } = default!;
         public bool Deprecated { get; set; }
-        public string? Version { get; set; }
-
         public ICollection<ThingTypeTag>? Tags { get; set; } = default!;
         public ICollection<ThingTypeSearchableAtt>? ThingTypeSearchableAttributes { get; set; } = default!;
     }
