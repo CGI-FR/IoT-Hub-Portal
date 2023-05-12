@@ -28,6 +28,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
                 _ = await set.AddAsync(new DeviceModelCommand
                 {
                     Id = item.RowKey,
+                    Name = item.RowKey,
                     Frame = item[nameof(DeviceModelCommand.Frame)].ToString()!,
                     Port = int.Parse(item[nameof(DeviceModelCommand.Port)].ToString()!, CultureInfo.InvariantCulture),
                     IsBuiltin = bool.Parse(item[nameof(DeviceModelCommand.IsBuiltin)]?.ToString() ?? "false"),
