@@ -1,9 +1,23 @@
-﻿@inject ISnackbar Snackbar
+﻿@using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Client.Services.AWS
+
+@inject ISnackbar Snackbar
 @inject IDeviceModelsClientService DeviceModelsClientService
+@inject PortalSettings Portal
+@inject IThingTypeClientService ThingTypeClientService
 
 <MudDialog>
     <DialogContent>
-        <p>Delete @deviceModelName ?</p>
+        @if (Portal.CloudProvider.Equals("AWS"))
+        {
+            <p>Delete @thingTypeName ?</p>
+
+        }
+        else
+        {
+            <p>Delete @deviceModelName ?</p>
+
+        }
         <br />
         <p><i>Warning : this cannot  be undone.</i></p>
     </DialogContent>
@@ -21,6 +35,9 @@
     [Parameter] public string deviceModelID { get; set; } = default!;
     [Parameter] public string deviceModelName { get; set; } = default!;
 
+    [Parameter] public string thingTypeID { get; set; } = default!;
+    [Parameter] public string thingTypeName { get; set; } = default!;
+
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
 
@@ -32,8 +49,17 @@
     {
         try
         {
-            await DeviceModelsClientService.DeleteDeviceModel(deviceModelID);
-            Snackbar.Add($"Device model {deviceModelName} has been successfully deleted!", Severity.Success);
+            if (Portal.CloudProvider.Equals("AWS"))
+            {
+                await ThingTypeClientService.DeleteThingType(thingTypeID);
+                Snackbar.Add($"Thing Type {thingTypeName} has been successfully deleted!", Severity.Success);
+            }
+            else
+            {
+                await DeviceModelsClientService.DeleteDeviceModel(deviceModelID);
+                Snackbar.Add($"Device model {deviceModelName} has been successfully deleted!", Severity.Success);
+            }
+
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (ProblemDetailsException exception)

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AzureIoTHub.Portal.Postgres.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    [Migration("20230502094509_AWS ThingType initial create")]
+    [Migration("20230511071349_AWS ThingType initial create")]
     partial class AWSThingTypeinitialcreate
     {
         /// <inheritdoc />
@@ -29,6 +29,9 @@ namespace AzureIoTHub.Portal.Postgres.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
+
+                    b.Property<bool>("Deprecated")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");

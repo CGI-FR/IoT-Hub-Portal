@@ -6,9 +6,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
 
     [Authorize]
     [ApiController]
@@ -25,6 +27,52 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
         }
 
         /// <summary>
+        /// Gets the Thing type list.
+        /// </summary>
+        /// <returns>An array representing the Thing type.</returns>
+        [HttpGet(Name = "GET Thing type list")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginationResult<ThingTypeDto>>> GetThingTypes([FromQuery] DeviceModelFilter deviceModelFilter)
+        {
+            var paginatedThingType = await this.thingTypeService.GetThingTypes(deviceModelFilter);
+
+            var nextPage = string.Empty;
+
+            if (paginatedThingType.HasNextPage)
+            {
+                nextPage = Url.RouteUrl(new UrlRouteContext
+                {
+                    RouteName = "GET Thing Type list",
+                    Values = new
+                    {
+                        deviceModelFilter.SearchText,
+                        deviceModelFilter.PageSize,
+                        pageNumber = deviceModelFilter.PageNumber + 1,
+                        deviceModelFilter.OrderBy
+                    }
+                });
+            }
+
+            return Ok(new PaginationResult<ThingTypeDto>
+            {
+                Items = paginatedThingType.Data,
+                TotalItems = paginatedThingType.TotalCount,
+                NextPage = nextPage
+            });
+        }
+
+        /// <summary>
+        /// Gets a thing type.
+        /// </summary>
+        /// <returns>An array representing the Thing type.</returns>
+        [HttpGet("{id}", Name = "GET A Thing type")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ThingTypeDto>> GetThingType(string id)
+        {
+            return Ok(await thingTypeService.GetThingType(id));
+        }
+
+        /// <summary>
         /// Creates the Thing type.
         /// </summary>
         /// <param name="thingtype">The thing type.</param>
@@ -35,6 +83,31 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
         {
 
             return Ok(await this.thingTypeService.CreateThingType(thingtype));
+        }
+
+        /// <summary>
+        /// Deprecate the Thing type.
+        /// </summary>
+        /// <param name="id">The thing type.</param>
+        [HttpPut("{id}", Name = "PUT Create AWS Thing type")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ThingTypeDto>> DeprecateThingTypeAsync(string id)
+        {
+            return Ok(await this.thingTypeService.DeprecateThingType(id));
+        }
+
+        /// <summary>
+        /// Deletes the thing type.
+        /// </summary>
+        /// <param name="id">The thing type identifier.</param>
+        [HttpDelete("{id}", Name = "DELETE the thing type")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteThingTypeAsync(string id)
+        {
+            await this.thingTypeService.DeleteThingType(id);
+            return NoContent();
         }
 
         /// <summary>

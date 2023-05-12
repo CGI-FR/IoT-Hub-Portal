@@ -16,6 +16,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
     using FluentAssertions;
     using AutoFixture;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using Microsoft.AspNetCore.Mvc.Routing;
+    using System.Linq;
 
     [TestFixture]
     public class ThingTypeControllerTest : BackendUnitTest
@@ -35,6 +39,46 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
             this.mockThingTypeService = this.mockRepository.Create<IThingTypeService>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
             this.mockThingTypeRepository = this.mockRepository.Create<IThingTypeRepository>();
+        }
+
+        [Test]
+        public async Task GetListGreaterThan10ShouldReturnAListAndNextPage()
+        {
+            // Arrange
+            var exepectedThingTypes = Fixture.CreateMany<ThingTypeDto>(24).ToList();
+            var thingTypeController = CreateThingTypeController();
+
+            var filter = new DeviceModelFilter
+            {
+                SearchText = string.Empty,
+                PageNumber = 0,
+                PageSize = 10,
+                OrderBy = new string[]
+                {
+                    null
+                }
+            };
+
+            _ = this.mockThingTypeService.Setup(service => service.GetThingTypes(filter))
+                .ReturnsAsync((DeviceModelFilter filter) => new PaginatedResult<ThingTypeDto>
+                {
+                    Data = exepectedThingTypes.Skip(filter.PageSize * filter.PageNumber).Take(filter.PageSize).ToList(),
+                    TotalCount = exepectedThingTypes.Count
+                });
+
+            var locationUrl = "http://location/aws/thingtypes";
+
+            _ = this.mockUrlHelper
+                .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(locationUrl);
+
+            // Act
+            var response = await thingTypeController.GetThingTypes(filter);
+
+            // Assert
+            _ = ((OkObjectResult)response.Result)?.StatusCode.Should().Be(200);
+            MockRepository.VerifyAll();
+
         }
 
         private ThingTypeController CreateThingTypeController()
@@ -124,6 +168,27 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
             // Assert
 
             _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(thingType.ThingTypeID);
+
+            this.mockRepository.VerifyAll();
+        }
+
+
+        [Test]
+        public async Task DeprecateAThingTypeShouldReturnOK()
+        {
+            // Arrange
+            var thingTypeController = CreateThingTypeController();
+            var thingTypeId = Fixture.Create<string>();
+
+            _ = this.mockThingTypeService
+                .Setup(x => x.DeprecateThingType(thingTypeId)).ReturnsAsync(new ThingTypeDto { ThingTypeID = thingTypeId, Deprecated = true });
+
+            // Act
+            var response = await thingTypeController.DeprecateThingTypeAsync(thingTypeId);
+
+            // Assert
+
+            _ = ((OkObjectResult)response.Result).StatusCode.Should().Be(200);
 
             this.mockRepository.VerifyAll();
         }
