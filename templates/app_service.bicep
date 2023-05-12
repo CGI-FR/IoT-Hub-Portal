@@ -105,7 +105,7 @@ resource site 'Microsoft.Web/sites@2022-03-01' = {
     reserved: true
     siteConfig: {
       numberOfWorkers: 1
-      linuxFxVersion: 'DOCKER|ghcr.io/cgi-fr/iothub-portal:4.10.0'
+      linuxFxVersion: 'DOCKER|ghcr.io/cgi-fr/iothub-portal:4.11.0'
       connectionStrings: [
         {
           name: 'IoTHub__ConnectionString'
