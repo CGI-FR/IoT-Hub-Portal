@@ -7,10 +7,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Domain.Repositories.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
     using Microsoft.Extensions.Logging;
     using Quartz;
@@ -19,6 +21,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     public class SyncThingTypesJob : IJob
     {
         private readonly IThingTypeRepository thingTypeRepository;
+        private readonly IThingTypeSearchableAttRepository thingTypeSearchableAttrRepository;
+        private readonly IThingTypeTagRepository thingTypeTagRepository;
+        private readonly IDeviceModelImageManager awsImageManager;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IAmazonIoT amazonIoTClient;
@@ -26,12 +31,18 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
         public SyncThingTypesJob(
             IThingTypeRepository thingTypeRepository,
+            IThingTypeSearchableAttRepository thingTypeSearchableAttrRepository,
+            IThingTypeTagRepository thingTypeTagRepository,
+            IDeviceModelImageManager awsImageManager,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IAmazonIoT amazonIoTClient,
             ILogger<SyncThingTypesJob> logger)
         {
             this.thingTypeRepository = thingTypeRepository;
+            this.thingTypeSearchableAttrRepository = thingTypeSearchableAttrRepository;
+            this.thingTypeTagRepository = thingTypeTagRepository;
+            this.awsImageManager = awsImageManager;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.amazonIoTClient = amazonIoTClient;
@@ -63,12 +74,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 await CreateOrUpdateThingType(thingTYpe);
             }
 
-            foreach (var thingType in (await this.thingTypeRepository.GetAllAsync()).Where(thingType => !getAllAWSThingTypes.Exists(x => x.ThingTypeID == thingType.Id)))
-            {
-                this.thingTypeRepository.Delete(thingType.Id);
-            }
-
-            await this.unitOfWork.SaveAsync();
+            //Delete in Database AWS deleted thing types
+            await DeleteThingTypes(getAllAWSThingTypes);
         }
 
         private async Task<List<ThingTypeDto>> GetAllAWSThingTypes()
@@ -129,14 +136,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         {
             var searchableAttrDtos = new List<ThingTypeSearchableAttDto>();
 
-            foreach (var searchAttr in thingType.ThingTypeProperties.SearchableAttributes)
+            searchableAttrDtos.AddRange(thingType.ThingTypeProperties.SearchableAttributes.Select(searchAttr => new ThingTypeSearchableAttDto
             {
-                var newSearchableAttr = new ThingTypeSearchableAttDto
-                {
-                    Name = searchAttr
-                };
-                searchableAttrDtos.Add(newSearchableAttr);
-            }
+                Name = searchAttr
+            }));
+
 
             return searchableAttrDtos;
         }
@@ -153,32 +157,76 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             var tags = new List<ThingTypeTagDto>();
 
-            foreach (var tag in thingTypeTags.Tags)
+            tags.AddRange(thingTypeTags.Tags.Select(tag => new ThingTypeTagDto
             {
-                var newTag = new ThingTypeTagDto
-                {
-                    Key = tag.Key,
-                    Value = tag.Value
-                };
-                tags.Add(newTag);
-            }
+                Key = tag.Key,
+                Value = tag.Value
+            }));
 
             return tags;
         }
 
         private async Task CreateOrUpdateThingType(ThingTypeDto thingTypeDto)
         {
-            var existingTHingType = await this.thingTypeRepository.GetByIdAsync(thingTypeDto.ThingTypeID);
+            var existingTHingType = await this.thingTypeRepository.GetByIdAsync(thingTypeDto.ThingTypeID, d => d.ThingTypeSearchableAttributes!, d => d.Tags!);
             var thingType = this.mapper.Map<ThingType>(thingTypeDto);
 
             if (existingTHingType == null)
             {
                 await this.thingTypeRepository.InsertAsync(thingType);
+                _ = await this.awsImageManager.SetDefaultImageToModel(thingTypeDto.ThingTypeID);
             }
             else
             {
-                this.thingTypeRepository.Update(thingType);
+                if (existingTHingType.ThingTypeSearchableAttributes != null
+                && thingType.ThingTypeSearchableAttributes?.Count != 0)
+                {
+                    foreach (var search in existingTHingType.ThingTypeSearchableAttributes!)
+                    {
+                        this.thingTypeSearchableAttrRepository.Delete(search.Id);
+
+                    }
+                }
+
+                if (existingTHingType.Tags != null
+                && thingType.Tags?.Count != 0)
+                {
+                    foreach (var tag in existingTHingType.Tags!)
+                    {
+                        this.thingTypeTagRepository.Delete(tag.Id);
+                    }
+                }
+
+                _ = this.mapper.Map(thingType, existingTHingType);
+                this.thingTypeRepository.Update(existingTHingType);
             }
+            await this.unitOfWork.SaveAsync();
+
+        }
+
+        private async Task DeleteThingTypes(List<ThingTypeDto> allAWSThingTypes)
+        {
+            foreach (var thingType in (await this.thingTypeRepository.GetAllAsync()).Where(thingType => !allAWSThingTypes.Exists(x => x.ThingTypeID == thingType.Id)))
+            {
+                var getThingType = await this.thingTypeRepository.GetByIdAsync(thingType.Id, d => d.ThingTypeSearchableAttributes!, d => d.Tags!);
+
+                if (getThingType != null)
+                {
+                    foreach (var search in getThingType.ThingTypeSearchableAttributes!)
+                    {
+                        this.thingTypeSearchableAttrRepository.Delete(search.Id);
+                    }
+                    foreach (var tag in getThingType.Tags!)
+                    {
+                        this.thingTypeTagRepository.Delete(tag.Id);
+                    }
+                    this.thingTypeRepository.Delete(getThingType.Id);
+                    _ = this.awsImageManager.DeleteDeviceModelImageAsync(getThingType.Id);
+                }
+
+            }
+
+            await this.unitOfWork.SaveAsync();
         }
 
     }
