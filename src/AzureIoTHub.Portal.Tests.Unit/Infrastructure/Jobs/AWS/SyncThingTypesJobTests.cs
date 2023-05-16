@@ -3,27 +3,28 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 {
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Moq;
-    using Quartz;
+    using System;
+    using System.Linq.Expressions;
+    using System.Net;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Amazon.IoT;
-    using AzureIoTHub.Portal.Domain.Repositories.AWS;
+    using Amazon.IoT.Model;
+    using AutoFixture;
     using AzureIoTHub.Portal.Application.Managers;
-    using Microsoft.Extensions.DependencyInjection;
-    //using System.Threading.Tasks;
-    //using Amazon.IoT.Model;
-    //using System.Net;
-    //using System.Threading;
-    //using AzureIoTHub.Portal.Models.v10.AWS;
-    //using AutoFixture;
-    //using AzureIoTHub.Portal.Domain.Entities.AWS;
-    //using System.Collections.Generic;
-    //using System.Linq.Expressions;
-    //using System;
-    //using NUnit.Framework;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities.AWS;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Domain.Repositories.AWS;
     using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
+    using AzureIoTHub.Portal.Models.v10.AWS;
+    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
+    using NUnit.Framework;
+    using Quartz;
+    using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
+    using ListTagsForResourceResponse = Amazon.IoT.Model.ListTagsForResourceResponse;
 
     public class SyncThingTypesJobTests : BackendUnitTest
     {
@@ -61,102 +62,128 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             this.syncThingTypesJob = Services.GetRequiredService<IJob>();
         }
 
-        /*
-         [Test]
-         public async Task ShouldListAllAWSThingTypes()
-         {
-             // Arrange
-             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
-             var searchableAttr = Fixture.CreateMany<ThingTypeSearchableAttDto>();
+        [Test]
+        public async Task ShouldListAllAWSThingTypes()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
-             var tag = Fixture.CreateMany<ThingTypeTagDto>();
+            var searchableAttr = Fixture.CreateMany<ThingTypeSearchableAttDto>();
 
-             var thingTypeId = Fixture.Create<string>();
-             var thingTypeName = Fixture.Create<string>();
-             var thingTypeProperties = Fixture.Create<ThingTypeProperties>();
-             var thingTypeMetadata = Fixture.Create<ThingTypeMetadata>();
-             var response = Fixture.Create<ListThingTypesResponse>();
-             var describeResponse = Fixture.Create<DescribeThingTypeResponse>();
+            var tag = Fixture.CreateMany<ThingTypeTagDto>();
 
-             _ = this.iaAmazon.Setup(s3 => s3.ListThingTypesAsync(It.IsAny<ListThingTypesRequest>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(response);
-             foreach (var thingType in response.ThingTypes)
-             {
-                 _ = this.iaAmazon.Setup(s3 => s3.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                     .ReturnsAsync(describeResponse);
-             }
+            var thingTypeId = Fixture.Create<string>();
+            var thingTypeName = Fixture.Create<string>();
+            var thingTypeProperties = Fixture.Create<ThingTypeProperties>();
+            var thingTypeMetadata = Fixture.Create<ThingTypeMetadata>();
+            var response = Fixture.Create<ListThingTypesResponse>();
+            var describeResponse = Fixture.Create<DescribeThingTypeResponse>();
+            var listTagsforResourceResponse = Fixture.Create<ListTagsForResourceResponse>();
 
-             // Act
-             await this.syncThingTypesJob.Execute(mockJobExecutionContext.Object);
+            response.HttpStatusCode = HttpStatusCode.OK;
+            describeResponse.HttpStatusCode = HttpStatusCode.OK;
+            listTagsforResourceResponse.HttpStatusCode = HttpStatusCode.OK;
 
-             // Assert
-             MockRepository.VerifyAll();
-         }
+            _ = this.iaAmazon.Setup(s3 => s3.ListThingTypesAsync(It.IsAny<ListThingTypesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
 
-         [Test]
-         public async Task ExecuteNewThingTypeShouldCreateNewThingType()
-         {
-             // Arrange
-             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
-             var searchableAttr = new List<ThingTypeSearchableAttDto>
-             {
-                 new ThingTypeSearchableAttDto{Name = "search1"},
-                 new ThingTypeSearchableAttDto{Name = "search2"},
-             };
+            _ = this.iaAmazon.Setup(c => c.ListTagsForResourceAsync(It.IsAny<ListTagsForResourceRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(listTagsforResourceResponse);
 
-             var tags = new List<ThingTypeTagDto>
-             {
-                 new ThingTypeTagDto{Key = "key1", Value = "val1"},
-                 new ThingTypeTagDto{Key = "key2", Value = "val2"}
-             };
+            foreach (var thingType in response.ThingTypes)
+            {
+                _ = this.iaAmazon.Setup(s3 => s3.DescribeThingTypeAsync(It.Is<DescribeThingTypeRequest>(c => c.ThingTypeName == thingType.ThingTypeName), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(describeResponse);
+            }
 
-             var expectedThingType = new ThingTypeDto
-             {
-                 ThingTypeID = Fixture.Create<string>(),
-                 ThingTypeName = Fixture.Create<string>(),
-                 ThingTypeDescription = Fixture.Create<string>(),
-                 ThingTypeSearchableAttDtos = searchableAttr,
-                 Tags = tags
-             };
+            _ = this.mockThingTypeRepository.Setup(c => c.GetAllAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Fixture.CreateMany<ThingType>());
 
-             var thingType = Fixture.Create<ThingType>();
+            _ = this.mockThingTypeRepository.Setup(c => c.GetByIdAsync(It.IsAny<string>(), It.IsAny<Expression<Func<ThingType, object>>[]>()))
+                .ReturnsAsync(Fixture.Create<ThingType>());
 
+            _ = this.mockThingTypeRepository.Setup(c => c.Update(It.IsAny<ThingType>()));
+            _ = this.mockThingTypeRepository.Setup(c => c.Delete(It.IsAny<string>()));
 
-             _ = this.mockThingTypeRepository.Setup(repository => repository.GetByIdAsync(expectedThingType.ThingTypeID, d => d.Tags, d => d.ThingTypeSearchableAttributes))
-                 .ReturnsAsync(thingType);
+            _ = this.mockThingTypeSearchAttrRepository.Setup(c => c.Delete(It.IsAny<string>()));
+            _ = this.mockThingTypeTagRepository.Setup(c => c.Delete(It.IsAny<string>()));
 
-             _ = this.mockThingTypeRepository.Setup(repository => repository.InsertAsync(It.IsAny<ThingType>()))
-                 .Returns(Task.CompletedTask);
+            _ = this.mockAWSImageManager.Setup(c => c.DeleteDeviceModelImageAsync(It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
 
-             _ = this.mockThingTypeRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<ThingType, bool>>>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<ThingType>
-                 {
-                     new ThingType
-                     {
-                         Id = expectedThingType.ThingTypeID
-                     },
-                     new ThingType
-                     {
-                         Id = Guid.NewGuid().ToString()
-                     }
-                 });
+            _ = this.mockUnitOfWork.Setup(c => c.SaveAsync())
+                .Returns(Task.CompletedTask);
 
-             this.mockThingTypeRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
-             this.mockThingTypeSearchAttrRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
-             this.mockThingTypeTagRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+            // Act
+            await this.syncThingTypesJob.Execute(mockJobExecutionContext.Object);
 
-             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                 .Returns(Task.CompletedTask);
+            // Assert
+            MockRepository.VerifyAll();
+        }
 
-             // Act
-             await this.syncThingTypesJob.Execute(mockJobExecutionContext.Object);
+        //[Test]
+        //public async Task ExecuteNewThingTypeShouldCreateNewThingType()
+        //{
+        //    // Arrange
+        //    var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+        //    var searchableAttr = new List<ThingTypeSearchableAttDto>
+        //     {
+        //         new ThingTypeSearchableAttDto{Name = "search1"},
+        //         new ThingTypeSearchableAttDto{Name = "search2"},
+        //     };
 
-             // Assert
-             MockRepository.VerifyAll();
+        //    var tags = new List<ThingTypeTagDto>
+        //     {
+        //         new ThingTypeTagDto{Key = "key1", Value = "val1"},
+        //         new ThingTypeTagDto{Key = "key2", Value = "val2"}
+        //     };
 
-         }
-        */
+        //    var expectedThingType = new ThingTypeDto
+        //    {
+        //        ThingTypeID = Fixture.Create<string>(),
+        //        ThingTypeName = Fixture.Create<string>(),
+        //        ThingTypeDescription = Fixture.Create<string>(),
+        //        ThingTypeSearchableAttDtos = searchableAttr,
+        //        Tags = tags
+        //    };
+
+        //    var thingType = Fixture.Create<ThingType>();
+
+        //    _ = this.mockThingTypeRepository.Setup(repository => repository.GetByIdAsync(expectedThingType.ThingTypeID, d => d.Tags, d => d.ThingTypeSearchableAttributes))
+        //        .ReturnsAsync(thingType);
+
+        //    _ = this.mockThingTypeRepository.Setup(repository => repository.InsertAsync(It.IsAny<ThingType>()))
+        //        .Returns(Task.CompletedTask);
+
+        //    _ = this.mockThingTypeRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<ThingType, bool>>>(), It.IsAny<CancellationToken>()))
+        //        .ReturnsAsync(new List<ThingType>
+        //        {
+        //             new ThingType
+        //             {
+        //                 Id = expectedThingType.ThingTypeID
+        //             },
+        //             new ThingType
+        //             {
+        //                 Id = Guid.NewGuid().ToString()
+        //             }
+        //        });
+
+        //    this.mockThingTypeRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+        //    this.mockThingTypeSearchAttrRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+        //    this.mockThingTypeTagRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+
+        //    _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+        //        .Returns(Task.CompletedTask);
+
+        //    // Act
+        //    await this.syncThingTypesJob.Execute(mockJobExecutionContext.Object);
+
+        //    // Assert
+        //    MockRepository.VerifyAll();
+
+        //}
+
     }
 
 }
