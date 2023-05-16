@@ -4,25 +4,19 @@
 namespace AzureIoTHub.Portal.Infrastructure.Startup
 {
     using Amazon;
+    using Amazon.GreengrassV2;
     using Amazon.IoT;
     using Amazon.IotData;
     using Amazon.S3;
     using Amazon.SecretsManager;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
     using AzureIoTHub.Portal.Infrastructure.Managers;
-    using Microsoft.Extensions.DependencyInjection;
-    using Amazon.GreengrassV2;
-    using Quartz;
-    using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
-    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Infrastructure.Services;
-
-    using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
-    using AzureIoTHub.Portal.Application.Services;
-    using AzureIoTHub.Portal.Infrastructure.Repositories;
-    using AzureIoTHub.Portal.Application.Mappers;
-    using AzureIoTHub.Portal.Infrastructure.Mappers;
+    using Microsoft.Extensions.DependencyInjection;
+    using Quartz;
 
     public static class AWSServiceCollectionExtension
     {
