@@ -18,6 +18,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using Amazon.GreengrassV2;
     using AzureIoTHub.Portal.Domain.Repositories.AWS;
     using AzureIoTHub.Portal.Infrastructure.Repositories.AWS;
+    using Quartz;
+    using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
 
     public static class AWSServiceCollectionExtension
     {
@@ -27,7 +29,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 .ConfigureAWSClient(configuration)
                 .ConfigureAWSServices()
                 .ConfigureAWSRepositories()
-                .ConfigureAWSDeviceModelImages();
+                .ConfigureAWSDeviceModelImages()
+                .ConfigureAWSSyncJobs(configuration);
         }
         private static IServiceCollection ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -74,6 +77,20 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
 
             return services;
+        }
+
+        private static IServiceCollection ConfigureAWSSyncJobs(this IServiceCollection services, ConfigHandler configuration)
+        {
+            return services.AddQuartz(q =>
+            {
+                _ = q.AddJob<SyncThingTypesJob>(j => j.WithIdentity(nameof(SyncThingTypesJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncThingTypesJob)}")
+                        .ForJob(nameof(SyncThingTypesJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+            });
         }
     }
 }

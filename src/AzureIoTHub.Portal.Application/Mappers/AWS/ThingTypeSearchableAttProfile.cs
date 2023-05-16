@@ -14,7 +14,6 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
             _ = CreateMap<ThingTypeSearchableAtt, ThingTypeSearchableAttDto>()
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
                 .ReverseMap();
-
         }
     }
 }

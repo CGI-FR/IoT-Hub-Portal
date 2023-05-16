@@ -11,6 +11,8 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
     {
         public ThingTypeProfile()
         {
+            _ = CreateMap<ThingType, ThingType>();
+
             _ = CreateMap<ThingTypeDto, ThingType>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ThingTypeID))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName))
