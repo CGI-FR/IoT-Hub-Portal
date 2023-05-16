@@ -21,7 +21,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
-    using AzureIoTHub.Portal.Shared.Constants;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -41,12 +40,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         /// </summary>
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
-        private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IEdgeDeviceModelRepository edgeModelRepository;
         private readonly ILabelRepository labelRepository;
         private readonly IEdgeDeviceModelCommandRepository commandRepository;
         private readonly ConfigHandler config;
+        private readonly IMapper mapper;
 
         public EdgeModelService(
             IMapper mapper,
@@ -124,6 +123,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             }
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
+
 
         /// <summary>
         /// Saves the module commands for a specific model object.
