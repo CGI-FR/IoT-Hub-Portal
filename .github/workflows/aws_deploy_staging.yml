@@ -103,6 +103,13 @@ jobs:
         env:
           CLOUDPROVIDER: AWS
           PORTALNAME: ${{ vars.PORTALNAME }}
+          AWS__REGION: ${{ secrets.AWS_REGION }}
+          AWS__BUCKETNAME: ${{ vars.AWS_BUCKETNAME }}
+          OIDC__APICLIENTID: ${{ vars.OIDC_APICLIENTID }}
+          OIDC__CLIENTID: ${{ vars.OIDC_CLIENTID }}
+          OIDC__AUTHORITY: ${{ vars.OIDC_AUTHORITY }}
+          OIDC__METADATAURL: ${{ vars.OIDC_METADATAURL }}
+          OIDC__SCOPE: ${{ vars.OIDC_SCOPE }}
         with:
           service: ${{ vars.AWS_APP_RUNNER_NAME }}
           image: ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
@@ -114,6 +121,13 @@ jobs:
           copy-env-vars: |
             CLOUDPROVIDER
             PORTALNAME
+            AWS__REGION
+            AWS__BUCKETNAME
+            OIDC__APICLIENTID
+            OIDC__CLIENTID
+            OIDC__AUTHORITY
+            OIDC__METADATAURL
+            OIDC__SCOPE
       
       - name: App Runner URL
         run: echo "App runner URL ${{ steps.deploy-apprunner.outputs.service-url }}" 
