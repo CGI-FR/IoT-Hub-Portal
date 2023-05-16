@@ -276,3 +276,30 @@ Resources:
                 Value: IoT Portal DEMO - AWS
           ImageIdentifier: !Sub '${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/iot-hub-portal:latest'
           ImageRepositoryType: ECR
+
+#GreenGras role script
+  GreenGrasRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join [ "-", [!Ref UniqueSolutionPrefix, "GreenGrass"] ]
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: greengrass.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGreengrassResourceAccessRolePolicy
+        - arn:aws:iam::aws:policy/AWSGreengrassFullAccess
+      Policies:
+        - PolicyName: ECRPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchGetImage
+                  - ecr:GetDownloadUrlForLayer
+                Resource: "*"
