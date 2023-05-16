@@ -7,20 +7,23 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Amazon.GreengrassV2;
+    using Amazon.GreengrassV2.Model;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Models.v10;
-    using Microsoft.AspNetCore.Http;
-    using AzureIoTHub.Portal.Shared.Models.v10;
-    using AzureIoTHub.Portal.Application.Managers;
-    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
-    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Constants;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using Microsoft.AspNetCore.Http;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -46,6 +49,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         private readonly ILabelRepository labelRepository;
         private readonly IEdgeDeviceModelCommandRepository commandRepository;
         private readonly ConfigHandler config;
+        private readonly IAmazonGreengrassV2 greengras;
 
         public EdgeModelService(
             IMapper mapper,
@@ -55,7 +59,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             IDeviceModelImageManager deviceModelImageManager,
             ILabelRepository labelRepository,
             IEdgeDeviceModelCommandRepository commandRepository,
-            ConfigHandler config)
+            ConfigHandler config,
+            IAmazonGreengrassV2 greengras)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -65,6 +70,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             this.deviceModelImageManager = deviceModelImageManager;
             this.commandRepository = commandRepository;
             this.config = config;
+            this.greengras = greengras;
         }
 
         /// <summary>
@@ -122,6 +128,34 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 await SaveModuleCommands(edgeModel);
             }
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+        }
+
+        /// <summary>
+        /// Create AWS Greengras deployment
+        /// </summary>
+        /// <param name="edgeModel">the new edge modle object.</param>
+        /// <returns>nothing.</returns>
+        /// <exception cref="ResourceAlreadyExistsException">If edge model template already exist return ResourceAlreadyExistsException.</exception>
+        /// <exception cref="InternalServerErrorException"></exception>
+        public async Task CreateGreenGrassDeployment(IoTEdgeModelListItem edgeModel)
+        {
+            var createDeploymentRequest = new CreateDeploymentRequest
+            {
+                DeploymentName = edgeModel?.Name
+            };
+            var createDeploymentResponse = await this.greengras.CreateDeploymentAsync(createDeploymentRequest);
+            if (createDeploymentResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException("The creation of the deployment failed due to an error in the Amazon IoT API.");
+
+            }
+            _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
+
+            //Must add the version column
+            var edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
+            await this.edgeModelRepository.InsertAsync(edgeModelEntity);
+            await this.unitOfWork.SaveAsync();
+
         }
 
         /// <summary>
