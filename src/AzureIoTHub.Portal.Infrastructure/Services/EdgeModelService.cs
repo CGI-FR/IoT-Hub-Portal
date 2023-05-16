@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using System.Linq;
     using System.Threading.Tasks;
     using Amazon.GreengrassV2;
+    using Amazon.GreengrassV2.Model;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
@@ -22,7 +23,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
-
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -127,6 +127,34 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 await SaveModuleCommands(edgeModel);
             }
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+        }
+
+        /// <summary>
+        /// Create AWS Greengras deployment
+        /// </summary>
+        /// <param name="edgeModel">the new edge modle object.</param>
+        /// <returns>nothing.</returns>
+        /// <exception cref="ResourceAlreadyExistsException">If edge model template already exist return ResourceAlreadyExistsException.</exception>
+        /// <exception cref="InternalServerErrorException"></exception>
+        public async Task CreateGreenGrassDeployment(IoTEdgeModelListItem edgeModel)
+        {
+            var createDeploymentRequest = new CreateDeploymentRequest
+            {
+                DeploymentName = edgeModel?.Name
+            };
+            var createDeploymentResponse = await this.greengras.CreateDeploymentAsync(createDeploymentRequest);
+            if (createDeploymentResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException("The creation of the deployment failed due to an error in the Amazon IoT API.");
+
+            }
+            _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
+
+            //Must add the version column
+            var edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
+            await this.edgeModelRepository.InsertAsync(edgeModelEntity);
+            await this.unitOfWork.SaveAsync();
+
         }
 
         /// <summary>
