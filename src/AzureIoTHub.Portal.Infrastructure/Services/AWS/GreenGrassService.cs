@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
+    using System.ComponentModel;
 
     public class GreenGrassService : IEdgeModelService
     {
@@ -87,6 +88,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     throw new InternalServerErrorException("The creation of the component failed due to an error in the Amazon IoT API.");
 
                 }
+
                 listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = "1.0.0" });
             }
 
@@ -95,11 +97,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         }
         private static JObject JsonCreateComponent(IoTEdgeModule component)
         {
+
             var environmentVariableObject = new JObject();
             foreach (var env in component.EnvironmentVariables)
             {
                 environmentVariableObject.Add(new JProperty(env.Name, env.Value));
             }
+
             var recipeJson =new JObject(
                     new JProperty("RecipeFormatVersion", "2020-01-25"),
                     new JProperty("ComponentName", component.ModuleName),
@@ -126,7 +130,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                                             new JObject(new JProperty("URI", $"docker:{component.ImageURI}"))
                                         )
                                     )
-
                             )
                         )
                     )
