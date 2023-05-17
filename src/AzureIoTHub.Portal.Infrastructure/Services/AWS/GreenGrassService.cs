@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
+    using System.ComponentModel;
 
     public class GreenGrassService : IEdgeModelService
     {
@@ -48,7 +49,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             {
                 DeploymentName = edgeModel?.Name,
                 Components = await CreateGreenGrassComponents(edgeModel),
-                TargetArn = "arn:aws:iot:eu-west-1:578920151383:thinggroup/test" //How 
+                TargetArn = "arn:aws:iot:eu-west-1:578920151383:thinggroup/test" //How?
             };
 
             var createDeploymentResponse = await this.greengras.CreateDeploymentAsync(createDeploymentRequest);
@@ -74,12 +75,33 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             var listcomponentName = new Dictionary<string, ComponentDeploymentSpecification>();
             foreach (var component in edgeModel.EdgeModules)
             {
-                var recipeJson =new JObject(
+                var recipeJson = JsonCreateComponent(component);
+                var recipeBytes = Encoding.UTF8.GetBytes(recipeJson.ToString());
+                var recipeStream = new MemoryStream(recipeBytes);
+
+                var componentVersion = new CreateComponentVersionRequest
+                {
+                    InlineRecipe = recipeStream
+                };
+                var response = await greengras.CreateComponentVersionAsync(componentVersion);
+                if (response.HttpStatusCode != System.Net.HttpStatusCode.Created)
+                {
+                    throw new InternalServerErrorException("The creation of the component failed due to an error in the Amazon IoT API.");
+
+                }
+                listcomponentName.Add(response.ComponentName, new ComponentDeploymentSpecification { ComponentVersion = "1.0.0" });
+            }
+
+            return listcomponentName;
+
+        }
+        private static JObject JsonCreateComponent(IoTEdgeModule component)
+        {
+            var recipeJson =new JObject(
                     new JProperty("RecipeFormatVersion", "2020-01-25"),
                     new JProperty("ComponentName", component.ModuleName),
                     new JProperty("ComponentVersion", "1.0.0"),
-                    new JProperty("ComponentDescription", "A component that runs a Docker container from a private Amazon ECR image."),
-                    new JProperty("ComponentPublisher", "Amazon"),
+                    new JProperty("ComponentPublisher", "IotHub"),
                     new JProperty("ComponentDependencies",
                         new JObject(
                             new JProperty("aws.greengrass.DockerApplicationManager",
@@ -92,28 +114,26 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                         new JArray(
                             new JObject(
                                 new JProperty("Platform",
-                                    new JObject(new JProperty("os", "all")))
+                                    new JObject(new JProperty("os", "linux"))),
+                                new JProperty("Lifecycle",
+                                    new JObject(new JProperty("Run", $"docker run {component.ImageURI}"),
+                                                new JProperty("Environment",
+                                                    new JObject(
+                                                        new JProperty("VAR1", "value1"),
+                                                        new JProperty("VAR2", "value2")
+                                                    ))
+                                   )),
+                                    new JProperty("Artifacts",
+                                        new JArray(
+                                            new JObject(new JProperty("URI", $"docker:{component.ImageURI}"))
+                                        )
+                                    )
                             )
                         )
                     )
                 );
-                var recipeBytes = Encoding.UTF8.GetBytes(recipeJson.ToString());
-                var recipeStream = new MemoryStream(recipeBytes);
 
-                var componentVersion = new CreateComponentVersionRequest
-                {
-                    InlineRecipe = recipeStream,
-                    Tags =
-                    {
-                        {component.ModuleName, "hey" }
-                    }
-                };
-                var response = await greengras.CreateComponentVersionAsync(componentVersion);
-                listcomponentName.Add(response.ComponentName, new ComponentDeploymentSpecification());
-            }
-
-            return listcomponentName;
-
+            return recipeJson;
         }
 
         //AWS Not implemented methods
