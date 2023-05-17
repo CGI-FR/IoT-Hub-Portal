@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Application.Services
         Task<IoTEdgeModel> GetEdgeModel(string modelId);
 
         Task CreateEdgeModel(IoTEdgeModel edgeModel);
+        
         Task UpdateEdgeModel(IoTEdgeModel edgeModel);
 
         Task DeleteEdgeModel(string edgeModelId);
