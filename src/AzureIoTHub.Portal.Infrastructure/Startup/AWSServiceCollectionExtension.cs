@@ -18,6 +18,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Infrastructure.Services;
 
+    using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
+    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
+    using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Infrastructure.Mappers;
+
     public static class AWSServiceCollectionExtension
     {
         public static IServiceCollection AddAWSInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
@@ -47,9 +53,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             _ = services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
             _ = services.AddSingleton<IAmazonS3>(new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
-            _ = services.AddSingleton(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+            _ = services.AddSingleton<IAmazonGreengrassV2>(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
-            _ = services.AddSingleton(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
             return services;
         }
 

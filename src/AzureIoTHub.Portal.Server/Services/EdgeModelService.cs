@@ -19,8 +19,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
-    using Amazon.GreengrassV2.Model;
-    using Amazon.GreengrassV2;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class EdgeModelService : IEdgeModelService
@@ -46,7 +44,6 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IEdgeDeviceModelRepository edgeModelRepository;
         private readonly ILabelRepository labelRepository;
         private readonly IEdgeDeviceModelCommandRepository commandRepository;
-        private readonly IAmazonGreengrassV2 greengras;
 
         public EdgeModelService(
             IMapper mapper,
@@ -55,8 +52,7 @@ namespace AzureIoTHub.Portal.Server.Services
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
             ILabelRepository labelRepository,
-            IEdgeDeviceModelCommandRepository commandRepository,
-            IAmazonGreengrassV2 greengras)
+            IEdgeDeviceModelCommandRepository commandRepository)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -65,7 +61,6 @@ namespace AzureIoTHub.Portal.Server.Services
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
             this.commandRepository = commandRepository;
-            this.greengras = greengras;
         }
 
         /// <summary>
@@ -120,34 +115,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
             await SaveModuleCommands(edgeModel);
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
-        }
-
-        /// <summary>
-        /// Create AWS Greengras deployment
-        /// </summary>
-        /// <param name="edgeModel">the new edge modle object.</param>
-        /// <returns>nothing.</returns>
-        /// <exception cref="ResourceAlreadyExistsException">If edge model template already exist return ResourceAlreadyExistsException.</exception>
-        /// <exception cref="InternalServerErrorException"></exception>
-        public async Task CreateGreenGrassDeployment(IoTEdgeModelListItem edgeModel)
-        {
-            var createDeploymentRequest = new CreateDeploymentRequest
-            {
-                DeploymentName = edgeModel?.Name
-            };
-            var createDeploymentResponse = await this.greengras.CreateDeploymentAsync(createDeploymentRequest);
-            if (createDeploymentResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new InternalServerErrorException("The creation of the deployment failed due to an error in the Amazon IoT API.");
-
-            }
-            _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
-
-            //Must add the version column
-            var edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
-            await this.edgeModelRepository.InsertAsync(edgeModelEntity);
-            await this.unitOfWork.SaveAsync();
-
         }
 
         /// <summary>
@@ -323,6 +290,12 @@ namespace AzureIoTHub.Portal.Server.Services
         public Task DeleteEdgeModelAvatar(string edgeModelId)
         {
             return Task.Run(() => this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModelId));
+        }
+
+        //Azure Not implemented methods
+        public Task CreateGreenGrassDeployment(IoTEdgeModel edgeModel)
+        {
+            throw new NotImplementedException();
         }
     }
 }
