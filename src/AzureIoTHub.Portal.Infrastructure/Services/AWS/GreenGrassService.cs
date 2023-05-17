@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
+    using System.ComponentModel;
 
     public class GreenGrassService : IEdgeModelService
     {
