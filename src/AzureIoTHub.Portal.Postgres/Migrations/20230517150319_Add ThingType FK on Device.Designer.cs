@@ -3,6 +3,7 @@ using System;
 using AzureIoTHub.Portal.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AzureIoTHub.Portal.Postgres.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    partial class PortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230517150319_Add ThingType FK on Device")]
+    partial class AddThingTypeFKonDevice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,68 @@ namespace AzureIoTHub.Portal.Postgres.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.AWS.ThingType", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Deprecated")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ThingTypes");
+                });
+
+            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.AWS.ThingTypeSearchableAtt", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ThingTypeId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ThingTypeId");
+
+                    b.ToTable("ThingTypeSearchableAttributes");
+                });
+
+            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.AWS.ThingTypeTag", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ThingTypeId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ThingTypeId");
+
+                    b.ToTable("ThingTypeTags");
+                });
 
             modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.Concentrator", b =>
                 {
@@ -487,6 +552,20 @@ namespace AzureIoTHub.Portal.Postgres.Migrations
                     b.ToTable("LorawanDevices", (string)null);
                 });
 
+            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.AWS.ThingTypeSearchableAtt", b =>
+                {
+                    b.HasOne("AzureIoTHub.Portal.Domain.Entities.AWS.ThingType", null)
+                        .WithMany("ThingTypeSearchableAttributes")
+                        .HasForeignKey("ThingTypeId");
+                });
+
+            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.AWS.ThingTypeTag", b =>
+                {
+                    b.HasOne("AzureIoTHub.Portal.Domain.Entities.AWS.ThingType", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("ThingTypeId");
+                });
+
             modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.Device", b =>
                 {
                     b.HasOne("AzureIoTHub.Portal.Domain.Entities.DeviceModel", "DeviceModel")
@@ -559,6 +638,13 @@ namespace AzureIoTHub.Portal.Postgres.Migrations
                         .HasForeignKey("AzureIoTHub.Portal.Domain.Entities.LorawanDevice", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.AWS.ThingType", b =>
+                {
+                    b.Navigation("Tags");
+
+                    b.Navigation("ThingTypeSearchableAttributes");
                 });
 
             modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.Device", b =>
