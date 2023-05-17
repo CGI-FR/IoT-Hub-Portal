@@ -124,7 +124,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 
-
         /// <summary>
         /// Saves the module commands for a specific model object.
         /// </summary>
