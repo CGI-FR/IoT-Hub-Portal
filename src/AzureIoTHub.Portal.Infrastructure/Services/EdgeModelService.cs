@@ -20,7 +20,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
-
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class EdgeModelService : IEdgeModelService
@@ -122,6 +121,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             {
                 await SaveModuleCommands(edgeModel);
             }
+
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 
