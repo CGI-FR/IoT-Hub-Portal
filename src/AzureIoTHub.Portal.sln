@@ -26,22 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{3CA1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}"
-	ProjectSection(SolutionItems) = preProject
-		..\templates\app_insights.bicep = ..\templates\app_insights.bicep
-		..\templates\app_service.bicep = ..\templates\app_service.bicep
-		..\templates\app_service_plan.bicep = ..\templates\app_service_plan.bicep
-		..\templates\azuredeploy.bicep = ..\templates\azuredeploy.bicep
-		..\templates\azuredeployUI.json = ..\templates\azuredeployUI.json
-		..\templates\blob_container.bicep = ..\templates\blob_container.bicep
-		..\templates\database.bicep = ..\templates\database.bicep
-		..\templates\dps.bicep = ..\templates\dps.bicep
-		..\templates\iothub.bicep = ..\templates\iothub.bicep
-		..\templates\iothub_eventhub_consumer_group.bicep = ..\templates\iothub_eventhub_consumer_group.bicep
-		..\templates\portal_without_lorawan.bicep = ..\templates\portal_without_lorawan.bicep
-		..\templates\portal_with_lorawan.bicep = ..\templates\portal_with_lorawan.bicep
-		..\templates\portal_with_lorawan_and_starter_kit.bicep = ..\templates\portal_with_lorawan_and_starter_kit.bicep
-		..\templates\storage.bicep = ..\templates\storage.bicep
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATES", "ISSUE_TEMPLATES", "{4B89F192-EA33-4121-9809-D99621C40F3B}"
 	ProjectSection(SolutionItems) = preProject
@@ -74,6 +58,29 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Postgres", "AzureIoTHub.Portal.Postgres\AzureIoTHub.Portal.Postgres.csproj", "{3195668B-D3D9-4E5A-894C-A56C9F913E99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Tests.E2E", "AzureIoTHub.Portal.Tests.E2E\AzureIoTHub.Portal.Tests.E2E.csproj", "{9C5F753D-B9A3-4E7F-BFF3-37EB8BEBAB80}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aws", "aws", "{AD6BE5D2-0FFB-4629-8DE1-67D9B4D39577}"
+	ProjectSection(SolutionItems) = preProject
+		..\templates\aws\awsdeploy.yml = ..\templates\aws\awsdeploy.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{EB8B706B-11C0-4D53-B5DA-603A4C1668F9}"
+	ProjectSection(SolutionItems) = preProject
+		..\templates\app_insights.bicep = ..\templates\app_insights.bicep
+		..\templates\app_service.bicep = ..\templates\app_service.bicep
+		..\templates\app_service_plan.bicep = ..\templates\app_service_plan.bicep
+		..\templates\azuredeploy.bicep = ..\templates\azuredeploy.bicep
+		..\templates\azuredeployUI.json = ..\templates\azuredeployUI.json
+		..\templates\blob_container.bicep = ..\templates\blob_container.bicep
+		..\templates\database.bicep = ..\templates\database.bicep
+		..\templates\dps.bicep = ..\templates\dps.bicep
+		..\templates\iothub.bicep = ..\templates\iothub.bicep
+		..\templates\iothub_eventhub_consumer_group.bicep = ..\templates\iothub_eventhub_consumer_group.bicep
+		..\templates\portal_without_lorawan.bicep = ..\templates\portal_without_lorawan.bicep
+		..\templates\portal_with_lorawan.bicep = ..\templates\portal_with_lorawan.bicep
+		..\templates\portal_with_lorawan_and_starter_kit.bicep = ..\templates\portal_with_lorawan_and_starter_kit.bicep
+		..\templates\storage.bicep = ..\templates\storage.bicep
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +144,8 @@ Global
 		{3CA153F4-1172-4AF5-B483-94200717AB5C} = {20EC2171-363D-4DDE-827F-F56D4FE9ADF3}
 		{3F7A2982-4F0B-45F9-9FCA-923D5A7A1511} = {20EC2171-363D-4DDE-827F-F56D4FE9ADF3}
 		{4B89F192-EA33-4121-9809-D99621C40F3B} = {3CA153F4-1172-4AF5-B483-94200717AB5C}
+		{AD6BE5D2-0FFB-4629-8DE1-67D9B4D39577} = {3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}
+		{EB8B706B-11C0-4D53-B5DA-603A4C1668F9} = {3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E03F3EEB-7B2B-4849-A581-4150BF29EC2B}
