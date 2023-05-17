@@ -25,6 +25,11 @@ namespace AzureIoTHub.Portal.Shared.Models
         public string ModelId { get; set; }
 
         /// <summary>
+        /// The model name.
+        /// </summary>
+        public string ModelName { get; set; }
+
+        /// <summary>
         /// The device model image Url.
         /// </summary>
         public Uri ImageUrl { get; set; }

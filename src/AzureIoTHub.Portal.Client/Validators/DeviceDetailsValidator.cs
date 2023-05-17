@@ -8,11 +8,12 @@ namespace AzureIoTHub.Portal.Client.Validators
     using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Constants;
     using FluentValidation;
 
     public class DeviceDetailsValidator : AbstractValidator<DeviceDetails>
     {
-        public DeviceDetailsValidator()
+        public DeviceDetailsValidator(string? cloudProvider = null)
         {
             _ = RuleFor(x => x.DeviceName)
                 .NotEmpty()
@@ -22,14 +23,16 @@ namespace AzureIoTHub.Portal.Client.Validators
                 .NotEmpty()
                 .WithMessage("ModelId is required.");
 
-            When(x => x.IsLoraWan, () =>
+            _ = When(x => x.IsLoraWan, () =>
             {
                 _ = RuleFor(x => x.DeviceID)
                 .NotEmpty()
                 .Length(1, 128)
                 .Matches("[A-Z0-9]{16}")
                 .WithMessage("DeviceID is required. It should be a 16 bit hex string.");
-            }).Otherwise(() =>
+            });
+
+            if (cloudProvider != null && cloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
             {
                 _ = RuleFor(x => x.DeviceID)
                 .NotEmpty()
@@ -37,7 +40,7 @@ namespace AzureIoTHub.Portal.Client.Validators
                 .Length(1, 128)
                 .Matches("[a-zA-Z0-9\\-.+%_#*?!(),:=@$']")
                 .WithMessage("DeviceID is required. It should be a case-sensitive string (up to 128 characters long) of ASCII 7-bit alphanumeric characters plus certain special characters: - . + % _ # * ? ! ( ) , : = @ $ '.");
-            });
+            }
         }
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
