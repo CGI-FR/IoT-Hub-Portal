@@ -121,7 +121,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             {
                 await SaveModuleCommands(edgeModel);
             }
-
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 
