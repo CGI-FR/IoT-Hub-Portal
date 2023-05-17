@@ -70,7 +70,7 @@ This configurations are used to get access to AWS cloud Platform. You have to en
   "AWS:Access": "<AWS_ACCESS_KEY>",
   "AWS:AccessSecret": "<AWS_ACCESS_SECRET_KEY>",
   "AWS:Region": "<AWS_REGION_KEY>",
-  "AWS:S3Storage:ConnectionString": "<CONNECTION_STRING_S3_STORAGE>",
+  "AWS:BucketName": "<AWS_BUCKET_NAME>",
   "OIDC:Scope": "<SCOPE>",
   "OIDC:MetadataUrl": "<METADATA_URL>",
   "OIDC:ClientId": "<CLIENT_ID>",
