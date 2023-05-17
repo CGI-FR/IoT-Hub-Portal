@@ -9,6 +9,7 @@
 @attribute [Authorize]
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
+@inject PortalSettings Portal
 @inject IDialogService DialogService
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
@@ -265,6 +266,8 @@
         try
         {
             isProcessing = true;
+
+            this.standardValidator = new DeviceDetailsValidator(Portal.CloudProvider);
 
             if (IsLoRa)
             {

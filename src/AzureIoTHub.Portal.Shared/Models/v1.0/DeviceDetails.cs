@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The device identifier.
         /// </summary>
-        [Required(ErrorMessage = "The device should have a unique identifier.")]
+        //[Required(ErrorMessage = "The device should have a unique identifier.")]
         [MaxLength(ErrorMessage = "The device identifier should be up to 128 characters long.")]
         [RegularExpression("^[a-zA-Z0-9\\-.+%_#*?!(),:=@$']{1,128}$", ErrorMessage = "The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters: - . + % _ # * ? ! ( ) , : = @ $ '.")]
         public virtual string DeviceID { get; set; } = default!;
@@ -33,6 +33,11 @@ namespace AzureIoTHub.Portal.Models.v10
         /// </summary>
         [Required(ErrorMessage = "The device should use a model.")]
         public string ModelId { get; set; } = default!;
+
+        /// <summary>
+        /// The model name. (For AWS)
+        /// </summary>
+        public string ModelName { get; set; } = default!;
 
         /// <summary>
         /// The device model image Url.

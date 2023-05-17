@@ -4,16 +4,20 @@
 @using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Models.v10.AWS;
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using AzureIoTHub.Portal.Shared.Models
 @using AzureIoTHub.Portal.Shared.Models.v10;
 @using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 @using AzureIoTHub.Portal.Shared.Constants;
+@using AzureIoTHub.Portal.Client.Services.AWS
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
+@inject PortalSettings Portal
 @inject NavigationManager NavManager
 @inject IDeviceModelsClientService DeviceModelsClientService
+@inject IThingTypeClientService ThingTypeClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
@@ -108,18 +112,25 @@
                                                 }
                                                 else
                                                 {
-                                                    <MudTextField @bind-Value="@Device.DeviceID"
-                                                              id=@nameof(DeviceDetails.DeviceID)
-                                                              Label="Device ID"
-                                                              Variant="Variant.Outlined"
-                                                              Validation=@(standardValidator.ValidateValue)
-                                                              For="@(()=> Device.DeviceID)"
-                                                              HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+                                                    if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                                    {
+                                                        <MudTextField @bind-Value="@Device.DeviceID"
+                                                                  id=@nameof(DeviceDetails.DeviceID)
+                                                                  Label="Device ID"
+                                                                  Variant="Variant.Outlined"
+                                                                  Validation=@(standardValidator.ValidateValue)
+                                                                  For="@(()=> Device.DeviceID)"
+                                                                  HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+                                                    }
                                                 }
                                             </MudItem>
-                                            <MudItem xs="12">
-                                                <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
-                                            </MudItem>
+                                            @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                            {
+                                                <MudItem xs="12">
+                                                    <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
+                                                </MudItem>
+                                            }
+                                            
                                             <MudItem xs="12">
                                                 <MudTextField @bind-Value="@Device.DeviceName"
                                                               id="@nameof(DeviceDetails.DeviceName)"
@@ -128,21 +139,25 @@
                                                               For="@(()=> Device.DeviceName)"
                                                               Required="true" />
                                             </MudItem>
-                                            <MudItem xs="12">
-                                                <MudText>
-                                                    <b>Status</b>
-                                                </MudText>
-                                                <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
-                                                    <MudRadio Option=@(true) Color="Color.Primary">
-                                                        Enabled
-                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
-                                                    </MudRadio>
-                                                    <MudRadio Option=@(false) Color="Color.Primary">
-                                                        Disabled
-                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
-                                                    </MudRadio>
-                                                </MudRadioGroup>
-                                            </MudItem>
+
+                                            @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                            {
+                                                <MudItem xs="12">
+                                                    <MudText>
+                                                        <b>Status</b>
+                                                    </MudText>
+                                                    <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
+                                                        <MudRadio Option=@(true) Color="Color.Primary">
+                                                            Enabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                        <MudRadio Option=@(false) Color="Color.Primary">
+                                                            Disabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                    </MudRadioGroup>
+                                                </MudItem>
+                                            }
                                         </MudGrid>
                                     </ChildContent>
                                 </MudExpansionPanel>
@@ -168,16 +183,19 @@
                             </MudItem>
                         </MudGrid>
 
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Labels">
-                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
-                                    <ChildContent>
-                                        <LabelsEditor ReadOnlyLabels="DeviceModel?.Labels" Labels="Device.Labels" />
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
+                        @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                        {
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Labels">
+                                        <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                        <ChildContent>
+                                            <LabelsEditor ReadOnlyLabels="DeviceModel?.Labels" Labels="Device.Labels" />
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                        }
 
                         @if (!IsLoRa && Properties.Any())
                         {
@@ -267,6 +285,7 @@
     private MudForm form = default!;
 
     private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
+
     private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
     private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; } = default!;
 
@@ -310,6 +329,8 @@
     {
         try
         {
+            this.standardValidator = new DeviceDetailsValidator(Portal.CloudProvider);
+
             DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
             Device = DeviceLayoutService.GetSharedDevice() ?? this.Device;
             DeviceModel = DeviceLayoutService.GetSharedDeviceModel() ?? this.DeviceModel;
@@ -350,7 +371,7 @@
             await form.Validate();
 
             if (CheckTagsError() || CheckGeneralValidation() || CheckLoRaValidation())
-            {
+                {
                 Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
                 // Allows to display ValidationError messages for the MudAutocomplete field.
@@ -366,7 +387,10 @@
             else
             {
                 await DeviceClientService.CreateDevice((Device as DeviceDetails)!);
-                await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
+                if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                {
+                    await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
+                }
             }
 
             // Prompts a snack bar to inform the action was successful
@@ -465,7 +489,27 @@
                 string.Empty
             }
         };
-        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
+
+        if (Portal.CloudProvider.Equals(CloudProviders.AWS))
+        {
+            IEnumerable<ThingTypeDto> thingTypes = (await ThingTypeClientService.GetThingTypes(filter)).Items.ToList<ThingTypeDto>();
+            IList<IDeviceModel> deviceModels = new List<IDeviceModel>();
+            foreach(ThingTypeDto thingType in thingTypes)
+            {
+                deviceModels.Add(new DeviceModelDto()
+                    {
+                        Name = thingType.ThingTypeName,
+                        Description = thingType.ThingTypeDescription,
+                        ImageUrl = thingType.ImageUrl,
+                        ModelId = thingType.ThingTypeID
+                    });
+            }
+            return deviceModels;
+        }
+        else
+        {
+            return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
+        }        
     }
 
     private void SetSaveButtonText(DeviceSaveAction saveAction)
@@ -492,6 +536,7 @@
                 {
                     DeviceID = Device.DeviceID,
                     ModelId = model?.ModelId!,
+                    ModelName = model?.Name,
                     ImageUrl = model?.ImageUrl!,
                     DeviceName = Device.DeviceName,
                     IsEnabled = Device.IsEnabled,
@@ -523,16 +568,19 @@
             }
             else
             {
-                var properties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
+                if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                {
+                    var properties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
 
-                Properties.AddRange(properties.Select(x => new DevicePropertyValue
-                    {
-                        DisplayName = x.DisplayName,
-                        IsWritable = x.IsWritable,
-                        Name = x.Name,
-                        Order = x.Order,
-                        PropertyType = x.PropertyType
-                    }));
+                    Properties.AddRange(properties.Select(x => new DevicePropertyValue
+                        {
+                            DisplayName = x.DisplayName,
+                            IsWritable = x.IsWritable,
+                            Name = x.Name,
+                            Order = x.Order,
+                            PropertyType = x.PropertyType
+                        }));
+                }
             }
         }
         catch (ProblemDetailsException exception)

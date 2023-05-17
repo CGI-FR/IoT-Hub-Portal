@@ -17,32 +17,32 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Infrastructure.Services;
+    using AzureIoTHub.Portal.Models.v10;
 
     public static class AWSServiceCollectionExtension
     {
         public static IServiceCollection AddAWSInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
         {
             return services
-                .ConfigureAWSClient(configuration)
+                .ConfigureAWSClient(configuration).Result
                 .ConfigureAWSServices()
                 .ConfigureAWSDeviceModelImages()
                 .ConfigureAWSSyncJobs(configuration);
         }
-        private static IServiceCollection ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
+        private static async Task<IServiceCollection> ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
-            _ = services.AddSingleton<IAmazonIoT>(new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
-            _ = services.AddSingleton(async sp =>
-            {
-                var endpoint = await sp.GetService<AmazonIoTClient>()!.DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
-                {
-                    EndpointType = "iot:Data-ATS"
-                });
+            var awsIoTClient = new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion));
+            _ = services.AddSingleton<IAmazonIoT>(awsIoTClient);
 
-                return new AmazonIotDataClient(configuration.AWSAccess, configuration.AWSAccessSecret, new AmazonIotDataConfig
-                {
-                    ServiceURL = $"https://{endpoint.EndpointAddress}"
-                });
+            var endPoint = await awsIoTClient.DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
+            {
+                EndpointType = "iot:Data-ATS"
             });
+
+            _ = services.AddSingleton<IAmazonIotData>(new AmazonIotDataClient(configuration.AWSAccess, configuration.AWSAccessSecret, new AmazonIotDataConfig
+            {
+                ServiceURL = $"https://{endPoint.EndpointAddress}"
+            }));
 
             _ = services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
@@ -50,6 +50,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             _ = services.AddSingleton(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
             _ = services.AddSingleton(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+
             return services;
         }
 
@@ -58,6 +59,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             return services
                 .AddTransient<IExternalDeviceService, AwsExternalDeviceService>()
                 .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>));
+                .AddTransient<IThingTypeService, ThingTypeService>();
+                .AddTransient<IDeviceService<DeviceDetails>, AWSDeviceService>();
+                .AddTransient<IAWSExternalDeviceService, AWSExternalDeviceService>();
+                .AddTransient<IDevicePropertyService, AWSDevicePropertyService>();
         }
 
         private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)

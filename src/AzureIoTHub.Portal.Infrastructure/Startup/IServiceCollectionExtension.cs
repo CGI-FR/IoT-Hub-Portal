@@ -112,5 +112,29 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             return services
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
         }
+
+        private static IServiceCollection ConfigureRepositories(this IServiceCollection services)
+        {
+            return services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>()
+                           .AddScoped<IDeviceTagRepository, DeviceTagRepository>()
+                           .AddScoped<IEdgeDeviceModelRepository, EdgeDeviceModelRepository>()
+                           .AddScoped<IEdgeDeviceModelCommandRepository, EdgeDeviceModelCommandRepository>()
+                           .AddScoped<IDeviceModelRepository, DeviceModelRepository>()
+                           .AddScoped<IDeviceRepository, DeviceRepository>()
+                           .AddScoped<IEdgeDeviceRepository, EdgeDeviceRepository>()
+                           .AddScoped<ILorawanDeviceRepository, LorawanDeviceRepository>()
+                           .AddScoped<IDeviceTagValueRepository, DeviceTagValueRepository>()
+                           .AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>()
+                           .AddScoped<IConcentratorRepository, ConcentratorRepository>()
+                           .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
+                           .AddScoped<ILabelRepository, LabelRepository>();
+        }
+
+        private static IServiceCollection ConfigureServices(this IServiceCollection services)
+        {
+            _ = services.AddTransient<IDeviceTagService, DeviceTagService>();
+            _ = services.AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
+            return services;
+        }
     }
 }

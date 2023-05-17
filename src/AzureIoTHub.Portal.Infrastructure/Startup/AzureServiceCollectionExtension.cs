@@ -13,13 +13,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Options;
-    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Extensions;
     using AzureIoTHub.Portal.Infrastructure.Jobs;
     using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Infrastructure.Providers;
-    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Wrappers;
