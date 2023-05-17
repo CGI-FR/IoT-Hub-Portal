@@ -126,6 +126,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                                             new JObject(new JProperty("URI", $"docker:{component.ImageURI}"))
                                         )
                                     )
+
                             )
                         )
                     )
