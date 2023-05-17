@@ -13,13 +13,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Options;
-    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Extensions;
     using AzureIoTHub.Portal.Infrastructure.Jobs;
     using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Infrastructure.Providers;
-    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Wrappers;
@@ -39,8 +37,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     {
         public static IServiceCollection AddAzureInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
         {
-            return services.ConfigureRepositories()
-                           .ConfigureImageBlobStorage(configuration)
+            return services.ConfigureImageBlobStorage(configuration)
                            .AddLoRaWanSupport(configuration)
                            .ConfigureDeviceRegstryDependencies(configuration)
                            .ConfigureServices()
@@ -96,23 +93,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             _ = services.AddScoped(_ => ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString));
 
             return services;
-        }
-
-        private static IServiceCollection ConfigureRepositories(this IServiceCollection services)
-        {
-            return services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>()
-                            .AddScoped<IDeviceTagRepository, DeviceTagRepository>()
-                            .AddScoped<IEdgeDeviceModelRepository, EdgeDeviceModelRepository>()
-                            .AddScoped<IEdgeDeviceModelCommandRepository, EdgeDeviceModelCommandRepository>()
-                            .AddScoped<IDeviceModelRepository, DeviceModelRepository>()
-                            .AddScoped<IDeviceRepository, DeviceRepository>()
-                            .AddScoped<IEdgeDeviceRepository, EdgeDeviceRepository>()
-                            .AddScoped<ILorawanDeviceRepository, LorawanDeviceRepository>()
-                            .AddScoped<IDeviceTagValueRepository, DeviceTagValueRepository>()
-                            .AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>()
-                            .AddScoped<IConcentratorRepository, ConcentratorRepository>()
-                            .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
-                            .AddScoped<ILabelRepository, LabelRepository>();
         }
 
         private static IServiceCollection ConfigureMappers(this IServiceCollection services)

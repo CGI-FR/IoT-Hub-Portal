@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Infrastructure.Services;
     using FluentAssertions;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
