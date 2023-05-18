@@ -19,7 +19,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
-    using System.ComponentModel;
 
     public class GreenGrassService : IEdgeModelService
     {
@@ -48,7 +47,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             var createDeploymentRequest = new CreateDeploymentRequest
             {
                 DeploymentName = edgeModel?.Name,
-                Components = await CreateGreenGrassComponents(edgeModel),
+                Components = await CreateGreenGrassComponents(edgeModel!),
                 TargetArn = "arn:aws:iot:eu-west-1:578920151383:thinggroup/test" //How?
             };
 
@@ -62,7 +61,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             //Must add the version column
             var edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
-            edgeModelEntity.Id = createDeploymentResponse.DeploymentId;
 
             await this.edgeModelRepository.InsertAsync(edgeModelEntity);
             await this.unitOfWork.SaveAsync();
@@ -89,7 +87,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     throw new InternalServerErrorException("The creation of the component failed due to an error in the Amazon IoT API.");
 
                 }
-                listcomponentName.Add(response.ComponentName, new ComponentDeploymentSpecification { ComponentVersion = "1.0.0" });
+                listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = "1.0.0" });
             }
 
             return listcomponentName;
@@ -97,6 +95,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         }
         private static JObject JsonCreateComponent(IoTEdgeModule component)
         {
+            var environmentVariableObject = new JObject();
+            foreach (var env in component.EnvironmentVariables)
+            {
+                environmentVariableObject.Add(new JProperty(env.Name, env.Value));
+            }
             var recipeJson =new JObject(
                     new JProperty("RecipeFormatVersion", "2020-01-25"),
                     new JProperty("ComponentName", component.ModuleName),
@@ -117,12 +120,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                                     new JObject(new JProperty("os", "linux"))),
                                 new JProperty("Lifecycle",
                                     new JObject(new JProperty("Run", $"docker run {component.ImageURI}"),
-                                                new JProperty("Environment",
-                                                    new JObject(
-                                                        new JProperty("VAR1", "value1"),
-                                                        new JProperty("VAR2", "value2")
-                                                    ))
-                                   )),
+                                                new JProperty("Environment",environmentVariableObject))),
                                     new JProperty("Artifacts",
                                         new JArray(
                                             new JObject(new JProperty("URI", $"docker:{component.ImageURI}"))
