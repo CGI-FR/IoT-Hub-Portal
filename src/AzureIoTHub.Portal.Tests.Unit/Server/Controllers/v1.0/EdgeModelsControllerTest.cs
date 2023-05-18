@@ -255,5 +255,30 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             this.mockRepository.VerifyAll();
         }
+
+        /*==================== GreenGrass Tests =======================*/
+        [Test]
+        public async Task CreateGreenGrasDeploymentlShouldCreateADeployment()
+        {
+            // Arrange
+            var edgeModelController = CreateController();
+
+            var expectedEdgeModel = new IoTEdgeModel
+            {
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockEdgeModelService
+                .Setup(x => x.CreateGreenGrassDeployment(It.IsAny<IoTEdgeModel>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var response = await edgeModelController.CreateGreenGrassDeployment(expectedEdgeModel);
+
+            // Assert
+            Assert.IsNotNull(response);
+
+            this.mockRepository.VerifyAll();
+        }
     }
 }
