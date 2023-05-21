@@ -136,7 +136,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetByIdAsync(It.Is<string>(s => s.Equals(existingDeviceModel.Id, StringComparison.Ordinal)), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
                 .ReturnsAsync(existingDeviceModel);
             _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetByIdAsync(It.Is<string>(s => !s.Equals(existingDeviceModel.Id, StringComparison.Ordinal)), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
-                .ReturnsAsync((DeviceModel)null);
+                .ReturnsAsync(default(DeviceModel));
 
             _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.InsertAsync(It.Is<DeviceModel>(s => s.Name.Equals(newDeviceModelName, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
