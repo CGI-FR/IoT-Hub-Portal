@@ -38,14 +38,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public async Task SaveAsyncTest()
         {
             // Arrange
+            var deviceModel = Fixture.Create<DeviceModel>();
             var label = Fixture.Create<Label>();
 
+            await this.unitOfWork.DeviceModelRepository.InsertAsync(deviceModel);
             await this.unitOfWork.LabelRepository.InsertAsync(label);
 
             // Act
             await this.unitOfWork.SaveAsync();
 
             // Assert
+            var savedDeviceModel = await this.unitOfWork.DeviceModelRepository.GetByIdAsync(deviceModel.Id);
+            _ = savedDeviceModel.Should().BeEquivalentTo(deviceModel);
             var savedLabel = await this.unitOfWork.LabelRepository.GetByIdAsync(label.Id);
             _ = savedLabel.Should().BeEquivalentTo(label);
         }
