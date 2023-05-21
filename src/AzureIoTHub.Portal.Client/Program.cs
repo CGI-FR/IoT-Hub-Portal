@@ -5,7 +5,6 @@ using System.Net.Http.Json;
 using AzureIoTHub.Portal.Client;
 using AzureIoTHub.Portal.Client.Handlers;
 using AzureIoTHub.Portal.Client.Services;
-using AzureIoTHub.Portal.Client.Services.AWS;
 using AzureIoTHub.Portal.Models.v10;
 using AzureIoTHub.Portal.Settings;
 using Blazored.LocalStorage;
@@ -87,9 +86,6 @@ _ = builder.Services.AddScoped<ILoRaWanDeviceClientService, LoRaWanDeviceClientS
 _ = builder.Services.AddScoped<IEdgeDeviceConfigurationsClientService, EdgeDeviceConfigurationsClientService>();
 _ = builder.Services.AddScoped<IIdeaClientService, IdeaClientService>();
 _ = builder.Services.AddScoped<ClipboardService>();
-
-//AWS Dependency injection
-_ = builder.Services.AddScoped<IThingTypeClientService, ThingTypeClientService>();
 
 
 await ConfigurePortalSettings(builder);
