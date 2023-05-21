@@ -108,6 +108,5 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             await this.edgeModelService.DeleteEdgeModelAvatar(edgeModelId);
             return NoContent();
         }
-
     }
 }

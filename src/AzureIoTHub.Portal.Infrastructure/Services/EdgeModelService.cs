@@ -304,10 +304,5 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             return Task.Run(() => this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModelId));
         }
 
-        //Azure Not implemented methods
-        public Task CreateGreenGrassDeployment(IoTEdgeModel edgeModel)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
