@@ -123,7 +123,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public async Task CreateDevice_ValidDeviceModel_DeviceModelCreated()
+        public async Task CreateDeviceModel_ValidDeviceModel_DeviceModelCreated()
         {
             // Arrange
             var deviceModelDto = Fixture.Create<DeviceModelDto>();
