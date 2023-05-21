@@ -13,14 +13,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Http;
+    using Microsoft.Azure.Devices;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
-    public class GreenGrassService : IEdgeModelService
+    public class AwsConfigService : IConfigService
     {
         private readonly IAmazonGreengrassV2 greengras;
         private readonly IDeviceModelImageManager deviceModelImageManager;
@@ -28,7 +27,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         private readonly IEdgeDeviceModelRepository edgeModelRepository;
         private readonly IUnitOfWork unitOfWork;
 
-        public GreenGrassService(
+        public AwsConfigService(
             IAmazonGreengrassV2 greengras,
             IDeviceModelImageManager deviceModelImageManager,
             IMapper mapper,
@@ -42,13 +41,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task CreateGreenGrassDeployment(IoTEdgeModel edgeModel)
+        public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
         {
             var createDeploymentRequest = new CreateDeploymentRequest
             {
                 DeploymentName = edgeModel?.Name,
                 Components = await CreateGreenGrassComponents(edgeModel!),
-                TargetArn = "arn:aws:iot:eu-west-1:578920151383:thinggroup/test" //How?
+                TargetArn = $"arn:aws:iot:eu-west-1:578920151383:thinggroup/{edgeModel?.Name}" //Dynmaic thing group Arn here will have the samae name as edgeModel
             };
 
             var createDeploymentResponse = await this.greengras.CreateDeploymentAsync(createDeploymentRequest);
@@ -58,13 +57,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 throw new InternalServerErrorException("The creation of the deployment failed due to an error in the Amazon IoT API.");
 
             }
-
-            //Must add the version column
-            var edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
-
-            await this.edgeModelRepository.InsertAsync(edgeModelEntity);
-            await this.unitOfWork.SaveAsync();
-            _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModelEntity.Id);
 
         }
 
@@ -135,48 +127,61 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         }
 
         //AWS Not implemented methods
-        public Task CreateEdgeModel(IoTEdgeModel edgeModel)
-        {
-            throw new NotImplementedException();
-        }
-        public Task DeleteEdgeModel(string edgeModelId)
+
+        public Task<IEnumerable<Configuration>> GetIoTEdgeConfigurations()
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteEdgeModelAvatar(string edgeModelId)
+        public Task<IEnumerable<Configuration>> GetDevicesConfigurations()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IoTEdgeModel> GetEdgeModel(string modelId)
+        public Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> GetEdgeModelAvatar(string edgeModelId)
+        public Task DeleteDeviceModelConfigurationByConfigurationNamePrefix(string configurationNamePrefix)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IoTEdgeModelListItem>> GetEdgeModels(EdgeModelFilter edgeModelFilter)
+        public Task RollOutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags, int priority = 0)
         {
             throw new NotImplementedException();
         }
 
-        public Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
+        public Task<Configuration> GetConfigItem(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateEdgeModel(IoTEdgeModel edgeModel)
+        public Task DeleteConfiguration(string configId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> UpdateEdgeModelAvatar(string edgeModelId, IFormFile file)
+        public Task<int> GetFailedDeploymentsCount()
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<IoTEdgeRoute>> GetConfigRouteList(string modelId)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

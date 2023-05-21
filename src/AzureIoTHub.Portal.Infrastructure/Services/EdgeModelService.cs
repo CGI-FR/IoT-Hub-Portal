@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Services
+namespace AzureIoTHub.Portal.Infrastructure.Services
 {
     using System;
     using System.Collections.Generic;
@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+    using AzureIoTHub.Portal.Shared.Constants;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -44,6 +45,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IEdgeDeviceModelRepository edgeModelRepository;
         private readonly ILabelRepository labelRepository;
         private readonly IEdgeDeviceModelCommandRepository commandRepository;
+        private readonly ConfigHandler config;
 
         public EdgeModelService(
             IMapper mapper,
@@ -52,7 +54,8 @@ namespace AzureIoTHub.Portal.Server.Services
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
             ILabelRepository labelRepository,
-            IEdgeDeviceModelCommandRepository commandRepository)
+            IEdgeDeviceModelCommandRepository commandRepository,
+            ConfigHandler config)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -61,6 +64,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
             this.commandRepository = commandRepository;
+            this.config = config;
         }
 
         /// <summary>
@@ -113,7 +117,10 @@ namespace AzureIoTHub.Portal.Server.Services
 
             _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
 
-            await SaveModuleCommands(edgeModel);
+            if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
+            {
+                await SaveModuleCommands(edgeModel);
+            }
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 
@@ -125,6 +132,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
         {
+
             IEnumerable<IoTEdgeModuleCommand> moduleCommands = deviceModelObject.EdgeModules
                 .SelectMany(x => x.Commands.Select(cmd => new IoTEdgeModuleCommand
                 {
@@ -292,10 +300,5 @@ namespace AzureIoTHub.Portal.Server.Services
             return Task.Run(() => this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModelId));
         }
 
-        //Azure Not implemented methods
-        public Task CreateGreenGrassDeployment(IoTEdgeModel edgeModel)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

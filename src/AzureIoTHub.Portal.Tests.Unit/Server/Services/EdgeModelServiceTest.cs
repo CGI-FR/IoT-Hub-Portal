@@ -18,7 +18,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
@@ -29,6 +28,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Infrastructure.Services;
 
     [TestFixture]
     public class EdgeModelServiceTest : BackendUnitTest
@@ -39,6 +39,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IConfigService> mockConfigService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
         private Mock<ILabelRepository> mockLabelRepository;
+        private Mock<ConfigHandler> mockConfigHandler;
 
         private IEdgeModelService edgeDeviceModelService;
 
@@ -54,6 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockConfigService = MockRepository.Create<IConfigService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
             this.mockLabelRepository = MockRepository.Create<ILabelRepository>();
+            this.mockConfigHandler = MockRepository.Create<ConfigHandler>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockEdgeDeviceModelRepository.Object);
@@ -62,6 +64,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
             _ = ServiceCollection.AddSingleton<IEdgeModelService, EdgeModelService>();
+            _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
 
             Services = ServiceCollection.BuildServiceProvider();
 
@@ -182,9 +185,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task CreateEdgeModelShouldCreateEdgeModel()
+        public async Task CreateEdgeModelForAzureShouldCreateEdgeModel()
         {
             // Arrange
+
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
             var expectedImageUri = Fixture.Create<Uri>();
 
@@ -194,6 +198,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("Azure");
 
             var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
             {
@@ -220,6 +225,36 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             MockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task CreateEdgeModelForAwsShouldCreateEdgeModel()
+        {
+            // Arrange
+
+            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var expectedImageUri = Fixture.Create<Uri>();
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync((EdgeDeviceModel)null);
+            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.InsertAsync(It.IsAny<EdgeDeviceModel>()))
+                .Returns(Task.CompletedTask);
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("AWS");
+
+
+            _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceModelImageManager.Setup(manager =>
+                    manager.SetDefaultImageToModel(It.IsAny<string>()))
+                .ReturnsAsync(expectedImageUri.ToString());
+
+            // Act
+            await this.edgeDeviceModelService.CreateEdgeModel(edgeDeviceModel);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
 
         [Test]
         public void CreateEdgeModelShouldThrowResourceAlreadyExistsExceptionIfModelAlreadyExists()

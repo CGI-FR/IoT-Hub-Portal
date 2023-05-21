@@ -14,7 +14,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
     using AzureIoTHub.Portal.Infrastructure.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Extensions.DependencyInjection;
     using Quartz;
 
@@ -26,7 +28,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 .ConfigureAWSClient(configuration)
                 .ConfigureAWSServices()
                 .ConfigureAWSDeviceModelImages()
-                .ConfigureAWSSyncJobs(configuration);
+                .ConfigureAWSSyncJobs(configuration)
+                .ConfigureOtherDependencies();
         }
         private static IServiceCollection ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -56,9 +59,21 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         {
             return services
                 .AddTransient<IExternalDeviceService, AwsExternalDeviceService>()
-                .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>));
+                .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>))
+                .AddTransient<IThingTypeService, ThingTypeService>()
+                .AddTransient<IConfigService, AwsConfigService>()
+                .AddTransient<IEdgeModelService, EdgeModelService>();
         }
 
+        private static IServiceCollection ConfigureAWSRepositories(this IServiceCollection services)
+        {
+            _ = services.AddScoped<IEdgeDeviceModelRepository, EdgeDeviceModelRepository>();
+            _ = services.AddScoped<ILabelRepository, LabelRepository>();
+            _ = services.AddScoped<IEdgeDeviceModelCommandRepository, EdgeDeviceModelCommandRepository>();
+
+
+            return services;
+        }
         private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)
         {
             _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
@@ -78,6 +93,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
             });
+        }
+
+        private static IServiceCollection ConfigureOtherDependencies(this IServiceCollection services)
+        {
+            _ = services.AddSingleton(new PortalSettings());
+            return services;
         }
     }
 }
