@@ -3,56 +3,51 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using System.Threading;
     using System.Threading.Tasks;
+    using AutoFixture;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure;
-    using Microsoft.EntityFrameworkCore;
-    using Moq;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
+    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using FluentAssertions;
+    using Microsoft.Extensions.DependencyInjection;
     using NUnit.Framework;
 
     [TestFixture]
-    public class UnitOfWorkTests
+    public class UnitOfWorkTests : BackendUnitTest
     {
-        private MockRepository mockRepository;
-        private Mock<DbContext> mockDbContext;
+        private IUnitOfWork unitOfWork;
 
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockDbContext = this.mockRepository.Create<DbContext>();
+            base.Setup();
+
+            _ = ServiceCollection.AddSingleton<IDeviceModelRepository, DeviceModelRepository>();
+            _ = ServiceCollection.AddSingleton<ILabelRepository, LabelRepository>();
+            _ = ServiceCollection.AddSingleton(DbContext);
+            _ = ServiceCollection.AddSingleton<IUnitOfWork, UnitOfWork<PortalDbContext>>();
+
+            Services = ServiceCollection.BuildServiceProvider();
+
+            this.unitOfWork = Services.GetRequiredService<IUnitOfWork>();
         }
 
         [TestCase]
         public async Task SaveAsyncTest()
         {
             // Arrange
-            using var instance = new UnitOfWork<DbContext>(this.mockDbContext.Object);
+            var label = Fixture.Create<Label>();
 
-            _ = this.mockDbContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(0);
-
-            _ = this.mockDbContext.Setup(c => c.Dispose());
+            await this.unitOfWork.LabelRepository.InsertAsync(label);
 
             // Act
-            await instance.SaveAsync();
+            await this.unitOfWork.SaveAsync();
 
             // Assert
-            this.mockDbContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [TestCase]
-        public void DisposeTest()
-        {
-            // Arrange
-            using var instance = new UnitOfWork<DbContext>(this.mockDbContext.Object);
-            _ = this.mockDbContext.Setup(c => c.Dispose());
-
-            // Act
-            instance.Dispose();
-
-            // Assert
-            this.mockDbContext.Verify(c => c.Dispose(), Times.Once);
+            var savedLabel = await this.unitOfWork.LabelRepository.GetByIdAsync(label.Id);
+            _ = savedLabel.Should().BeEquivalentTo(label);
         }
     }
 }
