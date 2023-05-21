@@ -18,7 +18,6 @@ namespace AzureIoTHub.Portal.Domain
         Task<T?> GetByIdAsync(object id, params Expression<Func<T, object>>[] includes);
 
         Task InsertAsync(T obj);
-        Task<string> InsertAndGetIdAsync(T obj);
 
         void Update(T obj);
 
