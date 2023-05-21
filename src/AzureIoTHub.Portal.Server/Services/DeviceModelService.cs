@@ -103,7 +103,7 @@ namespace AzureIoTHub.Portal.Server.Services
             return this.mapper.Map<TModel>(deviceModelEntity);
         }
 
-        public async Task CreateDeviceModel(TModel deviceModel)
+        public async Task<TModel> CreateDeviceModel(TModel deviceModel)
         {
             var deviceModelEntity = this.mapper.Map<DeviceModel>(deviceModel);
 
@@ -113,6 +113,8 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = this.deviceModelImageManager.SetDefaultImageToModel(deviceModel.ModelId);
 
             await CreateDeviceModelConfiguration(deviceModel);
+
+            return deviceModel;
         }
 
         public async Task UpdateDeviceModel(TModel deviceModel)

@@ -8,18 +8,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using Amazon.IotData;
     using Amazon.S3;
     using Amazon.SecretsManager;
-    using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Infrastructure.Managers;
     using Microsoft.Extensions.DependencyInjection;
     using Amazon.GreengrassV2;
-    using AzureIoTHub.Portal.Domain.Repositories.AWS;
-    using AzureIoTHub.Portal.Infrastructure.Repositories.AWS;
     using Quartz;
     using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
+    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Infrastructure.Services;
 
     public static class AWSServiceCollectionExtension
     {
@@ -28,7 +25,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             return services
                 .ConfigureAWSClient(configuration)
                 .ConfigureAWSServices()
-                .ConfigureAWSRepositories()
                 .ConfigureAWSDeviceModelImages()
                 .ConfigureAWSSyncJobs(configuration);
         }
@@ -59,19 +55,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
         private static IServiceCollection ConfigureAWSServices(this IServiceCollection services)
         {
-            _ = services.AddTransient<IThingTypeService, ThingTypeService>();
-
-            return services;
+            return services
+                .AddTransient<IExternalDeviceServiceV2, AwsExternalDeviceService>()
+                .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>));
         }
 
-        private static IServiceCollection ConfigureAWSRepositories(this IServiceCollection services)
-        {
-            _ = services.AddScoped<IThingTypeRepository, ThingTypeRepository>();
-            _ = services.AddScoped<IThingTypeTagRepository, ThingTypeTagRepository>();
-            _ = services.AddScoped<IThingTypeSearchableAttRepository, ThingTypeSearchableAttributeRepository>();
-
-            return services;
-        }
         private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)
         {
             _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
