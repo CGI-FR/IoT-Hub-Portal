@@ -8,7 +8,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using Amazon.IoT.Model;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Services;
-    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Shared;
     using ResourceAlreadyExistsException = Amazon.IoT.Model.ResourceAlreadyExistsException;
     using ResourceNotFoundException = Amazon.IoT.Model.ResourceNotFoundException;
@@ -40,7 +39,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             }
             catch (ResourceAlreadyExistsException e)
             {
-                throw new InternalServerErrorException($"Unable to create the device model {deviceModel.Name}: {e.Message}", e);
+                throw new Domain.Exceptions.ResourceAlreadyExistsException($"Unable to create the device model {deviceModel.Name}: {e.Message}", e);
             }
         }
 
@@ -58,7 +57,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             }
             catch (ResourceNotFoundException e)
             {
-                throw new InternalServerErrorException($"Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
+                throw new Domain.Exceptions.ResourceNotFoundException($"Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
             }
         }
     }
