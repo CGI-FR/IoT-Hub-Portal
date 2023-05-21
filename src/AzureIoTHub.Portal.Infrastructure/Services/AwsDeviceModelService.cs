@@ -128,6 +128,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 Name = deviceModelEntity.Name,
             });
 
+            foreach (var labelEntity in deviceModelEntity.Labels)
+            {
+                this.unitOfWork.LabelRepository.Delete(labelEntity.Id);
+            }
+
             // Image deletion
             await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelId);
 
