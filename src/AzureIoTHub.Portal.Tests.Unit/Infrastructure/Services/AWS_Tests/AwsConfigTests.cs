@@ -20,17 +20,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using AzureIoTHub.Portal.Models.v10;
     using AutoFixture;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain.Entities;
 
     [TestFixture]
-    public class GreenGrassServiceTests : BackendUnitTest
+    public class AwsConfigTests : BackendUnitTest
     {
         private Mock<IAmazonGreengrassV2> mockGreengrasClient;
         private Mock<IDeviceModelImageManager> mocDeviceModelImageManager;
         private Mock<IEdgeDeviceModelRepository> mockEdgeModelRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
 
-        private IEdgeModelService greenGrassModelService;
+        private IConfigService awsConfigService;
 
         [SetUp]
         public void SetUp()
@@ -45,11 +44,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = ServiceCollection.AddSingleton(this.mockGreengrasClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mocDeviceModelImageManager.Object);
-            _ = ServiceCollection.AddSingleton<IEdgeModelService, GreenGrassService>();
+            _ = ServiceCollection.AddSingleton<IConfigService, AwsConfigService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.greenGrassModelService = Services.GetRequiredService<IEdgeModelService>();
+            this.awsConfigService = Services.GetRequiredService<IConfigService>();
             Mapper = Services.GetRequiredService<IMapper>();
         }
 
@@ -58,8 +57,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         {
             //Act
             var edge = Fixture.Create<IoTEdgeModel>();
-            var expectedAvatarUrl = Fixture.Create<string>();
-
 
             _ = this.mockGreengrasClient.Setup(s3 => s3.CreateDeploymentAsync(It.IsAny<CreateDeploymentRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateDeploymentResponse
@@ -72,18 +69,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                     HttpStatusCode = HttpStatusCode.Created
                 });
 
-            _ = this.mockEdgeModelRepository.Setup(repository => repository.InsertAsync(It.IsAny<EdgeDeviceModel>()))
-                .Returns(Task.FromResult(edge));
-
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            _ = this.mocDeviceModelImageManager.Setup(manager =>
-                    manager.SetDefaultImageToModel(edge.ModelId))
-                .ReturnsAsync(expectedAvatarUrl);
-
             //Arrange
-            await this.greenGrassModelService.CreateGreenGrassDeployment(edge);
+            await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
 
             //Assert
             MockRepository.VerifyAll();
