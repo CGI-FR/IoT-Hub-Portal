@@ -4,9 +4,13 @@
 namespace AzureIoTHub.Portal.Domain
 {
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Domain.Repositories;
 
     public interface IUnitOfWork
     {
+        IDeviceModelRepository DeviceModelRepository { get; }
+        ILabelRepository LabelRepository { get; }
+
         Task SaveAsync();
     }
 }

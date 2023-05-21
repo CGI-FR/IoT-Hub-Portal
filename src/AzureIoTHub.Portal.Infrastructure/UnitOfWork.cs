@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Infrastructure
 {
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Threading.Tasks;
@@ -13,9 +14,14 @@ namespace AzureIoTHub.Portal.Infrastructure
     {
         private bool disposed;
 
-        public UnitOfWork(TContext context)
+        public UnitOfWork(TContext context,
+            IDeviceModelRepository deviceModelRepository,
+            ILabelRepository labelRepository)
         {
-            this.Context = context;
+            Context = context;
+            DeviceModelRepository = deviceModelRepository;
+            LabelRepository = labelRepository;
+
         }
 
         public void Dispose()
@@ -25,6 +31,10 @@ namespace AzureIoTHub.Portal.Infrastructure
         }
 
         public TContext Context { get; }
+
+        public IDeviceModelRepository DeviceModelRepository { get; }
+
+        public ILabelRepository LabelRepository { get; }
 
         public async Task SaveAsync()
         {
