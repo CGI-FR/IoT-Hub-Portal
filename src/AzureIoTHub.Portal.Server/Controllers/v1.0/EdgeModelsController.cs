@@ -108,15 +108,5 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             await this.edgeModelService.DeleteEdgeModelAvatar(edgeModelId);
             return NoContent();
         }
-
-        /*================================================= AWS GreenGrass =====================================================*/
-
-        [HttpPost("aws")]
-        public async Task<IActionResult> CreateGreenGrassDeployment(IoTEdgeModel EdgeModel)
-        {
-            await this.edgeModelService.CreateGreenGrassDeployment(EdgeModel);
-
-            return Ok();
-        }
     }
 }

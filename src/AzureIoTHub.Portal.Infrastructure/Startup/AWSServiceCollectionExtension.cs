@@ -64,6 +64,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IEdgeModelService, EdgeModelService>();
         }
 
+
         private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)
         {
             _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
