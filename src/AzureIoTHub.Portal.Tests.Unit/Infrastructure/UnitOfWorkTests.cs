@@ -12,13 +12,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
     using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using NUnit.Framework;
 
     [TestFixture]
     public class UnitOfWorkTests : BackendUnitTest
     {
-        private IUnitOfWork unitOfWork;
+        private UnitOfWork<DbContext> unitOfWork;
 
         public override void Setup()
         {
@@ -31,7 +32,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.unitOfWork = Services.GetRequiredService<IUnitOfWork>();
+            this.unitOfWork = new UnitOfWork<DbContext>(DbContext);
         }
 
         [TestCase]
@@ -41,16 +42,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             var deviceModel = Fixture.Create<DeviceModel>();
             var label = Fixture.Create<Label>();
 
-            await this.unitOfWork.DeviceModelRepository.InsertAsync(deviceModel);
-            await this.unitOfWork.LabelRepository.InsertAsync(label);
+            _ = await this.unitOfWork.Context.AddAsync(deviceModel);
+            _ = await this.unitOfWork.Context.AddAsync(label);
 
             // Act
             await this.unitOfWork.SaveAsync();
 
             // Assert
-            var savedDeviceModel = await this.unitOfWork.DeviceModelRepository.GetByIdAsync(deviceModel.Id);
+            var savedDeviceModel = await this.unitOfWork.Context.Set<DeviceModel>().FindAsync(deviceModel.Id);
             _ = savedDeviceModel.Should().BeEquivalentTo(deviceModel);
-            var savedLabel = await this.unitOfWork.LabelRepository.GetByIdAsync(label.Id);
+            var savedLabel = await this.unitOfWork.Context.Set<Label>().FindAsync(label.Id);
             _ = savedLabel.Should().BeEquivalentTo(label);
         }
     }

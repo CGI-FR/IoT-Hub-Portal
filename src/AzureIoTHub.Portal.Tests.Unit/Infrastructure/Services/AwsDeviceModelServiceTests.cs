@@ -28,11 +28,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     using AzureIoTHub.Portal.Domain.Exceptions;
     using Microsoft.AspNetCore.Http;
     using System.IO;
+    using AzureIoTHub.Portal.Domain.Repositories;
 
     [TestFixture]
     public class AwsDeviceModelServiceTests : BackendUnitTest
     {
         private Mock<IUnitOfWork> mockUnitOfWork;
+        private Mock<IDeviceModelRepository> mockDeviceModelRepository;
+        private Mock<ILabelRepository> mockLabelRepository;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
 
@@ -43,10 +46,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             base.Setup();
 
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
+            this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
+            this.mockLabelRepository = MockRepository.Create<ILabelRepository>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
             this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton<IDeviceModelService<DeviceModelDto, DeviceModelDto>, AwsDeviceModelService<DeviceModelDto, DeviceModelDto>>();
@@ -81,7 +88,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                 }
             };
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetPaginatedListAsync(filter.PageNumber, filter.PageSize, filter.OrderBy, It.IsAny<Expression<Func<DeviceModel, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
+            _ = this.mockDeviceModelRepository.Setup(u => u.GetPaginatedListAsync(filter.PageNumber, filter.PageSize, filter.OrderBy, It.IsAny<Expression<Func<DeviceModel, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
                 .ReturnsAsync(new PaginatedResult<DeviceModel>
                 {
                     Data = expectedDeviceModels,
@@ -111,7 +118,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             var expectedDeviceModel = Fixture.Create<DeviceModel>();
             var expectedDeviceModelDto = Mapper.Map<DeviceModelDto>(expectedDeviceModel);
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetByIdAsync(expectedDeviceModel.Id, d => d.Labels))
+            _ = this.mockDeviceModelRepository.Setup(u => u.GetByIdAsync(expectedDeviceModel.Id, d => d.Labels))
                 .ReturnsAsync(expectedDeviceModel);
 
             // Act
@@ -135,7 +142,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = this.mockExternalDeviceService.Setup(e => e.CreateDeviceModel(It.Is<ExternalDeviceModelDto>(d => externalDeviceModelDto.Name.Equals(d.Name, StringComparison.Ordinal))))
                 .ReturnsAsync(externalDeviceModelDto);
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.InsertAsync(It.IsAny<DeviceModel>()))
+            _ = this.mockDeviceModelRepository.Setup(u => u.InsertAsync(It.IsAny<DeviceModel>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(u => u.SaveAsync())
@@ -162,13 +169,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             var deviceModelDto = Mapper.Map<DeviceModelDto>(existingDeviceModel);
             deviceModelDto.Labels = Fixture.CreateMany<LabelDto>(10).ToList();
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetByIdAsync(deviceModelDto.ModelId, d => d.Labels))
+            _ = this.mockDeviceModelRepository.Setup(u => u.GetByIdAsync(deviceModelDto.ModelId, d => d.Labels))
                 .ReturnsAsync(existingDeviceModel);
 
-            this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.Update(It.Is<DeviceModel>(d => deviceModelDto.ModelId.Equals(d.Id, StringComparison.Ordinal))))
+            this.mockDeviceModelRepository.Setup(u => u.Update(It.Is<DeviceModel>(d => deviceModelDto.ModelId.Equals(d.Id, StringComparison.Ordinal))))
                 .Verifiable();
 
-            this.mockUnitOfWork.Setup(u => u.LabelRepository.Delete(It.IsAny<string>()))
+            this.mockLabelRepository.Setup(u => u.Delete(It.IsAny<string>()))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
@@ -187,7 +194,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             // Arrange
             var deviceModelDto = Fixture.Create<DeviceModelDto>();
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetByIdAsync(deviceModelDto.ModelId, d => d.Labels))
+            _ = this.mockDeviceModelRepository.Setup(u => u.GetByIdAsync(deviceModelDto.ModelId, d => d.Labels))
                 .ReturnsAsync(default(DeviceModel));
             // Act
             var act = () => this.deviceModelService.UpdateDeviceModel(deviceModelDto);
@@ -208,20 +215,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                 Name = deviceModel.Name,
             };
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetByIdAsync(deviceModel.Id, d => d.Labels))
+            _ = this.mockDeviceModelRepository.Setup(u => u.GetByIdAsync(deviceModel.Id, d => d.Labels))
                 .ReturnsAsync(deviceModel);
 
             _ = this.mockExternalDeviceService.Setup(e => e.DeleteDeviceModel(It.Is<ExternalDeviceModelDto>(d => externalDeviceModelDto.Name.Equals(d.Name, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
-            this.mockUnitOfWork.Setup(u => u.LabelRepository.Delete(It.IsAny<string>()))
+            this.mockLabelRepository.Setup(u => u.Delete(It.IsAny<string>()))
                 .Verifiable();
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
                     manager.DeleteDeviceModelImageAsync(deviceModel.Id))
                 .Returns(Task.CompletedTask);
 
-            this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.Delete(deviceModel.Id))
+            this.mockDeviceModelRepository.Setup(u => u.Delete(deviceModel.Id))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
@@ -240,7 +247,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             // Arrange
             var deviceModel = Fixture.Create<DeviceModel>();
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetByIdAsync(deviceModel.Id, d => d.Labels))
+            _ = this.mockDeviceModelRepository.Setup(u => u.GetByIdAsync(deviceModel.Id, d => d.Labels))
                 .ReturnsAsync(default(DeviceModel));
 
             // Act

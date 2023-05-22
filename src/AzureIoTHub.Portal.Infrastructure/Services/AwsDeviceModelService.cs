@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Domain.Shared;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Models.v10;
@@ -26,16 +27,22 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IDeviceModelRepository deviceModelRepository;
+        private readonly ILabelRepository labelRepository;
         private readonly IExternalDeviceService externalDeviceService;
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public AwsDeviceModelService(IMapper mapper,
             IUnitOfWork unitOfWork,
+            IDeviceModelRepository deviceModelRepository,
+            ILabelRepository labelRepository,
             IExternalDeviceService externalDeviceService,
             IDeviceModelImageManager deviceModelImageManager)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.deviceModelRepository = deviceModelRepository;
+            this.labelRepository = labelRepository;
             this.externalDeviceService = externalDeviceService;
             this.deviceModelImageManager = deviceModelImageManager;
         }
@@ -49,7 +56,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 deviceModelPredicate = deviceModelPredicate.And(model => model.Name.ToLower().Contains(deviceModelFilter.SearchText.ToLower()) || model.Description.ToLower().Contains(deviceModelFilter.SearchText.ToLower()));
             }
 
-            var paginatedDeviceModels = await this.unitOfWork.DeviceModelRepository.GetPaginatedListAsync(deviceModelFilter.PageNumber, deviceModelFilter.PageSize, deviceModelFilter.OrderBy, deviceModelPredicate, includes: new Expression<Func<DeviceModel, object>>[] { d => d.Labels });
+            var paginatedDeviceModels = await this.deviceModelRepository.GetPaginatedListAsync(deviceModelFilter.PageNumber, deviceModelFilter.PageSize, deviceModelFilter.OrderBy, deviceModelPredicate, includes: new Expression<Func<DeviceModel, object>>[] { d => d.Labels });
 
             var paginateDeviceModelsDto = new PaginatedResult<DeviceModelDto>
             {
@@ -67,7 +74,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
         public async Task<TModel> GetDeviceModel(string deviceModelId)
         {
-            var deviceModelEntity = await this.unitOfWork.DeviceModelRepository.GetByIdAsync(deviceModelId, d => d.Labels);
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId, d => d.Labels);
 
             if (deviceModelEntity == null)
             {
@@ -85,7 +92,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
             var deviceModelEntity = this.mapper.Map<DeviceModel>(deviceModel);
 
-            await this.unitOfWork.DeviceModelRepository.InsertAsync(deviceModelEntity);
+            await this.deviceModelRepository.InsertAsync(deviceModelEntity);
             await this.unitOfWork.SaveAsync();
 
             _ = this.deviceModelImageManager.SetDefaultImageToModel(deviceModel.ModelId);
@@ -95,7 +102,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
         public async Task UpdateDeviceModel(TModel deviceModel)
         {
-            var deviceModelEntity = await this.unitOfWork.DeviceModelRepository.GetByIdAsync(deviceModel.ModelId, d => d.Labels);
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModel.ModelId, d => d.Labels);
 
             if (deviceModelEntity == null)
             {
@@ -104,19 +111,19 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
             foreach (var labelEntity in deviceModelEntity.Labels)
             {
-                this.unitOfWork.LabelRepository.Delete(labelEntity.Id);
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             _ = this.mapper.Map(deviceModel, deviceModelEntity);
 
-            this.unitOfWork.DeviceModelRepository.Update(deviceModelEntity);
+            this.deviceModelRepository.Update(deviceModelEntity);
 
             await this.unitOfWork.SaveAsync();
         }
 
         public async Task DeleteDeviceModel(string deviceModelId)
         {
-            var deviceModelEntity = await this.unitOfWork.DeviceModelRepository.GetByIdAsync(deviceModelId, d => d.Labels);
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId, d => d.Labels);
 
             if (deviceModelEntity == null)
             {
@@ -130,13 +137,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
             foreach (var labelEntity in deviceModelEntity.Labels)
             {
-                this.unitOfWork.LabelRepository.Delete(labelEntity.Id);
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             // Image deletion
             await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelId);
 
-            this.unitOfWork.DeviceModelRepository.Delete(deviceModelId);
+            this.deviceModelRepository.Delete(deviceModelId);
 
             await this.unitOfWork.SaveAsync();
         }

@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
         private Mock<IAmazonIoT> iaAmazon;
         private Mock<IDeviceModelImageManager> mockAWSImageManager;
         private Mock<IUnitOfWork> mockUnitOfWork;
+        private Mock<IDeviceModelRepository> mockDeviceModelRepository;
 
         public override void Setup()
         {
@@ -35,10 +37,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
             this.mockAWSImageManager = MockRepository.Create<IDeviceModelImageManager>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
+            this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
             this.iaAmazon = MockRepository.Create<IAmazonIoT>();
 
             _ = ServiceCollection.AddSingleton(this.mockAWSImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.iaAmazon.Object);
             _ = ServiceCollection.AddSingleton<IJob, SyncThingTypesJob>();
 
@@ -130,20 +134,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 depcrecatedDeviceModel
             };
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+            _ = this.mockDeviceModelRepository.Setup(u => u.GetAllAsync(null, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(existingDeviceModels);
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetByIdAsync(It.Is<string>(s => s.Equals(existingDeviceModel.Id, StringComparison.Ordinal)), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
+            _ = this.mockDeviceModelRepository.Setup(u => u.GetByIdAsync(It.Is<string>(s => s.Equals(existingDeviceModel.Id, StringComparison.Ordinal)), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
                 .ReturnsAsync(existingDeviceModel);
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.GetByIdAsync(It.Is<string>(s => !s.Equals(existingDeviceModel.Id, StringComparison.Ordinal)), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
+            _ = this.mockDeviceModelRepository.Setup(u => u.GetByIdAsync(It.Is<string>(s => !s.Equals(existingDeviceModel.Id, StringComparison.Ordinal)), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
                 .ReturnsAsync(default(DeviceModel));
 
-            _ = this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.InsertAsync(It.Is<DeviceModel>(s => s.Name.Equals(newDeviceModelName, StringComparison.Ordinal))))
+            _ = this.mockDeviceModelRepository.Setup(u => u.InsertAsync(It.Is<DeviceModel>(s => s.Name.Equals(newDeviceModelName, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
-            this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.Update(It.IsAny<DeviceModel>()))
+            this.mockDeviceModelRepository.Setup(u => u.Update(It.IsAny<DeviceModel>()))
                 .Verifiable();
-            this.mockUnitOfWork.Setup(u => u.DeviceModelRepository.Delete(It.Is<string>(s => s.Equals(depcrecatedDeviceModel.Id, StringComparison.Ordinal))))
+            this.mockDeviceModelRepository.Setup(u => u.Delete(It.Is<string>(s => s.Equals(depcrecatedDeviceModel.Id, StringComparison.Ordinal))))
                 .Verifiable();
 
             _ = this.mockAWSImageManager.Setup(c => c.SetDefaultImageToModel(It.Is<string>(s => s.Equals(newDeviceModelName, StringComparison.Ordinal))))

@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using Microsoft.Extensions.Logging;
     using Quartz;
 
@@ -20,6 +21,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         private readonly ILogger<SyncThingTypesJob> logger;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IDeviceModelRepository deviceModelRepository;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
@@ -27,12 +29,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             ILogger<SyncThingTypesJob> logger,
             IMapper mapper,
             IUnitOfWork unitOfWork,
+            IDeviceModelRepository deviceModelRepository,
             IAmazonIoT amazonIoTClient,
             IDeviceModelImageManager awsImageManager)
         {
             this.deviceModelImageManager = awsImageManager;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.deviceModelRepository = deviceModelRepository;
             this.amazonIoTClient = amazonIoTClient;
             this.logger = logger;
         }
@@ -108,17 +112,17 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             var deviceModel = this.mapper.Map<DeviceModel>(thingType);
 
-            var existingDeviceModel = await this.unitOfWork.DeviceModelRepository.GetByIdAsync(deviceModel.Id);
+            var existingDeviceModel = await this.deviceModelRepository.GetByIdAsync(deviceModel.Id);
 
             if (existingDeviceModel == null)
             {
-                await this.unitOfWork.DeviceModelRepository.InsertAsync(deviceModel);
+                await this.deviceModelRepository.InsertAsync(deviceModel);
                 _ = await this.deviceModelImageManager.SetDefaultImageToModel(deviceModel.Id);
             }
             else
             {
                 _ = this.mapper.Map(deviceModel, existingDeviceModel);
-                this.unitOfWork.DeviceModelRepository.Update(existingDeviceModel);
+                this.deviceModelRepository.Update(existingDeviceModel);
             }
             await this.unitOfWork.SaveAsync();
 
@@ -127,7 +131,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         private async Task DeleteThingTypes(List<DescribeThingTypeResponse> thingTypes)
         {
             // Get all device models that are not in AWS anymore or that are deprecated
-            var deviceModelsToDelete = (await this.unitOfWork.DeviceModelRepository.GetAllAsync())
+            var deviceModelsToDelete = (await this.deviceModelRepository.GetAllAsync())
                 .Where(deviceModel => !thingTypes.Any(thingType => deviceModel.Id.Equals(thingType.ThingTypeId, StringComparison.Ordinal)) ||
                     thingTypes.Any(thingType => deviceModel.Id.Equals(thingType.ThingTypeId, StringComparison.Ordinal) && thingType.ThingTypeMetadata.Deprecated))
                 .ToList();
@@ -135,7 +139,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             deviceModelsToDelete.ForEach(async deviceModel =>
             {
                 await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModel.Id);
-                this.unitOfWork.DeviceModelRepository.Delete(deviceModel.Id);
+                this.deviceModelRepository.Delete(deviceModel.Id);
             });
 
             await this.unitOfWork.SaveAsync();
