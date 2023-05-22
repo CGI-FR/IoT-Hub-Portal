@@ -4,17 +4,20 @@
 @using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Models.v10.AWS;
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using AzureIoTHub.Portal.Shared.Models
 @using AzureIoTHub.Portal.Shared.Models.v10;
 @using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 @using AzureIoTHub.Portal.Shared.Constants;
+@using AzureIoTHub.Portal.Client.Services.AWS
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
 @inject PortalSettings Portal
 @inject NavigationManager NavManager
 @inject IDeviceModelsClientService DeviceModelsClientService
+@inject IThingTypeClientService ThingTypeClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
