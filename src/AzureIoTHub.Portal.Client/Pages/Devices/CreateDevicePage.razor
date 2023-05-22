@@ -4,20 +4,17 @@
 @using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
-@using AzureIoTHub.Portal.Models.v10.AWS;
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using AzureIoTHub.Portal.Shared.Models
 @using AzureIoTHub.Portal.Shared.Models.v10;
 @using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 @using AzureIoTHub.Portal.Shared.Constants;
-@using AzureIoTHub.Portal.Client.Services.AWS
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
 @inject PortalSettings Portal
 @inject NavigationManager NavManager
 @inject IDeviceModelsClientService DeviceModelsClientService
-@inject IThingTypeClientService ThingTypeClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
@@ -490,26 +487,7 @@
             }
         };
 
-        if (Portal.CloudProvider.Equals(CloudProviders.AWS))
-        {
-            IEnumerable<ThingTypeDto> thingTypes = (await ThingTypeClientService.GetThingTypes(filter)).Items.ToList<ThingTypeDto>();
-            IList<IDeviceModel> deviceModels = new List<IDeviceModel>();
-            foreach(ThingTypeDto thingType in thingTypes)
-            {
-                deviceModels.Add(new DeviceModelDto()
-                    {
-                        Name = thingType.ThingTypeName,
-                        Description = thingType.ThingTypeDescription,
-                        ImageUrl = thingType.ImageUrl,
-                        ModelId = thingType.ThingTypeID
-                    });
-            }
-            return deviceModels;
-        }
-        else
-        {
-            return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
-        }        
+        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();      
     }
 
     private void SetSaveButtonText(DeviceSaveAction saveAction)
