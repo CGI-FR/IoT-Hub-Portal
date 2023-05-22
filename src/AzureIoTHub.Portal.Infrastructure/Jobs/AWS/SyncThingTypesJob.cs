@@ -62,10 +62,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         {
             var thingTypes = await GetAllThingTypes();
 
-            thingTypes.ForEach(async thingType =>
+            foreach (var thingType in thingTypes)
             {
                 await CreateOrUpdateDeviceModel(thingType);
-            });
+            }
 
             //Delete in Database AWS deleted thing types
             await DeleteThingTypes(thingTypes);
