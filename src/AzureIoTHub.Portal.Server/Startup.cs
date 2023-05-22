@@ -10,7 +10,6 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Startup;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
-    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Startup;
