@@ -18,6 +18,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Application.Services.AWS;
+    using AzureIoTHub.Portal.Infrastructure.Services.AWS;
 
     public static class AWSServiceCollectionExtension
     {
@@ -58,10 +60,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         {
             return services
                 .AddTransient<IExternalDeviceService, AwsExternalDeviceService>()
-                .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>));
-                .AddTransient<IThingTypeService, ThingTypeService>();
-                .AddTransient<IDeviceService<DeviceDetails>, AWSDeviceService>();
-                .AddTransient<IAWSExternalDeviceService, AWSExternalDeviceService>();
+                .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>))
+                .AddTransient<IDeviceService<DeviceDetails>, AWSDeviceService>()
+                .AddTransient<IAWSExternalDeviceService, AWSExternalDeviceService>()
                 .AddTransient<IDevicePropertyService, AWSDevicePropertyService>();
         }
 

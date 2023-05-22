@@ -18,25 +18,20 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using Amazon.IoT.Model;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using Amazon.IotData.Model;
-    using Microsoft.Extensions.Configuration;
-    using AzureIoTHub.Portal.Shared.Constants;
 
     public class AWSDeviceService : IDeviceService<DeviceDetails>
     {
         private readonly IMapper mapper;
-        private readonly IConfiguration config;
         private readonly IUnitOfWork unitOfWork;
         private readonly IDeviceRepository deviceRepository;
         private readonly IAWSExternalDeviceService externalDevicesService;
 
         public AWSDeviceService(IMapper mapper,
-            IConfiguration config,
             IUnitOfWork unitOfWork,
             IDeviceRepository deviceRepository,
             IAWSExternalDeviceService externalDevicesService)
         {
             this.mapper = mapper;
-            this.config = config;
             this.unitOfWork = unitOfWork;
             this.deviceRepository = deviceRepository;
             this.externalDevicesService = externalDevicesService;
@@ -65,13 +60,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         private async Task<DeviceDetails> CreateDeviceInDatabase(DeviceDetails device)
         {
             var deviceEntity = this.mapper.Map<Device>(device);
-
-            //In AWS FK is on ThingType
-            if (this.config["CloudProvider"]!.Equals(CloudProviders.AWS, StringComparison.Ordinal))
-            {
-                deviceEntity.ThingTypeId = deviceEntity.DeviceModelId;
-                deviceEntity.DeviceModelId = null;
-            }
 
             await this.deviceRepository.InsertAsync(deviceEntity);
             await this.unitOfWork.SaveAsync();
