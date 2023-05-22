@@ -16,12 +16,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
-    using Microsoft.Azure.Devices;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using Amazon.IoT.Model;
+    using Amazon.IoT;
+    using Configuration = Microsoft.Azure.Devices.Configuration;
 
     public class AwsConfigService : IConfigService
     {
         private readonly IAmazonGreengrassV2 greengras;
+        private readonly IAmazonIoT iotClient;
         private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly IMapper mapper;
         private readonly IEdgeDeviceModelRepository edgeModelRepository;
@@ -29,12 +32,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         public AwsConfigService(
             IAmazonGreengrassV2 greengras,
+            IAmazonIoT iotClient,
             IDeviceModelImageManager deviceModelImageManager,
             IMapper mapper,
             IEdgeDeviceModelRepository edgeModelRepository,
             IUnitOfWork unitOfWork)
         {
             this.greengras = greengras;
+            this.iotClient = iotClient;
             this.deviceModelImageManager = deviceModelImageManager;
             this.mapper = mapper;
             this.edgeModelRepository = edgeModelRepository;
@@ -43,11 +48,21 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
         {
+            var dynamicThingGroup = new DescribeThingGroupRequest
+            {
+                ThingGroupName = edgeModel?.Name
+            };
+            var thingGrouepResponse = await this.iotClient.DescribeThingGroupAsync(dynamicThingGroup);
+            if (thingGrouepResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Can not retreive Thing group with name {edgeModel?.Name} due to an error in the Amazon IoT API.");
+
+            }
             var createDeploymentRequest = new CreateDeploymentRequest
             {
                 DeploymentName = edgeModel?.Name,
                 Components = await CreateGreenGrassComponents(edgeModel!),
-                TargetArn = $"arn:aws:iot:eu-west-1:578920151383:thinggroup/{edgeModel?.Name}" //Dynmaic thing group Arn here will have the samae name as edgeModel
+                TargetArn = thingGrouepResponse.ThingGroupArn
             };
 
             var createDeploymentResponse = await this.greengras.CreateDeploymentAsync(createDeploymentRequest);
