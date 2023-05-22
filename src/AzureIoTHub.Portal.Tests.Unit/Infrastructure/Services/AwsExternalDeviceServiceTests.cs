@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     {
         private Mock<IAmazonIoT> mockAmazonIot;
 
-        private IExternalDeviceServiceV2 externalDeviceModelService;
+        private IExternalDeviceService externalDeviceModelService;
 
         public override void Setup()
         {
@@ -33,11 +33,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockAmazonIot = MockRepository.Create<IAmazonIoT>();
 
             _ = ServiceCollection.AddSingleton(this.mockAmazonIot.Object);
-            _ = ServiceCollection.AddSingleton<IExternalDeviceServiceV2, AwsExternalDeviceService>();
+            _ = ServiceCollection.AddSingleton<IExternalDeviceService, AwsExternalDeviceService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.externalDeviceModelService = Services.GetRequiredService<IExternalDeviceServiceV2>();
+            this.externalDeviceModelService = Services.GetRequiredService<IExternalDeviceService>();
             Mapper = Services.GetRequiredService<IMapper>();
         }
 
