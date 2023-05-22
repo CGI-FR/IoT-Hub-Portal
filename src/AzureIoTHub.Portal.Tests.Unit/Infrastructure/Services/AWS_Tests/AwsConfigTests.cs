@@ -20,11 +20,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using AzureIoTHub.Portal.Models.v10;
     using AutoFixture;
     using System.Threading.Tasks;
+    using Amazon.IoT;
+    using Amazon.IoT.Model;
 
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest
     {
         private Mock<IAmazonGreengrassV2> mockGreengrasClient;
+        private Mock<IAmazonIoT> mockIotClient;
         private Mock<IDeviceModelImageManager> mocDeviceModelImageManager;
         private Mock<IEdgeDeviceModelRepository> mockEdgeModelRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
@@ -38,10 +41,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             this.mockEdgeModelRepository = MockRepository.Create<IEdgeDeviceModelRepository>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.mockGreengrasClient = MockRepository.Create<IAmazonGreengrassV2>();
+            this.mockIotClient = MockRepository.Create<IAmazonIoT>();
             this.mocDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
 
             _ = ServiceCollection.AddSingleton(this.mockEdgeModelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockGreengrasClient.Object);
+            _ = ServiceCollection.AddSingleton(this.mockIotClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mocDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton<IConfigService, AwsConfigService>();
@@ -57,6 +62,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         {
             //Act
             var edge = Fixture.Create<IoTEdgeModel>();
+
+            _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DescribeThingGroupResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
 
             _ = this.mockGreengrasClient.Setup(s3 => s3.CreateDeploymentAsync(It.IsAny<CreateDeploymentRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateDeploymentResponse
