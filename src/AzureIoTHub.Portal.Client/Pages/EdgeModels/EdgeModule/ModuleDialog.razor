@@ -25,16 +25,21 @@
                                   For="@(() => Module.ImageURI)"
                                   Required="true"/>
                 </MudItem>
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="@currentContainerCreateOptions"
-                                  id=@nameof(IoTEdgeModule.ContainerCreateOptions)
+
+                @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                {
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="@currentContainerCreateOptions"
+                                      id=@nameof(IoTEdgeModule.ContainerCreateOptions)
                                   Label="Container Create Options"
                                   Variant="Variant.Outlined"
-                                  For="@(() => Module.ContainerCreateOptions)"/>
-                </MudItem>
-                <MudItem xs="12">
-                    <MudAlert Severity="Severity.Info"><MudLink Href="https://learn.microsoft.com/en-us/azure/iot-edge/how-to-use-create-options" Target="_blank ">How to configure container create options for IoT Edge modules</MudLink></MudAlert>
-                </MudItem>
+                                  For="@(() => Module.ContainerCreateOptions)" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Info"><MudLink Href="https://learn.microsoft.com/en-us/azure/iot-edge/how-to-use-create-options" Target="_blank ">How to configure container create options for IoT Edge modules</MudLink></MudAlert>
+                    </MudItem>
+                }
+                
             </MudGrid>
 
             <MudTabs Elevation="1" Class="mt-10" Rounded="true" PanelClass="mt-6">
