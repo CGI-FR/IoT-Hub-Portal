@@ -56,7 +56,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureAWSServices(this IServiceCollection services)
         {
             return services
-                .AddTransient<IExternalDeviceServiceV2, AwsExternalDeviceService>()
+                .AddTransient<IExternalDeviceService, AwsExternalDeviceService>()
                 .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>));
         }
 

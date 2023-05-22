@@ -26,12 +26,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IExternalDeviceServiceV2 externalDeviceService;
+        private readonly IExternalDeviceService externalDeviceService;
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public AwsDeviceModelService(IMapper mapper,
             IUnitOfWork unitOfWork,
-            IExternalDeviceServiceV2 externalDeviceService,
+            IExternalDeviceService externalDeviceService,
             IDeviceModelImageManager deviceModelImageManager)
         {
             this.mapper = mapper;
