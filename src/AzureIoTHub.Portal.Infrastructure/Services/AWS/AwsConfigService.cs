@@ -58,7 +58,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 throw new InternalServerErrorException($"Can not retreive Thing group with name {edgeModel?.Name} due to an error in the Amazon IoT API.");
 
             }
-
             var createDeploymentRequest = new CreateDeploymentRequest
             {
                 DeploymentName = edgeModel?.Name,
