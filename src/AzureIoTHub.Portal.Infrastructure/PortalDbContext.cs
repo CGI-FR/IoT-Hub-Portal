@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Infrastructure
 {
-    using AzureIoTHub.Portal.Domain.Entities.AWS;
     using Domain.Entities;
     using Microsoft.EntityFrameworkCore;
     using Newtonsoft.Json;
@@ -23,9 +22,6 @@ namespace AzureIoTHub.Portal.Infrastructure
         public DbSet<Concentrator> Concentrators { get; set; }
         public DbSet<LoRaDeviceTelemetry> LoRaDeviceTelemetry { get; set; }
         public DbSet<Label> Labels { get; set; }
-        public DbSet<ThingTypeTag> ThingTypeTags { get; set; }
-        public DbSet<ThingTypeSearchableAtt> ThingTypeSearchableAttributes { get; set; }
-        public DbSet<ThingType> ThingTypes { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)

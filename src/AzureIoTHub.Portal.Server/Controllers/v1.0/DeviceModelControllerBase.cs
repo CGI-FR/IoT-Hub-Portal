@@ -116,9 +116,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>The action result.</returns>
         public virtual async Task<IActionResult> Post(TModel deviceModel)
         {
-            await this.deviceModelService.CreateDeviceModel(deviceModel);
-
-            return Ok();
+            var newDeviceModel = await this.deviceModelService.CreateDeviceModel(deviceModel);
+            return CreatedAtAction(nameof(Post), new { id = newDeviceModel.ModelId }, newDeviceModel);
         }
 
         /// <summary>

@@ -115,11 +115,5 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
         {
             return await this.context.Set<T>().AnyAsync(expression, cancellationToken: cancellationToken);
         }
-
-        public async Task<string> InsertAndGetIdAsync(T obj)
-        {
-            var addedEntity =  await this.context.Set<T>().AddAsync(obj);
-            return addedEntity.Entity.Id;
-        }
     }
 }

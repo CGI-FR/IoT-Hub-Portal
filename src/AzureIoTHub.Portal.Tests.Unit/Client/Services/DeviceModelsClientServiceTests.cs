@@ -18,6 +18,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using Newtonsoft.Json;
+    using System.Text;
+    using System.Net.Mime;
 
     [TestFixture]
     public class DeviceModelsClientServiceTests : BlazorUnitTest
@@ -97,12 +100,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                     _ = body.Value.Should().BeEquivalentTo(expectedDeviceModel);
                     return true;
                 })
-                .Respond(HttpStatusCode.Created);
+                .Respond(HttpStatusCode.Created, new StringContent(
+                    JsonConvert.SerializeObject(expectedDeviceModel),
+                    Encoding.UTF8,
+                    MediaTypeNames.Application.Json));
 
             // Act
-            await this.deviceModelsClientService.CreateDeviceModel(expectedDeviceModel);
+            var result = await this.deviceModelsClientService.CreateDeviceModel(expectedDeviceModel);
 
             // Assert
+            _ = result.Should().BeEquivalentTo(expectedDeviceModel);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

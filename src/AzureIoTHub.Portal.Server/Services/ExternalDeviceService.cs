@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Domain.Shared;
     using AzureIoTHub.Portal.Shared.Constants;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
@@ -705,6 +706,16 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 throw new InternalServerErrorException($"Failed to query devices to export", e);
             }
+        }
+
+        public Task<ExternalDeviceModelDto> CreateDeviceModel(ExternalDeviceModelDto deviceModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteDeviceModel(ExternalDeviceModelDto deviceModel)
+        {
+            throw new NotImplementedException();
         }
     }
 }

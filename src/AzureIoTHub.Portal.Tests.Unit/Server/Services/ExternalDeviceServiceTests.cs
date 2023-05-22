@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Application.Providers;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Domain.Shared;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Constants;
     using FluentAssertions;
@@ -2094,6 +2095,36 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert            
             Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task CreateDeviceModel_AnyExternalDeviceModelDto_NotImplementedExceptionIsThrown()
+        {
+            // Arrange
+            var externalDeviceModelDto = new ExternalDeviceModelDto();
+            var service = CreateService();
+
+            // Act
+            var act = () => service.CreateDeviceModel(externalDeviceModelDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<NotImplementedException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceModel_AnyExternalDeviceModelDto_NotImplementedExceptionIsThrown()
+        {
+            // Arrange
+            var externalDeviceModelDto = new ExternalDeviceModelDto();
+            var service = CreateService();
+
+            // Act
+            var act = () => service.DeleteDeviceModel(externalDeviceModelDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<NotImplementedException>();
+            this.mockRepository.VerifyAll();
         }
     }
 }

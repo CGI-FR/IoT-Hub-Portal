@@ -1,21 +1,8 @@
-﻿@using AzureIoTHub.Portal.Models.v10;
-
-@inject PortalSettings Portal;
-
-<MudExpansionPanels>
+﻿<MudExpansionPanels>
     <MudExpansionPanel Text="Search panel">
         <MudGrid>
             <MudItem xs="12" md="6">
-                @if (Portal.CloudProvider.Equals("Azure"))
-                {
-                    <MudTextField @bind-Value="searchText" Placeholder="Device Model Name / Device Model Description" id="searchText"></MudTextField>
-
-                }
-                else
-                {
-                    <MudTextField @bind-Value="searchText" Placeholder="Thing Type Name / Description / Tags / Searchable Attributes" id="searchText"></MudTextField>
-
-                }
+                <MudTextField @bind-Value="searchText" Placeholder="Device Model Name / Device Model Description" id="searchText"></MudTextField>
             </MudItem>
 
             <MudItem xs="12">

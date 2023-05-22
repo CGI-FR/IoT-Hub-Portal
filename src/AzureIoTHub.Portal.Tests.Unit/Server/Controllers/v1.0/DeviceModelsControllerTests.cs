@@ -134,7 +134,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var deviceModel = Fixture.Create<DeviceModelDto>();
 
             _ = this.mockDeviceModelService.Setup(service => service.CreateDeviceModel(deviceModel))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(deviceModel);
 
             // Act
             _ = await this.deviceModelsController.Post(deviceModel);

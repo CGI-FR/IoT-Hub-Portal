@@ -3,8 +3,10 @@
 
 namespace AzureIoTHub.Portal.Application.Mappers
 {
+    using Amazon.IoT.Model;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Shared;
     using Models.v10;
     using Models.v10.LoRaWAN;
 
@@ -19,6 +21,22 @@ namespace AzureIoTHub.Portal.Application.Mappers
             _ = CreateMap<LoRaDeviceModelDto, DeviceModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ModelId))
                 .ReverseMap();
+
+            _ = CreateMap<DeviceModelDto, ExternalDeviceModelDto>()
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
+
+            _ = CreateMap<ExternalDeviceModelDto, CreateThingTypeRequest>()
+                .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ThingTypeProperties, opts => opts.MapFrom(src => new ThingTypeProperties
+                {
+                    ThingTypeDescription = src.Description
+                }));
+
+            _ = CreateMap<DescribeThingTypeResponse, DeviceModel>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ThingTypeId))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.ThingTypeProperties.ThingTypeDescription ?? string.Empty));
         }
     }
 }

@@ -43,9 +43,11 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.GetFromJsonAsync<DeviceModelDto>($"api/models/{deviceModelId}")!;
         }
 
-        public Task CreateDeviceModel(DeviceModelDto deviceModel)
+        public async Task<DeviceModelDto> CreateDeviceModel(DeviceModelDto deviceModel)
         {
-            return this.http.PostAsJsonAsync("api/models", deviceModel);
+            var response = await this.http.PostAsJsonAsync("api/models", deviceModel);
+
+            return await response.Content.ReadFromJsonAsync<DeviceModelDto>();
         }
 
         public Task UpdateDeviceModel(DeviceModelDto deviceModel)
