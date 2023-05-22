@@ -70,12 +70,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             // Arrange
             var externalDeviceModelDto = Fixture.Create<ExternalDeviceModelDto>();
 
-            var createThingTypeResponse = new CreateThingTypeResponse
-            {
-                ThingTypeId = Fixture.Create<string>(),
-                ThingTypeName = externalDeviceModelDto.Name
-            };
-
             _ = this.mockAmazonIot.Setup(e => e.CreateThingTypeAsync(It.Is<CreateThingTypeRequest>(c => externalDeviceModelDto.Name.Equals(c.ThingTypeName, StringComparison.Ordinal)), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAlreadyExistsException(Fixture.Create<string>()));
 
