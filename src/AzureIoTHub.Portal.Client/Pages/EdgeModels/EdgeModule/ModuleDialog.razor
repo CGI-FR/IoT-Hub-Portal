@@ -1,5 +1,9 @@
 ﻿@using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Shared.Models.v10
+@using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Shared.Constants
+
+@inject PortalSettings Portal
 
 <MudDialog DisableSidePadding="true">
     <DialogContent>
@@ -39,13 +43,16 @@
                     <ModuleDialogTab1 EnvironmentVariables="@currentEnvironmentVariables"/>
                 </MudTabPanel>
 
-                <MudTabPanel Text="Module identity twin settings">
-                    <ModuleDialogTab2 ModuleIdentityTwinSettings="@currentModuleIdentityTwinSettings"/>
-                </MudTabPanel>
+                @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                {
+                    <MudTabPanel Text="Module identity twin settings">
+                        <ModuleDialogTab2 ModuleIdentityTwinSettings="@currentModuleIdentityTwinSettings" />
+                    </MudTabPanel>
 
-                <MudTabPanel Text="Commands">
-                    <ModuleDialogTab3 Commands="@currentCommands"/>
-                </MudTabPanel>
+                    <MudTabPanel Text="Commands">
+                        <ModuleDialogTab3 Commands="@currentCommands" />
+                    </MudTabPanel>
+                }
 
             </MudTabs>
         </MudContainer>
