@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Domain.Entities
 {
     using AzureIoTHub.Portal.Domain.Base;
-    using AzureIoTHub.Portal.Domain.Entities.AWS;
 
     public class Device : EntityBase
     {
@@ -16,12 +15,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// The device Model Identifier.
         /// </summary>
-        public string? DeviceModelId { get; set; } = default!;
-
-        /// <summary>
-        /// The thing type Identifier.
-        /// </summary>
-        public string? ThingTypeId { get; set; } = default!;
+        public string DeviceModelId { get; set; } = default!;
 
         /// <summary>
         /// A value indicating whether the device is currently connected.
@@ -47,11 +41,6 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// The device model
         /// </summary>
         public DeviceModel DeviceModel { get; set; } = default!;
-
-        /// <summary>
-        /// The thing type
-        /// </summary>
-        public ThingType ThingType { get; set; } = default!;
 
         /// <summary>
         /// The device labels.
