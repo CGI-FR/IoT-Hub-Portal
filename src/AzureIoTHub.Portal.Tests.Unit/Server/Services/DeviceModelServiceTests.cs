@@ -195,7 +195,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(expectedAvatarUrl);
 
             // Act
-            await this.deviceModelService.CreateDeviceModel(deviceModelDto);
+            _ = await this.deviceModelService.CreateDeviceModel(deviceModelDto);
 
             // Assert
             MockRepository.VerifyAll();

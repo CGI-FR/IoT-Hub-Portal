@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task<DeviceModelDto> GetDeviceModel(string deviceModelId);
 
-        Task CreateDeviceModel(DeviceModelDto deviceModel);
+        Task<DeviceModelDto> CreateDeviceModel(DeviceModelDto deviceModel);
 
         Task UpdateDeviceModel(DeviceModelDto deviceModel);
 

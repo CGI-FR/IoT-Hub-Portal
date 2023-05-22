@@ -5,6 +5,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Components\AWS\**" />
+    <Content Remove="Components\AWS\**" />
+    <EmbeddedResource Remove="Components\AWS\**" />
+    <None Remove="Components\AWS\**" />
+    <TypeScriptCompile Remove="Components\AWS\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="ChartJs.Blazor.Fork" Version="2.0.2" />
@@ -38,10 +46,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AzureIoTHub.Portal.Shared\AzureIoTHub.Portal.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Components\AWS\" />
   </ItemGroup>
   
 </Project>

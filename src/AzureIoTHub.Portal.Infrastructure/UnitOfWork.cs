@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public UnitOfWork(TContext context)
         {
-            this.Context = context;
+            Context = context;
         }
 
         public void Dispose()

@@ -9,42 +9,34 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Entities.AWS;
-    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Domain.Repositories.AWS;
-    using AzureIoTHub.Portal.Models.v10.AWS;
     using Microsoft.Extensions.Logging;
     using Quartz;
 
     [DisallowConcurrentExecution]
     public class SyncThingTypesJob : IJob
     {
-        private readonly IThingTypeRepository thingTypeRepository;
-        private readonly IThingTypeSearchableAttRepository thingTypeSearchableAttrRepository;
-        private readonly IThingTypeTagRepository thingTypeTagRepository;
-        private readonly IDeviceModelImageManager awsImageManager;
+
+        private readonly ILogger<SyncThingTypesJob> logger;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IDeviceModelRepository deviceModelRepository;
         private readonly IAmazonIoT amazonIoTClient;
-        private readonly ILogger<SyncThingTypesJob> logger;
+        private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public SyncThingTypesJob(
-            IThingTypeRepository thingTypeRepository,
-            IThingTypeSearchableAttRepository thingTypeSearchableAttrRepository,
-            IThingTypeTagRepository thingTypeTagRepository,
-            IDeviceModelImageManager awsImageManager,
+            ILogger<SyncThingTypesJob> logger,
             IMapper mapper,
             IUnitOfWork unitOfWork,
+            IDeviceModelRepository deviceModelRepository,
             IAmazonIoT amazonIoTClient,
-            ILogger<SyncThingTypesJob> logger)
+            IDeviceModelImageManager awsImageManager)
         {
-            this.thingTypeRepository = thingTypeRepository;
-            this.thingTypeSearchableAttrRepository = thingTypeSearchableAttrRepository;
-            this.thingTypeTagRepository = thingTypeTagRepository;
-            this.awsImageManager = awsImageManager;
+            this.deviceModelImageManager = awsImageManager;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.deviceModelRepository = deviceModelRepository;
             this.amazonIoTClient = amazonIoTClient;
             this.logger = logger;
         }
@@ -56,7 +48,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             {
                 this.logger.LogInformation("Start of sync Thing Types job");
 
-                await SyncThingTypes();
+                await SyncThingTypesAsDeviceModels();
 
                 this.logger.LogInformation("End of sync Thing Types job");
             }
@@ -66,165 +58,89 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             }
         }
 
-        private async Task SyncThingTypes()
+        private async Task SyncThingTypesAsDeviceModels()
         {
-            var getAllAWSThingTypes = await GetAllAWSThingTypes();
-            foreach (var thingTYpe in getAllAWSThingTypes)
+            var thingTypes = await GetAllThingTypes();
+
+            thingTypes.ForEach(async thingType =>
             {
-                await CreateOrUpdateThingType(thingTYpe);
-            }
+                await CreateOrUpdateDeviceModel(thingType);
+            });
 
             //Delete in Database AWS deleted thing types
-            await DeleteThingTypes(getAllAWSThingTypes);
+            await DeleteThingTypes(thingTypes);
         }
 
-        private async Task<List<ThingTypeDto>> GetAllAWSThingTypes()
+        private async Task<List<DescribeThingTypeResponse>> GetAllThingTypes()
         {
-            var thingTypes = new List<ThingTypeDto>();
+            var thingTypes = new List<DescribeThingTypeResponse>();
 
-            var request = new ListThingTypesRequest();
-            var response = await amazonIoTClient.ListThingTypesAsync(request);
+            var nextToken = string.Empty;
 
-            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            do
             {
-                throw new InternalServerErrorException("The request of getting all thing types failed due to an error in the Amazon IoT API.");
+                var request = new ListThingTypesRequest
+                {
+                    NextToken = nextToken
+                };
 
-            }
-            else
-            {
+                var response = await amazonIoTClient.ListThingTypesAsync(request);
+
                 foreach (var thingType in response.ThingTypes)
                 {
                     var requestDescribeThingType = new DescribeThingTypeRequest
                     {
                         ThingTypeName = thingType.ThingTypeName,
                     };
-                    var responseDescribeThingType  = await amazonIoTClient.DescribeThingTypeAsync(requestDescribeThingType);
 
-                    if (responseDescribeThingType.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                    {
-                        throw new InternalServerErrorException("The request of getting DescribeThingType failed due to an error in the Amazon IoT API.");
-
-                    }
-                    else
-                    {
-                        var getAllSearchableAttribute = GetAllSearchableAttributes(responseDescribeThingType);
-
-                        //get All tags from ResourceArn
-                        //Because we do not have possiblity to retreive the Tag from DescribeThingTypeResponse and ListThingTypesResponse too.
-                        var tags = await GetAllThingTypeTags(responseDescribeThingType);
-
-                        var getThingType = new ThingTypeDto
-                        {
-                            ThingTypeID = responseDescribeThingType.ThingTypeId,
-                            ThingTypeName = responseDescribeThingType.ThingTypeName,
-                            ThingTypeDescription = responseDescribeThingType.ThingTypeProperties.ThingTypeDescription,
-                            ThingTypeSearchableAttDtos = getAllSearchableAttribute,
-                            Deprecated = responseDescribeThingType.ThingTypeMetadata.Deprecated,
-                            Tags = tags
-                        };
-
-                        thingTypes.Add(getThingType);
-                    }
+                    thingTypes.Add(await this.amazonIoTClient.DescribeThingTypeAsync(requestDescribeThingType));
                 }
+
+                nextToken = response.NextToken;
             }
+            while (!string.IsNullOrEmpty(nextToken));
 
             return thingTypes;
         }
 
-        //To Get All Searchable attributes for a Thing Type
-        private static List<ThingTypeSearchableAttDto> GetAllSearchableAttributes(DescribeThingTypeResponse thingType)
+        private async Task CreateOrUpdateDeviceModel(DescribeThingTypeResponse thingType)
         {
-            var searchableAttrDtos = new List<ThingTypeSearchableAttDto>();
-
-            searchableAttrDtos.AddRange(thingType.ThingTypeProperties.SearchableAttributes.Select(searchAttr => new ThingTypeSearchableAttDto
+            if (thingType.ThingTypeMetadata.Deprecated)
             {
-                Name = searchAttr
-            }));
+                return;
+            }
 
+            var deviceModel = this.mapper.Map<DeviceModel>(thingType);
 
-            return searchableAttrDtos;
-        }
+            var existingDeviceModel = await this.deviceModelRepository.GetByIdAsync(deviceModel.Id);
 
-        //To Get All tags for a thing types
-        private async Task<List<ThingTypeTagDto>> GetAllThingTypeTags(DescribeThingTypeResponse thingType)
-        {
-            var listTagRequets = new ListTagsForResourceRequest
+            if (existingDeviceModel == null)
             {
-                ResourceArn = thingType.ThingTypeArn
-            };
-
-            var thingTypeTags = await this.amazonIoTClient.ListTagsForResourceAsync(listTagRequets);
-
-            var tags = new List<ThingTypeTagDto>();
-
-            tags.AddRange(thingTypeTags.Tags.Select(tag => new ThingTypeTagDto
-            {
-                Key = tag.Key,
-                Value = tag.Value
-            }));
-
-            return tags;
-        }
-
-        private async Task CreateOrUpdateThingType(ThingTypeDto thingTypeDto)
-        {
-            var existingTHingType = await this.thingTypeRepository.GetByIdAsync(thingTypeDto.ThingTypeID, d => d.ThingTypeSearchableAttributes!, d => d.Tags!);
-            var thingType = this.mapper.Map<ThingType>(thingTypeDto);
-
-            if (existingTHingType == null)
-            {
-                await this.thingTypeRepository.InsertAsync(thingType);
-                _ = await this.awsImageManager.SetDefaultImageToModel(thingTypeDto.ThingTypeID);
+                await this.deviceModelRepository.InsertAsync(deviceModel);
+                _ = await this.deviceModelImageManager.SetDefaultImageToModel(deviceModel.Id);
             }
             else
             {
-                if (existingTHingType.ThingTypeSearchableAttributes != null
-                && thingType.ThingTypeSearchableAttributes?.Count != 0)
-                {
-                    foreach (var search in existingTHingType.ThingTypeSearchableAttributes!)
-                    {
-                        this.thingTypeSearchableAttrRepository.Delete(search.Id);
-
-                    }
-                }
-
-                if (existingTHingType.Tags != null
-                && thingType.Tags?.Count != 0)
-                {
-                    foreach (var tag in existingTHingType.Tags!)
-                    {
-                        this.thingTypeTagRepository.Delete(tag.Id);
-                    }
-                }
-
-                _ = this.mapper.Map(thingType, existingTHingType);
-                this.thingTypeRepository.Update(existingTHingType);
+                _ = this.mapper.Map(deviceModel, existingDeviceModel);
+                this.deviceModelRepository.Update(existingDeviceModel);
             }
             await this.unitOfWork.SaveAsync();
 
         }
 
-        private async Task DeleteThingTypes(List<ThingTypeDto> allAWSThingTypes)
+        private async Task DeleteThingTypes(List<DescribeThingTypeResponse> thingTypes)
         {
-            foreach (var thingType in (await this.thingTypeRepository.GetAllAsync()).Where(thingType => !allAWSThingTypes.Exists(x => x.ThingTypeID == thingType.Id)))
+            // Get all device models that are not in AWS anymore or that are deprecated
+            var deviceModelsToDelete = (await this.deviceModelRepository.GetAllAsync())
+                .Where(deviceModel => !thingTypes.Any(thingType => deviceModel.Id.Equals(thingType.ThingTypeId, StringComparison.Ordinal)) ||
+                    thingTypes.Any(thingType => deviceModel.Id.Equals(thingType.ThingTypeId, StringComparison.Ordinal) && thingType.ThingTypeMetadata.Deprecated))
+                .ToList();
+
+            deviceModelsToDelete.ForEach(async deviceModel =>
             {
-                var getThingType = await this.thingTypeRepository.GetByIdAsync(thingType.Id, d => d.ThingTypeSearchableAttributes!, d => d.Tags!);
-
-                if (getThingType != null)
-                {
-                    foreach (var search in getThingType.ThingTypeSearchableAttributes!)
-                    {
-                        this.thingTypeSearchableAttrRepository.Delete(search.Id);
-                    }
-                    foreach (var tag in getThingType.Tags!)
-                    {
-                        this.thingTypeTagRepository.Delete(tag.Id);
-                    }
-                    this.thingTypeRepository.Delete(getThingType.Id);
-                    _ = this.awsImageManager.DeleteDeviceModelImageAsync(getThingType.Id);
-                }
-
-            }
+                await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModel.Id);
+                this.deviceModelRepository.Delete(deviceModel.Id);
+            });
 
             await this.unitOfWork.SaveAsync();
         }

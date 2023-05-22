@@ -1,15 +1,11 @@
 ﻿@page "/device-models/new"
-
 @using System.Net.Http.Headers
 @using AzureIoTHub.Portal.Client.Pages.DeviceModels
 @using AzureIoTHub.Portal.Client.Validators
-@using AzureIoTHub.Portal.Shared.Models
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
-@using AzureIoTHub.Portal.Models.v10.AWS
-@using AzureIoTHub.Portal.Shared.Constants
-@using AzureIoTHub.Portal.Client.Services.AWS
+@using AzureIoTHub.Portal.Shared.Models
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -17,19 +13,8 @@
 @inject ISnackbar Snackbar
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
-@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
-@inject IThingTypeClientService ThingTypeClientService
 
-@if (Portal.CloudProvider.Equals(CloudProviders.AWS))
-{
-    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Thing Type</MudText>
-    
-}
-else
-{
-    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device Model</MudText>
-
-}
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device Model</MudText>
 
 <MudForm Model="@Model" @ref="form" id="form">
     <MudGrid>
@@ -52,7 +37,6 @@ else
                     }
                 </MudCardActions>
             </MudCard>
-            
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton" Disabled="isProcessing">Save Changes</MudButton>
             </MudItem>
@@ -68,44 +52,26 @@ else
                                     <ChildContent>
                                         <MudGrid>
                                             <MudItem xs="12" md="6">
-                                                @if (Portal.CloudProvider.Equals(CloudProviders.AWS))
-                                                {
-                                                    <MudTextField id="@nameof(ThingType.ThingTypeName)" @bind-Value="@ThingType.ThingTypeName" For="@(() => ThingType.ThingTypeName)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
-
-                                                }
-                                                else
-                                                {
-                                                    <MudTextField id="@nameof(Model.Name)" @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
-                                                    
-                                                }
+                                                <MudTextField id="@nameof(Model.Name)" @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                @if (Portal.CloudProvider.Equals(CloudProviders.AWS))
-                                                {
-                                                    <MudTextField id="@nameof(ThingType.ThingTypeDescription)" @bind-Value="@ThingType.ThingTypeDescription" For="@(() => ThingType.ThingTypeDescription)" Label="Description" Variant="Variant.Outlined" Lines="5" />
-
-                                                }
-                                                else
-                                                {
-                                                    <MudTextField id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
-                                                    @if (Portal.IsLoRaSupported)
-                                                    {
-                                                        <MudItem xs="12">
-                                                            <MudText>
-                                                                <b>LoRa Device</b>
-                                                            </MudText>
-
-                                                            <MudSwitch @bind-Checked="@IsLoRa" id="SupportLoRaFeatures" Color="Color.Secondary" Label="Support LoRa"></MudSwitch>
-                                                            @if (IsLoRa)
-                                                            {
-                                                                <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>is</b> a LoRa Device.</MudText>
-
-                                                            }
-                                                        </MudItem>
-                                                    }
-                                                }
+                                                <MudTextField id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
                                             </MudItem>
-                                            
+                                            @if (Portal.IsLoRaSupported)
+                                            {
+                                                <MudItem xs="12">
+                                                    <MudText>
+                                                        <b>LoRa Device</b>
+                                                    </MudText>
+
+                                                    <MudSwitch @bind-Checked="@IsLoRa" id="SupportLoRaFeatures" Color="Color.Secondary" Label="Support LoRa"></MudSwitch>
+                                                    @if (IsLoRa)
+                                                    {
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>is</b> a LoRa Device.</MudText>
+
+                                                    }
+                                                </MudItem>
+                                            }
                                         </MudGrid>
                                     </ChildContent>
                                 </MudExpansionPanel>
@@ -113,164 +79,83 @@ else
                         </MudGrid>
                         @if (!IsLoRa)
                         {
-                            @if (Portal.CloudProvider.Equals(CloudProviders.AWS))
-                            {
-                                <MudGrid>
-                                    <MudItem xs="12">
-                                        <MudExpansionPanel Text="Tags">
-                                            <TitleContent><MudText Typo="Typo.h6">Tags</MudText></TitleContent>
-                                            <ChildContent>
-                                                <MudGrid>
-                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => ThingTypeTags.Add(new ThingTypeTagDto()))" StartIcon="@Icons.Material.Filled.Add" id="addTagButton">Add tag</MudButton>
-                                                    <MudItem xs="12">
-                                                        @foreach (var tag in this.ThingTypeTags)
-                                                        {
-                                                            <MudGrid id="@($"tag-{tag.Key}")">
-                                                                <MudItem md="4" xs="12">
-                                                                    <MudTextField id="@nameof(tag.Key)"
-                                                                          Label="Key"
-                                                                          @bind-Value="@tag.Key"
-                                                                          Variant="Variant.Outlined"
-                                                                          For="@(()=> tag.Key)" />
-                                                                </MudItem>
-                                                                <MudItem md="3" xs="12">
-                                                                    <MudTextField id="@nameof(tag.Value)"
-                                                                          Label="Value"
-                                                                          @bind-Value="@tag.Value"
-                                                                          Variant="Variant.Outlined"
-                                                                          For="@(()=> tag.Value)" />
-                                                                </MudItem>
-
-                                                                <MudItem md="1" xs="3">
-                                                                    <MudIconButton id="deleteTagButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => ThingTypeTags.Remove(tag))">Remove</MudIconButton>
-                                                                </MudItem>
-                                                            </MudGrid>
-                                                        }
-                                                    </MudItem>
-                                                </MudGrid>
-                                            </ChildContent>
-                                        </MudExpansionPanel>
-                                    </MudItem>
-                                </MudGrid>
-                            }
-                            else
-                            {
-                                <MudGrid>
-                                    <MudItem xs="12">
-                                        <MudExpansionPanel Text="Properties">
-                                            <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
-                                            <ChildContent>
-                                                <MudGrid>
-                                                    <MudItem xs="12">
-                                                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
-                                                    </MudItem>
-                                                    <MudItem xs="12">
-                                                        @foreach (var item in this.Properties.OrderBy(x => x.Order))
-                                                        {
-                                                            <MudGrid id="@($"property-{item.Name}")">
-                                                                <MudItem md="4" xs="12">
-                                                                    <MudTextField id="@nameof(item.DisplayName)"
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Properties">
+                                        <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudGrid>
+                                                <MudItem xs="12">
+                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                                </MudItem>
+                                                <MudItem xs="12">
+                                                    @foreach (var item in this.Properties.OrderBy(x => x.Order))
+                                                    {
+                                                        <MudGrid id="@($"property-{item.Name}")">
+                                                            <MudItem md="4" xs="12">
+                                                                <MudTextField id="@nameof(item.DisplayName)"
                                                                       @bind-Value="@item.DisplayName"
                                                                       Label="Display name"
                                                                       Variant="Variant.Outlined"
                                                                       For="@(()=> item.DisplayName)"
                                                                       Required="true" />
-                                                                </MudItem>
-                                                                <MudItem md="3" xs="12">
-                                                                    <MudTextField id="@nameof(item.Name)" @bind-Value="@item.Name"
+                                                            </MudItem>
+                                                            <MudItem md="3" xs="12">
+                                                                <MudTextField id="@nameof(item.Name)" @bind-Value="@item.Name"
                                                                       Label="Name"
                                                                       Variant="Variant.Outlined"
                                                                       For="@(()=> item.Name)"
                                                                       Required="true" />
-                                                                </MudItem>
-                                                                <MudItem md="1" xs="12">
-                                                                    <MudNumericField id="@nameof(item.Order)"
+                                                            </MudItem>
+                                                            <MudItem md="1" xs="12">
+                                                                <MudNumericField id="@nameof(item.Order)"
                                                                          @bind-Value="@item.Order"
                                                                          Label="Order"
                                                                          Variant="Variant.Outlined"
                                                                          Min=0
                                                                          For="@(()=> item.Order)"
                                                                          Required="true" />
-                                                                </MudItem>
-                                                                <MudItem md="2" xs="6">
-                                                                    <MudSelect id="@nameof(item.PropertyType)"
+                                                            </MudItem>
+                                                            <MudItem md="2" xs="6">
+                                                                <MudSelect id="@nameof(item.PropertyType)"
                                                                    @bind-Value="@item.PropertyType"
                                                                    Label="Type"
                                                                    Variant="Variant.Outlined"
                                                                    For="@(()=> item.PropertyType)"
                                                                    Required="true">
-                                                                        @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
-                                                                        {
-                                                                            <MudSelectItem Value="@item">@item</MudSelectItem>
-                                                                        }
-                                                                    </MudSelect>
-                                                                </MudItem>
-                                                                <MudItem md="1" xs="3">
-                                                                    <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
-
-                                                                </MudItem>
-                                                                <MudItem md="1" xs="3">
-                                                                    <MudIconButton id="deletePropertyButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
-                                                                </MudItem>
-                                                            </MudGrid>
-                                                        }
-                                                    </MudItem>
-                                                </MudGrid>
-                                            </ChildContent>
-                                        </MudExpansionPanel>
-                                    </MudItem>
-                                </MudGrid>
-                            }
-                        }
-
-                        @if (Portal.CloudProvider.Equals(CloudProviders.AWS))
-                        {
-                            <MudGrid>
-                                <MudItem xs="12">
-                                    <MudExpansionPanel Text="Searchable Attribute">
-                                        <TitleContent><MudText Typo="Typo.h6">Searchable Attribute</MudText></TitleContent>
-                                        <ChildContent>
-                                            <MudItem xs="12" md="6">
-                                                <MudItem xs="12">
-                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => searchableAtt.Add(new ThingTypeSearchableAttDto()))" StartIcon="@Icons.Material.Filled.Add" id="addSearchableAttButton">Add Attribute</MudButton>
-                                                </MudItem>
-                                                <MudItem xs="12">
-                                                    @foreach (var search in this.searchableAtt)
-                                                    {
-                                                        <MudGrid id="@($"search-{search.Name}")">
-                                                            <MudItem md="4" xs="12">
-                                                                <MudTextField id="@nameof(search.Name)"
-                                                                      Label="Name"
-                                                                      @bind-Value="@search.Name"
-                                                                      Variant="Variant.Outlined"
-                                                                      For="@(()=> search.Name)" />
+                                                                    @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
+                                                                    {
+                                                                        <MudSelectItem Value="@item">@item</MudSelectItem>
+                                                                    }
+                                                                </MudSelect>
                                                             </MudItem>
-                                                         
                                                             <MudItem md="1" xs="3">
-                                                                <MudIconButton id="deleteSearchableButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => searchableAtt.Remove(search))">Remove</MudIconButton>
+                                                                <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
+
+                                                            </MudItem>
+                                                            <MudItem md="1" xs="3">
+                                                                <MudIconButton id="deletePropertyButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
                                                             </MudItem>
                                                         </MudGrid>
                                                     }
                                                 </MudItem>
-                                            </MudItem>
+                                            </MudGrid>
                                         </ChildContent>
                                     </MudExpansionPanel>
                                 </MudItem>
                             </MudGrid>
                         }
-                        else
-                        {
-                            <MudGrid>
-                                <MudItem xs="12">
-                                    <MudExpansionPanel Text="Labels">
-                                        <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
-                                        <ChildContent>
-                                            <LabelsEditor Labels="Model.Labels" />
-                                        </ChildContent>
-                                    </MudExpansionPanel>
-                                </MudItem>
-                            </MudGrid>
-                        }
+
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Labels">
+                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                    <ChildContent>
+                                        <LabelsEditor Labels="Model.Labels" />
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
 
                     </MudExpansionPanels>
                 </MudTabPanel>
@@ -293,15 +178,12 @@ else
     private MudForm form = default!;
 
     private DeviceModelValidator standardValidator = new DeviceModelValidator();
-    private ThingTypeValidator thingTypeValidator = new ThingTypeValidator();
     private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
     private List<DeviceModelCommandDto> Commands { get; set; } = new();
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
-    private List<ThingTypeSearchableAttDto> searchableAtt { get; set; } = new List<ThingTypeSearchableAttDto>();
-    private List<ThingTypeTagDto> ThingTypeTags { get; set; } = new List<ThingTypeTagDto>();
+
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
-    private ThingTypeDto ThingType { get; set; } = new ThingTypeDto();
 
     private bool isProcessing;
 
@@ -361,21 +243,10 @@ else
 
     private bool CheckGeneralValidation()
     {
-        if (Portal.CloudProvider.Equals(CloudProviders.AWS))
+        if (!IsLoRa && this.Model is DeviceModelDto deviceModel)
         {
-            if(this.ThingType != null)
-            {
-                return !this.thingTypeValidator.Validate(this.ThingType).IsValid;
-            }
+            return !this.standardValidator.Validate(deviceModel).IsValid;
         }
-        else
-        {
-            if (!IsLoRa && this.Model is DeviceModelDto deviceModel)
-            {
-                return !this.standardValidator.Validate(deviceModel).IsValid;
-            }
-        }
-
 
         return CheckLoRaValidation();
     }
@@ -406,19 +277,6 @@ else
     }
 
     private async Task Save()
-    {
-
-        if(Portal.CloudProvider.Equals(CloudProviders.AWS))
-        {
-            await this.SaveThingType();
-        }
-        else
-        {
-            await this.SaveDeviceModel();
-        }
-    }
-
-    private async Task SaveDeviceModel()
     {
         isProcessing = true;
 
@@ -472,12 +330,9 @@ else
             }
             else
             {
-
-                await DeviceModelsClientService.CreateDeviceModel((Model as DeviceModelDto)!);
+                Model = await DeviceModelsClientService.CreateDeviceModel((Model as DeviceModelDto)!);
 
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
-
-
             }
 
             if (content is not null)
@@ -493,53 +348,6 @@ else
             }
 
             Snackbar.Add("Device model successfully created.", Severity.Success);
-
-
-            // Go back to the list of devices
-            NavigationManager.NavigateTo("device-models");
-        }
-
-        catch (ProblemDetailsException exception)
-        {
-            Error?.ProcessProblemDetails(exception);
-        }
-        finally
-        {
-            isProcessing = false;
-        }
-    }
-
-    private async Task SaveThingType()
-    {
-        isProcessing = true;
-
-        // Displays validation error message for each field
-        await form.Validate();
-
-
-        if (!thingTypeValidator.Validate(ThingType).IsValid)
-        {
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
-
-            isProcessing = false;
-
-            return;
-        }
-
-        try
-        {
-
-            ThingType.Tags = this.ThingTypeTags;
-            ThingType.ThingTypeSearchableAttDtos = searchableAtt;
-
-            var GetThingTypeId = await ThingTypeClientService.CreateThingType(ThingType);
-
-            if (content is not null)
-            {
-                _ = this.ThingTypeClientService.ChangeAvatar(GetThingTypeId, content);
-            }
-
-            Snackbar.Add("Thing Type successfully created.", Severity.Success);
 
             // Go back to the list of devices
             NavigationManager.NavigateTo("device-models");

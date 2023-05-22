@@ -8,9 +8,14 @@ namespace AzureIoTHub.Portal.Application.Services
     using Models.v10;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using AzureIoTHub.Portal.Domain.Shared;
 
     public interface IExternalDeviceService
     {
+        Task<ExternalDeviceModelDto> CreateDeviceModel(ExternalDeviceModelDto deviceModel);
+
+        Task DeleteDeviceModel(ExternalDeviceModelDto deviceModel);
+
         Task<Device> GetDevice(string deviceId);
 
         Task<Twin> GetDeviceTwin(string deviceId);

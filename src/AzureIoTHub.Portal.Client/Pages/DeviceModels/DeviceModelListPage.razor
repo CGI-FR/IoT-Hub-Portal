@@ -1,153 +1,81 @@
 ﻿@page "/device-models"
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Shared.Models.v10.Filters;
-@using AzureIoTHub.Portal.Client.Services.AWS
-@using AzureIoTHub.Portal.Models.v10.AWS
-
 
 @attribute [Authorize]
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
 @inject IDialogService dialogService
 @inject IDeviceModelsClientService DeviceModelsClientService
-@inject IThingTypeClientService ThingTypeClientService
 
 <MudGrid>
     <MudItem xs="12">
         <DeviceModelSearch OnSearch=@(async args => await Search(args)) />
     </MudItem>
     <MudItem xs="12">
-        @if (Portal.CloudProvider.Equals("Azure"))
-        {
-            <MudTable T="DeviceModelDto" ServerData=@LoadDeviceModels Loading="@IsLoading" @ref="table" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
-                <ColGroup>
-                    <col style="width: 5%;" />
-                    <col style="width: 30%;" />
-                    <col style="width: 30%;" />
-                    <col style="width: 5%;" />
-                    <col style="width: 5%;" />
-                </ColGroup>
-                <ToolBarContent>
-                    <MudText Typo="Typo.h6">Device Models</MudText>
-                    <MudSpacer />
-                    <MudTooltip Text="Refresh list">
-                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" Class="ma-2" id="tableRefreshButton"></MudIconButton>
+        <MudTable T="DeviceModelDto" ServerData=@LoadDeviceModels Loading="@IsLoading" @ref="table" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+            <ColGroup>
+                <col style="width: 5%;" />
+                <col style="width: 30%;" />
+                <col style="width: 30%;" />
+                <col style="width: 5%;" />
+                <col style="width: 5%;" />
+            </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Device Models</MudText>
+                <MudSpacer />
+                <MudTooltip Text="Refresh list">
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" Class="ma-2" id="tableRefreshButton"></MudIconButton>
+                </MudTooltip>
+                <MudTooltip Text="Add device model">
+                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton" />
+                </MudTooltip>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh></MudTh>
+                <MudTh><MudTableSortLabel SortLabel="Name" T="DeviceModelDto" id="NameLabel">Name</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="Description" T="DeviceModelDto" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center">Details</MudTh>
+                <MudTh Style="text-align: center">Delete</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd Style="text-align: center">
+                    <img height="25" src="@context.ImageUrl" />
+                </MudTd>
+                <MudTd DataLabel="Name">
+                    <MudItem>
+                        <MudText Typo="Typo.body1" Inline="true">
+                            @context.Name
+                        </MudText>
+                    </MudItem>
+                    <MudItem>
+                        <Labels Items="@context.Labels" />
+                    </MudItem>
+                </MudTd>
+                <MudTd DataLabel="Description" Style="word-break: break-all; ">
+                    @context.Description
+                </MudTd>
+                <MudTd DataLabel="Details" Style="text-align: center">
+                    <MudTooltip Text="Delete device model">
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                     </MudTooltip>
-                    <MudTooltip Text="Add device model">
-                        <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton" />
+                </MudTd>
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudTooltip Text="Delete device model">
+                        <MudIconButton Color="Color.Default" Disabled="context.IsBuiltin" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))" id="deleteButton"></MudIconButton>
                     </MudTooltip>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh></MudTh>
-                    <MudTh><MudTableSortLabel SortLabel="Name" T="DeviceModelDto" id="NameLabel">Name</MudTableSortLabel></MudTh>
-                    <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="Description" T="DeviceModelDto" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
-                    <MudTh Style="text-align: center">Details</MudTh>
-                    <MudTh Style="text-align: center">Delete</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd Style="text-align: center">
-                        <img height="25" src="@context.ImageUrl" />
-                    </MudTd>
-                    <MudTd DataLabel="Name">
-                        <MudItem>
-                            <MudText Typo="Typo.body1" Inline="true">
-                                @context.Name
-                            </MudText>
-                        </MudItem>
-                        <MudItem>
-                            <Labels Items="@context.Labels" />
-                        </MudItem>
-                    </MudTd>
-                    <MudTd DataLabel="Description" Style="word-break: break-all; ">
-                        @context.Description
-                    </MudTd>
-                    <MudTd DataLabel="Details" Style="text-align: center">
-                        <MudTooltip Text="Delete device model">
-                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
-                        </MudTooltip>
-                    </MudTd>
-                    <MudTd DataLabel="Delete" Style="text-align: center">
-                        <MudTooltip Text="Delete device model">
-                            <MudIconButton Color="Color.Default" Disabled="context.IsBuiltin" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))" id="deleteButton"></MudIconButton>
-                        </MudTooltip>
-                    </MudTd>
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-                <NoRecordsContent>
-                    <MudText>No matching records found</MudText>
-                </NoRecordsContent>
-                <LoadingContent>
-                    <MudText>Loading...</MudText>
-                </LoadingContent>
-            </MudTable>
-
-        }
-        else
-        {
-            <MudTable T="ThingTypeDto" ServerData=@LoadThingTypes Loading="@IsLoading" @ref="thingTypeTable" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToThingTypeDetails(e.Item))" RowStyle="cursor: pointer;">
-                <ColGroup>
-                    <col style="width: 5%;" />
-                    <col style="width: 30%;" />
-                    <col style="width: 30%;" />
-                    <col style="width: 5%;" />
-                    <col style="width: 5%;" />
-                </ColGroup>
-                <ToolBarContent>
-                    <MudText Typo="Typo.h6">Thing Types</MudText>
-                    <MudSpacer />
-                    <MudTooltip Text="Refresh list">
-                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" Class="ma-2" id="tableRefreshButton"></MudIconButton>
-                    </MudTooltip>
-                    <MudTooltip Text="Add thing type">
-                        <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton" />
-                    </MudTooltip>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh></MudTh>
-                    <MudTh><MudTableSortLabel SortLabel="Name" T="ThingTypeDto" id="NameLabel">Name</MudTableSortLabel></MudTh>
-                    <MudTh Style="text-align: center">Description</MudTh>
-                    <MudTh Style="text-align: center">Details</MudTh>
-                    <MudTh Style="text-align: center">Delete</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd Style="text-align: center">
-                        <img height="25" src="@context.ImageUrl" />
-                    </MudTd>
-                    <MudTd DataLabel="Name">
-                        <MudItem>
-                            <MudText Typo="Typo.body1" Inline="true">
-                                @context.ThingTypeName
-                            </MudText>
-                        </MudItem>
-                    </MudTd>
-                    <MudTd DataLabel="Description" Style="word-break: break-all; ">
-                        @context.ThingTypeDescription
-                    </MudTd>
-                    <MudTd DataLabel="Details" Style="text-align: center">
-                        <MudTooltip Text="Detail Thing Type ">
-                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToThingTypeDetails(context))" />
-                        </MudTooltip>
-                    </MudTd>
-                    <MudTd DataLabel="Delete" Style="text-align: center">
-                        <MudTooltip Text="Delete thing type">
-                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteThingType(context))" id="deleteButton"></MudIconButton>
-                        </MudTooltip>
-                    </MudTd>
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-                <NoRecordsContent>
-                    <MudText>No matching records found</MudText>
-                </NoRecordsContent>
-                <LoadingContent>
-                    <MudText>Loading...</MudText>
-                </LoadingContent>
-            </MudTable>
-
-        }
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+            <NoRecordsContent>
+                <MudText>No matching records found</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+        </MudTable>
     </MudItem>
 
 </MudGrid>
@@ -157,7 +85,6 @@
     public Error Error { get; set; } = default!;
 
     private MudTable<DeviceModelDto> table = default!;
-    private MudTable<ThingTypeDto> thingTypeTable = default!;
 
     private readonly Dictionary<int, string> pages = new();
 
@@ -174,7 +101,6 @@
 
     private void AddDeviceModel()
     {
-
         navigationManager.NavigateTo("/device-models/new");
     }
 
@@ -213,60 +139,11 @@
                     Items = result.Items,
                     TotalItems = result.TotalItems
                 };
-
         }
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
             return new TableData<DeviceModelDto>();
-        }
-        finally
-        {
-            IsLoading = false;
-        }
-    }
-
-    /// <summary>
-    ///  Sends a GET request to the ThingTypeController, to retrieve all thing types from the database
-    /// </summary>
-    /// <returns></returns>
-    private async Task<TableData<ThingTypeDto>> LoadThingTypes(TableState state)
-    {
-        try
-        {
-            IsLoading = true;
-
-            string orderBy = default!;
-
-            switch (state.SortDirection)
-            {
-                case SortDirection.Ascending:
-                    orderBy = $"{state.SortLabel} asc";
-                    break;
-                case SortDirection.Descending:
-                    orderBy = $"{state.SortLabel} desc";
-                    break;
-            }
-
-            var result = await ThingTypeClientService.GetThingTypes(new DeviceModelFilter
-                {
-                    SearchText = this.deviceModelSearchInfo.SearchText!,
-                    PageNumber = state.Page,
-                    PageSize = state.PageSize,
-                    OrderBy = new string[] { orderBy }
-                });
-
-            return new TableData<ThingTypeDto>
-                {
-                    Items = result.Items,
-                    TotalItems = result.TotalItems
-                };
-
-        }
-        catch (ProblemDetailsException exception)
-        {
-            Error?.ProcessProblemDetails(exception);
-            return new TableData<ThingTypeDto>();
         }
         finally
         {
@@ -291,31 +168,9 @@
         await Search();
     }
 
-    private async Task DeleteThingType(ThingTypeDto thingType)
-    {
-        var parameters = new DialogParameters();
-        parameters.Add("thingTypeID", thingType.ThingTypeID);
-        parameters.Add("thingTypeName", thingType.ThingTypeName);
-        var result = await dialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
-
-        if (result.Canceled)
-        {
-            return;
-        }
-
-        // Update the list of devices after the deletion
-        // await LoadDeviceModels();
-        await Search();
-    }
-
-
     private void GoToDetails(DeviceModelDto item)
     {
         navigationManager.NavigateTo($"/device-models/{item.ModelId}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
-    }
-    private void GoToThingTypeDetails(ThingTypeDto thingType)
-    {
-        navigationManager.NavigateTo($"/device-models/{thingType.ThingTypeID}");
     }
 
     private async Task Search(DeviceModelSearchInfo? deviceModelSearchInfo = null)
@@ -329,29 +184,11 @@
             this.deviceModelSearchInfo = deviceModelSearchInfo;
         }
 
-        if (Portal.CloudProvider.Equals("Azure"))
-        {
-            await table.ReloadServerData();
-
-        }
-        else
-        {
-            await thingTypeTable.ReloadServerData();
-
-        }
+        await table.ReloadServerData();
     }
 
     private async void Refresh()
     {
-        if (Portal.CloudProvider.Equals("Azure"))
-        {
-            await table.ReloadServerData();
-
-        }
-        else
-        {
-            await thingTypeTable.ReloadServerData();
-
-        }
+        await table.ReloadServerData();
     }
 }
