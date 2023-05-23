@@ -36,8 +36,6 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
     using Microsoft.OpenApi.Models;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
     using MudBlazor.Services;
     using Prometheus;
     using Quartz;
@@ -315,8 +313,6 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
             _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
             _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
-            _ = services.AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
-            _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
         }
 
 

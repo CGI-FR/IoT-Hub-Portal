@@ -121,12 +121,10 @@
                                                     }
                                                 }
                                             </MudItem>
-                                            @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
-                                            {
-                                                <MudItem xs="12">
-                                                    <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
-                                                </MudItem>
-                                            }
+
+                                            <MudItem xs="12">
+                                                <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
+                                            </MudItem>
                                             
                                             <MudItem xs="12">
                                                 <MudTextField @bind-Value="@Device.DeviceName"
@@ -137,24 +135,21 @@
                                                               Required="true" />
                                             </MudItem>
 
-                                            @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
-                                            {
-                                                <MudItem xs="12">
-                                                    <MudText>
-                                                        <b>Status</b>
-                                                    </MudText>
-                                                    <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
-                                                        <MudRadio Option=@(true) Color="Color.Primary">
-                                                            Enabled
-                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
-                                                        </MudRadio>
-                                                        <MudRadio Option=@(false) Color="Color.Primary">
-                                                            Disabled
-                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
-                                                        </MudRadio>
-                                                    </MudRadioGroup>
-                                                </MudItem>
-                                            }
+                                            <MudItem xs="12">
+                                                <MudText>
+                                                    <b>Status</b>
+                                                </MudText>
+                                                <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
+                                                    <MudRadio Option=@(true) Color="Color.Primary">
+                                                        Enabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                    <MudRadio Option=@(false) Color="Color.Primary">
+                                                        Disabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                </MudRadioGroup>
+                                            </MudItem>
                                         </MudGrid>
                                     </ChildContent>
                                 </MudExpansionPanel>
@@ -180,19 +175,16 @@
                             </MudItem>
                         </MudGrid>
 
-                        @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
-                        {
-                            <MudGrid>
-                                <MudItem xs="12">
-                                    <MudExpansionPanel Text="Labels">
-                                        <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
-                                        <ChildContent>
-                                            <LabelsEditor ReadOnlyLabels="DeviceModel?.Labels" Labels="Device.Labels" />
-                                        </ChildContent>
-                                    </MudExpansionPanel>
-                                </MudItem>
-                            </MudGrid>
-                        }
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Labels">
+                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                    <ChildContent>
+                                        <LabelsEditor ReadOnlyLabels="DeviceModel?.Labels" Labels="Device.Labels" />
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
 
                         @if (!IsLoRa && Properties.Any())
                         {
@@ -368,7 +360,7 @@
             await form.Validate();
 
             if (CheckTagsError() || CheckGeneralValidation() || CheckLoRaValidation())
-                {
+            {
                 Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
                 // Allows to display ValidationError messages for the MudAutocomplete field.
@@ -383,11 +375,8 @@
                 await LoRaWanDeviceClientService.CreateDevice((Device as LoRaDeviceDetails)!);
             else
             {
-                await DeviceClientService.CreateDevice((Device as DeviceDetails)!);
-                if (Portal.CloudProvider.Equals(CloudProviders.Azure))
-                {
-                    await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
-                }
+                Device.DeviceID = await DeviceClientService.CreateDevice((Device as DeviceDetails)!);
+                await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
             }
 
             // Prompts a snack bar to inform the action was successful
@@ -546,19 +535,16 @@
             }
             else
             {
-                if (Portal.CloudProvider.Equals(CloudProviders.Azure))
-                {
-                    var properties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
+                var properties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
 
-                    Properties.AddRange(properties.Select(x => new DevicePropertyValue
-                        {
-                            DisplayName = x.DisplayName,
-                            IsWritable = x.IsWritable,
-                            Name = x.Name,
-                            Order = x.Order,
-                            PropertyType = x.PropertyType
-                        }));
-                }
+                Properties.AddRange(properties.Select(x => new DevicePropertyValue
+                    {
+                        DisplayName = x.DisplayName,
+                        IsWritable = x.IsWritable,
+                        Name = x.Name,
+                        Order = x.Order,
+                        PropertyType = x.PropertyType
+                    }));
             }
         }
         catch (ProblemDetailsException exception)

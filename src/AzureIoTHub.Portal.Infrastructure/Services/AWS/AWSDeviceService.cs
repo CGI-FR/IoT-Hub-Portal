@@ -4,32 +4,41 @@
 namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Azure.Messaging.EventHubs;
     using AzureIoTHub.Portal.Application.Services;
-    using AzureIoTHub.Portal.Shared.Models.v1._0;
-    using AzureIoTHub.Portal.Shared.Models.v10;
     using Models.v10;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain;
     using Amazon.IoT.Model;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using Amazon.IotData.Model;
+    using AzureIoTHub.Portal.Application.Managers;
+    using Infrastructure;
+    using Device = Domain.Entities.Device;
+    using Microsoft.Extensions.Logging;
+    using System.Collections.Generic;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using Azure.Messaging.EventHubs;
 
-    public class AWSDeviceService : IDeviceService<DeviceDetails>
+    public class AWSDeviceService : DeviceService
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IDeviceRepository deviceRepository;
         private readonly IAWSExternalDeviceService externalDevicesService;
 
-        public AWSDeviceService(IMapper mapper,
+        public AWSDeviceService(PortalDbContext portalDbContext,
+            IMapper mapper,
             IUnitOfWork unitOfWork,
             IDeviceRepository deviceRepository,
-            IAWSExternalDeviceService externalDevicesService)
+            IDeviceTagValueRepository deviceTagValueRepository,
+            ILabelRepository labelRepository,
+            IDeviceTagService deviceTagService,
+            IDeviceModelImageManager deviceModelImageManager,
+            IAWSExternalDeviceService externalDevicesService,
+            ILogger<AWSDeviceService> logger)
+            : base(mapper, unitOfWork, deviceRepository, deviceTagValueRepository, labelRepository, null!, deviceTagService, deviceModelImageManager, null!, portalDbContext, logger)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -37,12 +46,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             this.externalDevicesService = externalDevicesService;
         }
 
-        public Task<bool> CheckIfDeviceExists(string deviceId)
+        public override async Task<bool> CheckIfDeviceExists(string deviceId)
         {
-            throw new NotImplementedException();
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId);
+            return deviceEntity != null;
         }
 
-        public async Task<DeviceDetails> CreateDevice(DeviceDetails device)
+        public override async Task<DeviceDetails> CreateDevice(DeviceDetails device)
         {
             //Create Thing
             var createThingRequest = this.mapper.Map<CreateThingRequest>(device);
@@ -57,7 +67,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             return await CreateDeviceInDatabase(device);
         }
 
-        private async Task<DeviceDetails> CreateDeviceInDatabase(DeviceDetails device)
+        protected override async Task<DeviceDetails> CreateDeviceInDatabase(DeviceDetails device)
         {
             var deviceEntity = this.mapper.Map<Device>(device);
 
@@ -67,42 +77,27 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             return device;
         }
 
-        public Task DeleteDevice(string deviceId)
+        public override Task DeleteDevice(string deviceId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<LabelDto>> GetAvailableLabels()
+        public override Task<DeviceDetails> UpdateDevice(DeviceDetails device)
         {
             throw new NotImplementedException();
         }
 
-        public Task<EnrollmentCredentials> GetCredentials(string deviceId)
+        public override Task<DeviceDetails> GetDevice(string deviceId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<DeviceDetails> GetDevice(string deviceId)
+        public override Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<PaginatedResult<DeviceListItem>> GetDevices(string? searchText = null, bool? searchStatus = null, bool? searchState = null, int pageSize = 10, int pageNumber = 0, string[]? orderBy = null, Dictionary<string, string>? tags = null, string? modelId = null, List<string>? labels = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task ProcessTelemetryEvent(EventData eventMessage)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DeviceDetails> UpdateDevice(DeviceDetails device)
+        public override Task ProcessTelemetryEvent(EventData eventMessage)
         {
             throw new NotImplementedException();
         }

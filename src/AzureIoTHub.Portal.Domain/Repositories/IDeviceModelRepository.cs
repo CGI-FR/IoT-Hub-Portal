@@ -7,5 +7,6 @@ namespace AzureIoTHub.Portal.Domain.Repositories
 
     public interface IDeviceModelRepository : IRepository<DeviceModel>
     {
+        public DeviceModel? GetByName(string modelName);
     }
 }

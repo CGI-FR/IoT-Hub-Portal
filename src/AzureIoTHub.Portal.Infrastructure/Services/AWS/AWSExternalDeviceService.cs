@@ -27,16 +27,44 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             this.amazonIotDataClient = amazonIotDataClient;
         }
 
+        public async Task<DescribeThingResponse> GetDevice(string deviceName)
+        {
+            var deviceRequest = new DescribeThingRequest { ThingName = deviceName };
+
+            var deviceResponse = await this.amazonIotClient.DescribeThingAsync(deviceRequest);
+
+            if (deviceResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Unable to get the thing with device name : {deviceName} due to an error in the Amazon IoT API : {deviceResponse.HttpStatusCode}");
+            }
+
+            return deviceResponse;
+        }
+
         public async Task<CreateThingResponse> CreateDevice(CreateThingRequest device)
         {
             var thingResponse = await this.amazonIotClient.CreateThingAsync(device);
 
             if (thingResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new InternalServerErrorException("The creation of the thing failed due to an error in the Amazon IoT API.");
+                throw new InternalServerErrorException($"Unable to create the thing with id {device.ThingName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
             }
 
             return thingResponse;
+        }
+
+        public async Task<GetThingShadowResponse> GetDeviceShadow(string deviceName)
+        {
+            var shadowRequest = new GetThingShadowRequest { ThingName = deviceName };
+
+            var shadowResponse = await this.amazonIotDataClient.GetThingShadowAsync(shadowRequest);
+
+            if (shadowResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Unable to get the thing shadow with device name : {deviceName} due to an error in the Amazon IoT API : {shadowResponse.HttpStatusCode}");
+            }
+
+            return shadowResponse;
         }
 
         public async Task<UpdateThingShadowResponse> UpdateDeviceShadow(UpdateThingShadowRequest shadow)
@@ -45,7 +73,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             if (shadowResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new InternalServerErrorException("The creation/update of the thing shadow failed due to an error in the Amazon IoT API.");
+                throw new InternalServerErrorException($"Unable to create/update the thing shadow with device name : {shadow.ThingName} due to an error in the Amazon IoT API : {shadowResponse.HttpStatusCode}");
             }
 
             return shadowResponse;

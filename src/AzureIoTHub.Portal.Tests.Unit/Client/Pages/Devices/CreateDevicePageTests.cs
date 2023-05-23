@@ -82,7 +82,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .Returns((Task<string>)Task.CompletedTask);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -291,7 +291,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .Returns((Task<string>)Task.CompletedTask);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -361,7 +361,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .Returns((Task<string>)Task.CompletedTask);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>

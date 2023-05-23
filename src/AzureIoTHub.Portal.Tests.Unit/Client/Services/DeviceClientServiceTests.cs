@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -101,7 +100,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                 .Respond(HttpStatusCode.Created);
 
             // Act
-            await this.deviceClientService.CreateDevice(device);
+            _ = await this.deviceClientService.CreateDevice(device);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();

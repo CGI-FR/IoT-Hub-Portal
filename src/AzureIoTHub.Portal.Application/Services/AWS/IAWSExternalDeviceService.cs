@@ -9,7 +9,11 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
 
     public interface IAWSExternalDeviceService
     {
+        Task<DescribeThingResponse> GetDevice(string deviceName);
+
         Task<CreateThingResponse> CreateDevice(CreateThingRequest device);
+
+        Task<GetThingShadowResponse> GetDeviceShadow(string deviceName);
 
         Task<UpdateThingShadowResponse> UpdateDeviceShadow(UpdateThingShadowRequest shadow);
     }

@@ -97,20 +97,21 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
         private static IServiceCollection ConfigureMappers(this IServiceCollection services)
         {
-            _ = services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
-            _ = services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
-            _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
-
             return services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>()
                             .AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>()
                             .AddTransient<IDeviceModelMapper<DeviceModelDto, DeviceModelDto>, DeviceModelMapper>()
                             .AddTransient<IDeviceModelMapper<DeviceModelDto, LoRaDeviceModelDto>, LoRaDeviceModelMapper>()
-                            .AddTransient<IEdgeDeviceMapper, EdgeDeviceMapper>();
+                            .AddTransient<IEdgeDeviceMapper, EdgeDeviceMapper>()
+                            .AddTransient<IDeviceModelImageManager, DeviceModelImageManager>()
+                            .AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>()
+                            .AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
         }
 
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            return services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>();
+            return services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>()
+                .AddTransient<IDeviceService<DeviceDetails>, DeviceService>()
+                .AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
         }
 
         private static IServiceCollection ConfigureHealthCheck(this IServiceCollection services)

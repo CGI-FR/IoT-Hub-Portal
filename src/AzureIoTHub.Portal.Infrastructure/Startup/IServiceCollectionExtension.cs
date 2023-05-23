@@ -11,6 +11,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Constants;
     using EntityFramework.Exceptions.PostgreSQL;
     using Microsoft.EntityFrameworkCore;

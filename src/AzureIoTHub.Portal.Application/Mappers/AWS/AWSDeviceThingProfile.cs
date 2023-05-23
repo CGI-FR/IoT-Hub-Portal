@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
             _ = CreateMap<DeviceDetails, CreateThingRequest>()
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.ModelName))
+                .ForPath(dest => dest.AttributePayload.Attributes, opts => opts.MapFrom(src => src.Tags))
                 .ReverseMap();
 
             _ = CreateMap<DeviceDetails, UpdateThingShadowRequest>()
