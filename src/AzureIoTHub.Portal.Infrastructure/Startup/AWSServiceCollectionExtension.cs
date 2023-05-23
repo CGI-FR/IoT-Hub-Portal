@@ -4,19 +4,21 @@
 namespace AzureIoTHub.Portal.Infrastructure.Startup
 {
     using Amazon;
+    using Amazon.GreengrassV2;
     using Amazon.IoT;
     using Amazon.IotData;
     using Amazon.S3;
     using Amazon.SecretsManager;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Application.Managers;
-    using AzureIoTHub.Portal.Infrastructure.Managers;
-    using Microsoft.Extensions.DependencyInjection;
-    using Amazon.GreengrassV2;
-    using Quartz;
-    using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
     using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Infrastructure.Jobs.AWS;
+    using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Infrastructure.Services;
+    using AzureIoTHub.Portal.Infrastructure.Services.AWS;
+    using AzureIoTHub.Portal.Models.v10;
+    using Microsoft.Extensions.DependencyInjection;
+    using Quartz;
 
     public static class AWSServiceCollectionExtension
     {
@@ -26,7 +28,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 .ConfigureAWSClient(configuration)
                 .ConfigureAWSServices()
                 .ConfigureAWSDeviceModelImages()
-                .ConfigureAWSSyncJobs(configuration);
+                .ConfigureAWSSyncJobs(configuration)
+                .ConfigureOtherDependencies();
         }
         private static IServiceCollection ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -47,9 +50,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             _ = services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
             _ = services.AddSingleton<IAmazonS3>(new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
-            _ = services.AddSingleton(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+            _ = services.AddSingleton<IAmazonGreengrassV2>(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
-            _ = services.AddSingleton(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
             return services;
         }
 
@@ -57,8 +59,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         {
             return services
                 .AddTransient<IExternalDeviceService, AwsExternalDeviceService>()
-                .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>));
+                .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>))
+                .AddTransient<IConfigService, AwsConfigService>()
+                .AddTransient<IEdgeModelService, EdgeModelService>();
         }
+
 
         private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)
         {
@@ -79,6 +84,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
             });
+        }
+
+        private static IServiceCollection ConfigureOtherDependencies(this IServiceCollection services)
+        {
+            _ = services.AddSingleton(new PortalSettings());
+            return services;
         }
     }
 }
