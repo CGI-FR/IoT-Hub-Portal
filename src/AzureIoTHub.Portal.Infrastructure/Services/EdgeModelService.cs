@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Amazon.GreengrassV2;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
@@ -47,7 +46,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         private readonly ILabelRepository labelRepository;
         private readonly IEdgeDeviceModelCommandRepository commandRepository;
         private readonly ConfigHandler config;
-        private readonly IAmazonGreengrassV2 greengras;
 
         public EdgeModelService(
             IMapper mapper,
@@ -57,8 +55,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             IDeviceModelImageManager deviceModelImageManager,
             ILabelRepository labelRepository,
             IEdgeDeviceModelCommandRepository commandRepository,
-            ConfigHandler config,
-            IAmazonGreengrassV2 greengras)
+            ConfigHandler config)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -68,7 +65,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             this.deviceModelImageManager = deviceModelImageManager;
             this.commandRepository = commandRepository;
             this.config = config;
-            this.greengras = greengras;
         }
 
         /// <summary>
