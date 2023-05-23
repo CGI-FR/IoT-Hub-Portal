@@ -4,11 +4,13 @@
 namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 {
     using System.Collections.Generic;
-    using Newtonsoft.Json.Linq;
+    using System.Net;
     using System.Text;
     using System.Threading.Tasks;
     using Amazon.GreengrassV2;
     using Amazon.GreengrassV2.Model;
+    using Amazon.IoT;
+    using Amazon.IoT.Model;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
@@ -17,8 +19,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
-    using Amazon.IoT.Model;
-    using Amazon.IoT;
+    using Newtonsoft.Json.Linq;
     using Configuration = Microsoft.Azure.Devices.Configuration;
 
     public class AwsConfigService : IConfigService
@@ -48,29 +49,70 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
         {
-            var dynamicThingGroup = new DescribeThingGroupRequest
-            {
-                ThingGroupName = edgeModel?.Name
-            };
-            var thingGroupResponse = await this.iotClient.DescribeThingGroupAsync(dynamicThingGroup);
-            if (thingGroupResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new InternalServerErrorException($"Can not retreive Thing group with name {edgeModel?.Name} due to an error in the Amazon IoT API.");
-
-            }
             var createDeploymentRequest = new CreateDeploymentRequest
             {
                 DeploymentName = edgeModel?.Name,
                 Components = await CreateGreenGrassComponents(edgeModel!),
-                TargetArn = thingGroupResponse.ThingGroupArn
+                TargetArn = await GetThingGroupArn(edgeModel!)
             };
 
             var createDeploymentResponse = await this.greengras.CreateDeploymentAsync(createDeploymentRequest);
 
-            if (createDeploymentResponse.HttpStatusCode != System.Net.HttpStatusCode.Created)
+            if (createDeploymentResponse.HttpStatusCode != HttpStatusCode.Created)
             {
-                throw new InternalServerErrorException("The creation of the deployment failed due to an error in the Amazon IoT API.");
+                throw new InternalServerErrorException("The deployment creation failed due to an error in the Amazon IoT API.");
 
+            }
+        }
+
+        private async Task<string> GetThingGroupArn(IoTEdgeModel edgeModel)
+        {
+            await CreateThingTypeIfNotExists(edgeModel!.ModelId);
+
+            var dynamicThingGroup = new DescribeThingGroupRequest
+            {
+                ThingGroupName = edgeModel?.ModelId
+            };
+
+            var existingThingGroupResponse = await this.iotClient.DescribeThingGroupAsync(dynamicThingGroup);
+
+            if (existingThingGroupResponse.HttpStatusCode != HttpStatusCode.OK)
+            {
+                var createThingGroupResponse = await this.iotClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
+                {
+                    ThingGroupName = edgeModel!.ModelId,
+                    QueryString = $"thingTypeName: {edgeModel!.ModelId}"
+                });
+
+                return createThingGroupResponse.ThingGroupArn;
+            }
+
+            return existingThingGroupResponse.ThingGroupArn;
+        }
+
+        private async Task CreateThingTypeIfNotExists(string thingTypeName)
+        {
+            var existingThingType = new DescribeThingTypeRequest
+            {
+                ThingTypeName = thingTypeName
+            };
+
+            var response = await this.iotClient.DescribeThingTypeAsync(existingThingType);
+
+            if (response.HttpStatusCode == HttpStatusCode.NotFound)
+            {
+                _ = await this.iotClient.CreateThingTypeAsync(new CreateThingTypeRequest
+                {
+                    ThingTypeName = thingTypeName,
+                    Tags = new List<Tag>
+                    {
+                        new Tag
+                        {
+                            Key = "iotEdge",
+                            Value = "True"
+                        }
+                    }
+                });
             }
         }
 
@@ -90,7 +132,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 var response = await greengras.CreateComponentVersionAsync(componentVersion);
                 if (response.HttpStatusCode != System.Net.HttpStatusCode.Created)
                 {
-                    throw new InternalServerErrorException("The creation of the component failed due to an error in the Amazon IoT API.");
+                    throw new InternalServerErrorException("The component creation failed due to an error in the Amazon IoT API.");
 
                 }
                 listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = "1.0.0" });
