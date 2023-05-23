@@ -22,7 +22,9 @@
             <MudCard>
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
-                        <MudAvatar Image="@imageDataUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
+                            <MudImage Src="@imageDataUrl"/>
+                        </MudAvatar>
                     </div>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
@@ -94,35 +96,35 @@
                                                         <MudGrid id="@($"property-{item.Name}")">
                                                             <MudItem md="4" xs="12">
                                                                 <MudTextField id="@nameof(item.DisplayName)"
-                                                                      @bind-Value="@item.DisplayName"
-                                                                      Label="Display name"
-                                                                      Variant="Variant.Outlined"
-                                                                      For="@(()=> item.DisplayName)"
-                                                                      Required="true" />
+                                                                @bind-Value="@item.DisplayName"
+                                                                              Label="Display name"
+                                                                              Variant="Variant.Outlined"
+                                                                              For="@(()=> item.DisplayName)"
+                                                                              Required="true" />
                                                             </MudItem>
                                                             <MudItem md="3" xs="12">
                                                                 <MudTextField id="@nameof(item.Name)" @bind-Value="@item.Name"
-                                                                      Label="Name"
-                                                                      Variant="Variant.Outlined"
-                                                                      For="@(()=> item.Name)"
-                                                                      Required="true" />
+                                                                              Label="Name"
+                                                                              Variant="Variant.Outlined"
+                                                                              For="@(()=> item.Name)"
+                                                                              Required="true" />
                                                             </MudItem>
                                                             <MudItem md="1" xs="12">
                                                                 <MudNumericField id="@nameof(item.Order)"
-                                                                         @bind-Value="@item.Order"
-                                                                         Label="Order"
-                                                                         Variant="Variant.Outlined"
-                                                                         Min=0
-                                                                         For="@(()=> item.Order)"
-                                                                         Required="true" />
+                                                                @bind-Value="@item.Order"
+                                                                                 Label="Order"
+                                                                                 Variant="Variant.Outlined"
+                                                                                 Min=0
+                                                                                 For="@(()=> item.Order)"
+                                                                                 Required="true" />
                                                             </MudItem>
                                                             <MudItem md="2" xs="6">
                                                                 <MudSelect id="@nameof(item.PropertyType)"
-                                                                   @bind-Value="@item.PropertyType"
-                                                                   Label="Type"
-                                                                   Variant="Variant.Outlined"
-                                                                   For="@(()=> item.PropertyType)"
-                                                                   Required="true">
+                                                                @bind-Value="@item.PropertyType"
+                                                                           Label="Type"
+                                                                           Variant="Variant.Outlined"
+                                                                           For="@(()=> item.PropertyType)"
+                                                                           Required="true">
                                                                     @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
                                                                     {
                                                                         <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -163,7 +165,7 @@
                 {
                     <MudTabPanel Class="LoRaWANTab" Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
                         <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModelDto)"
-                                           Commands="Commands" />
+                                               Commands="Commands" />
                     </MudTabPanel>
                 }
             </MudTabs>

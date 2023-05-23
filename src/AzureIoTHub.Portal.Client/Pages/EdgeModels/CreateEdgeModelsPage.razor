@@ -21,7 +21,9 @@
             <MudCard>
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
-                        <MudAvatar Image="@imageDataUrl" id="@(nameof(IoTEdgeModel.ImageUrl))" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
+                            <MudImage Src="@imageDataUrl" id="@(nameof(IoTEdgeModel.ImageUrl))" />
+                        </MudAvatar>
                     </div>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">

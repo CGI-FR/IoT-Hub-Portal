@@ -69,7 +69,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The IoT Edge configuraton.
         /// </summary>
-        public ConfigItem LastDeployment { get; set; } = new ConfigItem();
+        public ConfigItem LastDeployment { get; set; }
 
         /// <summary>
         /// The IoT Edge modules.

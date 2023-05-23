@@ -21,6 +21,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using MudBlazor.Services;
     using NUnit.Framework;
     using UnitTests.Mocks;
+    using AutoFixture;
 
     [TestFixture]
     public class EdgeDeviceDetailPageTests : BlazorUnitTest
@@ -355,6 +356,43 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             cut.WaitForElement(".rebootModule").Click();
 
             // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void EdgeDeviceDetailPageShouldDisplayLastDeploymentStatus()
+        {
+            // Arrange
+            var mockIoTEdgeModule = new IoTEdgeModule()
+            {
+                ModuleName = Guid.NewGuid().ToString()
+            };
+
+            var mockIoTEdgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = this.mockdeviceId,
+                ConnectionState = "Connected",
+                Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule},
+                ModelId = Guid.NewGuid().ToString(),
+                LastDeployment = Fixture.Create<ConfigItem>()
+            };
+
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
+
+            _ = this.mockIEdgeModelClientService
+                .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
+                .ReturnsAsync(new IoTEdgeModel());
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTagDto>());
+
+            // Act
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+
+            // Assert
+            cut.WaitForAssertion(() => Assert.AreEqual(mockIoTEdgeDevice.LastDeployment.Name, cut.WaitForElement("#lastDeploymentName").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(mockIoTEdgeDevice.LastDeployment.DateCreation.Date, DateTime.TryParse(cut.WaitForElement("#lastDeploymentDate").GetAttribute("value"), out var dateTime) ? dateTime : null));
+            cut.WaitForAssertion(() => Assert.AreEqual(mockIoTEdgeDevice.LastDeployment.Status, cut.WaitForElement("#lastDeploymentStatus").GetAttribute("value")));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
