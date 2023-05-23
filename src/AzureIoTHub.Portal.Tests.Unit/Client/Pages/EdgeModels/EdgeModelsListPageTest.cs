@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
@@ -70,19 +71,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var searchKeyword = Fixture.Create<string>();
 
             _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.Is<EdgeModelFilter>(x => string.IsNullOrEmpty(x.Keyword))))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
-                {
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
-                });
+                .ReturnsAsync(Fixture.CreateMany<IoTEdgeModelListItem>(3).ToList());
 
             _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.Is<EdgeModelFilter>(x => searchKeyword.Equals(x.Keyword, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
-                {
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
-                });
+                .ReturnsAsync(Fixture.CreateMany<IoTEdgeModelListItem>(2).ToList());
 
             var cut = RenderComponent<EdgeModelListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
