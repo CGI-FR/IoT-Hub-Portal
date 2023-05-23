@@ -13,10 +13,10 @@
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
-    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton"/>       
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
 </MudTooltip>
 <MudTooltip Placement="Placement.Top">
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Edge Device Details</MudText>
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Edge Device Details</MudText>
 </MudTooltip>
 
 <MudForm Model="@edgeDevice" @ref="form">
@@ -27,15 +27,17 @@
                     <CardHeaderContent>
                         <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModel.Name)>Model: <b>@edgeModel.Name</b></MudText>
                         <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(edgeDevice.DeviceName) ? edgeDevice.DeviceId : edgeDevice.DeviceName)</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent>
-                    <div class="d-flex justify-center mb-4">
-                        <MudAvatar Image="@edgeDevice.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
-                    </div>
-                </MudCardContent>
-                <MudCardActions Class="pb-4 pl-4 justify-center">
-                    @if (isLoaded)
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <div class="d-flex justify-center mb-4">
+                            <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
+                                <MudImage Src="@edgeModel?.ImageUrl?.ToString()" />
+                            </MudAvatar>
+                        </div>
+                    </MudCardContent>
+                    <MudCardActions Class="pb-4 pl-4 justify-center">
+                        @if (isLoaded)
                     {
                         <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
                     }
@@ -121,22 +123,23 @@
                         </MudGrid>
                         <MudGrid>
                             <MudItem xs="12">
-                                <MudExpansionPanel Text="Tags">
+                                <MudExpansionPanel Text="Last deployment">
                                     <TitleContent><MudText Typo="Typo.h6">Last deployment</MudText></TitleContent>
                                     <ChildContent>
-                                    @if (edgeDevice.LastDeployment != null){                                                                                   
-                                        <MudGrid>
-                                            <MudItem xs="12" md="4">
-                                                <MudTextField @bind-Value="@edgeDevice.LastDeployment.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                                            </MudItem>
-                                            <MudItem xs="12" md="4">
-                                                <MudTextField @bind-Value="@edgeDevice.LastDeployment.DateCreation" Label="Date" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                                            </MudItem>
-                                            <MudItem xs="12" md="4">
-                                                <MudTextField @bind-Value="@edgeDevice.LastDeployment.Status" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                                            </MudItem>
-                                        </MudGrid>
-                                     }
+                                        @if (edgeDevice.LastDeployment != null)
+                                        {
+                                            <MudGrid>
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField id="lastDeploymentName" @bind-Value="@edgeDevice.LastDeployment.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                                                </MudItem>
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField id="lastDeploymentDate" @bind-Value="@edgeDevice.LastDeployment.DateCreation" Label="Date" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                                                </MudItem>
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField id="lastDeploymentStatus" @bind-Value="@edgeDevice.LastDeployment.Status" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                                                </MudItem>
+                                            </MudGrid>
+                                        }
                                     </ChildContent>
                                 </MudExpansionPanel>
                             </MudItem>
@@ -188,8 +191,8 @@
                                                         edgeDevice.Tags.Add(tag.Name, "");
                                                     }
                                                     <MudTextField @bind-Value="edgeDevice.Tags[tag.Name]" Label="@tag.Label"
-                                                              Required="@tag.Required"
-                                                              Variant="Variant.Outlined" />
+                                                                  Required="@tag.Required"
+                                                                  Variant="Variant.Outlined" />
                                                 </MudItem>
                                             }
                                         </MudGrid>
@@ -387,16 +390,16 @@
 
     public async Task ShowConnectionString()
     {
-        var parameters = new DialogParameters {{nameof(ConnectionStringDialog.deviceId), this.deviceId}};
+        var parameters = new DialogParameters { { nameof(ConnectionStringDialog.deviceId), this.deviceId } };
 
-        _ =  await DialogService.Show<ConnectionStringDialog>("Edge Device Connection String", parameters).Result;
+        _ = await DialogService.Show<ConnectionStringDialog>("Edge Device Connection String", parameters).Result;
     }
 
     public async Task ShowDeleteModal()
     {
         isProcessing = true;
 
-        var parameter = new DialogParameters {{nameof(edgeDevice.DeviceId), edgeDevice.DeviceId}};
+        var parameter = new DialogParameters { { nameof(edgeDevice.DeviceId), edgeDevice.DeviceId } };
 
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Edge device deletion confirmation", parameter).Result;
 

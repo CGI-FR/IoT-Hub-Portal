@@ -342,7 +342,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             await cut.Instance.ChangeModel(edgeModel);
 
             // Assert
-            Assert.IsFalse(string.IsNullOrEmpty(ModelImageElement.InnerHtml));
+            Assert.AreEqual(edgeModel.ImageUrl, ModelImageElement.Attributes["src"].Value);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 

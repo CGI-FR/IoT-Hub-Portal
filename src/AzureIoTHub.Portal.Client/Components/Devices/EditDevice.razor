@@ -38,7 +38,9 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
-                        <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
+                            <MudImage Src="@Device.ImageUrl?.ToString()" />
+                        </MudAvatar>
                     </div>
                 </MudCardContent>
                 @if (context.Equals(CreateEditMode.Edit))
@@ -99,18 +101,18 @@
                                                     {
                                                         <MudAutocomplete T="IDeviceModel"
                                                                          id="@nameof(DeviceDetails.ModelId)"
-                                                                 @bind-Value="DeviceModel"
-                                                                 SearchFunc="@Search"
-                                                                 Label="Model*"
-                                                                 Dense=true
-                                                                 For=@(() => this.DeviceModel)
-                                                                 Variant="Variant.Outlined"
-                                                                 ToStringFunc="@(x => x?.Name)"
-                                                                 ResetValueOnEmptyText=true
-                                                                 Immediate=true
-                                                                 Clearable=true
-                                                                 CoerceText=true
-                                                                 CoerceValue=false>
+                                                        @bind-Value="DeviceModel"
+                                                                         SearchFunc="@Search"
+                                                                         Label="Model*"
+                                                                         Dense=true
+                                                                         For=@(() => this.DeviceModel)
+                                                                         Variant="Variant.Outlined"
+                                                                         ToStringFunc="@(x => x?.Name)"
+                                                                         ResetValueOnEmptyText=true
+                                                                         Immediate=true
+                                                                         Clearable=true
+                                                                         CoerceText=true
+                                                                         CoerceValue=false>
                                                             <ItemTemplate>
                                                                 @context.Name
                                                                 <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
@@ -133,22 +135,22 @@
                                                     {
                                                         <MudTextField @bind-Value="@Device.DeviceID"
                                                                       id=@nameof(LoRaDeviceDetails.DeviceID)
-                                                              Label="Device ID / DevEUI"
-                                                              Variant="Variant.Outlined"
-                                                              Validation=@(loraValidator.ValidateValue)
-                                                              For="@(()=> Device.DeviceID)"
-                                                              Mask="@maskLoRaDeviceID"
-                                                              HelperText="Device EUI must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                                                      Label="Device ID / DevEUI"
+                                                                      Variant="Variant.Outlined"
+                                                                      Validation=@(loraValidator.ValidateValue)
+                                                                      For="@(()=> Device.DeviceID)"
+                                                                      Mask="@maskLoRaDeviceID"
+                                                                      HelperText="Device EUI must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
                                                     }
                                                     else
                                                     {
                                                         <MudTextField @bind-Value="@Device.DeviceID"
                                                                       id=@nameof(DeviceDetails.DeviceID)
-                                                              Label="Device ID"
-                                                              Variant="Variant.Outlined"
-                                                              Validation=@(standardValidator.ValidateValue)
-                                                              For="@(()=> Device.DeviceID)"
-                                                              HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+                                                                      Label="Device ID"
+                                                                      Variant="Variant.Outlined"
+                                                                      Validation=@(standardValidator.ValidateValue)
+                                                                      For="@(()=> Device.DeviceID)"
+                                                                      HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
                                                     }
                                                 </MudItem>
                                             }
@@ -157,12 +159,12 @@
                                                 <MudItem xs="12" md="6">
                                                     <MudTextField @bind-Value="@Device.DeviceID"
                                                                   id=@nameof(DeviceDetails.DeviceID)
-                                                              Label="Device ID"
-                                                              Variant="Variant.Outlined"
-                                                              For="@(()=> Device.DeviceID)"
-                                                              Required="true"
-                                                              ReadOnly="true"
-                                                              HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                                                  Label="Device ID"
+                                                                  Variant="Variant.Outlined"
+                                                                  For="@(()=> Device.DeviceID)"
+                                                                  Required="true"
+                                                                  ReadOnly="true"
+                                                                  HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
                                                 </MudItem>
                                             }
 
@@ -214,8 +216,8 @@
                                                 {
                                                     <MudItem xs="12" md="6">
                                                         <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
-                                                              Required="@tag.Required"
-                                                              Variant="Variant.Outlined" />
+                                                                      Required="@tag.Required"
+                                                                      Variant="Variant.Outlined" />
                                                     </MudItem>
                                                 }
                                                 else if (context.Equals(CreateEditMode.Edit))
@@ -226,8 +228,8 @@
                                                             Device.Tags.Add(tag.Name, "");
                                                         }
                                                         <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
-                                                              Required="@tag.Required"
-                                                              Variant="Variant.Outlined" />
+                                                                      Required="@tag.Required"
+                                                                      Variant="Variant.Outlined" />
                                                     </MudItem>
                                                 }
                                             }
@@ -277,37 +279,37 @@
                                                         case DevicePropertyType.Double:
                                                             <MudItem xs="12" md="4">
                                                                 <MudTextField @bind-Value="item.Value"
-                                                              Label="@item.DisplayName"
-                                                              Variant="Variant.Outlined"
-                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
-                                                              Clearable="true" />
+                                                                              Label="@item.DisplayName"
+                                                                              Variant="Variant.Outlined"
+                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
+                                                                              Clearable="true" />
                                                             </MudItem>
                                                             break;
                                                         case DevicePropertyType.Float:
                                                             <MudItem xs="12" md="4">
                                                                 <MudTextField @bind-Value="item.Value"
-                                                              Label="@item.DisplayName"
-                                                              Variant="Variant.Outlined"
-                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
-                                                              Clearable="true" />
+                                                                              Label="@item.DisplayName"
+                                                                              Variant="Variant.Outlined"
+                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
+                                                                              Clearable="true" />
                                                             </MudItem>
                                                             break;
                                                         case DevicePropertyType.Integer:
                                                             <MudItem xs="12" md="4">
                                                                 <MudTextField @bind-Value="item.Value"
-                                                              Label="@item.DisplayName"
-                                                              Variant="Variant.Outlined"
-                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
-                                                              Clearable="true" />
+                                                                              Label="@item.DisplayName"
+                                                                              Variant="Variant.Outlined"
+                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
+                                                                              Clearable="true" />
                                                             </MudItem>
                                                             break;
                                                         case DevicePropertyType.Long:
                                                             <MudItem xs="12" md="4">
                                                                 <MudTextField @bind-Value="item.Value"
-                                                              Label="@item.DisplayName"
-                                                              Variant="Variant.Outlined"
-                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
-                                                              Clearable="true" />
+                                                                              Label="@item.DisplayName"
+                                                                              Variant="Variant.Outlined"
+                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
+                                                                              Clearable="true" />
                                                             </MudItem>
                                                             break;
                                                         case DevicePropertyType.String:
@@ -712,9 +714,9 @@
                 PageNumber = 0,
                 PageSize = 100,
                 OrderBy = new string[]
-                {
+                    {
                     string.Empty
-                }
+                    }
             };
         return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
     }

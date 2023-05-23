@@ -359,7 +359,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Act
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
 
-            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.Find($"#{nameof(IoTEdgeModel.ImageUrl)}").ChildElementCount));
+            cut.WaitForAssertion(() => Assert.IsFalse(string.IsNullOrEmpty(cut.Find($"#{nameof(IoTEdgeModel.ImageUrl)}").Attributes["src"]?.Value)));
 
             var avatar = cut.WaitForElement($"#{nameof(IoTEdgeModel.ImageUrl)}");
             Assert.IsNotNull(avatar);
@@ -368,7 +368,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             deleteAvatarBtn.Click();
 
             // Assert
-            cut.WaitForAssertion(() => Assert.AreEqual(0, cut.Find($"#{nameof(IoTEdgeModel.ImageUrl)}").ChildElementCount));
+            cut.WaitForAssertion(() => Assert.IsTrue(string.IsNullOrEmpty(cut.Find($"#{nameof(IoTEdgeModel.ImageUrl)}").Attributes["src"]?.Value)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
