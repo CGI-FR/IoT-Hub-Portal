@@ -6,12 +6,15 @@
 @using AzureIoTHub.Portal.Shared.Models.v10
 @using AzureIoTHub.Portal.Client.Validators
 @using System.Net.Http.Headers
+@using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Shared.Constants
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @inject IEdgeModelClientService EdgeModelService
+@inject PortalSettings Portal
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Edge Device Model</MudText>
 
@@ -63,43 +66,45 @@
                             </MudItem>
                         </MudGrid>
 
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="System Modules" IsInitiallyExpanded="true">
-                                    <TitleContent><MudText Typo="Typo.h6">System Modules</MudText></TitleContent>
-                                    <ChildContent>
-                                        <MudItem xs="12">
-                                            <MudTable Items="Model.SystemModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
-                                                <ColGroup>
-                                                    <col style="width: 15%;" />
-                                                    <col style="width: 50%;" />
-                                                    <col style="width: 10%;" />
-                                                </ColGroup>
+                        @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                        {
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="System Modules" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">System Modules</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudItem xs="12">
+                                                <MudTable Items="Model.SystemModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <ColGroup>
+                                                        <col style="width: 15%;" />
+                                                        <col style="width: 50%;" />
+                                                        <col style="width: 10%;" />
+                                                    </ColGroup>
 
-                                                <HeaderContent>
-                                                    <MudTh Style="text-align: center">Module name</MudTh>
-                                                    <MudTh Style="text-align: center">Image URI</MudTh>
-                                                    <MudTh Style="text-align: center">Detail</MudTh>
-                                                </HeaderContent>
+                                                    <HeaderContent>
+                                                        <MudTh Style="text-align: center">Module name</MudTh>
+                                                        <MudTh Style="text-align: center">Image URI</MudTh>
+                                                        <MudTh Style="text-align: center">Detail</MudTh>
+                                                    </HeaderContent>
 
-                                                <RowTemplate Context="sysModule">
-                                                    <MudTd DataLabel="System module Name" Style="word-break: break-all;">
-                                                        <MudTextField id=@nameof(EdgeModelSystemModule.Name) @bind-Value="@sysModule.Name" Margin="Margin.Dense" Label="Module name" For="@(() => sysModule.Name )" Variant="Variant.Outlined" Disabled />
-                                                    </MudTd>
-                                                    <MudTd DataLabel="System module Image URI" Style="word-break: break-all;">
-                                                        <MudTextField id=@nameof(EdgeModelSystemModule.ImageUri) @bind-Value="@sysModule.ImageUri" Margin="Margin.Dense" Label="Image URI" For="@(() => sysModule.ImageUri )" Variant="Variant.Outlined" />
-                                                    </MudTd>
-                                                    <MudTd DataLabel="See detail" Style="text-align: center;">
-                                                        <MudButton Variant="Variant.Filled" id="@("editSystModuleButton_"+sysModule.Name)" OnClick="@(async () => await ShowSystemModuleDetail(sysModule))">Detail</MudButton>
-                                                    </MudTd>
-                                                </RowTemplate>
-                                            </MudTable>
-                                        </MudItem>
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
-
+                                                    <RowTemplate Context="sysModule">
+                                                        <MudTd DataLabel="System module Name" Style="word-break: break-all;">
+                                                            <MudTextField id=@nameof(EdgeModelSystemModule.Name) @bind-Value="@sysModule.Name" Margin="Margin.Dense" Label="Module name" For="@(() => sysModule.Name )" Variant="Variant.Outlined" Disabled />
+                                                        </MudTd>
+                                                        <MudTd DataLabel="System module Image URI" Style="word-break: break-all;">
+                                                            <MudTextField id=@nameof(EdgeModelSystemModule.ImageUri) @bind-Value="@sysModule.ImageUri" Margin="Margin.Dense" Label="Image URI" For="@(() => sysModule.ImageUri )" Variant="Variant.Outlined" />
+                                                        </MudTd>
+                                                        <MudTd DataLabel="See detail" Style="text-align: center;">
+                                                            <MudButton Variant="Variant.Filled" id="@("editSystModuleButton_"+sysModule.Name)" OnClick="@(async () => await ShowSystemModuleDetail(sysModule))">Detail</MudButton>
+                                                        </MudTd>
+                                                    </RowTemplate>
+                                                </MudTable>
+                                            </MudItem>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                        }
                         <MudGrid>
                             <MudItem xs="12">
                                 <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
@@ -142,64 +147,66 @@
                                 </MudExpansionPanel>
                             </MudItem>
                         </MudGrid>
-
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Routes" IsInitiallyExpanded="true">
-                                    <TitleContent><MudText Typo="Typo.h6">Routes</MudText></TitleContent>
-                                    <ChildContent>
-                                        <MudItem xs="12">
-                                            <MudTable Items="@Model.EdgeRoutes" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
-                                                <ColGroup>
-                                                    <col style="width: 20%;" />
-                                                    <col style="width: 20%;" />
-                                                    <col style="width: 10%;" />
-                                                    <col style="width: 10%;" />
-                                                    <col style="width: 5%;" />
-                                                </ColGroup>
-                                                <HeaderContent>
-                                                    <MudTh Style="text-align: center">Name</MudTh>
-                                                    <MudTh Style="text-align: center">Value</MudTh>
-                                                    <MudTh Style="text-align: center">Priority</MudTh>
-                                                    <MudTh Style="text-align: center">Time To Live (Secs)</MudTh>
-                                                    <MudTh Style="text-align: center">Delete</MudTh>
-                                                </HeaderContent>
-                                                <RowTemplate Context="RouteContext">
-                                                    <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                                        <MudTextField id="@(nameof(IoTEdgeRoute.Name))" @bind-Value="@RouteContext.Name" Margin="Margin.Dense" Label="Name" For="@(() => RouteContext.Name )" Variant="Variant.Outlined" Required="true"></MudTextField>
-                                                    </MudTd>
-                                                    <MudTd DataLabel="Value" Style="word-break: break-all;">
-                                                        <MudTextField id="@(nameof(IoTEdgeRoute.Value))" @bind-Value="@RouteContext.Value" Margin="Margin.Dense" Label="Value" For="@(() => RouteContext.Value )" Variant="Variant.Outlined" Required="true" />
-                                                    </MudTd>
-                                                    <MudTd DataLabel="Priority" Style="text-align: center;">
-                                                        <MudNumericField @bind-Value="@RouteContext.Priority" Label="Priority" For="@(() => RouteContext.Priority)" Variant="Variant.Outlined"></MudNumericField>
-                                                    </MudTd>
-                                                    <MudTd DataLabel="Time To Live (Secs)" Style="text-align: center;">
-                                                        <MudNumericField @bind-Value="@RouteContext.TimeToLive" Label="TTL" For="@(() => RouteContext.TimeToLive)" Variant="Variant.Outlined"></MudNumericField>
-                                                    </MudTd>
-                                                    <MudTd DataLabel="Delete" Style="text-align: center">
-                                                        <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="( () => DeleteRoute(RouteContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
-                                                    </MudTd>
-                                                </RowTemplate>
-                                                <FooterContent>
-                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" id="addRouteButton" OnClick="AddRoute" Color="Color.Success">Add new route</MudButton>
-                                                </FooterContent>
-                                            </MudTable>
-                                        </MudItem>
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Labels">
-                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
-                                    <ChildContent>
-                                        <LabelsEditor Labels="Model.Labels" />
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
+                        @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                        {
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Routes" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Routes</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudItem xs="12">
+                                                <MudTable Items="@Model.EdgeRoutes" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <ColGroup>
+                                                        <col style="width: 20%;" />
+                                                        <col style="width: 20%;" />
+                                                        <col style="width: 10%;" />
+                                                        <col style="width: 10%;" />
+                                                        <col style="width: 5%;" />
+                                                    </ColGroup>
+                                                    <HeaderContent>
+                                                        <MudTh Style="text-align: center">Name</MudTh>
+                                                        <MudTh Style="text-align: center">Value</MudTh>
+                                                        <MudTh Style="text-align: center">Priority</MudTh>
+                                                        <MudTh Style="text-align: center">Time To Live (Secs)</MudTh>
+                                                        <MudTh Style="text-align: center">Delete</MudTh>
+                                                    </HeaderContent>
+                                                    <RowTemplate Context="RouteContext">
+                                                        <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                                            <MudTextField id="@(nameof(IoTEdgeRoute.Name))" @bind-Value="@RouteContext.Name" Margin="Margin.Dense" Label="Name" For="@(() => RouteContext.Name )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Value" Style="word-break: break-all;">
+                                                            <MudTextField id="@(nameof(IoTEdgeRoute.Value))" @bind-Value="@RouteContext.Value" Margin="Margin.Dense" Label="Value" For="@(() => RouteContext.Value )" Variant="Variant.Outlined" Required="true" />
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Priority" Style="text-align: center;">
+                                                            <MudNumericField @bind-Value="@RouteContext.Priority" Label="Priority" For="@(() => RouteContext.Priority)" Variant="Variant.Outlined"></MudNumericField>
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Time To Live (Secs)" Style="text-align: center;">
+                                                            <MudNumericField @bind-Value="@RouteContext.TimeToLive" Label="TTL" For="@(() => RouteContext.TimeToLive)" Variant="Variant.Outlined"></MudNumericField>
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Delete" Style="text-align: center">
+                                                            <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="( () => DeleteRoute(RouteContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                                        </MudTd>
+                                                    </RowTemplate>
+                                                    <FooterContent>
+                                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" id="addRouteButton" OnClick="AddRoute" Color="Color.Success">Add new route</MudButton>
+                                                    </FooterContent>
+                                                </MudTable>
+                                            </MudItem>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Labels">
+                                        <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                        <ChildContent>
+                                            <LabelsEditor Labels="Model.Labels" />
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                        }
 
                     </MudExpansionPanels>
                 </MudTabPanel>

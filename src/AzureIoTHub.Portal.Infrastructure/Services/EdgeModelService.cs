@@ -1,24 +1,26 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Services
+namespace AzureIoTHub.Portal.Infrastructure.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Models.v10;
-    using Microsoft.AspNetCore.Http;
-    using AzureIoTHub.Portal.Shared.Models.v10;
-    using AzureIoTHub.Portal.Application.Managers;
-    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Constants;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using Microsoft.AspNetCore.Http;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -38,11 +40,12 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
-        private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IEdgeDeviceModelRepository edgeModelRepository;
         private readonly ILabelRepository labelRepository;
         private readonly IEdgeDeviceModelCommandRepository commandRepository;
+        private readonly ConfigHandler config;
+        private readonly IMapper mapper;
 
         public EdgeModelService(
             IMapper mapper,
@@ -51,7 +54,8 @@ namespace AzureIoTHub.Portal.Server.Services
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
             ILabelRepository labelRepository,
-            IEdgeDeviceModelCommandRepository commandRepository)
+            IEdgeDeviceModelCommandRepository commandRepository,
+            ConfigHandler config)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -60,6 +64,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
             this.commandRepository = commandRepository;
+            this.config = config;
         }
 
         /// <summary>
@@ -112,7 +117,10 @@ namespace AzureIoTHub.Portal.Server.Services
 
             _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
 
-            await SaveModuleCommands(edgeModel);
+            if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
+            {
+                await SaveModuleCommands(edgeModel);
+            }
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 
@@ -124,6 +132,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
         {
+
             IEnumerable<IoTEdgeModuleCommand> moduleCommands = deviceModelObject.EdgeModules
                 .SelectMany(x => x.Commands.Select(cmd => new IoTEdgeModuleCommand
                 {
@@ -160,7 +169,18 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 throw new ResourceNotFoundException($"The edge model with id {modelId} doesn't exist");
             }
+            if (config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.OrdinalIgnoreCase))
+            {
+                return await GetAzureEdgeModel(modelId, edgeModelEntity);
+            }
+            else
+            {
+                return await GetAwsEdgeModel(modelId, edgeModelEntity);
+            }
+        }
 
+        private async Task<IoTEdgeModel> GetAzureEdgeModel(string modelId, EdgeDeviceModel edgeModelEntity)
+        {
             var modules = await this.configService.GetConfigModuleList(modelId);
             var sysModules = await this.configService.GetModelSystemModule(modelId);
             var routes = await this.configService.GetConfigRouteList(modelId);
@@ -190,6 +210,24 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 module.Commands.Add(this.mapper.Map<IoTEdgeModuleCommand>(command));
             }
+
+            return result;
+        }
+
+        private async Task<IoTEdgeModel> GetAwsEdgeModel(string modelId, EdgeDeviceModel edgeModelEntity)
+        {
+            var modules = await this.configService.GetConfigModuleList(modelId);
+            //TODO : User a mapper
+            //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
+            var result = new IoTEdgeModel
+            {
+                ModelId = edgeModelEntity.Id,
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
+                Name = edgeModelEntity.Name,
+                Description = edgeModelEntity.Description,
+                EdgeModules = modules,
+                Labels = this.mapper.Map<List<LabelDto>>(edgeModelEntity.Labels)
+            };
 
             return result;
         }
@@ -290,5 +328,6 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             return Task.Run(() => this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModelId));
         }
+
     }
 }
