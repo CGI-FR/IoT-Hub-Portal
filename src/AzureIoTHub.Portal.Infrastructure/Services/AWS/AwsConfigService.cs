@@ -11,12 +11,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using Amazon.GreengrassV2.Model;
     using Amazon.IoT;
     using Amazon.IoT.Model;
-    using AutoMapper;
-    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Newtonsoft.Json.Linq;
@@ -26,25 +22,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     {
         private readonly IAmazonGreengrassV2 greengras;
         private readonly IAmazonIoT iotClient;
-        private readonly IDeviceModelImageManager deviceModelImageManager;
-        private readonly IMapper mapper;
-        private readonly IEdgeDeviceModelRepository edgeModelRepository;
-        private readonly IUnitOfWork unitOfWork;
 
         public AwsConfigService(
             IAmazonGreengrassV2 greengras,
-            IAmazonIoT iotClient,
-            IDeviceModelImageManager deviceModelImageManager,
-            IMapper mapper,
-            IEdgeDeviceModelRepository edgeModelRepository,
-            IUnitOfWork unitOfWork)
+            IAmazonIoT iotClient)
         {
             this.greengras = greengras;
             this.iotClient = iotClient;
-            this.deviceModelImageManager = deviceModelImageManager;
-            this.mapper = mapper;
-            this.edgeModelRepository = edgeModelRepository;
-            this.unitOfWork = unitOfWork;
         }
 
         public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
@@ -74,9 +58,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 ThingGroupName = edgeModel?.ModelId
             };
 
-            var existingThingGroupResponse = await this.iotClient.DescribeThingGroupAsync(dynamicThingGroup);
+            try
+            {
+                var existingThingGroupResponse = await this.iotClient.DescribeThingGroupAsync(dynamicThingGroup);
 
-            if (existingThingGroupResponse.HttpStatusCode != HttpStatusCode.OK)
+                return existingThingGroupResponse.ThingGroupArn;
+
+            }
+            catch (Amazon.IoT.Model.ResourceNotFoundException)
             {
                 var createThingGroupResponse = await this.iotClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
                 {
@@ -87,7 +76,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 return createThingGroupResponse.ThingGroupArn;
             }
 
-            return existingThingGroupResponse.ThingGroupArn;
         }
 
         private async Task CreateThingTypeIfNotExists(string thingTypeName)
@@ -96,10 +84,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             {
                 ThingTypeName = thingTypeName
             };
+            try
+            {
+                var response = await this.iotClient.DescribeThingTypeAsync(existingThingType);
 
-            var response = await this.iotClient.DescribeThingTypeAsync(existingThingType);
-
-            if (response.HttpStatusCode == HttpStatusCode.NotFound)
+            }
+            catch (Amazon.IoT.Model.ResourceNotFoundException)
             {
                 _ = await this.iotClient.CreateThingTypeAsync(new CreateThingTypeRequest
                 {
@@ -114,6 +104,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     }
                 });
             }
+
         }
 
         private async Task<Dictionary<string, ComponentDeploymentSpecification>> CreateGreenGrassComponents(IoTEdgeModel edgeModel)
