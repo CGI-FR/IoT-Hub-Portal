@@ -28,8 +28,8 @@ Ready to get started with IoT Hub Portal? Great! Follow these simple steps to qu
 
 IoT Hub Portal works seamlessly with both Azure and Amazon Web Services. Simply click on the link below that corresponds to your cloud provider of choice:
 
-* For Azure users, follow the [Quick Start](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/azure/#quick-start) guide.
-* For Amazon Web Services users, follow the [Quick Start](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/aws/#quick-start) guide.
+* For Azure users, follow the [Azure Quick Start guide](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/azure/#quick-start).
+* For Amazon Web Services users, follow the [AWS Quick Start guide](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/aws/#quick-start).
 
 ### Step 2: Configure Your Environment
 
