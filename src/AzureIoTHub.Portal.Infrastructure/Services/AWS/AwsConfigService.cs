@@ -75,7 +75,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
                 return createThingGroupResponse.ThingGroupArn;
             }
-
         }
 
         private async Task CreateThingTypeIfNotExists(string thingTypeName)
@@ -84,10 +83,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             {
                 ThingTypeName = thingTypeName
             };
+
             try
             {
-                var response = await this.iotClient.DescribeThingTypeAsync(existingThingType);
-
+                _ = await this.iotClient.DescribeThingTypeAsync(existingThingType);
             }
             catch (Amazon.IoT.Model.ResourceNotFoundException)
             {
@@ -104,7 +103,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     }
                 });
             }
-
         }
 
         private async Task<Dictionary<string, ComponentDeploymentSpecification>> CreateGreenGrassComponents(IoTEdgeModel edgeModel)
@@ -130,15 +128,17 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             }
 
             return listcomponentName;
-
         }
+
         private static JObject JsonCreateComponent(IoTEdgeModule component)
         {
             var environmentVariableObject = new JObject();
+
             foreach (var env in component.EnvironmentVariables)
             {
                 environmentVariableObject.Add(new JProperty(env.Name, env.Value));
             }
+
             var recipeJson =new JObject(
                     new JProperty("RecipeFormatVersion", "2020-01-25"),
                     new JProperty("ComponentName", component.ModuleName),
