@@ -52,8 +52,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             {
                 ThingGroupName = edgeModel?.Name
             };
-            var thingGrouepResponse = await this.iotClient.DescribeThingGroupAsync(dynamicThingGroup);
-            if (thingGrouepResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            var thingGroupResponse = await this.iotClient.DescribeThingGroupAsync(dynamicThingGroup);
+            if (thingGroupResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
                 throw new InternalServerErrorException($"Can not retreive Thing group with name {edgeModel?.Name} due to an error in the Amazon IoT API.");
 
@@ -62,7 +62,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             {
                 DeploymentName = edgeModel?.Name,
                 Components = await CreateGreenGrassComponents(edgeModel!),
-                TargetArn = thingGrouepResponse.ThingGroupArn
+                TargetArn = thingGroupResponse.ThingGroupArn
             };
 
             var createDeploymentResponse = await this.greengras.CreateDeploymentAsync(createDeploymentRequest);
@@ -72,7 +72,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 throw new InternalServerErrorException("The creation of the deployment failed due to an error in the Amazon IoT API.");
 
             }
-
         }
 
         private async Task<Dictionary<string, ComponentDeploymentSpecification>> CreateGreenGrassComponents(IoTEdgeModel edgeModel)
