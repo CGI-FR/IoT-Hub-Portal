@@ -217,6 +217,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         public Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
         {
+            // To be implemented with the update method in EdgeModelService
             throw new NotImplementedException();
         }
 

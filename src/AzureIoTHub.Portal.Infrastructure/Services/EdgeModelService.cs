@@ -169,7 +169,18 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             {
                 throw new ResourceNotFoundException($"The edge model with id {modelId} doesn't exist");
             }
+            if (config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.OrdinalIgnoreCase))
+            {
+                return await GetAzureEdgeModel(modelId, edgeModelEntity);
+            }
+            else
+            {
+                return await GetAwsEdgeModel(modelId, edgeModelEntity);
+            }
+        }
 
+        private async Task<IoTEdgeModel> GetAzureEdgeModel(string modelId, EdgeDeviceModel edgeModelEntity)
+        {
             var modules = await this.configService.GetConfigModuleList(modelId);
             var sysModules = await this.configService.GetModelSystemModule(modelId);
             var routes = await this.configService.GetConfigRouteList(modelId);
@@ -199,6 +210,24 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
                 module.Commands.Add(this.mapper.Map<IoTEdgeModuleCommand>(command));
             }
+
+            return result;
+        }
+
+        private async Task<IoTEdgeModel> GetAwsEdgeModel(string modelId, EdgeDeviceModel edgeModelEntity)
+        {
+            var modules = await this.configService.GetConfigModuleList(modelId);
+            //TODO : User a mapper
+            //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
+            var result = new IoTEdgeModel
+            {
+                ModelId = edgeModelEntity.Id,
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
+                Name = edgeModelEntity.Name,
+                Description = edgeModelEntity.Description,
+                EdgeModules = modules,
+                Labels = this.mapper.Map<List<LabelDto>>(edgeModelEntity.Labels)
+            };
 
             return result;
         }
