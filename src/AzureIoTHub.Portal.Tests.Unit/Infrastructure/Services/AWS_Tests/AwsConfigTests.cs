@@ -58,7 +58,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         }
 
         [Test]
-        public async Task CreateDeploymentWithComponentsShouldCreateComponentsAndDeployment()
+        public async Task CreateDeploymentWithComponentsAndExistingThingGroupAndThingTypeShouldCreateTheDeployment()
         {
             //Act
             var edge = Fixture.Create<IoTEdgeModel>();
@@ -68,6 +68,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                 {
                     HttpStatusCode = HttpStatusCode.OK
                 });
+
+            _ = this.mockIotClient.Setup(s3 => s3.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DescribeThingTypeResponse());
 
             _ = this.mockGreengrasClient.Setup(s3 => s3.CreateDeploymentAsync(It.IsAny<CreateDeploymentRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateDeploymentResponse
@@ -88,6 +91,43 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 
         }
 
+        [Test]
+        public async Task CreateDeploymentWithComponentsAndNonExistingThingGroupAndThingTypeShouldCreateThingGroupAndThingTypeAndTheDeployment()
+        {
+            //Act
+            var edge = Fixture.Create<IoTEdgeModel>();
 
+            _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Amazon.IoT.Model.ResourceNotFoundException("Resource Not found"));
+
+            _ = this.mockIotClient.Setup(s3 => s3.CreateDynamicThingGroupAsync(It.IsAny<CreateDynamicThingGroupRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateDynamicThingGroupResponse());
+
+            _ = this.mockIotClient.Setup(s3 => s3.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Amazon.IoT.Model.ResourceNotFoundException("Resource Not found"));
+
+            _ = this.mockIotClient.Setup(s3 => s3.CreateThingTypeAsync(It.IsAny<CreateThingTypeRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateThingTypeResponse());
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.CreateDeploymentAsync(It.IsAny<CreateDeploymentRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateDeploymentResponse
+                {
+                    HttpStatusCode = HttpStatusCode.Created
+                });
+            _ = this.mockGreengrasClient.Setup(s3 => s3.CreateComponentVersionAsync(It.IsAny<CreateComponentVersionRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateComponentVersionResponse
+                {
+                    HttpStatusCode = HttpStatusCode.Created
+                });
+
+            //Arrange
+            await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
+
+            //Assert
+            MockRepository.VerifyAll();
+
+
+
+        }
     }
 }
