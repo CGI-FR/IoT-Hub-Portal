@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using System.Globalization;
 
     public abstract class BlazorUnitTest : TestContextWrapper, IDisposable
     {
@@ -32,6 +33,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
 
             // Add Mock Http Client
             MockHttpClient = Services.AddMockHttpClient();
+
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
         }
 
         [TearDown]
