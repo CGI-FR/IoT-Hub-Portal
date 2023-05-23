@@ -110,6 +110,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task GetEdgeModelShouldReturnValueAsync()
         {
             // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("Azure");
+
             var expectedModules = Fixture.CreateMany<IoTEdgeModule>(2).ToList();
             var expectedRoutes = Fixture.CreateMany<IoTEdgeRoute>(2).ToList();
             var expectedSysModule = Fixture.CreateMany<EdgeModelSystemModule>(2).ToList();
