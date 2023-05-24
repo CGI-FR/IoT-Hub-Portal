@@ -79,7 +79,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                     UndoDeprecate = false
                 };
 
-                var response = await this.amazonIoTClient.DeprecateThingTypeAsync(deprecated);
+                _ = await this.amazonIoTClient.DeprecateThingTypeAsync(deprecated);
 
                 _ = await this.amazonIoTClient.DeleteDynamicThingGroupAsync(new DeleteDynamicThingGroupRequest
                 {
