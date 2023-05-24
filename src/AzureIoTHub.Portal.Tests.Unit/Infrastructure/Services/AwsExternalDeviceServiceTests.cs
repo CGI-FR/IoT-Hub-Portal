@@ -53,8 +53,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                 ThingTypeName = externalDeviceModelDto.Name
             };
 
-            _ = this.mockAmazonIot.Setup(e => e.CreateThingTypeAsync(It.Is<CreateThingTypeRequest>(c => externalDeviceModelDto.Name.Equals(c.ThingTypeName, StringComparison.Ordinal)), It.IsAny<CancellationToken>()))
+            _ = this.mockAmazonIot.Setup(e => e.CreateThingTypeAsync(It.Is<CreateThingTypeRequest>(c => externalDeviceModelDto.Name.Equals(c.ThingTypeName, StringComparison.OrdinalIgnoreCase)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(createThingTypeResponse);
+
+            _ = this.mockAmazonIot.Setup(c => c.DescribeThingGroupAsync(It.Is<DescribeThingGroupRequest>(d => d.ThingGroupName.Equals(externalDeviceModelDto.Name, StringComparison.OrdinalIgnoreCase)), It.IsAny<CancellationToken>()))
+                    .ThrowsAsync(new ResourceNotFoundException(It.IsAny<string>()));
+
+            _ = this.mockAmazonIot.Setup(c => c.CreateDynamicThingGroupAsync(It.Is<CreateDynamicThingGroupRequest>(d => d.ThingGroupName.Equals(externalDeviceModelDto.Name, StringComparison.OrdinalIgnoreCase)
+                                                                                                                        && d.QueryString.Equals($"thingTypeName: {externalDeviceModelDto.Name}", StringComparison.OrdinalIgnoreCase)), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new CreateDynamicThingGroupResponse());
 
             // Act
             var result = await this.externalDeviceModelService.CreateDeviceModel(externalDeviceModelDto);
@@ -70,7 +77,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             // Arrange
             var externalDeviceModelDto = Fixture.Create<ExternalDeviceModelDto>();
 
-            _ = this.mockAmazonIot.Setup(e => e.CreateThingTypeAsync(It.Is<CreateThingTypeRequest>(c => externalDeviceModelDto.Name.Equals(c.ThingTypeName, StringComparison.Ordinal)), It.IsAny<CancellationToken>()))
+            _ = this.mockAmazonIot.Setup(e => e.CreateThingTypeAsync(It.Is<CreateThingTypeRequest>(c => externalDeviceModelDto.Name.Equals(c.ThingTypeName, StringComparison.OrdinalIgnoreCase)), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAlreadyExistsException(Fixture.Create<string>()));
 
             // Act
@@ -87,8 +94,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             // Arrange
             var externalDeviceModelDto = Fixture.Create<ExternalDeviceModelDto>();
 
-            _ = this.mockAmazonIot.Setup(e => e.DeprecateThingTypeAsync(It.Is<DeprecateThingTypeRequest>(c => externalDeviceModelDto.Name.Equals(c.ThingTypeName, StringComparison.Ordinal) && !c.UndoDeprecate), It.IsAny<CancellationToken>()))
+            _ = this.mockAmazonIot.Setup(e => e.DeprecateThingTypeAsync(It.Is<DeprecateThingTypeRequest>(c => externalDeviceModelDto.Name.Equals(c.ThingTypeName, StringComparison.OrdinalIgnoreCase) && !c.UndoDeprecate), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DeprecateThingTypeResponse());
+
+            _ = this.mockAmazonIot.Setup(c => c.DeleteDynamicThingGroupAsync(It.Is<DeleteDynamicThingGroupRequest>(d => d.ThingGroupName.Equals(externalDeviceModelDto.Name, StringComparison.OrdinalIgnoreCase)), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new DeleteDynamicThingGroupResponse());
 
             // Act
             await this.externalDeviceModelService.DeleteDeviceModel(externalDeviceModelDto);
@@ -103,7 +113,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             // Arrange
             var externalDeviceModelDto = Fixture.Create<ExternalDeviceModelDto>();
 
-            _ = this.mockAmazonIot.Setup(e => e.DeprecateThingTypeAsync(It.Is<DeprecateThingTypeRequest>(c => externalDeviceModelDto.Name.Equals(c.ThingTypeName, StringComparison.Ordinal) && !c.UndoDeprecate), It.IsAny<CancellationToken>()))
+            _ = this.mockAmazonIot.Setup(e => e.DeprecateThingTypeAsync(It.Is<DeprecateThingTypeRequest>(c => externalDeviceModelDto.Name.Equals(c.ThingTypeName, StringComparison.OrdinalIgnoreCase) && !c.UndoDeprecate), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceNotFoundException(Fixture.Create<string>()));
 
             // Act

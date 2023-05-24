@@ -33,9 +33,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         {
             try
             {
-                var thingType = this.mapper.Map<CreateThingTypeRequest>(deviceModel);
-
-                var createThingTypeRequest = this.mapper.Map<CreateThingTypeRequest>(thingType);
+                var createThingTypeRequest = this.mapper.Map<CreateThingTypeRequest>(deviceModel);
 
                 createThingTypeRequest.Tags.Add(new Tag
                 {
@@ -44,8 +42,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 });
 
                 var response = await this.amazonIoTClient.CreateThingTypeAsync(createThingTypeRequest);
+                await this.CreateDynamicGroupForThingType(response.ThingTypeName);
 
                 deviceModel.Id = response.ThingTypeId;
+
                 return deviceModel;
             }
             catch (ResourceAlreadyExistsException e)
@@ -80,6 +80,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 };
 
                 _ = await this.amazonIoTClient.DeprecateThingTypeAsync(deprecated);
+
+                _ = await this.amazonIoTClient.DeleteDynamicThingGroupAsync(new DeleteDynamicThingGroupRequest
+                {
+                    ThingGroupName = deviceModel.Name
+                });
             }
             catch (ResourceNotFoundException e)
             {
@@ -190,6 +195,27 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         public Task<Twin> UpdateDeviceTwin(Twin twin)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task CreateDynamicGroupForThingType(string thingTypeName)
+        {
+            try
+            {
+                var dynamicThingGroup = new DescribeThingGroupRequest
+                {
+                    ThingGroupName = thingTypeName
+                };
+
+                _ = await this.amazonIoTClient.DescribeThingGroupAsync(dynamicThingGroup);
+            }
+            catch (ResourceNotFoundException)
+            {
+                _ = await this.amazonIoTClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
+                {
+                    ThingGroupName = thingTypeName,
+                    QueryString = $"thingTypeName: {thingTypeName}"
+                });
+            }
         }
     }
 }
