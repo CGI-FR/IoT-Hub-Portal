@@ -9,7 +9,7 @@
 <link href="../unit-tests-common-practices/" rel="prev"/>
 <link href="../../migrations/v3-to-v4/" rel="next"/>
 <link href="../../../assets/images/favicon.svg" rel="icon"/>
-<meta content="mkdocs-1.4.2, mkdocs-material-9.0.6" name="generator"/>
+<meta content="mkdocs-1.4.3, mkdocs-material-9.0.6" name="generator"/>
 <title>Unit Tests on Blazor components - IoT Hub Portal</title>
 <link href="../../../assets/stylesheets/main.558e4712.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.2505c338.min.css" rel="stylesheet"/>
@@ -550,12 +550,12 @@ was called after the component was initialized:</p>
 <p class="admonition-title">Tip</p>
 <p><code>WaitForAssertion</code> is useful in asserting asynchronous changes: It will blocks and waits in a
 test method until the specified assertion action does not throw an exception, or until the timeout is reached (the default
-timeout is one second). <img alt="👉" class="twemoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f449.svg" title=":point_right:"> <a href="https://bunit.dev/docs/verification/async-assertion.html">Assertion of asynchronous changes</a></img></p>
+timeout is one second). <img alt="👉" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1f449.svg" title=":point_right:"> <a href="https://bunit.dev/docs/verification/async-assertion.html">Assertion of asynchronous changes</a></img></p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Within unit tests on Blazor components, you can interact with HTML DOM and query rendered HTMLelements (buttons, div...) by using
-CSS selectors (id, class...) <img alt="👉" class="twemoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f449.svg" title=":point_right:"> Lean more about <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">CSS selectors</a></img></p>
+CSS selectors (id, class...) <img alt="👉" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1f449.svg" title=":point_right:"> Lean more about <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">CSS selectors</a></img></p>
 </div>
 <h2 id="how-to-unit-test-a-component-requiring-an-external-component">How to unit test a component requiring an external component<a class="headerlink" href="#how-to-unit-test-a-component-requiring-an-external-component" title="Permanent link">¶</a></h2>
 <p>Some components proposed by MudBlazor (MudAutocomplete, MudSelect...) use another component <code>MudPopoverProvider</code> to display elements.
