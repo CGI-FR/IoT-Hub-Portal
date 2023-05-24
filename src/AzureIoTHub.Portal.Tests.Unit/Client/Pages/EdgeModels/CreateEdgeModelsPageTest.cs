@@ -45,6 +45,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnSaveShouldPostEdgeModelData()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var edgeModel = new IoTEdgeModel()
             {
                 Name = Guid.NewGuid().ToString(),
@@ -75,6 +77,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void WhenEdgeModelRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             _ = this.mockSnackbarService
                 .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
@@ -94,6 +97,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void WhenModulesRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var edgeModel = new IoTEdgeModel()
             {
                 Name = Guid.NewGuid().ToString(),
@@ -124,6 +129,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void WhenRoutesRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var edgeModel = new IoTEdgeModel()
             {
                 Name = Guid.NewGuid().ToString(),
@@ -154,6 +161,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnSaveShouldPostProcessProblemDetailsExceptionWhenIssueOccurs()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var edgeModel = new IoTEdgeModel()
             {
                 Name = Guid.NewGuid().ToString(),
@@ -179,6 +188,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnAddModuleShouldAddModuleOnEdgeModelData()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
@@ -195,6 +205,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnDeleteModuleShouldRemoveModule()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
@@ -216,6 +227,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnShowAddEdgeModuleDialogShouldShowDialog()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
 
@@ -246,6 +259,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickShowAddEdgeModuleDialogShouldDisplayAddModuleDialogAndReturnIfAborted()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
 
@@ -276,6 +291,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnShowSystemModuleDetailShouldShowDialog()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
 
@@ -301,6 +318,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnShowSystemModuleDetailShouldShowDialogAndReturnIfAborted()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
 
@@ -325,6 +344,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnAddRouteShouldAddRouteOnEdgeModelData()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
@@ -341,6 +361,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnDeleteRouteShouldRemoveRouteFromEdgeModelData()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();

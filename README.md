@@ -1,5 +1,6 @@
 [![Tests](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/ci-tests.yml/badge.svg?branch=main)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/ci-tests.yml)
-[![Deploy Staging](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml/badge.svg)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml)
+[![Deploy Azure Staging](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml/badge.svg)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml)
+[![Deploy AWS Staging](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/aws_deploy_staging.yml/badge.svg)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/aws_deploy_staging.yml)
 [![Publish](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/publish.yml/badge.svg?event=release)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/publish.yml)
 [![codecov](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal/branch/main/graph/badge.svg?token=S1A59KMRV6)](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal)
 [![Open Source Helpers](https://img.shields.io/github/contributors/CGI-FR/IoT-Hub-Portal)](https://img.shields.io/github/contributors/CGI-FR/IoT-Hub-Portal)
@@ -8,7 +9,7 @@
 
 # IoT Hub Portal
 
-This project aims to provide a solution for handling IoT Devices easyly.
+This project aims to provide a solution for handling IoT Devices easily.
 It leverages on Azure IoT Hub or AWS IoT Core for connectivity and device management.
 
 ## Features
@@ -27,8 +28,8 @@ Ready to get started with IoT Hub Portal? Great! Follow these simple steps to qu
 
 IoT Hub Portal works seamlessly with both Azure and Amazon Web Services. Simply click on the link below that corresponds to your cloud provider of choice:
 
-* For Azure users, follow the [Quick Start](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/azure/#quick-start) guide.
-* For Amazon Web Services users, follow the [Quick Start](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/aws/#quick-start) guide.
+* For Azure users, follow the [Azure Quick Start guide](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/azure/#quick-start).
+* For Amazon Web Services users, follow the [AWS Quick Start guide](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/aws/#quick-start).
 
 ### Step 2: Configure Your Environment
 

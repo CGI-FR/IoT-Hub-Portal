@@ -255,5 +255,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             this.mockRepository.VerifyAll();
         }
+
     }
 }

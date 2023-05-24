@@ -108,6 +108,8 @@ jobs:
           OIDC__AUTHORITY: ${{ vars.OIDC_AUTHORITY }}
           OIDC__METADATAURL: ${{ vars.OIDC_METADATAURL }}
           OIDC__SCOPE: ${{ vars.OIDC_SCOPE }}
+          OIDC__VALIDATEAUDIENCE: ${{ vars.OIDC_VALIDATEAUDIENCE }}
+          LORAFEATURE__ENABLED: ${{ vars.LORAFEATURE_ENABLED }}
         with:
           service: ${{ vars.AWS_APP_RUNNER_NAME }}
           image: ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
@@ -126,6 +128,8 @@ jobs:
             OIDC__AUTHORITY
             OIDC__METADATAURL
             OIDC__SCOPE
+            OIDC__VALIDATEAUDIENCE
+            LORAFEATURE__ENABLED
       
       - name: App Runner URL
         run: echo "App runner URL ${{ steps.deploy-apprunner.outputs.service-url }}" 
