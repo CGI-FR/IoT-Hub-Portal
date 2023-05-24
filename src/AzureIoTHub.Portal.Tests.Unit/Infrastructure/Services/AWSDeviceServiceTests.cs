@@ -86,7 +86,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             {
                 DeviceID = Fixture.Create<string>()
             };
-            var device = Mapper.Map<Device>(deviceDto);
 
             _ = this.mockAmazonIotClient.Setup(iotClient => iotClient.CreateThingAsync(It.IsAny<CreateThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateThingResponse
