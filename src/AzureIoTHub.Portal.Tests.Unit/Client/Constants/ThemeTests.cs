@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Constants
 {
     using AzureIoTHub.Portal.Client.Constants;
     using FluentAssertions;
+    using MudBlazor;
     using NUnit.Framework;
 
     [TestFixture]
@@ -20,6 +21,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Constants
             var currentTheme = Theme.CurrentTheme;
 
             // Assert
+            _ = currentTheme.Palette.GetType().Should().Be(typeof(PaletteLight));
             _ = currentTheme.Palette.Background.ToString().Should().Be(expectedPaletteBackground);
         }
     }

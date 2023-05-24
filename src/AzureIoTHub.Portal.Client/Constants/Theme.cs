@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Client.Constants
     {
         public static readonly MudTheme CurrentTheme = new()
         {
-            Palette = new Palette
+            Palette = new PaletteLight
             {
                 Background = "#efefef"
             }
