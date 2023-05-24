@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/AzureIoTHub.Portal/Server/AzureIoTHub.Portal.Server.csproj",
+                "${workspaceFolder}/src/AzureIoTHub.Portal.Server/AzureIoTHub.Portal.Server.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/src/AzureIoTHub.Portal/Server/AzureIoTHub.Portal.Server.csproj",
+                "${workspaceFolder}/src/AzureIoTHub.Portal.Server/AzureIoTHub.Portal.Server.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/src/AzureIoTHub.Portal/Server/AzureIoTHub.Portal.Server.csproj"
+                "${workspaceFolder}/src/AzureIoTHub.Portal.Server/AzureIoTHub.Portal.Server.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
