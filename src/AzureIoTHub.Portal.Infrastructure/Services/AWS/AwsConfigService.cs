@@ -11,8 +11,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using Amazon.GreengrassV2.Model;
     using Amazon.IoT;
     using Amazon.IoT.Model;
+    using AutoMapper;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Newtonsoft.Json.Linq;
@@ -22,17 +27,37 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     {
         private readonly IAmazonGreengrassV2 greengras;
         private readonly IAmazonIoT iotClient;
+        private readonly IDeviceModelImageManager deviceModelImageManager;
+
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IEdgeDeviceModelRepository edgeModelRepository;
+        private readonly ILabelRepository labelRepository;
+        private readonly ConfigHandler config;
+        private readonly IMapper mapper;
 
         public AwsConfigService(
             IAmazonGreengrassV2 greengras,
-            IAmazonIoT iotClient)
+            IAmazonIoT iot,
+            IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IEdgeDeviceModelRepository edgeModelRepository,
+            IDeviceModelImageManager deviceModelImageManager,
+            ILabelRepository labelRepository,
+            ConfigHandler config)
         {
             this.greengras = greengras;
-            this.iotClient = iotClient;
+            this.iotClient = iot;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.edgeModelRepository = edgeModelRepository;
+            this.deviceModelImageManager = deviceModelImageManager;
+            this.labelRepository = labelRepository;
+            this.config = config;
         }
 
         public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
         {
+
             var createDeploymentRequest = new CreateDeploymentRequest
             {
                 DeploymentName = edgeModel?.Name,
@@ -46,6 +71,25 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             {
                 throw new InternalServerErrorException("The deployment creation failed due to an error in the Amazon IoT API.");
 
+            }
+            else
+            {
+                var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
+                if (edgeModelEntity == null)
+                {
+                    edgeModel.ModelId = createDeploymentResponse.DeploymentId;
+
+                    edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
+
+                    await this.edgeModelRepository.InsertAsync(edgeModelEntity);
+                    await this.unitOfWork.SaveAsync();
+                }
+                else
+                {
+                    throw new Domain.Exceptions.ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
+                }
+
+                _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
             }
         }
 
@@ -118,6 +162,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     InlineRecipe = recipeStream
                 };
                 var response = await greengras.CreateComponentVersionAsync(componentVersion);
+
                 if (response.HttpStatusCode != System.Net.HttpStatusCode.Created)
                 {
                     throw new InternalServerErrorException("The component creation failed due to an error in the Amazon IoT API.");
@@ -214,10 +259,72 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             throw new NotImplementedException();
         }
 
-        public Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
+        public async Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
         {
-            // To be implemented with the update method in EdgeModelService
-            throw new NotImplementedException();
+
+            var moduleList = new List<IoTEdgeModule>();
+
+            var getDeployement = new GetDeploymentRequest
+            {
+                DeploymentId = modelId,
+            };
+            try
+            {
+                var response = await this.greengras.GetDeploymentAsync(getDeployement);
+
+                foreach (var compoenent in response.Components)
+                {
+                    var responseComponent = await this.greengras.GetComponentAsync(new GetComponentRequest
+                    {
+                        Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
+                        RecipeOutputFormat = RecipeOutputFormat.JSON
+                    });
+
+                    using var reader = new StreamReader(responseComponent.Recipe);
+
+                    // Extract the lifecycle from the JSON object
+                    var run_variable = retreiveParentAttribute("Lifecycle", "Run", reader);
+
+                    // Use the `lifecycle` variable as needed
+                }
+                return moduleList;
+            }
+            catch (Amazon.IoT.Model.ResourceNotFoundException)
+            {
+                throw new InternalServerErrorException("The deployment is not found");
+
+            }
+        }
+
+        private static string retreiveParentAttribute(string parent, string child, StreamReader reader)
+        {
+            var recipeJsonString = reader.ReadToEnd();
+            var runValue = "";
+            // Parse the string as a JSON object
+            var recipeJsonObject = JObject.Parse(recipeJsonString);
+
+            // Extract the "Manifests" array
+            var jArray = recipeJsonObject["Manifests"] as JArray;
+            var manifests = jArray;
+
+            if (manifests != null && manifests.Count > 0)
+            {
+                // Get the first manifest in the array
+                var firstManifest = manifests[0] as JObject;
+
+                // Extract the "Lifecycle" object
+                var jObject = firstManifest?[parent] as JObject;
+                var lifecycle = jObject;
+
+                if (lifecycle != null)
+                {
+                    // Extract the value of "Run"
+                    runValue = lifecycle[child]?.ToString();
+
+                    // Use the `runValue` variable as needed
+                }
+            }
+            return runValue;
         }
 
         public Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId)
