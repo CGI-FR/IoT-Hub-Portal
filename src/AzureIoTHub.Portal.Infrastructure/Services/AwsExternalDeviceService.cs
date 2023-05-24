@@ -33,9 +33,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         {
             try
             {
-                var thingType = this.mapper.Map<CreateThingTypeRequest>(deviceModel);
-
-                var createThingTypeRequest = this.mapper.Map<CreateThingTypeRequest>(thingType);
+                var createThingTypeRequest = this.mapper.Map<CreateThingTypeRequest>(deviceModel);
 
                 createThingTypeRequest.Tags.Add(new Tag
                 {
