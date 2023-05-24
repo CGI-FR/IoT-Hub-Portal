@@ -43,10 +43,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             }
 
             var deviceShadow = await this.externalDeviceService.GetDeviceShadow(deviceDb.Name);
-            if (deviceShadow == null)
-            {
-                throw new ResourceNotFoundException($"Unable to find the device shadow {deviceDb.Name} in AWS");
-            }
 
             IEnumerable<DeviceModelProperty> items;
             try
@@ -64,7 +60,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             try
             {
-                desiredPropertiesAsJson = JObject.Parse(JsonConvert.SerializeObject(AWSDeviceHelper.RetrieveDesiredProperties(deviceShadow)));
+                desiredPropertiesAsJson = AWSDeviceHelper.RetrieveDesiredProperties(deviceShadow);
             }
             catch (JsonReaderException e)
             {
@@ -73,7 +69,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             try
             {
-                reportedPropertiesAsJson = JObject.Parse(JsonConvert.SerializeObject(AWSDeviceHelper.RetrieveReportedProperties(deviceShadow)));
+                reportedPropertiesAsJson = AWSDeviceHelper.RetrieveReportedProperties(deviceShadow);
             }
             catch (JsonReaderException e)
             {

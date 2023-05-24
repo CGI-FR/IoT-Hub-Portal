@@ -87,7 +87,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateDeviceShouldCreateDevice()
         {
             // Arrange
-            var device = new DeviceDetails();
+            var device = new DeviceDetails()
+            {
+                DeviceID = Fixture.Create<string>()
+            };
 
             _ = MockHttpClient.When(HttpMethod.Post, "/api/devices")
                 .With(m =>

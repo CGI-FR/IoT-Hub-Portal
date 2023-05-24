@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using System.Collections.Generic;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
@@ -18,11 +17,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Shared.Constants;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -84,26 +82,52 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task CreateADeviceShouldReturnAValue()
         {
             // Arrange
-            var ThingID = Fixture.Create<string>();
-            var deviceDetails = new DeviceDetails()
+            var deviceDto = new DeviceDetails()
             {
-                DeviceName = Fixture.Create<string>(),
-                ModelId = Fixture.Create<string>(),
-                ModelName = Fixture.Create<string>(),
-                Tags = new Dictionary<string, string>()
-                {
-                    {
-                        Fixture.Create<string>(),
-                        Fixture.Create<string>()
-                    }
-                }
+                DeviceID = Fixture.Create<string>()
             };
-            var device = Mapper.Map<Device>(deviceDetails);
+            var device = Mapper.Map<Device>(deviceDto);
+
+            _ = this.mockAmazonIotClient.Setup(iotClient => iotClient.CreateThingAsync(It.IsAny<CreateThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateThingResponse
+                {
+                    ThingId = deviceDto.DeviceID,
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockAmazonIotDataClient.Setup(iotDataClient => iotDataClient.UpdateThingShadowAsync(It.IsAny<UpdateThingShadowRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UpdateThingShadowResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            //Act
+            var result = await this.awsDeviceService.CreateDevice(deviceDto);
+
+            //Assert
+            _ = result.Should().BeEquivalentTo(deviceDto);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateDeviceDuplicateExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails()
+            {
+                DeviceID = Fixture.Create<string>()
+            };
 
             _ = this.mockAmazonIotClient.Setup(s3 => s3.CreateThingAsync(It.IsAny<CreateThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateThingResponse
                 {
-                    ThingId = ThingID,
+                    ThingId = deviceDto.DeviceID,
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
@@ -117,13 +141,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
+                .ThrowsAsync(new UniqueConstraintException());
 
-            //Act
-            var result = await this.awsDeviceService.CreateDevice(deviceDetails);
+            // Act
+            var act = () => this.awsDeviceService.CreateDevice(deviceDto);
 
-            //Assert
-            _ = result.Should().BeEquivalentTo(deviceDetails);
+            // Assert
+            _ = await act.Should().ThrowAsync<UniqueConstraintException>();
             MockRepository.VerifyAll();
         }
     }
