@@ -37,6 +37,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
                 var createThingTypeRequest = this.mapper.Map<CreateThingTypeRequest>(thingType);
 
+                createThingTypeRequest.Tags.Add(new Tag
+                {
+                    Key = "iotEdge",
+                    Value = "False"
+                });
+
                 var response = await this.amazonIoTClient.CreateThingTypeAsync(createThingTypeRequest);
 
                 deviceModel.Id = response.ThingTypeId;

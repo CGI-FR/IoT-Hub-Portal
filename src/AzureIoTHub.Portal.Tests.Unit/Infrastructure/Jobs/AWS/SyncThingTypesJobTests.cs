@@ -88,6 +88,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
             var existingThingType = new DescribeThingTypeResponse
             {
+                ThingTypeArn = Fixture.Create<string>(),
                 ThingTypeId = existingDeviceModelName,
                 ThingTypeName = existingDeviceModelName,
                 ThingTypeMetadata = new ThingTypeMetadata()
@@ -95,6 +96,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
             var newThingType = new DescribeThingTypeResponse
             {
+                ThingTypeArn = Fixture.Create<string>(),
                 ThingTypeId = newDeviceModelName,
                 ThingTypeName = newDeviceModelName,
                 ThingTypeMetadata = new ThingTypeMetadata()
@@ -102,6 +104,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
             var depcrecatedThingType = new DescribeThingTypeResponse
             {
+                ThingTypeArn = Fixture.Create<string>(),
                 ThingTypeId = depcrecatedDeviceModelName,
                 ThingTypeName = depcrecatedDeviceModelName,
                 ThingTypeMetadata = new ThingTypeMetadata
@@ -116,6 +119,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     .ReturnsAsync(newThingType);
             _ = this.iaAmazon.Setup(client => client.DescribeThingTypeAsync(It.Is<DescribeThingTypeRequest>(c => c.ThingTypeName == depcrecatedThingType.ThingTypeName), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(depcrecatedThingType);
+
+            _ = this.iaAmazon.Setup(client => client.ListTagsForResourceAsync(It.IsAny<ListTagsForResourceRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListTagsForResourceResponse
+                {
+                    NextToken = Fixture.Create<string>(),
+                    Tags = new List<Tag>
+                    {
+                                    new Tag
+                                    {
+                                        Key = "iotEdge",
+                                        Value = "False"
+                                    }
+                    }
+                });
 
             var existingDeviceModel = new DeviceModel
             {
