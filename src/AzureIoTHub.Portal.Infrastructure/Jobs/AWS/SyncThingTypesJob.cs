@@ -64,11 +64,52 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             foreach (var thingType in thingTypes)
             {
-                await CreateOrUpdateDeviceModel(thingType);
+                var isEdge = await IsEdgeThingType(thingType);
+
+                // Cannot know if the thing type was created for an iotEdge or not, so skipping...
+                if (!isEdge.HasValue)
+                {
+                    continue;
+                }
+
+                if (isEdge == true)
+                {
+                    // TODO: Implement CreateOrUpdateEdgeModel here.
+                }
+                else
+                {
+                    await CreateOrUpdateDeviceModel(thingType);
+                }
             }
 
-            //Delete in Database AWS deleted thing types
+            // Delete in Database AWS deleted thing types
             await DeleteThingTypes(thingTypes);
+        }
+
+        private async Task<bool?> IsEdgeThingType(DescribeThingTypeResponse thingType)
+        {
+            do
+            {
+                var response = await this.amazonIoTClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
+                {
+                    ResourceArn = thingType.ThingTypeArn
+                });
+
+                if (response == null || !response.Tags.Any())
+                {
+                    return null;
+                }
+
+                var iotEdgeTag = response.Tags.Where(c => c.Key.Equals("iotEdge", StringComparison.OrdinalIgnoreCase));
+
+                if (!iotEdgeTag.Any())
+                {
+                    continue;
+                }
+
+                return bool.TryParse(iotEdgeTag.Single().Value, out var result) ? result : null;
+
+            } while (true);
         }
 
         private async Task<List<DescribeThingTypeResponse>> GetAllThingTypes()
@@ -124,8 +165,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 _ = this.mapper.Map(deviceModel, existingDeviceModel);
                 this.deviceModelRepository.Update(existingDeviceModel);
             }
-            await this.unitOfWork.SaveAsync();
 
+            await this.unitOfWork.SaveAsync();
         }
 
         private async Task DeleteThingTypes(List<DescribeThingTypeResponse> thingTypes)
