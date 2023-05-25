@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Services
+namespace AzureIoTHub.Portal.Infrastructure.Services
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -149,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public abstract Task<bool> CheckIfDeviceExists(string deviceId);
 
-        public async Task<TDto> CreateDevice(TDto device)
+        public virtual async Task<TDto> CreateDevice(TDto device)
         {
             var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(device.DeviceID);
 
@@ -163,7 +163,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected abstract Task<TDto> CreateDeviceInDatabase(TDto device);
 
-        public async Task<TDto> UpdateDevice(TDto device)
+        public virtual async Task<TDto> UpdateDevice(TDto device)
         {
             // Device status (enabled/disabled) has to be dealt with afterwards
             var currentDevice = await this.externalDevicesService.GetDevice(device.DeviceID);

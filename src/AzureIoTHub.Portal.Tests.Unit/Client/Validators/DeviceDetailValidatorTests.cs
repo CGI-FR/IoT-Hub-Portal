@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
 {
     using System;
     using AzureIoTHub.Portal.Client.Validators;
+    using AzureIoTHub.Portal.Shared.Constants;
     using Models.v10;
     using NUnit.Framework;
 
@@ -32,6 +33,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
             Assert.AreEqual(0, standardValidation.Errors.Count);
         }
 
+        [Test]
+        public void ValidateValidAWSDevice()
+        {
+
+            // Arrange
+            var standardValidator = new DeviceDetailsValidator(CloudProviders.AWS);
+            var device = new DeviceDetails()
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            // Act
+            var standardValidation = standardValidator.Validate(device);
+
+            // Assert
+            Assert.IsTrue(standardValidation.IsValid);
+            Assert.AreEqual(0, standardValidation.Errors.Count);
+        }
+
         [TestCase("DeviceName", "", "ModelIdValue", "DeviceIDValue")]
         [TestCase("ModelId", "DeviceNameValue", "", "DeviceIDValue")]
         [TestCase("DeviceID", "DeviceNameValue", "ModelIdValue", "")]
@@ -42,7 +63,33 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
             string DeviceIDValue)
         {
             // Arrange
-            var standardValidator = new DeviceDetailsValidator();
+            var standardValidator = new DeviceDetailsValidator(CloudProviders.Azure);
+            var device = new DeviceDetails()
+            {
+                DeviceName = DeviceNameValue,
+                ModelId =ModelIdValue,
+                DeviceID = DeviceIDValue,
+            };
+
+            // Act
+            var standardValidation = standardValidator.Validate(device);
+
+            // Assert
+            Assert.IsFalse(standardValidation.IsValid);
+            Assert.GreaterOrEqual(standardValidation.Errors.Count, 1);
+            Assert.AreEqual(standardValidation.Errors[0].ErrorMessage, $"{testedValue} is required.");
+        }
+
+        [TestCase("DeviceName", "", "ModelIdValue", "DeviceIDValue")]
+        [TestCase("ModelId", "DeviceNameValue", "", "DeviceIDValue")]
+        public void ValidateMissingAWSFieldShouldReturnError(
+            string testedValue,
+            string DeviceNameValue,
+            string ModelIdValue,
+            string DeviceIDValue)
+        {
+            // Arrange
+            var standardValidator = new DeviceDetailsValidator(CloudProviders.AWS);
             var device = new DeviceDetails()
             {
                 DeviceName = DeviceNameValue,
@@ -63,7 +110,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         public void ValidateAllFieldsEmptyShouldReturnError()
         {
             // Arrange
-            var standardValidator = new DeviceDetailsValidator();
+            var standardValidator = new DeviceDetailsValidator(CloudProviders.Azure);
             var device = new DeviceDetails();
 
             // Act
@@ -72,6 +119,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
             // Assert
             Assert.IsFalse(standardValidation.IsValid);
             Assert.AreEqual(3, standardValidation.Errors.Count);
+        }
+
+        [Test]
+        public void AWSValidateAllFieldsEmptyShouldReturnError()
+        {
+            // Arrange
+            var standardValidator = new DeviceDetailsValidator(CloudProviders.AWS);
+            var device = new DeviceDetails();
+
+            // Act
+            var standardValidation = standardValidator.Validate(device);
+
+            // Assert
+            Assert.IsFalse(standardValidation.IsValid);
+            Assert.AreEqual(2, standardValidation.Errors.Count);
         }
     }
 }

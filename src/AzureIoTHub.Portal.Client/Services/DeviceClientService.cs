@@ -29,9 +29,20 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.GetFromJsonAsync<DeviceDetails>($"api/devices/{deviceId}")!;
         }
 
-        public Task CreateDevice(DeviceDetails device)
+        public async Task<string> CreateDevice(DeviceDetails device)
         {
-            return this.http.PostAsJsonAsync("api/devices", device);
+            var response = await this.http.PostAsJsonAsync("api/devices", device);
+
+            if (device.DeviceID != null)
+            {
+                return device.DeviceID;
+            }
+
+            //Retrieve Device ID
+            var responseJson = await response.Content.ReadAsStringAsync();
+            var updatedDevice = Newtonsoft.Json.JsonConvert.DeserializeObject<DeviceDetails>(responseJson);
+
+            return updatedDevice!.DeviceID;
         }
 
         public Task UpdateDevice(DeviceDetails device)

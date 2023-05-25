@@ -6,12 +6,13 @@
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using AzureIoTHub.Portal.Shared.Models
-@using AzureIoTHub.Portal.Shared.Models.v10;
-@using AzureIoTHub.Portal.Shared.Models.v10.Filters;
-@using AzureIoTHub.Portal.Shared.Constants;
+@using AzureIoTHub.Portal.Shared.Models.v10
+@using AzureIoTHub.Portal.Shared.Models.v10.Filters
+@using AzureIoTHub.Portal.Shared.Constants
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
+@inject PortalSettings Portal
 @inject NavigationManager NavManager
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
@@ -108,18 +109,23 @@
                                                 }
                                                 else
                                                 {
-                                                    <MudTextField @bind-Value="@Device.DeviceID"
-                                                              id=@nameof(DeviceDetails.DeviceID)
-                                                              Label="Device ID"
-                                                              Variant="Variant.Outlined"
-                                                              Validation=@(standardValidator.ValidateValue)
-                                                              For="@(()=> Device.DeviceID)"
-                                                              HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+                                                    if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                                    {
+                                                        <MudTextField @bind-Value="@Device.DeviceID"
+                                                                  id=@nameof(DeviceDetails.DeviceID)
+                                                                  Label="Device ID"
+                                                                  Variant="Variant.Outlined"
+                                                                  Validation=@(standardValidator.ValidateValue)
+                                                                  For="@(()=> Device.DeviceID)"
+                                                                  HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+                                                    }
                                                 }
                                             </MudItem>
+
                                             <MudItem xs="12">
                                                 <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
                                             </MudItem>
+                                            
                                             <MudItem xs="12">
                                                 <MudTextField @bind-Value="@Device.DeviceName"
                                                               id="@nameof(DeviceDetails.DeviceName)"
@@ -128,6 +134,7 @@
                                                               For="@(()=> Device.DeviceName)"
                                                               Required="true" />
                                             </MudItem>
+
                                             <MudItem xs="12">
                                                 <MudText>
                                                     <b>Status</b>
@@ -267,6 +274,7 @@
     private MudForm form = default!;
 
     private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
+
     private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
     private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; } = default!;
 
@@ -310,6 +318,8 @@
     {
         try
         {
+            this.standardValidator = new DeviceDetailsValidator(Portal.CloudProvider);
+
             DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
             Device = DeviceLayoutService.GetSharedDevice() ?? this.Device;
             DeviceModel = DeviceLayoutService.GetSharedDeviceModel() ?? this.DeviceModel;
@@ -365,7 +375,7 @@
                 await LoRaWanDeviceClientService.CreateDevice((Device as LoRaDeviceDetails)!);
             else
             {
-                await DeviceClientService.CreateDevice((Device as DeviceDetails)!);
+                Device.DeviceID = await DeviceClientService.CreateDevice((Device as DeviceDetails)!);
                 await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
             }
 
@@ -465,7 +475,8 @@
                 string.Empty
             }
         };
-        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
+
+        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();      
     }
 
     private void SetSaveButtonText(DeviceSaveAction saveAction)
@@ -492,6 +503,7 @@
                 {
                     DeviceID = Device.DeviceID,
                     ModelId = model?.ModelId!,
+                    ModelName = model?.Name,
                     ImageUrl = model?.ImageUrl!,
                     DeviceName = Device.DeviceName,
                     IsEnabled = Device.IsEnabled,
@@ -545,4 +557,3 @@
         }
     }
 }
-

@@ -25,6 +25,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using System.Linq;
     using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Constants;
 
     [TestFixture]
     public class CreateDevicePageTests : BlazorUnitTest
@@ -55,6 +56,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
 
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
@@ -82,7 +84,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(expectedDeviceDetails.DeviceID));
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -291,7 +293,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(expectedDeviceDetails.DeviceID));
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -361,7 +363,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(expectedDeviceDetails.DeviceID));
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>

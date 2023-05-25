@@ -14,7 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Application.Mappers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
