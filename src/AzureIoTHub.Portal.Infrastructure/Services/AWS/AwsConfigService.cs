@@ -51,11 +51,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         private async Task<string> GetThingGroupArn(IoTEdgeModel edgeModel)
         {
-            await CreateThingTypeIfNotExists(edgeModel!.ModelId);
+            await CreateThingTypeIfNotExists(edgeModel!.Name);
 
             var dynamicThingGroup = new DescribeThingGroupRequest
             {
-                ThingGroupName = edgeModel?.ModelId
+                ThingGroupName = edgeModel?.Name
             };
 
             try
@@ -63,14 +63,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 var existingThingGroupResponse = await this.iotClient.DescribeThingGroupAsync(dynamicThingGroup);
 
                 return existingThingGroupResponse.ThingGroupArn;
-
             }
             catch (Amazon.IoT.Model.ResourceNotFoundException)
             {
                 var createThingGroupResponse = await this.iotClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
                 {
-                    ThingGroupName = edgeModel!.ModelId,
-                    QueryString = $"thingTypeName: {edgeModel!.ModelId}"
+                    ThingGroupName = edgeModel!.Name,
+                    QueryString = $"thingTypeName: {edgeModel!.Name}"
                 });
 
                 return createThingGroupResponse.ThingGroupArn;
