@@ -172,6 +172,59 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task GetEdgeModelForAwsShouldReturnValueAsync()
+        {
+            // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("AWS");
+
+            var expectedModules = Fixture.CreateMany<IoTEdgeModule>(2).ToList();
+
+            var expectedImageUri = Fixture.Create<Uri>();
+
+            var expectedEdgeDeviceModel = new IoTEdgeModel()
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                ImageUrl = expectedImageUri,
+                Description = Guid.NewGuid().ToString(),
+                EdgeModules = expectedModules
+            };
+
+            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
+            {
+                command.EdgeDeviceModelId = expectedEdgeDeviceModel.ModelId;
+                command.ModuleName = expectedModules[0].ModuleName;
+                return command;
+            }) .ToList();
+
+            expectedCommands.Add(new EdgeDeviceModelCommand
+            {
+                EdgeDeviceModelId = expectedEdgeDeviceModel.ModelId,
+                Id = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                ModuleName = Guid.NewGuid().ToString()
+            });
+
+            var expectedEdgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(expectedEdgeDeviceModel);
+
+            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.IsAny<string>()))
+                .Returns(expectedImageUri);
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), d => d.Labels))
+                .ReturnsAsync(expectedEdgeDeviceModelEntity);
+
+            _ = this.mockConfigService.Setup(x => x.GetConfigModuleList(It.IsAny<string>()))
+                .ReturnsAsync(expectedModules);
+
+            // Act
+            var result = await this.edgeDeviceModelService.GetEdgeModel(expectedEdgeDeviceModel.ModelId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            _ = result.Should().BeEquivalentTo(expectedEdgeDeviceModel);
+        }
+
+        [Test]
         public void GetEdgeModelShouldThrowResourceNotFoundExceptionIfModelDoesNotExist()
         {
 

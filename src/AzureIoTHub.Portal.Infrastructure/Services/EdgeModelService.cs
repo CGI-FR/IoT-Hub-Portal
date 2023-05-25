@@ -260,7 +260,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
             await this.unitOfWork.SaveAsync();
 
-            await SaveModuleCommands(edgeModel);
+            if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
+            {
+                await SaveModuleCommands(edgeModel);
+            }
+
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 

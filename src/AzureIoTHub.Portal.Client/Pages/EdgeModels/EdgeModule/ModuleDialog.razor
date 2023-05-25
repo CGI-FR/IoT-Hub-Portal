@@ -39,7 +39,17 @@
                         <MudAlert Severity="Severity.Info"><MudLink Href="https://learn.microsoft.com/en-us/azure/iot-edge/how-to-use-create-options" Target="_blank ">How to configure container create options for IoT Edge modules</MudLink></MudAlert>
                     </MudItem>
                 }
-                
+                else
+                {
+                    <MudItem xs="5">
+                        <MudTextField @bind-Value="@currentNumVersion"
+                                      id=@nameof(IoTEdgeModule.Version)
+                                  Label="Version Number"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => Module.Version)" />
+                    </MudItem>
+                }
+
             </MudGrid>
 
             <MudTabs Elevation="1" Class="mt-10" Rounded="true" PanelClass="mt-6">
@@ -77,6 +87,7 @@
     private string currentModuleName = default!;
     private string currentImageUri = default!;
     private string currentContainerCreateOptions = default!;
+    private string currentNumVersion = default!;
 
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
     private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings = new();
@@ -92,6 +103,7 @@
         currentModuleName = Module.ModuleName;
         currentImageUri = Module.ImageURI;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
+        currentNumVersion = "1.0.0";
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(Module.ModuleIdentityTwinSettings.ToArray());
         currentCommands = new List<IoTEdgeModuleCommand>(Module.Commands.ToArray());
@@ -104,6 +116,7 @@
         Module.ModuleName = currentModuleName;
         Module.ImageURI = currentImageUri;
         Module.ContainerCreateOptions = currentContainerCreateOptions;
+        Module.Version = currentNumVersion;
         Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
         Module.ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(currentModuleIdentityTwinSettings.ToArray());
         Module.Commands = new List<IoTEdgeModuleCommand>(currentCommands.ToArray());

@@ -154,13 +154,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     InlineRecipe = recipeStream
                 };
                 var response = await greengras.CreateComponentVersionAsync(componentVersion);
-
                 if (response.HttpStatusCode != HttpStatusCode.Created)
                 {
                     throw new InternalServerErrorException("The component creation failed due to an error in the Amazon IoT API.");
 
                 }
-                listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = "1.0.0" });
+                listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = component.Version });
             }
 
             return listcomponentName;
@@ -178,7 +177,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             var recipeJson =new JObject(
                     new JProperty("RecipeFormatVersion", "2020-01-25"),
                     new JProperty("ComponentName", component.ModuleName),
-                    new JProperty("ComponentVersion", "1.0.0"),
+                    new JProperty("ComponentVersion", component.Version),
                     new JProperty("ComponentPublisher", "IotHub"),
                     new JProperty("ComponentDependencies",
                         new JObject(
@@ -285,7 +284,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     {
                         ModuleName = compoenent.Key,
                         ImageURI = uriImage,
-                        EnvironmentVariables = env
+                        EnvironmentVariables = env,
+                        Version = compoenent.Value.ComponentVersion
                     };
 
                     moduleList.Add(iotEdgeModule);

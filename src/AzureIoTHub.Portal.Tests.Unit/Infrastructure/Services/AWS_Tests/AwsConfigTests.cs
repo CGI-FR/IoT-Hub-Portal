@@ -23,6 +23,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using AzureIoTHub.Portal.Domain.Entities;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
+    using Newtonsoft.Json.Linq;
 
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest
@@ -150,8 +154,42 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             //Assert
             MockRepository.VerifyAll();
 
+        }
 
+        [Test]
+        public async Task GetAllDeploymentComponentsShouldRetreiveImageUriAndEnvironmentVariables()
+        {
+            //Act
+            var edge = Fixture.Create<IoTEdgeModel>();
+            using var recipeAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<JObject>().ToString()));
 
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.GetDeploymentAsync(It.IsAny<GetDeploymentRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetDeploymentResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK,
+                    Components = new Dictionary<string, ComponentDeploymentSpecification>
+                    {
+                        {"test", new ComponentDeploymentSpecification()}
+
+                    }
+                });
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.GetComponentAsync(It.IsAny<GetComponentRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetComponentResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK,
+                    Recipe = recipeAsMemoryStream,
+                    RecipeOutputFormat = RecipeOutputFormat.JSON
+                });
+
+            //Arrange
+            _ = await this.awsConfigService.GetConfigModuleList(edge.IdProvider);
+
+            //Assert
+            MockRepository.VerifyAll();
         }
     }
 }
