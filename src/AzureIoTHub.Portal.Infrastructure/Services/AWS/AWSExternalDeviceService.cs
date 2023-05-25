@@ -47,7 +47,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             if (thingResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new InternalServerErrorException($"Unable to create the thing with id {device.ThingName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
+                throw new InternalServerErrorException($"Unable to create the thing with device name : {device.ThingName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
             }
 
             return thingResponse;
@@ -59,7 +59,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             if (thingResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new InternalServerErrorException($"Unable to update the thing with id {device.ThingName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
+                throw new InternalServerErrorException($"Unable to update the thing with device name : {device.ThingName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
             }
 
             return thingResponse;
