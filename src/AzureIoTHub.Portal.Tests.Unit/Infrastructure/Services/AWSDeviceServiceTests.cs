@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using System.Threading;
     using System.Threading.Tasks;
     using Amazon.IoT;
     using Amazon.IoT.Model;
@@ -166,11 +165,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                 DeviceName = Fixture.Create<string>(),
             };
 
-            var updateThingRequest = new UpdateThingRequest()
-            {
-                ThingName = deviceDto.DeviceName
-            };
-
             _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<UpdateThingRequest>()))
                 .ReturnsAsync(new UpdateThingResponse()
                 {
@@ -226,11 +220,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                 DeviceName = Fixture.Create<string>(),
             };
 
-            var updateThingRequest = new UpdateThingRequest()
-            {
-                ThingName = deviceDto.DeviceName
-            };
-
             _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<UpdateThingRequest>()))
                 .ReturnsAsync(new UpdateThingResponse()
                 {
@@ -262,11 +251,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             {
                 DeviceID = Fixture.Create<string>(),
                 DeviceName = Fixture.Create<string>(),
-            };
-
-            var updateThingRequest = new UpdateThingRequest()
-            {
-                ThingName = deviceDto.DeviceName
             };
 
             _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<UpdateThingRequest>()))
