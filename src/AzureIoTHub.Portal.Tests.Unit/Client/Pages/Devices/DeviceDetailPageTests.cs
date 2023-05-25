@@ -24,6 +24,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using UnitTests.Mocks;
     using Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
+    using AzureIoTHub.Portal.Shared.Constants;
 
     [TestFixture]
     public class DeviceDetailPageTests : BlazorUnitTest
@@ -60,7 +61,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = CloudProviders.Azure });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 

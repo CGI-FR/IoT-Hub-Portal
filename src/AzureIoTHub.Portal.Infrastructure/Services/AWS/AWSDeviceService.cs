@@ -15,11 +15,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using Amazon.IotData.Model;
     using AzureIoTHub.Portal.Application.Managers;
     using Infrastructure;
-    using Device = Domain.Entities.Device;
     using Microsoft.Extensions.Logging;
-    using System.Collections.Generic;
-    using AzureIoTHub.Portal.Shared.Models.v10;
-    using Azure.Messaging.EventHubs;
 
     public class AWSDeviceService : DeviceService
     {
@@ -46,12 +42,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             this.externalDevicesService = externalDevicesService;
         }
 
-        public override async Task<bool> CheckIfDeviceExists(string deviceId)
-        {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId);
-            return deviceEntity != null;
-        }
-
         public override async Task<DeviceDetails> CreateDevice(DeviceDetails device)
         {
             //Create Thing
@@ -67,37 +57,17 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             return await CreateDeviceInDatabase(device);
         }
 
-        protected override async Task<DeviceDetails> CreateDeviceInDatabase(DeviceDetails device)
+        public override async Task<DeviceDetails> UpdateDevice(DeviceDetails device)
         {
-            var deviceEntity = this.mapper.Map<Device>(device);
+            //Update Thing
+            var updateThingRequest = this.mapper.Map<UpdateThingRequest>(device);
+            _ = await this.externalDevicesService.UpdateDevice(updateThingRequest);
 
-            await this.deviceRepository.InsertAsync(deviceEntity);
-            await this.unitOfWork.SaveAsync();
-
-            return device;
+            //Update Thing in DB
+            return await UpdateDeviceInDatabase(device);
         }
 
         public override Task DeleteDevice(string deviceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<DeviceDetails> UpdateDevice(DeviceDetails device)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<DeviceDetails> GetDevice(string deviceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task ProcessTelemetryEvent(EventData eventMessage)
         {
             throw new NotImplementedException();
         }
