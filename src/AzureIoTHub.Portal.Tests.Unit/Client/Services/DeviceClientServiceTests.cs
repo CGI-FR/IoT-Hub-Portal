@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -88,7 +87,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateDeviceShouldCreateDevice()
         {
             // Arrange
-            var device = new DeviceDetails();
+            var device = new DeviceDetails()
+            {
+                DeviceID = Fixture.Create<string>()
+            };
 
             _ = MockHttpClient.When(HttpMethod.Post, "/api/devices")
                 .With(m =>
@@ -101,7 +103,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                 .Respond(HttpStatusCode.Created);
 
             // Act
-            await this.deviceClientService.CreateDevice(device);
+            _ = await this.deviceClientService.CreateDevice(device);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();

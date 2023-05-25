@@ -29,6 +29,11 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         public string ModelId { get; set; } = default!;
 
         /// <summary>
+        /// The model name.
+        /// </summary>
+        public string ModelName { get; set; } = default!;
+
+        /// <summary>
         /// The device model image Url.
         /// </summary>
         public Uri ImageUrl { get; set; } = default!;

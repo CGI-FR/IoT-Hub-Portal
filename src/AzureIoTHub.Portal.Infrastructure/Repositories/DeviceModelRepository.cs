@@ -11,5 +11,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
         public DeviceModelRepository(PortalDbContext context) : base(context)
         {
         }
+
+        public DeviceModel? GetByName(string modelName)
+        {
+            return GetAll().FirstOrDefault(model => model.Name.Equals(modelName, StringComparison.Ordinal));
+        }
     }
 }

@@ -1,6 +1,15 @@
 ﻿@page "/devices/{DeviceID}"
 
 @inject NavigationManager NavManager
+@inject ISnackbar Snackbar
+@inject PortalSettings Portal
+@inject IDialogService DialogService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
+@inject IDeviceClientService DeviceClientService
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
+@inject IDeviceLayoutService DeviceLayoutService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
@@ -23,4 +32,190 @@
     public string DeviceID { get; set; } = default!;
 
     private void Return() => NavManager.NavigateTo("devices");
+
+    private IEnumerable<DeviceModelCommandDto> Commands { get; set; } = Array.Empty<DeviceModelCommandDto>();
+
+    private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
+
+    private IEnumerable<DevicePropertyValue> Properties = Array.Empty<DevicePropertyValue>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isProcessing = true;
+
+            this.standardValidator = new DeviceDetailsValidator(Portal.CloudProvider);
+
+            if (IsLoRa)
+            {
+                Device = await LoRaWanDeviceClientService.GetDevice(DeviceID);
+                Commands = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(Device.ModelId);
+                DeviceModel = await LoRaWanDeviceModelsClientService.GetDeviceModel(Device.ModelId);
+            }
+            else
+            {
+                Device = await DeviceClientService.GetDevice(DeviceID);
+                Properties = await DeviceClientService.GetDeviceProperties(DeviceID);
+                DeviceModel = await DeviceModelsClientService.GetDeviceModel(Device.ModelId);
+            }
+
+            TagList = await DeviceTagSettingsClientService.GetDeviceTags();
+
+            isLoaded = true;
+            isProcessing = false;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    private void ProcessActionOnDevice()
+    {
+        switch (deviceSaveAction)
+        {
+            case DeviceSaveAction.Save:
+                Save();
+                break;
+            case DeviceSaveAction.Duplicate:
+                DeviceLayoutService.DuplicateSharedDevice(Device);
+                DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel);
+                NavManager.NavigateTo("devices/new");
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
+    /// </summary>
+    public async void Save()
+    {
+        try
+        {
+            isProcessing = true;
+
+            await form.Validate();
+
+            if (CheckTagsError() || CheckGeneralValidation() || CheckLoRaValidation())
+            {
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
+            if (IsLoRa)
+            {
+                await LoRaWanDeviceClientService.UpdateDevice((Device as LoRaDeviceDetails)!);
+            }
+            else
+            {
+                await DeviceClientService.UpdateDevice((Device as DeviceDetails)!);
+
+                await DeviceClientService.SetDeviceProperties(DeviceID, Properties.ToList());
+            }
+
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success, null);
+
+            NavManager.NavigateTo("devices");
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+            StateHasChanged();          
+        }
+    }
+
+    public async Task ShowConnectionString()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(ConnectionStringDialog.deviceId), this.DeviceID);
+
+        _  = await DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters).Result;
+    }
+
+    private bool CheckTagsError()
+    {
+        bool tagValidationError = false;
+
+        foreach (DeviceTagDto tag in TagList)
+        {
+            if (tag.Required && string.IsNullOrEmpty(Device.Tags[tag.Name]))
+            {
+                tagValidationError = true;
+            }
+        }
+        return tagValidationError;
+    }
+
+    private bool CheckLoRaValidation()
+    {
+        if(!IsLoRa)
+        {
+           return false;
+        }
+
+        if (this.Device is LoRaDeviceDetails loRaDeviceDetails)
+        {
+            return !this.loraValidator.Validate(loRaDeviceDetails).IsValid;
+        }
+
+        return true;
+    }
+
+    private bool CheckGeneralValidation()
+    {
+        if (!IsLoRa && this.Device is DeviceDetails deviceDetails)
+        {
+            return !this.standardValidator.Validate(deviceDetails).IsValid;
+        }
+
+        return CheckLoRaValidation();
+    }
+
+    /// <summary>
+    /// Prompts a pop-up windows to confirm the device's deletion.
+    /// </summary>
+    /// <param name="device">Device to delete from the hub</param>
+    /// <returns></returns>
+    private async Task DeleteDevice()
+    {
+        isProcessing = true;
+
+        var parameters = new DialogParameters
+        {
+            {"deviceID", Device.DeviceID},
+            {"deviceName", Device.DeviceName},
+            {"IsLoRaWan", IsLoRa}
+        };
+        var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
+
+        isProcessing = false;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        // Go back to the list of devices
+        NavManager.NavigateTo("devices");
+    }
+
+    private void SetSaveButtonText(DeviceSaveAction saveAction)
+    {
+        deviceSaveAction = saveAction;
+        saveButtonText = deviceSaveAction switch
+        {
+            DeviceSaveAction.Save => "Save",
+            DeviceSaveAction.Duplicate => "Duplicate",
+            _ => saveButtonText
+        };
+    }
 }
