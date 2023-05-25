@@ -12,7 +12,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using AutoMapper;
-    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;

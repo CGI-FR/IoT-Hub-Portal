@@ -22,6 +22,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using System.Threading.Tasks;
     using Amazon.IoT;
     using Amazon.IoT.Model;
+    using AzureIoTHub.Portal.Domain.Entities;
 
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest
@@ -31,6 +32,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         private Mock<IDeviceModelImageManager> mocDeviceModelImageManager;
         private Mock<IEdgeDeviceModelRepository> mockEdgeModelRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
+        private Mock<ConfigHandler> mockConfigHandler;
+
 
         private IConfigService awsConfigService;
 
@@ -43,6 +46,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             this.mockGreengrasClient = MockRepository.Create<IAmazonGreengrassV2>();
             this.mockIotClient = MockRepository.Create<IAmazonIoT>();
             this.mocDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
+            this.mockConfigHandler = MockRepository.Create<ConfigHandler>();
+
 
             _ = ServiceCollection.AddSingleton(this.mockEdgeModelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockGreengrasClient.Object);
@@ -50,6 +55,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mocDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton<IConfigService, AwsConfigService>();
+            _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
+
 
             Services = ServiceCollection.BuildServiceProvider();
 
@@ -61,7 +68,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         public async Task CreateDeploymentWithComponentsAndExistingThingGroupAndThingTypeShouldCreateTheDeployment()
         {
             //Act
+
             var edge = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edge);
 
             _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingGroupResponse
@@ -83,6 +92,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                     HttpStatusCode = HttpStatusCode.Created
                 });
 
+            _ = this.mockEdgeModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(edgeDeviceModelEntity);
+
+            _ = this.mockEdgeModelRepository.Setup(repository => repository.Update(It.IsAny<EdgeDeviceModel>()));
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
             //Arrange
             await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
 
@@ -96,6 +112,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         {
             //Act
             var edge = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edge);
 
             _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Amazon.IoT.Model.ResourceNotFoundException("Resource Not found"));
@@ -119,6 +136,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                 {
                     HttpStatusCode = HttpStatusCode.Created
                 });
+
+            _ = this.mockEdgeModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(edgeDeviceModelEntity);
+
+            _ = this.mockEdgeModelRepository.Setup(repository => repository.Update(It.IsAny<EdgeDeviceModel>()));
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
 
             //Arrange
             await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
