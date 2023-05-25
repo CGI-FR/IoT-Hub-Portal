@@ -46,7 +46,11 @@
                                       id=@nameof(IoTEdgeModule.Version)
                                   Label="Version Number"
                                   Variant="Variant.Outlined"
-                                  For="@(() => Module.Version)" />
+                                  For="@(() => Module.Version)"
+                                  Required="true"/>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Warning">The Version should be incremented when updating the component</MudAlert>
                     </MudItem>
                 }
 
@@ -87,7 +91,7 @@
     private string currentModuleName = default!;
     private string currentImageUri = default!;
     private string currentContainerCreateOptions = default!;
-    private string currentNumVersion = default!;
+    private string currentNumVersion = "1.0.0";
 
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
     private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings = new();
@@ -103,7 +107,7 @@
         currentModuleName = Module.ModuleName;
         currentImageUri = Module.ImageURI;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
-        currentNumVersion = "1.0.0";
+        currentNumVersion = Module.Version;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(Module.ModuleIdentityTwinSettings.ToArray());
         currentCommands = new List<IoTEdgeModuleCommand>(Module.Commands.ToArray());

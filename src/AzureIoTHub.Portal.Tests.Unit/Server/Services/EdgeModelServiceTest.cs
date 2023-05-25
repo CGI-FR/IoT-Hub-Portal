@@ -352,6 +352,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateEdgeModelShouldUpdateEdgeModel()
         {
             // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("Azure");
+
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
 
@@ -375,6 +377,37 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
                  .Returns(Task.CompletedTask);
+
+            _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.edgeDeviceModelService.UpdateEdgeModel(edgeDeviceModel);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+
+        [Test]
+        public async Task UpdateEdgeModelForAWSShouldUpdateEdgeModel()
+        {
+            // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("AWS");
+
+            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), d => d.Labels))
+                .ReturnsAsync(edgeDeviceModelEntity);
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.Update(It.IsAny<EdgeDeviceModel>()));
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
                 .Returns(Task.CompletedTask);
