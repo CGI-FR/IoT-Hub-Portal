@@ -13,6 +13,8 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
 
         Task<CreateThingResponse> CreateDevice(CreateThingRequest device);
 
+        Task<UpdateThingResponse> UpdateDevice(UpdateThingRequest device);
+
         Task<GetThingShadowResponse> GetDeviceShadow(string deviceName);
 
         Task<UpdateThingShadowResponse> UpdateDeviceShadow(UpdateThingShadowRequest shadow);

@@ -15,7 +15,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     using Amazon.IotData.Model;
     using AutoMapper;
     using Azure;
-    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
@@ -25,8 +24,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.EntityFrameworkCore.Metadata;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;

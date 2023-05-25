@@ -53,6 +53,18 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             return thingResponse;
         }
 
+        public async Task<UpdateThingResponse> UpdateDevice(UpdateThingRequest device)
+        {
+            var thingResponse = await this.amazonIotClient.UpdateThingAsync(device);
+
+            if (thingResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Unable to update the thing with id {device.ThingName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
+            }
+
+            return thingResponse;
+        }
+
         public async Task<GetThingShadowResponse> GetDeviceShadow(string deviceName)
         {
             var shadowRequest = new GetThingShadowRequest { ThingName = deviceName };
