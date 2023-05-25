@@ -29,6 +29,12 @@ namespace AzureIoTHub.Portal.Models.v10
         public Uri ImageUrl { get; set; } = default!;
 
         /// <summary>
+        /// The aws deployment ID.
+        /// </summary>
+        public string IdProvider { get; set; } = default!;
+
+
+        /// <summary>
         /// Gets the edge model labels.
         /// </summary>
         public IEnumerable<LabelDto> Labels { get; set; } = new List<LabelDto>();

@@ -103,29 +103,27 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task CreateEdgeModel(IoTEdgeModel edgeModel)
         {
-            if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
+            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
+            if (edgeModelEntity == null)
             {
-                var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
-                if (edgeModelEntity == null)
-                {
-                    edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
-                    await this.edgeModelRepository.InsertAsync(edgeModelEntity);
-                    await this.unitOfWork.SaveAsync();
-                }
-                else
-                {
-                    throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
-                }
-
-                _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
-
-                await SaveModuleCommands(edgeModel);
-                await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+                edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
+                await this.edgeModelRepository.InsertAsync(edgeModelEntity);
+                await this.unitOfWork.SaveAsync();
             }
             else
             {
-                await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+                throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
             }
+
+            _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
+
+
+            if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
+            {
+                await SaveModuleCommands(edgeModel);
+            }
+
+            await this.configService.RollOutEdgeModelConfiguration(edgeModel);
 
         }
 
@@ -221,7 +219,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
         private async Task<IoTEdgeModel> GetAwsEdgeModel(EdgeDeviceModel edgeModelEntity)
         {
-            var modules = await this.configService.GetConfigModuleList(edgeModelEntity.Id);
+            var modules = await this.configService.GetConfigModuleList(edgeModelEntity.IdProvider!);
             //TODO : User a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
             var result = new IoTEdgeModel
