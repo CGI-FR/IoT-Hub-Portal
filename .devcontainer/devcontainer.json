@@ -2,16 +2,17 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.238.0/containers/dotnet
 {
 	"name": "C# (.NET)",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"args": {
-			// Update 'VARIANT' to pick a .NET Core version: 3.1, 6.0
-			// Append -bullseye or -focal to pin to an OS version.
-			"VARIANT": "6.0-bullseye",
-			// Options
-			"NODE_VERSION": "lts/*"
-		}
-	},
+	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
+	"dockerComposeFile": "docker-compose.yml",
+
+	// The 'service' property is the name of the service for the container that VS Code should
+	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+	"service": "app",
+
+	// The 'workspaceFolder' property is the path VS Code should open by default when
+	// connected. Corresponds to a volume mount in .devcontainer/docker-compose.yml
+	"workspaceFolder": "/workspace",
+
 	// Configure tool-specific properties.
 	"customizations": {
 		// Configure properties specific to VS Code.
@@ -21,7 +22,6 @@
 				"ms-dotnettools.csharp",
 				"ms-dotnettools.vscode-dotnet-runtime",
 				"tintoy.msbuild-project-tools",
-				"jchannon.csharpextensions",
 				"fernandoescolar.vscode-solution-explorer"
 			]
 		}
@@ -51,7 +51,7 @@
 	//    * If only using Remote - Containers with a local container, uncomment this line instead:
 	//      "mounts": [ "source=${env:HOME}${env:USERPROFILE}/.aspnet/https,target=/home/vscode/.aspnet/https,type=bind" ],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "dotnet restore",
+	"postCreateCommand": "dotnet dev-certs https --trust && dotnet restore src/*.sln",
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
 }
