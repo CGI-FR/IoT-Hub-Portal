@@ -171,12 +171,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDeviceShadow(It.IsAny<UpdateThingShadowRequest>()))
-                .ReturnsAsync(new UpdateThingShadowResponse()
-                {
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new Device
                 {
@@ -226,12 +220,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDeviceShadow(It.IsAny<UpdateThingShadowRequest>()))
-                .ReturnsAsync(new UpdateThingShadowResponse()
-                {
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync((Device)null);
 
@@ -255,12 +243,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<UpdateThingRequest>()))
                 .ReturnsAsync(new UpdateThingResponse()
-                {
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDeviceShadow(It.IsAny<UpdateThingShadowRequest>()))
-                .ReturnsAsync(new UpdateThingShadowResponse()
                 {
                     HttpStatusCode = HttpStatusCode.OK
                 });
