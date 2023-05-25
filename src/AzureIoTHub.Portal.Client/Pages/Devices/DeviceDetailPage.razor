@@ -1,4 +1,11 @@
 ﻿@page "/devices/{DeviceID}"
+@using AzureIoTHub.Portal.Client.Pages.Devices
+@using AzureIoTHub.Portal.Client.Validators
+@using AzureIoTHub.Portal.Models
+@using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Models.v10.LoRaWAN
+@using AzureIoTHub.Portal.Shared.Constants;
+@using AzureIoTHub.Portal.Shared.Models
 
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
@@ -17,7 +24,116 @@
 <MudTooltip Placement="Placement.Top">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Details</MudText>
 </MudTooltip>
-<EditDevice context="CreateEditMode.Edit" IsLoRa="@IsLoRa" DeviceID="@DeviceID" />
+<MudForm Model="@Device" @ref="form">
+    <MudGrid>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard>
+                <MudCardHeader Class="DeviceCardHeader">
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(DeviceModel.Name)>Model: <b>@DeviceModel.Name</b></MudText>
+                        <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center" >@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                    </div>
+
+                </MudCardContent>
+                <MudCardActions Class="pb-4 pl-4 justify-center">
+                    @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
+                    {
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
+                    }
+                </MudCardActions>
+            </MudCard>
+
+            <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton" Disabled="isProcessing">Delete device</MudButton>
+                <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                    <MudButton id="saveButton" OnClick="ProcessActionOnDevice" Disabled="isProcessing">@saveButtonText</MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                        <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
+                        <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Duplicate)">Duplicate</MudMenuItem>
+                    </MudMenu>
+                </MudButtonGroup>
+            </MudItem>
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
+
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
+                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@Device.DeviceID"
+                                                              id=@nameof(DeviceDetails.DeviceID)
+                                                              Label="Device ID"
+                                                              Variant="Variant.Outlined"
+                                                              For="@(()=> Device.DeviceID)"
+                                                              Required="true"
+                                                              ReadOnly="true"
+                                                              HelperText="@((Portal.CloudProvider.Equals(CloudProviders.AWS)) ?
+                                                                            "DeviceID is automatically generated" :
+                                                                            "DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")"/>
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@Device.DeviceName"
+                                                              id=@nameof(DeviceDetails.DeviceName)
+                                                              Label="Device name"
+                                                              Variant="Variant.Outlined"
+                                                              For="@(()=> Device.DeviceName)"
+                                                              Required="true"
+                                                              ReadOnly="@(Portal.CloudProvider.Equals(CloudProviders.AWS))" />
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                <MudText>
+                                                    <b>Status</b>
+                                                </MudText>
+                                                <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
+                                                    <MudRadio Option=@(true) Color="Color.Primary">
+                                                        Enabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                    <MudRadio Option=@(false) Color="Color.Primary">
+                                                        Disabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                </MudRadioGroup>
+                                            </MudItem>
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Tags">
+                                    <TitleContent><MudText Typo="Typo.h6" Style=@(CheckTagsError() ? "color: red" : "")>Tags</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            @foreach (DeviceTagDto tag in TagList)
+                                            {
+                                                <MudItem xs="12" md="6">
+                                                    @if (!Device.Tags.ContainsKey(tag.Name))
+                                                    {
+                                                        Device.Tags.Add(tag.Name, "");
+                                                    }
+                                                    <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
+                                                              Required="@tag.Required"
+                                                              Variant="Variant.Outlined" />
+                                                </MudItem>
+                                            }
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
 
 @code {
     [Parameter]

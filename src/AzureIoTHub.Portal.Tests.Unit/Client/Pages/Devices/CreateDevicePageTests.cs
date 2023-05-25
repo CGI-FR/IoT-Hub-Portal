@@ -50,6 +50,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
         }
 
+        private void PortalSettingsCloudProvider(string cloudProvider)
+        {
+            Services.GetRequiredService<PortalSettings>().CloudProvider = cloudProvider;
+        }
+
         [Test]
         public void CreateDevicePageShouldRenderCorrectly()
         {
@@ -377,6 +382,46 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             items.First().Find("div.mud-list-item").Click();
 
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public Task AWSCreateDeviceShouldNotHaveDeviceID()
+        {
+            // Arrange
+            PortalSettingsCloudProvider(CloudProviders.AWS);
+
+            var mockDeviceModel = new DeviceModelDto
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            _ = this.mockDeviceModelsClientService
+               .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+               .ReturnsAsync(new List<DeviceProperty>());
+
+            var cut = RenderComponent<CreateDevicePage>();
+
+            // Act
+            var result = () => cut.Find($"#{nameof(DeviceDetails.DeviceID)}");
+
+            // Assert
+            _ = result.Should().Throw<ElementNotFoundException>();
+            return Task.CompletedTask;
         }
     }
 }
