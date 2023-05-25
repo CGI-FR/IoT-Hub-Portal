@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to get templates properties fro device with id {deviceId}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to get templates properties for device with id {deviceId}: {e.Message}", e);
             }
 
             var result = new List<DevicePropertyValue>();
