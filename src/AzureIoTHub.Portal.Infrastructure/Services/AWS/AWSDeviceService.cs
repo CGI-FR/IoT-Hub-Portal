@@ -63,10 +63,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             var updateThingRequest = this.mapper.Map<UpdateThingRequest>(device);
             _ = await this.externalDevicesService.UpdateDevice(updateThingRequest);
 
-            //Update Thing Shadow
-            var shadowRequest = this.mapper.Map<UpdateThingShadowRequest>(device);
-            _ = await this.externalDevicesService.UpdateDeviceShadow(shadowRequest);
-
             //Update Thing in DB
             return await UpdateDeviceInDatabase(device);
         }
