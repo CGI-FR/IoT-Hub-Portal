@@ -78,8 +78,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             foreach (var item in items)
             {
-                var value = item.IsWritable ? desiredPropertiesAsJson.SelectToken(item.Name)?.Value<string>() :
-                        reportedPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
+                var value = item.IsWritable ? desiredPropertiesAsJson?.SelectToken(item.Name)?.Value<string>() :
+                        reportedPropertiesAsJson?.SelectToken(item.Name)?.Value<string>();
 
                 result.Add(new DevicePropertyValue
                 {
