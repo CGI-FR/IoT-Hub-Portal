@@ -10,14 +10,13 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Application.Helpers;
+    using Application.Providers;
+    using Application.Services;
     using Azure;
-    using AzureIoTHub.Portal.Application.Helpers;
-    using AzureIoTHub.Portal.Application.Providers;
-    using AzureIoTHub.Portal.Application.Services;
-    using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Domain.Shared;
-    using AzureIoTHub.Portal.Shared.Constants;
+    using Domain.Exceptions;
+    using Domain.Repositories;
+    using Domain.Shared;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -25,6 +24,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using Models.v10;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Shared.Constants;
+    using Shared.Models.v10;
 
     public class ExternalDeviceService : IExternalDeviceService
     {
@@ -588,7 +589,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        public async Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId)
+        public async Task<DeviceCredentials> GetDeviceCredentials(string deviceId)
         {
             var device = await GetDeviceTwin(deviceId);
 
@@ -620,7 +621,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="edgeDeviceId">the edge device id.</param>
         /// <returns>Enrollment credentials.</returns>
         /// <exception cref="ResourceNotFoundException"></exception>
-        public async Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
+        public async Task<DeviceCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
         {
             var deviceTwin = await GetDeviceTwin(edgeDeviceId);
 

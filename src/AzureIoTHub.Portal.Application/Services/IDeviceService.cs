@@ -35,7 +35,7 @@ namespace AzureIoTHub.Portal.Application.Services
 
         Task DeleteDevice(string deviceId);
 
-        Task<EnrollmentCredentials> GetCredentials(string deviceId);
+        Task<DeviceCredentials> GetCredentials(string deviceId);
 
         Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
 

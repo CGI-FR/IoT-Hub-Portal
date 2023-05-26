@@ -174,7 +174,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceId">The device identifier.</param>
         [HttpGet("{deviceId}/credentials", Name = "GET Device enrollment credentials")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceId)
+        public async Task<ActionResult<SymmetricCredentials>> GetCredentials(string deviceId)
         {
             try
             {

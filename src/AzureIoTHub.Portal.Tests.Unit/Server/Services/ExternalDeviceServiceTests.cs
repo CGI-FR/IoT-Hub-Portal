@@ -25,6 +25,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
+    using Shared.Models.v10;
 
     [TestFixture]
     public class ExternalDeviceServiceTests
@@ -1791,10 +1792,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(mockTwin);
 
-            var mockRegistrationCredentials = new EnrollmentCredentials
+            var mockRegistrationCredentials = new DeviceCredentials
             {
-                RegistrationID = "aaa",
-                SymmetricKey = "dfhjkfdgh"
+                AuthenticationMode = AuthenticationMode.SymmetricKey,
+                SymmetricCredentials =
+                {
+                    RegistrationID = "aaa",
+                    SymmetricKey = "dfhjkfdgh"
+                }
             };
 
             _ = this.mockDeviceModelRepository.Setup(c => c.GetByIdAsync("bbb"))
@@ -1808,7 +1813,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(mockRegistrationCredentials);
 
             // Act
-            var enrollmentCredentials = await service.GetEnrollmentCredentials(deviceId);
+            var enrollmentCredentials = await service.GetDeviceCredentials(deviceId);
 
             // Assert
             _ = enrollmentCredentials.Should().BeEquivalentTo(mockRegistrationCredentials);
@@ -1829,7 +1834,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(mockTwin);
 
             // Act
-            var act = () => service.GetEnrollmentCredentials(deviceId);
+            var act = () => service.GetDeviceCredentials(deviceId);
 
             // Assert
             _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
@@ -1848,7 +1853,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync((Twin)null);
 
             // Act
-            var act = () => service.GetEnrollmentCredentials(deviceId);
+            var act = () => service.GetDeviceCredentials(deviceId);
 
             // Assert
             _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
@@ -1879,7 +1884,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Throws(new RequestFailedException("test"));
 
             // Act
-            var act = () => service.GetEnrollmentCredentials(deviceId);
+            var act = () => service.GetDeviceCredentials(deviceId);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -1928,10 +1933,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var service = CreateService();
 
-            var mockRegistrationCredentials = new EnrollmentCredentials
+            var mockRegistrationCredentials = new DeviceCredentials
             {
-                RegistrationID = "aaa",
-                SymmetricKey = "dfhjkfdgh"
+                AuthenticationMode = AuthenticationMode.SymmetricKey,
+                SymmetricCredentials = {
+                    RegistrationID = "aaa",
+                    SymmetricKey = "dfhjkfdgh"
+                }
             };
 
             var mockTwin = new Twin("aaa");
@@ -2093,7 +2101,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Act
             var result = await service.RetrieveLastConfiguration(mockTwin);
 
-            // Assert            
+            // Assert
             Assert.IsNull(result);
         }
 

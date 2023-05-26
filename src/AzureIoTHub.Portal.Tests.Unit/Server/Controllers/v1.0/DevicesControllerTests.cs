@@ -250,10 +250,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var devicesController = CreateDevicesController();
             const string deviceId = "aaa";
 
-            var expectedEnrollmentCredentials = new EnrollmentCredentials
+            var expectedEnrollmentCredentials = new DeviceCredentials
             {
-                RegistrationID = "aaa",
-                SymmetricKey = "dfhjkfdgh"
+                AuthenticationMode = AuthenticationMode.SymmetricKey,
+                SymmetricCredentials = {
+                    RegistrationID = "aaa",
+                    SymmetricKey = "dfhjkfdgh"
+                }
             };
 
             _ = this.mockDeviceService.Setup(service => service.GetCredentials(deviceId))

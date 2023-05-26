@@ -41,7 +41,7 @@
 
     [Parameter] public string deviceId { get; set; } = default!;
 
-    private EnrollmentCredentials Credentials = new EnrollmentCredentials();
+    private SymmetricCredentials Credentials = new SymmetricCredentials();
 
     protected override async Task OnInitializedAsync()
     {

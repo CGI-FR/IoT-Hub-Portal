@@ -44,7 +44,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(new EnrollmentCredentials());
+                .ReturnsAsync(new SymmetricCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -100,7 +100,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(new EnrollmentCredentials());
+                .ReturnsAsync(new SymmetricCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
 

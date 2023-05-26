@@ -306,7 +306,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             _ = this.mockDeviceService
                 .Setup(x => x.GetEdgeDeviceCredentials(It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal))))
-                .ReturnsAsync(new EnrollmentCredentials());
+                .ReturnsAsync(new DeviceCredentials());
 
             // Act
             var result = await edgeDevicesController.GetCredentials(deviceId);
@@ -320,7 +320,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             Assert.AreEqual(200, okObjectResult.StatusCode);
 
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<EnrollmentCredentials>(okObjectResult.Value);
+            Assert.IsAssignableFrom<SymmetricCredentials>(okObjectResult.Value);
 
             this.mockRepository.VerifyAll();
         }

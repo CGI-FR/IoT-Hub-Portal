@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Application.Services
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using AzureIoTHub.Portal.Domain.Shared;
+    using Shared.Models.v10;
 
     public interface IExternalDeviceService
     {
@@ -64,9 +65,9 @@ namespace AzureIoTHub.Portal.Application.Services
 
         Task<int> GetConcentratorsCount();
 
-        Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId);
+        Task<DeviceCredentials> GetDeviceCredentials(string deviceId);
 
-        Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId);
+        Task<DeviceCredentials> GetEdgeDeviceCredentials(string edgeDeviceId);
 
         Task<ConfigItem> RetrieveLastConfiguration(Twin twin);
 

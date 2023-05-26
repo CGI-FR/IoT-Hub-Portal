@@ -117,9 +117,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public override Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
+        public override Task<ActionResult<DeviceCredentials>> GetCredentials(string deviceID)
         {
-            return Task.FromResult<ActionResult<EnrollmentCredentials>>(NotFound());
+            return Task.FromResult<ActionResult<DeviceCredentials>>(NotFound());
         }
 
         [HttpGet("gateways", Name = "Get Gateways")]
