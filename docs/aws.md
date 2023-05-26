@@ -33,7 +33,7 @@ The template will deploy in your AWS Account the Following resources:
 1. Follow next step below to start your deployment:
 
     1. Press on the button here below to download the template AWS:  
-    [Download the template](https://github.com/CGI-FR/IoT-Hub-Portal/blob/1940-cloudformation-script-creation/templates/aws/awsdeploy.yml)
+    [Download the template](https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/arm/main-vnext/templates/aws/awsdeploy.yml)
 
     1. Import your template :  
         ***From the AWS console: [CloudFormation new stack](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/create)***  
