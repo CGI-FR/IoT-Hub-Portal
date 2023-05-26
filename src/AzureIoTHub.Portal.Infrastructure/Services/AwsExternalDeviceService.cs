@@ -7,6 +7,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using System.Threading.Tasks;
     using Amazon.IoT;
     using Amazon.IoT.Model;
+    using Amazon.SecretsManager;
+    using Amazon.SecretsManager.Model;
     using AutoMapper;
     using AzureIoTHub.Portal;
     using AzureIoTHub.Portal.Application.Services;
@@ -14,19 +16,30 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Shared.Models.v10;
     using ResourceAlreadyExistsException = Amazon.IoT.Model.ResourceAlreadyExistsException;
     using ResourceNotFoundException = Amazon.IoT.Model.ResourceNotFoundException;
+    using Tag = Amazon.IoT.Model.Tag;
 
     public class AwsExternalDeviceService : IExternalDeviceService
     {
+        private const string PrivateKeyKey = "_private-key";
+        private const string PublicKeyKey = "_public-key";
+        private const string CertificateKey = "_certificate";
+
         private readonly IMapper mapper;
         private readonly IAmazonIoT amazonIoTClient;
+        private readonly IAmazonSecretsManager amazonSecretsManager;
+
 
         public AwsExternalDeviceService(IMapper mapper,
-            IAmazonIoT amazonIoTClient)
+            IAmazonIoT amazonIoTClient,
+            IAmazonSecretsManager amazonSecretsManager
+            )
         {
             this.mapper = mapper;
             this.amazonIoTClient = amazonIoTClient;
+            this.amazonSecretsManager = amazonSecretsManager;
         }
 
         public async Task<ExternalDeviceModelDto> CreateDeviceModel(ExternalDeviceModelDto deviceModel)
@@ -162,7 +175,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
+        public Task<DeviceCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
         {
             throw new NotImplementedException();
         }
@@ -177,9 +190,19 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId)
+        public async Task<DeviceCredentials> GetDeviceCredentials(string deviceId)
         {
-            throw new NotImplementedException();
+            DeviceCredentials deviceCredentials;
+            try
+            {
+                deviceCredentials = await GetDeviceCredentialsFromSecretsManager(deviceId);
+            }
+            catch (ResourceNotFoundException)
+            {
+                deviceCredentials = await GenerateCertificate(deviceId);
+            }
+
+            return deviceCredentials;
         }
 
         public Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
@@ -216,6 +239,85 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                     QueryString = $"thingTypeName: {thingTypeName}"
                 });
             }
+        }
+
+        private async Task<DeviceCredentials> GenerateCertificate(string deviceId)
+        {
+            var response = await this.amazonIoTClient.CreateKeysAndCertificateAsync(true);
+
+            _ = await CreatePrivateKeySecret(deviceId, response.KeyPair.PrivateKey);
+            _ = await CreatePublicKeySecret(deviceId, response.KeyPair.PublicKey);
+            _ = await CreateCertificateSecret(deviceId, response.CertificatePem);
+
+            return new DeviceCredentials
+            {
+                AuthenticationMode = AuthenticationMode.Certificate,
+                CertificateCredentials = new CertificateCredentials
+                {
+                    CertificatePem = response.CertificatePem,
+                    PrivateKey = response.KeyPair.PrivateKey,
+                    PublicKey = response.KeyPair.PublicKey,
+                }
+            };
+        }
+
+        private async Task<CreateSecretResponse> CreatePrivateKeySecret(string deviceId, string privateKey)
+        {
+            var request = new CreateSecretRequest
+            {
+                Name = deviceId + PrivateKeyKey,
+                Description = "Private key for the certificate of device " + deviceId,
+                SecretString = privateKey
+            };
+            return await this.amazonSecretsManager.CreateSecretAsync(request);
+        }
+
+        private async Task<CreateSecretResponse> CreatePublicKeySecret(string deviceId, string privateKey)
+        {
+            var request = new CreateSecretRequest
+            {
+                Name = deviceId + PublicKeyKey,
+                Description = "Public key for the certificate of device " + deviceId,
+                SecretString = privateKey
+            };
+            return await this.amazonSecretsManager.CreateSecretAsync(request);
+        }
+
+        private async Task<CreateSecretResponse> CreateCertificateSecret(string deviceId, string certificatePem)
+        {
+            var request = new CreateSecretRequest
+            {
+                Name = deviceId + CertificateKey,
+                Description = "Certificate for the certificate of device " + deviceId,
+                SecretString = certificatePem
+            };
+            return await this.amazonSecretsManager.CreateSecretAsync(request);
+        }
+
+
+        private async Task<DeviceCredentials> GetDeviceCredentialsFromSecretsManager(string deviceId)
+        {
+            var certificate = await GetSecret(deviceId + CertificateKey);
+            var privateKey = await GetSecret(deviceId + PrivateKeyKey);
+            var publicKey = await GetSecret(deviceId + PublicKeyKey);
+            return new DeviceCredentials
+            {
+                AuthenticationMode = AuthenticationMode.Certificate,
+                CertificateCredentials = new CertificateCredentials
+                {
+                    CertificatePem = certificate.SecretString,
+                    PrivateKey = privateKey.SecretString,
+                    PublicKey = publicKey.SecretString,
+                }
+            };
+        }
+
+        private async Task<GetSecretValueResponse> GetSecret(string secretId)
+        {
+            return await this.amazonSecretsManager.GetSecretValueAsync(new GetSecretValueRequest
+            {
+                SecretId = secretId,
+            });
         }
     }
 }
