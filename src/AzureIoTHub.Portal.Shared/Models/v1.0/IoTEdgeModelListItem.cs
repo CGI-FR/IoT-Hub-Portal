@@ -31,7 +31,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The aws deployment ID.
         /// </summary>
-        public string IdProvider { get; set; } = default!;
+        public string ExternalIdentifier { get; set; } = default!;
 
 
         /// <summary>

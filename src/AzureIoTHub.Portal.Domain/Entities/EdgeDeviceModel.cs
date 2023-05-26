@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
         public string Name { get; set; } = default!;
 
         public string? Description { get; set; }
-        public string? IdProvider { get; set; }
+        public string? ExternalIdentifier { get; set; }
 
         /// <summary>
         /// Labels

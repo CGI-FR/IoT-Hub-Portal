@@ -459,6 +459,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteEdgeModelShouldDeleteEdgeModel()
         {
             // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("Azure");
+
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
 
@@ -487,6 +489,35 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             };
             _ = this.mockConfigService.Setup(x => x.GetIoTEdgeConfigurations())
                 .ReturnsAsync(configurations);
+            _ = this.mockConfigService.Setup(x => x.DeleteConfiguration(It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.edgeDeviceModelService.DeleteEdgeModel(edgeDeviceModel.ModelId);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEdgeModelForAwsShouldDeleteEdgeModel()
+        {
+            // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("AWS");
+
+            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.GetByIdAsync(edgeDeviceModelEntity.Id, d => d.Labels))
+                .ReturnsAsync(edgeDeviceModelEntity);
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.Delete(It.IsAny<string>()));
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
             _ = this.mockConfigService.Setup(x => x.DeleteConfiguration(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 

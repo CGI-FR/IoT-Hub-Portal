@@ -219,7 +219,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
         private async Task<IoTEdgeModel> GetAwsEdgeModel(EdgeDeviceModel edgeModelEntity)
         {
-            var modules = await this.configService.GetConfigModuleList(edgeModelEntity.IdProvider!);
+            var modules = await this.configService.GetConfigModuleList(edgeModelEntity.ExternalIdentifier!);
             //TODO : User a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
             var result = new IoTEdgeModel
@@ -282,17 +282,24 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 return;
             }
 
-            var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
-
-            if (config != null)
+            if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
             {
-                await this.configService.DeleteConfiguration(config.Id);
+                var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
+
+                if (config != null)
+                {
+                    await this.configService.DeleteConfiguration(config.Id);
+                }
+
+                var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
+                foreach (var command in existingCommands)
+                {
+                    this.commandRepository.Delete(command.Id);
+                }
             }
-
-            var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
-            foreach (var command in existingCommands)
+            else
             {
-                this.commandRepository.Delete(command.Id);
+                await this.configService.DeleteConfiguration(edgeModelEntity.ExternalIdentifier!);
             }
 
             foreach (var labelEntity in edgeModelEntity.Labels)

@@ -29,8 +29,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 .ConfigureAWSClient(configuration).Result
                 .ConfigureAWSServices()
                 .ConfigureAWSDeviceModelImages()
-                .ConfigureAWSSyncJobs(configuration)
-                .ConfigureOtherDependencies();
+                .ConfigureAWSSyncJobs(configuration);
         }
         private static async Task<IServiceCollection> ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -88,10 +87,5 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             });
         }
 
-        private static IServiceCollection ConfigureOtherDependencies(this IServiceCollection services)
-        {
-            _ = services.AddSingleton(new PortalSettings());
-            return services;
-        }
     }
 }

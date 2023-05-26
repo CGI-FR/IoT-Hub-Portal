@@ -74,7 +74,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 }
                 else
                 {
-                    edgeModel!.IdProvider = createDeploymentResponse.DeploymentId;
+                    edgeModel!.ExternalIdentifier = createDeploymentResponse.DeploymentId;
 
                     _ = this.mapper.Map(edgeModel, edgeModelEntity);
 
@@ -240,9 +240,45 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             throw new NotImplementedException();
         }
 
-        public Task DeleteConfiguration(string configId)
+        public async Task DeleteConfiguration(string modelId)
         {
-            throw new NotImplementedException();
+            var modules = await GetConfigModuleList(modelId);
+            foreach (var module in modules)
+            {
+                var deletedComponentResponse = await this.greengras.DeleteComponentAsync(new DeleteComponentRequest
+                {
+                    Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{module.ModuleName}:versions:{module.Version}"
+                });
+
+                if (deletedComponentResponse.HttpStatusCode != HttpStatusCode.NoContent)
+                {
+                    throw new InternalServerErrorException("The deletion of the component failed due to an error in the Amazon IoT API.");
+
+                }
+            }
+
+            var cancelDeploymentResponse = await this.greengras.CancelDeploymentAsync(new CancelDeploymentRequest
+            {
+                DeploymentId = modelId
+            });
+            if (cancelDeploymentResponse.HttpStatusCode != HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException("The cancellation of the deployment failed due to an error in the Amazon IoT API.");
+
+            }
+            else
+            {
+                var deleteDeploymentResponse = await this.greengras.DeleteDeploymentAsync(new DeleteDeploymentRequest
+                {
+                    DeploymentId = modelId
+                });
+
+                if (deleteDeploymentResponse.HttpStatusCode != HttpStatusCode.NoContent)
+                {
+                    throw new InternalServerErrorException("The deletion of the deployment failed due to an error in the Amazon IoT API.");
+                }
+            }
+
         }
 
         public Task<int> GetFailedDeploymentsCount()

@@ -186,10 +186,64 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                 });
 
             //Arrange
-            _ = await this.awsConfigService.GetConfigModuleList(edge.IdProvider);
+            _ = await this.awsConfigService.GetConfigModuleList(edge.ExternalIdentifier);
 
             //Assert
             MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeploymentShouldDeleteTheDeploymentVersionAndAllItsComponentsVersions()
+        {
+            //Act
+            var edge = Fixture.Create<IoTEdgeModel>();
+            using var recipeAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<JObject>().ToString()));
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.GetDeploymentAsync(It.IsAny<GetDeploymentRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetDeploymentResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK,
+                    Components = new Dictionary<string, ComponentDeploymentSpecification>
+                    {
+                        {"test", new ComponentDeploymentSpecification()}
+
+                    }
+                });
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.GetComponentAsync(It.IsAny<GetComponentRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetComponentResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK,
+                    Recipe = recipeAsMemoryStream,
+                    RecipeOutputFormat = RecipeOutputFormat.JSON
+                });
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.DeleteComponentAsync(It.IsAny<DeleteComponentRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DeleteComponentResponse
+                {
+                    HttpStatusCode = HttpStatusCode.NoContent
+                });
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.CancelDeploymentAsync(It.IsAny<CancelDeploymentRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CancelDeploymentResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.DeleteDeploymentAsync(It.IsAny<DeleteDeploymentRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DeleteDeploymentResponse
+                {
+                    HttpStatusCode = HttpStatusCode.NoContent
+                });
+            //Arrange
+            await this.awsConfigService.DeleteConfiguration(edge.ExternalIdentifier);
+
+            //Assert
+            MockRepository.VerifyAll();
+
         }
     }
 }
