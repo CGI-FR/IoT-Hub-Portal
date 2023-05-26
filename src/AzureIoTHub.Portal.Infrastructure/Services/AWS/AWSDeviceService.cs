@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 {
-    using System;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Services;
     using Models.v10;
@@ -67,9 +66,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             return await UpdateDeviceInDatabase(device);
         }
 
-        public override Task DeleteDevice(string deviceId)
+        public override async Task DeleteDevice(string deviceId)
         {
-            throw new NotImplementedException();
+            //Delete Thing
+            var device = await deviceRepository.GetByIdAsync(deviceId);
+            var deleteThingRequest = this.mapper.Map<DeleteThingRequest>(device);
+            _ = await this.externalDevicesService.DeleteDevice(deleteThingRequest);
+
+            //Delete Thing in DB
+            await DeleteDeviceInDatabase(deviceId);
         }
     }
 }

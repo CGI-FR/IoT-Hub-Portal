@@ -24,6 +24,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -265,6 +266,123 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             // Assert
             _ = await act.Should().ThrowAsync<CannotInsertNullException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDevice()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            var device = new Device
+            {
+                Id = deviceDto.DeviceID,
+                Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList(),
+                Labels = Fixture.CreateMany<Label>(5).ToList()
+            };
+
+            _ = this.mockAWSExternalDevicesService.Setup(service => service.DeleteDevice(It.IsAny<DeleteThingRequest>()))
+               .ReturnsAsync(new DeleteThingResponse()
+               {
+                   HttpStatusCode = HttpStatusCode.OK
+               });
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+                .ReturnsAsync(device);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(device);
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceNothingIsDoneIfDeviceNotExist()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockAWSExternalDevicesService.Setup(service => service.DeleteDevice(It.IsAny<DeleteThingRequest>()))
+                .ReturnsAsync(new DeleteThingResponse()
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+                .ReturnsAsync((Device)null);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+               .ReturnsAsync((Device)null);
+
+            // Act
+            await this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceWhenDbUpdateExceptionIsRaisedDbUpdateExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            var device = new Device
+            {
+                Id = deviceDto.DeviceID,
+                Tags = new List<DeviceTagValue>(),
+                Labels =  new List<Label>(),
+            };
+
+            _ = this.mockAWSExternalDevicesService.Setup(service => service.DeleteDevice(It.IsAny<DeleteThingRequest>()))
+                .ReturnsAsync(new DeleteThingResponse()
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+                .ReturnsAsync(device);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(device);
+
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<DbUpdateException>();
             MockRepository.VerifyAll();
         }
     }
