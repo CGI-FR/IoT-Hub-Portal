@@ -45,5 +45,8 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The module commands.
         /// </summary>
         public List<IoTEdgeModuleCommand> Commands { get; set; } = new List<IoTEdgeModuleCommand>();
+
+        [Required(ErrorMessage = "The component version is required.", AllowEmptyStrings = true)]
+        public string Version { get; set; } = default!;
     }
 }
