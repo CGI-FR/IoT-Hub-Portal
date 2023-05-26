@@ -65,6 +65,18 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             return thingResponse;
         }
 
+        public async Task<DeleteThingResponse> DeleteDevice(DeleteThingRequest device)
+        {
+            var deleteResponse = await this.amazonIotClient.DeleteThingAsync(device);
+
+            if (deleteResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Unable to delete the thing with device name : {device.ThingName} due to an error in the Amazon IoT API : {deleteResponse.HttpStatusCode}");
+            }
+
+            return deleteResponse;
+        }
+
         public async Task<GetThingShadowResponse> GetDeviceShadow(string deviceName)
         {
             var shadowRequest = new GetThingShadowRequest { ThingName = deviceName };
