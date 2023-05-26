@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
     using Amazon.IoT.Model;
     using Amazon.IotData.Model;
     using AutoMapper;
+    using AzureIoTHub.Portal.Domain.Entities;
     using Models.v10;
     using Newtonsoft.Json;
 
@@ -23,6 +24,10 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
             _ = CreateMap<DeviceDetails, UpdateThingRequest>()
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
                 .ForPath(dest => dest.AttributePayload.Attributes, opts => opts.MapFrom(src => src.Tags))
+                .ReverseMap();
+
+            _ = CreateMap<Device, DeleteThingRequest>()
+                .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.Name))
                 .ReverseMap();
 
             _ = CreateMap<DeviceDetails, UpdateThingShadowRequest>()

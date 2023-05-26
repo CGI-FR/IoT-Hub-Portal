@@ -237,6 +237,55 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        public async Task DeleteDeviceShouldReturnAValue()
+        {
+            // Arrange
+            var deleteThingRequest = new DeleteThingRequest()
+            {
+                ThingName = Fixture.Create<string>(),
+            };
+
+            var expected = new DeleteThingResponse
+            {
+                HttpStatusCode = HttpStatusCode.OK
+            };
+
+            _ = this.mockAmazonIotClient.Setup(iotClient => iotClient.DeleteThingAsync(It.IsAny<DeleteThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
+
+            //Act
+            var result = await this.awsExternalDeviceService.DeleteDevice(deleteThingRequest);
+
+            //Assert
+            _ = result.Should().BeEquivalentTo(expected);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public Task DeleteDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOK()
+        {
+            // Arrange
+            var deleteThingRequest = new DeleteThingRequest()
+            {
+                ThingName = Fixture.Create<string>(),
+            };
+
+            _ = this.mockAmazonIotClient.Setup(iotClient => iotClient.DeleteThingAsync(It.IsAny<DeleteThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DeleteThingResponse
+                {
+                    HttpStatusCode = HttpStatusCode.BadRequest
+                });
+
+            //Act
+            var result = () => this.awsExternalDeviceService.DeleteDevice(deleteThingRequest);
+
+            //Assert
+            _ = result.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+            return Task.CompletedTask;
+        }
+
+        [Test]
         public async Task GetDeviceShadowShouldReturnAValue()
         {
             // Arrange

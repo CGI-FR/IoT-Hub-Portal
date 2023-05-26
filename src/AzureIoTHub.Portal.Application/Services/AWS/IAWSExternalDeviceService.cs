@@ -15,6 +15,8 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
 
         Task<UpdateThingResponse> UpdateDevice(UpdateThingRequest device);
 
+        Task<DeleteThingResponse> DeleteDevice(DeleteThingRequest device);
+
         Task<GetThingShadowResponse> GetDeviceShadow(string deviceName);
 
         Task<UpdateThingShadowResponse> UpdateDeviceShadow(UpdateThingShadowRequest shadow);
