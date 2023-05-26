@@ -53,7 +53,7 @@ The template will deploy in your Azure subscription the Following resources:
     > * API Client ID: `<your-client-id>`
 
 1. Press on the button here below to start your deployment on Azure:  
-    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain%2Ftemplates%2Fazuredeploy.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain%2Ftemplates%2FazuredeployUI.json)
+    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain-vnext%2Ftemplates%2Fazure%2Fazuredeploy.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain-vnext%2Ftemplates%2Fazure%2FazuredeployUI.json)
 
 1. You will get to a page asking you to fill the following fields:
     * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name.
