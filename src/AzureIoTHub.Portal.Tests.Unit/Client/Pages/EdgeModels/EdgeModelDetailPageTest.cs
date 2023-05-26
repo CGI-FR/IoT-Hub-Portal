@@ -44,6 +44,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             _ = Services.AddSingleton(this.mockEdgeModelService.Object);
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }
@@ -52,6 +54,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnReturnButtonMustNavigateToPreviousPage()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
@@ -68,6 +71,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnSaveChangesShouldUpdateTheData()
         {
             // Arrange
+
             var edgeModel =  SetupLoadEdgeModel();
 
             _ = this.mockEdgeModelService
@@ -91,6 +95,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void WhenModuleRequiredFieldEmptyClickOnSaveShouldProcessValidationError()
         {
             // Arrange
+
             var edgeModel =  SetupLoadEdgeModel();
 
             _ = this.mockSnackbarService
@@ -118,6 +123,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void WhenRoutesRequiredFieldEmptyClickOnSaveShouldProcessValidationError()
         {
             // Arrange
+
             var edgeModel =  SetupLoadEdgeModel();
 
             _ = this.mockSnackbarService
@@ -164,6 +170,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnAddModuleShouldAddModuleOnEdgeModelData()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             // Act
@@ -201,6 +208,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnDeleteEdgeModelButtonShouldShowDeleteDialogAndRedirectIfOk()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
@@ -225,6 +233,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnDeleteEdgeModelButtonShouldShowDeleteDialogAndReturnIfAborted()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
@@ -248,6 +257,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnShowEditEdgeModuleDialogShouldShowDialog()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
@@ -274,6 +284,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickShowEditEdgeModuleDialogShouldDisplayEditModuleDialogAndReturnIfAborted()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
@@ -300,6 +311,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnShowSystemModuleDetailShouldShowDialog()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
@@ -327,6 +339,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnShowSystemModuleDetailShouldShowDialogAndReturnIfAborted()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
@@ -354,6 +367,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void DeleteAvatarShouldRemoveTheImage()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             // Act
@@ -384,10 +398,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                     new IoTEdgeModule()
                     {
                         ModuleName = "module_Test",
-                        ImageURI = "image_test"
+                        ImageURI = "image_test",
+                        Version = "1.0.1"
                     }
                 },
-                ImageUrl = new Uri($"http://fake.local/{this.mockEdgeModleId}")
+                ImageUrl = new Uri($"http://fake.local/{this.mockEdgeModleId}"),
+
             };
 
             _ = this.mockEdgeModelService
@@ -405,6 +421,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnAddRouteShouldAddRouteOnEdgeModelData()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             // Act
@@ -422,6 +439,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnDeleteRouteShouldRemoveRouteFromEdgeModelData()
         {
             // Arrange
+
             _ = SetupLoadEdgeModel();
 
             // Act

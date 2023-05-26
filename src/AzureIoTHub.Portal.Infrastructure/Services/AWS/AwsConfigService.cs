@@ -11,8 +11,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using Amazon.GreengrassV2.Model;
     using Amazon.IoT;
     using Amazon.IoT.Model;
+    using AutoMapper;
     using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Newtonsoft.Json.Linq;
@@ -23,16 +26,30 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         private readonly IAmazonGreengrassV2 greengras;
         private readonly IAmazonIoT iotClient;
 
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IEdgeDeviceModelRepository edgeModelRepository;
+        private readonly ConfigHandler config;
+        private readonly IMapper mapper;
+
         public AwsConfigService(
             IAmazonGreengrassV2 greengras,
-            IAmazonIoT iotClient)
+            IAmazonIoT iot,
+            IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IEdgeDeviceModelRepository edgeModelRepository,
+            ConfigHandler config)
         {
             this.greengras = greengras;
-            this.iotClient = iotClient;
+            this.iotClient = iot;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.edgeModelRepository = edgeModelRepository;
+            this.config = config;
         }
 
         public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
         {
+
             var createDeploymentRequest = new CreateDeploymentRequest
             {
                 DeploymentName = edgeModel?.Name,
@@ -45,6 +62,25 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             if (createDeploymentResponse.HttpStatusCode != HttpStatusCode.Created)
             {
                 throw new InternalServerErrorException("The deployment creation failed due to an error in the Amazon IoT API.");
+
+            }
+            else
+            {
+                var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId!);
+                if (edgeModelEntity == null)
+                {
+                    throw new Domain.Exceptions.ResourceNotFoundException($"The edge model with id {edgeModel?.ModelId} not found");
+
+                }
+                else
+                {
+                    edgeModel!.ExternalIdentifier = createDeploymentResponse.DeploymentId;
+
+                    _ = this.mapper.Map(edgeModel, edgeModelEntity);
+
+                    this.edgeModelRepository.Update(edgeModelEntity);
+                    await this.unitOfWork.SaveAsync();
+                }
 
             }
         }
@@ -118,12 +154,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     InlineRecipe = recipeStream
                 };
                 var response = await greengras.CreateComponentVersionAsync(componentVersion);
-                if (response.HttpStatusCode != System.Net.HttpStatusCode.Created)
+                if (response.HttpStatusCode != HttpStatusCode.Created)
                 {
                     throw new InternalServerErrorException("The component creation failed due to an error in the Amazon IoT API.");
 
                 }
-                listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = "1.0.0" });
+                listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = component.Version });
             }
 
             return listcomponentName;
@@ -141,7 +177,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             var recipeJson =new JObject(
                     new JProperty("RecipeFormatVersion", "2020-01-25"),
                     new JProperty("ComponentName", component.ModuleName),
-                    new JProperty("ComponentVersion", "1.0.0"),
+                    new JProperty("ComponentVersion", component.Version),
                     new JProperty("ComponentPublisher", "IotHub"),
                     new JProperty("ComponentDependencies",
                         new JObject(
@@ -204,9 +240,45 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             throw new NotImplementedException();
         }
 
-        public Task DeleteConfiguration(string configId)
+        public async Task DeleteConfiguration(string modelId)
         {
-            throw new NotImplementedException();
+            var modules = await GetConfigModuleList(modelId);
+            foreach (var module in modules)
+            {
+                var deletedComponentResponse = await this.greengras.DeleteComponentAsync(new DeleteComponentRequest
+                {
+                    Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{module.ModuleName}:versions:{module.Version}"
+                });
+
+                if (deletedComponentResponse.HttpStatusCode != HttpStatusCode.NoContent)
+                {
+                    throw new InternalServerErrorException("The deletion of the component failed due to an error in the Amazon IoT API.");
+
+                }
+            }
+
+            var cancelDeploymentResponse = await this.greengras.CancelDeploymentAsync(new CancelDeploymentRequest
+            {
+                DeploymentId = modelId
+            });
+            if (cancelDeploymentResponse.HttpStatusCode != HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException("The cancellation of the deployment failed due to an error in the Amazon IoT API.");
+
+            }
+            else
+            {
+                var deleteDeploymentResponse = await this.greengras.DeleteDeploymentAsync(new DeleteDeploymentRequest
+                {
+                    DeploymentId = modelId
+                });
+
+                if (deleteDeploymentResponse.HttpStatusCode != HttpStatusCode.NoContent)
+                {
+                    throw new InternalServerErrorException("The deletion of the deployment failed due to an error in the Amazon IoT API.");
+                }
+            }
+
         }
 
         public Task<int> GetFailedDeploymentsCount()
@@ -214,10 +286,143 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             throw new NotImplementedException();
         }
 
-        public Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
+        public async Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
         {
-            // To be implemented with the update method in EdgeModelService
-            throw new NotImplementedException();
+
+            var moduleList = new List<IoTEdgeModule>();
+
+            var getDeployement = new GetDeploymentRequest
+            {
+                DeploymentId = modelId,
+            };
+            try
+            {
+                var response = await this.greengras.GetDeploymentAsync(getDeployement);
+
+                foreach (var compoenent in response.Components)
+                {
+                    var responseComponent = await this.greengras.GetComponentAsync(new GetComponentRequest
+                    {
+                        Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
+                        RecipeOutputFormat = RecipeOutputFormat.JSON
+                    });
+
+                    // Read the Recipe which is in JSON Format
+                    using var reader = new StreamReader(responseComponent.Recipe);
+                    var recipeJsonString = reader.ReadToEnd();
+
+                    // Extract the imageUri from the 'Run' JSON object
+                    var uriImage = retreiveImageUri("Lifecycle", "Run", recipeJsonString);
+                    // Extract the environment Variables from the 'Environment' JSON object
+                    var env = retreiveEnvVariableAttr("Lifecycle", "Environment", recipeJsonString);
+
+                    var iotEdgeModule = new IoTEdgeModule
+                    {
+                        ModuleName = compoenent.Key,
+                        ImageURI = uriImage,
+                        EnvironmentVariables = env,
+                        Version = compoenent.Value.ComponentVersion
+                    };
+
+                    moduleList.Add(iotEdgeModule);
+
+                }
+                return moduleList;
+            }
+            catch (Amazon.IoT.Model.ResourceNotFoundException)
+            {
+                throw new InternalServerErrorException("The deployment is not found");
+
+            }
+        }
+
+        private static string retreiveImageUri(string parent, string child, string recipeJsonString)
+        {
+            var uriImage = "";
+            // Parse the string as a JSON object
+            var recipeJsonObject = JObject.Parse(recipeJsonString);
+
+            // Extract the "Manifests" array
+            var jArray = recipeJsonObject["Manifests"] as JArray;
+            var manifests = jArray;
+
+            if (manifests != null && manifests.Count > 0)
+            {
+                // Get the first manifest in the array
+                var firstManifest = manifests[0] as JObject;
+
+                // Extract the "Lifecycle" object
+                var jObject = firstManifest?[parent] as JObject;
+                var lifecycle = jObject;
+
+                if (lifecycle != null)
+                {
+                    // Extract the value of "Run"
+                    var runValue = lifecycle[child]?.ToString();
+
+                    // Search the index of the 1st whitespace
+                    var firstSpaceIndex = runValue.IndexOf(' ');
+
+                    if (firstSpaceIndex != -1)
+                    {
+                        // // Search the index of the 2nd whitespace
+                        var secondSpaceIndex = runValue.IndexOf(' ', firstSpaceIndex + 1);
+
+                        if (secondSpaceIndex != -1)
+                        {
+                            // Extract the URI iamge
+                            uriImage = runValue[(secondSpaceIndex + 1)..];
+                        }
+
+                    }
+                }
+            }
+
+            return uriImage;
+        }
+
+        private static List<IoTEdgeModuleEnvironmentVariable> retreiveEnvVariableAttr(string parent, string child, string recipeJsonString)
+        {
+
+            // Parse the string as a JSON object
+            var recipeJsonObject = JObject.Parse(recipeJsonString);
+
+            var environmentVariables = new List<IoTEdgeModuleEnvironmentVariable>();
+
+            // Extract the "Manifests" array
+            var jArray = recipeJsonObject["Manifests"] as JArray;
+            var manifests = jArray;
+
+            if (manifests != null && manifests.Count > 0)
+            {
+                // Get the first manifest in the array
+                var firstManifest = manifests[0] as JObject;
+
+                // Extract the "Lifecycle" object
+                var jObject = firstManifest?[parent] as JObject;
+                var lifecycle = jObject;
+
+                if (lifecycle != null)
+                {
+                    // Extract the value of "Environment"
+                    var env = lifecycle?[child] as JObject;
+
+                    // Convert Environment JSON Object as a dictionnary
+                    var keyValuePairs = env!.ToObject<Dictionary<string, string>>();
+
+                    foreach (var kvp in keyValuePairs!)
+                    {
+                        var iotEnvVariable = new IoTEdgeModuleEnvironmentVariable
+                        {
+                            Name = kvp.Key,
+                            Value = kvp.Value
+                        };
+
+                        environmentVariables.Add(iotEnvVariable);
+                    }
+                }
+            }
+            return environmentVariables;
         }
 
         public Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId)

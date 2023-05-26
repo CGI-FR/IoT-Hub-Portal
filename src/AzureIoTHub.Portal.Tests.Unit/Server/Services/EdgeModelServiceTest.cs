@@ -172,6 +172,59 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task GetEdgeModelForAwsShouldReturnValueAsync()
+        {
+            // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("AWS");
+
+            var expectedModules = Fixture.CreateMany<IoTEdgeModule>(2).ToList();
+
+            var expectedImageUri = Fixture.Create<Uri>();
+
+            var expectedEdgeDeviceModel = new IoTEdgeModel()
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                ImageUrl = expectedImageUri,
+                Description = Guid.NewGuid().ToString(),
+                EdgeModules = expectedModules
+            };
+
+            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
+            {
+                command.EdgeDeviceModelId = expectedEdgeDeviceModel.ModelId;
+                command.ModuleName = expectedModules[0].ModuleName;
+                return command;
+            }) .ToList();
+
+            expectedCommands.Add(new EdgeDeviceModelCommand
+            {
+                EdgeDeviceModelId = expectedEdgeDeviceModel.ModelId,
+                Id = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                ModuleName = Guid.NewGuid().ToString()
+            });
+
+            var expectedEdgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(expectedEdgeDeviceModel);
+
+            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.IsAny<string>()))
+                .Returns(expectedImageUri);
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), d => d.Labels))
+                .ReturnsAsync(expectedEdgeDeviceModelEntity);
+
+            _ = this.mockConfigService.Setup(x => x.GetConfigModuleList(It.IsAny<string>()))
+                .ReturnsAsync(expectedModules);
+
+            // Act
+            var result = await this.edgeDeviceModelService.GetEdgeModel(expectedEdgeDeviceModel.ModelId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            _ = result.Should().BeEquivalentTo(expectedEdgeDeviceModel);
+        }
+
+        [Test]
         public void GetEdgeModelShouldThrowResourceNotFoundExceptionIfModelDoesNotExist()
         {
 
@@ -299,6 +352,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateEdgeModelShouldUpdateEdgeModel()
         {
             // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("Azure");
+
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
 
@@ -322,6 +377,37 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
                  .Returns(Task.CompletedTask);
+
+            _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.edgeDeviceModelService.UpdateEdgeModel(edgeDeviceModel);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+
+        [Test]
+        public async Task UpdateEdgeModelForAWSShouldUpdateEdgeModel()
+        {
+            // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("AWS");
+
+            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), d => d.Labels))
+                .ReturnsAsync(edgeDeviceModelEntity);
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.Update(It.IsAny<EdgeDeviceModel>()));
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
                 .Returns(Task.CompletedTask);
@@ -373,6 +459,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteEdgeModelShouldDeleteEdgeModel()
         {
             // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("Azure");
+
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
 
@@ -401,6 +489,35 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             };
             _ = this.mockConfigService.Setup(x => x.GetIoTEdgeConfigurations())
                 .ReturnsAsync(configurations);
+            _ = this.mockConfigService.Setup(x => x.DeleteConfiguration(It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.edgeDeviceModelService.DeleteEdgeModel(edgeDeviceModel.ModelId);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEdgeModelForAwsShouldDeleteEdgeModel()
+        {
+            // Arrange
+            _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("AWS");
+
+            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.GetByIdAsync(edgeDeviceModelEntity.Id, d => d.Labels))
+                .ReturnsAsync(edgeDeviceModelEntity);
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.Delete(It.IsAny<string>()));
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
             _ = this.mockConfigService.Setup(x => x.DeleteConfiguration(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 

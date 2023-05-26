@@ -89,5 +89,6 @@ namespace AzureIoTHub.Portal.Infrastructure
         public override string AWSRegion => this.config[AWSRegionKey]!;
         public override string AWSS3StorageConnectionString => this.config[AWSS3StorageConnectionStringKey]!;
         public override string AWSBucketName => this.config[AWSBucketNameKey]!;
+        public override string AWSAccountId => this.config[AWSAccountIdKey]!;
     }
 }

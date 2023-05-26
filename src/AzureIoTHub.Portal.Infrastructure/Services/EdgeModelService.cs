@@ -117,11 +117,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
             _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
 
+
             if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
             {
                 await SaveModuleCommands(edgeModel);
             }
+
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+
         }
 
         /// <summary>
@@ -171,20 +174,20 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             }
             if (config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.OrdinalIgnoreCase))
             {
-                return await GetAzureEdgeModel(modelId, edgeModelEntity);
+                return await GetAzureEdgeModel(edgeModelEntity);
             }
             else
             {
-                return await GetAwsEdgeModel(modelId, edgeModelEntity);
+                return await GetAwsEdgeModel(edgeModelEntity);
             }
         }
 
-        private async Task<IoTEdgeModel> GetAzureEdgeModel(string modelId, EdgeDeviceModel edgeModelEntity)
+        private async Task<IoTEdgeModel> GetAzureEdgeModel(EdgeDeviceModel edgeModelEntity)
         {
-            var modules = await this.configService.GetConfigModuleList(modelId);
-            var sysModules = await this.configService.GetModelSystemModule(modelId);
-            var routes = await this.configService.GetConfigRouteList(modelId);
-            var commands =  this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == modelId).ToList();
+            var modules = await this.configService.GetConfigModuleList(edgeModelEntity.Id);
+            var sysModules = await this.configService.GetModelSystemModule(edgeModelEntity.Id);
+            var routes = await this.configService.GetConfigRouteList(edgeModelEntity.Id);
+            var commands =  this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelEntity.Id).ToList();
 
             //TODO : User a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
@@ -214,9 +217,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             return result;
         }
 
-        private async Task<IoTEdgeModel> GetAwsEdgeModel(string modelId, EdgeDeviceModel edgeModelEntity)
+        private async Task<IoTEdgeModel> GetAwsEdgeModel(EdgeDeviceModel edgeModelEntity)
         {
-            var modules = await this.configService.GetConfigModuleList(modelId);
+            var modules = await this.configService.GetConfigModuleList(edgeModelEntity.ExternalIdentifier!);
             //TODO : User a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
             var result = new IoTEdgeModel
@@ -257,7 +260,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
             await this.unitOfWork.SaveAsync();
 
-            await SaveModuleCommands(edgeModel);
+            if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
+            {
+                await SaveModuleCommands(edgeModel);
+            }
+
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 
@@ -275,17 +282,24 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 return;
             }
 
-            var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
-
-            if (config != null)
+            if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
             {
-                await this.configService.DeleteConfiguration(config.Id);
+                var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
+
+                if (config != null)
+                {
+                    await this.configService.DeleteConfiguration(config.Id);
+                }
+
+                var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
+                foreach (var command in existingCommands)
+                {
+                    this.commandRepository.Delete(command.Id);
+                }
             }
-
-            var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
-            foreach (var command in existingCommands)
+            else
             {
-                this.commandRepository.Delete(command.Id);
+                await this.configService.DeleteConfiguration(edgeModelEntity.ExternalIdentifier!);
             }
 
             foreach (var labelEntity in edgeModelEntity.Labels)
