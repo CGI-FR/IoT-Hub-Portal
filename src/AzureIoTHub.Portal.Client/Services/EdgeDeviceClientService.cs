@@ -49,6 +49,11 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.GetFromJsonAsync<SymmetricCredentials>($"api/edge/devices/{deviceId}/credentials")!;
         }
 
+        public Task<string> GetEnrollmentScriptUrl(string deviceId, string templateName)
+        {
+            return this.http.GetStringAsync($"api/edge/devices/{deviceId}/enrollementScript/{templateName}")!;
+        }
+
         public async Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
         {
             var response = await this.http.PostAsJsonAsync($"api/edge/devices/{deviceId}/logs", edgeModule);

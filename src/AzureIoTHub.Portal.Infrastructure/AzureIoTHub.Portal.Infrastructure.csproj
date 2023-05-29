@@ -1,11 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Resources\default-template-icon.png" />
     <None Remove="RouterConfigFiles\AS_923_925_1.json" />
@@ -31,7 +29,6 @@
     <None Remove="RouterConfigFiles\US_902_928_FSB_7.json" />
     <None Remove="RouterConfigFiles\US_902_928_FSB_8.json" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="RouterConfigFiles\AS_923_925_1.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -89,8 +86,8 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
+    <EmbeddedResource Include="EdgeEnrollementScripts\AWS\debian_11_bullseye" />
     <EmbeddedResource Include="Resources\default-template-icon.png" />
     <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP1.json" />
     <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP2.json" />
@@ -104,7 +101,6 @@
     <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_7.json" />
     <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_8.json" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="AWSSDK.GreengrassV2" Version="3.7.103.20" />
     <PackageReference Include="AWSSDK.IoT" Version="3.7.107.5" />
@@ -116,6 +112,7 @@
     <PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.8.1" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.15.0" />
     <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.2.0" />
@@ -147,14 +144,10 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.1" />
     <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="6.0.3" />
-
   </ItemGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\AzureIoTHub.Portal.Application\AzureIoTHub.Portal.Application.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Crosscutting\AzureIoTHub.Portal.Crosscutting.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Domain\AzureIoTHub.Portal.Domain.csproj" />
-    
   </ItemGroup>
-
 </Project>

@@ -4,7 +4,10 @@
 namespace AzureIoTHub.Portal.Infrastructure.Services
 {
     using System.Collections.Generic;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using Amazon.GreengrassV2;
+    using Amazon.GreengrassV2.Model;
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using Amazon.SecretsManager;
@@ -12,6 +15,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
     using AutoMapper;
     using AzureIoTHub.Portal;
     using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Shared;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
@@ -27,18 +31,24 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         private const string PublicKeyKey = "_public-key";
         private const string CertificateKey = "_certificate";
 
+        private readonly ConfigHandler configHandler;
         private readonly IMapper mapper;
         private readonly IAmazonIoT amazonIoTClient;
+        private readonly IAmazonGreengrassV2 greengrass;
         private readonly IAmazonSecretsManager amazonSecretsManager;
 
 
-        public AwsExternalDeviceService(IMapper mapper,
+        public AwsExternalDeviceService(
+            ConfigHandler configHandler,
+            IMapper mapper,
             IAmazonIoT amazonIoTClient,
-            IAmazonSecretsManager amazonSecretsManager
-            )
+            IAmazonGreengrassV2 greengrass,
+            IAmazonSecretsManager amazonSecretsManager)
         {
+            this.configHandler = configHandler;
             this.mapper = mapper;
             this.amazonIoTClient = amazonIoTClient;
+            this.greengrass = greengrass;
             this.amazonSecretsManager = amazonSecretsManager;
         }
 
@@ -67,19 +77,30 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             }
         }
 
-        public Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<Twin> CreateNewTwinFromDeviceId(string deviceId)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteDevice(string deviceId)
+        public async Task DeleteDevice(string deviceId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _ = await this.greengrass.DeleteCoreDeviceAsync(new DeleteCoreDeviceRequest
+                {
+                    CoreDeviceThingName = deviceId,
+                });
+            }
+            catch (Amazon.GreengrassV2.Model.ResourceNotFoundException) { }
+
+            try
+            {
+                _ = await this.amazonIoTClient.DeleteThingAsync(new DeleteThingRequest
+                {
+                    ThingName = deviceId
+                });
+            }
+            catch (Amazon.IoT.Model.ResourceNotFoundException) { }
         }
 
         public async Task DeleteDeviceModel(ExternalDeviceModelDto deviceModel)
@@ -175,9 +196,34 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<DeviceCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
+        public async Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device)
         {
-            throw new NotImplementedException();
+            DeviceCredentials deviceCredentials;
+
+            try
+            {
+                deviceCredentials = await GetDeviceCredentialsFromSecretsManager(device.DeviceName);
+            }
+            catch (Amazon.SecretsManager.Model.ResourceNotFoundException)
+            {
+                var createCertificateTuple = await GenerateCertificate(device.DeviceName);
+
+                _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
+                {
+                    PolicyName = "GreengrassV2IoTThingPolicy",
+                    Target = createCertificateTuple.Item2
+                });
+
+                _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
+                {
+                    PolicyName = "GreengrassCoreTokenExchangeRoleAliasPolicy",
+                    Target = createCertificateTuple.Item2
+                });
+
+                return createCertificateTuple.Item1;
+            }
+
+            return deviceCredentials;
         }
 
         public Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
@@ -192,17 +238,16 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
         public async Task<DeviceCredentials> GetDeviceCredentials(string deviceId)
         {
-            DeviceCredentials deviceCredentials;
             try
             {
-                deviceCredentials = await GetDeviceCredentialsFromSecretsManager(deviceId);
+                return await GetDeviceCredentialsFromSecretsManager(deviceId);
             }
-            catch (ResourceNotFoundException)
+            catch (Amazon.SecretsManager.Model.ResourceNotFoundException)
             {
-                deviceCredentials = await GenerateCertificate(deviceId);
-            }
+                var deviceCredentialsTuple = await GenerateCertificate(deviceId);
 
-            return deviceCredentials;
+                return deviceCredentialsTuple.Item1;
+            }
         }
 
         public Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
@@ -241,15 +286,17 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             }
         }
 
-        private async Task<DeviceCredentials> GenerateCertificate(string deviceId)
+        private async Task<Tuple<DeviceCredentials, string>> GenerateCertificate(string deviceId)
         {
             var response = await this.amazonIoTClient.CreateKeysAndCertificateAsync(true);
+
+            _ = await this.amazonIoTClient.AttachThingPrincipalAsync(deviceId, response.CertificateArn);
 
             _ = await CreatePrivateKeySecret(deviceId, response.KeyPair.PrivateKey);
             _ = await CreatePublicKeySecret(deviceId, response.KeyPair.PublicKey);
             _ = await CreateCertificateSecret(deviceId, response.CertificatePem);
 
-            return new DeviceCredentials
+            return new Tuple<DeviceCredentials, string>(new DeviceCredentials
             {
                 AuthenticationMode = AuthenticationMode.Certificate,
                 CertificateCredentials = new CertificateCredentials
@@ -258,7 +305,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                     PrivateKey = response.KeyPair.PrivateKey,
                     PublicKey = response.KeyPair.PublicKey,
                 }
-            };
+            }, response.CertificateArn);
         }
 
         private async Task<CreateSecretResponse> CreatePrivateKeySecret(string deviceId, string privateKey)
@@ -318,6 +365,113 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             {
                 SecretId = secretId,
             });
+        }
+
+        public async Task<string> CreateEnrollementScript(string template, Domain.Entities.EdgeDevice device)
+        {
+            var iotDataEndpointResponse = await this.amazonIoTClient.DescribeEndpointAsync(new DescribeEndpointRequest
+            {
+                EndpointType = "iot:Data-ATS"
+            });
+
+            var credentialProviderEndpointResponse = await this.amazonIoTClient.DescribeEndpointAsync(new DescribeEndpointRequest
+            {
+                EndpointType = "iot:CredentialProvider"
+            });
+
+            var credentials = await this.GetDeviceCredentials(device.Name);
+
+            return template.Replace("%DATA_ENDPOINT%", iotDataEndpointResponse!.EndpointAddress, StringComparison.OrdinalIgnoreCase)
+               .Replace("%CREDENTIALS_ENDPOINT%", credentialProviderEndpointResponse.EndpointAddress, StringComparison.OrdinalIgnoreCase)
+               .Replace("%CERTIFICATE%", credentials.CertificateCredentials.CertificatePem, StringComparison.OrdinalIgnoreCase)
+               .Replace("%PRIVATE_KEY%", credentials.CertificateCredentials.PrivateKey, StringComparison.OrdinalIgnoreCase)
+               .Replace("%REGION%", this.configHandler.AWSRegion, StringComparison.OrdinalIgnoreCase)
+               .Replace("%THING_NAME%", device.Name, StringComparison.OrdinalIgnoreCase)
+               .ReplaceLineEndings();
+        }
+
+        public Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CreateEdgeDevice(string deviceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task RemoveDeviceCredentials(IoTEdgeDevice device)
+        {
+            var request = new ListThingPrincipalsRequest
+            {
+                ThingName = device.DeviceName
+            };
+
+            do
+            {
+                var principalResponse = await this.amazonIoTClient.ListThingPrincipalsAsync(request);
+
+                if (!principalResponse.Principals.Any())
+                {
+                    break;
+                }
+
+                foreach (var item in principalResponse.Principals)
+                {
+                    await RemoveGreengrassCertificateFromPrincipal(device, item);
+                }
+
+                request.NextToken = principalResponse.NextToken;
+            }
+            while (true);
+        }
+
+        private async Task RemoveGreengrassCertificateFromPrincipal(IoTEdgeDevice device, string principalId)
+        {
+            _ = await this.amazonIoTClient.DetachPolicyAsync(new DetachPolicyRequest
+            {
+                Target = principalId,
+                PolicyName = "GreengrassV2IoTThingPolicy"
+            });
+
+            _ = await this.amazonIoTClient.DetachPolicyAsync(new DetachPolicyRequest
+            {
+                Target = principalId,
+                PolicyName = "GreengrassCoreTokenExchangeRoleAliasPolicy"
+            });
+            _ = await this.amazonIoTClient.DetachThingPrincipalAsync(device.DeviceName, principalId);
+
+            _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
+            {
+                ForceDeleteWithoutRecovery = true,
+                SecretId = device.DeviceId + PublicKeyKey,
+            });
+
+            _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
+            {
+                ForceDeleteWithoutRecovery = true,
+                SecretId = device.DeviceId + PrivateKeyKey,
+            });
+
+            _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
+            {
+                ForceDeleteWithoutRecovery = true,
+                SecretId = device.DeviceId + CertificateKey,
+            });
+
+            var awsPricipalCertRegex = new Regex("/arn:aws:iot:([a-z0-9-]*):(\\d*):cert\\/([0-9a-fA-F]*)/gm");
+
+            var matches = awsPricipalCertRegex.Match(principalId);
+
+            if (!matches.Success)
+            {
+                return;
+            }
+
+            var certificateId = matches.Captures[2].Value;
+
+            _ = await this.amazonIoTClient.UpdateCertificateAsync(certificateId, CertificateStatus.REGISTER_INACTIVE);
+            _ = await this.amazonIoTClient.DeleteCertificateAsync(certificateId);
         }
     }
 }

@@ -10,19 +10,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using Amazon.IotData.Model;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using Microsoft.Extensions.Logging;
 
     public class AWSExternalDeviceService : IAWSExternalDeviceService
     {
-        private readonly ILogger<AWSExternalDeviceService> log;
         private readonly IAmazonIoT amazonIotClient;
         private readonly IAmazonIotData amazonIotDataClient;
 
-        public AWSExternalDeviceService(ILogger<AWSExternalDeviceService> log
-            , IAmazonIoT amazonIoTClient
-            , IAmazonIotData amazonIotDataClient)
+        public AWSExternalDeviceService(IAmazonIoT amazonIoTClient, IAmazonIotData amazonIotDataClient)
         {
-            this.log = log;
             this.amazonIotClient = amazonIoTClient;
             this.amazonIotDataClient = amazonIotDataClient;
         }

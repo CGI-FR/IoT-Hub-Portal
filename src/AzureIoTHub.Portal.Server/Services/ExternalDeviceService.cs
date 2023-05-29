@@ -621,18 +621,18 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="edgeDeviceId">the edge device id.</param>
         /// <returns>Enrollment credentials.</returns>
         /// <exception cref="ResourceNotFoundException"></exception>
-        public async Task<DeviceCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
+        public async Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device)
         {
-            var deviceTwin = await GetDeviceTwin(edgeDeviceId);
+            var deviceTwin = await GetDeviceTwin(device.DeviceId);
 
             if (deviceTwin == null)
             {
-                throw new ResourceNotFoundException($"IoT Edge {edgeDeviceId} doesn't exist.");
+                throw new ResourceNotFoundException($"IoT Edge {device.DeviceId} doesn't exist.");
             }
 
             var modelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId));
 
-            return await this.deviceRegistryProvider.GetEnrollmentCredentialsAsync(edgeDeviceId, modelId);
+            return await this.deviceRegistryProvider.GetEnrollmentCredentialsAsync(device.DeviceId, modelId);
         }
 
         /// <summary>
@@ -715,6 +715,21 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         public Task DeleteDeviceModel(ExternalDeviceModelDto deviceModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> CreateEnrollementScript(string template, Domain.Entities.EdgeDevice device)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CreateEdgeDevice(string deviceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveDeviceCredentials(IoTEdgeDevice device)
         {
             throw new NotImplementedException();
         }

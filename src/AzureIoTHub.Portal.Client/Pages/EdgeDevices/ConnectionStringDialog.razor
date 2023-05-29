@@ -1,47 +1,86 @@
 ﻿@using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Shared.Constants;
 
 @inject ClipboardService ClipboardService
 @inject IEdgeDeviceClientService EdgeDeviceClientService
+@inject PortalSettings Portal
 
 <MudDialog>
-        <DialogContent>
-            <MudCard Outlined="true">
-                <MudCardContent>
-                    <MudGrid>
+    <DialogContent>
+        <MudCard Outlined="true">
+            <MudCardContent>
+                <MudGrid>
+                    @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                    {
                         <MudItem xs="12">
                             <MudText Style="text-decoration:underline"><b>Service Endpoint</b></MudText>
-                            <MudTextField @bind-Value="@Credentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ProvisioningEndpoint))"/>
+                            <MudTextField @bind-Value="@Credentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ProvisioningEndpoint))" />
                         </MudItem>
                         <MudItem Class="mt-0" xs="12">
                             <MudText Style="text-decoration:underline"><b>Registration Id</b></MudText>
-                            <MudTextField @bind-Value="@Credentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.RegistrationID))" />
+                            <MudTextField @bind-Value="@Credentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.RegistrationID))" />
                         </MudItem>
                         <MudItem Class="mt-0" xs="12">
                             <MudText Style="text-decoration:underline"><b>Scope Id</b></MudText>
-                            <MudTextField @bind-Value="@Credentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ScopeID))" />
+                            <MudTextField @bind-Value="@Credentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ScopeID))" />
                         </MudItem>
                         <MudItem Class="mt-0" xs="12">
                             <MudText Style="text-decoration:underline"><b>Symmetric Key</b></MudText>
                             <MudTextField @bind-Value="@Credentials.SymmetricKey" Variant="Variant.Text" InputType="InputType.Password" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricKey))" />
                         </MudItem>
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
-        </DialogContent>
-        <DialogActions>
-            <MudButton id="cancel" OnClick="Cancel">Cancel</MudButton>
-        </DialogActions>
-    </MudDialog>
+                    }
+                    else if (Portal.CloudProvider.Equals(CloudProviders.AWS))
+                    {
+                        <MudItem xs="12">
+                            @if (string.IsNullOrEmpty(EnrollementScriptCommand))
+                            {
+                                <MudText>Quick connect</MudText>
+                                <br />
+                                <MudAlert Severity="Severity.Normal">
+                                    Quiclky connect your Edge device on the platform by executing one command.
+                                </MudAlert>
+                                <br />
+                                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;display: block; margin-left: auto; margin-right: auto" OnClick="GetEnrollmentScriptCommand">Get the magic command</MudButton>
+                            }
+                            else
+                            {
+                                <br />
+                                <MudText Style="text-decoration:underline"><b>Operating system</b></MudText>
+                                <MudSelect T="string" @bind-Value="@templateName" Text="Operating system" SelectedValuesChanged="GetEnrollmentScriptCommand">
+                                    <MudSelectItem  Value="@("debian_11_bullseye")">Debian 11 (Bulleseye)</MudSelectItem>
+                                </MudSelect>
+                                <br />
+                                <MudAlert Severity="Severity.Info">
+                                    Copy this command line above and paste it into the device prompt.<br />
+                                    <b>Note that you should have administrative rights on the device to execute the command.</b>
+                                </MudAlert>
+                                <br />
+                                <MudTextField @bind-Value="@EnrollementScriptCommand" Style="text-overflow: ellipsis" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(EnrollementScriptCommand))" />
+                            }
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="ok" OnClick="Close">OK</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
     [CascadingParameter]
     public Error Error { get; set; } = default!;
-    
+
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter] public string deviceId { get; set; } = default!;
 
     private SymmetricCredentials Credentials = new SymmetricCredentials();
+
+    public string EnrollementScriptCommand { get; set; } = default!;
+
+    public string templateName { get; set; } = "debian_11_bullseye";
 
     protected override async Task OnInitializedAsync()
     {
@@ -53,10 +92,16 @@
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
-            Cancel();
+            Close();
         }
     }
 
+    private async Task GetEnrollmentScriptCommand()
+    {
+        var url = await EdgeDeviceClientService.GetEnrollmentScriptUrl(deviceId, templateName);
 
-    void Cancel() => MudDialog.Cancel();
+        EnrollementScriptCommand = $"curl -s {url} | bash";
+    }
+
+    void Close() => MudDialog.Cancel();
 }

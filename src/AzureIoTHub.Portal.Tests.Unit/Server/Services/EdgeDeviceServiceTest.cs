@@ -63,7 +63,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
-            _ = ServiceCollection.AddSingleton<IEdgeDevicesService, EdgeDevicesService>();
+            _ = ServiceCollection.AddSingleton<IEdgeDevicesService, AzureEdgeDevicesService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 

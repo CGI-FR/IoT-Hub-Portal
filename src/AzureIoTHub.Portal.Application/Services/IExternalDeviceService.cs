@@ -22,9 +22,12 @@ namespace AzureIoTHub.Portal.Application.Services
         Task<Twin> GetDeviceTwin(string deviceId);
 
         Task<Twin> GetDeviceTwinWithModule(string deviceId);
+
         Task<Twin> GetDeviceTwinWithEdgeHubModule(string deviceId);
 
         Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled);
+
+        Task<bool> CreateEdgeDevice(string deviceId);
 
         Task<Device> UpdateDevice(Device device);
 
@@ -67,7 +70,7 @@ namespace AzureIoTHub.Portal.Application.Services
 
         Task<DeviceCredentials> GetDeviceCredentials(string deviceId);
 
-        Task<DeviceCredentials> GetEdgeDeviceCredentials(string edgeDeviceId);
+        Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device);
 
         Task<ConfigItem> RetrieveLastConfiguration(Twin twin);
 
@@ -76,5 +79,9 @@ namespace AzureIoTHub.Portal.Application.Services
         Task<List<string>> GetAllGatewayID();
 
         Task<IEnumerable<string>> GetDevicesToExport();
+
+        Task<string> CreateEnrollementScript(string template, Domain.Entities.EdgeDevice device);
+
+        Task RemoveDeviceCredentials(IoTEdgeDevice device);
     }
 }

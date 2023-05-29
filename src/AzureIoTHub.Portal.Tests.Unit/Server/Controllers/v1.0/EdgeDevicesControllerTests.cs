@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
+    using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices.Common.Exceptions;
@@ -30,6 +31,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
         private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IEdgeDevicesService> mockEdgeDeviceService;
         private Mock<IUrlHelper> mockUrlHelper;
+        private Mock<IDataProtectionProvider> mockDataProtectionProvider;
+        private Mock<IDataProtector> mockDataProtector;
 
         [SetUp]
         public void SetUp()
@@ -40,6 +43,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
             this.mockEdgeDeviceService = this.mockRepository.Create<IEdgeDevicesService>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
+            this.mockDataProtectionProvider = this.mockRepository.Create<IDataProtectionProvider>();
+            this.mockDataProtector = this.mockRepository.Create<IDataProtector>();
+
+            _ = this.mockDataProtectionProvider.Setup(c => c.CreateProtector(It.IsAny<string>()))
+                .Returns(this.mockDataProtector.Object);
         }
 
         private EdgeDevicesController CreateEdgeDevicesController()
@@ -47,7 +55,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             return new EdgeDevicesController(
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
-                this.mockEdgeDeviceService.Object)
+                this.mockEdgeDeviceService.Object,
+                this.mockDataProtectionProvider.Object)
             {
                 Url = this.mockUrlHelper.Object
             };
@@ -305,7 +314,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceService
-                .Setup(x => x.GetEdgeDeviceCredentials(It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal))))
+                .Setup(x => x.GetEdgeDeviceCredentials(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(deviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceCredentials());
 
             // Act
@@ -334,7 +343,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceService
-                .Setup(x => x.GetEdgeDeviceCredentials(It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal))))
+                .Setup(x => x.GetEdgeDeviceCredentials(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(deviceId, StringComparison.Ordinal))))
                 .ThrowsAsync(new ResourceNotFoundException(""));
 
             // Act

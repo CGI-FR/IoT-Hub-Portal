@@ -6,18 +6,21 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Cryptography;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Services;
-    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
 
     [Authorize]
     [ApiController]
@@ -42,6 +45,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IEdgeDevicesService edgeDevicesService;
 
         /// <summary>
+        /// The data protector
+        /// </summary>
+        private readonly ITimeLimitedDataProtector protector;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDevicesController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
@@ -50,11 +58,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public EdgeDevicesController(
             ILogger<EdgeDevicesController> logger,
             IExternalDeviceService service,
-            IEdgeDevicesService edgeDevicesService)
+            IEdgeDevicesService edgeDevicesService,
+            IDataProtectionProvider dataProtectionProvider)
         {
             this.edgeDevicesService = edgeDevicesService;
             this.logger = logger;
             this.externalDevicesService = service;
+
+            this.protector = dataProtectionProvider
+                    .CreateProtector("EdgeEnrollementScriptKey")
+                    .ToTimeLimitedDataProtector();
         }
 
         /// <summary>
@@ -176,13 +189,60 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<SymmetricCredentials>> GetCredentials(string deviceId)
         {
+            var device = await this.edgeDevicesService.GetEdgeDevice(deviceId);
+
+            if (deviceId == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(await this.externalDevicesService.GetEdgeDeviceCredentials(device));
+        }
+
+
+        /// <summary>
+        /// Gets the IoT Edge device enrollement script Url.
+        /// </summary>
+        /// <param name="deviceId">The device identifier.</param>
+        [HttpGet("{deviceId}/enrollementScript/{templateName}", Name = "GET Device enrollment script URL")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<string> GetEnrollementScriptUrl(string deviceId, string templateName)
+        {
+            if (deviceId == null)
+            {
+                return NotFound();
+            }
+
+            var enrollementParameters = new Dictionary<string, string>
+            {
+                { "deviceId", deviceId },
+                { "templateName", templateName}
+            };
+
+            var protectedParameters = protector.Protect(JsonConvert.SerializeObject(enrollementParameters),
+                                                                DateTimeOffset.UtcNow.AddMinutes(15));
+
+            return new Uri(new Uri(Request.GetDisplayUrl()), Url.Action(nameof(GetEnrollementScript), new
+            {
+                code = protectedParameters
+            })!).ToString();
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("enroll", Name = "GET Device enrollment script")]
+        public async Task<ActionResult<string>> GetEnrollementScript([FromQuery] string code)
+        {
             try
             {
-                return Ok(await this.externalDevicesService.GetEdgeDeviceCredentials(deviceId));
+                var parameters = JsonConvert.DeserializeObject<Dictionary<string, string>>(protector.Unprotect(code));
+
+                return await this.edgeDevicesService
+                                .GetEdgeDeviceEnrollementScript(parameters["deviceId"], parameters["templateName"]);
             }
-            catch (ResourceNotFoundException e)
+            catch (CryptographicException ex)
             {
-                return NotFound(e);
+                return BadRequest(ex.Message);
             }
         }
 

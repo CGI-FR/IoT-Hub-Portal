@@ -22,6 +22,8 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task<SymmetricCredentials> GetEnrollmentCredentials(string deviceId);
 
+        Task<string> GetEnrollmentScriptUrl(string deviceId, string templateName);
+
         Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule);
 
         Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);

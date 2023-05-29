@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Models.v10
     /// </summary>
     public class CertificateCredentials
     {
-
         /// <summary>
         /// The Certificate Pem
         /// </summary>

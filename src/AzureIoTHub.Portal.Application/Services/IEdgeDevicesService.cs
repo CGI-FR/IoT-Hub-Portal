@@ -33,5 +33,7 @@ namespace AzureIoTHub.Portal.Application.Services
         Task<C2Dresult> ExecuteModuleCommand(string deviceId, string moduleName, string commandName);
 
         Task<IEnumerable<LabelDto>> GetAvailableLabels();
+
+        Task<string> GetEdgeDeviceEnrollementScript(string deviceId, string templateName);
     }
 }
