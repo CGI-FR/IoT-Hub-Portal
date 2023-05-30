@@ -34,6 +34,16 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.Payload, opts => opts.MapFrom(src => EmptyPayload()))
                 .ReverseMap();
+
+            _ = CreateMap<DescribeThingResponse, Device>()
+               .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ThingId))
+               .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingName))
+               .ForMember(dest => dest.Version, opts => opts.MapFrom(src => src.Version))
+               .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Attributes.Select(att => new DeviceTagValue
+               {
+                   Name = att.Key,
+                   Value = att.Value
+               })));
         }
 
         private static MemoryStream EmptyPayload()

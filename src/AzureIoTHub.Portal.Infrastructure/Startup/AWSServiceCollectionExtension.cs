@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Startup
 {
+    using System.Net;
     using Amazon;
     using Amazon.GreengrassV2;
     using Amazon.IoT;
@@ -19,6 +20,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Extensions.DependencyInjection;
+    using Prometheus;
     using Quartz;
 
     public static class AWSServiceCollectionExtension
@@ -81,7 +83,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                     .AddTrigger(t => t
                         .WithIdentity($"{nameof(SyncThingTypesJob)}")
                         .ForJob(nameof(SyncThingTypesJob))
-                    .WithSimpleSchedule(s => s
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<SyncThingsJob>(j => j.WithIdentity(nameof(SyncThingsJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncThingsJob)}")
+                        .ForJob(nameof(SyncThingsJob))
+                        .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
 
