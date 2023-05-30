@@ -183,13 +183,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                     thingTypes.Any(thingType => deviceModel.Id.Equals(thingType.ThingTypeId, StringComparison.Ordinal) && thingType.ThingTypeMetadata.Deprecated))
                 .ToList();
 
-            deviceModelsToDelete.ForEach(async deviceModel =>
+            foreach (var deviceModel in deviceModelsToDelete)
             {
                 await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModel.Id);
                 this.deviceModelRepository.Delete(deviceModel.Id);
                 await this.unitOfWork.SaveAsync();
-
-            });
+            }
 
         }
 

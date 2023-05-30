@@ -404,11 +404,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
-            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.Update(It.IsAny<EdgeDeviceModel>()));
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
                 .Returns(Task.CompletedTask);
 
