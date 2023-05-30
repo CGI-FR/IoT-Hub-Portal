@@ -629,8 +629,6 @@ Resources:
                   Fn::Sub: "${openIdScopeName}"
               - Name: CloudProvider
                 Value: AWS
-              - Name: PortalName
-                Value: IoT Portal DEMO - AWS
           ImageIdentifier:
             Fn::Sub: "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/iot-hub-portal:latest"
           ImageRepositoryType: ECR

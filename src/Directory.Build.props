@@ -9,6 +9,7 @@
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <TargetFramework>net6.0</TargetFramework>
         <NoWarn>1591</NoWarn>
+        <RestoreFallbackFolders>clear</RestoreFallbackFolders>
     </PropertyGroup>
 
     <ItemGroup>
