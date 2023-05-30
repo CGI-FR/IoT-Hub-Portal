@@ -14,7 +14,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Routing;
@@ -49,6 +48,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         private readonly ITimeLimitedDataProtector protector;
 
+        internal const string EdgeEnrollementKeyProtectorName = "EdgeEnrollementKeyProtector";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDevicesController"/> class.
         /// </summary>
@@ -66,7 +67,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             this.externalDevicesService = service;
 
             this.protector = dataProtectionProvider
-                    .CreateProtector("EdgeEnrollementScriptKey")
+                    .CreateProtector(EdgeEnrollementKeyProtectorName)
                     .ToTimeLimitedDataProtector();
         }
 
@@ -219,13 +220,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 { "templateName", templateName}
             };
 
-            var protectedParameters = protector.Protect(JsonConvert.SerializeObject(enrollementParameters),
-                                                                DateTimeOffset.UtcNow.AddMinutes(15));
+            var protectedParameters = protector.Protect(JsonConvert.SerializeObject(enrollementParameters), DateTimeOffset.UtcNow.AddMinutes(15));
 
-            return new Uri(new Uri(Request.GetDisplayUrl()), Url.Action(nameof(GetEnrollementScript), new
+            return Ok(Url.ActionLink(nameof(GetEnrollementScript), values: new
             {
                 code = protectedParameters
-            })!).ToString();
+            }));
         }
 
 
@@ -237,8 +237,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 var parameters = JsonConvert.DeserializeObject<Dictionary<string, string>>(protector.Unprotect(code));
 
-                return await this.edgeDevicesService
-                                .GetEdgeDeviceEnrollementScript(parameters["deviceId"], parameters["templateName"]);
+                return Ok(await this.edgeDevicesService
+                                .GetEdgeDeviceEnrollementScript(parameters["deviceId"], parameters["templateName"]));
             }
             catch (CryptographicException ex)
             {

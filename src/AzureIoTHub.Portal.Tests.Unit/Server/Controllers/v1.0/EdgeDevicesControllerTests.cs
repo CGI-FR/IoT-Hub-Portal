@@ -5,9 +5,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
+    using System.Net;
+    using System.Security.Cryptography.Xml;
     using System.Threading.Tasks;
     using AutoFixture;
+    using Azure;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Controllers.V10;
@@ -15,11 +19,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
+    using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.DataProtection;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Graph.DeviceManagement.DeviceConfigurations.Item.GetOmaSettingPlainTextValueWithSecretReferenceValueId;
     using Models.v10;
     using Moq;
     using NUnit.Framework;
@@ -33,8 +41,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
         private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IEdgeDevicesService> mockEdgeDeviceService;
         private Mock<IUrlHelper> mockUrlHelper;
-        private Mock<IDataProtectionProvider> mockDataProtectionProvider;
-        private Mock<IDataProtector> mockDataProtector;
+        private IDataProtectionProvider mockDataProtectionProvider;
 
         [SetUp]
         public void SetUp()
@@ -45,20 +52,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
             this.mockEdgeDeviceService = this.mockRepository.Create<IEdgeDevicesService>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
-            this.mockDataProtectionProvider = this.mockRepository.Create<IDataProtectionProvider>();
-            this.mockDataProtector = this.mockRepository.Create<IDataProtector>();
-
-            _ = this.mockDataProtectionProvider.Setup(c => c.CreateProtector(It.IsAny<string>()))
-                .Returns(this.mockDataProtector.Object);
+            this.mockDataProtectionProvider = new EphemeralDataProtectionProvider();
         }
 
-        private EdgeDevicesController CreateEdgeDevicesController()
+        private EdgeDevicesController CreateEdgeDevicesController(IDataProtectionProvider dataProtectionProvider = null)
         {
             return new EdgeDevicesController(
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockEdgeDeviceService.Object,
-                this.mockDataProtectionProvider.Object)
+                dataProtectionProvider ?? this.mockDataProtectionProvider)
             {
                 Url = this.mockUrlHelper.Object
             };
@@ -432,6 +435,103 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedLabels);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEnrollmentScriptUrlShouldReturnEncryptedUrlParameters()
+        {
+            // Arrange
+            var encryptedData = Fixture.CreateMany<byte>(64).ToArray();
+            var encodedPayload = WebEncoders.Base64UrlEncode(encryptedData);
+
+            var fakeUri = Fixture.Create<Uri>();
+
+            var deviceId = Fixture.Create<string>();
+            var templateName = Fixture.Create<string>();
+
+            var mockDataProtectionProvider = this.mockRepository.Create<IDataProtectionProvider>();
+            var mockDataProtector = this.mockRepository.Create<IDataProtector>();
+
+            _ = mockDataProtectionProvider.Setup(c => c.CreateProtector(It.IsAny<string>()))
+                .Returns(mockDataProtector.Object);
+
+            var edgeDeviceController = CreateEdgeDevicesController(mockDataProtectionProvider.Object);
+
+            var mockLimitedLifetimeProtector = this.mockRepository
+                                                    .Create<ITimeLimitedDataProtector>();
+
+            _ = mockDataProtector.Setup(c => c.CreateProtector(It.IsAny<string>()))
+                .Returns(mockLimitedLifetimeProtector.Object);
+
+            _ = mockLimitedLifetimeProtector.Setup(c => c.Protect(It.IsAny<byte[]>()))
+                .Returns(encryptedData);
+
+            _ = this.mockUrlHelper.SetupGet(c => c.ActionContext)
+                .Returns(new ActionContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                });
+
+            _ = this.mockUrlHelper.Setup(c => c.Action(It.Is<UrlActionContext>(a => a.Values.ToString() == new { code = encodedPayload }.ToString())))
+                .Returns(fakeUri.ToString());
+
+            // Act
+            var response = edgeDeviceController.GetEnrollementScriptUrl(deviceId, templateName);
+
+            // Assert
+            _ = response.Result.Should().BeAssignableTo<OkObjectResult>();
+            _ = (response.Result as OkObjectResult).Value.Should().Be(fakeUri.ToString());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEnrollementScriptShouldDecryptTheCode()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+            var templateName = Fixture.Create<string>();
+
+            var encryptedData = "{\"deviceId\": \"" + deviceId + "\",\"templateName\": \"" + templateName + "\"}";
+            var expectedResumt = Fixture.Create<string>();
+
+            var protector = this.mockDataProtectionProvider.CreateProtector(EdgeDevicesController.EdgeEnrollementKeyProtectorName)
+                                                                .ToTimeLimitedDataProtector();
+
+            var code = protector.Protect(encryptedData, DateTimeOffset.UtcNow + 1.Minutes());
+
+            _ = this.mockEdgeDeviceService.Setup(c => c.GetEdgeDeviceEnrollementScript(deviceId, templateName))
+                .ReturnsAsync(expectedResumt);
+
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            // Act
+            var response = await edgeDeviceController.GetEnrollementScript(code);
+
+            // Assert
+            _ = response.Result.Should().BeAssignableTo<OkObjectResult>();
+            _ = (response.Result as OkObjectResult).Value.Should().Be(expectedResumt);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenCodeExpiresGetEnrollementScriptShouldReturnBadRequest()
+        {
+            // Arrange
+            var encryptedData = Fixture.Create<string>();
+
+            var protector = this.mockDataProtectionProvider.CreateProtector(EdgeDevicesController.EdgeEnrollementKeyProtectorName)
+                                                                .ToTimeLimitedDataProtector();
+
+            var code = protector.Protect(encryptedData, DateTimeOffset.UtcNow - 1.Minutes());
+
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            // Act
+            var response = await edgeDeviceController.GetEnrollementScript(code);
+
+            // Assert
+            _ = response.Result.Should().BeAssignableTo<BadRequestObjectResult>();
             this.mockRepository.VerifyAll();
         }
     }
