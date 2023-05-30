@@ -147,7 +147,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             {
                 try
                 {
-                    var getComponentIfExist = await this.greengras.DescribeComponentAsync(new DescribeComponentRequest
+                    _ = await this.greengras.DescribeComponentAsync(new DescribeComponentRequest
                     {
                         Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{component.ModuleName}:versions:{component.Version}"
                     });
