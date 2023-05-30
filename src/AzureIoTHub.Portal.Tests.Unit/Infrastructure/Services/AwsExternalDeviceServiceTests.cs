@@ -6,11 +6,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using Amazon.GreengrassV2;
     using Amazon.IoT;
     using Amazon.IoT.Model;
+    using Amazon.SecretsManager;
     using AutoFixture;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Shared;
     using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
@@ -23,6 +26,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     public class AwsExternalDeviceServiceTests : BackendUnitTest
     {
         private Mock<IAmazonIoT> mockAmazonIot;
+        private Mock<IAmazonGreengrassV2> mockGreengrassV2;
+        private Mock<IAmazonSecretsManager> mockSecretsManager;
+        private Mock<ConfigHandler> mockConfigHandler;
 
         private IExternalDeviceService externalDeviceModelService;
 
@@ -31,8 +37,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             base.Setup();
 
             this.mockAmazonIot = MockRepository.Create<IAmazonIoT>();
+            this.mockGreengrassV2 = MockRepository.Create<IAmazonGreengrassV2>();
+            this.mockSecretsManager = MockRepository.Create<IAmazonSecretsManager>();
+            this.mockConfigHandler = MockRepository.Create<ConfigHandler>();
 
             _ = ServiceCollection.AddSingleton(this.mockAmazonIot.Object);
+            _ = ServiceCollection.AddSingleton(this.mockGreengrassV2.Object);
+            _ = ServiceCollection.AddSingleton(this.mockSecretsManager.Object);
+            _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
             _ = ServiceCollection.AddSingleton<IExternalDeviceService, AwsExternalDeviceService>();
 
             Services = ServiceCollection.BuildServiceProvider();

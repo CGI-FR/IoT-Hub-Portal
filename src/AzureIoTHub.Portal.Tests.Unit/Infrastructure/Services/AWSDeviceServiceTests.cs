@@ -45,6 +45,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
         private Mock<IAmazonIotData> mockAmazonIotDataClient;
         private Mock<IConfiguration> mockConfiguration;
         private Mock<IAWSExternalDeviceService> mockAWSExternalDevicesService;
+        private Mock<IExternalDeviceService> mockExternalDeviceService;
 
         private IDeviceService<DeviceDetails> awsDeviceService;
 
@@ -63,6 +64,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockAmazonIotDataClient = MockRepository.Create<IAmazonIotData>();
             this.mockConfiguration = MockRepository.Create<IConfiguration>();
             this.mockAWSExternalDevicesService = MockRepository.Create<IAWSExternalDeviceService>();
+            this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
 
             _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
@@ -73,8 +75,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockAmazonIotClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockAmazonIotDataClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
-            _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton(this.mockAWSExternalDevicesService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
+            _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, AWSDeviceService>();
 
             Services = ServiceCollection.BuildServiceProvider();

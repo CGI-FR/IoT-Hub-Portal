@@ -191,7 +191,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             var device = await this.edgeDevicesService.GetEdgeDevice(deviceId);
 
-            if (deviceId == null)
+            if (device == null)
             {
                 return NotFound();
             }

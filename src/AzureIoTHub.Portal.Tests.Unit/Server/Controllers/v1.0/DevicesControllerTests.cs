@@ -253,7 +253,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var expectedEnrollmentCredentials = new DeviceCredentials
             {
                 AuthenticationMode = AuthenticationMode.SymmetricKey,
-                SymmetricCredentials = {
+                SymmetricCredentials = new SymmetricCredentials
+                {
                     RegistrationID = "aaa",
                     SymmetricKey = "dfhjkfdgh"
                 }

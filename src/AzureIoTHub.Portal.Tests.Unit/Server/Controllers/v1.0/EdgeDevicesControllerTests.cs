@@ -7,11 +7,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AutoFixture;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Mvc;
@@ -23,7 +25,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using NUnit.Framework;
 
     [TestFixture]
-    public class EdgeDevicesControllerTests
+    public class EdgeDevicesControllerTests : BackendUnitTest
     {
         private MockRepository mockRepository;
 
@@ -311,14 +313,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Arrange
             var edgeDevicesController = CreateEdgeDevicesController();
 
-            var deviceId = Guid.NewGuid().ToString();
+            var mockDevice = Fixture.Create<IoTEdgeDevice>();
+
+            _ = this.mockEdgeDeviceService.Setup(x => x.GetEdgeDevice(mockDevice.DeviceId))
+                .ReturnsAsync(mockDevice);
 
             _ = this.mockDeviceService
-                .Setup(x => x.GetEdgeDeviceCredentials(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(deviceId, StringComparison.Ordinal))))
+                .Setup(x => x.GetEdgeDeviceCredentials(mockDevice))
                 .ReturnsAsync(new DeviceCredentials());
 
             // Act
-            var result = await edgeDevicesController.GetCredentials(deviceId);
+            var result = await edgeDevicesController.GetCredentials(mockDevice.DeviceId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -329,33 +334,28 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             Assert.AreEqual(200, okObjectResult.StatusCode);
 
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<SymmetricCredentials>(okObjectResult.Value);
+            Assert.IsAssignableFrom<DeviceCredentials>(okObjectResult.Value);
 
             this.mockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task WhenDeviceDoesNotExistGetEnrollmentCredentialsShouldThrowAnException()
+        public async Task WhenDeviceDoesNotExistGetEnrollmentCredentialsShouldReturnNotFound()
         {
             // Arrange
             var edgeDevicesController = CreateEdgeDevicesController();
 
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceService
-                .Setup(x => x.GetEdgeDeviceCredentials(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(deviceId, StringComparison.Ordinal))))
-                .ThrowsAsync(new ResourceNotFoundException(""));
+            _ = this.mockEdgeDeviceService.Setup(c => c.GetEdgeDevice(deviceId))
+                .ReturnsAsync((IoTEdgeDevice)null);
 
             // Act
             var result = await edgeDevicesController.GetCredentials(deviceId);
 
             // Assert
             Assert.IsNotNull(result);
-
-            var objectResult = result.Result as ObjectResult;
-
-            Assert.IsNotNull(objectResult);
-            Assert.AreEqual(404, objectResult.StatusCode);
+            Assert.IsAssignableFrom<NotFoundResult>(result.Result);
 
             this.mockRepository.VerifyAll();
         }

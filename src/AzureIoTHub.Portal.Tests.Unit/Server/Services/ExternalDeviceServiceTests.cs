@@ -1798,7 +1798,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockRegistrationCredentials = new DeviceCredentials
             {
                 AuthenticationMode = AuthenticationMode.SymmetricKey,
-                SymmetricCredentials =
+                SymmetricCredentials = new SymmetricCredentials
                 {
                     RegistrationID = "aaa",
                     SymmetricKey = "dfhjkfdgh"

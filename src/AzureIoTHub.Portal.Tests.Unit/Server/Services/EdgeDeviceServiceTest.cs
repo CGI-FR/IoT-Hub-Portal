@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
@@ -39,6 +40,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
         private Mock<ILabelRepository> mockLabelRepository;
+        private Mock<IEdgeEnrollementHelper> mockEnrollementHelper;
+        private Mock<ConfigHandler> mockConfig;
 
         private IEdgeDevicesService edgeDevicesService;
 
@@ -54,6 +57,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
             this.mockLabelRepository = MockRepository.Create<ILabelRepository>();
+            this.mockEnrollementHelper = MockRepository.Create<IEdgeEnrollementHelper>();
+            this.mockConfig = MockRepository.Create<ConfigHandler>();
 
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceService.Object);
@@ -62,6 +67,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockConfig.Object);
+            _ = ServiceCollection.AddSingleton(this.mockEnrollementHelper.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton<IEdgeDevicesService, AzureEdgeDevicesService>();
 
@@ -555,6 +562,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(value: null);
+
+            _ = this.mockUnitOfWork.Setup(c => c.SaveAsync())
+                .Returns(Task.CompletedTask);
 
             // Act
             await this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceDto.DeviceId);
