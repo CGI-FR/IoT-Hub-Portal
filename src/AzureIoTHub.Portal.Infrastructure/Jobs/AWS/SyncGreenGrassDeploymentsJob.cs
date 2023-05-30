@@ -128,13 +128,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 .Where(edge => !edgeModels.Any(edgeModel => edge.ExternalIdentifier!.Equals(edgeModel.ExternalIdentifier, StringComparison.Ordinal)))
                 .ToList();
 
-            deploymentToDelete.ForEach(async edgeModel =>
+            foreach (var edgeModel in deploymentToDelete)
             {
                 await this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModel.Id);
                 this.edgeDeviceModelRepository.Delete(edgeModel.Id);
                 await this.unitOfWork.SaveAsync();
-            });
-
+            }
         }
     }
 }

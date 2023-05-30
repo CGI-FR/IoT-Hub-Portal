@@ -63,6 +63,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
             var deploymentId = Fixture.Create<string>();
+            var nonExistingDeploymentId = Fixture.Create<string>();
 
             var listDeploymentsInAws = new ListDeploymentsResponse
             {
@@ -91,8 +92,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 },
                 new EdgeDeviceModel
                 {
-                    Id = Fixture.Create<string>(),
-                    ExternalIdentifier = Fixture.Create<string>(),
+                    Id = nonExistingDeploymentId,
+                    ExternalIdentifier = nonExistingDeploymentId,
                 }
             };
 
@@ -106,6 +107,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 .Returns(Task.CompletedTask);
             _ = this.mockDeviceModelImageManager.Setup(c => c.SetDefaultImageToModel(It.Is<string>(s => !s.Equals(deploymentId, StringComparison.Ordinal))))
                 .ReturnsAsync(Fixture.Create<string>());
+
+            this.mockEdgeDeviceModelRepository.Setup(u => u.Delete(It.Is<string>(s => s.Equals(nonExistingDeploymentId, StringComparison.Ordinal))))
+               .Verifiable();
+
+            _ = this.mockDeviceModelImageManager.Setup(c => c.DeleteDeviceModelImageAsync(It.Is<string>(s => s.Equals(nonExistingDeploymentId, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
             _ = this.mockUnitOfWork.Setup(c => c.SaveAsync())
                 .Returns(Task.CompletedTask);
 
@@ -116,5 +124,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             MockRepository.VerifyAll();
 
         }
+
     }
 }
