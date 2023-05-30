@@ -69,7 +69,7 @@ jobs:
             ${{ steps.meta.outputs.tags }}
 
   arm_templates:
-    name: Publish ARM templates
+    name: Publish cloud infrastructure templates
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -112,24 +112,34 @@ jobs:
         working-directory: arm-templates
         run: |
             rm -rf ./templates/
-            mkdir -p templates/iotedge-lorawan-starterkit
+            mkdir -p templates/azure/iotedge-lorawan-starterkit
             touch ./templates/.gitkeep
             cp -r ../IoT-Hub-Portal/templates/* ./templates/
-            cp -r ../iotedge-lorawan-starterkit/TemplateBicep/* ./templates/iotedge-lorawan-starterkit/
-            sed -r -i 's/..\/iotedge-lorawan-starterkit\/TemplateBicep\/main.bicep/.\/iotedge-lorawan-starterkit\/main.bicep/g' ./templates/portal_with_lorawan_and_starter_kit.bicep
+            cp -r ../iotedge-lorawan-starterkit/TemplateBicep/* ./templates/azure/iotedge-lorawan-starterkit/
+            sed -r -i 's/..\/iotedge-lorawan-starterkit\/TemplateBicep\/main.bicep/.\/iotedge-lorawan-starterkit\/main.bicep/g' ./templates/azure/portal_with_lorawan_and_starter_kit.bicep
       
       - name: Update IoTHub Portal docker image tag in app_service.bicep
-        working-directory: arm-templates/templates
+        working-directory: arm-templates/templates/azure
         run: sed -i 's/ghcr.io\/cgi-fr\/iothub-portal:latest/ghcr.io\/cgi-fr\/iothub-portal:${{ fromJSON(steps.version.outputs.json).labels['org.opencontainers.image.version'] }}/g' app_service.bicep
       
+      - name: Update IoTHub Portal docker image tag in awsdeploy.yml
+        working-directory: arm-templates/templates/aws
+        run: sed -i 's/\${AWS::AccountId}.dkr.ecr.\${AWS::Region}.amazonaws.com\/iot-hub-portal:latest/578920151383.dkr.ecr.eu-west-1.amazonaws.com\/iot-hub-portal:${{ fromJSON(steps.version.outputs.json).labels['org.opencontainers.image.version'] }}/g' awsdeploy.yml
+
       - name: Generate ARM file
-        working-directory: arm-templates/templates
+        working-directory: arm-templates/templates/azure
         run: az bicep build --file azuredeploy.bicep --outfile azuredeploy.json 
     
-      - name: Upload templates to release assets
+      - name: Upload azure templates to release assets
         uses: AButler/upload-release-assets@v2.0
         with:
-          files: 'arm-templates/templates/*.json'
+          files: 'arm-templates/templates/azure/*.json'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload aws templates to release assets
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: 'arm-templates/templates/aws/*.yml'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create PR for template updates
