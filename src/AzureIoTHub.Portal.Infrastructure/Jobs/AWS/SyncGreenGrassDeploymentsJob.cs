@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     using AzureIoTHub.Portal.Models.v10;
     using Amazon.GreengrassV2.Model;
     using AzureIoTHub.Portal.Domain.Entities;
+    using System.Text.RegularExpressions;
 
     [DisallowConcurrentExecution]
     public class SyncGreenGrassDeploymentsJob : IJob
@@ -89,13 +90,25 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             foreach (var deployment in getAllAwsGreenGrassDeployments.Deployments)
             {
-                var iotEdgeModel = new IoTEdgeModel
+                var awsThingGroupRegex = new Regex(@"/([^/]+)$");
+                var matches = awsThingGroupRegex.Match(deployment.TargetArn);
+
+                if (matches.Success && matches.Groups.Count > 1)
                 {
-                    ModelId = deployment.DeploymentId, //Instead of giving a random Id here, we can give the deploymentID
-                    Name = deployment.DeploymentName,
-                    ExternalIdentifier = deployment.DeploymentId
-                };
-                deployments.Add(iotEdgeModel);
+                    var thinggroupName = matches.Groups[1].Value;
+                    var s = await this.amazonIoTClient.DescribeThingGroupAsync(new Amazon.IoT.Model.DescribeThingGroupRequest { ThingGroupName = thinggroupName });
+                    if (s.QueryString != null)
+                    {
+                        var iotEdgeModel = new IoTEdgeModel
+                        {
+                            ModelId = deployment.DeploymentId, //Instead of giving a random Id here, we can give the deploymentID
+                            Name = deployment.DeploymentName,
+                            ExternalIdentifier = deployment.DeploymentId
+                        };
+                        deployments.Add(iotEdgeModel);
+                    }
+                }
+
             }
             return deployments;
         }

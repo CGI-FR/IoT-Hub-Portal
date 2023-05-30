@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
     using Amazon.GreengrassV2;
     using Amazon.GreengrassV2.Model;
     using Amazon.IoT;
+    using Amazon.IoT.Model;
     using AutoFixture;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
@@ -72,14 +73,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     new Deployment
                     {
                         DeploymentId = deploymentId,
+                        TargetArn = "arn:aws:iot:eu-west-1:0000000000:thinggroup/DemoEdgeModel"
                     },
                     new Deployment
                     {
                         DeploymentId = Fixture.Create<string>(),
+                        TargetArn = "arn:aws:iot:eu-west-1:0000000000:thinggroup/toto"
+
                     },
                     new Deployment
                     {
                         DeploymentId = Fixture.Create<string>(),
+                        TargetArn = "arn:aws:iot:eu-west-1:0000000000:thinggroup/titi"
+
                     }
                 }
             };
@@ -99,6 +105,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
             _ = this.mockAmazonGreenGrass.Setup(greengrass => greengrass.ListDeploymentsAsync(It.IsAny<ListDeploymentsRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(listDeploymentsInAws);
+
+            _ = this.mockAmazonIoTClient.Setup(iot => iot.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Fixture.Create<DescribeThingGroupResponse>);
 
             _ = this.mockEdgeDeviceModelRepository.Setup(u => u.GetAllAsync(null, It.IsAny<CancellationToken>()))
               .ReturnsAsync(existingDeployments);
