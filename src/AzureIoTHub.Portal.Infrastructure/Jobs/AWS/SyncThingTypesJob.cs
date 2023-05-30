@@ -187,9 +187,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             {
                 await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModel.Id);
                 this.deviceModelRepository.Delete(deviceModel.Id);
+                await this.unitOfWork.SaveAsync();
+
             });
 
-            await this.unitOfWork.SaveAsync();
         }
 
     }

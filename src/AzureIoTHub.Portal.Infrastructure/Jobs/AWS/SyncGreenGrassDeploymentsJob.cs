@@ -67,8 +67,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             foreach (var deployment in awsGreenGrassDeployments)
             {
-                await CreateOrUpdateGreenGrassDeployment(deployment);
+                await CreateNonExisitingGreenGrassDeployment(deployment);
             }
+
+            //Delete in DB AWS deleted deployments
+            await DeleteGreenGrassDeployments(awsGreenGrassDeployments);
         }
 
         private async Task<List<IoTEdgeModel>> GetAllGreenGrassDeployments()
@@ -81,6 +84,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 new ListDeploymentsRequest
                 {
                     NextToken = nextToken,
+                    HistoryFilter = DeploymentHistoryFilter.LATEST_ONLY
                 });
 
             foreach (var deployment in getAllAwsGreenGrassDeployments.Deployments)
@@ -96,12 +100,18 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             return deployments;
         }
 
-        private async Task CreateOrUpdateGreenGrassDeployment(IoTEdgeModel iotEdgeModel)
+        private async Task CreateNonExisitingGreenGrassDeployment(IoTEdgeModel iotEdgeModel)
         {
 
-            var iotEdgeModels = (await this.edgeDeviceModelRepository.GetAllAsync()).Where(edge => edge.ExternalIdentifier == iotEdgeModel.ExternalIdentifier).ToList();
+            var iotEdgeModels = (await this.edgeDeviceModelRepository.GetAllAsync())
+                .Where(edge => edge.ExternalIdentifier!.Equals(iotEdgeModel.ExternalIdentifier, StringComparison.Ordinal)).ToList();
+
             if (iotEdgeModels.Count == 0)
             {
+                //In Aws, it is possible to create a deployment without a name, so it will take the id as a name
+                //Here is how we handle it
+                iotEdgeModel.Name ??= iotEdgeModel.ModelId;
+
                 var edgeModel = this.mapper.Map<EdgeDeviceModel>(iotEdgeModel);
 
                 await this.edgeDeviceModelRepository.InsertAsync(edgeModel);
@@ -111,9 +121,20 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
         }
 
-        /*private async Task DeleteGreenGrassDeployments(List<IoTEdgeModel> edgeModels)
+        private async Task DeleteGreenGrassDeployments(List<IoTEdgeModel> edgeModels)
         {
+            //Get All Deployments that are not in AWS
+            var deploymentToDelete = (await this.edgeDeviceModelRepository.GetAllAsync())
+                .Where(edge => !edgeModels.Any(edgeModel => edge.ExternalIdentifier!.Equals(edgeModel.ExternalIdentifier, StringComparison.Ordinal)))
+                .ToList();
 
-        }*/
+            deploymentToDelete.ForEach(async edgeModel =>
+            {
+                await this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModel.Id);
+                this.edgeDeviceModelRepository.Delete(edgeModel.Id);
+                await this.unitOfWork.SaveAsync();
+            });
+
+        }
     }
 }
