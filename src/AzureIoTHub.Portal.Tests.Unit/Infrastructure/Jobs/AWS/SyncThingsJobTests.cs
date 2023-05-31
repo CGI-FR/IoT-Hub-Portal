@@ -116,10 +116,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>()))
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new List<Device>
                 {
-                    newDevice,
                     new Device
                     {
                         Id = Guid.NewGuid().ToString()
@@ -200,11 +199,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
             this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>())).Verifiable();
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Device>
-                {
-                    existingDevice
-                });
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<Device>());
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
@@ -265,11 +261,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(existingDevice.Id, d => d.Tags))
                 .ReturnsAsync(existingDevice);
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Device>
-                {
-                    existingDevice
-                });
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<Device>());
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
