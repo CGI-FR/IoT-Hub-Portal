@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Startup
 {
-    using System.Net;
     using Amazon;
     using Amazon.GreengrassV2;
     using Amazon.IoT;
@@ -20,7 +19,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Extensions.DependencyInjection;
-    using Prometheus;
     using Quartz;
 
     public static class AWSServiceCollectionExtension

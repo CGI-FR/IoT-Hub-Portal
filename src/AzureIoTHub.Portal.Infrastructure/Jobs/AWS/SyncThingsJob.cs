@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 {
+    using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
     using Amazon.IoT;
@@ -104,10 +105,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 await CreateOrUpdateThing(thing, deviceModel);
             }
 
-            foreach (var item in (await this.deviceRepository.GetAllAsync()).Where(device => !things.Exists(x => x.ThingId == device.Id)))
+            foreach (var item in (await this.deviceRepository.GetAllAsync(
+                device => !things.Select(x => x.ThingId).Contains(device.Id),
+                default,
+                d => d.Tags,
+                d => d.Labels
+            )))
             {
-                var deviceEntity = await this.deviceRepository.GetByIdAsync(item.Id, d => d.Tags, d => d.Labels);
-                this.deviceRepository.Delete(deviceEntity!.Id);
+                this.deviceRepository.Delete(item.Id);
             }
 
             await this.unitOfWork.SaveAsync();
