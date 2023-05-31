@@ -97,7 +97,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 var thingShadow = await this.amazonIoTDataClient.GetThingShadowAsync(thingShadowRequest);
                 if (thingShadow.HttpStatusCode.Equals(HttpStatusCode.NotFound))
                 {
-                    this.logger.LogWarning($"Cannot import device '{thing.ThingName}' since it doesn't have related thing shadow");
+                    this.logger.LogInformation($"Cannot import device '{thing.ThingName}' since it doesn't have related thing shadow");
                     continue;
                 }
 

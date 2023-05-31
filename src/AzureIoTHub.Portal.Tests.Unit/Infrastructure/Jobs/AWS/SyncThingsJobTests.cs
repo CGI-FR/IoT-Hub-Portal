@@ -273,5 +273,171 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             // Assert
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task ExecuteNewDeviceWithoutThingTypeSkipped()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+
+            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            var existingDevice = new Device
+            {
+                Id = Fixture.Create<string>(),
+                Name = Fixture.Create<string>(),
+                DeviceModel = expectedDeviceModel,
+                DeviceModelId = expectedDeviceModel.Id,
+                Version = 2
+            };
+
+            var thingsListing = new ListThingsResponse
+            {
+                Things = new List<ThingAttribute>()
+                {
+                    new ThingAttribute
+                    {
+                        ThingName = existingDevice.Name
+                    }
+                }
+            };
+
+            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(thingsListing);
+
+            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DescribeThingResponse()
+                {
+                    ThingId = existingDevice.Id,
+                    ThingName = existingDevice.Name,
+                    Version = 1
+                });
+
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<Device>());
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ExecuteNewDeviceWithUnknownThingTypeSkipped()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+
+            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            var existingDevice = new Device
+            {
+                Id = Fixture.Create<string>(),
+                Name = Fixture.Create<string>(),
+                DeviceModel = expectedDeviceModel,
+                DeviceModelId = expectedDeviceModel.Id,
+                Version = 2
+            };
+
+            var thingsListing = new ListThingsResponse
+            {
+                Things = new List<ThingAttribute>()
+                {
+                    new ThingAttribute
+                    {
+                        ThingName = existingDevice.Name
+                    }
+                }
+            };
+
+            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(thingsListing);
+
+            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DescribeThingResponse()
+                {
+                    ThingId = existingDevice.Id,
+                    ThingName = existingDevice.Name,
+                    ThingTypeName = existingDevice.DeviceModel.Name,
+                    Version = 1
+                });
+
+            _ = this.mockDeviceModelRepository
+                .Setup(x => x.GetByName(existingDevice.DeviceModel.Name))
+                .Returns((DeviceModel)null);
+
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<Device>());
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ExecuteNewDeviceWithoutThingShadowSkipped()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+
+            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            var existingDevice = new Device
+            {
+                Id = Fixture.Create<string>(),
+                Name = Fixture.Create<string>(),
+                DeviceModel = expectedDeviceModel,
+                DeviceModelId = expectedDeviceModel.Id,
+                Version = 2
+            };
+
+            var thingsListing = new ListThingsResponse
+            {
+                Things = new List<ThingAttribute>()
+                {
+                    new ThingAttribute
+                    {
+                        ThingName = existingDevice.Name
+                    }
+                }
+            };
+
+            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(thingsListing);
+
+            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DescribeThingResponse()
+                {
+                    ThingId = existingDevice.Id,
+                    ThingName = existingDevice.Name,
+                    ThingTypeName = existingDevice.DeviceModel.Name,
+                    Version = 1
+                });
+
+            _ = this.mockDeviceModelRepository
+                .Setup(x => x.GetByName(existingDevice.DeviceModel.Name))
+                .Returns(expectedDeviceModel);
+
+            _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetThingShadowResponse() { HttpStatusCode = HttpStatusCode.NotFound });
+
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<Device>());
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
     }
 }
