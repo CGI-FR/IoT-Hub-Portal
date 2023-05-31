@@ -255,13 +255,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 this.labelRepository.Delete(labelEntity.Id);
             }
 
-            _ = this.mapper.Map(edgeModel, edgeModelEntity);
-            this.edgeModelRepository.Update(edgeModelEntity);
 
-            await this.unitOfWork.SaveAsync();
-
+            // For AWS, we do the update in the AwsConfiguration
             if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
             {
+                _ = this.mapper.Map(edgeModel, edgeModelEntity);
+
+                this.edgeModelRepository.Update(edgeModelEntity);
+                await this.unitOfWork.SaveAsync();
+
                 await SaveModuleCommands(edgeModel);
             }
 

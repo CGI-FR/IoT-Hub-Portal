@@ -145,28 +145,42 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             var listcomponentName = new Dictionary<string, ComponentDeploymentSpecification>();
             foreach (var component in edgeModel.EdgeModules)
             {
-                var recipeJson = JsonCreateComponent(component);
-                var recipeBytes = Encoding.UTF8.GetBytes(recipeJson.ToString());
-                var recipeStream = new MemoryStream(recipeBytes);
-
-                var componentVersion = new CreateComponentVersionRequest
+                try
                 {
-                    InlineRecipe = recipeStream
-                };
-                var response = await greengras.CreateComponentVersionAsync(componentVersion);
-                if (response.HttpStatusCode != HttpStatusCode.Created)
-                {
-                    throw new InternalServerErrorException("The component creation failed due to an error in the Amazon IoT API.");
+                    _ = await this.greengras.DescribeComponentAsync(new DescribeComponentRequest
+                    {
+                        Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{component.ModuleName}:versions:{component.Version}"
+                    });
+                    listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = component.Version });
 
                 }
-                listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = component.Version });
+                catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
+                {
+                    var recipeJson = JsonCreateComponent(component);
+                    var recipeBytes = Encoding.UTF8.GetBytes(recipeJson.ToString());
+                    var recipeStream = new MemoryStream(recipeBytes);
+
+                    var componentVersion = new CreateComponentVersionRequest
+                    {
+                        InlineRecipe = recipeStream
+                    };
+                    var response = await greengras.CreateComponentVersionAsync(componentVersion);
+                    if (response.HttpStatusCode != HttpStatusCode.Created)
+                    {
+                        throw new InternalServerErrorException("The component creation failed due to an error in the Amazon IoT API.");
+
+                    }
+                    listcomponentName.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = component.Version });
+                }
             }
+
 
             return listcomponentName;
         }
 
         private static JObject JsonCreateComponent(IoTEdgeModule component)
         {
+
             var environmentVariableObject = new JObject();
 
             foreach (var env in component.EnvironmentVariables)
@@ -329,7 +343,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 }
                 return moduleList;
             }
-            catch (Amazon.IoT.Model.ResourceNotFoundException)
+            catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
             {
                 throw new InternalServerErrorException("The deployment is not found");
 
