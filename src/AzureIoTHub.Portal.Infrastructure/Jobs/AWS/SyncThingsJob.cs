@@ -124,13 +124,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             var response = await amazonIoTClient.ListThingsAsync();
 
-            foreach (var thing in response.Things)
+            foreach (var requestDescribeThing in response.Things.Select(thing => new DescribeThingRequest { ThingName = thing.ThingName }))
             {
-                var requestDescribeThing = new DescribeThingRequest
-                {
-                    ThingName = thing.ThingName
-                };
-
                 things.Add(await this.amazonIoTClient.DescribeThingAsync(requestDescribeThing));
             }
 
