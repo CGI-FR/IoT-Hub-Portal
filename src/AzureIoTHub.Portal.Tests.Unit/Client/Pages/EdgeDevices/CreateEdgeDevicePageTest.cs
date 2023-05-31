@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Constants;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
@@ -45,6 +46,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = Services.AddSingleton(this.mockIEdgeModelClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
 
             _ = Services.AddSingleton<IEdgeDeviceLayoutService, EdgeDeviceLayoutService>();
 

@@ -10,6 +10,7 @@
 @using AzureIoTHub.Portal.Shared.Models.v10.Filters
 @using AzureIoTHub.Portal.Shared.Constants
 
+
 @attribute [Authorize]
 @inject ISnackbar Snackbar
 @inject PortalSettings Portal
@@ -22,6 +23,7 @@
 @inject IDeviceLayoutService DeviceLayoutService
 
 @implements IDisposable
+
 
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
@@ -135,21 +137,25 @@
                                                               Required="true" />
                                             </MudItem>
 
-                                            <MudItem xs="12">
-                                                <MudText>
-                                                    <b>Status</b>
-                                                </MudText>
-                                                <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
-                                                    <MudRadio Option=@(true) Color="Color.Primary">
-                                                        Enabled
-                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
-                                                    </MudRadio>
-                                                    <MudRadio Option=@(false) Color="Color.Primary">
-                                                        Disabled
-                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
-                                                    </MudRadio>
-                                                </MudRadioGroup>
-                                            </MudItem>
+                                            @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                            {
+                                                <MudItem xs="12">
+                                                    <MudText>
+                                                        <b>Status</b>
+                                                    </MudText>
+                                                    <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
+                                                        <MudRadio Option=@(true) Color="Color.Primary">
+                                                            Enabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                        <MudRadio Option=@(false) Color="Color.Primary">
+                                                            Disabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                    </MudRadioGroup>
+                                                </MudItem>
+                                            }
+                                          
                                         </MudGrid>
                                     </ChildContent>
                                 </MudExpansionPanel>
