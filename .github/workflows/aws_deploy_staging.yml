@@ -59,8 +59,7 @@ jobs:
             ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}
           tags: |
             type=raw,enable=true,priority=200,prefix=,suffix=,value=${{ steps.final-version.outputs.new_version }}
-          flavor: |
-            latest=true
+            type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short
 
       - name: Build and push
         # You may pin to the exact commit or the version.
@@ -83,6 +82,8 @@ jobs:
     environment:
       name: AWS Staging
     steps:
+      - uses: actions/checkout@v3.4.0
+  
       - name: Configure AWS credentials
         id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -94,6 +95,10 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set outputs
+        id: git_sha
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Deploy to App Runner Image
         id: deploy-apprunner
@@ -112,7 +117,7 @@ jobs:
           LORAFEATURE__ENABLED: ${{ vars.LORAFEATURE_ENABLED }}
         with:
           service: ${{ vars.AWS_APP_RUNNER_NAME }}
-          image: ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:sha-${{ steps.git_sha.outputs.sha_short }}
           access-role-arn: ${{ secrets.AWS_ROLE_ARN }}
           region: ${{ secrets.AWS_REGION }}
           cpu : 1
