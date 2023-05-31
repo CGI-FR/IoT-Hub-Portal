@@ -550,9 +550,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 DeviceID = Fixture.Create<string>()
             };
 
-            var expectedEnrollmentCredentials = Fixture.Create<EnrollmentCredentials>();
+            var expectedEnrollmentCredentials = Fixture.Create<DeviceCredentials>();
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetEnrollmentCredentials(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceCredentials(deviceDto.DeviceID))
                 .ReturnsAsync(expectedEnrollmentCredentials);
 
             // Act

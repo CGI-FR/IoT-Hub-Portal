@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task SetDeviceProperties(string deviceId, IList<DevicePropertyValue> deviceProperties);
 
-        Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId);
+        Task<SymmetricCredentials> GetEnrollmentCredentials(string deviceId);
 
         Task DeleteDevice(string deviceId);
 

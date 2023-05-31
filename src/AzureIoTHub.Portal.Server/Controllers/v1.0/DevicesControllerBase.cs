@@ -170,7 +170,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Returns the device enrollment credentials.
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
-        public virtual async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
+        public virtual async Task<ActionResult<DeviceCredentials>> GetCredentials(string deviceID)
         {
             return Ok(await this.deviceService.GetCredentials(deviceID));
         }

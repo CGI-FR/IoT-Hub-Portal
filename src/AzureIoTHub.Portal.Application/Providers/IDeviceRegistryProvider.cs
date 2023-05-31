@@ -5,9 +5,9 @@ namespace AzureIoTHub.Portal.Application.Providers
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
+    using Shared.Models.v10;
 
     public interface IDeviceRegistryProvider
     {
@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Application.Providers
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="modelId">The device model id.</param>
-        Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string modelId);
+        Task<DeviceCredentials> GetEnrollmentCredentialsAsync(string deviceId, string modelId);
 
         Task DeleteEnrollmentGroupAsync(EnrollmentGroup enrollmentGroup, CancellationToken cancellationToken);
 

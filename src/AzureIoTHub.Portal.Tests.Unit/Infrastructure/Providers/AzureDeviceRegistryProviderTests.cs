@@ -269,10 +269,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Providers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.RegistrationID);
-            Assert.AreEqual("https://FakeEndpoint", result.ProvisioningEndpoint);
-            Assert.AreEqual("FakeScopeID", result.ScopeID);
-            Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricKey);
+            Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.SymmetricCredentials.RegistrationID);
+            Assert.AreEqual("https://FakeEndpoint", result.SymmetricCredentials.ProvisioningEndpoint);
+            Assert.AreEqual("FakeScopeID", result.SymmetricCredentials.ScopeID);
+            Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricCredentials.SymmetricKey);
             this.mockRepository.VerifyAll();
         }
 
@@ -325,10 +325,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Providers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.RegistrationID);
-            Assert.AreEqual("https://FakeEndpoint", result.ProvisioningEndpoint);
-            Assert.AreEqual("FakeScopeID", result.ScopeID);
-            Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricKey);
+            Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.SymmetricCredentials.RegistrationID);
+            Assert.AreEqual("https://FakeEndpoint", result.SymmetricCredentials.ProvisioningEndpoint);
+            Assert.AreEqual("FakeScopeID", result.SymmetricCredentials.ScopeID);
+            Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricCredentials.SymmetricKey);
 
             this.mockRepository.VerifyAll();
         }

@@ -7,6 +7,7 @@
 @attribute [Authorize]
 @inject PortalSettings Portal
 @inject ISnackbar Snackbar
+@inject PortalSettings Portal
 @inject NavigationManager NavigationManager
 @inject IEdgeDeviceClientService EdgeDeviceClientService
 @inject IEdgeModelClientService EdgeModelClientService
@@ -20,9 +21,10 @@
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
             <MudCard>
-                <MudCardHeader>
+                <MudCardHeader Class="DeviceCardHeader">
                     <CardHeaderContent>
-                        <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(EdgeDevice.DeviceName) ? EdgeDevice.DeviceId : EdgeDevice.DeviceName)</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModel.Name)>Model: <b>@edgeModel?.Name</b></MudText>
+                        <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(EdgeDevice?.DeviceName) ? EdgeDevice?.DeviceId : EdgeDevice?.DeviceName)</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
@@ -90,12 +92,16 @@
 
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudTextField @bind-Value="@EdgeDevice.DeviceId"
-                                                              id=@nameof(IoTEdgeDevice.DeviceId)
-                                                              Label="Device ID"
-                                                              Variant="Variant.Outlined"
-                                                              For="@(()=> EdgeDevice.DeviceId)"
-                                                              HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+                                                @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                                {
+                                                    <MudTextField @bind-Value="@EdgeDevice.DeviceId"
+                                                                  id=@nameof(IoTEdgeDevice.DeviceId)
+                                                                  Label="Device ID"
+                                                                  Variant="Variant.Outlined"
+                                                                  For="@(()=> EdgeDevice.DeviceId)"
+                                                                  HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+
+                                                }
                                             </MudItem>
                                             <MudItem xs="12">
                                                 <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />

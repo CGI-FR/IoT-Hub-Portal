@@ -44,9 +44,14 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"api/edge/devices/{deviceId}");
         }
 
-        public Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId)
+        public Task<SymmetricCredentials> GetEnrollmentCredentials(string deviceId)
         {
-            return this.http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/devices/{deviceId}/credentials")!;
+            return this.http.GetFromJsonAsync<SymmetricCredentials>($"api/edge/devices/{deviceId}/credentials")!;
+        }
+
+        public Task<string> GetEnrollmentScriptUrl(string deviceId, string templateName)
+        {
+            return this.http.GetStringAsync($"api/edge/devices/{deviceId}/enrollementScript/{templateName}")!;
         }
 
         public async Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)

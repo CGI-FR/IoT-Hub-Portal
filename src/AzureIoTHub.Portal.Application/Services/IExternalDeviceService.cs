@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Application.Services
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using AzureIoTHub.Portal.Domain.Shared;
+    using Shared.Models.v10;
 
     public interface IExternalDeviceService
     {
@@ -21,9 +22,12 @@ namespace AzureIoTHub.Portal.Application.Services
         Task<Twin> GetDeviceTwin(string deviceId);
 
         Task<Twin> GetDeviceTwinWithModule(string deviceId);
+
         Task<Twin> GetDeviceTwinWithEdgeHubModule(string deviceId);
 
         Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled);
+
+        Task<bool> CreateEdgeDevice(string deviceId);
 
         Task<Device> UpdateDevice(Device device);
 
@@ -64,9 +68,9 @@ namespace AzureIoTHub.Portal.Application.Services
 
         Task<int> GetConcentratorsCount();
 
-        Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId);
+        Task<DeviceCredentials> GetDeviceCredentials(string deviceId);
 
-        Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId);
+        Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device);
 
         Task<ConfigItem> RetrieveLastConfiguration(Twin twin);
 
@@ -75,5 +79,9 @@ namespace AzureIoTHub.Portal.Application.Services
         Task<List<string>> GetAllGatewayID();
 
         Task<IEnumerable<string>> GetDevicesToExport();
+
+        Task<string> CreateEnrollementScript(string template, Domain.Entities.EdgeDevice device);
+
+        Task RemoveDeviceCredentials(IoTEdgeDevice device);
     }
 }

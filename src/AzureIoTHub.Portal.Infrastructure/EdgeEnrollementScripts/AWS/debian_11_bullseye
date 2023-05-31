@@ -1,0 +1,57 @@
+#!/bin/sh
+
+## Install all dthe dependencies
+apt-get update && \
+  apt install -y systemd default-jdk unzip curl sudo
+
+## Create the greengrass configuration
+mkdir -p /etc/greengrass/certs /etc/greengrass/config
+useradd --system --create-home ggc_user
+groupadd --system ggc_group
+
+cat > /etc/greengrass/certs/device.pem.crt << EOF
+%CERTIFICATE%
+EOF
+
+cat > /etc/greengrass/certs/private.pem.key << EOF
+%PRIVATE_KEY%
+EOF
+
+curl -o /etc/greengrass/certs/AmazonRootCA1.pem https://www.amazontrust.com/repository/AmazonRootCA1.pem
+
+cat > /etc/greengrass/config/config.yaml << EOF
+---
+system:
+  certificateFilePath: "/etc/greengrass/certs/device.pem.crt"
+  privateKeyPath: "/etc/greengrass/certs/private.pem.key"
+  rootCaPath: "/etc/greengrass/certs/AmazonRootCA1.pem"
+  rootpath: "/greengrass/v2"
+  thingName: "%THING_NAME%"
+services:
+  aws.greengrass.Nucleus:
+    componentType: "NUCLEUS"
+    version: "nucleus-version"
+    configuration:
+      awsRegion: "%REGION%"
+      iotRoleAlias: "GreengrassCoreTokenExchangeRoleAlias"
+      iotDataEndpoint: "%DATA_ENDPOINT%"
+      iotCredEndpoint: "%CREDENTIALS_ENDPOINT%"
+EOF
+
+chown -R ggc_user:ggc_group /etc/greengrass 
+chmod 640 /etc/greengrass/ -R
+
+## Download the AWS IoT Greengrass Core software
+curl -s https://d2s8p88vqu9w66.cloudfront.net/releases/greengrass-nucleus-latest.zip > greengrass-nucleus-latest.zip
+jarsigner -verify -certs -verbose greengrass-nucleus-latest.zip
+unzip greengrass-nucleus-latest.zip -d GreengrassInstaller && rm greengrass-nucleus-latest.zip
+
+## Install the AWS IoT Greengrass Core software 
+java -Droot="/greengrass/v2" -Dlog.store=FILE \
+  -jar ./GreengrassInstaller/lib/Greengrass.jar \
+  --init-config /etc/greengrass/config/config.yaml \
+  --component-default-user ggc_user:ggc_group \
+  --setup-system-service true
+
+## Remove the installer directory
+rm -rf ./GreengrassInstaller

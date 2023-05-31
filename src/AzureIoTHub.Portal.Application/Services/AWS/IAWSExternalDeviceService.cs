@@ -20,5 +20,7 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
         Task<GetThingShadowResponse> GetDeviceShadow(string deviceName);
 
         Task<UpdateThingShadowResponse> UpdateDeviceShadow(UpdateThingShadowRequest shadow);
+
+
     }
 }

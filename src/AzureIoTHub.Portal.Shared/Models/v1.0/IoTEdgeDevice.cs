@@ -16,7 +16,6 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The IoT Edge identifier.
         /// </summary>
-        [Required(ErrorMessage = "The device identifier is required.")]
         public string DeviceId { get; set; } = default!;
 
         /// <summary>

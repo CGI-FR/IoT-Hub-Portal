@@ -19,7 +19,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     public class AWSDeviceService : DeviceService
     {
         private readonly IMapper mapper;
-        private readonly IUnitOfWork unitOfWork;
         private readonly IDeviceRepository deviceRepository;
         private readonly IAWSExternalDeviceService externalDevicesService;
 
@@ -32,11 +31,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             IDeviceTagService deviceTagService,
             IDeviceModelImageManager deviceModelImageManager,
             IAWSExternalDeviceService externalDevicesService,
+            IExternalDeviceService externalDeviceService,
             ILogger<AWSDeviceService> logger)
-            : base(mapper, unitOfWork, deviceRepository, deviceTagValueRepository, labelRepository, null!, deviceTagService, deviceModelImageManager, null!, portalDbContext, logger)
+            : base(mapper, unitOfWork, deviceRepository, deviceTagValueRepository, labelRepository, externalDeviceService, deviceTagService, deviceModelImageManager, null!, portalDbContext, logger)
         {
             this.mapper = mapper;
-            this.unitOfWork = unitOfWork;
             this.deviceRepository = deviceRepository;
             this.externalDevicesService = externalDevicesService;
         }
