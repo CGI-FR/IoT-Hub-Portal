@@ -143,7 +143,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var deviceTwinWithModules = await this.externalDevicesService.GetDeviceTwinWithModule(edgeDeviceId);
 
-            deviceDto.LastDeployment = await this.externalDevicesService.RetrieveLastConfiguration(deviceTwinWithModules);
+            deviceDto.LastDeployment = await this.externalDevicesService.RetrieveLastConfiguration(deviceDto);
 
             deviceDto.Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules);
             deviceDto.RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceTwinWithModules);
