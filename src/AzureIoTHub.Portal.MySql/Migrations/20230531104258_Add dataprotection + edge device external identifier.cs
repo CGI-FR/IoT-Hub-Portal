@@ -1,24 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #nullable disable
 
 namespace AzureIoTHub.Portal.MySql.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Metadata;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
+
     /// <inheritdoc />
     public partial class Adddataprotectionedgedeviceexternalidentifier : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+            _ = migrationBuilder.AddColumn<string>(
                 name: "ExternalIdentifier",
                 table: "EdgeDeviceModels",
                 type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "DataProtectionKeys",
                 columns: table => new
                 {
@@ -31,7 +35,7 @@ namespace AzureIoTHub.Portal.MySql.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DataProtectionKeys", x => x.Id);
+                    _ = table.PrimaryKey("PK_DataProtectionKeys", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
         }
@@ -39,10 +43,10 @@ namespace AzureIoTHub.Portal.MySql.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "DataProtectionKeys");
 
-            migrationBuilder.DropColumn(
+            _ = migrationBuilder.DropColumn(
                 name: "ExternalIdentifier",
                 table: "EdgeDeviceModels");
         }
