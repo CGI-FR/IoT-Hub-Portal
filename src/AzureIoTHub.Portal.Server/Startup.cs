@@ -84,9 +84,8 @@ namespace AzureIoTHub.Portal.Server
                 case CloudProviders.AWS:
                     ConfigureServicesAws(services);
                     break;
-                // Code line not reachable
                 default:
-                    break;
+                    throw new InvalidOperationException($"Invalid CloudProvider setting: '{configuration.CloudProvider}'. Only '{CloudProviders.Azure}' and '{CloudProviders.AWS}' are supported.");
             }
 
             //Common configurations
