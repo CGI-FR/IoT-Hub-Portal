@@ -72,7 +72,7 @@ namespace AzureIoTHub.Portal.Application.Services
 
         Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device);
 
-        Task<ConfigItem> RetrieveLastConfiguration(Twin twin);
+        Task<ConfigItem> RetrieveLastConfiguration(IoTEdgeDevice ioTEdgeDevice);
 
         Task<Twin> CreateNewTwinFromDeviceId(string deviceId);
 

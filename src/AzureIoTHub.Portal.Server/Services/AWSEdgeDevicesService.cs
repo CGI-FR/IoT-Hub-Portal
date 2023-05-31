@@ -128,7 +128,9 @@ namespace AzureIoTHub.Portal.Server.Services
             var deviceDto = await base.GetEdgeDevice(edgeDeviceId);
 
             // TODO
-
+            deviceDto.LastDeployment = await this.externalDeviceService.RetrieveLastConfiguration(deviceDto);
+            deviceDto.Status = deviceDto.LastDeployment.Status;
+            deviceDto.Modules = null;
             return deviceDto;
         }
 
