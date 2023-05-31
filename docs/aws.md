@@ -71,12 +71,13 @@ This configurations are used to get access to AWS cloud Platform. You have to en
   "AWS:AccessSecret": "<AWS_ACCESS_SECRET_KEY>",
   "AWS:Region": "<AWS_REGION_KEY>",
   "AWS:BucketName": "<AWS_BUCKET_NAME>",
+  "AWS:AccountId": "<AWS_ACCOUNT_ID>",
   "OIDC:Scope": "<SCOPE>",
   "OIDC:MetadataUrl": "<METADATA_URL>",
   "OIDC:ClientId": "<CLIENT_ID>",
   "OIDC:Authority": "<AUTHORITY>",
   "OIDC:ApiClientId": "<API_CLIENT_ID>",
-  "PostgreSQL:ConnectionString": "<POSTGRE_SQL_CONNECTION_STRING>",
+  "PostgreSQL:ConnectionString": "<POSTGRE_SQL_CONNECTION_STRING>"
 }
 ```
 
