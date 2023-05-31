@@ -3,10 +3,11 @@
 
 namespace AzureIoTHub.Portal.Models.v10
 {
+
     /// <summary>
     /// Enrollment credentials.
     /// </summary>
-    public class EnrollmentCredentials
+    public class SymmetricCredentials
     {
         /// <summary>
         /// The registration identifier.

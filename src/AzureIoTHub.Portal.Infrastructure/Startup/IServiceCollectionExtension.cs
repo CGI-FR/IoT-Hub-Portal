@@ -112,6 +112,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
             return services
+                .AddTransient<IEdgeEnrollementHelper, EdgeEnrollementHelper>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>()
                 .AddTransient<IDeviceTagService, DeviceTagService>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();

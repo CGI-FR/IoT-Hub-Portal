@@ -7,6 +7,7 @@
 @attribute [Authorize]
 @inject PortalSettings Portal
 @inject ISnackbar Snackbar
+@inject PortalSettings Portal
 @inject NavigationManager NavigationManager
 @inject IEdgeDeviceClientService EdgeDeviceClientService
 @inject IEdgeModelClientService EdgeModelClientService
@@ -20,14 +21,15 @@
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
             <MudCard>
-                <MudCardHeader>
+                <MudCardHeader Class="DeviceCardHeader">
                     <CardHeaderContent>
-                        <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(EdgeDevice.DeviceName) ? EdgeDevice.DeviceId : EdgeDevice.DeviceName)</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModel.Name)>Model: <b>@edgeModel?.Name</b></MudText>
+                        <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(EdgeDevice?.DeviceName) ? EdgeDevice?.DeviceId : EdgeDevice?.DeviceName)</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
                         <div class="d-flex justify-center mb-4">
-                            <MudAvatar id="@(nameof(IoTEdgeDevice.ImageUrl))" Image="@EdgeDevice.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                            <MudAvatar id="ImageUrl" Image="@edgeModel?.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
                         </div>
                     </MudCardContent>
                 </MudCard>
@@ -53,26 +55,26 @@
                                         <ChildContent>
                                             <MudGrid>
                                                 <MudItem xs="12" md="6">
-                                                @if (duplicateDevice)
+                                                    @if (duplicateDevice)
                                                 {
                                                     <EdgeDeviceToDuplicateSelector />
                                                 }
                                                 else
                                                 {
                                                     <MudAutocomplete T="IoTEdgeModel"
-                                                                 id="@nameof(IoTEdgeModel.ModelId)"
-                                                                 @bind-Value="edgeModel"
-                                                                 SearchFunc="@Search"
-                                                                 Label="Model*"
-                                                                 Dense=true
-                                                                 For=@(() => this.edgeModel)
-                                                                 Variant="Variant.Outlined"
-                                                                 ToStringFunc="@(x => x?.Name)"
-                                                                 ResetValueOnEmptyText=true
-                                                                 Immediate=true
-                                                                 Clearable=true
-                                                                 CoerceText=true
-                                                                 CoerceValue=false>
+                                                                     id="@nameof(IoTEdgeModel.ModelId)"
+                                                    @bind-Value="edgeModel"
+                                                                     SearchFunc="@Search"
+                                                                     Label="Model*"
+                                                                     Dense=true
+                                                                     For=@(() => this.edgeModel)
+                                                                     Variant="Variant.Outlined"
+                                                                     ToStringFunc="@(x => x?.Name)"
+                                                                     ResetValueOnEmptyText=true
+                                                                     Immediate=true
+                                                                     Clearable=true
+                                                                     CoerceText=true
+                                                                     CoerceValue=false>
                                                         <ItemTemplate>
                                                             @context.Name
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
@@ -88,12 +90,16 @@
 
                                             </MudItem>
                                             <MudItem xs="12" md="6">
+                                                @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                                {
                                                     <MudTextField @bind-Value="@EdgeDevice.DeviceId"
-                                                              id=@nameof(IoTEdgeDevice.DeviceId)
-                                                              Label="Device ID"
-                                                              Variant="Variant.Outlined"
-                                                              For="@(()=> EdgeDevice.DeviceId)"
-                                                              HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+                                                                  id=@nameof(IoTEdgeDevice.DeviceId)
+                                                                  Label="Device ID"
+                                                                  Variant="Variant.Outlined"
+                                                                  For="@(()=> EdgeDevice.DeviceId)"
+                                                                  HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+
+                                                }
                                             </MudItem>
                                             <MudItem xs="12">
                                                 <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
@@ -141,8 +147,8 @@
                                             {
                                                 <MudItem xs="12" md="6">
                                                     <MudTextField @bind-Value="EdgeDevice.Tags[tag.Name]" id="@tag.Name" Label="@tag.Label"
-                                                              Required="@tag.Required"
-                                                              Variant="Variant.Outlined" />
+                                                                  Required="@tag.Required"
+                                                                  Variant="Variant.Outlined" />
                                                 </MudItem>
                                             }
                                         </MudGrid>
@@ -161,7 +167,7 @@
                                 </MudExpansionPanel>
                             </MudItem>
                         </MudGrid>
-                        
+
                     </MudExpansionPanels>
                 </MudTabPanel>
             </MudTabs>
@@ -313,18 +319,18 @@
         if (string.IsNullOrEmpty(value))
             return edgeModelList
                     .Select(m => new IoTEdgeModel
-                    {
-                        ModelId = m.ModelId,
-                        Name = m.Name
-                    });;
+                        {
+                            ModelId = m.ModelId,
+                            Name = m.Name
+                        }); ;
 
         return edgeModelList
                     .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
                     .Select(m => new IoTEdgeModel
-                    {
-                        ModelId = m.ModelId,
-                        Name = m.Name
-                    });
+                        {
+                            ModelId = m.ModelId,
+                            Name = m.Name
+                        });
     }
 
     internal async Task ChangeModel(IoTEdgeModel edgeModel)

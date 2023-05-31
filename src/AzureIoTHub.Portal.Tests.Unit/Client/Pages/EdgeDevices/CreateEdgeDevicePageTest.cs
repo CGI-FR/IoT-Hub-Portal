@@ -48,6 +48,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
 
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
+
             _ = Services.AddSingleton<IEdgeDeviceLayoutService, EdgeDeviceLayoutService>();
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();

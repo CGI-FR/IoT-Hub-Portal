@@ -26,6 +26,7 @@ namespace AzureIoTHub.Portal.Server
     using Managers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -81,6 +82,7 @@ namespace AzureIoTHub.Portal.Server
                     ConfigureServicesAzure(services);
                     break;
                 case CloudProviders.AWS:
+                    ConfigureServicesAws(services);
                     break;
                 // Code line not reachable
                 default:
@@ -300,22 +302,28 @@ namespace AzureIoTHub.Portal.Server
 
             // Add the Quartz.NET hosted service
             _ = services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+            _ = services.AddDataProtection()
+                .PersistKeysToDbContext<PortalDbContext>();
         }
 
         private static void ConfigureServicesAzure(IServiceCollection services)
         {
             _ = services.AddTransient<IExportManager, ExportManager>();
-            _ = services.AddTransient<IExternalDeviceService, ExternalDeviceService>();
             _ = services.AddTransient<IConfigService, ConfigService>();
             _ = services.AddTransient<ILoRaWANCommandService, LoRaWANCommandService>();
             _ = services.AddTransient<IEdgeModelService, EdgeModelService>();
             _ = services.AddTransient<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
-            _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
+            _ = services.AddTransient<IEdgeDevicesService, AzureEdgeDevicesService>();
             _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
             _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
             _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
         }
 
+        private static void ConfigureServicesAws(IServiceCollection services)
+        {
+            _ = services.AddTransient<IEdgeDevicesService, AWSEdgeDevicesService>();
+        }
 
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
         {

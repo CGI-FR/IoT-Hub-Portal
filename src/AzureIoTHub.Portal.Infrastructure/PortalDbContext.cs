@@ -4,10 +4,11 @@
 namespace AzureIoTHub.Portal.Infrastructure
 {
     using Domain.Entities;
+    using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
     using Newtonsoft.Json;
 
-    public class PortalDbContext : DbContext
+    public class PortalDbContext : DbContext, IDataProtectionKeyContext
     {
         public DbSet<DeviceModelProperty> DeviceModelProperties { get; set; }
         public DbSet<DeviceTag> DeviceTags { get; set; }
@@ -22,11 +23,12 @@ namespace AzureIoTHub.Portal.Infrastructure
         public DbSet<Concentrator> Concentrators { get; set; }
         public DbSet<LoRaDeviceTelemetry> LoRaDeviceTelemetry { get; set; }
         public DbSet<Label> Labels { get; set; }
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-            : base(options)
+                : base(options)
         {
         }
 

@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Shared.Constants;
 
     [TestFixture]
     public class ConnectionStringDialogTests : BlazorUnitTest
@@ -32,7 +33,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
             _ = Services.AddSingleton<ClipboardService>();
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = CloudProviders.Azure });
 
             this.dialogService = Services.GetService<IDialogService>() as DialogService;
         }
@@ -44,7 +45,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(new EnrollmentCredentials());
+                .ReturnsAsync(new SymmetricCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -94,13 +95,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         }
 
         [Test]
-        public async Task ConnectionStringDialogMustBeCancelledOnClickOnCancel()
+        public async Task ConnectionStringDialogMustBeClosedOnClickOnOk()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(new EnrollmentCredentials());
+                .ReturnsAsync(new SymmetricCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -115,7 +116,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             // Act
             await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
-            cut.WaitForElement("#cancel").Click();
+            cut.WaitForElement("#ok").Click();
 
             var result = await dialogReference.Result;
 

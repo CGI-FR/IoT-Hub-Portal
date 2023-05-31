@@ -183,7 +183,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceId = Fixture.Create<string>();
-            var expectedEnrollmentCredentials = Fixture.Create<EnrollmentCredentials>();
+            var expectedEnrollmentCredentials = Fixture.Create<SymmetricCredentials>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/credentials")
                 .RespondJson(expectedEnrollmentCredentials);

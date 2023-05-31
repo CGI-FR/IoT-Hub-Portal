@@ -394,7 +394,7 @@
     {
         var parameters = new DialogParameters {{nameof(ConnectionStringDialog.deviceId), this.deviceId}};
 
-        _ =  await DialogService.Show<ConnectionStringDialog>("Edge Device Connection String", parameters).Result;
+        _ =  await DialogService.Show<ConnectionStringDialog>("Connect Edge device", parameters).Result;
     }
 
     public async Task ShowDeleteModal()

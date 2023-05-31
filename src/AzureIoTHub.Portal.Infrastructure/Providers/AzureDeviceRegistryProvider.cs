@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Providers
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
+    using Shared.Models.v10;
 
     internal class AzureDeviceRegistryProvider : IDeviceRegistryProvider
     {
@@ -110,7 +111,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Providers
             return attetationMechanism.GetAttestation();
         }
 
-        public async Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string modelId)
+        public async Task<DeviceCredentials> GetEnrollmentCredentialsAsync(string deviceId, string modelId)
         {
             Attestation attestation;
 
@@ -133,12 +134,16 @@ namespace AzureIoTHub.Portal.Infrastructure.Providers
 
             var symmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceId, CheckAttestation(attestation));
 
-            return new EnrollmentCredentials
+            return new DeviceCredentials
             {
-                SymmetricKey = symmetricKey,
-                RegistrationID = deviceId,
-                ScopeID = this.config.DPSScopeID,
-                ProvisioningEndpoint = $"https://{this.config.DPSEndpoint}"
+                AuthenticationMode = AuthenticationMode.SymmetricKey,
+                SymmetricCredentials = new SymmetricCredentials
+                {
+                    SymmetricKey = symmetricKey,
+                    RegistrationID = deviceId,
+                    ScopeID = this.config.DPSScopeID,
+                    ProvisioningEndpoint = $"https://{this.config.DPSEndpoint}"
+                }
             };
         }
 
