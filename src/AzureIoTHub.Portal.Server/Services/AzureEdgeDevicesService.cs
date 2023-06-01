@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Helpers;
+    using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;

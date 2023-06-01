@@ -315,30 +315,39 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
                 foreach (var compoenent in response.Components)
                 {
-                    var responseComponent = await this.greengras.GetComponentAsync(new GetComponentRequest
+                    try
                     {
-                        Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
-                        RecipeOutputFormat = RecipeOutputFormat.JSON
-                    });
+                        var responseComponent = await this.greengras.GetComponentAsync(new GetComponentRequest
+                        {
+                            Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
+                            RecipeOutputFormat = RecipeOutputFormat.JSON
+                        });
 
-                    // Read the Recipe which is in JSON Format
-                    using var reader = new StreamReader(responseComponent.Recipe);
-                    var recipeJsonString = reader.ReadToEnd();
+                        // Read the Recipe which is in JSON Format
+                        using var reader = new StreamReader(responseComponent.Recipe);
+                        var recipeJsonString = reader.ReadToEnd();
 
-                    // Extract the imageUri from the 'Run' JSON object
-                    var uriImage = retreiveImageUri("Lifecycle", "Run", recipeJsonString);
-                    // Extract the environment Variables from the 'Environment' JSON object
-                    var env = retreiveEnvVariableAttr("Lifecycle", "Environment", recipeJsonString);
+                        // Extract the imageUri from the 'Run' JSON object
+                        var uriImage = retreiveImageUri("Lifecycle", "Run", recipeJsonString);
+                        // Extract the environment Variables from the 'Environment' JSON object
+                        var env = retreiveEnvVariableAttr("Lifecycle", "Environment", recipeJsonString);
 
-                    var iotEdgeModule = new IoTEdgeModule
+                        var iotEdgeModule = new IoTEdgeModule
+                        {
+                            ModuleName = compoenent.Key,
+                            ImageURI = uriImage,
+                            EnvironmentVariables = env,
+                            Version = compoenent.Value.ComponentVersion
+                        };
+
+                        moduleList.Add(iotEdgeModule);
+                    }
+                    catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
                     {
-                        ModuleName = compoenent.Key,
-                        ImageURI = uriImage,
-                        EnvironmentVariables = env,
-                        Version = compoenent.Value.ComponentVersion
-                    };
+                        throw new InternalServerErrorException($"The component {compoenent.Key} is not found or may not be a docker component or may be a public component");
 
-                    moduleList.Add(iotEdgeModule);
+                    }
+
 
                 }
                 return moduleList;
@@ -372,22 +381,26 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 if (lifecycle != null)
                 {
                     // Extract the value of "Run"
-                    var runValue = lifecycle[child]?.ToString();
-
-                    // Search the index of the 1st whitespace
-                    var firstSpaceIndex = runValue.IndexOf(' ');
-
-                    if (firstSpaceIndex != -1)
+                    var runObject = lifecycle[child] as JObject;
+                    var runValueObject = runObject;
+                    if (runValueObject != null)
                     {
-                        // // Search the index of the 2nd whitespace
-                        var secondSpaceIndex = runValue.IndexOf(' ', firstSpaceIndex + 1);
+                        var runValue = runValueObject.ToString();
+                        // Search the index of the 1st whitespace
+                        var firstSpaceIndex = runValue.IndexOf(' ', StringComparison.Ordinal);
 
-                        if (secondSpaceIndex != -1)
+                        if (firstSpaceIndex != -1)
                         {
-                            // Extract the URI iamge
-                            uriImage = runValue[(secondSpaceIndex + 1)..];
-                        }
+                            // // Search the index of the 2nd whitespace
+                            var secondSpaceIndex = runValue.IndexOf(' ', firstSpaceIndex + 1);
 
+                            if (secondSpaceIndex != -1)
+                            {
+                                // Extract the URI iamge
+                                uriImage = runValue[(secondSpaceIndex + 1)..];
+                            }
+
+                        }
                     }
                 }
             }
@@ -419,20 +432,24 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 if (lifecycle != null)
                 {
                     // Extract the value of "Environment"
-                    var env = lifecycle?[child] as JObject;
+                    var envObject = lifecycle[child] as JObject;
+                    var env = envObject;
 
-                    // Convert Environment JSON Object as a dictionnary
-                    var keyValuePairs = env!.ToObject<Dictionary<string, string>>();
-
-                    foreach (var kvp in keyValuePairs!)
+                    if (env != null)
                     {
-                        var iotEnvVariable = new IoTEdgeModuleEnvironmentVariable
-                        {
-                            Name = kvp.Key,
-                            Value = kvp.Value
-                        };
+                        // Convert Environment JSON Object as a dictionnary
+                        var keyValuePairs = env!.ToObject<Dictionary<string, string>>();
 
-                        environmentVariables.Add(iotEnvVariable);
+                        foreach (var kvp in keyValuePairs!)
+                        {
+                            var iotEnvVariable = new IoTEdgeModuleEnvironmentVariable
+                            {
+                                Name = kvp.Key,
+                                Value = kvp.Value
+                            };
+
+                            environmentVariables.Add(iotEnvVariable);
+                        }
                     }
                 }
             }

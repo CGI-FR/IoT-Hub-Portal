@@ -63,7 +63,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IAWSExternalDeviceService, AWSExternalDeviceService>()
                 .AddTransient<IDevicePropertyService, AWSDevicePropertyService>()
                 .AddTransient<IConfigService, AwsConfigService>()
-                .AddTransient<IEdgeModelService, EdgeModelService>();
+                .AddTransient<IEdgeModelService, EdgeModelService>()
+                .AddTransient<IEdgeDevicesService, AWSEdgeDevicesService>();
+
         }
 
         private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)

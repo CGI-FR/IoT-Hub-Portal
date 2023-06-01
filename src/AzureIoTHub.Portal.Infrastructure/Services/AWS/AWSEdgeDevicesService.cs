@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Services
+namespace AzureIoTHub.Portal.Infrastructure.Services
 {
     using System;
     using System.Threading.Tasks;
@@ -22,12 +22,11 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         private readonly IAWSExternalDeviceService awsExternalDevicesService;
         private readonly IExternalDeviceService externalDeviceService;
-
         private readonly IUnitOfWork unitOfWork;
         private readonly IEdgeDeviceRepository edgeDeviceRepository;
         private readonly IEdgeEnrollementHelper edgeEnrollementHelper;
         private readonly IEdgeDeviceModelRepository deviceModelRepository;
-
+        private readonly IConfigService configService;
         private readonly ConfigHandler configHandler;
 
         public AWSEdgeDevicesService(
@@ -36,6 +35,7 @@ namespace AzureIoTHub.Portal.Server.Services
             IExternalDeviceService externalDeviceService,
             IAWSExternalDeviceService awsExternalDevicesService,
             IDeviceTagService deviceTagService,
+            IConfigService configService,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IEdgeDeviceRepository edgeDeviceRepository,
@@ -49,6 +49,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.edgeEnrollementHelper = edgeEnrollementHelper;
             this.awsExternalDevicesService = awsExternalDevicesService;
             this.externalDeviceService = externalDeviceService;
+            this.configService = configService;
             this.deviceModelRepository = deviceModelRepository;
 
             this.unitOfWork = unitOfWork;
@@ -123,14 +124,18 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="edgeDeviceId">device id.</param>
         /// <returns>IoTEdgeDevice object.</returns>
+#pragma warning disable CS0108 // Un membre masque un membre hérité ; le mot clé new est manquant
         public async Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId)
+#pragma warning restore CS0108 // Un membre masque un membre hérité ; le mot clé new est manquant
         {
             var deviceDto = await base.GetEdgeDevice(edgeDeviceId);
 
-            // TODO
             deviceDto.LastDeployment = await this.externalDeviceService.RetrieveLastConfiguration(deviceDto);
-            deviceDto.Status = deviceDto.LastDeployment.Status;
-            deviceDto.Modules = null;
+            deviceDto.RuntimeResponse = deviceDto.LastDeployment.Status;
+            deviceDto.Modules = await this.configService.GetConfigModuleList(deviceDto.ModelId);
+            deviceDto.NbDevices = await this.awsExternalDevicesService.GetEdgeDeviceNbDevices(deviceDto);
+            deviceDto.NbModules = deviceDto.Modules.Count;
+
             return deviceDto;
         }
 
@@ -166,5 +171,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
             return await this.externalDeviceService.CreateEnrollementScript(template, device);
         }
+
     }
 }
