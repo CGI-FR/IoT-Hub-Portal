@@ -13,6 +13,11 @@ namespace AzureIoTHub.Portal.Models.v10
     public class IoTEdgeModule
     {
         /// <summary>
+        /// The module name, only used for AWS IoT Greengrass.
+        /// </summary>
+        public string Id { get; set; } = default!;
+
+        /// <summary>
         /// The module name.
         /// </summary>
         [Required(ErrorMessage = "The device model name is required.")]
