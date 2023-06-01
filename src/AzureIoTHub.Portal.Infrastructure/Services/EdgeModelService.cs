@@ -345,5 +345,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             return Task.Run(() => this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModelId));
         }
 
+        public Task<IEnumerable<IoTEdgeModule>> GetPublicEdgeModules()
+        {
+            return this.configService.GetPublicEdgeModules();
+        }
     }
 }

@@ -67,5 +67,10 @@ namespace AzureIoTHub.Portal.Client.Services
         {
             return this.http.DeleteAsync($"{this.apiUrlBase}/{id}/avatar");
         }
+
+        public async Task<List<IoTEdgeModule>> GetPublicEdgeModules()
+        {
+            return await this.http.GetFromJsonAsync<List<IoTEdgeModule>>($"{this.apiUrlBase}/public-modules") ?? new List<IoTEdgeModule>();
+        }
     }
 }

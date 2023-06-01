@@ -34,5 +34,7 @@ namespace AzureIoTHub.Portal.Application.Services
         Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId);
 
         Task<List<IoTEdgeRoute>> GetConfigRouteList(string modelId);
+
+        Task<IEnumerable<IoTEdgeModule>> GetPublicEdgeModules();
     }
 }

@@ -350,5 +350,10 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new InternalServerErrorException("Unable to get failed deployments count", ex);
             }
         }
+
+        public Task<IEnumerable<IoTEdgeModule>> GetPublicEdgeModules()
+        {
+            return Task.FromResult<IEnumerable<IoTEdgeModule>>(Array.Empty<IoTEdgeModule>());
+        }
     }
 }
