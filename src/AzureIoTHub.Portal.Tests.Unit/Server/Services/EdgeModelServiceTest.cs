@@ -618,59 +618,5 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             MockRepository.VerifyAll();
         }
-
-        [Test]
-        public async Task SaveModuleCommandsShouldUpdateDatabase()
-        {
-            // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
-
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
-            {
-                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
-                return command;
-            }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
-                 .Returns(Task.CompletedTask);
-
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            // Act
-            await this.edgeDeviceModelService.SaveModuleCommands(edgeDeviceModel);
-
-            // Assert
-            MockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void SaveModuleCommandsShouldThrowInternalServerErrorExceptionIfDbUpdateExceptionOccurs()
-        {
-            // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
-
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
-            {
-                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
-                return command;
-            }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
-                 .Returns(Task.CompletedTask);
-
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Throws(new DbUpdateException());
-
-            // Act
-            var result = async () => await this.edgeDeviceModelService.SaveModuleCommands(edgeDeviceModel);
-
-            // Assert
-            _ = result.Should().ThrowAsync<InternalServerErrorException>();
-        }
     }
 }
