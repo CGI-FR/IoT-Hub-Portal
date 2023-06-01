@@ -250,9 +250,19 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             }
         }
 
-        public Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
+        public async Task<ConfigItem> RetrieveLastConfiguration(IoTEdgeDevice ioTEdgeDevice)
         {
-            throw new NotImplementedException();
+            var coreDevice = await this.greengrass.GetCoreDeviceAsync(new GetCoreDeviceRequest
+            {
+                CoreDeviceThingName = ioTEdgeDevice.DeviceName
+            });
+
+            return new ConfigItem
+            {
+                Name = coreDevice.CoreDeviceThingName,
+                DateCreation = coreDevice.LastStatusUpdateTimestamp,
+                Status = coreDevice.Status
+            };
         }
 
         public Task<Device> UpdateDevice(Device device)

@@ -639,8 +639,9 @@ namespace AzureIoTHub.Portal.Server.Services
         /// Retrieves the last configuration of the IoT Edge.
         /// </summary>
         /// <param name="twin">The twin.</param>
-        public async Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
+        public async Task<ConfigItem> RetrieveLastConfiguration(IoTEdgeDevice ioTEdgeDevice)
         {
+            var twin = await this.registryManager.GetTwinAsync(ioTEdgeDevice.DeviceId);
             var item = new ConfigItem();
 
             if (twin.Configurations?.Count > 0)

@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
+    using Amazon.GreengrassV2;
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using Amazon.IotData;
@@ -39,6 +40,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
         private Mock<IAmazonIoT> mockAmazonIotClient;
         private Mock<IAmazonIotData> mockAmazonIotDataClient;
         private Mock<IConfiguration> mockConfiguration;
+        private Mock<IAmazonGreengrassV2> mockGreenGrass;
 
         private IAWSExternalDeviceService awsExternalDeviceService;
 
@@ -56,6 +58,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockAmazonIotClient = MockRepository.Create<IAmazonIoT>();
             this.mockAmazonIotDataClient = MockRepository.Create<IAmazonIotData>();
             this.mockConfiguration = MockRepository.Create<IConfiguration>();
+            this.mockGreenGrass = MockRepository.Create<IAmazonGreengrassV2>();
 
             _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
@@ -66,6 +69,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockAmazonIotClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockAmazonIotDataClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
+            _ = ServiceCollection.AddSingleton(this.mockGreenGrass.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton<IAWSExternalDeviceService, AWSExternalDeviceService>();
             _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, AWSDeviceService>();
@@ -73,7 +77,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             Services = ServiceCollection.BuildServiceProvider();
 
             this.awsExternalDeviceService = Services.GetRequiredService<IAWSExternalDeviceService>();
-
             Mapper = Services.GetRequiredService<IMapper>();
         }
 
