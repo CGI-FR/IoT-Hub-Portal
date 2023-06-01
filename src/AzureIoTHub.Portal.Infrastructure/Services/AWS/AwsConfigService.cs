@@ -269,28 +269,47 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
                 foreach (var compoenent in response.Components)
                 {
-                    var responseComponent = await this.greengrass.GetComponentAsync(new GetComponentRequest
-                    {
-                        Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
-                        RecipeOutputFormat = RecipeOutputFormat.JSON
-                    });
+                    var componentId = string.Empty;
+                    var jsonRecipe = string.Empty;
 
-                    // Read the Recipe which is in JSON Format
-                    using var reader = new StreamReader(responseComponent.Recipe);
-                    var recipeJsonString = reader.ReadToEnd();
+                    try
+                    {
+                        var responseComponent = await this.greengrass.GetComponentAsync(new GetComponentRequest
+                        {
+                            Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
+                            RecipeOutputFormat = RecipeOutputFormat.JSON
+                        });
+
+                        // Read the Recipe which is in JSON Format
+                        using var reader = new StreamReader(responseComponent.Recipe);
+                        jsonRecipe = reader.ReadToEnd();
+                    }
+                    catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
+                    {
+                        // If the component is not found, we assume it is a public component
+                        componentId = $"arn:aws:greengrass:{config.AWSRegion}:aws:components:{compoenent.Key}";
+
+                        var responseComponent = await this.greengrass.GetComponentAsync(new GetComponentRequest
+                        {
+                            Arn = $"arn:aws:greengrass:{config.AWSRegion}:aws:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
+                            RecipeOutputFormat = RecipeOutputFormat.JSON
+                        });
+
+                        using var reader = new StreamReader(responseComponent.Recipe);
+                        jsonRecipe = reader.ReadToEnd();
+                    }
 
                     var iotEdgeModule = new IoTEdgeModule
                     {
                         Id = componentId,
                         ModuleName = compoenent.Key,
                         Version = compoenent.Value.ComponentVersion,
-                        ContainerCreateOptions = recipeJsonString,
+                        ContainerCreateOptions = jsonRecipe,
                         // ImageURI is required, but not used for Greengrass components
                         ImageURI = "example.com"
                     };
 
-                    }
-
+                    moduleList.Add(iotEdgeModule);
 
                 }
                 return moduleList;
@@ -301,89 +320,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             }
         }
-
-        //    // Extract the "Manifests" array
-        //    var jArray = recipeJsonObject["Manifests"] as JArray;
-        //    var manifests = jArray;
-
-        //    if (manifests != null && manifests.Count > 0)
-        //    {
-        //        // Get the first manifest in the array
-        //        var firstManifest = manifests[0] as JObject;
-
-        //        // Extract the "Lifecycle" object
-        //        var jObject = firstManifest?[parent] as JObject;
-        //        var lifecycle = jObject;
-
-        //        if (lifecycle != null)
-        //        {
-        //            // Extract the value of "Run"
-        //            var runValue = lifecycle[child]?.ToString();
-
-        //            // Search the index of the 1st whitespace
-        //            var firstSpaceIndex = runValue.IndexOf(' ');
-
-        //            if (firstSpaceIndex != -1)
-        //            {
-        //                // // Search the index of the 2nd whitespace
-        //                var secondSpaceIndex = runValue.IndexOf(' ', firstSpaceIndex + 1);
-
-        //                if (secondSpaceIndex != -1)
-        //                {
-        //                    // Extract the URI iamge
-        //                    uriImage = runValue[(secondSpaceIndex + 1)..];
-        //                }
-
-        //            }
-        //        }
-        //    }
-
-        //    return uriImage;
-        //}
-
-        //private static List<IoTEdgeModuleEnvironmentVariable> retreiveEnvVariableAttr(string parent, string child, string recipeJsonString)
-        //{
-
-        //    // Parse the string as a JSON object
-        //    var recipeJsonObject = JObject.Parse(recipeJsonString);
-
-        //    var environmentVariables = new List<IoTEdgeModuleEnvironmentVariable>();
-
-        //    // Extract the "Manifests" array
-        //    var jArray = recipeJsonObject["Manifests"] as JArray;
-        //    var manifests = jArray;
-
-        //    if (manifests != null && manifests.Count > 0)
-        //    {
-        //        // Get the first manifest in the array
-        //        var firstManifest = manifests[0] as JObject;
-
-        //        // Extract the "Lifecycle" object
-        //        var jObject = firstManifest?[parent] as JObject;
-        //        var lifecycle = jObject;
-
-        //        if (lifecycle != null)
-        //        {
-        //            // Extract the value of "Environment"
-        //            var env = lifecycle?[child] as JObject;
-
-        //            // Convert Environment JSON Object as a dictionnary
-        //            var keyValuePairs = env!.ToObject<Dictionary<string, string>>();
-
-        //            foreach (var kvp in keyValuePairs!)
-        //            {
-        //                var iotEnvVariable = new IoTEdgeModuleEnvironmentVariable
-        //                {
-        //                    Name = kvp.Key,
-        //                    Value = kvp.Value
-        //                };
-
-        //                environmentVariables.Add(iotEnvVariable);
-        //            }
-        //        }
-        //    }
-        //    return environmentVariables;
-        //}
 
         public Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId)
         {
