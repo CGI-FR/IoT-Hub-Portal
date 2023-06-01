@@ -36,14 +36,15 @@
 
     protected async override Task OnInitializedAsync()
     {
-        selectedPublicComponents = new HashSet<IoTEdgeModule>(EdgeModules.Where(m => !string.IsNullOrEmpty(m.Id)));
         publicComponents = await EdgeModelClientService.GetPublicEdgeModules();
+        selectedPublicComponents = new HashSet<IoTEdgeModule>(publicComponents.Where(m => EdgeModules.Any(e => m.Id.Equals(e.Id))));
     }
 
     private void Cancel() => MudDialog.Cancel();
 
     private void Submit()
     {
+        EdgeModules.RemoveAll(e => !string.IsNullOrEmpty(e.Id));
         EdgeModules.AddRange(selectedPublicComponents.ToList());
 
         MudDialog.Close(DialogResult.Ok(true));
