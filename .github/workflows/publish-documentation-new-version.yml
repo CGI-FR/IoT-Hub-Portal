@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3.4.0
         with:
-          ref: docs/{{ github.ref_name }}
+          ref: docs/${{ github.ref_name }}
           fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v4
