@@ -1,8 +1,10 @@
 ﻿@using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Shared.Models.v10
+@using System.Text
 
 @inject ClipboardService ClipboardService
 @inject IDeviceClientService DeviceClientService
+@inject IJSRuntime JS
 
 <div class="ConnectionString-dialog">
     <MudDialog>
@@ -38,15 +40,15 @@
                             {
                                 <MudItem xs="12">
                                     <MudText Style="text-decoration:underline"><b>Certificate Pem</b></MudText>
-                                    <MudTextField @bind-Value="@credentials.CertificateCredentials.CertificatePem" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.CertificateCredentials.CertificatePem))"/>
+                                    <MudTextField @bind-Value="@credentials.CertificateCredentials.CertificatePem" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPemFile"/>
                                 </MudItem>
                                 <MudItem Class="mt-0" xs="12">
                                     <MudText Style="text-decoration:underline"><b>Public Key</b></MudText>
-                                    <MudTextField @bind-Value="@credentials.CertificateCredentials.PublicKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.CertificateCredentials.PublicKey))"/>
+                                    <MudTextField @bind-Value="@credentials.CertificateCredentials.PublicKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPublicKeyFile"/>
                                 </MudItem>
                                 <MudItem Class="mt-0" xs="12">
                                     <MudText Style="text-decoration:underline"><b>Private Key</b></MudText>
-                                    <MudTextField @bind-Value="@credentials.CertificateCredentials.PrivateKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.CertificateCredentials.PrivateKey))"/>
+                                    <MudTextField @bind-Value="@credentials.CertificateCredentials.PrivateKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPrivateKeyFile"/>
                                 </MudItem>
                             }
                         }
@@ -82,6 +84,28 @@
             MudDialog.Close();
         }
     }
+
+    private async Task DownloadPemFile()
+    {
+        var stream = new DotNetStreamReference(stream: new MemoryStream(
+            Encoding.UTF8.GetBytes(credentials.CertificateCredentials.CertificatePem)));
+        await JS.InvokeVoidAsync("downloadFileFromStream", "certificate.pem", stream);
+    }
+
+    private async Task DownloadPublicKeyFile()
+    {
+        var stream = new DotNetStreamReference(stream: new MemoryStream(
+            Encoding.UTF8.GetBytes(credentials.CertificateCredentials.PublicKey)));
+        await JS.InvokeVoidAsync("downloadFileFromStream", "key.pub", stream);
+    }
+
+    private async Task DownloadPrivateKeyFile()
+    {
+        var stream = new DotNetStreamReference(stream: new MemoryStream(
+            Encoding.UTF8.GetBytes(credentials.CertificateCredentials.PrivateKey)));
+        await JS.InvokeVoidAsync("downloadFileFromStream", "key", stream);
+    }
+
 
     void Cancel() => MudDialog.Cancel();
 }
