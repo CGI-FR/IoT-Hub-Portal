@@ -712,6 +712,7 @@ Resources:
                 - "logs:CreateLogStream"
                 - "logs:PutLogEvents"
                 - "logs:DescribeLogStreams"
+                - "s3:GetObject"
                 - "s3:GetBucketLocation"
 
   GreengrassCoreTokenExchangeRoleAlias:
