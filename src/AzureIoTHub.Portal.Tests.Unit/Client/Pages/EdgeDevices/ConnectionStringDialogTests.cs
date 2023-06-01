@@ -18,6 +18,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using MudBlazor;
     using NUnit.Framework;
     using AzureIoTHub.Portal.Shared.Constants;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AutoFixture;
 
     [TestFixture]
     public class ConnectionStringDialogTests : BlazorUnitTest
@@ -45,7 +47,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(new SymmetricCredentials());
+                .ReturnsAsync(Fixture.Create<DeviceCredentials>());
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -101,7 +103,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(new SymmetricCredentials());
+                .ReturnsAsync(new DeviceCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
 

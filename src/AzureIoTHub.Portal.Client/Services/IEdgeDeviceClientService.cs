@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task DeleteDevice(string deviceId);
 
-        Task<SymmetricCredentials> GetEnrollmentCredentials(string deviceId);
+        Task<DeviceCredentials> GetEnrollmentCredentials(string deviceId);
 
         Task<string> GetEnrollmentScriptUrl(string deviceId, string templateName);
 

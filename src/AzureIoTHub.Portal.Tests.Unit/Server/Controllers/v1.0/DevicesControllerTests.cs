@@ -249,6 +249,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var devicesController = CreateDevicesController();
             const string deviceId = "aaa";
+            var deviceDetails = new DeviceDetails
+            {
+                DeviceName = "aaa"
+            };
 
             var expectedEnrollmentCredentials = new DeviceCredentials
             {
@@ -260,11 +264,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 }
             };
 
-            _ = this.mockDeviceService.Setup(service => service.GetCredentials(deviceId))
+            _ = this.mockDeviceService.Setup(service => service.GetCredentials(deviceDetails))
                 .ReturnsAsync(expectedEnrollmentCredentials);
+            _ = this.mockDeviceService.Setup(service => service.GetDevice(deviceDetails.DeviceID))
+                .ReturnsAsync(deviceDetails);
 
             // Act
-            var response = await devicesController.GetCredentials(deviceId);
+            var response = await devicesController.GetCredentials(deviceDetails.DeviceID);
 
             // Assert
             Assert.IsNotNull(response);
