@@ -365,7 +365,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             var act = () => this.externalDeviceService.RetrieveLastConfiguration(Fixture.Create<IoTEdgeDevice>());
 
             // Assert
-
+            _ = act.Should().NotBeNull();
         }
 
         [Test]
