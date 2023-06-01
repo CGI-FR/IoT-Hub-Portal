@@ -4,7 +4,7 @@
 
 <MudDialog>
     <DialogContent>
-        <MudTable @ref="_table" T="IoTEdgeModule" Items="@publicComponents" MultiSelection="true" SelectOnRowClick="true"
+        <MudTable T="IoTEdgeModule" Items="@publicComponents" MultiSelection="true" SelectOnRowClick="true"
             @bind-SelectedItems="selectedPublicComponents" Hover="true">
             <HeaderContent>
                 <MudTh>Name</MudTh>
@@ -31,7 +31,6 @@
     [Parameter]
     public List<IoTEdgeModule> EdgeModules { get; set; } = default!;
 
-    private MudTable<IoTEdgeModule> _table;
     private List<IoTEdgeModule> publicComponents = new();
     private HashSet<IoTEdgeModule> selectedPublicComponents = new HashSet<IoTEdgeModule>();
 

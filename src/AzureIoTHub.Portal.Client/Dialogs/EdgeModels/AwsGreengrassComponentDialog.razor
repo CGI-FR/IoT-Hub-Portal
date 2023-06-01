@@ -23,6 +23,9 @@
     public IoTEdgeModule Module { get; set; } = default!;
 
     [Parameter]
+    public List<IoTEdgeModule> EdgeModules { get; set; } = default!;
+
+    [Parameter]
     public Context Context { get; set; } = default!;
 
     private bool formIsValid;
@@ -34,49 +37,10 @@
 
     protected override void OnInitialized()
     {
-        if (Context == Context.Create)
-        {
-            InitRecipe();
-        }
-        else
+        if (Context == Context.Edit)
         {
             jsonRecipe = Module.ContainerCreateOptions;
         }
-    }
-
-    private void InitRecipe()
-    {
-        // This is a sample recipe for a Greengrass component. It is not intended to be used in production.
-        jsonRecipe = @"
-{
-	""RecipeFormatVersion"": ""2020-01-25"",
-	""ComponentName"": ""com.example.HelloWorld"",
-	""ComponentVersion"": ""1.0.0"",
-	""ComponentDescription"": ""My first Greengrass component."",
-	""ComponentPublisher"": ""Me"",
-	""ComponentConfiguration"": {
-		""DefaultConfiguration"": {
-			""Message"": ""world""
-		}
-	},
-	""Manifests"": [
-		{
-			""Name"": ""Linux"",
-			""Platform"": {
-				""os"": ""linux""
-			},
-			""Lifecycle"": {
-				""Run"": ""python3 {artifacts:path}/hello_world.py '{configuration:/Message}'""
-			},
-			""Artifacts"": [
-				{
-					""Uri"": ""s3://EXAMPLE_BUCKET/artifacts/com.example.HelloWorld/1.0.0/hello_world.py""
-				}
-			]
-		}
-	]
-}
-";
     }
 
     private IEnumerable<string> ValidateJsonRecipe(string json)
@@ -95,6 +59,10 @@
         }
         else
         {
+            if (Context == Context.Create && EdgeModules.Any(m => m.ModuleName.Equals(jsonProperties["ComponentName"].ToString())))
+            {
+                yield return $"Component {jsonProperties["ComponentName"].ToString()} is already used";
+            }
             currentModuleName = jsonProperties["ComponentName"].ToString();
         }
 
@@ -121,11 +89,24 @@
         await form.Validate();
         if (!form.IsValid) return;
 
-        Module.ModuleName = currentModuleName;
-        Module.Version = currentModuleVersion;
-        // ImageURI is required, but not used for Greengrass components
-        Module.ImageURI = "example.com";
-        Module.ContainerCreateOptions = jsonRecipe;
+        if(Context == Context.Create)
+        {
+            EdgeModules.Add(new IoTEdgeModule
+            {
+                ModuleName = currentModuleName,
+                Version = currentModuleVersion,
+                ImageURI = "example.com",
+                ContainerCreateOptions = jsonRecipe
+            });
+        }
+        else
+        {
+            Module.ModuleName = currentModuleName;
+            Module.Version = currentModuleVersion;
+            // ImageURI is required, but not used for Greengrass components
+            Module.ImageURI = "example.com";
+            Module.ContainerCreateOptions = jsonRecipe;
+        }
 
         MudDialog.Close(DialogResult.Ok(true));
     }
