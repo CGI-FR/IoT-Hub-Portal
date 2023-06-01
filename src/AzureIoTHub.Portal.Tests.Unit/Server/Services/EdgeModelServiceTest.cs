@@ -407,6 +407,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
                 .Returns(Task.CompletedTask);
 
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
             // Act
             await this.edgeDeviceModelService.UpdateEdgeModel(edgeDeviceModel);
 

@@ -27,6 +27,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using System.IO;
     using System.Text;
     using Newtonsoft.Json.Linq;
+    using System.Linq;
 
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest
@@ -76,6 +77,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
 
             var edge = Fixture.Create<IoTEdgeModel>();
+            // Simulate a custom/private component
+            edge.EdgeModules.First().Id = string.Empty;
+
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edge);
 
             _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
@@ -125,6 +129,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
 
             var edge = Fixture.Create<IoTEdgeModel>();
+            // Simulate a custom/private component
+            edge.EdgeModules.First().Id = string.Empty;
+
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edge);
 
             _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
@@ -171,6 +178,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
 
             var edge = Fixture.Create<IoTEdgeModel>();
+            // Simulate a custom/private component
+            edge.EdgeModules.First().Id = string.Empty;
+
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edge);
 
             _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
