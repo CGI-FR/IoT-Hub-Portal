@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Client.Services;
-    using Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
@@ -17,6 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Portal.Shared.Models.v10;
 
     [TestFixture]
     public class ConnectionStringDialogTests : BlazorUnitTest
@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(new SymmetricCredentials());
+                .ReturnsAsync(new DeviceCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
             var service = Services.GetService<IDialogService>() as DialogService;
