@@ -200,9 +200,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
         protected abstract Task DeleteDeviceInDatabase(string deviceId);
 
-        public virtual Task<DeviceCredentials> GetCredentials(string deviceId)
+        public virtual Task<DeviceCredentials> GetCredentials(TDto device)
         {
-            return this.externalDevicesService.GetDeviceCredentials(deviceId);
+            return this.externalDevicesService.GetDeviceCredentials(device.DeviceName);
         }
 
         public abstract Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);

@@ -172,7 +172,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceID">The device identifier.</param>
         public virtual async Task<ActionResult<DeviceCredentials>> GetCredentials(string deviceID)
         {
-            return Ok(await this.deviceService.GetCredentials(deviceID));
+            var device = await this.deviceService.GetDevice(deviceID);
+
+            if (device == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(await this.deviceService.GetCredentials(device));
         }
 
         private static Dictionary<string, string> GetTagsFromQueryString(IQueryCollection queryCollection)
