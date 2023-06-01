@@ -56,15 +56,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         {
             try
             {
-                this.logger.LogInformation("Start of sync Thing Types job");
+                this.logger.LogInformation("Start of sync Things job");
 
                 await SyncThingsAsDevices();
 
-                this.logger.LogInformation("End of sync Thing Types job");
+                this.logger.LogInformation("End of sync Things job");
             }
             catch (Exception e)
             {
-                this.logger.LogError(e, "Sync Thing Types job has failed");
+                this.logger.LogError(e, "Sync Things job has failed");
             }
         }
 
@@ -74,6 +74,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             foreach (var thing in things)
             {
+                //Thing error
+                if (thing.HttpStatusCode != HttpStatusCode.OK)
+                {
+                    this.logger.LogWarning($"Cannot import device '{thing.ThingName}' due to an error in the Amazon IoT API : {thing.HttpStatusCode}");
+                    continue;
+                }
+
                 //ThingType not specified
                 if (thing.ThingTypeName.IsNullOrWhiteSpace())
                 {
@@ -94,10 +101,21 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 {
                     ThingName = thing.ThingName
                 };
-                var thingShadow = await this.amazonIoTDataClient.GetThingShadowAsync(thingShadowRequest);
-                if (thingShadow.HttpStatusCode.Equals(HttpStatusCode.NotFound))
+                try
                 {
-                    this.logger.LogInformation($"Cannot import device '{thing.ThingName}' since it doesn't have related thing shadow");
+                    var thingShadow = await this.amazonIoTDataClient.GetThingShadowAsync(thingShadowRequest);
+                    if (thingShadow.HttpStatusCode != HttpStatusCode.OK)
+                    {
+                        if (thingShadow.HttpStatusCode.Equals(HttpStatusCode.NotFound))
+                            this.logger.LogInformation($"Cannot import device '{thing.ThingName}' since it doesn't have related classic thing shadow");
+                        else
+                            this.logger.LogWarning($"Cannot import device '{thing.ThingName}' due to an error retrieving thing shadow in the Amazon IoT API : {thingShadow.HttpStatusCode}");
+                        continue;
+                    }
+                }
+                catch (AmazonIotDataException e)
+                {
+                    this.logger.LogWarning($"Cannot import device '{thing.ThingName}' due to an error retrieving thing shadow in the Amazon IoT Data API.", e);
                     continue;
                 }
 
@@ -126,7 +144,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             foreach (var requestDescribeThing in response.Things.Select(thing => new DescribeThingRequest { ThingName = thing.ThingName }))
             {
-                things.Add(await this.amazonIoTClient.DescribeThingAsync(requestDescribeThing));
+                try
+                {
+                    things.Add(await this.amazonIoTClient.DescribeThingAsync(requestDescribeThing));
+                }
+                catch (AmazonIoTException e)
+                {
+                    this.logger.LogWarning($"Cannot import device '{requestDescribeThing.ThingName}' due to an error in the Amazon IoT API.", e);
+                    continue;
+                }
             }
 
             return things;
