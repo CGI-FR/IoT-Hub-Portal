@@ -60,9 +60,9 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.PostAsJsonAsync($"api/devices/{deviceId}/properties", deviceProperties);
         }
 
-        public Task<SymmetricCredentials> GetEnrollmentCredentials(string deviceId)
+        public Task<DeviceCredentials> GetEnrollmentCredentials(string deviceId)
         {
-            return this.http.GetFromJsonAsync<SymmetricCredentials>($"api/devices/{deviceId}/credentials")!;
+            return this.http.GetFromJsonAsync<DeviceCredentials>($"api/devices/{deviceId}/credentials")!;
         }
 
         public Task DeleteDevice(string deviceId)
