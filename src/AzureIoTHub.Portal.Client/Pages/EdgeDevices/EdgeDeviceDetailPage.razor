@@ -91,7 +91,7 @@
                                                 <MudText>
                                                     <b>Runtime response</b>
                                                 </MudText>
-                                                @if (edgeDevice.RuntimeResponse == "running")
+                                                @if (edgeDevice.RuntimeResponse == "running" || edgeDevice.RuntimeResponse == "HEALTHY")
                                                 {
                                                     <MudTooltip Text="Runtime is running well">
                                                         <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
@@ -151,35 +151,62 @@
                         </MudGrid>
                         <MudGrid>
                             <MudItem xs="12">
-                                <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
-                                    <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
-                                    <ChildContent>
-                                        <MudTable Items="@edgeDevice.Modules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
-                                            <ColGroup>
-                                                <col style="width: 40%;" />
-                                                <col style="width: 10%;" />
-                                                <col style="width: 20%;" />
-                                            </ColGroup>
-                                            <HeaderContent>
-                                                <MudTh Style="text-align: center">Module Name</MudTh>
-                                                <MudTh Style="text-align: center">Status</MudTh>
-                                                <MudTh Style="text-align: center"></MudTh>
-                                            </HeaderContent>
-                                            <RowTemplate>
-                                                <MudTd DataLabel="Module Name" Style="word-break: break-all;">@context.ModuleName</MudTd>
-                                                <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
-                                                <MudTd DataLabel="Device" Style="text-align: center;display:flex;justify-content:space-evenly;">
-                                                    <MudButton Variant="Variant.Filled" Class="btn showLogs" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
-                                                    <MudButton Variant="Variant.Filled" Class="rebootModule" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context.ModuleName,"RestartModule") )">reboot</MudButton>
-                                                    @foreach (var command in context.Commands)
-                                                    {
-                                                        <MudButton Variant="Variant.Filled" id="@(command.Name)" Disabled="btn_disable" Color="Color.Success" OnClick="@(async () => await OnMethod(context.ModuleName, command.Name) )">@command.Name</MudButton>
-                                                    }
-                                                </MudTd>
-                                            </RowTemplate>
-                                        </MudTable>
-                                    </ChildContent>
-                                </MudExpansionPanel>
+                                @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                {
+                                    <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudTable Items="@edgeDevice.Modules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                <ColGroup>
+                                                    <col style="width: 40%;" />
+                                                    <col style="width: 10%;" />
+                                                    <col style="width: 20%;" />
+                                                </ColGroup>
+
+                                                <HeaderContent>
+                                                    <MudTh Style="text-align: center">Module Name</MudTh>
+                                                    <MudTh Style="text-align: center">Status</MudTh>
+                                                    <MudTh Style="text-align: center"></MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate>
+                                                    <MudTd DataLabel="Module Name" Style="word-break: break-all;">@context.ModuleName</MudTd>
+                                                    <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
+                                                    <MudTd DataLabel="Device" Style="text-align: center;display:flex;justify-content:space-evenly;">
+                                                        <MudButton Variant="Variant.Filled" Class="btn showLogs" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
+                                                        <MudButton Variant="Variant.Filled" Class="rebootModule" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context.ModuleName,"RestartModule") )">reboot</MudButton>
+                                                        @foreach (var command in context.Commands)
+                                                        {
+                                                            <MudButton Variant="Variant.Filled" id="@(command.Name)" Disabled="btn_disable" Color="Color.Success" OnClick="@(async () => await OnMethod(context.ModuleName, command.Name) )">@command.Name</MudButton>
+                                                        }
+                                                    </MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                }
+                                else
+                                {
+                                    <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudTable Items="@edgeDevice.Modules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                <ColGroup>
+                                                    <col style="width: 50%;" />
+                                                    <col style="width: 20%;" />
+                                                </ColGroup>
+
+                                                <HeaderContent>
+                                                    <MudTh Style="text-align: center">Module Name</MudTh>
+                                                    <MudTh Style="text-align: center">Version</MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate>
+                                                    <MudTd DataLabel="Module Name" Style="word-break: break-all;">@context.ModuleName</MudTd>
+                                                    <MudTd DataLabel="Status" Style="text-align: center">@context.Version</MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                }
                             </MudItem>
                         </MudGrid>
                         <MudGrid>

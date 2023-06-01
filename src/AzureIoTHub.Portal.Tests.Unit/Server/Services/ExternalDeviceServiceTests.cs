@@ -2094,10 +2094,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var service = CreateService();
-            var mockTwin = new Twin("aaa");
-
+            var mockDevice = Fixture.Create<IoTEdgeDevice>();
+            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(mockDevice.DeviceId)).ReturnsAsync(Fixture.Create<Twin>());
             // Act
-            var result = await service.RetrieveLastConfiguration(mockTwin);
+            var result = await service.RetrieveLastConfiguration(mockDevice);
 
             // Assert
             Assert.IsNull(result);

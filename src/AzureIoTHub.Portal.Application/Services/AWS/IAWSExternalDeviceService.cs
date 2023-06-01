@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
     using System.Threading.Tasks;
     using Amazon.IoT.Model;
     using Amazon.IotData.Model;
+    using AzureIoTHub.Portal.Models.v10;
 
     public interface IAWSExternalDeviceService
     {
@@ -20,6 +21,7 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
         Task<GetThingShadowResponse> GetDeviceShadow(string deviceName);
 
         Task<UpdateThingShadowResponse> UpdateDeviceShadow(UpdateThingShadowRequest shadow);
+        Task<int> GetEdgeDeviceNbDevices(IoTEdgeDevice device);
 
 
     }

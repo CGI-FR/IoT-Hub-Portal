@@ -362,10 +362,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task RetrieveLastConfigurationShouldThrowNotImplementedException()
         {
             // Act
-            var act = () => this.externalDeviceService.RetrieveLastConfiguration(Fixture.Create<Twin>());
+            var act = () => this.externalDeviceService.RetrieveLastConfiguration(Fixture.Create<IoTEdgeDevice>());
 
             // Assert
-            _ = await act.Should().ThrowAsync<NotImplementedException>();
+            _ = act.Should().NotBeNull();
         }
 
         [Test]

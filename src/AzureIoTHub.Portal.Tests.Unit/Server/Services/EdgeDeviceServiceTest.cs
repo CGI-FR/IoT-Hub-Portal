@@ -213,7 +213,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin(expectedEdgeDevice.Id));
 
             _ = this.mockDeviceService
-                .Setup(x => x.RetrieveLastConfiguration(It.IsAny<Twin>()))
+                .Setup(x => x.RetrieveLastConfiguration(It.IsAny<IoTEdgeDevice>()))
                 .ReturnsAsync(new ConfigItem());
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))

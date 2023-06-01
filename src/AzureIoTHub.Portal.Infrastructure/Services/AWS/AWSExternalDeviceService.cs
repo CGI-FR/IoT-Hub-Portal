@@ -4,22 +4,29 @@
 namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 {
     using System.Threading.Tasks;
+    using Amazon.GreengrassV2;
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using Amazon.IotData;
     using Amazon.IotData.Model;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Models.v10;
 
     public class AWSExternalDeviceService : IAWSExternalDeviceService
     {
         private readonly IAmazonIoT amazonIotClient;
         private readonly IAmazonIotData amazonIotDataClient;
+        private readonly IAmazonGreengrassV2 amazonGreenGrasss;
 
-        public AWSExternalDeviceService(IAmazonIoT amazonIoTClient, IAmazonIotData amazonIotDataClient)
+        public AWSExternalDeviceService(
+            IAmazonIoT amazonIoTClient,
+            IAmazonIotData amazonIotDataClient,
+            IAmazonGreengrassV2 amazonGreenGrasss)
         {
             this.amazonIotClient = amazonIoTClient;
             this.amazonIotDataClient = amazonIotDataClient;
+            this.amazonGreenGrasss = amazonGreenGrasss;
         }
 
         public async Task<DescribeThingResponse> GetDevice(string deviceName)
@@ -96,6 +103,18 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             }
 
             return shadowResponse;
+        }
+
+        public async Task<int> GetEdgeDeviceNbDevices(IoTEdgeDevice device)
+        {
+            var listClientDevices = await this.amazonGreenGrasss.ListClientDevicesAssociatedWithCoreDeviceAsync(
+                new Amazon.GreengrassV2.Model.ListClientDevicesAssociatedWithCoreDeviceRequest
+                {
+                    CoreDeviceThingName = device.DeviceName
+                });
+            return listClientDevices.HttpStatusCode != System.Net.HttpStatusCode.OK
+                ? throw new InternalServerErrorException($"Can not list Client Devices Associated to {device.DeviceName} Core Device due to an error in the Amazon IoT API.")
+                : listClientDevices.AssociatedClientDevices.Count;
         }
     }
 }
