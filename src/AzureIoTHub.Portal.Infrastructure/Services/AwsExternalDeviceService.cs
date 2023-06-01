@@ -305,6 +305,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             _ = await CreatePrivateKeySecret(deviceId, response.KeyPair.PrivateKey);
             _ = await CreatePublicKeySecret(deviceId, response.KeyPair.PublicKey);
             _ = await CreateCertificateSecret(deviceId, response.CertificatePem);
+            _ = await AttachCertificateToThing(deviceId, response.CertificateArn);
 
             return new Tuple<DeviceCredentials, string>(new DeviceCredentials
             {
@@ -316,6 +317,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                     PublicKey = response.KeyPair.PublicKey,
                 }
             }, response.CertificateArn);
+        }
+
+        private async Task<AttachThingPrincipalResponse> AttachCertificateToThing(string deviceId, string certificateArn)
+        {
+            return await this.amazonIoTClient.AttachThingPrincipalAsync(deviceId, certificateArn);
         }
 
         private async Task<CreateSecretResponse> CreatePrivateKeySecret(string deviceId, string privateKey)
