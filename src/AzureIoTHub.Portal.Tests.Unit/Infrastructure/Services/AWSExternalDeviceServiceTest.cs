@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
+    using System.Collections.Generic;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
@@ -253,6 +254,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                 HttpStatusCode = HttpStatusCode.OK
             };
 
+            _ = this.mockAmazonIotClient.Setup(iotClient => iotClient.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListThingPrincipalsResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK,
+                    Principals = Fixture.Create<List<string>>()
+                });
+
+            _ = this.mockAmazonIotClient.Setup(iotClient => iotClient.DetachThingPrincipalAsync(It.IsAny<DetachThingPrincipalRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DetachThingPrincipalResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
             _ = this.mockAmazonIotClient.Setup(iotClient => iotClient.DeleteThingAsync(It.IsAny<DeleteThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
@@ -272,9 +286,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             {
                 ThingName = Fixture.Create<string>(),
             };
-
-            _ = this.mockAmazonIotClient.Setup(iotClient => iotClient.DeleteThingAsync(It.IsAny<DeleteThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DeleteThingResponse
+            _ = this.mockAmazonIotClient.Setup(iotClient => iotClient.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListThingPrincipalsResponse
                 {
                     HttpStatusCode = HttpStatusCode.BadRequest
                 });
