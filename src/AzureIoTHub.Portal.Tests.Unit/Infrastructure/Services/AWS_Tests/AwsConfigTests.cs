@@ -28,6 +28,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using System.Text;
     using Newtonsoft.Json.Linq;
     using System.Linq;
+    using FluentAssertions;
+    using System;
 
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest
@@ -293,6 +295,36 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             await this.awsConfigService.DeleteConfiguration(edge.ExternalIdentifier);
 
             //Assert
+            MockRepository.VerifyAll();
+
+        }
+
+        [Test]
+        public async Task GetPublicEdgeModules_AwsContext_EmptyListIsReturned()
+        {
+            //Arrange
+            var components = Fixture.CreateMany<Component>(2).ToList();
+
+            var expectedPublicEdgeModules = components.Select(c => new IoTEdgeModule
+            {
+                Id = c.Arn,
+                ModuleName = c.ComponentName,
+                Version = c.LatestVersion.ComponentVersion,
+                ImageURI = "example.com"
+            }).ToList();
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.ListComponentsAsync(It.Is<ListComponentsRequest>(a => a.Scope == ComponentVisibilityScope.PUBLIC), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListComponentsResponse
+                {
+                    Components = components,
+                    NextToken = string.Empty,
+                });
+
+            // Act
+            var publicEdgeModules = await this.awsConfigService.GetPublicEdgeModules();
+
+            //Assert
+            _ = publicEdgeModules.Should().BeEquivalentTo(expectedPublicEdgeModules);
             MockRepository.VerifyAll();
 
         }

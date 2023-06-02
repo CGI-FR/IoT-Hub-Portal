@@ -989,5 +989,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
             this.mockRegistryManager.Verify(c => c.RemoveConfigurationAsync(It.IsAny<string>()), Times.Once());
         }
+
+        [Test]
+        public async Task GetPublicEdgeModules_AzureContext_EmptyListIsReturned()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+
+            //Arrange
+            var publicEdgeModules = await configsServices.GetPublicEdgeModules();
+
+            //Assert
+            _ = publicEdgeModules.Should().BeEquivalentTo(Array.Empty<IoTEdgeModule>());
+            this.mockRepository.VerifyAll();
+        }
     }
 }
