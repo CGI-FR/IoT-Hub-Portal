@@ -69,6 +69,35 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         public async Task<DeleteThingResponse> DeleteDevice(DeleteThingRequest device)
         {
+            //Retreive all thing princpals and detach it before deleting the thing
+            var principals = await this.amazonIotClient.ListThingPrincipalsAsync(new ListThingPrincipalsRequest
+            {
+                NextToken = string.Empty,
+                ThingName = device.ThingName
+            });
+
+            if (principals.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Unable to retreive Thing {device.ThingName} principals due to an error in the Amazon IoT API : {principals.HttpStatusCode}");
+
+            }
+
+            foreach (var principal in principals.Principals)
+            {
+                var detachPrincipal = await this.amazonIotClient.DetachThingPrincipalAsync(new DetachThingPrincipalRequest
+                {
+                    Principal = principal,
+                    ThingName = device.ThingName
+                });
+
+                if (detachPrincipal.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    throw new InternalServerErrorException($"Unable to detach Thing {device.ThingName} principal due to an error in the Amazon IoT API : {detachPrincipal.HttpStatusCode}");
+
+                }
+            }
+
+            //Delete the thing type before detaching the princiapl
             var deleteResponse = await this.amazonIotClient.DeleteThingAsync(device);
 
             if (deleteResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
