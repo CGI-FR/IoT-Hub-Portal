@@ -267,7 +267,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                  .Returns(Task.CompletedTask);
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Fixture.Create<string>()));
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
                     manager.SetDefaultImageToModel(It.IsAny<string>()))
@@ -298,7 +298,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Fixture.Create<string>()));
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
                     manager.SetDefaultImageToModel(It.IsAny<string>()))
@@ -379,7 +379,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                  .Returns(Task.CompletedTask);
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Fixture.Create<string>()));
 
             // Act
             await this.edgeDeviceModelService.UpdateEdgeModel(edgeDeviceModel);
@@ -405,7 +405,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Fixture.Create<string>()));
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);

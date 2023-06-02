@@ -116,7 +116,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 desiredProperties.Add($"properties.desired.{item.Key}", propertyValue);
             }
 
-            await this.configService.RollOutDeviceConfiguration(deviceConfig.ModelId, desiredProperties, deviceConfig.ConfigurationId, deviceConfig.Tags, 100);
+            _ = await this.configService.RollOutDeviceConfiguration(deviceConfig.ModelId, desiredProperties, deviceConfig.ConfigurationId, deviceConfig.Tags, 100);
         }
     }
 }

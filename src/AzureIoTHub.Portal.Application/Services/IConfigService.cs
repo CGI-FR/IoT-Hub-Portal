@@ -15,13 +15,13 @@ namespace AzureIoTHub.Portal.Application.Services
 
         Task<IEnumerable<Configuration>> GetDevicesConfigurations();
 
-        Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties);
+        Task<string> RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties);
 
         Task DeleteDeviceModelConfigurationByConfigurationNamePrefix(string configurationNamePrefix);
 
-        Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel);
+        Task<string> RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel);
 
-        Task RollOutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags, int priority = 0);
+        Task<string> RollOutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags, int priority = 0);
 
         Task<Configuration> GetConfigItem(string id);
 

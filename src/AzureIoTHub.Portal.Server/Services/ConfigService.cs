@@ -200,7 +200,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        public async Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
+        public async Task<string> RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase
             var configurationNamePrefix = modelId?.Trim()
@@ -217,6 +217,8 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.Content.DeviceContent = desiredProperties;
 
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+
+            return Guid.NewGuid().ToString();
         }
 
         public async Task DeleteDeviceModelConfigurationByConfigurationNamePrefix(string configurationNamePrefix)
@@ -234,7 +236,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
+        public async Task<string> RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
@@ -267,9 +269,11 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 await this.registryManager.RemoveConfigurationAsync(item.Id);
             }
+
+            return Guid.NewGuid().ToString();
         }
 
-        public async Task RollOutDeviceConfiguration(
+        public async Task<string> RollOutDeviceConfiguration(
             string modelId,
             Dictionary<string, object> desiredProperties,
             string configurationId,
@@ -332,6 +336,8 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 throw new InternalServerErrorException($"Unable to add configuration {newConfiguration.Id}", e);
             }
+
+            return Guid.NewGuid().ToString();
         }
 
         public async Task<int> GetFailedDeploymentsCount()

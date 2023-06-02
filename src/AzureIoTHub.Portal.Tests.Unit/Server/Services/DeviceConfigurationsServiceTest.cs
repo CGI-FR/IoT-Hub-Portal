@@ -7,11 +7,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AutoFixture;
     using Azure;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Azure.Devices;
@@ -22,7 +24,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Configuration = Microsoft.Azure.Devices.Configuration;
 
     [TestFixture]
-    public class DeviceConfigurationsServiceTest
+    public class DeviceConfigurationsServiceTest : BackendUnitTest
     {
         private MockRepository mockRepository;
 
@@ -170,7 +172,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         It.Is<string>(x => x == deviceConfig.ConfigurationId),
                         It.IsAny<Dictionary<string, string>>(),
                         It.Is<int>(x => x == 100)))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Fixture.Create<string>()));
 
             _ = this.mockDeviceModelPropertiesService.Setup(c => c.GetModelProperties(deviceConfig.ModelId))
                 .ReturnsAsync(new[]
@@ -230,7 +232,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         It.Is<string>(x => x == deviceConfig.ConfigurationId),
                         It.IsAny<Dictionary<string, string>>(),
                         It.Is<int>(x => x == 100)))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Fixture.Create<string>()));
 
             _ = this.mockDeviceModelPropertiesService.Setup(c => c.GetModelProperties(deviceConfig.ModelId))
                 .ReturnsAsync(new[]
@@ -363,7 +365,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         It.Is<string>(x => x == deviceConfig.ConfigurationId),
                         It.IsAny<Dictionary<string, string>>(),
                         It.Is<int>(x => x == 100)))
-                .Returns(Task.CompletedTask)
+                .Returns(Task.FromResult(Fixture.Create<string>()))
                 .Callback((string _, Dictionary<string, object> properties, string _,
                     Dictionary<string, string> _, int _) => requestedProperties = properties);
 
@@ -422,7 +424,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         It.Is<string>(x => x == deviceConfig.ConfigurationId),
                         It.IsAny<Dictionary<string, string>>(),
                         It.Is<int>(x => x == 100)))
-                .Returns(Task.CompletedTask)
+                .Returns(Task.FromResult(Fixture.Create<string>()))
                 .Callback((string _, Dictionary<string, object> properties, string _,
                     Dictionary<string, string> _, int _) => requestedProperties = properties);
 
@@ -472,7 +474,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         It.Is<string>(x => x == deviceConfig.ConfigurationId),
                         It.IsAny<Dictionary<string, string>>(),
                         It.Is<int>(x => x == 100)))
-                .Returns(Task.CompletedTask)
+                .Returns(Task.FromResult(Fixture.Create<string>()))
                 .Callback((string _, Dictionary<string, object> properties, string _,
                     Dictionary<string, string> _, int _) => requestedProperties = properties);
 
@@ -523,7 +525,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         It.Is<string>(x => x == deviceConfig.ConfigurationId),
                         It.IsAny<Dictionary<string, string>>(),
                         It.Is<int>(x => x == 100)))
-                .Returns(Task.CompletedTask)
+                .Returns(Task.FromResult(Fixture.Create<string>()))
                 .Callback((string _, Dictionary<string, object> properties, string _,
                     Dictionary<string, string> _, int _) => requestedProperties = properties);
 

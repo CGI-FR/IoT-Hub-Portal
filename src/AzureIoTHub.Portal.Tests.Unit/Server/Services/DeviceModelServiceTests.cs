@@ -188,7 +188,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockConfigService.Setup(service =>
                     service.RollOutDeviceModelConfiguration(deviceModelDto.ModelId,
                         It.IsAny<Dictionary<string, object>>()))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Fixture.Create<string>()));
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
                     manager.SetDefaultImageToModel(deviceModelDto.ModelId))
@@ -257,7 +257,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockConfigService.Setup(service =>
                     service.RollOutDeviceModelConfiguration(deviceModelDto.ModelId,
                         It.IsAny<Dictionary<string, object>>()))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Fixture.Create<string>()));
 
             // Act
             await this.deviceModelService.UpdateDeviceModel(deviceModelDto);

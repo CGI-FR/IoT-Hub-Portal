@@ -123,7 +123,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 await SaveModuleCommands(edgeModel);
             }
 
-            await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+            edgeModelEntity.ExternalIdentifier = await this.configService.RollOutEdgeModelConfiguration(edgeModel);
 
             await this.unitOfWork.SaveAsync();
         }
@@ -266,7 +266,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 await SaveModuleCommands(edgeModel);
             }
 
-            await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+            edgeModel.ExternalIdentifier = await this.configService.RollOutEdgeModelConfiguration(edgeModel);
 
             await this.unitOfWork.SaveAsync();
         }

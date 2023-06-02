@@ -46,7 +46,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             this.config = config;
         }
 
-        public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
+        public async Task<string> RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
         {
 
             var createDeploymentRequest = new CreateDeploymentRequest
@@ -61,27 +61,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             if (createDeploymentResponse.HttpStatusCode != HttpStatusCode.Created)
             {
                 throw new InternalServerErrorException("The deployment creation failed due to an error in the Amazon IoT API.");
-
             }
-            else
-            {
-                var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId!);
-                if (edgeModelEntity == null)
-                {
-                    throw new Domain.Exceptions.ResourceNotFoundException($"The edge model with id {edgeModel?.ModelId} not found");
 
-                }
-                else
-                {
-                    edgeModel!.ExternalIdentifier = createDeploymentResponse.DeploymentId;
-
-                    _ = this.mapper.Map(edgeModel, edgeModelEntity);
-
-                    this.edgeModelRepository.Update(edgeModelEntity);
-                    await this.unitOfWork.SaveAsync();
-                }
-
-            }
+            return createDeploymentResponse.DeploymentId;
         }
 
         private async Task<string> GetThingGroupArn(IoTEdgeModel edgeModel)
@@ -188,7 +170,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             throw new NotImplementedException();
         }
 
-        public Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
+        public Task<string> RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
             throw new NotImplementedException();
         }
@@ -198,7 +180,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             throw new NotImplementedException();
         }
 
-        public Task RollOutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags, int priority = 0)
+        public Task<string> RollOutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags, int priority = 0)
         {
             throw new NotImplementedException();
         }
@@ -211,7 +193,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         public async Task DeleteConfiguration(string modelId)
         {
             var modules = await GetConfigModuleList(modelId);
-            foreach (var module in modules)
+
+            foreach (var module in modules.Where(c => string.IsNullOrEmpty(c.Id)))
             {
                 var deletedComponentResponse = await this.greengrass.DeleteComponentAsync(new DeleteComponentRequest
                 {
@@ -221,7 +204,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 if (deletedComponentResponse.HttpStatusCode != HttpStatusCode.NoContent)
                 {
                     throw new InternalServerErrorException("The deletion of the component failed due to an error in the Amazon IoT API.");
-
                 }
             }
 
@@ -229,6 +211,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             {
                 DeploymentId = modelId
             });
+
             if (cancelDeploymentResponse.HttpStatusCode != HttpStatusCode.OK)
             {
                 throw new InternalServerErrorException("The cancellation of the deployment failed due to an error in the Amazon IoT API.");
@@ -246,7 +229,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     throw new InternalServerErrorException("The deletion of the deployment failed due to an error in the Amazon IoT API.");
                 }
             }
-
         }
 
         public Task<int> GetFailedDeploymentsCount()
@@ -256,7 +238,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
         public async Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
         {
-
             var moduleList = new List<IoTEdgeModule>();
 
             var getDeployement = new GetDeploymentRequest
