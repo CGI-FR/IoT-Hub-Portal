@@ -335,7 +335,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync((EdgeDeviceModel)null);
+                .ReturnsAsync((EdgeDeviceModel)default);
             _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.InsertAsync(It.IsAny<EdgeDeviceModel>()))
                 .Returns(Task.CompletedTask);
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
