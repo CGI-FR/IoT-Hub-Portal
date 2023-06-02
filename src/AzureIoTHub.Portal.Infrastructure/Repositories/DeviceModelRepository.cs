@@ -16,7 +16,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
         public async Task<DeviceModel?> GetByNameAsync(string modelName)
         {
             return await this.context.Set<DeviceModel>()
-                             .FirstOrDefaultAsync(deviceModel => deviceModel.Name.Equals(modelName, StringComparison.Ordinal));
+                             .FirstOrDefaultAsync(deviceModel => deviceModel.Name == modelName);
         }
     }
 }
