@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
 {
     using AzureIoTHub.Portal.Domain.Repositories;
     using Domain.Entities;
+    using Microsoft.EntityFrameworkCore;
 
     public class DeviceModelRepository : GenericRepository<DeviceModel>, IDeviceModelRepository
     {
@@ -12,9 +13,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
         {
         }
 
-        public DeviceModel? GetByName(string modelName)
+        public async Task<DeviceModel?> GetByNameAsync(string modelName)
         {
-            return GetAll().FirstOrDefault(model => model.Name.Equals(modelName, StringComparison.Ordinal));
+            return await this.context.Set<DeviceModel>()
+                             .FirstOrDefaultAsync(deviceModel => deviceModel.Name.Equals(modelName, StringComparison.Ordinal));
         }
     }
 }

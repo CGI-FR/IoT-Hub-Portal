@@ -14,7 +14,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
     using Amazon.IotData;
     using Amazon.IotData.Model;
     using AutoFixture;
-    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Repositories;
@@ -31,7 +30,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
         private Mock<IAmazonIoT> amazonIoTClient;
         private Mock<IAmazonIotData> amazonIoTDataClient;
-        private Mock<IDeviceModelImageManager> mockAWSImageManager;
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IDeviceRepository> mockDeviceRepository;
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
@@ -41,7 +39,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
         {
             base.Setup();
 
-            this.mockAWSImageManager = MockRepository.Create<IDeviceModelImageManager>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.mockDeviceRepository = MockRepository.Create<IDeviceRepository>();
             this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
@@ -49,7 +46,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             this.amazonIoTClient = MockRepository.Create<IAmazonIoT>();
             this.amazonIoTDataClient = MockRepository.Create<IAmazonIotData>();
 
-            _ = ServiceCollection.AddSingleton(this.mockAWSImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
@@ -105,8 +101,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 });
 
             _ = this.mockDeviceModelRepository
-                .Setup(x => x.GetByName(newDevice.DeviceModel.Name))
-                .Returns(expectedDeviceModel);
+                .Setup(x => x.GetByNameAsync(newDevice.DeviceModel.Name))
+                .ReturnsAsync(expectedDeviceModel);
 
             _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetThingShadowResponse() { HttpStatusCode = HttpStatusCode.OK });
@@ -188,8 +184,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 });
 
             _ = this.mockDeviceModelRepository
-                .Setup(x => x.GetByName(existingDevice.DeviceModel.Name))
-                .Returns(expectedDeviceModel);
+                .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
+                .ReturnsAsync(expectedDeviceModel);
 
             _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetThingShadowResponse() { HttpStatusCode = HttpStatusCode.OK });
@@ -255,8 +251,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 });
 
             _ = this.mockDeviceModelRepository
-                .Setup(x => x.GetByName(existingDevice.DeviceModel.Name))
-                .Returns(expectedDeviceModel);
+                .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
+                .ReturnsAsync(expectedDeviceModel);
 
             _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetThingShadowResponse() { HttpStatusCode = HttpStatusCode.OK });
@@ -310,10 +306,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingResponse()
                 {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
                     HttpStatusCode = HttpStatusCode.RequestTimeout
                 });
 
@@ -423,8 +415,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 });
 
             _ = this.mockDeviceModelRepository
-                .Setup(x => x.GetByName(existingDevice.DeviceModel.Name))
-                .Returns((DeviceModel)null);
+                .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
+                .ReturnsAsync((DeviceModel)null);
 
             _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new List<Device>());
@@ -481,8 +473,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 });
 
             _ = this.mockDeviceModelRepository
-                .Setup(x => x.GetByName(existingDevice.DeviceModel.Name))
-                .Returns(expectedDeviceModel);
+                .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
+                .ReturnsAsync(expectedDeviceModel);
 
             _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetThingShadowResponse() { HttpStatusCode = thingShadowCode });
@@ -585,8 +577,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 });
 
             _ = this.mockDeviceModelRepository
-                .Setup(x => x.GetByName(existingDevice.DeviceModel.Name))
-                .Returns(expectedDeviceModel);
+                .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
+                .ReturnsAsync(expectedDeviceModel);
 
             _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
                 .Throws(new AmazonIotDataException(""));

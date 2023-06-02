@@ -7,5 +7,6 @@ namespace AzureIoTHub.Portal.Domain.Repositories
 
     public interface IEdgeDeviceModelRepository : IRepository<EdgeDeviceModel>
     {
+        Task<EdgeDeviceModel?> GetByNameAsync(string edgeModelDevice);
     }
 }
