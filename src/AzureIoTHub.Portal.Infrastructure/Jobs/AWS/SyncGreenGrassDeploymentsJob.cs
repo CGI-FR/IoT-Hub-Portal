@@ -115,9 +115,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
         private async Task CreateNonExisitingGreenGrassDeployment(IoTEdgeModel iotEdgeModel)
         {
-
             var iotEdgeModels = (await this.edgeDeviceModelRepository.GetAllAsync())
-                .Where(edge => edge.ExternalIdentifier!.Equals(iotEdgeModel.ExternalIdentifier, StringComparison.Ordinal)).ToList();
+                .Where(edge => string.Equals(edge.ExternalIdentifier, iotEdgeModel.ExternalIdentifier, StringComparison.Ordinal)).ToList();
 
             if (iotEdgeModels.Count == 0)
             {
@@ -138,7 +137,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         {
             //Get All Deployments that are not in AWS
             var deploymentToDelete = (await this.edgeDeviceModelRepository.GetAllAsync())
-                .Where(edge => !edgeModels.Any(edgeModel => edge.ExternalIdentifier!.Equals(edgeModel.ExternalIdentifier, StringComparison.Ordinal)))
+                .Where(edge => !edgeModels.Any(edgeModel => string.Equals(edge.ExternalIdentifier, edgeModel.ExternalIdentifier, StringComparison.Ordinal)))
                 .ToList();
 
             foreach (var edgeModel in deploymentToDelete)
