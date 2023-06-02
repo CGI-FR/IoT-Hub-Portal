@@ -10,10 +10,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     using Amazon.GreengrassV2.Model;
     using Amazon.IoT;
     using Amazon.IoT.Model;
+    using Amazon.SecretsManager.Model;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Extensions.Logging;
     using Quartz;
     using Quartz.Util;
@@ -30,6 +34,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonGreengrassV2 amazonGreenGrass;
+        private readonly IConfigService configService;
+        private readonly IAWSExternalDeviceService awsExternalDevicesService;
 
         public SyncGreenGrassDevicesJob(
             ILogger<SyncGreenGrassDevicesJob> logger,
@@ -39,7 +45,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             IEdgeDeviceModelRepository edgeDeviceModelRepository,
             IDeviceTagValueRepository deviceTagValueRepository,
             IAmazonIoT amazonIoTClient,
-            IAmazonGreengrassV2 amazonGreenGrass)
+            IAmazonGreengrassV2 amazonGreenGrass,
+            IConfigService configService,
+            IAWSExternalDeviceService awsExternalDevicesService)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -48,6 +56,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             this.deviceTagValueRepository = deviceTagValueRepository;
             this.amazonIoTClient = amazonIoTClient;
             this.amazonGreenGrass = amazonGreenGrass;
+            this.configService = configService;
+            this.awsExternalDevicesService = awsExternalDevicesService;
             this.logger = logger;
         }
 
@@ -96,8 +106,31 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                     continue;
                 }
 
+                //Map with EdgeDevice
+                var edgeDevice = this.mapper.Map<EdgeDevice>(thing);
+                edgeDevice.DeviceModelId = edgeDeviceModel.Id;
+                //EdgeDevices properties that are not present in the thing
+                try
+                {
+                    var modules = await this.configService.GetConfigModuleList(edgeDevice.DeviceModelId);
+                    edgeDevice.NbDevices = await this.awsExternalDevicesService.GetEdgeDeviceNbDevices(this.mapper.Map<IoTEdgeDevice>(edgeDevice));
+                    edgeDevice.NbModules = modules.Count;
+                    var coreDevice = await amazonGreenGrass.GetCoreDeviceAsync(new GetCoreDeviceRequest() { CoreDeviceThingName = thing.ThingName });
+                    if (coreDevice.HttpStatusCode != HttpStatusCode.OK)
+                    {
+                        this.logger.LogWarning($"Cannot import Greengrass device '{thing.ThingName}' due to an error retrieving core device in the Amazon IoT Data API : {coreDevice.HttpStatusCode}");
+                        continue;
+                    }
+                    edgeDevice.ConnectionState = coreDevice.Status == CoreDeviceStatus.HEALTHY ? "Connected" : "Disconnected";
+                }
+                catch (Exception e)
+                {
+                    this.logger.LogWarning($"Cannot import Greengrass device '{thing.ThingName}' due to an error retrieving Greengrass device properties in the Amazon IoT Data API.", e);
+                    continue;
+                }
+
                 //Create or update the Edge Device
-                await CreateOrUpdateGreenGrassDevice(thing, edgeDeviceModel);
+                await CreateOrUpdateGreenGrassDevice(edgeDevice);
             }
 
             foreach (var item in (await this.edgeDeviceRepository.GetAllAsync(
@@ -141,11 +174,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             return devices;
         }
 
-        private async Task CreateOrUpdateGreenGrassDevice(DescribeThingResponse greengrassDevice, EdgeDeviceModel edgeModelDevice)
+        private async Task CreateOrUpdateGreenGrassDevice(EdgeDevice edgeDevice)
         {
-            var edgeDevice = this.mapper.Map<EdgeDevice>(greengrassDevice);
             var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(edgeDevice.Id, d => d.Tags);
-            edgeDevice.DeviceModelId = edgeModelDevice.Id;
 
             if (edgeDeviceEntity == null)
             {
