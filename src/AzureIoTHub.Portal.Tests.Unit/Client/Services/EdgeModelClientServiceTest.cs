@@ -200,5 +200,22 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
+
+        [Test]
+        public async Task GetPublicEdgeModules_GetPublicEdgeModules_EdgeModulesReturned()
+        {
+            var expectedModels = Fixture.Build<IoTEdgeModule>().CreateMany(3).ToList();
+
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/edge/models/public-modules")
+                .RespondJson(expectedModels);
+
+            // Act
+            var result = await this.edgeModelClientService.GetPublicEdgeModules();
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedModels);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
     }
 }
