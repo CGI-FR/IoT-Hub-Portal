@@ -3,9 +3,9 @@
 
 <MudDialog>
     <DialogContent>
-        <MudForm id="idea-form" @ref="form" @bind-IsValid="@formIsValid" >
+        <MudForm @ref="form" @bind-IsValid="@formIsValid" >
         <MudContainer Style="max-height: 600px; overflow-y: scroll">
-            <MudTextField T="string" Label="Recipe as JSON" Variant="Variant.Text" @bind-Value="@jsonRecipe" Lines="20"
+                <MudTextField id="greengrass-component-recipe-json" T="string" Label="Recipe as JSON" Variant="Variant.Text" @bind-Value="@jsonRecipe" Lines="20"
                               Validation="@(new Func<string, IEnumerable<string>>(ValidateJsonRecipe))" />
         </MudContainer>
         </MudForm>
