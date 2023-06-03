@@ -204,6 +204,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         [Test]
         public async Task GetPublicEdgeModules_GetPublicEdgeModules_EdgeModulesReturned()
         {
+            // Arrange
             var expectedModels = Fixture.Build<IoTEdgeModule>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, "/api/edge/models/public-modules")

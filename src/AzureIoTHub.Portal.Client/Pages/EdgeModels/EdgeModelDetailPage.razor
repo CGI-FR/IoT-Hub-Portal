@@ -225,14 +225,14 @@
                                                             @moduleContext.ModuleName
                                                         </MudTd>
                                                         <MudTd DataLabel="See detail" Style="text-align: center;">
-                                                            <MudButton Variant="Variant.Filled" id="editButton" Disabled="@(!string.IsNullOrEmpty(moduleContext.Id))" OnClick="@(async () => await ShowEditEdgeModuleDialog(moduleContext))">Detail</MudButton>
+                                                            <MudButton Variant="Variant.Filled" id="edit-edge-module" Disabled="@(!string.IsNullOrEmpty(moduleContext.Id))" OnClick="@(async () => await ShowEditEdgeModuleDialog(moduleContext))">Detail</MudButton>
                                                         </MudTd>
                                                         <MudTd DataLabel="Delete" Style="text-align: center">
                                                             <MudIconButton Class="deleteModuleButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteModule(moduleContext))"></MudIconButton>
                                                         </MudTd>
                                                     </RowTemplate>
                                                     <FooterContent>
-                                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" id="addModuleButton" OnClick="ShowAddNewEdgeModuleDialog">Add new module</MudButton>
+                                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" id="add-edge-module" OnClick="ShowAddNewEdgeModuleDialog">Add new module</MudButton>
                                                         <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" id="add-public-edge-modules" OnClick="ShowAddEdgePublicModulesDialog">Add public modules</MudButton>
                                                     </FooterContent>
                                                 </MudTable>
