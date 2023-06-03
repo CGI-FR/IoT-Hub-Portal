@@ -316,7 +316,7 @@
 
         DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
-        await DialogService.Show<AwsGreengrassPublicComponents>(string.Empty, parameters, options).Result;
+        await DialogService.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters, options).Result;
 
         await InvokeAsync(StateHasChanged);
     }
