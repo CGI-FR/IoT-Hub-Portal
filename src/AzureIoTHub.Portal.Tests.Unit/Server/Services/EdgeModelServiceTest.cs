@@ -621,5 +621,23 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task GetPublicEdgeModules_GetPublicEdgeModules_EdgeModulesReturned()
+        {
+            // Arrange
+            var edgeModules = Fixture.CreateMany<IoTEdgeModule>(10).ToList();
+
+            _ = this.mockConfigService
+                .Setup(s => s.GetPublicEdgeModules())
+                .ReturnsAsync(edgeModules);
+
+            // Act
+            var result = await this.edgeDeviceModelService.GetPublicEdgeModules();
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(edgeModules);
+            MockRepository.VerifyAll();
+        }
     }
 }
