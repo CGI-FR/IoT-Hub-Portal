@@ -26,5 +26,7 @@ namespace AzureIoTHub.Portal.Client.Services
         Task ChangeAvatar(string id, MultipartFormDataContent content);
 
         Task DeleteAvatar(string id);
+
+        Task<List<IoTEdgeModule>> GetPublicEdgeModules();
     }
 }

@@ -27,6 +27,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using System.IO;
     using System.Text;
     using Newtonsoft.Json.Linq;
+    using System.Linq;
+    using FluentAssertions;
+    using System;
 
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest
@@ -71,11 +74,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         [Test]
         public async Task CreateDeploymentWithComponentsAndExistingThingGroupAndThingTypeShouldCreateTheDeployment()
         {
-            //Act
+            // Arrange
+            var deploymentId = Fixture.Create<string>();
+
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
             _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
 
             var edge = Fixture.Create<IoTEdgeModel>();
+            // Simulate a custom/private component
+            edge.EdgeModules.First().Id = string.Empty;
+
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edge);
 
             _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
@@ -90,7 +98,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.mockGreengrasClient.Setup(s3 => s3.CreateDeploymentAsync(It.IsAny<CreateDeploymentRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateDeploymentResponse
                 {
-                    HttpStatusCode = HttpStatusCode.Created
+                    HttpStatusCode = HttpStatusCode.Created,
+                    DeploymentId = deploymentId
                 });
 
             _ = this.mockGreengrasClient.Setup(s3 => s3.DescribeComponentAsync(It.IsAny<DescribeComponentRequest>(), It.IsAny<CancellationToken>()))
@@ -102,29 +111,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                     HttpStatusCode = HttpStatusCode.Created
                 });
 
-            _ = this.mockEdgeModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(edgeDeviceModelEntity);
+            // Act
+            var result = _ = await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
 
-            _ = this.mockEdgeModelRepository.Setup(repository => repository.Update(It.IsAny<EdgeDeviceModel>()));
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            //Arrange
-            await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
-
-            //Assert
+            // Assert
+            Assert.AreEqual(deploymentId, result);
             MockRepository.VerifyAll();
-
         }
 
         [Test]
         public async Task CreateDeploymentWithExistingComponentsAndExistingThingGroupAndThingTypeShouldCreateTheDeployment()
         {
-            //Act
+            // Arrange
+            var deploymentId = Fixture.Create<string>();
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
             _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
 
             var edge = Fixture.Create<IoTEdgeModel>();
+            // Simulate a custom/private component
+            edge.EdgeModules.First().Id = string.Empty;
+
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edge);
 
             _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
@@ -139,7 +145,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.mockGreengrasClient.Setup(s3 => s3.CreateDeploymentAsync(It.IsAny<CreateDeploymentRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateDeploymentResponse
                 {
-                    HttpStatusCode = HttpStatusCode.Created
+                    HttpStatusCode = HttpStatusCode.Created,
+                    DeploymentId = deploymentId
                 });
 
             _ = this.mockGreengrasClient.Setup(s3 => s3.DescribeComponentAsync(It.IsAny<DescribeComponentRequest>(), It.IsAny<CancellationToken>()))
@@ -148,29 +155,25 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            _ = this.mockEdgeModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(edgeDeviceModelEntity);
+            // Act
+            var result = await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
 
-            _ = this.mockEdgeModelRepository.Setup(repository => repository.Update(It.IsAny<EdgeDeviceModel>()));
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            //Arrange
-            await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
-
-            //Assert
+            // Assert
+            Assert.AreEqual(deploymentId, result);
             MockRepository.VerifyAll();
-
         }
 
         [Test]
         public async Task CreateDeploymentWithNonExistingComponentsAndNonExistingThingGroupAndThingTypeShouldCreateThingGroupAndThingTypeAndTheDeployment()
         {
-            //Act
+            // Arrange
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
             _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
 
             var edge = Fixture.Create<IoTEdgeModel>();
+            // Simulate a custom/private component
+            edge.EdgeModules.First().Id = string.Empty;
+
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edge);
 
             _ = this.mockIotClient.Setup(s3 => s3.DescribeThingGroupAsync(It.IsAny<DescribeThingGroupRequest>(), It.IsAny<CancellationToken>()))
@@ -199,19 +202,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                     HttpStatusCode = HttpStatusCode.Created
                 });
 
-            _ = this.mockEdgeModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(edgeDeviceModelEntity);
+            // Act
+            _ = await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
 
-            _ = this.mockEdgeModelRepository.Setup(repository => repository.Update(It.IsAny<EdgeDeviceModel>()));
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            //Arrange
-            await this.awsConfigService.RollOutEdgeModelConfiguration(edge);
-
-            //Assert
+            // Assert
             MockRepository.VerifyAll();
-
         }
 
         [Test]
@@ -300,6 +295,36 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             await this.awsConfigService.DeleteConfiguration(edge.ExternalIdentifier);
 
             //Assert
+            MockRepository.VerifyAll();
+
+        }
+
+        [Test]
+        public async Task GetPublicEdgeModules_AwsContext_EmptyListIsReturned()
+        {
+            //Arrange
+            var components = Fixture.CreateMany<Component>(2).ToList();
+
+            var expectedPublicEdgeModules = components.Select(c => new IoTEdgeModule
+            {
+                Id = c.Arn,
+                ModuleName = c.ComponentName,
+                Version = c.LatestVersion.ComponentVersion,
+                ImageURI = "example.com"
+            }).ToList();
+
+            _ = this.mockGreengrasClient.Setup(s3 => s3.ListComponentsAsync(It.Is<ListComponentsRequest>(a => a.Scope == ComponentVisibilityScope.PUBLIC), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListComponentsResponse
+                {
+                    Components = components,
+                    NextToken = string.Empty,
+                });
+
+            // Act
+            var publicEdgeModules = await this.awsConfigService.GetPublicEdgeModules();
+
+            //Assert
+            _ = publicEdgeModules.Should().BeEquivalentTo(expectedPublicEdgeModules);
             MockRepository.VerifyAll();
 
         }

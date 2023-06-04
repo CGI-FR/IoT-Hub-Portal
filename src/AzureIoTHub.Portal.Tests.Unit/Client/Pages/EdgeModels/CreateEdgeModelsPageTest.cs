@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 {
     using System;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Client.Dialogs.EdgeModels;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.EdgeModels;
@@ -376,6 +377,64 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             // Assert
             cut.WaitForAssertion(() => Assert.AreEqual(0, cut.FindAll(".deleteRouteButton").Count));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void CreateEdgeModelsPage_ClickOnAddEdgeModule_ShowAwsGreengrassComponentDialog()
+        {
+            // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            var edgeModel = new IoTEdgeModel()
+            {
+                Name = Guid.NewGuid().ToString(),
+            };
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+
+            _ = this.mockDialogService
+                .Setup(c => c.Show<AwsGreengrassComponentDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
+
+            var cut = RenderComponent<CreateEdgeModelsPage>();
+
+            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+
+            // Act
+            cut.WaitForElement("#add-edge-module").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void CreateEdgeModelsPage_ClickOnAddPublicEdgeModules_ShowAwsGreengrassPublicComponentsDialog()
+        {
+            // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            var edgeModel = new IoTEdgeModel()
+            {
+                Name = Guid.NewGuid().ToString(),
+            };
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+
+            _ = this.mockDialogService
+                .Setup(c => c.Show<AwsGreengrassPublicComponentsDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
+
+            var cut = RenderComponent<CreateEdgeModelsPage>();
+
+            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+
+            // Act
+            cut.WaitForElement("#add-public-edge-modules").Click();
+
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

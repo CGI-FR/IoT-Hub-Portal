@@ -96,9 +96,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
-            _ = await this.awsExternalDevicesService.GetDevice(edgeDevice.DeviceId);
+            _ = await this.awsExternalDevicesService.GetDevice(edgeDevice.DeviceName);
 
-            // TODO
             var result = await UpdateEdgeDeviceInDatabase(edgeDevice);
 
             await this.unitOfWork.SaveAsync();
@@ -131,8 +130,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             var deviceDto = await base.GetEdgeDevice(edgeDeviceId);
 
             deviceDto.LastDeployment = await this.externalDeviceService.RetrieveLastConfiguration(deviceDto);
-            deviceDto.RuntimeResponse = deviceDto.LastDeployment.Status;
-            deviceDto.Modules = await this.configService.GetConfigModuleList(deviceDto.ModelId);
+            deviceDto.RuntimeResponse = deviceDto.LastDeployment?.Status;
+
+            var model = await this.deviceModelRepository.GetByIdAsync(deviceDto.ModelId);
+
+            deviceDto.Modules = await this.configService.GetConfigModuleList(model.ExternalIdentifier!);
             deviceDto.NbDevices = await this.awsExternalDevicesService.GetEdgeDeviceNbDevices(deviceDto);
             deviceDto.NbModules = deviceDto.Modules.Count;
 

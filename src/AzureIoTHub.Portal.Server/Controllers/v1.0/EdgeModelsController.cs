@@ -108,5 +108,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             await this.edgeModelService.DeleteEdgeModelAvatar(edgeModelId);
             return NoContent();
         }
+
+        /// <summary>
+        /// Get public edge modules
+        /// </summary>
+        /// <returns>Public edge modules</returns>
+        [HttpGet("public-modules", Name = "GET edge public modules")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public virtual async Task<ActionResult<IEnumerable<IoTEdgeModel>>> GetPublicEdgeModules()
+        {
+            return Ok(await this.edgeModelService.GetPublicEdgeModules());
+        }
     }
 }

@@ -1,0 +1,114 @@
+﻿@using AzureIoTHub.Portal.Models.v10;
+@using System.Text.Json;
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" @bind-IsValid="@formIsValid" >
+        <MudContainer Style="max-height: 600px; overflow-y: scroll">
+                <MudTextField id="greengrass-component-recipe-json" T="string" Label="Recipe as JSON" Variant="Variant.Text" @bind-Value="@jsonRecipe" Lines="20"
+                              Validation="@(new Func<string, IEnumerable<string>>(ValidateJsonRecipe))" />
+        </MudContainer>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="greengrass-component-cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="greengrass-component-submit" Color="Color.Primary" OnClick="Submit" Disabled="@(!formIsValid)">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public IoTEdgeModule Module { get; set; } = default!;
+
+    [Parameter]
+    public List<IoTEdgeModule> EdgeModules { get; set; } = default!;
+
+    [Parameter]
+    public Context Context { get; set; } = default!;
+
+    private bool formIsValid;
+    private MudForm form = default!;
+
+    private string currentModuleName = default!;
+    private string currentModuleVersion = default!;
+    private string jsonRecipe = default!;
+
+    protected override void OnInitialized()
+    {
+        if (Context == Context.Edit)
+        {
+            jsonRecipe = Module.ContainerCreateOptions;
+        }
+    }
+
+    private IEnumerable<string> ValidateJsonRecipe(string json)
+    {
+        var jsonProperties = JsonSerializer.Deserialize<Dictionary<string, object>>(json) ?? new Dictionary<string, object>();
+
+        if (!jsonProperties.ContainsKey("ComponentName"))
+        {
+            currentModuleName = string.Empty;
+            yield return "ComponentName is missing";
+        }
+        else if (string.IsNullOrEmpty(jsonProperties["ComponentName"].ToString()))
+        {
+            currentModuleName = string.Empty;
+            yield return "ComponentName is empty";
+        }
+        else
+        {
+            if (Context == Context.Create && EdgeModules.Any(m => m.ModuleName.Equals(jsonProperties["ComponentName"].ToString())))
+            {
+                yield return $"Component {jsonProperties["ComponentName"].ToString()} is already used";
+            }
+            currentModuleName = jsonProperties["ComponentName"].ToString();
+        }
+
+        if (!jsonProperties.ContainsKey("ComponentVersion"))
+        {
+            currentModuleVersion = string.Empty;
+            yield return "ComponentVersion is missing";
+        }
+        else if (string.IsNullOrEmpty(jsonProperties["ComponentVersion"].ToString()))
+        {
+            currentModuleVersion = string.Empty;
+            yield return "ComponentVersion is empty";
+        }
+        else
+        {
+            currentModuleVersion = jsonProperties["ComponentVersion"].ToString();
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+    public async Task Submit()
+    {
+        await form.Validate();
+        if (!form.IsValid) return;
+
+        if(Context == Context.Create)
+        {
+            EdgeModules.Add(new IoTEdgeModule
+            {
+                ModuleName = currentModuleName,
+                Version = currentModuleVersion,
+                ImageURI = "example.com",
+                ContainerCreateOptions = jsonRecipe
+            });
+        }
+        else
+        {
+            Module.ModuleName = currentModuleName;
+            Module.Version = currentModuleVersion;
+            // ImageURI is required, but not used for Greengrass components
+            Module.ImageURI = "example.com";
+            Module.ContainerCreateOptions = jsonRecipe;
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+}
