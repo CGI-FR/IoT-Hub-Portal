@@ -256,5 +256,46 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task GetPublicEdgeModules_GetPublicEdgeModules_EdgeModulesReturned()
+        {
+            // Arrange
+            var edgeModelController = CreateController();
+            var publicEdgeModules = new List<IoTEdgeModule>
+            {
+                new IoTEdgeModule{
+                    Id = Guid.NewGuid().ToString()
+                }
+            };
+
+            _ = this.mockEdgeModelService
+                .Setup(x => x.GetPublicEdgeModules())
+                .ReturnsAsync(publicEdgeModules);
+
+            // Act
+            var response = await edgeModelController.GetPublicEdgeModules();
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
+
+            if (response.Result is OkObjectResult okResponse)
+            {
+                Assert.AreEqual(200, okResponse.StatusCode);
+
+                Assert.IsNotNull(okResponse.Value);
+                if (okResponse.Value is List<IoTEdgeModule> result)
+                {
+                    Assert.AreEqual(1, result.Count);
+                }
+            }
+            else
+            {
+                Assert.Fail("Cannot inspect the result.");
+            }
+
+            this.mockRepository.VerifyAll();
+        }
+
     }
 }

@@ -117,7 +117,8 @@
                                                               Label="Device name"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> edgeDevice.DeviceName)"
-                                                              Required="true" />
+                                                              Required="true"
+                                                              ReadOnly=@(Portal.CloudProvider == CloudProviders.AWS)/>
                                             </MudItem>
                                         </MudGrid>
                                     </ChildContent>

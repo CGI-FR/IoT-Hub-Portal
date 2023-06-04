@@ -104,11 +104,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         public async Task CreateEdgeModel(IoTEdgeModel edgeModel)
         {
             var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
+
             if (edgeModelEntity == null)
             {
                 edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
                 await this.edgeModelRepository.InsertAsync(edgeModelEntity);
-                await this.unitOfWork.SaveAsync();
             }
             else
             {
@@ -123,8 +123,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 await SaveModuleCommands(edgeModel);
             }
 
-            await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+            edgeModelEntity.ExternalIdentifier = await this.configService.RollOutEdgeModelConfiguration(edgeModel);
 
+            await this.unitOfWork.SaveAsync();
         }
 
         /// <summary>
@@ -133,9 +134,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         /// <param name="deviceModelObject">The device model object.</param>
         /// <returns></returns>
         /// <exception cref="InternalServerErrorException"></exception>
-        public async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
+        private async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
         {
-
             IEnumerable<IoTEdgeModuleCommand> moduleCommands = deviceModelObject.EdgeModules
                 .SelectMany(x => x.Commands.Select(cmd => new IoTEdgeModuleCommand
                 {
@@ -146,6 +146,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 })).ToArray();
 
             var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == deviceModelObject.ModelId).ToList();
+
             foreach (var command in existingCommands)
             {
                 this.commandRepository.Delete(command.Id);
@@ -155,7 +156,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             {
                 await this.commandRepository.InsertAsync(this.mapper.Map<EdgeDeviceModelCommand>(cmd));
             }
-            await this.unitOfWork.SaveAsync();
         }
 
         /// <summary>
@@ -262,12 +262,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 _ = this.mapper.Map(edgeModel, edgeModelEntity);
 
                 this.edgeModelRepository.Update(edgeModelEntity);
-                await this.unitOfWork.SaveAsync();
 
                 await SaveModuleCommands(edgeModel);
             }
 
-            await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+            edgeModel.ExternalIdentifier = await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+
+            await this.unitOfWork.SaveAsync();
         }
 
         /// <summary>
@@ -345,5 +346,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             return Task.Run(() => this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModelId));
         }
 
+        public Task<IEnumerable<IoTEdgeModule>> GetPublicEdgeModules()
+        {
+            return this.configService.GetPublicEdgeModules();
+        }
     }
 }

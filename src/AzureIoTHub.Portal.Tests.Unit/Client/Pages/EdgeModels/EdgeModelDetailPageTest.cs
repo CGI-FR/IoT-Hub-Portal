@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Client.Dialogs.EdgeModels;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.EdgeModels;
@@ -31,8 +32,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
         private readonly string mockEdgeModleId = Guid.NewGuid().ToString();
 
-        private FakeNavigationManager mockNavigationManager;
-
         public override void Setup()
         {
             base.Setup();
@@ -45,9 +44,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
-
-
-            this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }
 
         [Test]
@@ -63,7 +59,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             cut.WaitForElement("#returnButton").Click();
 
             // Assert
-            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/edge/models"));
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/edge/models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -225,7 +221,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             deleteModelBtn.Click();
 
             // Assert
-            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/edge/models"));
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/edge/models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -455,6 +451,54 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             // Assert
             cut.WaitForAssertion(() => Assert.AreEqual(0, cut.FindAll(".deleteRouteButton").Count));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void EdgeModelDetailPage_ClickOnAddEdgeModule_ShowAwsGreengrassComponentDialog()
+        {
+            // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            _ = SetupLoadEdgeModel();
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+
+            _ = this.mockDialogService
+                .Setup(c => c.Show<AwsGreengrassComponentDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
+
+            var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
+
+            // Act
+            cut.WaitForElement("#add-edge-module").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void EdgeModelDetailPage_ClickOnAddPublicEdgeModules_ShowAwsGreengrassPublicComponentsDialog()
+        {
+            // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            _ = SetupLoadEdgeModel();
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+
+            _ = this.mockDialogService
+                .Setup(c => c.Show<AwsGreengrassPublicComponentsDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
+
+            var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
+
+            // Act
+            cut.WaitForElement("#add-public-edge-modules").Click();
+
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

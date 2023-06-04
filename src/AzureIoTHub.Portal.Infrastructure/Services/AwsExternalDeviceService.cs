@@ -252,17 +252,24 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
         public async Task<ConfigItem> RetrieveLastConfiguration(IoTEdgeDevice ioTEdgeDevice)
         {
-            var coreDevice = await this.greengrass.GetCoreDeviceAsync(new GetCoreDeviceRequest
+            try
             {
-                CoreDeviceThingName = ioTEdgeDevice.DeviceName
-            });
+                var coreDevice = await this.greengrass.GetCoreDeviceAsync(new GetCoreDeviceRequest
+                {
+                    CoreDeviceThingName = ioTEdgeDevice.DeviceName
+                });
 
-            return new ConfigItem
+                return new ConfigItem
+                {
+                    Name = coreDevice.CoreDeviceThingName,
+                    DateCreation = coreDevice.LastStatusUpdateTimestamp,
+                    Status = coreDevice.Status
+                };
+            }
+            catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
             {
-                Name = coreDevice.CoreDeviceThingName,
-                DateCreation = coreDevice.LastStatusUpdateTimestamp,
-                Status = coreDevice.Status
-            };
+                return null!;
+            }
         }
 
         public Task<Device> UpdateDevice(Device device)
