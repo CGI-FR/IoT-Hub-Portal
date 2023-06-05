@@ -450,17 +450,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
         private async Task RemoveGreengrassCertificateFromPrincipal(IoTEdgeDevice device, string principalId)
         {
-            _ = await this.amazonIoTClient.DetachPolicyAsync(new DetachPolicyRequest
+            foreach (var item in this.configHandler.AWSGreengrassRequiredRoles)
             {
-                Target = principalId,
-                PolicyName = "GreengrassV2IoTThingPolicy"
-            });
+                _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
+                {
+                    PolicyName = item,
+                    Target = principalId
+                });
+            }
 
-            _ = await this.amazonIoTClient.DetachPolicyAsync(new DetachPolicyRequest
-            {
-                Target = principalId,
-                PolicyName = "GreengrassCoreTokenExchangeRoleAliasPolicy"
-            });
             _ = await this.amazonIoTClient.DetachThingPrincipalAsync(device.DeviceName, principalId);
 
             _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
