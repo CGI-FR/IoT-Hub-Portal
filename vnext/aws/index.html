@@ -427,7 +427,7 @@
 <h1 id="aws-configurations">AWS configurations<a class="headerlink" href="#aws-configurations" title="Permanent link">¶</a></h1>
 <h2 id="overall-architecture">Overall Architecture<a class="headerlink" href="#overall-architecture" title="Permanent link">¶</a></h2>
 <p>This schema represent the various components and how they interact to have a better understanding of the various solution elements.</p>
-<p><img alt="images/architecture_AWS.png" src="../images/architecture_AWS.png"/></p>
+<p><img alt="images/awsdeploy-designer.png" src="../images/awsdeploy-designer.png"/></p>
 <ol>
 <li>The user is authenticated by the OpenID Connect server.</li>
 <li>The user access to the IoT Hub Portal with the OAuth2.0 token.</li>
@@ -477,7 +477,6 @@
 <p>You will get to a page asking you to fill the following fields:</p>
 <ul>
 <li><strong>Stack Name</strong>: A name for the stack where all the template resource would be put into, just choose a meaningful name.</li>
-<li><strong>Unique Solution Prefix</strong>: A string that would be used as prefix for all the resources name to ensure their uniqueness.</li>
 <li><strong>PostgreSQL user</strong>: The PostgreSQL user name to be used for the IoT Hub Portal database.</li>
 <li><strong>PostgreSQL password</strong>: The PostgreSQL password to be used for the IoT Hub Portal database.</li>
 <li><strong>AWS Access Key</strong>: The AWS Access Key of your AWS environment.</li>
@@ -505,20 +504,22 @@
 <span class="normal"><a href="#__codelineno-1-11">11</a></span>
 <span class="normal"><a href="#__codelineno-1-12">12</a></span>
 <span class="normal"><a href="#__codelineno-1-13">13</a></span>
-<span class="normal"><a href="#__codelineno-1-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="p">{</span>
+<span class="normal"><a href="#__codelineno-1-14">14</a></span>
+<span class="normal"><a href="#__codelineno-1-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="p">{</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="nt">"CloudProvider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AWS"</span><span class="p">,</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span><span class="nt">"AWS:Access"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AWS_ACCESS_KEY&gt;"</span><span class="p">,</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span><span class="nt">"AWS:AccessSecret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AWS_ACCESS_SECRET_KEY&gt;"</span><span class="p">,</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span><span class="nt">"AWS:Region"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AWS_REGION_KEY&gt;"</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">  </span><span class="nt">"AWS:BucketName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AWS_BUCKET_NAME&gt;"</span><span class="p">,</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">  </span><span class="nt">"AWS:AccountId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AWS_ACCOUNT_ID&gt;"</span><span class="p">,</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">  </span><span class="nt">"OIDC:Scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SCOPE&gt;"</span><span class="p">,</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">  </span><span class="nt">"OIDC:MetadataUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;METADATA_URL&gt;"</span><span class="p">,</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">  </span><span class="nt">"OIDC:ClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CLIENT_ID&gt;"</span><span class="p">,</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">  </span><span class="nt">"OIDC:Authority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AUTHORITY&gt;"</span><span class="p">,</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">  </span><span class="nt">"OIDC:ApiClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;API_CLIENT_ID&gt;"</span><span class="p">,</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="p">}</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">  </span><span class="nt">"AWS:BucketName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AWS_BUCKET_NAME&gt;"</span><span class="p">,</span><span class="w">  </span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">  </span><span class="nt">"AWS:AccountId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AWS_ACCOUNT_IDENTIFIER&gt;"</span><span class="p">,</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">  </span><span class="nt">"AWS:GreengrassRequiredRoles:&lt;ID&gt;"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;GREENGRASS_ROLE_NAME&gt;"</span><span class="p">,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">  </span><span class="nt">"OIDC:Scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SCOPE&gt;"</span><span class="p">,</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">  </span><span class="nt">"OIDC:MetadataUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;METADATA_URL&gt;"</span><span class="p">,</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">  </span><span class="nt">"OIDC:ClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CLIENT_ID&gt;"</span><span class="p">,</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">  </span><span class="nt">"OIDC:Authority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AUTHORITY&gt;"</span><span class="p">,</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">  </span><span class="nt">"OIDC:ApiClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;API_CLIENT_ID&gt;"</span><span class="p">,</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <blockquote>
 <p><u>Note:</u> You must replace all values in the brackets by your own AWS settings. If you can't find them in the AWS Portal, please contact an administrator of this project to have more information.</p>
