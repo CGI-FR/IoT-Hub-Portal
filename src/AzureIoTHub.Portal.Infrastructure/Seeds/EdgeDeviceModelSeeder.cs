@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
     {
         public static async Task MigrateEdgeDeviceModels(this PortalDbContext ctx, ConfigHandler config)
         {
-            var table = new TableClientFactory(config.StorageAccountConnectionString)
+            var table = new TableClientFactory(config.AzureStorageAccountConnectionString)
                                 .GetEdgeDeviceTemplates();
 
             var set = ctx.Set<EdgeDeviceModel>();
