@@ -51,13 +51,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         {
             _ = services.Configure<LoRaWANOptions>(opts =>
             {
-                opts.Enabled = configuration.IsLoRaEnabled;
-                opts.KeyManagementApiVersion = configuration.LoRaKeyManagementApiVersion;
-                opts.KeyManagementCode = configuration.LoRaKeyManagementCode;
-                opts.KeyManagementUrl = configuration.LoRaKeyManagementUrl;
+                opts.Enabled = configuration.AzureIsLoRaEnabled;
+                opts.KeyManagementApiVersion = configuration.AzureLoRaKeyManagementApiVersion;
+                opts.KeyManagementCode = configuration.AzureLoRaKeyManagementCode;
+                opts.KeyManagementUrl = configuration.AzureLoRaKeyManagementUrl;
             });
 
-            if (!configuration.IsLoRaEnabled)
+            if (!configuration.AzureIsLoRaEnabled)
             {
                 return services;
             }
@@ -88,9 +88,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             _ = services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
             _ = services.AddTransient<IDeviceRegistryProvider, AzureDeviceRegistryProvider>();
 
-            _ = services.AddScoped(_ => RegistryManager.CreateFromConnectionString(configuration.IoTHubConnectionString));
-            _ = services.AddScoped(_ => ServiceClient.CreateFromConnectionString(configuration.IoTHubConnectionString));
-            _ = services.AddScoped(_ => ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString));
+            _ = services.AddScoped(_ => RegistryManager.CreateFromConnectionString(configuration.AzureIoTHubConnectionString));
+            _ = services.AddScoped(_ => ServiceClient.CreateFromConnectionString(configuration.AzureIoTHubConnectionString));
+            _ = services.AddScoped(_ => ProvisioningServiceClient.CreateFromConnectionString(configuration.AzureDPSConnectionString));
 
             return services;
         }
@@ -128,10 +128,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
         private static IServiceCollection ConfigureImageBlobStorage(this IServiceCollection services, ConfigHandler configuration)
         {
-            return services.AddTransient(_ => new BlobServiceClient(configuration.StorageAccountConnectionString))
+            return services.AddTransient(_ => new BlobServiceClient(configuration.AzureStorageAccountConnectionString))
                             .Configure<DeviceModelImageOptions>((opts) =>
                             {
-                                var serviceClient = new BlobServiceClient(configuration.StorageAccountConnectionString);
+                                var serviceClient = new BlobServiceClient(configuration.AzureStorageAccountConnectionString);
                                 var container = serviceClient.GetBlobContainerClient(opts.ImageContainerName);
 
                                 _ = container.SetAccessPolicy(PublicAccessType.Blob);
@@ -187,7 +187,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                         .RepeatForever()));
 
-                if (configuration.IsLoRaEnabled)
+                if (configuration.AzureIsLoRaEnabled)
                 {
                     _ = q.AddJob<SyncLoRaDeviceTelemetryJob>(j => j.WithIdentity(nameof(SyncLoRaDeviceTelemetryJob)))
                     .AddTrigger(t => t

@@ -23,19 +23,19 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override int MetricLoaderRefreshIntervalInMinutes => this.config.GetValue(MetricLoaderRefreshIntervalKey, 10);
 
-        public override string IoTHubConnectionString => this.config[IoTHubConnectionStringKey]!;
+        public override string AzureIoTHubConnectionString => this.config[AzureIoTHubConnectionStringKey]!;
 
-        public override string IoTHubEventHubEndpoint => this.config.GetValue(IoTHubEventHubEndpointKey, string.Empty)!;
+        public override string AzureIoTHubEventHubEndpoint => this.config.GetValue(AzureIoTHubEventHubEndpointKey, string.Empty)!;
 
-        public override string IoTHubEventHubConsumerGroup => this.config.GetValue(IoTHubEventHubConsumerGroupKey, "iothub-portal")!;
+        public override string AzureIoTHubEventHubConsumerGroup => this.config.GetValue(AzureIoTHubEventHubConsumerGroupKey, "iothub-portal")!;
 
-        public override string DPSConnectionString => this.config[DPSConnectionStringKey]!;
+        public override string AzureDPSConnectionString => this.config[AzureDPSConnectionStringKey]!;
 
-        public override string DPSEndpoint => this.config[DPSServiceEndpointKey]!;
+        public override string AzureDPSEndpoint => this.config[AzureDPSServiceEndpointKey]!;
 
-        public override string DPSScopeID => this.config[DPSIDScopeKey]!;
+        public override string AzureDPSScopeID => this.config[AzureDPSIDScopeKey]!;
 
-        public override string StorageAccountConnectionString => throw new NotImplementedException();
+        public override string AzureStorageAccountConnectionString => throw new NotImplementedException();
 
         public override int StorageAccountDeviceModelImageMaxAge => this.config.GetValue(StorageAccountDeviceModelImageMaxAgeKey, 86400);
 
@@ -63,13 +63,13 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override bool OIDCValidateTokenReplay => this.config.GetValue(OIDCValidateTokenReplayKey, false);
 
-        public override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "true");
+        public override bool AzureIsLoRaEnabled => bool.Parse(this.config[AzureIsLoRaFeatureEnabledKey] ?? "true");
 
-        public override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey]!;
+        public override string AzureLoRaKeyManagementUrl => this.config[AzureLoRaKeyManagementUrlKey]!;
 
-        public override string LoRaKeyManagementCode => this.config[LoRaKeyManagementCodeKey]!;
+        public override string AzureLoRaKeyManagementCode => this.config[AzureLoRaKeyManagementCodeKey]!;
 
-        public override string LoRaKeyManagementApiVersion => this.config[LoRaKeyManagementApiVersionKey]!;
+        public override string AzureLoRaKeyManagementApiVersion => this.config[AzureLoRaKeyManagementApiVersionKey]!;
 
         public override bool IdeasEnabled => this.config.GetValue(IdeasEnabledKey, false);
         public override string IdeasUrl => this.config.GetValue(IdeasUrlKey, string.Empty)!;

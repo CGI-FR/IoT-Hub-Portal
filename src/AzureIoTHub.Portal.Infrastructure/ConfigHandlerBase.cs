@@ -8,12 +8,12 @@ namespace AzureIoTHub.Portal.Infrastructure
     internal abstract class ConfigHandlerBase : ConfigHandler
     {
         internal const string PortalNameKey = "PortalName";
-        internal const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
-        internal const string IoTHubEventHubEndpointKey = "IoTHub:EventHub:Endpoint";
-        internal const string IoTHubEventHubConsumerGroupKey = "IoTHub:EventHub:ConsumerGroup";
-        internal const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
-        internal const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
-        internal const string DPSIDScopeKey = "IoTDPS:IDScope";
+        internal const string AzureIoTHubConnectionStringKey = "Azure:IoTHub:ConnectionString";
+        internal const string AzureIoTHubEventHubEndpointKey = "Azure:IoTHub:EventHub:Endpoint";
+        internal const string AzureIoTHubEventHubConsumerGroupKey = "Azure:IoTHub:EventHub:ConsumerGroup";
+        internal const string AzureDPSConnectionStringKey = "Azure:IoTDPS:ConnectionString";
+        internal const string AzureDPSServiceEndpointKey = "Azure:IoTDPS:ServiceEndpoint";
+        internal const string AzureDPSIDScopeKey = "Azure:IoTDPS:IDScope";
         internal const string UseSecurityHeadersKey = "UseSecurityHeaders";
         internal const string PostgreSQLConnectionStringKey = "PostgreSQL:ConnectionString";
         internal const string MySQLConnectionStringKey = "MySQL:ConnectionString";
@@ -31,14 +31,14 @@ namespace AzureIoTHub.Portal.Infrastructure
         internal const string OIDCValidateActorKey = "OIDC:ValidateActor";
         internal const string OIDCValidateTokenReplayKey = "OIDC:ValidateTokenReplay";
 
-        internal const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
+        internal const string AzureIsLoRaFeatureEnabledKey = "Azure:LoRaFeature:Enabled";
 
-        internal const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
+        internal const string AzureStorageAccountConnectionStringKey = "Azure:StorageAccount:ConnectionString";
         internal const string StorageAccountDeviceModelImageMaxAgeKey = "StorageAccount:DeviceModel:Image:MaxAgeInSeconds";
 
-        internal const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
-        internal const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
-        internal const string LoRaKeyManagementApiVersionKey = "LoRaKeyManagement:ApiVersion";
+        internal const string AzureLoRaKeyManagementUrlKey = "Azure:LoRaKeyManagement:Url";
+        internal const string AzureLoRaKeyManagementCodeKey = "Azure:LoRaKeyManagement:Code";
+        internal const string AzureLoRaKeyManagementApiVersionKey = "Azure:LoRaKeyManagement:ApiVersion";
 
         internal const string MetricExporterRefreshIntervalKey = "Metrics:ExporterRefreshIntervalInSeconds";
         internal const string MetricLoaderRefreshIntervalKey = "Metrics:LoaderRefreshIntervalInMinutes";
