@@ -58,6 +58,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         internal const string AWSS3StorageConnectionStringKey = "AWS:S3Storage:ConnectionString";
         internal const string AWSBucketNameKey = "AWS:BucketName";
         internal const string AWSAccountIdKey = "AWS:AccountId";
+        internal const string AWSGreengrassRequiredRolesKey = "AWS:GreengrassRequiredRoles";
 
     }
 }

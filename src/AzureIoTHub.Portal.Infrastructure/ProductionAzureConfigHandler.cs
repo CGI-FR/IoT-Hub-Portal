@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Infrastructure
 {
+    using System.Collections.Generic;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
     using Microsoft.Extensions.Configuration;
 
@@ -94,5 +95,6 @@ namespace AzureIoTHub.Portal.Infrastructure
         public override string AWSBucketName => throw new NotImplementedException();
         public override string AWSAccountId => throw new NotImplementedException();
 
+        public override IEnumerable<string> AWSGreengrassRequiredRoles => throw new NotImplementedException();
     }
 }

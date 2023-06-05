@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Infrastructure
 {
+    using System.Collections.Generic;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
     using Microsoft.Extensions.Configuration;
 
@@ -90,5 +91,6 @@ namespace AzureIoTHub.Portal.Infrastructure
         public override string AWSS3StorageConnectionString => this.config[AWSS3StorageConnectionStringKey]!;
         public override string AWSBucketName => this.config[AWSBucketNameKey]!;
         public override string AWSAccountId => this.config[AWSAccountIdKey]!;
+        public override IEnumerable<string> AWSGreengrassRequiredRoles => this.config.GetSection(AWSGreengrassRequiredRolesKey).Get<string[]>()!;
     }
 }

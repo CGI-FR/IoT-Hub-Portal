@@ -54,6 +54,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.AWSS3StorageConnectionStringKey, nameof(ConfigHandlerBase.AWSS3StorageConnectionString))]
         [TestCase(ConfigHandlerBase.CloudProviderKey, nameof(ConfigHandlerBase.CloudProvider))]
         [TestCase(ConfigHandlerBase.AWSBucketNameKey, nameof(ConfigHandlerBase.AWSBucketName))]
+        [TestCase(ConfigHandlerBase.AWSAccountIdKey, nameof(ConfigHandlerBase.AWSAccountId))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -71,6 +72,36 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 
             // Assert
             Assert.AreEqual(expected, result);
+            this.mockRepository.VerifyAll();
+        }
+
+        [TestCase(ConfigHandlerBase.AWSGreengrassRequiredRolesKey, nameof(ConfigHandlerBase.AWSGreengrassRequiredRoles))]
+        public void SettingsShouldGetSectionFromAppSettings(string configKey, string configPropertyName)
+        {
+            // Arrange
+            var mockSection = this.mockRepository.Create<IConfigurationSection>();
+
+            _ = mockSection.SetupGet(c => c.Value)
+                    .Returns(Guid.NewGuid().ToString());
+
+            _ = mockSection.SetupGet(c => c.Path)
+                .Returns(configKey);
+
+            _ = mockSection.Setup(c => c.GetChildren())
+                .Returns(Array.Empty<IConfigurationSection>());
+
+            var configHandler = CreateDevelopmentConfigHandler();
+
+            _ = this.mockConfiguration.Setup(c => c.GetSection(It.Is<string>(x => x == configKey)))
+                .Returns(mockSection.Object);
+
+            // Act
+            var result = configHandler
+                                .GetType()
+                                .GetProperty(configPropertyName)
+                                .GetValue(configHandler, null);
+
+            // Assert
             this.mockRepository.VerifyAll();
         }
 
