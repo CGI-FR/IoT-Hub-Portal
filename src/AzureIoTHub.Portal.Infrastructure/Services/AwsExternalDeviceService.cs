@@ -407,6 +407,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                .Replace("%PRIVATE_KEY%", credentials.CertificateCredentials.PrivateKey, StringComparison.OrdinalIgnoreCase)
                .Replace("%REGION%", this.configHandler.AWSRegion, StringComparison.OrdinalIgnoreCase)
                .Replace("%THING_NAME%", device.Name, StringComparison.OrdinalIgnoreCase)
+               .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", device.Name, StringComparison.OrdinalIgnoreCase)
                .ReplaceLineEndings();
         }
 

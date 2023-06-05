@@ -24,19 +24,19 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override int MetricLoaderRefreshIntervalInMinutes => this.config.GetValue(MetricLoaderRefreshIntervalKey, 10);
 
-        public override string IoTHubConnectionString => this.config.GetConnectionString(IoTHubConnectionStringKey)!;
+        public override string AzureIoTHubConnectionString => this.config.GetConnectionString(AzureIoTHubConnectionStringKey)!;
 
-        public override string IoTHubEventHubEndpoint => this.config.GetConnectionString(IoTHubEventHubEndpointKey)!;
+        public override string AzureIoTHubEventHubEndpoint => this.config.GetConnectionString(AzureIoTHubEventHubEndpointKey)!;
 
-        public override string IoTHubEventHubConsumerGroup => this.config.GetValue(IoTHubEventHubConsumerGroupKey, "iothub-portal")!;
+        public override string AzureIoTHubEventHubConsumerGroup => this.config.GetValue(AzureIoTHubEventHubConsumerGroupKey, "iothub-portal")!;
 
-        public override string DPSConnectionString => this.config.GetConnectionString(DPSConnectionStringKey)!;
+        public override string AzureDPSConnectionString => this.config.GetConnectionString(AzureDPSConnectionStringKey)!;
 
-        public override string DPSEndpoint => this.config[DPSServiceEndpointKey]!;
+        public override string AzureDPSEndpoint => this.config[AzureDPSServiceEndpointKey]!;
 
-        public override string DPSScopeID => this.config[DPSIDScopeKey]!;
+        public override string AzureDPSScopeID => this.config[AzureDPSIDScopeKey]!;
 
-        public override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey)!;
+        public override string AzureStorageAccountConnectionString => this.config.GetConnectionString(AzureStorageAccountConnectionStringKey)!;
 
         public override string PostgreSQLConnectionString => this.config.GetConnectionString(PostgreSQLConnectionStringKey)!;
 
@@ -70,13 +70,13 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override bool OIDCValidateTokenReplay => this.config.GetValue(OIDCValidateTokenReplayKey, false);
 
-        public override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "true");
+        public override bool AzureIsLoRaEnabled => bool.Parse(this.config[AzureIsLoRaFeatureEnabledKey] ?? "true");
 
-        public override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey]!;
+        public override string AzureLoRaKeyManagementUrl => this.config[AzureLoRaKeyManagementUrlKey]!;
 
-        public override string LoRaKeyManagementCode => this.config.GetConnectionString(LoRaKeyManagementCodeKey)!;
+        public override string AzureLoRaKeyManagementCode => this.config.GetConnectionString(AzureLoRaKeyManagementCodeKey)!;
 
-        public override string LoRaKeyManagementApiVersion => this.config[LoRaKeyManagementApiVersionKey]!;
+        public override string AzureLoRaKeyManagementApiVersion => this.config[AzureLoRaKeyManagementApiVersionKey]!;
 
         public override bool IdeasEnabled => this.config.GetValue(IdeasEnabledKey, false);
         public override string IdeasUrl => this.config.GetValue(IdeasUrlKey, string.Empty)!;
@@ -96,5 +96,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         public override string AWSAccountId => throw new NotImplementedException();
 
         public override IEnumerable<string> AWSGreengrassRequiredRoles => throw new NotImplementedException();
+
+        public override string AWSGreengrassCoreTokenExchangeRoleAliasName => throw new NotImplementedException();
     }
 }

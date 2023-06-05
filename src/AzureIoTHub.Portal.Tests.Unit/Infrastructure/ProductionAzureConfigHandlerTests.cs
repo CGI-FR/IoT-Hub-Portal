@@ -33,13 +33,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             return new ProductionAzureConfigHandler(this.mockConfiguration.Object);
         }
 
-        [TestCase(ConfigHandlerBase.IoTHubConnectionStringKey, nameof(ConfigHandlerBase.IoTHubConnectionString))]
-        [TestCase(ConfigHandlerBase.DPSConnectionStringKey, nameof(ConfigHandlerBase.DPSConnectionString))]
-        [TestCase(ConfigHandlerBase.StorageAccountConnectionStringKey, nameof(ConfigHandlerBase.StorageAccountConnectionString))]
-        [TestCase(ConfigHandlerBase.LoRaKeyManagementCodeKey, nameof(ConfigHandlerBase.LoRaKeyManagementCode))]
+        [TestCase(ConfigHandlerBase.AzureIoTHubConnectionStringKey, nameof(ConfigHandlerBase.AzureIoTHubConnectionString))]
+        [TestCase(ConfigHandlerBase.AzureDPSConnectionStringKey, nameof(ConfigHandlerBase.AzureDPSConnectionString))]
+        [TestCase(ConfigHandlerBase.AzureStorageAccountConnectionStringKey, nameof(ConfigHandlerBase.AzureStorageAccountConnectionString))]
+        [TestCase(ConfigHandlerBase.AzureLoRaKeyManagementCodeKey, nameof(ConfigHandlerBase.AzureLoRaKeyManagementCode))]
         [TestCase(ConfigHandlerBase.PostgreSQLConnectionStringKey, nameof(ConfigHandlerBase.PostgreSQLConnectionString))]
         [TestCase(ConfigHandlerBase.MySQLConnectionStringKey, nameof(ConfigHandlerBase.MySQLConnectionString))]
-        [TestCase(ConfigHandlerBase.IoTHubEventHubEndpointKey, nameof(ConfigHandlerBase.IoTHubEventHubEndpoint))]
+        [TestCase(ConfigHandlerBase.AzureIoTHubEventHubEndpointKey, nameof(ConfigHandlerBase.AzureIoTHubEventHubEndpoint))]
         public void SecretsShouldGetValueFromConnectionStrings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -65,15 +65,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         }
 
         [TestCase(ConfigHandlerBase.PortalNameKey, nameof(ConfigHandlerBase.PortalName))]
-        [TestCase(ConfigHandlerBase.DPSServiceEndpointKey, nameof(ConfigHandlerBase.DPSEndpoint))]
-        [TestCase(ConfigHandlerBase.DPSIDScopeKey, nameof(ConfigHandlerBase.DPSScopeID))]
+        [TestCase(ConfigHandlerBase.AzureDPSServiceEndpointKey, nameof(ConfigHandlerBase.AzureDPSEndpoint))]
+        [TestCase(ConfigHandlerBase.AzureDPSIDScopeKey, nameof(ConfigHandlerBase.AzureDPSScopeID))]
         [TestCase(ConfigHandlerBase.OIDCScopeKey, nameof(ConfigHandlerBase.OIDCScope))]
         [TestCase(ConfigHandlerBase.OIDCAuthorityKey, nameof(ConfigHandlerBase.OIDCAuthority))]
         [TestCase(ConfigHandlerBase.OIDCMetadataUrlKey, nameof(ConfigHandlerBase.OIDCMetadataUrl))]
         [TestCase(ConfigHandlerBase.OIDCClientIdKey, nameof(ConfigHandlerBase.OIDCClientId))]
         [TestCase(ConfigHandlerBase.OIDCApiClientIdKey, nameof(ConfigHandlerBase.OIDCApiClientId))]
-        [TestCase(ConfigHandlerBase.LoRaKeyManagementUrlKey, nameof(ConfigHandlerBase.LoRaKeyManagementUrl))]
-        [TestCase(ConfigHandlerBase.LoRaKeyManagementApiVersionKey, nameof(ConfigHandlerBase.LoRaKeyManagementApiVersion))]
+        [TestCase(ConfigHandlerBase.AzureLoRaKeyManagementUrlKey, nameof(ConfigHandlerBase.AzureLoRaKeyManagementUrl))]
+        [TestCase(ConfigHandlerBase.AzureLoRaKeyManagementApiVersionKey, nameof(ConfigHandlerBase.AzureLoRaKeyManagementApiVersion))]
         [TestCase(ConfigHandlerBase.CloudProviderKey, nameof(ConfigHandlerBase.CloudProvider))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
@@ -100,6 +100,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(nameof(ConfigHandlerBase.AWSRegion))]
         [TestCase(nameof(ConfigHandlerBase.AWSS3StorageConnectionString))]
         [TestCase(nameof(ConfigHandlerBase.AWSBucketName))]
+        [TestCase(nameof(ConfigHandlerBase.AWSAccountId))]
+        [TestCase(nameof(ConfigHandlerBase.AWSGreengrassRequiredRoles))]
+        [TestCase(nameof(ConfigHandlerBase.AWSGreengrassCoreTokenExchangeRoleAliasName))]
+
         public void SettingsShouldThrowError(string configPropertyName)
         {
             // Arrange
@@ -171,7 +175,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             Assert.IsFalse(result);
         }
 
-        [TestCase(ConfigHandlerBase.IsLoRaFeatureEnabledKey, nameof(ConfigHandlerBase.IsLoRaEnabled))]
+        [TestCase(ConfigHandlerBase.AzureIsLoRaFeatureEnabledKey, nameof(ConfigHandlerBase.AzureIsLoRaEnabled))]
         public void SettingsShouldGetBoolFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -294,7 +298,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = productionConfigHandler.IoTHubEventHubConsumerGroup.Should().Be("iothub-portal");
+            _ = productionConfigHandler.AzureIoTHubEventHubConsumerGroup.Should().Be("iothub-portal");
         }
 
         [Test]

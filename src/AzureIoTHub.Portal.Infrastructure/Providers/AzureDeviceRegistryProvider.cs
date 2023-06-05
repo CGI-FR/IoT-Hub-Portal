@@ -141,8 +141,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Providers
                 {
                     SymmetricKey = symmetricKey,
                     RegistrationID = deviceId,
-                    ScopeID = this.config.DPSScopeID,
-                    ProvisioningEndpoint = $"https://{this.config.DPSEndpoint}"
+                    ScopeID = this.config.AzureDPSScopeID,
+                    ProvisioningEndpoint = $"https://{this.config.AzureDPSEndpoint}"
                 }
             };
         }

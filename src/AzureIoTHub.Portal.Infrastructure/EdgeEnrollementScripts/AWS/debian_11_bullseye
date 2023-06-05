@@ -31,7 +31,7 @@ services:
     version: "2.10.1"
     configuration:
       awsRegion: "%REGION%"
-      iotRoleAlias: "GreengrassCoreTokenExchangeRoleAlias"
+      iotRoleAlias: "%GREENGRASSCORETOKENEXCHANGEROLEALIAS%"
       iotDataEndpoint: "%DATA_ENDPOINT%"
       iotCredEndpoint: "%CREDENTIALS_ENDPOINT%"
 EOF

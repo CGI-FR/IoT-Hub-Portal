@@ -222,10 +222,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             var protectedParameters = protector.Protect(JsonConvert.SerializeObject(enrollementParameters), DateTimeOffset.UtcNow.AddMinutes(15));
 
-            return Ok(Url.ActionLink(nameof(GetEnrollementScript), values: new
-            {
-                code = protectedParameters
-            }));
+            return Ok(Url.ActionLink(nameof(GetEnrollementScript),
+                protocol: "https",
+                values: new
+                {
+                    code = protectedParameters
+                }));
         }
 
 

@@ -5,19 +5,19 @@ namespace AzureIoTHub.Portal.Domain
 {
     public abstract class ConfigHandler
     {
-        public abstract string IoTHubConnectionString { get; }
+        public abstract string AzureIoTHubConnectionString { get; }
 
-        public abstract string IoTHubEventHubEndpoint { get; }
+        public abstract string AzureIoTHubEventHubEndpoint { get; }
 
-        public abstract string IoTHubEventHubConsumerGroup { get; }
+        public abstract string AzureIoTHubEventHubConsumerGroup { get; }
 
-        public abstract string DPSConnectionString { get; }
+        public abstract string AzureDPSConnectionString { get; }
 
-        public abstract string DPSEndpoint { get; }
+        public abstract string AzureDPSEndpoint { get; }
 
-        public abstract string DPSScopeID { get; }
+        public abstract string AzureDPSScopeID { get; }
 
-        public abstract string StorageAccountConnectionString { get; }
+        public abstract string AzureStorageAccountConnectionString { get; }
 
         public abstract int StorageAccountDeviceModelImageMaxAge { get; }
 
@@ -45,13 +45,13 @@ namespace AzureIoTHub.Portal.Domain
 
         public abstract bool OIDCValidateTokenReplay { get; }
 
-        public abstract bool IsLoRaEnabled { get; }
+        public abstract bool AzureIsLoRaEnabled { get; }
 
-        public abstract string LoRaKeyManagementUrl { get; }
+        public abstract string AzureLoRaKeyManagementUrl { get; }
 
-        public abstract string LoRaKeyManagementCode { get; }
+        public abstract string AzureLoRaKeyManagementCode { get; }
 
-        public abstract string LoRaKeyManagementApiVersion { get; }
+        public abstract string AzureLoRaKeyManagementApiVersion { get; }
 
         public abstract string PortalName { get; }
 
@@ -81,6 +81,7 @@ namespace AzureIoTHub.Portal.Domain
         public abstract string AWSS3StorageConnectionString { get; }
         public abstract string AWSBucketName { get; }
         public abstract string AWSAccountId { get; }
+        public abstract string AWSGreengrassCoreTokenExchangeRoleAliasName { get; }
         public abstract IEnumerable<string> AWSGreengrassRequiredRoles { get; }
     }
 }

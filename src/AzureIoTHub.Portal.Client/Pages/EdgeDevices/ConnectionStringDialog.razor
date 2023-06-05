@@ -17,19 +17,19 @@
                         {
                             <MudItem xs="12">
                                 <MudText Style="text-decoration:underline"><b>Service Endpoint</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.ProvisioningEndpoint))"/>
+                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.ProvisioningEndpoint))" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Registration Id</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.RegistrationID))"/>
+                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.RegistrationID))" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Scope Id</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.ScopeID))"/>
+                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.ScopeID))" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Symmetric Key</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.SymmetricKey" Variant="Variant.Text" InputType="InputType.Password" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.SymmetricKey))"/>
+                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.SymmetricKey" Variant="Variant.Text" InputType="InputType.Password" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.SymmetricKey))" />
                             </MudItem>
                         }
                     }
@@ -39,49 +39,50 @@
                         {
                             <MudItem xs="12">
                                 <MudText Style="text-decoration:underline"><b>Certificate Pem</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.CertificateCredentials.CertificatePem" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPemFile"/>
+                                <MudTextField @bind-Value="@Credentials.CertificateCredentials.CertificatePem" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPemFile" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Public Key</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.CertificateCredentials.PublicKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPublicKeyFile"/>
+                                <MudTextField @bind-Value="@Credentials.CertificateCredentials.PublicKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPublicKeyFile" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Private Key</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.CertificateCredentials.PrivateKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPrivateKeyFile"/>
+                                <MudTextField @bind-Value="@Credentials.CertificateCredentials.PrivateKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPrivateKeyFile" />
                             </MudItem>
                         }
 
-                        <div style="border-bottom:1px solid var(--mud-palette-lines-default);width: 90%;text-align: center;margin: auto;">
-                            <span style="background-color: white;transform:translateY(10px);display: inline-block;padding: 0px 10px">OR</span>
-                        </div>
+                        @if (string.IsNullOrEmpty(EnrollementScriptCommand))
+                        {
+                            <div style="border-bottom:1px solid var(--mud-palette-lines-default);width: 90%;text-align: center;margin: auto;">
+                                <span style="background-color: white;transform:translateY(10px);display: inline-block;padding: 0px 10px">OR</span>
+                            </div>
 
-                        <MudItem xs="12">
-                            @if (string.IsNullOrEmpty(EnrollementScriptCommand))
-                            {
+                            <MudItem xs="12">
                                 <MudText>Quick connect</MudText>
-                                <br/>
+                                <br />
                                 <MudAlert Severity="Severity.Normal">
                                     Quiclky connect your Edge device on the platform by executing one command.
                                 </MudAlert>
-                                <br/>
+                                <br />
                                 <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;display: block; margin-left: auto; margin-right: auto" OnClick="GetEnrollmentScriptCommand">Get the magic command</MudButton>
-                            }
-                            else
-                            {
-                                <br/>
-                                <MudText Style="text-decoration:underline"><b>Operating system</b></MudText>
-                                <MudSelect T="string" @bind-Value="@templateName" Text="Operating system" SelectedValuesChanged="GetEnrollmentScriptCommand">
-                                    <MudSelectItem Value="@("debian_11_bullseye")">Debian 11 (Bulleseye)</MudSelectItem>
-                                </MudSelect>
-                                <br/>
-                                <MudAlert Severity="Severity.Info">
-                                    Copy this command line above and paste it into the device prompt.<br/>
-                                    <b>Note that you should have administrative rights on the device to execute the command.</b>
-                                </MudAlert>
-                                <br/>
-                                <MudTextField @bind-Value="@EnrollementScriptCommand" Style="text-overflow: ellipsis" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(EnrollementScriptCommand))"/>
-                            }
-                        </MudItem>
+
+                            </MudItem>
+                        }
+                        else
+                        {
+                            <br />
+                            <MudText Style="text-decoration:underline"><b>Operating system</b></MudText>
+                            <MudSelect T="string" @bind-Value="@templateName" Text="Operating system" SelectedValuesChanged="GetEnrollmentScriptCommand">
+                                <MudSelectItem Value="@("debian_11_bullseye")">Debian 11 (Bulleseye)</MudSelectItem>
+                            </MudSelect>
+                            <br />
+                            <MudAlert Severity="Severity.Info">
+                                Copy this command line above and paste it into the device prompt.<br />
+                                <b>Note that you should have administrative rights on the device to execute the command.</b>
+                            </MudAlert>
+                            <br />
+                            <MudTextField @bind-Value="@EnrollementScriptCommand" Style="text-overflow: ellipsis" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(EnrollementScriptCommand))" />
+                        }
                     }
                 </MudGrid>
             </MudCardContent>
