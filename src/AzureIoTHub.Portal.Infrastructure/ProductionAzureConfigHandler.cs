@@ -96,5 +96,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         public override string AWSAccountId => throw new NotImplementedException();
 
         public override IEnumerable<string> AWSGreengrassRequiredRoles => throw new NotImplementedException();
+
+        public override string AWSGreengrassCoreTokenExchangeRoleAliasName => throw new NotImplementedException();
     }
 }

@@ -81,6 +81,7 @@ namespace AzureIoTHub.Portal.Domain
         public abstract string AWSS3StorageConnectionString { get; }
         public abstract string AWSBucketName { get; }
         public abstract string AWSAccountId { get; }
+        public abstract string AWSGreengrassCoreTokenExchangeRoleAliasName { get; }
         public abstract IEnumerable<string> AWSGreengrassRequiredRoles { get; }
     }
 }

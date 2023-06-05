@@ -91,7 +91,6 @@ namespace AzureIoTHub.Portal.Infrastructure
         public override string AWSBucketName => this.config[AWSBucketNameKey]!;
         public override string AWSAccountId => this.config[AWSAccountIdKey]!;
         public override IEnumerable<string> AWSGreengrassRequiredRoles => this.config.GetSection(AWSGreengrassRequiredRolesKey).Get<string[]>()!;
-
-
+        public override string AWSGreengrassCoreTokenExchangeRoleAliasName => this.config[AWSGreengrassCoreTokenExchangeRoleAliasNameKey]!;
     }
 }
