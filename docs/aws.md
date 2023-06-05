@@ -4,7 +4,7 @@
 
 This schema represent the various components and how they interact to have a better understanding of the various solution elements.
 
-![images/architecture_AWS.png](images/architecture_AWS.png)
+![images/awsdeploy-designer.png](images/awsdeploy-designer.png)
 
 1. The user is authenticated by the OpenID Connect server.
 1. The user access to the IoT Hub Portal with the OAuth2.0 token.
@@ -49,7 +49,6 @@ The template will deploy in your AWS Account the Following resources:
 
 1. You will get to a page asking you to fill the following fields:
     * **Stack Name**: A name for the stack where all the template resource would be put into, just choose a meaningful name.
-    * **Unique Solution Prefix**: A string that would be used as prefix for all the resources name to ensure their uniqueness.
     * **PostgreSQL user**: The PostgreSQL user name to be used for the IoT Hub Portal database.
     * **PostgreSQL password**: The PostgreSQL password to be used for the IoT Hub Portal database.
     * **AWS Access Key**: The AWS Access Key of your AWS environment.
@@ -70,8 +69,9 @@ This configurations are used to get access to AWS cloud Platform. You have to en
   "AWS:Access": "<AWS_ACCESS_KEY>",
   "AWS:AccessSecret": "<AWS_ACCESS_SECRET_KEY>",
   "AWS:Region": "<AWS_REGION_KEY>",
-  "AWS:BucketName": "<AWS_BUCKET_NAME>",
-  "AWS:AccountId": "<AWS_ACCOUNT_ID>",
+  "AWS:BucketName": "<AWS_BUCKET_NAME>",  
+  "AWS:AccountId": "<AWS_ACCOUNT_IDENTIFIER>",
+  "AWS:GreengrassRequiredRoles:<ID>": "<GREENGRASS_ROLE_NAME>",
   "OIDC:Scope": "<SCOPE>",
   "OIDC:MetadataUrl": "<METADATA_URL>",
   "OIDC:ClientId": "<CLIENT_ID>",
