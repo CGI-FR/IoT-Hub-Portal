@@ -66,11 +66,11 @@ This configurations are used to get access to AWS cloud Platform. You have to en
 ```json
 {
   "CloudProvider": "AWS",
-  "AWS:Access": "<AWS_ACCESS_KEY>",
-  "AWS:AccessSecret": "<AWS_ACCESS_SECRET_KEY>",
-  "AWS:Region": "<AWS_REGION_KEY>",
-  "AWS:BucketName": "<AWS_BUCKET_NAME>",  
-  "AWS:AccountId": "<AWS_ACCOUNT_IDENTIFIER>",
+  "AWS:Access": "<ACCESS_KEY>",
+  "AWS:AccessSecret": "<ACCESS_SECRET_KEY>",
+  "AWS:Region": "<REGION_KEY>",
+  "AWS:BucketName": "<BUCKET_NAME>",  
+  "AWS:AccountId": "<ACCOUNT_IDENTIFIER>",
   "AWS:GreengrassRequiredRoles:<ID>": "<GREENGRASS_ROLE_NAME>",
   "OIDC:Scope": "<SCOPE>",
   "OIDC:MetadataUrl": "<METADATA_URL>",
