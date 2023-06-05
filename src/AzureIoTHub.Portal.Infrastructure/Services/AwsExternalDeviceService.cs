@@ -447,6 +447,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             while (true);
         }
 
+
         private async Task RemoveGreengrassCertificateFromPrincipal(IoTEdgeDevice device, string principalId)
         {
             _ = await this.amazonIoTClient.DetachPolicyAsync(new DetachPolicyRequest
@@ -465,19 +466,19 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
             {
                 ForceDeleteWithoutRecovery = true,
-                SecretId = device.DeviceId + PublicKeyKey,
+                SecretId = device.DeviceName + PublicKeyKey,
             });
 
             _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
             {
                 ForceDeleteWithoutRecovery = true,
-                SecretId = device.DeviceId + PrivateKeyKey,
+                SecretId = device.DeviceName + PrivateKeyKey,
             });
 
             _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
             {
                 ForceDeleteWithoutRecovery = true,
-                SecretId = device.DeviceId + CertificateKey,
+                SecretId = device.DeviceName + CertificateKey,
             });
 
             var awsPricipalCertRegex = new Regex("/arn:aws:iot:([a-z0-9-]*):(\\d*):cert\\/([0-9a-fA-F]*)/gm");
