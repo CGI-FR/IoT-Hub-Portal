@@ -162,7 +162,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             Assert.IsFalse(result);
         }
 
-        [TestCase(ConfigHandlerBase.AzureDPSServiceEndpointKey, nameof(ConfigHandlerBase.AzureDPSEndpoint))]
+        [TestCase(ConfigHandlerBase.AzureIsLoRaFeatureEnabledKey, nameof(ConfigHandlerBase.AzureIsLoRaEnabled))]
         public void SettingsShouldGetBoolFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
