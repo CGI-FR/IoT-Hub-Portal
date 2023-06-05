@@ -39,5 +39,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
             // Assert
             _ = result.Should().BeEquivalentTo(expectedEdgeDeviceModels);
         }
+
+        [Test]
+        public async Task GetByNameShouldReturnExpectedEdgeDeviceModel()
+        {
+            // Arrange
+            var edgeDeviceModels = Fixture.CreateMany<EdgeDeviceModel>(5).ToList();
+            var searchEdgeDeviceModel = Fixture.Create<EdgeDeviceModel>();
+            edgeDeviceModels.Add(searchEdgeDeviceModel);
+
+            await DbContext.AddRangeAsync(edgeDeviceModels);
+
+            _ = await DbContext.SaveChangesAsync();
+
+            // Act
+            var result = await this.edgeDeviceModelRepository.GetByNameAsync(searchEdgeDeviceModel.Name);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(searchEdgeDeviceModel);
+        }
     }
 }

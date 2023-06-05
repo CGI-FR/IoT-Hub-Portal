@@ -88,8 +88,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                     continue;
                 }
 
-                //ThingType not find in DB
-                var deviceModel = this.deviceModelRepository.GetByName(thing.ThingTypeName);
+                //DeviceModel not find in DB
+                var deviceModel = await this.deviceModelRepository.GetByNameAsync(thing.ThingTypeName);
                 if (deviceModel == null)
                 {
                     this.logger.LogWarning($"Cannot import device '{thing.ThingName}'. The ThingType '{thing.ThingTypeName}' doesn't exist");

@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 {
     using System;
     using System.Threading.Tasks;
+    using Amazon.GreengrassV2;
     using Amazon.IoT.Model;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
@@ -137,6 +138,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             deviceDto.Modules = await this.configService.GetConfigModuleList(model.ExternalIdentifier!);
             deviceDto.NbDevices = await this.awsExternalDevicesService.GetEdgeDeviceNbDevices(deviceDto);
             deviceDto.NbModules = deviceDto.Modules.Count;
+            deviceDto.ConnectionState = deviceDto.RuntimeResponse == CoreDeviceStatus.HEALTHY ? "Connected" : "Disconnected";
 
             return deviceDto;
         }

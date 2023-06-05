@@ -9,11 +9,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
+    using Amazon.GreengrassV2;
+    using Amazon.GreengrassV2.Model;
     using Amazon.IoT;
     using Amazon.IoT.Model;
-    using Amazon.IotData;
-    using Amazon.IotData.Model;
     using AutoFixture;
+    using AzureIoTHub.Portal.Application.Services.AWS;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Repositories;
@@ -23,51 +25,58 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
     using Moq;
     using NUnit.Framework;
     using Quartz;
+    using AzureIoTHub.Portal.Models.v10;
 
-    public class SyncThingsJobTests : BackendUnitTest
+    public class SyncGreenGrassDevicesJobTests : BackendUnitTest
     {
-        private IJob syncThingsJob;
+        private IJob syncGreenGrassDevicesJob;
 
         private Mock<IAmazonIoT> amazonIoTClient;
-        private Mock<IAmazonIotData> amazonIoTDataClient;
+        private Mock<IAmazonGreengrassV2> amazonGreenGrass;
         private Mock<IUnitOfWork> mockUnitOfWork;
-        private Mock<IDeviceRepository> mockDeviceRepository;
-        private Mock<IDeviceModelRepository> mockDeviceModelRepository;
+        private Mock<IEdgeDeviceRepository> mockDeviceRepository;
+        private Mock<IEdgeDeviceModelRepository> mockDeviceModelRepository;
         private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
+        private Mock<IConfigService> mockConfigService;
+        private Mock<IAWSExternalDeviceService> mockAwsExternalDevicesService;
 
         public override void Setup()
         {
             base.Setup();
 
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
-            this.mockDeviceRepository = MockRepository.Create<IDeviceRepository>();
-            this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
+            this.mockDeviceRepository = MockRepository.Create<IEdgeDeviceRepository>();
+            this.mockDeviceModelRepository = MockRepository.Create<IEdgeDeviceModelRepository>();
             this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
             this.amazonIoTClient = MockRepository.Create<IAmazonIoT>();
-            this.amazonIoTDataClient = MockRepository.Create<IAmazonIotData>();
+            this.amazonGreenGrass = MockRepository.Create<IAmazonGreengrassV2>();
+            this.mockConfigService = MockRepository.Create<IConfigService>();
+            this.mockAwsExternalDevicesService = MockRepository.Create<IAWSExternalDeviceService>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
             _ = ServiceCollection.AddSingleton(this.amazonIoTClient.Object);
-            _ = ServiceCollection.AddSingleton(this.amazonIoTDataClient.Object);
-            _ = ServiceCollection.AddSingleton<IJob, SyncThingsJob>();
+            _ = ServiceCollection.AddSingleton(this.amazonGreenGrass.Object);
+            _ = ServiceCollection.AddSingleton(this.mockConfigService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockAwsExternalDevicesService.Object);
+            _ = ServiceCollection.AddSingleton<IJob, SyncGreenGrassDevicesJob>();
 
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.syncThingsJob = Services.GetRequiredService<IJob>();
+            this.syncGreenGrassDevicesJob = Services.GetRequiredService<IJob>();
         }
 
         [Test]
-        public async Task ExecuteNewDeviceDeviceCreated()
+        public async Task ExecuteNewEdgeDeviceEdgeDeviceCreated()
         {
             // Arrange
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var newDevice = new Device
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+            var newDevice = new EdgeDevice
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
@@ -76,19 +85,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 Version = 1
             };
 
-            var thingsListing = new ListThingsResponse
+            var greenGrassDevices = new ListCoreDevicesResponse
             {
-                Things = new List<ThingAttribute>()
+                CoreDevices = new List<CoreDevice>()
                 {
-                    new ThingAttribute
+                    new CoreDevice
                     {
-                        ThingName = newDevice.Name
+                        CoreDeviceThingName = newDevice.Name
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
+            _ = this.amazonGreenGrass.Setup(client => client.ListCoreDevicesAsync(It.IsAny<ListCoreDevicesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(greenGrassDevices);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingResponse()
@@ -104,19 +113,25 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 .Setup(x => x.GetByNameAsync(newDevice.DeviceModel.Name))
                 .ReturnsAsync(expectedDeviceModel);
 
-            _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetThingShadowResponse() { HttpStatusCode = HttpStatusCode.OK });
+            _ = this.mockConfigService.Setup(x => x.GetConfigModuleList(expectedDeviceModel.Id))
+                    .ReturnsAsync(new List<IoTEdgeModule>());
+
+            _ = this.mockAwsExternalDevicesService.Setup(x => x.GetEdgeDeviceNbDevices(It.IsAny<IoTEdgeDevice>()))
+                    .ReturnsAsync(0);
+
+            _ = this.amazonGreenGrass.Setup(client => client.GetCoreDeviceAsync(It.IsAny<GetCoreDeviceRequest>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new GetCoreDeviceResponse() { HttpStatusCode = HttpStatusCode.OK });
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(newDevice.Id, d => d.Tags))
-                .ReturnsAsync((Device)null);
+                .ReturnsAsync((EdgeDevice)null);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
+            _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<EdgeDevice>()))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<EdgeDevice>
                 {
-                    new Device
+                    new EdgeDevice
                     {
                         Id = Guid.NewGuid().ToString()
                     }
@@ -128,7 +143,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+            await this.syncGreenGrassDevicesJob.Execute(mockJobExecutionContext.Object);
 
             // Assert
             MockRepository.VerifyAll();
@@ -140,8 +155,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             // Arrange
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+            var existingDevice = new EdgeDevice
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
@@ -159,19 +174,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 }
             };
 
-            var thingsListing = new ListThingsResponse
+            var greenGrassDevices = new ListCoreDevicesResponse
             {
-                Things = new List<ThingAttribute>()
+                CoreDevices = new List<CoreDevice>()
                 {
-                    new ThingAttribute
+                    new CoreDevice
                     {
-                        ThingName = existingDevice.Name
+                        CoreDeviceThingName = existingDevice.Name
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
+            _ = this.amazonGreenGrass.Setup(client => client.ListCoreDevicesAsync(It.IsAny<ListCoreDevicesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(greenGrassDevices);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingResponse()
@@ -187,58 +202,81 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
                 .ReturnsAsync(expectedDeviceModel);
 
-            _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetThingShadowResponse() { HttpStatusCode = HttpStatusCode.OK });
+            _ = this.mockConfigService.Setup(x => x.GetConfigModuleList(expectedDeviceModel.Id))
+                    .ReturnsAsync(new List<IoTEdgeModule>());
+
+            _ = this.mockAwsExternalDevicesService.Setup(x => x.GetEdgeDeviceNbDevices(It.IsAny<IoTEdgeDevice>()))
+                    .ReturnsAsync(0);
+
+            _ = this.amazonGreenGrass.Setup(client => client.GetCoreDeviceAsync(It.IsAny<GetCoreDeviceRequest>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new GetCoreDeviceResponse() { HttpStatusCode = HttpStatusCode.OK });
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(existingDevice.Id, d => d.Tags))
                 .ReturnsAsync(existingDevice);
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>())).Verifiable();
 
-            this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>())).Verifiable();
+            this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<EdgeDevice>())).Verifiable();
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<EdgeDevice>
+                {
+                    new EdgeDevice
+                    {
+                        Id = Guid.NewGuid().ToString()
+                    }
+                });
+
+            this.mockDeviceRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+            await this.syncGreenGrassDevicesJob.Execute(mockJobExecutionContext.Object);
 
             // Assert
             MockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task ExecuteExistingDeviceWithOlderVersionDeviceNotUpdated()
+        public async Task ExecuteExistingEdgeDeviceWithOlderVersionEdgeDeviceNotUpdated()
         {
             // Arrange
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+            var existingDevice = new EdgeDevice
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
                 DeviceModel = expectedDeviceModel,
                 DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+                Version = 2,
+                Tags = new List<DeviceTagValue>()
                 {
-                    new ThingAttribute
+                    new()
                     {
-                        ThingName = existingDevice.Name
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
+            var greenGrassDevices = new ListCoreDevicesResponse
+            {
+                CoreDevices = new List<CoreDevice>()
+                {
+                    new CoreDevice
+                    {
+                        CoreDeviceThingName = existingDevice.Name
+                    }
+                }
+            };
+
+            _ = this.amazonGreenGrass.Setup(client => client.ListCoreDevicesAsync(It.IsAny<ListCoreDevicesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(greenGrassDevices);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingResponse()
@@ -254,33 +292,47 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
                 .ReturnsAsync(expectedDeviceModel);
 
-            _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetThingShadowResponse() { HttpStatusCode = HttpStatusCode.OK });
+            _ = this.mockConfigService.Setup(x => x.GetConfigModuleList(expectedDeviceModel.Id))
+                    .ReturnsAsync(new List<IoTEdgeModule>());
+
+            _ = this.mockAwsExternalDevicesService.Setup(x => x.GetEdgeDeviceNbDevices(It.IsAny<IoTEdgeDevice>()))
+                    .ReturnsAsync(0);
+
+            _ = this.amazonGreenGrass.Setup(client => client.GetCoreDeviceAsync(It.IsAny<GetCoreDeviceRequest>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new GetCoreDeviceResponse() { HttpStatusCode = HttpStatusCode.OK });
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(existingDevice.Id, d => d.Tags))
                 .ReturnsAsync(existingDevice);
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<EdgeDevice>
+                {
+                    new EdgeDevice
+                    {
+                        Id = Guid.NewGuid().ToString()
+                    }
+                });
+
+            this.mockDeviceRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+            await this.syncGreenGrassDevicesJob.Execute(mockJobExecutionContext.Object);
 
             // Assert
             MockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task ExecuteNewDeviceWithDescribeThingErrorSkipped()
+        public async Task ExecuteNewEdgeDeviceWithDescribeThingErrorSkipped()
         {
             // Arrange
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+            var existingDevice = new EdgeDevice
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
@@ -289,19 +341,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 Version = 2
             };
 
-            var thingsListing = new ListThingsResponse
+            var greenGrassDevices = new ListCoreDevicesResponse
             {
-                Things = new List<ThingAttribute>()
+                CoreDevices = new List<CoreDevice>()
                 {
-                    new ThingAttribute
+                    new CoreDevice
                     {
-                        ThingName = existingDevice.Name
+                        CoreDeviceThingName = existingDevice.Name
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
+            _ = this.amazonGreenGrass.Setup(client => client.ListCoreDevicesAsync(It.IsAny<ListCoreDevicesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(greenGrassDevices);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingResponse()
@@ -309,14 +361,80 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     HttpStatusCode = HttpStatusCode.RequestTimeout
                 });
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<EdgeDevice>());
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+            await this.syncGreenGrassDevicesJob.Execute(mockJobExecutionContext.Object);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ExecuteNewEdgeDeviceWithGetCoreDeviceErrorSkipped()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+            var existingDevice = new EdgeDevice
+            {
+                Id = Fixture.Create<string>(),
+                Name = Fixture.Create<string>(),
+                DeviceModel = expectedDeviceModel,
+                DeviceModelId = expectedDeviceModel.Id,
+                Version = 1
+            };
+
+            var greenGrassDevices = new ListCoreDevicesResponse
+            {
+                CoreDevices = new List<CoreDevice>()
+                {
+                    new CoreDevice
+                    {
+                        CoreDeviceThingName = existingDevice.Name
+                    }
+                }
+            };
+
+            _ = this.amazonGreenGrass.Setup(client => client.ListCoreDevicesAsync(It.IsAny<ListCoreDevicesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(greenGrassDevices);
+
+            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DescribeThingResponse()
+                {
+                    ThingId = existingDevice.Id,
+                    ThingName = existingDevice.Name,
+                    ThingTypeName = existingDevice.DeviceModel.Name,
+                    Version = 1,
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockDeviceModelRepository
+                .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
+                .ReturnsAsync(expectedDeviceModel);
+
+            _ = this.mockConfigService.Setup(x => x.GetConfigModuleList(expectedDeviceModel.Id))
+                    .ReturnsAsync(new List<IoTEdgeModule>());
+
+            _ = this.mockAwsExternalDevicesService.Setup(x => x.GetEdgeDeviceNbDevices(It.IsAny<IoTEdgeDevice>()))
+                    .ReturnsAsync(0);
+
+            _ = this.amazonGreenGrass.Setup(client => client.GetCoreDeviceAsync(It.IsAny<GetCoreDeviceRequest>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new GetCoreDeviceResponse() { HttpStatusCode = HttpStatusCode.RequestTimeout });
+
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<EdgeDevice>());
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.syncGreenGrassDevicesJob.Execute(mockJobExecutionContext.Object);
 
             // Assert
             MockRepository.VerifyAll();
@@ -328,8 +446,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             // Arrange
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+            var existingDevice = new EdgeDevice
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
@@ -338,19 +456,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 Version = 2
             };
 
-            var thingsListing = new ListThingsResponse
+            var greenGrassDevices = new ListCoreDevicesResponse
             {
-                Things = new List<ThingAttribute>()
+                CoreDevices = new List<CoreDevice>()
                 {
-                    new ThingAttribute
+                    new CoreDevice
                     {
-                        ThingName = existingDevice.Name
+                        CoreDeviceThingName = existingDevice.Name
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
+            _ = this.amazonGreenGrass.Setup(client => client.ListCoreDevicesAsync(It.IsAny<ListCoreDevicesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(greenGrassDevices);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingResponse()
@@ -361,14 +479,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<EdgeDevice>());
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+            await this.syncGreenGrassDevicesJob.Execute(mockJobExecutionContext.Object);
 
             // Assert
             MockRepository.VerifyAll();
@@ -380,8 +498,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             // Arrange
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+            var existingDevice = new EdgeDevice
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
@@ -390,19 +508,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 Version = 2
             };
 
-            var thingsListing = new ListThingsResponse
+            var greenGrassDevices = new ListCoreDevicesResponse
             {
-                Things = new List<ThingAttribute>()
+                CoreDevices = new List<CoreDevice>()
                 {
-                    new ThingAttribute
+                    new CoreDevice
                     {
-                        ThingName = existingDevice.Name
+                        CoreDeviceThingName = existingDevice.Name
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
+            _ = this.amazonGreenGrass.Setup(client => client.ListCoreDevicesAsync(It.IsAny<ListCoreDevicesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(greenGrassDevices);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingResponse()
@@ -416,30 +534,28 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
             _ = this.mockDeviceModelRepository
                 .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
-                .ReturnsAsync((DeviceModel)null);
+                .ReturnsAsync((EdgeDeviceModel)null);
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<EdgeDevice>());
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+            await this.syncGreenGrassDevicesJob.Execute(mockJobExecutionContext.Object);
 
             // Assert
             MockRepository.VerifyAll();
         }
 
-        [TestCase(HttpStatusCode.NotFound)]
-        [TestCase(HttpStatusCode.BadRequest)]
-        public async Task ExecuteNewDeviceWithoutThingShadowSkipped(HttpStatusCode thingShadowCode)
+        public async Task ExecuteNewEdgeDeviceWithAmazonIotExceptionSkipped()
         {
             // Arrange
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+            var existingDevice = new EdgeDevice
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
@@ -448,149 +564,31 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 Version = 2
             };
 
-            var thingsListing = new ListThingsResponse
+            var greenGrassDevices = new ListCoreDevicesResponse
             {
-                Things = new List<ThingAttribute>()
+                CoreDevices = new List<CoreDevice>()
                 {
-                    new ThingAttribute
+                    new CoreDevice
                     {
-                        ThingName = existingDevice.Name
+                        CoreDeviceThingName = existingDevice.Name
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
-                {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.mockDeviceModelRepository
-                .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
-                .ReturnsAsync(expectedDeviceModel);
-
-            _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetThingShadowResponse() { HttpStatusCode = thingShadowCode });
-
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
-
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
-
-            // Assert
-            MockRepository.VerifyAll();
-        }
-
-        public async Task ExecuteNewDeviceWithAmazonIotExceptionSkipped()
-        {
-            // Arrange
-            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
-
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
-            {
-                Id = Fixture.Create<string>(),
-                Name = Fixture.Create<string>(),
-                DeviceModel = expectedDeviceModel,
-                DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
-                {
-                    new ThingAttribute
-                    {
-                        ThingName = existingDevice.Name
-                    }
-                }
-            };
-
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
+            _ = this.amazonGreenGrass.Setup(client => client.ListCoreDevicesAsync(It.IsAny<ListCoreDevicesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(greenGrassDevices);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
                 .Throws(new AmazonIoTException(""));
 
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new List<EdgeDevice>());
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
-
-            // Assert
-            MockRepository.VerifyAll();
-        }
-
-        public async Task ExecuteNewDeviceWithAmazonIotDataExceptionSkipped()
-        {
-            // Arrange
-            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
-
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
-            {
-                Id = Fixture.Create<string>(),
-                Name = Fixture.Create<string>(),
-                DeviceModel = expectedDeviceModel,
-                DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
-                {
-                    new ThingAttribute
-                    {
-                        ThingName = existingDevice.Name
-                    }
-                }
-            };
-
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
-                {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.mockDeviceModelRepository
-                .Setup(x => x.GetByNameAsync(existingDevice.DeviceModel.Name))
-                .ReturnsAsync(expectedDeviceModel);
-
-            _ = this.amazonIoTDataClient.Setup(client => client.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
-                .Throws(new AmazonIotDataException(""));
-
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
-
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
+            await this.syncGreenGrassDevicesJob.Execute(mockJobExecutionContext.Object);
 
             // Assert
             MockRepository.VerifyAll();
