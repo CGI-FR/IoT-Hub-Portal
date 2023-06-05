@@ -406,8 +406,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                .Replace("%CERTIFICATE%", credentials.CertificateCredentials.CertificatePem, StringComparison.OrdinalIgnoreCase)
                .Replace("%PRIVATE_KEY%", credentials.CertificateCredentials.PrivateKey, StringComparison.OrdinalIgnoreCase)
                .Replace("%REGION%", this.configHandler.AWSRegion, StringComparison.OrdinalIgnoreCase)
+               .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", this.configHandler.AWSGreengrassCoreTokenExchangeRoleAliasName, StringComparison.OrdinalIgnoreCase)
                .Replace("%THING_NAME%", device.Name, StringComparison.OrdinalIgnoreCase)
-               .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", device.Name, StringComparison.OrdinalIgnoreCase)
                .ReplaceLineEndings();
         }
 
