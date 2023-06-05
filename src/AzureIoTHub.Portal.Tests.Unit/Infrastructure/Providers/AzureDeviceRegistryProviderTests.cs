@@ -256,10 +256,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Providers
                 .Setup(c => c.GetEnrollmentGroupAttestationAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .ReturnsAsync(mockAttestationMehanism.Object);
 
-            _ = this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
+            _ = this.mockConfigHandler.SetupGet(c => c.AzureDPSEndpoint)
                 .Returns("FakeEndpoint");
 
-            _ = this.mockConfigHandler.SetupGet(c => c.DPSScopeID)
+            _ = this.mockConfigHandler.SetupGet(c => c.AzureDPSScopeID)
                 .Returns("FakeScopeID");
 
             // Act
@@ -297,10 +297,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Providers
                 .Setup(c => c.GetEnrollmentGroupAttestationAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
 
-            _ = this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
+            _ = this.mockConfigHandler.SetupGet(c => c.AzureDPSEndpoint)
                 .Returns("FakeEndpoint");
 
-            _ = this.mockConfigHandler.SetupGet(c => c.DPSScopeID)
+            _ = this.mockConfigHandler.SetupGet(c => c.AzureDPSScopeID)
                 .Returns("FakeScopeID");
 
             _ = this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
