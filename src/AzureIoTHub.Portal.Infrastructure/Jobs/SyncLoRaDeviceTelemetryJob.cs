@@ -43,8 +43,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs
 
             var processor = new EventProcessorClient(
                 storageClient,
-                this.configHandler.IoTHubEventHubConsumerGroup,
-                this.configHandler.IoTHubEventHubEndpoint);
+                this.configHandler.AzureIoTHubEventHubConsumerGroup,
+                this.configHandler.AzureIoTHubEventHubEndpoint);
 
             try
             {

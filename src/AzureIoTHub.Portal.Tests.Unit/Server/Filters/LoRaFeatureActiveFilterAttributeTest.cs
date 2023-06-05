@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Filters
         {
             // Arrange
             _ = this.mockConfigHandler
-                .SetupGet(c => c.IsLoRaEnabled)
+                .SetupGet(c => c.AzureIsLoRaEnabled)
                 .Returns(false);
 
             var serviceProviderMock = new Mock<IServiceProvider>();
@@ -77,7 +77,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Filters
         {
             // Arrange
             _ = this.mockConfigHandler
-                .SetupGet(c => c.IsLoRaEnabled)
+                .SetupGet(c => c.AzureIsLoRaEnabled)
                 .Returns(true);
 
             var serviceProviderMock = new Mock<IServiceProvider>();

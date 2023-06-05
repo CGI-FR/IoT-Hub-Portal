@@ -14,7 +14,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
     {
         public static async Task MigrateDeviceModels(this PortalDbContext ctx, ConfigHandler config)
         {
-            var table = new TableClientFactory(config.StorageAccountConnectionString)
+            var table = new TableClientFactory(config.AzureStorageAccountConnectionString)
                                 .GetDeviceTemplates();
 
             var set = ctx.Set<DeviceModel>();
