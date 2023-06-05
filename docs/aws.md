@@ -66,7 +66,7 @@ This configurations are used to get access to AWS cloud Platform. You have to en
 ```json
 {
   "CloudProvider": "AWS",
-  "AWS:Access": "<AACCESS_KEY>",
+  "AWS:Access": "<ACCESS_KEY>",
   "AWS:AccessSecret": "<ACCESS_SECRET_KEY>",
   "AWS:Region": "<REGION_KEY>",
   "AWS:BucketName": "<BUCKET_NAME>",  

@@ -81,7 +81,6 @@ _Secrets_ are used to fill in the login credentials to the cloud platform. You h
 {
   "CloudProvider": "Azure",
   "Azure:StorageAccount:ConnectionString": "<CONNECTION_STRING_STORAGE_ACCOUNT>",
-  "StorageAccount:BlobContainerName": "<BLOB_CONTAINER_NAME>",
   "OIDC:Scope": "<SCOPE>",
   "OIDC:MetadataUrl": "<METADATA_URL>",
   "OIDC:ClientId": "<CLIENT_ID>",
