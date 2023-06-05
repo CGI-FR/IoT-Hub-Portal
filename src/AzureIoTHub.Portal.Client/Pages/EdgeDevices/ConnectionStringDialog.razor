@@ -35,7 +35,7 @@
                     }
                     else
                     {
-                        @if (Credentials.CertificateCredentials != null)
+                        @if (Credentials.CertificateCredentials != null && string.IsNullOrEmpty(EnrollementScriptCommand))
                         {
                             <MudItem xs="12">
                                 <MudText Style="text-decoration:underline"><b>Certificate Pem</b></MudText>
