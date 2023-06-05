@@ -117,6 +117,7 @@ jobs:
           OIDC__SCOPE: ${{ vars.OIDC_SCOPE }}
           OIDC__VALIDATEAUDIENCE: ${{ vars.OIDC_VALIDATEAUDIENCE }}
           LORAFEATURE__ENABLED: ${{ vars.LORAFEATURE_ENABLED }}
+          AWS__GREENGRASSCORETOKENEXCHANGEROLEALIASNAME: "aurademoiot-GreengrassCoreTokenExchangeRoleAlias"
           AWS__GREENGRASSREQUIREDROLES__0: "aurademoiot-GreengrassCoreTokenExchangeRoleAliasPolicy"
           AWS__GREENGRASSREQUIREDROLES__1: "aurademoiot-GreengrassV2IoTThingPolicy"
         with:
@@ -141,6 +142,7 @@ jobs:
             OIDC__SCOPE
             OIDC__VALIDATEAUDIENCE
             LORAFEATURE__ENABLED
+            AWS__GREENGRASSCORETOKENEXCHANGEROLEALIASNAME
             AWS__GREENGRASSREQUIREDROLES__0
             AWS__GREENGRASSREQUIREDROLES__1
       

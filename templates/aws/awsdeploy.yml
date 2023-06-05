@@ -604,6 +604,9 @@ Resources:
                     - "-"
                     - - Ref: "AWS::StackName"
                       - "bucket"
+              - Name: "AWS__GreengrassCoreTokenExchangeRoleAliasName"
+                Value: 
+                  Fn::GetAtt: GreengrassCoreTokenExchangeRoleAlias.RoleAlias
               - Name: "AWS__GreengrassRequiredRoles__0"
                 Value: 
                   Fn::GetAtt: GreengrassCoreTokenExchangeRoleAliasPolicy.Id

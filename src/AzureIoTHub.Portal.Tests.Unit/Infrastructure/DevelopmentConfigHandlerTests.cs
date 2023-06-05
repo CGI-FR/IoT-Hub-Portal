@@ -55,6 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.CloudProviderKey, nameof(ConfigHandlerBase.CloudProvider))]
         [TestCase(ConfigHandlerBase.AWSBucketNameKey, nameof(ConfigHandlerBase.AWSBucketName))]
         [TestCase(ConfigHandlerBase.AWSAccountIdKey, nameof(ConfigHandlerBase.AWSAccountId))]
+        [TestCase(ConfigHandlerBase.AWSGreengrassCoreTokenExchangeRoleAliasNameKey, nameof(ConfigHandlerBase.AWSGreengrassCoreTokenExchangeRoleAliasName))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange

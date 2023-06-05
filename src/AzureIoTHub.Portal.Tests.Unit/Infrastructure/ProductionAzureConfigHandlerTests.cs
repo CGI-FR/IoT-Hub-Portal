@@ -100,6 +100,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(nameof(ConfigHandlerBase.AWSRegion))]
         [TestCase(nameof(ConfigHandlerBase.AWSS3StorageConnectionString))]
         [TestCase(nameof(ConfigHandlerBase.AWSBucketName))]
+        [TestCase(nameof(ConfigHandlerBase.AWSAccountId))]
+        [TestCase(nameof(ConfigHandlerBase.AWSGreengrassRequiredRoles))]
+        [TestCase(nameof(ConfigHandlerBase.AWSGreengrassCoreTokenExchangeRoleAliasName))]
+
         public void SettingsShouldThrowError(string configPropertyName)
         {
             // Arrange

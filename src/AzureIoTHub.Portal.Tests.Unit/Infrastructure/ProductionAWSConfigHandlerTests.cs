@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.CloudProviderKey, nameof(ConfigHandlerBase.CloudProvider))]
         [TestCase(ConfigHandlerBase.AWSBucketNameKey, nameof(ConfigHandlerBase.AWSBucketName))]
         [TestCase(ConfigHandlerBase.AWSAccountIdKey, nameof(ConfigHandlerBase.AWSAccountId))]
-
+        [TestCase(ConfigHandlerBase.AWSGreengrassCoreTokenExchangeRoleAliasNameKey, nameof(ConfigHandlerBase.AWSGreengrassCoreTokenExchangeRoleAliasName))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -107,6 +107,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         }
 
         [TestCase(nameof(ConfigHandlerBase.AzureStorageAccountConnectionString))]
+        [TestCase(nameof(ConfigHandlerBase.AzureDPSConnectionString))]
+        [TestCase(nameof(ConfigHandlerBase.AzureDPSEndpoint))]
+        [TestCase(nameof(ConfigHandlerBase.AzureDPSScopeID))]
+        [TestCase(nameof(ConfigHandlerBase.AzureIoTHubConnectionString))]
+        [TestCase(nameof(ConfigHandlerBase.AzureIoTHubEventHubConsumerGroup))]
+        [TestCase(nameof(ConfigHandlerBase.AzureIoTHubEventHubEndpoint))]
+        [TestCase(nameof(ConfigHandlerBase.AzureIsLoRaEnabled))]
+        [TestCase(nameof(ConfigHandlerBase.AzureLoRaKeyManagementApiVersion))]
+        [TestCase(nameof(ConfigHandlerBase.AzureLoRaKeyManagementCode))]
+        [TestCase(nameof(ConfigHandlerBase.AzureLoRaKeyManagementUrl))]
         [TestCase(nameof(ConfigHandlerBase.StorageAccountDeviceModelImageMaxAge))]
         public void SettingsShouldThrowError(string configPropertyName)
         {
