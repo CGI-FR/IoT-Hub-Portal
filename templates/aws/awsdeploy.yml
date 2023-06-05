@@ -5,10 +5,6 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: Solution
-        Parameters:
-          - UniqueSolutionPrefix
-      - Label:
           default: Amazon Web Services resources access
         Parameters:
           - awsAccess
@@ -29,13 +25,6 @@ Metadata:
     ParameterLabels: ParameterLabel
 
 Parameters:
-  UniqueSolutionPrefix:
-    Type: String
-    Description: Prefix used for resource names. Should be unique as this will also be used for bucket and database name. Should not contain uppercase letters
-    MinLength: "1"
-    MaxLength: "20"
-    ConstraintDescription: Should be less than 20 letters
-    AllowedPattern: "^[a-z]+$"
   pgsqlAdminLogin:
     Type: String
     Description: PostgreSQL user
@@ -80,7 +69,7 @@ Resources:
       BucketName:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "bucket"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: false
@@ -105,7 +94,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "vpc"
 
   PrivateSubnet1:
@@ -123,7 +112,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "priv-snet-1"
 
   PrivateSubnet2:
@@ -141,7 +130,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "priv-snet-2"
 
   PrivateSubnet3:
@@ -159,7 +148,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "priv-snet-3"
 
   PublicSubnet:
@@ -173,7 +162,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "pub-snet"
 
   InternetGateway:
@@ -184,7 +173,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "igw"
 
   InternetGatewayAttachment:
@@ -205,7 +194,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "pub-rt"
 
   InternetRoutePublicSubnet:
@@ -227,7 +216,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "natgw-eip"
 
   NatGateway:
@@ -242,7 +231,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "natgw"
 
   PrivateRouteTable:
@@ -255,7 +244,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "priv-rt"
 
   InternetRoutePrivateSubnet:
@@ -307,7 +296,7 @@ Resources:
       DBInstanceIdentifier:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "pgdb"
       AllocatedStorage: "20"
       DBInstanceClass: "db.t2.micro"
@@ -321,7 +310,7 @@ Resources:
       DBName:
         Fn::Join:
           - "_"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "db"
       VPCSecurityGroups:
         - Ref: PgSQLSecurityGroup
@@ -332,7 +321,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "database"
 
   PgSQLSecurityGroup:
@@ -352,7 +341,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "database-sg"
 
   PgSQLSubnetGroup:
@@ -361,7 +350,7 @@ Resources:
       DBSubnetGroupName:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "database-snetgroup"
       DBSubnetGroupDescription: Database subnet group
       SubnetIds:
@@ -373,7 +362,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "db-snet-group"
 
   #======== Secrets ==========
@@ -384,7 +373,7 @@ Resources:
       Name:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "AWSKey"
       SecretString:
         Fn::Sub: "${awsAccess}"
@@ -395,7 +384,7 @@ Resources:
       Name:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "AWSSecretKey"
       SecretString:
         Fn::Sub: "${awsAccessSecretkey}"
@@ -406,14 +395,14 @@ Resources:
       Name:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "PostgreSQLConnectionString"
       SecretString:
         Fn::Join:
           - ""
           - - "Server="
             - Fn::GetAtt: PostgreSQLDB.Endpoint.Address
-            - Fn::Sub: ";Database=${UniqueSolutionPrefix}_db;Port=5432;User Id=${pgsqlAdminLogin};Password=${pgsqlAdminPassword};Pooling=true;Connection Lifetime=0;Command Timeout=0;"
+            - Fn::Sub: ";Database=${AWS::StackName}_db;Port=5432;User Id=${pgsqlAdminLogin};Password=${pgsqlAdminPassword};Pooling=true;Connection Lifetime=0;Command Timeout=0;"
 
   SMS3StorageConnectionString:
     Type: AWS::SecretsManager::Secret
@@ -421,13 +410,13 @@ Resources:
       Name:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "S3StorageConnectionString"
       SecretString: !
         Fn::Join:
           - ""
           - - Fn::Sub: "https://s3.${AWS::Region}.amazonaws.com/"
-            - Ref: UniqueSolutionPrefix
+            - Ref: "AWS::StackName"
             - "-bucket"
 
   #============= App Runner ==============
@@ -438,7 +427,7 @@ Resources:
       RoleName:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "AppRunner"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -463,7 +452,7 @@ Resources:
                   Fn::Join:
                     - ""
                     - - Fn::Sub: "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:"
-                      - Ref: UniqueSolutionPrefix
+                      - Ref: "AWS::StackName"
                       - "-*"
         - PolicyName: AmazonElasticContainerRegistryPublicReadOnly
           PolicyDocument:
@@ -526,7 +515,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "apprunner-sg"
 
   AppRunnerDatabaseOutboundRule:
@@ -562,7 +551,7 @@ Resources:
       ServiceName:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "portal"
       InstanceConfiguration:
         Cpu: 1024
@@ -606,12 +595,21 @@ Resources:
               - Name: AWS__Region
                 Value:
                   Ref: AWS::Region
+              - Name: AWS__AccountId
+                Value:
+                  Ref: AWS::AccountId
               - Name: AWS__BucketName
                 Value:
                   Fn::Join:
                     - "-"
-                    - - Ref: UniqueSolutionPrefix
+                    - - Ref: "AWS::StackName"
                       - "bucket"
+              - Name: "AWS__GreengrassRequiredRoles__0"
+                Value: 
+                  Fn::GetAtt: GreengrassCoreTokenExchangeRoleAliasPolicy.Id
+              - Name: "AWS__GreengrassRequiredRoles__1"
+                Value: 
+                  Fn::GetAtt: GreengrassV2IoTThingPolicy.Id
               - Name: OIDC__ApiClientId
                 Value:
                   Fn::Sub: "${openIdApiClientId}"
@@ -628,7 +626,7 @@ Resources:
                 Value:
                   Fn::Sub: "${openIdScopeName}"
               - Name: CloudProvider
-                Value: AWS
+                Value: AWS            
           ImageIdentifier:
             Fn::Sub: "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/iot-hub-portal:latest"
           ImageRepositoryType: ECR
@@ -637,7 +635,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "apprunner"
 
   AppRunnerServiceVPCConnector:
@@ -654,7 +652,7 @@ Resources:
           Value:
             Fn::Join:
               - "-"
-              - - Ref: UniqueSolutionPrefix
+              - - Ref: "AWS::StackName"
                 - "apprunner-vpc-connector"
 
   #============= IoT Greengrass Role ==============
@@ -665,7 +663,7 @@ Resources:
       RoleName:
         Fn::Join:
           - "-"
-          - - Ref: UniqueSolutionPrefix
+          - - Ref: "AWS::StackName"
             - "GreenGrass"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -678,7 +676,11 @@ Resources:
         - arn:aws:iam::aws:policy/service-role/AWSGreengrassResourceAccessRolePolicy
         - arn:aws:iam::aws:policy/AWSGreengrassFullAccess
       Policies:
-        - PolicyName: ECRPermissions
+        - PolicyName:
+            Fn::Join:
+              - "-"
+              - - Ref: "AWS::StackName"
+                - "ECRPermissions"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -692,7 +694,11 @@ Resources:
   GreengrassV2TokenExchangeRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: GreengrassV2TokenExchangeRole
+      RoleName: 
+        Fn::Join:
+          - "-"
+          - - Ref: "AWS::StackName"
+            - "GreengrassV2TokenExchangeRole"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -701,7 +707,11 @@ Resources:
               Service: credentials.iot.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: GreengrassV2TokenExchangeRoleAccess
+        - PolicyName: 
+            Fn::Join:
+              - "-"
+              - - Ref: "AWS::StackName"
+                - "GreengrassV2TokenExchangeRoleAccess"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -718,14 +728,22 @@ Resources:
   GreengrassCoreTokenExchangeRoleAlias:
     Type: AWS::IoT::RoleAlias
     Properties: 
-      RoleAlias: GreengrassCoreTokenExchangeRoleAlias
+      RoleAlias:
+        Fn::Join:
+          - "-"
+          - - Ref: "AWS::StackName"
+            - "GreengrassCoreTokenExchangeRoleAlias"
       RoleArn: 
         Fn::GetAtt: GreengrassV2TokenExchangeRole.Arn
 
   GreengrassCoreTokenExchangeRoleAliasPolicy: 
     Type: AWS::IoT::Policy
     Properties:
-      PolicyName: GreengrassCoreTokenExchangeRoleAliasPolicy
+      PolicyName:
+        Fn::Join:
+          - "-"
+          - - Ref: "AWS::StackName"
+            - "GreengrassCoreTokenExchangeRoleAliasPolicy"
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -738,7 +756,11 @@ Resources:
   GreengrassV2IoTThingPolicy: 
     Type: AWS::IoT::Policy
     Properties:
-      PolicyName: GreengrassV2IoTThingPolicy 
+      PolicyName: 
+        Fn::Join:
+          - "-"
+          - - Ref: "AWS::StackName"
+            - "GreengrassV2IoTThingPolicy" 
       PolicyDocument:
         Version: '2012-10-17'
         Statement:

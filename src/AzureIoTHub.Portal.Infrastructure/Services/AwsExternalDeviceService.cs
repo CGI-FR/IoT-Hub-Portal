@@ -208,17 +208,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             {
                 var createCertificateTuple = await GenerateCertificate(device.DeviceName);
 
-                _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
+                foreach (var item in this.configHandler.AWSGreengrassRequiredRoles)
                 {
-                    PolicyName = "GreengrassV2IoTThingPolicy",
-                    Target = createCertificateTuple.Item2
-                });
-
-                _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
-                {
-                    PolicyName = "GreengrassCoreTokenExchangeRoleAliasPolicy",
-                    Target = createCertificateTuple.Item2
-                });
+                    _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
+                    {
+                        PolicyName = item,
+                        Target = createCertificateTuple.Item2
+                    });
+                }
 
                 return createCertificateTuple.Item1;
             }
