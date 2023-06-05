@@ -65,23 +65,23 @@
                                 </MudAlert>
                                 <br />
                                 <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;display: block; margin-left: auto; margin-right: auto" OnClick="GetEnrollmentScriptCommand">Get the magic command</MudButton>
-                                }
-                                else
-                                {
-                                <br />
-                                <MudText Style="text-decoration:underline"><b>Operating system</b></MudText>
-                                <MudSelect T="string" @bind-Value="@templateName" Text="Operating system" SelectedValuesChanged="GetEnrollmentScriptCommand">
-                                    <MudSelectItem Value="@("debian_11_bullseye")">Debian 11 (Bulleseye)</MudSelectItem>
-                                </MudSelect>
-                                <br />
-                                <MudAlert Severity="Severity.Info">
-                                    Copy this command line above and paste it into the device prompt.<br />
-                                    <b>Note that you should have administrative rights on the device to execute the command.</b>
-                                </MudAlert>
-                                <br />
-                                <MudTextField @bind-Value="@EnrollementScriptCommand" Style="text-overflow: ellipsis" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(EnrollementScriptCommand))" />
 
                             </MudItem>
+                        }
+                        else
+                        {
+                            <br />
+                            <MudText Style="text-decoration:underline"><b>Operating system</b></MudText>
+                            <MudSelect T="string" @bind-Value="@templateName" Text="Operating system" SelectedValuesChanged="GetEnrollmentScriptCommand">
+                                <MudSelectItem Value="@("debian_11_bullseye")">Debian 11 (Bulleseye)</MudSelectItem>
+                            </MudSelect>
+                            <br />
+                            <MudAlert Severity="Severity.Info">
+                                Copy this command line above and paste it into the device prompt.<br />
+                                <b>Note that you should have administrative rights on the device to execute the command.</b>
+                            </MudAlert>
+                            <br />
+                            <MudTextField @bind-Value="@EnrollementScriptCommand" Style="text-overflow: ellipsis" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(EnrollementScriptCommand))" />
                         }
                     }
                 </MudGrid>
