@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
     using Amazon.IoT.Model;
     using AutoFixture;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Repositories;
@@ -28,6 +29,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
         private Mock<IAmazonIoT> iaAmazon;
         private Mock<IDeviceModelImageManager> mockAWSImageManager;
+        private Mock<IAWSExternalDeviceService> mockAWSExternalDeviceService;
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
 
@@ -36,11 +38,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             base.Setup();
 
             this.mockAWSImageManager = MockRepository.Create<IDeviceModelImageManager>();
+            this.mockAWSExternalDeviceService = MockRepository.Create<IAWSExternalDeviceService>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
             this.iaAmazon = MockRepository.Create<IAmazonIoT>();
 
             _ = ServiceCollection.AddSingleton(this.mockAWSImageManager.Object);
+            _ = ServiceCollection.AddSingleton(this.mockAWSExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.iaAmazon.Object);
@@ -120,19 +124,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             _ = this.iaAmazon.Setup(client => client.DescribeThingTypeAsync(It.Is<DescribeThingTypeRequest>(c => c.ThingTypeName == depcrecatedThingType.ThingTypeName), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(depcrecatedThingType);
 
-            _ = this.iaAmazon.Setup(client => client.ListTagsForResourceAsync(It.IsAny<ListTagsForResourceRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ListTagsForResourceResponse
-                {
-                    NextToken = Fixture.Create<string>(),
-                    Tags = new List<Tag>
-                    {
-                                    new Tag
-                                    {
-                                        Key = "iotEdge",
-                                        Value = "False"
-                                    }
-                    }
-                });
+            _ = this.mockAWSExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+                .ReturnsAsync(false);
 
             var existingDeviceModel = new DeviceModel
             {
