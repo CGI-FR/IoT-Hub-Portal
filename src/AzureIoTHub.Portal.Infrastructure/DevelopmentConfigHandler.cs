@@ -64,7 +64,7 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override bool OIDCValidateTokenReplay => this.config.GetValue(OIDCValidateTokenReplayKey, false);
 
-        public override bool AzureIsLoRaEnabled => bool.Parse(this.config[AzureIsLoRaFeatureEnabledKey] ?? "true");
+        public override bool AzureIsLoRaEnabled => bool.Parse(this.config[AzureIsLoRaFeatureEnabledKey] ?? "false");
 
         public override string AzureLoRaKeyManagementUrl => this.config[AzureLoRaKeyManagementUrlKey]!;
 

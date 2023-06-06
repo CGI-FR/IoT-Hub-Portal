@@ -406,8 +406,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                .Replace("%CERTIFICATE%", credentials.CertificateCredentials.CertificatePem, StringComparison.OrdinalIgnoreCase)
                .Replace("%PRIVATE_KEY%", credentials.CertificateCredentials.PrivateKey, StringComparison.OrdinalIgnoreCase)
                .Replace("%REGION%", this.configHandler.AWSRegion, StringComparison.OrdinalIgnoreCase)
+               .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", this.configHandler.AWSGreengrassCoreTokenExchangeRoleAliasName, StringComparison.OrdinalIgnoreCase)
                .Replace("%THING_NAME%", device.Name, StringComparison.OrdinalIgnoreCase)
-               .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", device.Name, StringComparison.OrdinalIgnoreCase)
                .ReplaceLineEndings();
         }
 
@@ -447,37 +447,36 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             while (true);
         }
 
+
         private async Task RemoveGreengrassCertificateFromPrincipal(IoTEdgeDevice device, string principalId)
         {
-            _ = await this.amazonIoTClient.DetachPolicyAsync(new DetachPolicyRequest
+            foreach (var item in this.configHandler.AWSGreengrassRequiredRoles)
             {
-                Target = principalId,
-                PolicyName = "GreengrassV2IoTThingPolicy"
-            });
+                _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
+                {
+                    PolicyName = item,
+                    Target = principalId
+                });
+            }
 
-            _ = await this.amazonIoTClient.DetachPolicyAsync(new DetachPolicyRequest
-            {
-                Target = principalId,
-                PolicyName = "GreengrassCoreTokenExchangeRoleAliasPolicy"
-            });
             _ = await this.amazonIoTClient.DetachThingPrincipalAsync(device.DeviceName, principalId);
 
             _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
             {
                 ForceDeleteWithoutRecovery = true,
-                SecretId = device.DeviceId + PublicKeyKey,
+                SecretId = device.DeviceName + PublicKeyKey,
             });
 
             _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
             {
                 ForceDeleteWithoutRecovery = true,
-                SecretId = device.DeviceId + PrivateKeyKey,
+                SecretId = device.DeviceName + PrivateKeyKey,
             });
 
             _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
             {
                 ForceDeleteWithoutRecovery = true,
-                SecretId = device.DeviceId + CertificateKey,
+                SecretId = device.DeviceName + CertificateKey,
             });
 
             var awsPricipalCertRegex = new Regex("/arn:aws:iot:([a-z0-9-]*):(\\d*):cert\\/([0-9a-fA-F]*)/gm");
