@@ -22,7 +22,6 @@ namespace AzureIoTHub.Portal.Server
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Identity;
     using Infrastructure;
-    using Infrastructure.Seeds;
     using Managers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -35,7 +34,6 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
     using Microsoft.OpenApi.Models;
     using MudBlazor.Services;
@@ -314,6 +312,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IEdgeModelService, EdgeModelService>();
             _ = services.AddTransient<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
             _ = services.AddTransient<IEdgeDevicesService, AzureEdgeDevicesService>();
+            _ = services.AddTransient<IExternalDeviceService, ExternalDeviceService>();
             _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
             _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
             _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
@@ -465,8 +464,6 @@ namespace AzureIoTHub.Portal.Server
 
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
             await deviceModelImageManager?.SyncImagesCacheControl()!;
-
-            await EnsureDatabaseCreatedAndUpToDate(app)!;
         }
         private static async Task ConfigureAwsAsync(IApplicationBuilder app)
         {
@@ -494,40 +491,6 @@ namespace AzureIoTHub.Portal.Server
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             return Task.CompletedTask;
-        }
-
-        private static async Task EnsureDatabaseCreatedAndUpToDate(IApplicationBuilder app)
-        {
-            using var scope = app.ApplicationServices.CreateScope();
-            using var context = scope.ServiceProvider.GetRequiredService<PortalDbContext>();
-            var config = scope.ServiceProvider.GetRequiredService<ConfigHandler>();
-
-            try
-            {
-                await context
-                    .MigrateDeviceModelProperties(config);
-
-                await context
-                    .MigrateDeviceTags(config);
-
-                await context
-                    .MigrateDeviceModelCommands(config);
-
-                await context
-                    .MigrateDeviceModels(config);
-
-                await context
-                    .MigrateEdgeDeviceModels(config);
-
-                await context
-                    .MigrateEdgeDeviceModelCommands(config);
-
-                _ = await context.SaveChangesAsync();
-            }
-            catch (InvalidOperationException e)
-            {
-                scope.ServiceProvider.GetRequiredService<ILogger>().LogError(e, "Failed to seed the database.");
-            }
         }
     }
 }

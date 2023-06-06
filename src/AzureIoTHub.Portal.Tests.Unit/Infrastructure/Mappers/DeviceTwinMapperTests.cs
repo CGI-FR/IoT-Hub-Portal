@@ -8,7 +8,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Mappers
     using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Crosscutting.Extensions;
-    using AzureIoTHub.Portal.Infrastructure.Factories;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
     using Microsoft.Azure.Devices.Shared;
     using Models.v10;
@@ -21,7 +20,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Mappers
         private MockRepository mockRepository;
 
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
-        private Mock<ITableClientFactory> mockTableClientFactory;
 
         [SetUp]
         public void SetUp()
@@ -29,7 +27,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockDeviceModelImageManager = this.mockRepository.Create<IDeviceModelImageManager>();
-            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
         }
 
         private DeviceTwinMapper CreateDeviceTwinMapper()

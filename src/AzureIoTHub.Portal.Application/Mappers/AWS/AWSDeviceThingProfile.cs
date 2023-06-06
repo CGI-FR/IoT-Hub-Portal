@@ -57,6 +57,16 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
                     Name = att.Key,
                     Value = att.Value
                 })));
+
+            _ = CreateMap<IoTEdgeDevice, CreateThingRequest>()
+                .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
+                .ForPath(dest => dest.AttributePayload.Attributes, opts => opts.MapFrom(src => src.Tags))
+                .ReverseMap();
+
+            _ = CreateMap<IoTEdgeDevice, UpdateThingRequest>()
+                .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
+                .ForPath(dest => dest.AttributePayload.Attributes, opts => opts.MapFrom(src => src.Tags))
+                .ReverseMap();
         }
 
         private static MemoryStream EmptyPayload()
