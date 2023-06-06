@@ -18,6 +18,8 @@ namespace AzureIoTHub.Portal.Application.Mappers
     {
         public EdgeDeviceProfile()
         {
+            _ = CreateMap<EdgeDevice, EdgeDevice>();
+
             _ = CreateMap<Twin, EdgeDevice>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
