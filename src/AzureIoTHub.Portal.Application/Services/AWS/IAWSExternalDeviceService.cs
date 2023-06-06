@@ -23,6 +23,7 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
         Task<UpdateThingShadowResponse> UpdateDeviceShadow(UpdateThingShadowRequest shadow);
         Task<int> GetEdgeDeviceNbDevices(IoTEdgeDevice device);
 
+        Task<bool?> IsEdgeThingType(DescribeThingTypeResponse thingType);
 
     }
 }

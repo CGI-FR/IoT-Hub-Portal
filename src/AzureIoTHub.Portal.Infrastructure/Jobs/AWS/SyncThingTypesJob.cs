@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     using Amazon.IoT.Model;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Repositories;
@@ -24,6 +25,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         private readonly IDeviceModelRepository deviceModelRepository;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IDeviceModelImageManager deviceModelImageManager;
+        private readonly IAWSExternalDeviceService awsExternalDeviceService;
 
         public SyncThingTypesJob(
             ILogger<SyncThingTypesJob> logger,
@@ -31,13 +33,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
             IUnitOfWork unitOfWork,
             IDeviceModelRepository deviceModelRepository,
             IAmazonIoT amazonIoTClient,
-            IDeviceModelImageManager awsImageManager)
+            IDeviceModelImageManager awsImageManager,
+            IAWSExternalDeviceService awsExternalDeviceService)
         {
             this.deviceModelImageManager = awsImageManager;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.deviceModelRepository = deviceModelRepository;
             this.amazonIoTClient = amazonIoTClient;
+            this.awsExternalDeviceService = awsExternalDeviceService;
             this.logger = logger;
         }
 
@@ -64,7 +68,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             foreach (var thingType in thingTypes)
             {
-                var isEdge = await IsEdgeThingType(thingType);
+                var isEdge = await awsExternalDeviceService.IsEdgeThingType(thingType);
 
                 // Cannot know if the thing type was created for an iotEdge or not, so skipping...
                 if (!isEdge.HasValue)
@@ -72,11 +76,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                     continue;
                 }
 
-                if (isEdge == true)
-                {
-                    // TODO: Implement CreateOrUpdateEdgeModel here.
-                }
-                else
+                if (isEdge == false)
                 {
                     await CreateOrUpdateDeviceModel(thingType);
                 }
@@ -84,38 +84,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             // Delete in Database AWS deleted thing types
             await DeleteThingTypes(thingTypes);
-        }
-
-        private async Task<bool?> IsEdgeThingType(DescribeThingTypeResponse thingType)
-        {
-            var response = await this.amazonIoTClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
-            {
-                ResourceArn = thingType.ThingTypeArn
-            });
-
-            do
-            {
-                if (response == null || !response.Tags.Any())
-                {
-                    return null;
-                }
-
-                var iotEdgeTag = response.Tags.Where(c => c.Key.Equals("iotEdge", StringComparison.OrdinalIgnoreCase));
-
-                if (!iotEdgeTag.Any())
-                {
-                    response = await this.amazonIoTClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
-                    {
-                        ResourceArn = thingType.ThingTypeArn,
-                        NextToken = response.NextToken
-                    });
-
-                    continue;
-                }
-
-                return bool.TryParse(iotEdgeTag.Single().Value, out var result) ? result : null;
-
-            } while (true);
         }
 
         private async Task<List<DescribeThingTypeResponse>> GetAllThingTypes()

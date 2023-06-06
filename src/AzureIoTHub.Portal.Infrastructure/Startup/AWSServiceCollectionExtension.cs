@@ -102,14 +102,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                     .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
-
-                _ = q.AddJob<SyncGreenGrassDevicesJob>(j => j.WithIdentity(nameof(SyncGreenGrassDevicesJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(SyncGreenGrassDevicesJob)}")
-                        .ForJob(nameof(SyncGreenGrassDevicesJob))
-                        .WithSimpleSchedule(s => s
-                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
-                            .RepeatForever()));
             });
         }
 
