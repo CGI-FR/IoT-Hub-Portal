@@ -29,6 +29,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         private readonly IEdgeDeviceModelRepository deviceModelRepository;
         private readonly IConfigService configService;
         private readonly ConfigHandler configHandler;
+        private readonly IMapper mapper;
 
         public AWSEdgeDevicesService(
             ConfigHandler configHandler,
@@ -55,6 +56,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
 
             this.unitOfWork = unitOfWork;
             this.edgeDeviceRepository = edgeDeviceRepository;
+
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -73,15 +76,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
                 throw new InvalidOperationException($"Edge model '{edgeDevice.ModelId}' doesn't exist!");
             }
 
-            var response = await this.awsExternalDevicesService.CreateDevice(new CreateThingRequest
-            {
-                ThingName = edgeDevice.DeviceName,
-                ThingTypeName = model.Name
-            });
+            var createThingRequest = this.mapper.Map<CreateThingRequest>(edgeDevice);
+            createThingRequest.ThingTypeName = model.Name;
 
+            var response = await this.awsExternalDevicesService.CreateDevice(createThingRequest);
             edgeDevice.DeviceId = response.ThingId;
-            var result = await base.CreateEdgeDeviceInDatabase(edgeDevice);
 
+            var result = await base.CreateEdgeDeviceInDatabase(edgeDevice);
             await this.unitOfWork.SaveAsync();
 
             return result;
@@ -97,7 +98,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
-            _ = await this.awsExternalDevicesService.GetDevice(edgeDevice.DeviceName);
+            var updateThingRequest = this.mapper.Map<UpdateThingRequest>(edgeDevice);
+            _ = await this.awsExternalDevicesService.UpdateDevice(updateThingRequest);
 
             var result = await UpdateEdgeDeviceInDatabase(edgeDevice);
 
