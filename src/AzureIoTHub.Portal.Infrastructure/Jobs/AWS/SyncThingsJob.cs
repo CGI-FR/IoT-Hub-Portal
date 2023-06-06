@@ -298,7 +298,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 {
                     this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
                 }
-
                 _ = this.mapper.Map(edgeDevice, edgeDeviceEntity);
                 this.edgeDeviceRepository.Update(edgeDeviceEntity);
             }
