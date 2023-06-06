@@ -62,7 +62,7 @@
                                     <ChildContent>
                                         <MudGrid>
                                             <MudItem xs="12" md="6">
-                                                <MudTextField id="@nameof(EdgeModel.Name)" @bind-Value="@EdgeModel.Name" For="@(() => EdgeModel.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
+                                                <MudTextField id="@nameof(EdgeModel.Name)" @bind-Value="@EdgeModel.Name" For="@(() => EdgeModel.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" ReadOnly="true"/>
                                             </MudItem>
                                             <MudItem xs="12" md="6">
                                                 <MudTextField id="@nameof(EdgeModel.Description)" @bind-Value="@EdgeModel.Description" For="@(() => EdgeModel.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />

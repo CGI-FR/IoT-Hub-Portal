@@ -6,11 +6,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
+    using Amazon.GreengrassV2.Model;
+    using Amazon.GreengrassV2;
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using Amazon.IotData;
     using Amazon.IotData.Model;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Repositories;
@@ -26,29 +29,41 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IDeviceRepository deviceRepository;
+        private readonly IEdgeDeviceRepository edgeDeviceRepository;
         private readonly IDeviceModelRepository deviceModelRepository;
+        private readonly IEdgeDeviceModelRepository edgeDeviceModelRepository;
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonIotData amazonIoTDataClient;
+        private readonly IAmazonGreengrassV2 amazonGreenGrass;
+        private readonly IAWSExternalDeviceService awsExternalDeviceService;
 
         public SyncThingsJob(
             ILogger<SyncThingsJob> logger,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IDeviceRepository deviceRepository,
+            IEdgeDeviceRepository edgeDeviceRepository,
             IDeviceModelRepository deviceModelRepository,
+            IEdgeDeviceModelRepository edgeDeviceModelRepository,
             IDeviceTagValueRepository deviceTagValueRepository,
             IAmazonIoT amazonIoTClient,
-            IAmazonIotData amazonIoTDataClient)
+            IAmazonIotData amazonIoTDataClient,
+            IAmazonGreengrassV2 amazonGreenGrass,
+            IAWSExternalDeviceService awsExternalDeviceService)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.deviceRepository = deviceRepository;
+            this.edgeDeviceRepository = edgeDeviceRepository;
             this.deviceModelRepository = deviceModelRepository;
+            this.edgeDeviceModelRepository = edgeDeviceModelRepository;
             this.deviceTagValueRepository = deviceTagValueRepository;
             this.amazonIoTClient = amazonIoTClient;
             this.amazonIoTDataClient = amazonIoTDataClient;
+            this.amazonGreenGrass = amazonGreenGrass;
             this.logger = logger;
+            this.awsExternalDeviceService = awsExternalDeviceService;
         }
 
 
@@ -88,41 +103,104 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                     continue;
                 }
 
-                //DeviceModel not find in DB
-                var deviceModel = await this.deviceModelRepository.GetByNameAsync(thing.ThingTypeName);
-                if (deviceModel == null)
-                {
-                    this.logger.LogWarning($"Cannot import device '{thing.ThingName}'. The ThingType '{thing.ThingTypeName}' doesn't exist");
-                    continue;
-                }
-
-                //ThingShadow not specified
-                var thingShadowRequest = new GetThingShadowRequest()
-                {
-                    ThingName = thing.ThingName
-                };
+                bool? isEdge;
+                //Retrieve ThingType to know if it's an iotEdge
                 try
                 {
-                    var thingShadow = await this.amazonIoTDataClient.GetThingShadowAsync(thingShadowRequest);
-                    if (thingShadow.HttpStatusCode != HttpStatusCode.OK)
+                    var thingType = await this.amazonIoTClient.DescribeThingTypeAsync(new DescribeThingTypeRequest()
                     {
-                        if (thingShadow.HttpStatusCode.Equals(HttpStatusCode.NotFound))
-                            this.logger.LogInformation($"Cannot import device '{thing.ThingName}' since it doesn't have related classic thing shadow");
-                        else
-                            this.logger.LogWarning($"Cannot import device '{thing.ThingName}' due to an error retrieving thing shadow in the Amazon IoT API : {thingShadow.HttpStatusCode}");
-                        continue;
-                    }
+                        ThingTypeName = thing.ThingTypeName
+                    });
+
+                    isEdge = await awsExternalDeviceService.IsEdgeThingType(thingType);
                 }
-                catch (AmazonIotDataException e)
+                catch (AmazonIoTException e)
                 {
                     this.logger.LogWarning($"Cannot import device '{thing.ThingName}' due to an error retrieving thing shadow in the Amazon IoT Data API.", e);
                     continue;
                 }
 
-                //Create or update the thing
-                await CreateOrUpdateThing(thing, deviceModel);
+                // Cannot know if the thing type was created for an iotEdge or not, so skipping...
+                if (!isEdge.HasValue)
+                {
+                    continue;
+                }
+
+                // EdgeDevice
+                if (isEdge == true)
+                {
+                    //EdgeDeviceModel not find in DB
+                    var edgeDeviceModel = await this.edgeDeviceModelRepository.GetByNameAsync(thing.ThingTypeName);
+                    if (edgeDeviceModel == null)
+                    {
+                        this.logger.LogWarning($"Cannot import Edge device '{thing.ThingName}'. The EdgeDeviceModel '{thing.ThingTypeName}' doesn't exist");
+                        continue;
+                    }
+
+                    //EdgeDevice map
+                    var edgeDevice = this.mapper.Map<EdgeDevice>(thing);
+                    edgeDevice.DeviceModelId = edgeDeviceModel.Id;
+                    //Get EdgeDevice ConnectionState
+                    try
+                    {
+                        var coreDevice = await amazonGreenGrass.GetCoreDeviceAsync(new GetCoreDeviceRequest() { CoreDeviceThingName = thing.ThingName });
+                        edgeDevice.ConnectionState = coreDevice.HttpStatusCode != HttpStatusCode.OK
+                            ? "Disconnected"
+                            : coreDevice.Status == CoreDeviceStatus.HEALTHY ? "Connected" : "Disconnected";
+                    }
+                    //Disconnected if unable to retrieve
+                    catch (AmazonGreengrassV2Exception)
+                    {
+                        edgeDevice.ConnectionState = "Disconnected";
+                    }
+
+                    //Create or update the edge device
+                    await CreateOrUpdateEdgeDevice(edgeDevice);
+                }
+                //Device
+                else
+                {
+                    //DeviceModel not find in DB
+                    var deviceModel = await this.deviceModelRepository.GetByNameAsync(thing.ThingTypeName);
+                    if (deviceModel == null)
+                    {
+                        this.logger.LogWarning($"Cannot import device '{thing.ThingName}'. The ThingType '{thing.ThingTypeName}' doesn't exist");
+                        continue;
+                    }
+
+                    //ThingShadow not specified
+                    var thingShadowRequest = new GetThingShadowRequest()
+                    {
+                        ThingName = thing.ThingName
+                    };
+                    try
+                    {
+                        var thingShadow = await this.amazonIoTDataClient.GetThingShadowAsync(thingShadowRequest);
+                        if (thingShadow.HttpStatusCode != HttpStatusCode.OK)
+                        {
+                            if (thingShadow.HttpStatusCode.Equals(HttpStatusCode.NotFound))
+                                this.logger.LogInformation($"Cannot import device '{thing.ThingName}' since it doesn't have related classic thing shadow");
+                            else
+                                this.logger.LogWarning($"Cannot import device '{thing.ThingName}' due to an error retrieving thing shadow in the Amazon IoT API : {thingShadow.HttpStatusCode}");
+                            continue;
+                        }
+                    }
+                    catch (AmazonIotDataException e)
+                    {
+                        this.logger.LogWarning($"Cannot import device '{thing.ThingName}' due to an error retrieving thing shadow in the Amazon IoT Data API.", e);
+                        continue;
+                    }
+
+                    //Device
+                    var device = this.mapper.Map<Device>(thing);
+                    device.DeviceModelId = deviceModel.Id;
+
+                    //Create or update the thing
+                    await CreateOrUpdateDevice(device);
+                }
             }
 
+            //Delete Device don't exist on AWS
             foreach (var item in (await this.deviceRepository.GetAllAsync(
                 device => !things.Select(x => x.ThingId).Contains(device.Id),
                 default,
@@ -133,6 +211,17 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                 this.deviceRepository.Delete(item.Id);
             }
 
+            //Delete Edge Device don't exist on AWS
+            foreach (var item in (await this.edgeDeviceRepository.GetAllAsync(
+                device => !things.Select(x => x.ThingId).Contains(device.Id),
+                default,
+                d => d.Tags,
+                d => d.Labels
+            )))
+            {
+                this.edgeDeviceRepository.Delete(item.Id);
+            }
+
             await this.unitOfWork.SaveAsync();
         }
 
@@ -140,29 +229,40 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
         {
             var things = new List<DescribeThingResponse>();
 
-            var response = await amazonIoTClient.ListThingsAsync();
+            var marker = string.Empty;
 
-            foreach (var requestDescribeThing in response.Things.Select(thing => new DescribeThingRequest { ThingName = thing.ThingName }))
+            do
             {
-                try
+                var request = new ListThingsRequest
                 {
-                    things.Add(await this.amazonIoTClient.DescribeThingAsync(requestDescribeThing));
-                }
-                catch (AmazonIoTException e)
+                    Marker = marker
+                };
+
+                var response = await amazonIoTClient.ListThingsAsync(request);
+
+                foreach (var requestDescribeThing in response.Things.Select(thing => new DescribeThingRequest { ThingName = thing.ThingName }))
                 {
-                    this.logger.LogWarning($"Cannot import device '{requestDescribeThing.ThingName}' due to an error in the Amazon IoT API.", e);
-                    continue;
+                    try
+                    {
+                        things.Add(await this.amazonIoTClient.DescribeThingAsync(requestDescribeThing));
+                    }
+                    catch (AmazonIoTException e)
+                    {
+                        this.logger.LogWarning($"Cannot import device '{requestDescribeThing.ThingName}' due to an error in the Amazon IoT API.", e);
+                        continue;
+                    }
                 }
+
+                marker = response.NextMarker;
             }
+            while (!string.IsNullOrEmpty(marker));
 
             return things;
         }
 
-        private async Task CreateOrUpdateThing(DescribeThingResponse thing, DeviceModel deviceModel)
+        private async Task CreateOrUpdateDevice(Device device)
         {
-            var device = this.mapper.Map<Device>(thing);
             var deviceEntity = await this.deviceRepository.GetByIdAsync(device.Id, d => d.Tags);
-            device.DeviceModelId = deviceModel.Id;
 
             if (deviceEntity == null)
             {
@@ -179,6 +279,28 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
                 _ = this.mapper.Map(device, deviceEntity);
                 this.deviceRepository.Update(deviceEntity);
+            }
+        }
+
+        private async Task CreateOrUpdateEdgeDevice(EdgeDevice edgeDevice)
+        {
+            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(edgeDevice.Id, d => d.Tags);
+
+            if (edgeDeviceEntity == null)
+            {
+                await this.edgeDeviceRepository.InsertAsync(edgeDevice);
+            }
+            else
+            {
+                if (edgeDeviceEntity.Version >= edgeDevice.Version) return;
+
+                foreach (var deviceTagEntity in edgeDeviceEntity.Tags)
+                {
+                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+                }
+
+                _ = this.mapper.Map(edgeDevice, edgeDeviceEntity);
+                this.edgeDeviceRepository.Update(edgeDeviceEntity);
             }
         }
     }
