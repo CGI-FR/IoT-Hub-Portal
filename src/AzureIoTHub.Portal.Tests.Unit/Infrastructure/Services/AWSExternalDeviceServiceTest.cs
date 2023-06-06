@@ -414,5 +414,133 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
             MockRepository.VerifyAll();
             return Task.CompletedTask;
         }
+
+        [Test]
+        public async Task IsEdgeThingTypeReturnTrue()
+        {
+            // Arrange
+            var thingType = new DescribeThingTypeResponse()
+            {
+                ThingTypeArn = Fixture.Create<string>(),
+                ThingTypeId = Fixture.Create<string>(),
+                ThingTypeName = Fixture.Create<string>(),
+                ThingTypeMetadata = new ThingTypeMetadata()
+            };
+
+            _ = this.mockAmazonIotClient.Setup(client => client.DescribeThingTypeAsync(It.Is<DescribeThingTypeRequest>(c => c.ThingTypeName == thingType.ThingTypeName), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(thingType);
+
+            _ = this.mockAmazonIotClient.Setup(client => client.ListTagsForResourceAsync(It.Is<ListTagsForResourceRequest>(c => c.ResourceArn == thingType.ThingTypeArn), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListTagsForResourceResponse
+                {
+                    NextToken = Fixture.Create<string>(),
+                    Tags = new List<Tag>
+                    {
+                                    new Tag
+                                    {
+                                        Key = "iotEdge",
+                                        Value = "true"
+                                    }
+                    }
+                });
+
+            //Act
+            var result = await this.awsExternalDeviceService.IsEdgeThingType(thingType);
+
+            //Assert
+            _ = result.Should().BeTrue();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task IsNotEdgeThingTypeReturnFalse()
+        {
+            // Arrange
+            var thingType = new DescribeThingTypeResponse()
+            {
+                ThingTypeArn = Fixture.Create<string>(),
+                ThingTypeId = Fixture.Create<string>(),
+                ThingTypeName = Fixture.Create<string>(),
+                ThingTypeMetadata = new ThingTypeMetadata()
+            };
+
+            _ = this.mockAmazonIotClient.Setup(client => client.ListTagsForResourceAsync(It.Is<ListTagsForResourceRequest>(c => c.ResourceArn == thingType.ThingTypeArn), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListTagsForResourceResponse
+                {
+                    NextToken = Fixture.Create<string>(),
+                    Tags = new List<Tag>
+                    {
+                                    new Tag
+                                    {
+                                        Key = "iotEdge",
+                                        Value = "false"
+                                    }
+                    }
+                });
+
+            //Act
+            var result = await this.awsExternalDeviceService.IsEdgeThingType(thingType);
+
+            //Assert
+            _ = result.Should().BeFalse();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task EdgeThingTypeNullReturnNull()
+        {
+            // Arrange
+            var thingType = new DescribeThingTypeResponse()
+            {
+                ThingTypeArn = Fixture.Create<string>(),
+                ThingTypeId = Fixture.Create<string>(),
+                ThingTypeName = Fixture.Create<string>(),
+                ThingTypeMetadata = new ThingTypeMetadata()
+            };
+
+            _ = this.mockAmazonIotClient.Setup(client => client.ListTagsForResourceAsync(It.Is<ListTagsForResourceRequest>(c => c.ResourceArn == thingType.ThingTypeArn), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((ListTagsForResourceResponse)null);
+
+            //Act
+            var result = await this.awsExternalDeviceService.IsEdgeThingType(thingType);
+
+            //Assert
+            _ = result.Should().BeNull();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task EdgeThingTypeNotBooleanReturnNull()
+        {
+            // Arrange
+            var thingType = new DescribeThingTypeResponse()
+            {
+                ThingTypeArn = Fixture.Create<string>(),
+                ThingTypeId = Fixture.Create<string>(),
+                ThingTypeName = Fixture.Create<string>(),
+                ThingTypeMetadata = new ThingTypeMetadata()
+            };
+
+            _ = this.mockAmazonIotClient.Setup(client => client.ListTagsForResourceAsync(It.Is<ListTagsForResourceRequest>(c => c.ResourceArn == thingType.ThingTypeArn), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListTagsForResourceResponse
+                {
+                    NextToken = Fixture.Create<string>(),
+                    Tags = new List<Tag>
+                    {
+                                    new Tag
+                                    {
+                                        Key = "iotEdge",
+                                        Value = "123"
+                                    }
+                    }
+                });
+
+            //Act
+            var result = await this.awsExternalDeviceService.IsEdgeThingType(thingType);
+
+            //Assert
+            _ = result.Should().BeNull();
+            MockRepository.VerifyAll();
+        }
     }
 }

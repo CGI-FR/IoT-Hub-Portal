@@ -144,14 +144,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
                     try
                     {
                         var coreDevice = await amazonGreenGrass.GetCoreDeviceAsync(new GetCoreDeviceRequest() { CoreDeviceThingName = thing.ThingName });
-                        if (coreDevice.HttpStatusCode != HttpStatusCode.OK)
-                        {
-                            edgeDevice.ConnectionState = "Disconnected";
-                        }
-                        else
-                        {
-                            edgeDevice.ConnectionState = coreDevice.Status == CoreDeviceStatus.HEALTHY ? "Connected" : "Disconnected";
-                        }
+                        edgeDevice.ConnectionState = coreDevice.HttpStatusCode != HttpStatusCode.OK
+                            ? "Disconnected"
+                            : coreDevice.Status == CoreDeviceStatus.HEALTHY ? "Connected" : "Disconnected";
                     }
                     //Disconnected if unable to retrieve
                     catch (AmazonGreengrassV2Exception)
