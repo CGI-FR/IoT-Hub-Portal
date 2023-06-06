@@ -427,9 +427,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
                 ThingTypeMetadata = new ThingTypeMetadata()
             };
 
-            _ = this.mockAmazonIotClient.Setup(client => client.DescribeThingTypeAsync(It.Is<DescribeThingTypeRequest>(c => c.ThingTypeName == thingType.ThingTypeName), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(thingType);
-
             _ = this.mockAmazonIotClient.Setup(client => client.ListTagsForResourceAsync(It.Is<ListTagsForResourceRequest>(c => c.ResourceArn == thingType.ThingTypeArn), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ListTagsForResourceResponse
                 {
