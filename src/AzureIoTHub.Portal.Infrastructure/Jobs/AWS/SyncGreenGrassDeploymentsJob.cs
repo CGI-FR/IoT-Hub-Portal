@@ -81,35 +81,42 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs.AWS
 
             var nextToken = string.Empty;
 
-            var getAllAwsGreenGrassDeployments = await this.amazonGreenGrass.ListDeploymentsAsync(
-                new ListDeploymentsRequest
+            do
+            {
+                var request = new ListDeploymentsRequest
                 {
                     NextToken = nextToken,
                     HistoryFilter = DeploymentHistoryFilter.LATEST_ONLY
-                });
+                };
 
-            foreach (var deployment in getAllAwsGreenGrassDeployments.Deployments)
-            {
-                var awsThingGroupRegex = new Regex(@"/([^/]+)$");
-                var matches = awsThingGroupRegex.Match(deployment.TargetArn);
+                var response = await this.amazonGreenGrass.ListDeploymentsAsync(request);
 
-                if (matches.Success && matches.Groups.Count > 1)
+                foreach (var deployment in response.Deployments)
                 {
-                    var thinggroupName = matches.Groups[1].Value;
-                    var s = await this.amazonIoTClient.DescribeThingGroupAsync(new Amazon.IoT.Model.DescribeThingGroupRequest { ThingGroupName = thinggroupName });
-                    if (s.QueryString != null)
+                    var awsThingGroupRegex = new Regex(@"/([^/]+)$");
+                    var matches = awsThingGroupRegex.Match(deployment.TargetArn);
+
+                    if (matches.Success && matches.Groups.Count > 1)
                     {
-                        var iotEdgeModel = new IoTEdgeModel
+                        var thinggroupName = matches.Groups[1].Value;
+                        var s = await this.amazonIoTClient.DescribeThingGroupAsync(new Amazon.IoT.Model.DescribeThingGroupRequest { ThingGroupName = thinggroupName });
+                        if (s.QueryString != null)
                         {
-                            ModelId = deployment.DeploymentId, //Instead of giving a random Id here, we can give the deploymentID
-                            Name = deployment.DeploymentName,
-                            ExternalIdentifier = deployment.DeploymentId
-                        };
-                        deployments.Add(iotEdgeModel);
+                            var iotEdgeModel = new IoTEdgeModel
+                            {
+                                ModelId = deployment.DeploymentId, //Instead of giving a random Id here, we can give the deploymentID
+                                Name = deployment.DeploymentName,
+                                ExternalIdentifier = deployment.DeploymentId
+                            };
+                            deployments.Add(iotEdgeModel);
+                        }
                     }
                 }
 
+                nextToken = response.NextToken;
             }
+            while (!string.IsNullOrEmpty(nextToken));
+
             return deployments;
         }
 

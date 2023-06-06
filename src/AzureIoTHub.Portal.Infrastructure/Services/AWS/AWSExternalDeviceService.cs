@@ -145,5 +145,37 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 ? throw new InternalServerErrorException($"Can not list Client Devices Associated to {device.DeviceName} Core Device due to an error in the Amazon IoT API.")
                 : listClientDevices.AssociatedClientDevices.Count;
         }
+
+        public async Task<bool?> IsEdgeThingType(DescribeThingTypeResponse thingType)
+        {
+            var response = await this.amazonIotClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
+            {
+                ResourceArn = thingType.ThingTypeArn
+            });
+
+            do
+            {
+                if (response == null || !response.Tags.Any())
+                {
+                    return null;
+                }
+
+                var iotEdgeTag = response.Tags.Where(c => c.Key.Equals("iotEdge", StringComparison.OrdinalIgnoreCase));
+
+                if (!iotEdgeTag.Any())
+                {
+                    response = await this.amazonIotClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
+                    {
+                        ResourceArn = thingType.ThingTypeArn,
+                        NextToken = response.NextToken
+                    });
+
+                    continue;
+                }
+
+                return bool.TryParse(iotEdgeTag.Single().Value, out var result) ? result : null;
+
+            } while (true);
+        }
     }
 }
