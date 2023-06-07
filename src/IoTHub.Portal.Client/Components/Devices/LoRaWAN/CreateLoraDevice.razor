@@ -1,0 +1,105 @@
+﻿@using IoTHub.Portal.Client.Validators
+@using IoTHub.Portal.Models.v10.LoRaWAN
+@using IoTHub.Portal.Models.v10
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
+
+<MudExpansionPanels MultiExpansion="true">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="LoRaWAN" IsInitiallyExpanded="true">
+                <TitleContent><MudText Typo="Typo.h6">LoraWAN</MudText></TitleContent>
+                <ChildContent>
+                    <MudGrid>
+                        @if (LoraModelDto.UseOTAA)
+                        {
+                            <MudItem xs="12" md="6">
+                                <MudTextField id="@nameof(LoRaDevice.AppEUI)"
+                                          @bind-Value="@LoRaDevice.AppEUI"
+                                          Label="OTAA AppEUI"
+                                          Variant="Variant.Outlined"
+                                          For="@(()=> LoRaDevice.AppEUI)"
+                                          Required="true" />
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField id="@nameof(LoRaDevice.AppKey)"
+                                          @bind-Value="@LoRaDevice.AppKey"
+                                          Label="OTAA AppKey"
+                                          For="@(() => LoRaDevice.AppKey)"
+                                          Required="true"
+                                          Variant="Variant.Outlined" />
+                            </MudItem>
+                        }
+                        else
+                        {
+                            <MudItem xs="12" md="6">
+                                <MudTextField id="@nameof(LoRaDevice.AppSKey)" @bind-Value="@LoRaDevice.AppSKey" Label="ABP App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField id="@nameof(LoRaDevice.NwkSKey)" @bind-Value="@LoRaDevice.NwkSKey" Label="ABP Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField id="@nameof(LoRaDevice.DevAddr)" @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                            </MudItem>
+                        }
+                        <MudItem xs="12" md="6">
+                            <MudAutocomplete T="string"
+                                             id="@nameof(LoRaDevice.GatewayID)"
+                                             @bind-Value="LoRaDevice.GatewayID"
+                                             SearchFunc="@SearchGatewayID"
+                                             Label="GatewayID"
+                                             Dense=true
+                                             For="@(() => LoRaDevice.GatewayID)"
+                                             Variant="Variant.Outlined"
+                                             ResetValueOnEmptyText=true
+                                             Immediate=true
+                                             Clearable=true
+                                             CoerceText=true
+                                             CoerceValue=false>
+                            </MudAutocomplete>
+                        </MudItem>
+                    </MudGrid>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+</MudExpansionPanels>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [Parameter]
+    public LoRaDeviceDetails LoRaDevice { get; set; } = default!;
+
+    [Parameter]
+    public LoRaDeviceDetailsValidator LoraValidator { get; set; } = default!;
+
+    [Parameter]
+    public LoRaDeviceModelDto LoraModelDto { get; set; } = default!;
+
+    public List<string> GatewayIdList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            GatewayIdList = (await LoRaWanDeviceClientService.GetGatewayIdList()).GatewayIds;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    private async Task<IEnumerable<string>> SearchGatewayID(string value)
+    {
+        await Task.Delay(50);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return GatewayIdList;
+
+        return GatewayIdList
+                    .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+}

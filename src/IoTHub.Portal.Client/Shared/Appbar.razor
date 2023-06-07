@@ -1,0 +1,99 @@
+﻿@using IoTHub.Portal.Models.v10
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using IoTHub.Portal.Client.Pages.Ideas
+
+@inject PortalSettings Portal
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ILayoutService LayoutService
+
+<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@LayoutService.ToggleDrawer" />
+<MudText id="title" Typo="Typo.h5">@Portal.PortalName</MudText>
+<MudSpacer />
+<AuthorizeView>
+    <Authorized>
+        @if (Portal.IsIdeasFeatureEnabled)
+        {
+            <MudTooltip id="ideas" Duration="1000" Text="New Ideas ?">
+                <MudIconButton Icon="@Icons.Material.Filled.Lightbulb" Color="Color.Inherit" OnClick="@OpenSubmitIdeaDialog" />
+            </MudTooltip>
+        }
+        <MudTooltip id="dark_light_switch" Duration="1000" Text="@(LayoutService.IsDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme")">
+            <MudIconButton Icon="@(LayoutService.IsDarkMode ? @Icons.Material.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@LayoutService.ToggleDarkMode" />
+        </MudTooltip>
+        <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="help-menu">
+            <ActivatorContent>
+                <MudTooltip id="dark_light_switch" Duration="1000" Text="Support + documentation">
+                    <MudIconButton Icon="@Icons.Material.Rounded.HelpOutline" Style="color: white;" Size="Size.Medium" />
+                </MudTooltip>
+            </ActivatorContent>
+            <ChildContent>
+                <MudContainer>
+                    <MudItem sm="12">
+                        <MudText Typo="Typo.h6" Style="margin-bottom: 15px;">Support resources</MudText>
+                        <MudLink Href="https://cgi-fr.github.io/IoT-Hub-Portal/stable/concepts/" Target="_blank" Style="display: flex">
+                            <MudIcon Icon="@Icons.Material.Outlined.Subject" />&nbsp;
+                            <MudText Typo="Typo.body1">
+                                Explore the portal documentation
+                            </MudText>
+                        </MudLink>
+                    </MudItem>
+                </MudContainer>
+                <MudContainer Style="margin-top: 20px">
+                    <MudItem sm="12">
+                        <MudText Typo="Typo.h6" Style="margin-bottom: 15px;">Need more help?</MudText>
+                        <MudText Typo="Typo.body1" style="margin-bottom: 10px">Visit our github repository, create an issue or feature requests.</MudText>
+                        <MudLink Href="https://github.com/CGI-FR/IoT-Hub-Portal/issues" Target="_blank" Style="display: flex">
+                            <MudIcon Icon="@Icons.Custom.Brands.GitHub" Style="font-size: 1.2em" />&nbsp;
+                            <MudText Typo="Typo.body1">
+                                Visit our GitHub repository
+                            </MudText>
+                        </MudLink>
+                    </MudItem>
+                </MudContainer>
+            </ChildContent>
+        </MudMenu>
+        <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="account-menu">
+            <ActivatorContent>
+                <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Style="color: white;" Size="Size.Medium" />
+            </ActivatorContent>
+            <ChildContent>
+                <MudList Clickable="true">
+                    <MudListSubheader>
+                        <MudText Typo="Typo.caption">Signed in as</MudText>
+                        <MudText Typo="Typo.body1"><b>@context.User.Identity?.Name</b></MudText>
+                    </MudListSubheader>
+                    <MudDivider />
+                    <MudListItem Href="#" OnClick="BeginLogout" Icon="@Icons.Material.Filled.Logout">Log out</MudListItem>
+                </MudList>
+            </ChildContent>
+        </MudMenu>
+    </Authorized>
+    <NotAuthorized>
+        <MudChip id="login" Icon="@Icons.Material.Filled.Login" Label="true" Color="Color.Secondary" Variant="Variant.Filled" @onclick="BeginLogin">Log in</MudChip>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private void BeginLogout(MouseEventArgs args)
+    {
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+
+    private void BeginLogin(MouseEventArgs args)
+    {
+        Navigation.NavigateTo("authentication/login");
+    }
+
+    private void OpenSubmitIdeaDialog()
+    {
+        var options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                DisableBackdropClick = true
+            };
+
+        DialogService.Show<SubmitIdeaDialog>(string.Empty, options);
+    }
+}
