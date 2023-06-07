@@ -27,6 +27,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
+    using Amazon.IotData;
+    using IoTHub.Portal.Application.Services.AWS;
 
     [TestFixture]
     public class AwsExternalDeviceServiceTests : BackendUnitTest
@@ -34,7 +36,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         private Mock<IAmazonIoT> mockAmazonIot;
         private Mock<IAmazonGreengrassV2> mockGreengrassV2;
         private Mock<IAmazonSecretsManager> mockSecretsManager;
+        private Mock<IAmazonIotData> mocAmazonIotData;
         private Mock<ConfigHandler> mockConfigHandler;
+        private Mock<IAWSExternalDeviceService> awsExternalDeviceService;
 
         private IExternalDeviceService externalDeviceService;
 
@@ -45,13 +49,19 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockAmazonIot = MockRepository.Create<IAmazonIoT>();
             this.mockGreengrassV2 = MockRepository.Create<IAmazonGreengrassV2>();
             this.mockSecretsManager = MockRepository.Create<IAmazonSecretsManager>();
+            this.mocAmazonIotData = MockRepository.Create<IAmazonIotData>();
             this.mockConfigHandler = MockRepository.Create<ConfigHandler>();
+            this.awsExternalDeviceService = MockRepository.Create<IAWSExternalDeviceService>();
+
 
             _ = ServiceCollection.AddSingleton(this.mockAmazonIot.Object);
             _ = ServiceCollection.AddSingleton(this.mockGreengrassV2.Object);
             _ = ServiceCollection.AddSingleton(this.mockSecretsManager.Object);
+            _ = ServiceCollection.AddSingleton(this.mocAmazonIotData.Object);
             _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
             _ = ServiceCollection.AddSingleton<IExternalDeviceService, AwsExternalDeviceService>();
+            _ = ServiceCollection.AddSingleton(this.awsExternalDeviceService.Object);
+
 
             Services = ServiceCollection.BuildServiceProvider();
 
@@ -271,13 +281,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public async Task GetConnectedEdgeDevicesCountShouldThrowNotImplementedException()
+        public async Task GetConnectedEdgeDevicesCountShouldReturnConnectedEdgeDeviceNumber()
         {
+            //Arrange
+            _ = this.mockGreengrassV2.Setup(greengrass => greengrass.ListCoreDevicesAsync(It.IsAny<ListCoreDevicesRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListCoreDevicesResponse());
             // Act
             var act = () => this.externalDeviceService.GetConnectedEdgeDevicesCount();
 
             // Assert
-            _ = await act.Should().ThrowAsync<NotImplementedException>();
+            _ = act.Should().NotBeNull();
         }
 
         [Test]
@@ -291,13 +304,24 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public async Task GetDevicesCountShouldThrowNotImplementedException()
+        public async Task GetDevicesCountShouldReturnDeviceNumber()
         {
+
+            //Arrange
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(new List<DescribeThingResponse>());
+            _ = this.mockAmazonIot.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DescribeThingTypeResponse());
+
+            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+                .ReturnsAsync(false);
+
             // Act
             var act = () => this.externalDeviceService.GetDevicesCount();
 
             // Assert
-            _ = await act.Should().ThrowAsync<NotImplementedException>();
+            _ = act.Should().NotBeNull();
+
         }
 
         [Test]
@@ -353,11 +377,20 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         [Test]
         public async Task GetEdgeDevicesCountShouldThrowNotImplementedException()
         {
+            //Arrange
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(new List<DescribeThingResponse>());
+            _ = this.mockAmazonIot.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DescribeThingTypeResponse());
+
+            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+                .ReturnsAsync(true);
+
             // Act
-            var act = () => this.externalDeviceService.GetEdgeDevicesCount();
+            var act = () => this.externalDeviceService.GetDevicesCount();
 
             // Assert
-            _ = await act.Should().ThrowAsync<NotImplementedException>();
+            _ = act.Should().NotBeNull();
         }
 
         [Test]

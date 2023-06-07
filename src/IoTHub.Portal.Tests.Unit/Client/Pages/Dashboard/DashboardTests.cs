@@ -15,6 +15,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
+    using IoTHub.Portal.Models.v10;
 
     [TestFixture]
     public class DashboardTests : BlazorUnitTest
@@ -33,9 +34,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
         }
 
         [Test]
-        public void DashboardShouldRenderCorrectly()
+        public void DashboardShouldRenderCorrectlyForAzure()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var portalMetric = new PortalMetric
             {
                 DeviceCount = 1,
@@ -64,9 +67,43 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
         }
 
         [Test]
-        public void OnCLickOnRefreshShouldRaiseRefreshDashboardEvent()
+        public void DashboardShouldRenderCorrectlyForAWS()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            var portalMetric = new PortalMetric
+            {
+                DeviceCount = 1,
+                EdgeDeviceCount = 3,
+                ConnectedEdgeDeviceCount = 4,
+                FailedDeploymentCount = 5,
+            };
+
+            _ = this.mockDashboardMetricsClientService.Setup(c => c.GetPortalMetrics())
+                .ReturnsAsync(portalMetric);
+
+            // Act
+            var cut = RenderComponent<Dashboard>();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-icon").Count.Should().Be(4));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(4));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(4));
+
+            cut.WaitForAssertion(() => cut.Find("#dashboard-metric-counter-title").TextContent.Should().Be("Devices"));
+            cut.WaitForAssertion(() => cut.Find("#dashboard-metric-counter-value").TextContent.Should().Be(portalMetric.DeviceCount.ToString(CultureInfo.InvariantCulture)));
+
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void OnCLickOnRefreshShouldRaiseRefreshDashboardEventForAzure()
+        {
+            // Arrange
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
             var portalMetric = new PortalMetric
             {
                 DeviceCount = 1,
@@ -75,6 +112,47 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
                 ConnectedEdgeDeviceCount = 4,
                 FailedDeploymentCount = 5,
                 ConcentratorCount = 6
+            };
+
+            var receivedEvents = new List<string>();
+
+            var dashboardLayoutService = TestContext?.Services.GetRequiredService<IDashboardLayoutService>();
+
+            dashboardLayoutService.RefreshDashboardOccurred += (sender, _) =>
+            {
+                receivedEvents.Add(sender?.GetType().ToString());
+            };
+
+            _ = this.mockDashboardMetricsClientService.Setup(c => c.GetPortalMetrics())
+                .ReturnsAsync(portalMetric);
+
+            var cut = RenderComponent<Dashboard>();
+            cut.WaitForAssertion(() => cut.Find("#refresh-dashboard"));
+
+            // Act
+            cut.Find("#refresh-dashboard").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => receivedEvents.Count.Should().Be(1));
+            cut.WaitForAssertion(() => receivedEvents.First().Should().Be(typeof(DashboardLayoutService).ToString()));
+
+            cut.WaitForAssertion(() => this.mockDashboardMetricsClientService.Verify(service => service.GetPortalMetrics(), Times.Exactly(2)));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void OnCLickOnRefreshShouldRaiseRefreshDashboardEventForAWS()
+        {
+            // Arrange
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+
+            var portalMetric = new PortalMetric
+            {
+                DeviceCount = 1,
+                EdgeDeviceCount = 3,
+                ConnectedEdgeDeviceCount = 4,
+                FailedDeploymentCount = 5,
             };
 
             var receivedEvents = new List<string>();
