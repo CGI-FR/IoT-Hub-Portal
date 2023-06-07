@@ -12,6 +12,6 @@ updates:
       interval: "daily"
     # Maintain dependencies for the web client
   - package-ecosystem: "npm"
-    directory: "/src/AzureIoTHub.Portal/Client"
+    directory: "/src/IoTHub.Portal/Client"
     schedule:
       interval: "daily"

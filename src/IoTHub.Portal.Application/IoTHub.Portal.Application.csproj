@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AWSSDK.IoT" Version="3.7.107.5" />
+    <PackageReference Include="AWSSDK.IotData" Version="3.7.102.5" />
+    <PackageReference Include="Azure.Messaging.EventHubs" Version="5.8.1" />
+    <PackageReference Include="Microsoft.Azure.Devices" Version="1.38.2" />
+    <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Service" Version="1.18.2" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IoTHub.Portal.Crosscutting\IoTHub.Portal.Crosscutting.csproj" />
+    <ProjectReference Include="..\IoTHub.Portal.Domain\IoTHub.Portal.Domain.csproj" />
+    <ProjectReference Include="..\IoTHub.Portal.Shared\IoTHub.Portal.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

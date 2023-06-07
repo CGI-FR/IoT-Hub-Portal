@@ -1,0 +1,166 @@
+﻿@page "/lorawan/concentrators/new"
+@using IoTHub.Portal.Models.v10.LoRaWAN
+@using IoTHub.Portal.Client.Validators
+@using IoTHub.Portal.Shared.Models.v10.LoRaWAN
+
+@attribute [Authorize]
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+@inject IDialogService DialogService
+@inject ILoRaWanConcentratorClientService LoRaWanConcentratorsClientService
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">LoRaWAN Concentrator</MudText>
+
+<MudForm Model="@concentrator" @ref="form">
+    <MudGrid>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(concentrator.DeviceName) ? concentrator.DeviceId : concentrator.DeviceName)</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+            </MudCard>
+            <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveDevice" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+            </MudItem>
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
+                <MudTabPanel Text="General">
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            <MudItem xs="12">
+                                                <MudTextField @bind-Value="@concentrator.DeviceId"
+                                                              id="@nameof(ConcentratorDto.DeviceId)"
+                                                              Label="Device Id"
+                                                              Variant="Variant.Outlined"
+                                                              For="@(()=> concentrator.DeviceId)"
+                                                              Required="true"
+                                                              HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                <MudTextField @bind-Value="@concentrator.DeviceName"
+                                                              id="@nameof(ConcentratorDto.DeviceName)"
+                                                              For="@(()=> concentrator.DeviceName)"
+                                                              Label="Device name" Variant="Variant.Outlined" Required="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField For="@(()=> concentrator.ClientThumbprint)"
+                                                              Mask="@maskThumbprint"
+                                                              HelperText="ClientThumbprint must contain 40 hexadecimal characters"
+                                                              @bind-Value="@concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudSelect T="string" For="@(()=> concentrator.LoraRegion)" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true" id="@nameof(ConcentratorDto.LoraRegion)">
+                                                    @foreach (var frequencyPlan in FrequencyPlans.OrderBy(c => c.Name))
+                                                    {
+                                                        <MudSelectItem Value="@(frequencyPlan.FrequencyPlanID)">@frequencyPlan.Name</MudSelectItem>
+                                                    }
+                                                </MudSelect>
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                <MudText>
+                                                    <b>Status</b>
+                                                </MudText>
+                                                <MudRadioGroup @bind-SelectedOption="@concentrator.IsEnabled">
+                                                    <MudRadio Option=@(true) Color="Color.Primary">
+                                                        Enabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                    <MudRadio Option=@(false) Color="Color.Primary">
+                                                        Disabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                </MudRadioGroup>
+                                            </MudItem>
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                    </MudExpansionPanels>
+                </MudTabPanel>
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+
+    @code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    private ConcentratorDto concentrator = new();
+    private MudForm form = default!;
+    private ConcentratorValidator concentratorValidator = new();
+
+    private List<FrequencyPlan> FrequencyPlans = new List<FrequencyPlan>();
+
+    private bool isProcessing;
+
+    public PatternMask maskThumbprint = new("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
+    {
+            MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
+            CleanDelimiters = false,
+            Transformation = AllUpperCase
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        this.FrequencyPlans.AddRange(await this.LoRaWanConcentratorsClientService.GetFrequencyPlans());
+    }
+
+    private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
+
+    /// <summary>
+    /// Sends a POST request to the ConcentratorsController, to add the new device lora concentrator to the Azure IoT Hub
+    /// </summary>
+    public async void SaveDevice()
+    {
+        isProcessing = true;
+        
+        try
+        {
+            await form.Validate();
+            if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
+            {
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
+            concentrator.DeviceType = "LoRa Concentrator";
+
+            // Sends the device to be added to the controller
+            await LoRaWanConcentratorsClientService.CreateConcentrator(concentrator);
+
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
+
+            // Go back to the list of concentrator
+            NavManager.NavigateTo("lorawan/concentrators");
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    // Workaround to change MudSelect value when performing unit tests.
+    internal void ChangeRegion(string region) { concentrator.LoraRegion = region; }
+
+}

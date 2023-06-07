@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/AzureIoTHub.Portal.Server/bin/Debug/net7.0/AzureIoTHub.Portal.Server.dll",
+            "program": "${workspaceFolder}/src/IoTHub.Portal.Server/bin/Debug/net7.0/IoTHub.Portal.Server.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/AzureIoTHub.Portal.Server/",
+            "cwd": "${workspaceFolder}/src/IoTHub.Portal.Server/",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {

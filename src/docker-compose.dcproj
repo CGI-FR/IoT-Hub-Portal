@@ -6,7 +6,7 @@
     <ProjectGuid>b9d2de01-84de-461f-998c-20b57e4aa021</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/{Scheme}://{ServiceHost}:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>azureiothub.portal.server</DockerServiceName>
+    <DockerServiceName>IoTHub.Portal.Server</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

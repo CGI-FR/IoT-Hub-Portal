@@ -266,7 +266,7 @@ __pycache__/
 
 
 src/.env
-/src/AzureIoTHub.Portal/Client/Properties/launchSettings.json
+/src/IoTHub.Portal/Client/Properties/launchSettings.json
 
 # Jekyll
 _site/
@@ -315,8 +315,8 @@ Temporary Items
 *.icloud
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
-src/AzureIoTHub.Portal/Client/assets/package-lock.json
-src/AzureIoTHub.Portal/Server/appsettings.Development.json
+src/IoTHub.Portal/Client/assets/package-lock.json
+src/IoTHub.Portal/Server/appsettings.Development.json
 
 # Folder for iotedge-lorawan-starterkit bicep templates
 iotedge-lorawan-starterkit/
