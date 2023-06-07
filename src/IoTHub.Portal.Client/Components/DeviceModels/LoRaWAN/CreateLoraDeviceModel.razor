@@ -1,0 +1,202 @@
+﻿@using IoTHub.Portal.Models.v10.LoRaWAN
+
+<MudExpansionPanels MultiExpansion="true" id="lorawan">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="LoRaWAN" IsInitiallyExpanded="true">
+                <TitleContent><MudText Typo="Typo.h6">LoraWAN</MudText></TitleContent>
+                <ChildContent>
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudGrid>
+                                <MudItem md="6" xs="12">
+                                    <MudSwitch id="@nameof(LoRaDeviceModel.UseOTAA)" @bind-Checked="@LoRaDeviceModel.UseOTAA" Color="Color.Primary" Label="Support OTAA/ABP setting"></MudSwitch>
+                                    <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">@(LoRaDeviceModel.UseOTAA ? "OTAA setting" : "ABP setting") <b>is</b> used</MudText>
+                                </MudItem>
+                                    <MudItem md="6" xs="12">
+                                        @if (!LoRaDeviceModel.UseOTAA)
+                                        {
+                                        <MudCheckBox id="@nameof(LoRaDeviceModel.ABPRelaxMode)" @bind-Checked="@LoRaDeviceModel.ABPRelaxMode" For="@(() => LoRaDeviceModel.ABPRelaxMode)" Label="Disable ABP relax mode" Color="Color.Primary"></MudCheckBox>
+                                        }
+                                    </MudItem>
+                                <MudItem md="3" xs="6">
+                                    <MudSelect id="@nameof(LoRaDeviceModel.ClassType)"
+                                               @bind-Value="@LoRaDeviceModel.ClassType"
+                                               Label="Type"
+                                               Variant="Variant.Outlined"
+                                               For="@(()=> LoRaDeviceModel.ClassType)"
+                                               Required="true">
+                                        @foreach (ClassType item in Enum.GetValues(typeof(ClassType)))
+                                        {
+                                            <MudSelectItem Value="@item">@item</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                <MudItem md="3" xs="6">
+                                    <MudSelect id="@nameof(LoRaDeviceModel.Deduplication)" @bind-Value="@LoRaDeviceModel.Deduplication" For="@(() => LoRaDeviceModel.Deduplication)" AnchorOrigin="Origin.BottomCenter" Label="Message Deduplication" Variant="Variant.Outlined">
+                                        @foreach (DeduplicationMode item in Enum.GetValues(typeof(DeduplicationMode)))
+                                        {
+                                            <MudSelectItem Value="@item">@item</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                        <MudItem md="6" xs=12>
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudTextField id="@nameof(LoRaDeviceModel.SensorDecoder)" @bind-Value="@LoRaDeviceModel.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoder)" Variant="Variant.Outlined"></MudTextField>
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                        <MudItem sm="6" xs=12>
+                            <MudGrid>
+                                <MudItem lg="6" xs="12">
+                                    <MudNumericField id="@nameof(LoRaDeviceModel.KeepAliveTimeout)" @bind-Value="@LoRaDeviceModel.KeepAliveTimeout" For="@(() => LoRaDeviceModel.KeepAliveTimeout)" Min=1 Label="Device Connection Timeout" Variant="Variant.Outlined"></MudNumericField>
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                    </MudGrid>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="Properties">
+                <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
+                <ChildContent>
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudText Typo=Typo.h5 Class="mb-4">Receive Windows</MudText>
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudSwitch id="@nameof(LoRaDeviceModel.Downlink)" @bind-Checked="@LoRaDeviceModel.Downlink" For="@(() => LoRaDeviceModel.Downlink)" Label="Support downstream messages" Color="Color.Primary"></MudSwitch>
+                                    @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
+                                    {
+                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">Downstream messages <b>is</b> enabled.</MudText>
+                                                    
+                                    }
+                                </MudItem>
+                                @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
+                                {
+                                    <MudItem xs="12" md="6">
+                                        <MudNumericField id="@nameof(LoRaDeviceModel.PreferredWindow)" @bind-Value="@LoRaDeviceModel.PreferredWindow" For="@(() => LoRaDeviceModel.PreferredWindow)" Min="1" Max="2" Label="Preferred receive window" Variant="Variant.Outlined"></MudNumericField>
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudNumericField id="@nameof(LoRaDeviceModel.RXDelay)" @bind-Value="@LoRaDeviceModel.RXDelay" For="@(() => LoRaDeviceModel.RXDelay)" Min=1 Label="RX Delay" Variant="Variant.Outlined"></MudNumericField>
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudNumericField id="@nameof(LoRaDeviceModel.RX1DROffset)" @bind-Value="@LoRaDeviceModel.RX1DROffset" For="@(() => LoRaDeviceModel.RX1DROffset)" Label="RX1 Datarate Offset" Variant="Variant.Outlined"></MudNumericField>
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudNumericField id="@nameof(LoRaDeviceModel.RX2DataRate)" @bind-Value="@LoRaDeviceModel.RX2DataRate" For="@(() => LoRaDeviceModel.RX2DataRate)" Label="RX2 Datarate" Variant="Variant.Outlined"></MudNumericField>
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        </MudItem>
+
+                        <MudItem xs="6">
+                            <MudText Typo=Typo.h5 Class="mb-4">Frame Counters</MudText>
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudCheckBox id="@nameof(LoRaDeviceModel.Supports32BitFCnt)" @bind-Checked="@LoRaDeviceModel.Supports32BitFCnt" For="@(() => LoRaDeviceModel.Supports32BitFCnt)" Label="32bit counter support" Color="Color.Primary"></MudCheckBox>
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudNumericField id="@nameof(LoRaDeviceModel.FCntUpStart)" @bind-Value="@LoRaDeviceModel.FCntUpStart" For="@(() => LoRaDeviceModel.FCntUpStart)" Min=0 Label="Frame counter up start value" Variant="Variant.Outlined"></MudNumericField>
+                                </MudItem>
+                                @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
+                                {
+                                    <MudItem xs="12" md="6">
+                                        <MudNumericField id="@nameof(LoRaDeviceModel.FCntDownStart)" @bind-Value="@LoRaDeviceModel.FCntDownStart" For="@(() => LoRaDeviceModel.FCntDownStart)" Min=0 Label="Frame counter down start value" Variant="Variant.Outlined"></MudNumericField>
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudNumericField id="@nameof(LoRaDeviceModel.FCntResetCounter)" @bind-Value="@LoRaDeviceModel.FCntResetCounter" For="@(() => LoRaDeviceModel.FCntResetCounter)" Min=0 Label="Frame counter reset counter value" Variant="Variant.Outlined"></MudNumericField>
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        </MudItem>
+                    </MudGrid>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+
+    @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
+    {
+        <MudGrid>
+            <MudItem xs="12">
+                <MudExpansionPanel Text="Commands" IsInitiallyExpanded="true">
+                    <TitleContent><MudText Typo="Typo.h6">Commands</MudText></TitleContent>
+                    <ChildContent>
+                        <MudItem xs="12">
+                            <MudTable Items="@Commands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                <ColGroup>
+                                    <col style="width: 30%;" />
+                                    <col style="max-width: 50%;" />
+                                    <col style="width: 5%;" />
+                                    <col style="min-width: 10%;" />
+                                    <col style="width: 5%;" />
+                                </ColGroup>
+                                <HeaderContent>
+                                    <MudTh>Name</MudTh>
+                                    <MudTh Style="text-align: center">Frame</MudTh>
+                                    <MudTh Style="text-align: center">Ack</MudTh>
+                                    <MudTh Style="text-align: center">Port</MudTh>
+                                    <MudTh Style="text-align: center">Delete</MudTh>
+                                </HeaderContent>
+                                <RowTemplate Context="CommandContext">
+                                    <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                        <MudTextField id="@nameof(DeviceModelCommandDto.Name)" @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin"></MudTextField>
+                                    </MudTd>
+                                    <MudTd DataLabel="Frame" Style="word-break: break-all; ">
+                                        <MudTextField id="@nameof(DeviceModelCommandDto.Frame)" @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin" Mask="@(new RegexMask(@"^[0-9a-fA-F]{0,255}$"))"></MudTextField>
+                                    </MudTd>
+                                    <MudTd DataLabel="Confirmed" Style="text-align: center; ">
+                                        <MudCheckBox @bind-Checked="@CommandContext.Confirmed" For="@(() => CommandContext.Confirmed)" Color="Color.Primary" Disabled="CommandContext.IsBuiltin"></MudCheckBox>
+                                    </MudTd>
+                                    <MudTd DataLabel="Port" Style="text-align: center;">
+                                        <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Variant="Variant.Outlined" Disabled="CommandContext.IsBuiltin"></MudNumericField>
+                                    </MudTd>
+                                    <MudTd DataLabel="Delete" Style="text-align: center">
+                                        <MudIconButton id="removeButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" Disabled="@CommandContext.IsBuiltin" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>
+                                    </MudTd>
+                                </RowTemplate>
+                                <FooterContent>
+                                    <MudButton id="addButton" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add Command</MudButton>
+                                </FooterContent>
+                            </MudTable>
+                        </MudItem>
+                    </ChildContent>
+                </MudExpansionPanel>
+            </MudItem>
+        </MudGrid>
+    }
+</MudExpansionPanels>
+
+@code {
+    [Parameter]
+    public LoRaDeviceModelDto LoRaDeviceModel { get; set; } = default!;
+
+    [Parameter]
+    public IList<DeviceModelCommandDto> Commands { get; set; } = new List<DeviceModelCommandDto>();
+
+    private bool loraProperty { get; set; }
+
+    private DeviceModelCommandDto DeviceModelCommandDto { get; set; } = new DeviceModelCommandDto();
+
+    private void AddCommand()
+    {
+        var last = Commands.LastOrDefault();
+
+        if (Commands.Count == 0 || (last?.Name is not null && last?.Frame is not null))
+        {
+            Commands.Add(new DeviceModelCommandDto());
+        }
+    }
+
+    private void DeleteCommand(DeviceModelCommandDto item)
+    {
+        Commands.Remove(item);
+    }
+}

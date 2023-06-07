@@ -37,16 +37,16 @@ jobs:
       working-directory: src/
       
     - name: Restore dependencies
-      run: dotnet restore AzureIoTHub.Portal.sln 
+      run: dotnet restore IoTHub.Portal.sln 
       working-directory: src/
 
     - name: Build
-      run: dotnet build AzureIoTHub.Portal.sln --no-restore -p:ClientAssetsRestoreCommand="npm ci"
+      run: dotnet build IoTHub.Portal.sln --no-restore -p:ClientAssetsRestoreCommand="npm ci"
       working-directory: src/
   
     - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" AzureIoTHub.Portal.Tests.Unit.csproj
-      working-directory: src/AzureIoTHub.Portal.Tests.Unit/
+      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" IoTHub.Portal.Tests.Unit.csproj
+      working-directory: src/IoTHub.Portal.Tests.Unit/
 
     # Upload test results as artifact
     - uses: actions/upload-artifact@v3
@@ -54,13 +54,13 @@ jobs:
       with:
         name: test-results
         path: |
-          src/AzureIoTHub.Portal.Tests.Unit/TestResults
+          src/IoTHub.Portal.Tests.Unit/TestResults
 
     - name: Upload to Codecov test reports
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        directory: src/AzureIoTHub.Portal.Tests.Unit/TestResults
+        directory: src/IoTHub.Portal.Tests.Unit/TestResults
         verbose: true # optional (default = false)
 
   #e2e-tests:
@@ -134,8 +134,8 @@ jobs:
   #    run: sudo apt-get install google-chrome-stable
 
   #  - name: Run E2E tests
-  #    run: dotnet test AzureIoTHub.Portal.Tests.E2E.csproj
-  #    working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+  #    run: dotnet test IoTHub.Portal.Tests.E2E.csproj
+  #    working-directory: src/IoTHub.Portal.Tests.E2E/
   #    env:
   #      E2E_USERNAME: ${{ vars.E2E_USERNAME }}
   #      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}

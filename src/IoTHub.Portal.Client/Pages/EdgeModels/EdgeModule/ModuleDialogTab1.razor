@@ -1,0 +1,73 @@
+﻿@using IoTHub.Portal.Shared.Models.v10
+<MudGrid>
+    <MudItem xs="12">
+        <MudTable Items=@EnvironmentVariables Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true>
+
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Environment variables</MudText>
+                <MudSpacer />
+            </ToolBarContent>
+
+            <ColGroup>
+                <col style="width: 45%;" />
+                <col style="width: 45%;" />
+                <col style="width: 10%;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTh>Key</MudTh>
+                <MudTh>Value</MudTh>
+                <MudTh Style="text-align: center">Delete</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="Context">
+                <MudTd DataLabel="Key" Style="word-break: break-all;">
+                    <MudTextField @bind-Value="@Context.Name"
+                                  For="@(() => Context.Name)"
+                                  Margin="Margin.Dense"
+                                  Variant="Variant.Outlined"></MudTextField>
+                </MudTd>
+                <MudTd DataLabel="Value" Style="word-break: break-all; ">
+
+                    <MudTextField @bind-Value="@Context.Value"
+                                  Margin="Margin.Dense"
+                                  Variant="Variant.Outlined"></MudTextField>
+                </MudTd>
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudTooltip Text="Delete">
+                        <MudIconButton id="removeButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteRow(Context))"></MudIconButton>
+                    </MudTooltip>
+                </MudTd>
+            </RowTemplate>
+            <FooterContent>
+                <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddRow" id="addButton">Add new</MudButton>
+            </FooterContent>
+
+            <NoRecordsContent>
+                <MudText>No value</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public IList<IoTEdgeModuleEnvironmentVariable> EnvironmentVariables { get; set; } = new List<IoTEdgeModuleEnvironmentVariable>();
+    private bool IsLoading = false;
+
+    public void AddRow()
+    {
+        var last = EnvironmentVariables.LastOrDefault();
+
+        if (EnvironmentVariables.Count == 0 || (last?.Name is not null && last?.Value is not null))
+        {
+            EnvironmentVariables.Add(new IoTEdgeModuleEnvironmentVariable());
+        }
+    }
+
+    public void DeleteRow(IoTEdgeModuleEnvironmentVariable item)
+    {
+        EnvironmentVariables.Remove(item);
+    }
+}

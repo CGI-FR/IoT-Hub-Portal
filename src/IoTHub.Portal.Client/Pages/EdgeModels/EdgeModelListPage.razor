@@ -1,0 +1,151 @@
+﻿@page "/edge/models"
+
+@using IoTHub.Portal.Shared.Models.v10.Filters;
+@using Microsoft.AspNetCore.Authorization
+@using IoTHub.Portal.Models.v10
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+@inject IEdgeModelClientService EdgeModelService
+@inject IDialogService dialogService
+@inject NavigationManager NavigationManager
+
+<MudGrid>
+    <MudItem xs="12">
+        <EdgeModelSearch OnSearch=@Search />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
+            <ColGroup>
+                <col style="width: 5%;" />
+                <col style="width: 30%;" />
+                <col style="width: 30%;" />
+                <col style="width: 5%;" />
+                <col style="width: 5%;" />
+            </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Edge Models</MudText>
+                <MudSpacer />
+                <MudTooltip Text="Refresh list">
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@LoadEdgeModels" Class="ma-2"></MudIconButton>
+                </MudTooltip>
+                <MudTooltip Text="Add device model">
+                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@RedirectToCreatePage" Size="Size.Medium" id="addEdgeModelButton" />
+                </MudTooltip>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItem, object>(x => x.Name)" id="NameLabel" >Name</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItem, object>(x => x.Description)" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center">Details</MudTh>
+                <MudTh Style="text-align: center">Delete</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd Style="text-align: center">
+                    <img height="25" src="@context.ImageUrl" />
+                </MudTd>
+                <MudTd DataLabel="Name">
+                    <MudItem>
+                        <MudText Typo="Typo.body1" Inline="true">
+                            @context.Name
+                        </MudText>
+                    </MudItem>
+                    <MudItem>
+                        <Labels Items="@context.Labels" />
+                    </MudItem>
+                </MudTd>
+                <MudTd DataLabel="Description" Style="word-break: break-all; ">
+                    @context.Description
+                </MudTd>
+                <MudTd DataLabel="Details" Style="text-align: center">
+                    <MudTooltip Text="Go to the detail">
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                    </MudTooltip>
+                </MudTd>
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudTooltip Text="Delete device model">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" OnClick="@(async () => await DeleteDeviceModel(context))" Size="Size.Medium" id="deleteButton"></MudIconButton>
+                    </MudTooltip>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+            </PagerContent>
+            <NoRecordsContent>
+                <MudText>No matching records found</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    private List<IoTEdgeModelListItem> EdgeModelList = new List<IoTEdgeModelListItem>();
+
+    private bool IsLoading { get; set; } = true;
+    private readonly int[] pageSizeOptions = { 3, 5, 10 };
+
+    private string searchKeyword = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEdgeModels();
+    }
+
+    private async Task LoadEdgeModels()
+    {
+        try
+        {
+            IsLoading = true;
+            EdgeModelList = await EdgeModelService.GetIoTEdgeModelList(new EdgeModelFilter
+            {
+                Keyword = searchKeyword
+            });
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task Search(string searchKeyword)
+    {
+        this.searchKeyword = searchKeyword;
+
+        await LoadEdgeModels();
+    }
+
+    public void RedirectToCreatePage()
+    {
+        NavigationManager.NavigateTo("/edge/models/new");
+    }
+
+    private async Task DeleteDeviceModel(IoTEdgeModelListItem ioTEdgeModel)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("deviceModelID", ioTEdgeModel.ModelId);
+        parameters.Add("deviceModelName", ioTEdgeModel.Name);
+        var result = await dialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        await this.LoadEdgeModels();
+    }
+
+    private void GoToDetails(IoTEdgeModelListItem item)
+    {
+        NavigationManager.NavigateTo($"/edge/models/{item.ModelId}");
+    }
+}

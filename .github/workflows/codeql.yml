@@ -45,7 +45,7 @@ jobs:
         queries: +security-and-quality,security-extended
 
     - name: Build
-      run: dotnet build AzureIoTHub.Portal.sln --configuration Release
+      run: dotnet build IoTHub.Portal.sln --configuration Release
       working-directory: src/
 
     - name: Perform CodeQL Analysis

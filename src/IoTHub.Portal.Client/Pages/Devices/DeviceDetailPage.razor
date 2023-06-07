@@ -1,0 +1,342 @@
+﻿@page "/devices/{DeviceID}"
+@using IoTHub.Portal.Client.Pages.Devices
+@using IoTHub.Portal.Client.Validators
+@using IoTHub.Portal.Models
+@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Models.v10.LoRaWAN
+@using IoTHub.Portal.Shared.Constants;
+@using IoTHub.Portal.Shared.Models
+
+@inject NavigationManager NavManager
+@inject ISnackbar Snackbar
+@inject PortalSettings Portal
+@inject IDialogService DialogService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
+@inject IDeviceClientService DeviceClientService
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
+@inject IDeviceLayoutService DeviceLayoutService
+
+<MudTooltip Text="Return" Placement="Placement.Left">
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
+</MudTooltip>
+<MudTooltip Placement="Placement.Top">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Details</MudText>
+</MudTooltip>
+<MudForm Model="@Device" @ref="form">
+    <MudGrid>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard>
+                <MudCardHeader Class="DeviceCardHeader">
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(DeviceModel.Name)>Model: <b>@DeviceModel.Name</b></MudText>
+                        <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center" >@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                    </div>
+
+                </MudCardContent>
+                <MudCardActions Class="pb-4 pl-4 justify-center">
+                    @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
+                    {
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
+                    }
+                </MudCardActions>
+            </MudCard>
+
+            <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton" Disabled="isProcessing">Delete device</MudButton>
+                <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                    <MudButton id="saveButton" OnClick="ProcessActionOnDevice" Disabled="isProcessing">@saveButtonText</MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                        <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
+                        <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Duplicate)">Duplicate</MudMenuItem>
+                    </MudMenu>
+                </MudButtonGroup>
+            </MudItem>
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
+
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
+                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@Device.DeviceID"
+                                                              id=@nameof(DeviceDetails.DeviceID)
+                                                              Label="Device ID"
+                                                              Variant="Variant.Outlined"
+                                                              For="@(()=> Device.DeviceID)"
+                                                              Required="true"
+                                                              ReadOnly="true"
+                                                              HelperText="@((Portal.CloudProvider.Equals(CloudProviders.AWS)) ?
+                                                                            "DeviceID is automatically generated" :
+                                                                            "DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")"/>
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@Device.DeviceName"
+                                                              id=@nameof(DeviceDetails.DeviceName)
+                                                              Label="Device name"
+                                                              Variant="Variant.Outlined"
+                                                              For="@(()=> Device.DeviceName)"
+                                                              Required="true"
+                                                              ReadOnly="@(Portal.CloudProvider.Equals(CloudProviders.AWS))" />
+                                            </MudItem>
+
+                                            @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                            {
+                                                <MudItem xs="12">
+                                                    <MudText>
+                                                        <b>Status</b>
+                                                    </MudText>
+                                                    <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
+                                                        <MudRadio Option=@(true) Color="Color.Primary">
+                                                            Enabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                        <MudRadio Option=@(false) Color="Color.Primary">
+                                                            Disabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                    </MudRadioGroup>
+                                                </MudItem>
+                                            }
+                                           
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Tags">
+                                    <TitleContent><MudText Typo="Typo.h6" Style=@(CheckTagsError() ? "color: red" : "")>Tags</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            @foreach (DeviceTagDto tag in TagList)
+                                            {
+                                                <MudItem xs="12" md="6">
+                                                    @if (!Device.Tags.ContainsKey(tag.Name))
+                                                    {
+                                                        Device.Tags.Add(tag.Name, "");
+                                                    }
+                                                    <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
+                                                              Required="@tag.Required"
+                                                              Variant="Variant.Outlined" />
+                                                </MudItem>
+                                            }
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public bool IsLoRa
+    {
+        get;
+        set;
+    }
+
+    [Parameter]
+    public string DeviceID { get; set; } = default!;
+
+    private void Return() => NavManager.NavigateTo("devices");
+
+    private IEnumerable<DeviceModelCommandDto> Commands { get; set; } = Array.Empty<DeviceModelCommandDto>();
+
+    private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
+
+    private IEnumerable<DevicePropertyValue> Properties = Array.Empty<DevicePropertyValue>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isProcessing = true;
+
+            this.standardValidator = new DeviceDetailsValidator(Portal.CloudProvider);
+
+            if (IsLoRa)
+            {
+                Device = await LoRaWanDeviceClientService.GetDevice(DeviceID);
+                Commands = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(Device.ModelId);
+                DeviceModel = await LoRaWanDeviceModelsClientService.GetDeviceModel(Device.ModelId);
+            }
+            else
+            {
+                Device = await DeviceClientService.GetDevice(DeviceID);
+                Properties = await DeviceClientService.GetDeviceProperties(DeviceID);
+                DeviceModel = await DeviceModelsClientService.GetDeviceModel(Device.ModelId);
+            }
+
+            TagList = await DeviceTagSettingsClientService.GetDeviceTags();
+
+            isLoaded = true;
+            isProcessing = false;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    private void ProcessActionOnDevice()
+    {
+        switch (deviceSaveAction)
+        {
+            case DeviceSaveAction.Save:
+                Save();
+                break;
+            case DeviceSaveAction.Duplicate:
+                DeviceLayoutService.DuplicateSharedDevice(Device);
+                DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel);
+                NavManager.NavigateTo("devices/new");
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
+    /// </summary>
+    public async void Save()
+    {
+        try
+        {
+            isProcessing = true;
+
+            await form.Validate();
+
+            if (CheckTagsError() || CheckGeneralValidation() || CheckLoRaValidation())
+            {
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
+            if (IsLoRa)
+            {
+                await LoRaWanDeviceClientService.UpdateDevice((Device as LoRaDeviceDetails)!);
+            }
+            else
+            {
+                await DeviceClientService.UpdateDevice((Device as DeviceDetails)!);
+
+                await DeviceClientService.SetDeviceProperties(DeviceID, Properties.ToList());
+            }
+
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success, null);
+
+            NavManager.NavigateTo("devices");
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+            StateHasChanged();          
+        }
+    }
+
+    public async Task ShowConnectionString()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(ConnectionStringDialog.deviceId), this.DeviceID);
+
+        _  = await DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters).Result;
+    }
+
+    private bool CheckTagsError()
+    {
+        bool tagValidationError = false;
+
+        foreach (DeviceTagDto tag in TagList)
+        {
+            if (tag.Required && string.IsNullOrEmpty(Device.Tags[tag.Name]))
+            {
+                tagValidationError = true;
+            }
+        }
+        return tagValidationError;
+    }
+
+    private bool CheckLoRaValidation()
+    {
+        if(!IsLoRa)
+        {
+           return false;
+        }
+
+        if (this.Device is LoRaDeviceDetails loRaDeviceDetails)
+        {
+            return !this.loraValidator.Validate(loRaDeviceDetails).IsValid;
+        }
+
+        return true;
+    }
+
+    private bool CheckGeneralValidation()
+    {
+        if (!IsLoRa && this.Device is DeviceDetails deviceDetails)
+        {
+            return !this.standardValidator.Validate(deviceDetails).IsValid;
+        }
+
+        return CheckLoRaValidation();
+    }
+
+    /// <summary>
+    /// Prompts a pop-up windows to confirm the device's deletion.
+    /// </summary>
+    /// <param name="device">Device to delete from the hub</param>
+    /// <returns></returns>
+    private async Task DeleteDevice()
+    {
+        isProcessing = true;
+
+        var parameters = new DialogParameters
+        {
+            {"deviceID", Device.DeviceID},
+            {"deviceName", Device.DeviceName},
+            {"IsLoRaWan", IsLoRa}
+        };
+        var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
+
+        isProcessing = false;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        // Go back to the list of devices
+        NavManager.NavigateTo("devices");
+    }
+
+    private void SetSaveButtonText(DeviceSaveAction saveAction)
+    {
+        deviceSaveAction = saveAction;
+        saveButtonText = deviceSaveAction switch
+        {
+            DeviceSaveAction.Save => "Save",
+            DeviceSaveAction.Duplicate => "Duplicate",
+            _ => saveButtonText
+        };
+    }
+}

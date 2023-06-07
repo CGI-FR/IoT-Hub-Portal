@@ -1,0 +1,504 @@
+﻿@page "/edge/models/{ModelID}"
+
+@using Microsoft.AspNetCore.Authorization
+@using IoTHub.Portal.Client.Pages.EdgeModels.EdgeModule
+@using System.Net.Http.Headers
+@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Shared.Models.v10
+@using IoTHub.Portal.Client.Validators
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using IoTHub.Portal.Shared.Constants
+
+
+@attribute [Authorize]
+@inject NavigationManager NavigationManager
+@inject IEdgeModelClientService EdgeModelService
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject PortalSettings Portal
+
+<MudTooltip Text="Return" Placement="Placement.Left">
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
+</MudTooltip>
+<MudTooltip Placement="Placement.Top">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4"> Edge Device Model</MudText>
+</MudTooltip>
+
+<MudForm Model="@EdgeModel" @ref="form" id="form">
+    <MudGrid>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
+                            <MudImage Src="@imageDataUrl" id="@(nameof(IoTEdgeModel.ImageUrl))" />
+                        </MudAvatar>
+                    </div>
+                </MudCardContent>
+                <MudCardActions Class="d-flex justify-center">
+                    @if (imageDataUrl != null)
+                    {
+                        <MudButton OnClick="DeleteAvatar" id="deleteAvatarButton" Color="Color.Error">Delete Picture</MudButton>
+                    }
+                    else
+                    {
+                        <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
+                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">Change Picture</MudButton>
+                    }
+                </MudCardActions>
+            </MudCard>
+            <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel" id="deleteButton" Disabled="isProcessing">Delete model</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+            </MudItem>
+        </MudItem>
+
+        <MudItem xs="12" sm="8" md="9">
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content" id="tabs">
+                <MudTabPanel Text="General">
+                    <MudExpansionPanels MultiExpansion="true" id="general">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField id="@nameof(EdgeModel.Name)" @bind-Value="@EdgeModel.Name" For="@(() => EdgeModel.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" ReadOnly="true"/>
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField id="@nameof(EdgeModel.Description)" @bind-Value="@EdgeModel.Description" For="@(() => EdgeModel.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
+                                            </MudItem>
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                        @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                        {
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="System Modules" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">System Modules</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudItem xs="12">
+                                                <MudTable Items="EdgeModel.SystemModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <ColGroup>
+                                                        <col style="width: 15%;" />
+                                                        <col style="width: 50%;" />
+                                                        <col style="width: 10%;" />
+                                                    </ColGroup>
+
+                                                    <HeaderContent>
+                                                        <MudTh Style="text-align: center">Module name</MudTh>
+                                                        <MudTh Style="text-align: center">Image URI</MudTh>
+                                                        <MudTh Style="text-align: center">Detail</MudTh>
+                                                    </HeaderContent>
+
+                                                    <RowTemplate Context="sysModule">
+                                                        <MudTd DataLabel="System module Name" Style="word-break: break-all;">
+                                                            <MudTextField id=@nameof(EdgeModelSystemModule.Name) @bind-Value="@sysModule.Name" Margin="Margin.Dense" Label="Module name" For="@(() => sysModule.Name )" Variant="Variant.Outlined" Disabled />
+                                                        </MudTd>
+                                                        <MudTd DataLabel="System module Image URI" Style="word-break: break-all;">
+                                                            <MudTextField id=@nameof(EdgeModelSystemModule.ImageUri) @bind-Value="@sysModule.ImageUri" Margin="Margin.Dense" Label="Image URI" For="@(() => sysModule.ImageUri )" Variant="Variant.Outlined" />
+                                                        </MudTd>
+                                                        <MudTd DataLabel="See detail" Style="text-align: center;">
+                                                            <MudButton Variant="Variant.Filled" id="@("editSystModuleButton_"+sysModule.Name)" OnClick="@(async () => await ShowSystemModuleDetail(sysModule))">Detail</MudButton>
+                                                        </MudTd>
+                                                    </RowTemplate>
+                                                </MudTable>
+                                            </MudItem>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                       
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudItem xs="12">
+                                                <MudTable Items="@EdgeModel.EdgeModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <ColGroup>
+                                                        <col style="width: 30%;" />
+                                                        <col style="width: 30%;" />
+                                                        <col style="width: 10%;" />
+                                                        <col style="width: 5%;" />
+                                                    </ColGroup>
+                                                    <HeaderContent>
+                                                        <MudTh Style="text-align: center">Module name</MudTh>
+                                                        <MudTh Style="text-align: center">Image URI</MudTh>
+                                                        <MudTh Style="text-align: center">See detail</MudTh>
+                                                        <MudTh Style="text-align: center">Delete</MudTh>
+                                                    </HeaderContent>
+                                                    <RowTemplate Context="ModuleContext">
+                                                        <MudTd DataLabel="Module Name" Style="word-break: break-all;">
+                                                            <MudTextField id="@(nameof(IoTEdgeModule.ModuleName))" @bind-Value="@ModuleContext.ModuleName" Margin="Margin.Dense" Label="Module name" For="@(() => ModuleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Image Uri" Style="word-break: break-all;">
+                                                            <MudTextField id="@(nameof(IoTEdgeModule.ImageURI))" @bind-Value="@ModuleContext.ImageURI" Margin="Margin.Dense" Label="Image URI" For="@(() => ModuleContext.ImageURI )" Variant="Variant.Outlined" Required="true" />
+                                                        </MudTd>
+                                                        <MudTd DataLabel="See detail" Style="text-align: center;">
+                                                            <MudButton Variant="Variant.Filled" id="editButton" OnClick="(async () => await ShowEditEdgeModuleDialog(ModuleContext))">Detail</MudButton>
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Delete" Style="text-align: center">
+                                                            <MudIconButton Color="Color.Default" Class="deleteModuleButton" OnClick="( () => DeleteModule(ModuleContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                                        </MudTd>
+                                                    </RowTemplate>
+                                                    <FooterContent>
+                                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" id="addModuleButton" OnClick="AddModule" Color="Color.Success">Add new module</MudButton>
+                                                    </FooterContent>
+                                                </MudTable>
+                                            </MudItem>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Routes" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Routes</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudItem xs="12">
+                                                <MudTable Items="@EdgeModel.EdgeRoutes" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <ColGroup>
+                                                        <col style="width: 20%;" />
+                                                        <col style="width: 20%;" />
+                                                        <col style="width: 10%;" />
+                                                        <col style="width: 10%;" />
+                                                        <col style="width: 5%;" />
+                                                    </ColGroup>
+                                                    <HeaderContent>
+                                                        <MudTh Style="text-align: center">Name</MudTh>
+                                                        <MudTh Style="text-align: center">Value</MudTh>
+                                                        <MudTh Style="text-align: center">Priority</MudTh>
+                                                        <MudTh Style="text-align: center">Time To Live (Secs)</MudTh>
+                                                        <MudTh Style="text-align: center">Delete</MudTh>
+                                                    </HeaderContent>
+                                                    <RowTemplate Context="RouteContext">
+                                                        <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                                            <MudTextField id="@(nameof(IoTEdgeRoute.Name))" @bind-Value="@RouteContext.Name" Margin="Margin.Dense" Label="Name" For="@(() => RouteContext.Name )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Value" Style="word-break: break-all;">
+                                                            <MudTextField id="@(nameof(IoTEdgeRoute.Value))" @bind-Value="@RouteContext.Value" Margin="Margin.Dense" Label="Value" For="@(() => RouteContext.Value )" Variant="Variant.Outlined" Required="true" />
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Priority" Style="text-align: center;">
+                                                            <MudNumericField @bind-Value="@RouteContext.Priority" Label="Priority" For="@(() => RouteContext.Priority)" Variant="Variant.Outlined"></MudNumericField>
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Time To Live (Secs)" Style="text-align: center;">
+                                                            <MudNumericField @bind-Value="@RouteContext.TimeToLive" Label="TTL" For="@(() => RouteContext.TimeToLive)" Variant="Variant.Outlined"></MudNumericField>
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Delete" Style="text-align: center">
+                                                            <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="( () => DeleteRoute(RouteContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                                        </MudTd>
+                                                    </RowTemplate>
+                                                    <FooterContent>
+                                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" id="addRouteButton" OnClick="AddRoute" Color="Color.Success">Add new route</MudButton>
+                                                    </FooterContent>
+                                                </MudTable>
+                                            </MudItem>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                        }
+                        @if (Portal.CloudProvider.Equals(CloudProviders.AWS))
+                        {
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudItem xs="12">
+                                                <MudTable Items="@EdgeModel.EdgeModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <ColGroup>
+                                                        <col style="width: 70%;" />
+                                                        <col style="width: 10%;" />
+                                                        <col style="width: 5%;" />
+                                                    </ColGroup>
+                                                    <HeaderContent>
+                                                        <MudTh Style="text-align: center">Module name</MudTh>
+                                                        <MudTh Style="text-align: center">See detail</MudTh>
+                                                        <MudTh Style="text-align: center">Delete</MudTh>
+                                                    </HeaderContent>
+                                                    <RowTemplate Context="moduleContext">
+                                                        <MudTd DataLabel="module Name" Style="word-break: break-all;">
+                                                            @moduleContext.ModuleName
+                                                        </MudTd>
+                                                        <MudTd DataLabel="See detail" Style="text-align: center;">
+                                                            <MudButton Variant="Variant.Filled" id="edit-edge-module" Disabled="@(!string.IsNullOrEmpty(moduleContext.Id))" OnClick="@(async () => await ShowEditEdgeModuleDialog(moduleContext))">Detail</MudButton>
+                                                        </MudTd>
+                                                        <MudTd DataLabel="Delete" Style="text-align: center">
+                                                            <MudIconButton Class="deleteModuleButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteModule(moduleContext))"></MudIconButton>
+                                                        </MudTd>
+                                                    </RowTemplate>
+                                                    <FooterContent>
+                                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" id="add-edge-module" OnClick="ShowAddNewEdgeModuleDialog">Add new module</MudButton>
+                                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" id="add-public-edge-modules" OnClick="ShowAddEdgePublicModulesDialog">Add public modules</MudButton>
+                                                    </FooterContent>
+                                                </MudTable>
+                                            </MudItem>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                        }
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Labels">
+                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                    <ChildContent>
+                                        <LabelsEditor Labels="EdgeModel.Labels" />
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+
+                    </MudExpansionPanels>
+                </MudTabPanel>
+
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+
+</MudForm>
+
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [Parameter]
+    public string ModelID { get; set; } = default!;
+
+    private IoTEdgeModel EdgeModel { get; set; } = default!;
+
+    public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
+    public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
+    public IoTEdgeRouteValidator edgeRouteValidator = new IoTEdgeRouteValidator();
+
+    private bool isProcessing;
+
+    private MudForm form = default!;
+
+    private void Return() => NavigationManager.NavigateTo("/edge/models");
+
+    // Used to manage the picture
+    private MultipartFormDataContent? content = default!;
+    private string? imageDataUrl = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isProcessing = true;
+            EdgeModel = new IoTEdgeModel();
+
+            await loadModel();
+            this.imageDataUrl = await this.EdgeModelService.GetAvatarUrl(this.ModelID);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private async Task loadModel()
+    {
+        this.EdgeModel = await this.EdgeModelService.GetIoTEdgeModel(this.ModelID);
+    }
+
+    private void DeleteAvatar()
+    {
+        content = null;
+        imageDataUrl = null;
+    }
+
+    private async Task UploadFiles(InputFileChangeEventArgs e)
+    {
+        content = new MultipartFormDataContent();
+
+        var resizedImageFile = await e.File.RequestImageFileAsync(e.File.ContentType, 200, 200);
+
+        var fileContent = new StreamContent(resizedImageFile.OpenReadStream());
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(e.File.ContentType);
+
+        content.Add(content: fileContent,
+                      name: "\"file\"",
+                      fileName: e.File.Name);
+
+        var buffer = new byte[resizedImageFile.Size];
+        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+
+        imageDataUrl = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
+    }
+
+    private async Task Save()
+    {
+        isProcessing = true;
+
+        try
+        {
+            // Displays validation error message for each field
+            await form.Validate();
+
+            if (!edgeModelValidator.Validate(this.EdgeModel).IsValid)
+            {
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
+            if (this.EdgeModel.EdgeModules.Any() && !edgeModuleValidator.Validate(this.EdgeModel.EdgeModules).IsValid)
+            {
+                Snackbar.Add("One or more validation errors occurred with the modules.", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
+            if (this.EdgeModel.EdgeRoutes.Any() && !edgeRouteValidator.Validate(this.EdgeModel.EdgeRoutes).IsValid)
+            {
+
+                Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
+            await this.EdgeModelService.UpdateIoTEdgeModel(this.EdgeModel);
+
+            if (content is not null)
+            {
+                await this.EdgeModelService.ChangeAvatar(this.EdgeModel.ModelId, content);
+            }
+
+            Snackbar.Add("Edge model successfully updated.", Severity.Success);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+
+    }
+
+    private void AddModule()
+    {
+        EdgeModel.EdgeModules.Add(new IoTEdgeModule());
+    }
+
+    private async Task ShowAddNewEdgeModuleDialog()
+    {
+        var parameters = new DialogParameters();
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        parameters.Add("Context", Context.Create);
+        parameters.Add("EdgeModules", EdgeModel.EdgeModules);
+
+        await DialogService.Show<AwsGreengrassComponentDialog>(string.Empty, parameters, options).Result;
+    }
+
+    private async Task ShowAddEdgePublicModulesDialog()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("EdgeModules", EdgeModel.EdgeModules);
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        await DialogService.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters, options).Result;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ShowEditEdgeModuleDialog(IoTEdgeModule module)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("module", module);
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+        {
+            if (!string.IsNullOrWhiteSpace(module.ModuleName))
+            {
+                await DialogService.Show<ModuleDialog>(module.ModuleName, parameters, options).Result;
+            }
+        }
+        else
+        {
+            parameters.Add("Context", Context.Edit);
+            parameters.Add("Module", module);
+
+            await DialogService.Show<AwsGreengrassComponentDialog>(module.ModuleName, parameters, options).Result;
+        }
+    }
+
+    private void DeleteModule(IoTEdgeModule module)
+    {
+        EdgeModel.EdgeModules.Remove(module);
+    }
+
+    private async Task DeleteDeviceModel()
+    {
+        isProcessing = true;
+
+        var parameters = new DialogParameters();
+        parameters.Add("deviceModelID", EdgeModel.ModelId);
+        parameters.Add("deviceModelName", EdgeModel.Name);
+
+        var result = await this.DialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
+
+        isProcessing = false;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        this.NavigationManager.NavigateTo("/edge/models");
+    }
+
+    private void DeleteRoute(IoTEdgeRoute route)
+    {
+        EdgeModel.EdgeRoutes.Remove(route);
+    }
+
+    private void AddRoute()
+    {
+        var last = EdgeModel.EdgeRoutes.LastOrDefault();
+
+        if (EdgeModel.EdgeRoutes.Count == 0 || (last?.Name is not null && last?.Value is not null))
+        {
+            EdgeModel.EdgeRoutes.Add(new IoTEdgeRoute());
+        }
+    }
+
+    private async Task ShowSystemModuleDetail(EdgeModelSystemModule systemModule)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("module", systemModule);
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        var result = await DialogService.Show<SystemModuleDialog>(systemModule.Name, parameters, options).Result;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+    }
+}
