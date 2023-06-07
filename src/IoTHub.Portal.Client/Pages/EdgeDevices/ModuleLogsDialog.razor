@@ -1,0 +1,85 @@
+@page "/edge/devices/logs"
+@using IoTHub.Portal.Models.v10
+
+@inject IEdgeDeviceClientService EdgeDeviceClientService
+
+<MudDialog Style="max-width:fit-content;">
+    <DialogContent>
+        <MudCard Outlined="true" Style="width:800px;max-height: 600px; overflow-y: scroll">
+            <MudCardContent>
+
+                <MudItem xs="12">
+                <MudTable Items="@logs" FixedHeader="true"
+                    Height="400px"
+                    Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+                    <ColGroup>
+                        <col style="width: 20%;" />
+                        <col style="width: 10%;" />
+                        <col style="width: 40%;" />
+                    </ColGroup>
+
+                    <HeaderContent>
+                        <MudTh Style="text-align: center">Timestamp</MudTh>
+                        <MudTh Style="text-align: center">Log level</MudTh>
+                        <MudTh Style="text-align: center">Text</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Device" Style="word-break: break-all;">
+                            @context.TimeStamp
+                        </MudTd>
+                        <MudTd DataLabel="Type" Style="text-align: center">@context.LogLevel</MudTd>
+                        <MudTd DataLabel="NbDevices" Style="text-align: center;">
+                            <MudTextField T="string" Style="font-size: 0.875em;" DisableUnderLine="true" Text="@context.Text" Lines="3" ReadOnly="true"></MudTextField>
+                        </MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>No logs have been found</MudText>
+                    </NoRecordsContent>
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                    </PagerContent>
+                </MudTable>
+            </MudItem>
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="close" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+    
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string deviceId { get; set; } = default!;
+    [Parameter] public IoTEdgeModule edgeModule { get; set; } = default!;
+    
+    private int[] pageSizeOptions = new int[] { 3, 5 , 10};
+    private List<IoTEdgeDeviceLog> logs = new();
+
+    void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        await LoadEdgeDeviceLogs();
+    }
+
+    public async Task LoadEdgeDeviceLogs()
+    {
+        try
+        {
+            logs = await EdgeDeviceClientService.GetEdgeDeviceLogs(deviceId, edgeModule);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+}

@@ -1,0 +1,565 @@
+﻿@page "/devices/new"
+
+@using IoTHub.Portal.Client.Pages.Devices
+@using IoTHub.Portal.Client.Validators
+@using IoTHub.Portal.Models
+@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Models.v10.LoRaWAN
+@using IoTHub.Portal.Shared.Models
+@using IoTHub.Portal.Shared.Models.v10
+@using IoTHub.Portal.Shared.Models.v10.Filters
+@using IoTHub.Portal.Shared.Constants
+
+
+@attribute [Authorize]
+@inject ISnackbar Snackbar
+@inject PortalSettings Portal
+@inject NavigationManager NavManager
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
+@inject IDeviceClientService DeviceClientService
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
+@inject IDeviceLayoutService DeviceLayoutService
+
+@implements IDisposable
+
+
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
+<MudForm Model="@Device" @ref="form">
+    <MudGrid>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <div class="d-flex justify-center mb-4">
+                            <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+                <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                        <MudButton id="SaveButton" OnClick="Save" Disabled="isProcessing">@saveButtonText</MudButton>
+                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
+                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.SaveAndAddNew)">Save and add new</MudMenuItem>
+                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.SaveAndDuplicate)">Save and duplicate</MudMenuItem>
+                        </MudMenu>
+                    </MudButtonGroup>
+                </MudItem>
+            </MudItem>
+            <MudItem xs="12" sm="8" md="9">
+                <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
+                    <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
+                        <MudExpansionPanels MultiExpansion="true">
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudGrid>
+                                                <MudItem xs="12" md="6">
+                                                @if (duplicateDevice)
+                                                {
+                                                    <DeviceToDuplicateSelector />
+                                                }
+                                                else
+                                                {
+                                                    <MudAutocomplete T="IDeviceModel"
+                                                                 id="@nameof(DeviceDetails.ModelId)"
+                                                                 @bind-Value="DeviceModel"
+                                                                 SearchFunc="@Search"
+                                                                 Label="Model*"
+                                                                 Dense=true
+                                                                 For=@(() => this.DeviceModel)
+                                                                 Variant="Variant.Outlined"
+                                                                 ToStringFunc="@(x => x?.Name)"
+                                                                 ResetValueOnEmptyText=true
+                                                                 Immediate=true
+                                                                 Clearable=true
+                                                                 CoerceText=true
+                                                                 CoerceValue=false>
+                                                        <ItemTemplate>
+                                                            @context.Name
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                                                @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                                            </MudText>
+                                                        </ItemTemplate>
+                                                    </MudAutocomplete>
+                                                    @if (Device.ModelId == null && displayValidationErrorMessages)
+                                                    {
+                                                        <p class="validation-error-message">The Model is required.</p>
+                                                    }
+                                                }
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                @if (IsLoRa)
+                                                {
+                                                    <MudTextField @bind-Value="@Device.DeviceID"
+                                                              id=@nameof(LoRaDeviceDetails.DeviceID)
+                                                              Label="Device ID / DevEUI"
+                                                              Variant="Variant.Outlined"
+                                                              Validation=@(loraValidator.ValidateValue)
+                                                              For="@(()=> Device.DeviceID)"
+                                                              Mask="@maskLoRaDeviceID"
+                                                              HelperText="Device EUI must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                                }
+                                                else
+                                                {
+                                                    if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                                    {
+                                                        <MudTextField @bind-Value="@Device.DeviceID"
+                                                                  id=@nameof(DeviceDetails.DeviceID)
+                                                                  Label="Device ID"
+                                                                  Variant="Variant.Outlined"
+                                                                  Validation=@(standardValidator.ValidateValue)
+                                                                  For="@(()=> Device.DeviceID)"
+                                                                  HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+                                                    }
+                                                }
+                                            </MudItem>
+
+                                            <MudItem xs="12">
+                                                <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
+                                            </MudItem>
+                                            
+                                            <MudItem xs="12">
+                                                <MudTextField @bind-Value="@Device.DeviceName"
+                                                              id="@nameof(DeviceDetails.DeviceName)"
+                                                              Label="Device name"
+                                                              Variant="Variant.Outlined"
+                                                              For="@(()=> Device.DeviceName)"
+                                                              Required="true" />
+                                            </MudItem>
+
+                                            @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                            {
+                                                <MudItem xs="12">
+                                                    <MudText>
+                                                        <b>Status</b>
+                                                    </MudText>
+                                                    <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
+                                                        <MudRadio Option=@(true) Color="Color.Primary">
+                                                            Enabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                        <MudRadio Option=@(false) Color="Color.Primary">
+                                                            Disabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                    </MudRadioGroup>
+                                                </MudItem>
+                                            }
+                                          
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Tags">
+                                    <TitleContent><MudText Typo="Typo.h6" Style=@(CheckTagsError() ? "color: red" : "")>Tags</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            @foreach (DeviceTagDto tag in TagList)
+                                            {
+                                                <MudItem xs="12" md="6">
+                                                    <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
+                                                              Required="@tag.Required"
+                                                              Variant="Variant.Outlined" />
+                                                </MudItem>
+                                            }
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Labels">
+                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                    <ChildContent>
+                                        <LabelsEditor ReadOnlyLabels="DeviceModel?.Labels" Labels="Device.Labels" />
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+
+                        @if (!IsLoRa && Properties.Any())
+                        {
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Properties">
+                                        <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudGrid>
+                                                @foreach (var item in Properties.OrderBy(c => c.Order))
+                                                {
+                                                    switch (item.PropertyType)
+                                                    {
+                                                        case DevicePropertyType.Boolean:
+                                                            <MudItem xs="12" md="4">
+                                                                <MudCheckBox @bind-Checked="item.Value" Label="@item.DisplayName" Color="@Color.Primary" Converter="@(new StringToBoolConverter())" TriState="true" />
+                                                            </MudItem>
+                                                            break;
+                                                        case DevicePropertyType.Double:
+                                                            <MudItem xs="12" md="4">
+                                                                <MudTextField @bind-Value="item.Value"
+                                                              Label="@item.DisplayName"
+                                                              Variant="Variant.Outlined"
+                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
+                                                              Clearable="true" />
+                                                            </MudItem>
+                                                            break;
+                                                        case DevicePropertyType.Float:
+                                                            <MudItem xs="12" md="4">
+                                                                <MudTextField @bind-Value="item.Value"
+                                                              Label="@item.DisplayName"
+                                                              Variant="Variant.Outlined"
+                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
+                                                              Clearable="true" />
+                                                            </MudItem>
+                                                            break;
+                                                        case DevicePropertyType.Integer:
+                                                            <MudItem xs="12" md="4">
+                                                                <MudTextField @bind-Value="item.Value"
+                                                              Label="@item.DisplayName"
+                                                              Variant="Variant.Outlined"
+                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
+                                                              Clearable="true" />
+                                                            </MudItem>
+                                                            break;
+                                                        case DevicePropertyType.Long:
+                                                            <MudItem xs="12" md="4">
+                                                                <MudTextField @bind-Value="item.Value"
+                                                              Label="@item.DisplayName"
+                                                              Variant="Variant.Outlined"
+                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
+                                                              Clearable="true" />
+                                                            </MudItem>
+                                                            break;
+                                                        case DevicePropertyType.String:
+                                                            <MudItem xs="12" md="12">
+                                                                <MudTextField @bind-Value="item.Value" Label="@item.DisplayName" Format="F1" Variant="Variant.Outlined" Clearable="true" />
+                                                            </MudItem>
+                                                            break;
+                                                    }
+                                                }
+                                            </MudGrid>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                        }
+                    </MudExpansionPanels>
+                </MudTabPanel>
+                @if (IsLoRa)
+                {
+                    <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
+                        <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraModelDto="@(LoRaDeviceModelDto)" LoraValidator="@(loraValidator)" />
+                    </MudTabPanel>
+                }
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    private IDeviceDetails Device = new DeviceDetails();
+
+    private MudForm form = default!;
+
+    private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
+
+    private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
+    private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; } = default!;
+
+    private bool IsLoRa
+    {
+        get
+        {
+            return Device is LoRaDeviceDetails;
+        }
+    }
+
+    public PatternMask maskLoRaDeviceID = new PatternMask("XXXXXXXXXXXXXXXX")
+        {
+            MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
+            CleanDelimiters = false,
+            Transformation = AllUpperCase
+        };
+
+    private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
+
+    private IDeviceModel _deviceModel = default!;
+
+    private IDeviceModel DeviceModel
+    {
+        get => _deviceModel;
+        set { Task.Run(async () => await ChangeModel(value)); }
+    }
+
+    private IEnumerable<DeviceTagDto> TagList { get; set; } = new List<DeviceTagDto>();
+    private List<DevicePropertyValue> Properties = new List<DevicePropertyValue>();
+
+    private bool displayValidationErrorMessages = false;
+
+    private bool isProcessing;
+    private bool duplicateDevice;
+
+    private DeviceSaveAction deviceSaveAction = DeviceSaveAction.Save;
+    private string saveButtonText = "Save";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            this.standardValidator = new DeviceDetailsValidator(Portal.CloudProvider);
+
+            DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
+            Device = DeviceLayoutService.GetSharedDevice() ?? this.Device;
+            DeviceModel = DeviceLayoutService.GetSharedDeviceModel() ?? this.DeviceModel;
+
+            // Enable device by default
+            Device.IsEnabled = true;
+
+            // Gets the custom tags that can be set when creating a device
+            TagList = await DeviceTagSettingsClientService.GetDeviceTags();
+
+            foreach (var tag in TagList)
+            {
+                Device.Tags.TryAdd(tag.Name, string.Empty);
+            }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    public void Dispose()
+    {
+        DeviceLayoutService.ResetSharedDevice<DeviceDetails>();
+        DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
+        DeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred!;
+    }
+
+    /// <summary>
+    /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
+    /// </summary>
+    public async void Save()
+    {
+        try
+        {
+            isProcessing = true;
+
+            await form.Validate();
+
+            if (CheckTagsError() || CheckGeneralValidation() || CheckLoRaValidation())
+            {
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+                // Allows to display ValidationError messages for the MudAutocomplete field.
+                displayValidationErrorMessages = true;
+
+                isProcessing = false;
+
+                return;
+            }
+
+            if (IsLoRa)
+                await LoRaWanDeviceClientService.CreateDevice((Device as LoRaDeviceDetails)!);
+            else
+            {
+                Device.DeviceID = await DeviceClientService.CreateDevice((Device as DeviceDetails)!);
+                await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
+            }
+
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {Device.DeviceID} has been successfully created!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
+
+            ProcessPostDeviceCreation();
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private void ProcessPostDeviceCreation()
+    {
+        switch (deviceSaveAction)
+        {
+            case DeviceSaveAction.Save:
+                NavManager.NavigateTo("devices");
+                break;
+            case DeviceSaveAction.SaveAndAddNew:
+                Device = DeviceLayoutService.ResetSharedDevice<DeviceDetails>(TagList.ToList());
+                DeviceModel = DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
+                break;
+            case DeviceSaveAction.SaveAndDuplicate:
+                Device = DeviceLayoutService.DuplicateSharedDevice((Device as DeviceDetails)!);
+                DeviceModel = DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel);
+                break;
+        }
+    }
+
+    private void DeviceServiceOnRefreshDeviceOccurred(object sender, EventArgs e)
+    {
+        Device = DeviceLayoutService.GetSharedDevice();
+        DeviceModel = DeviceLayoutService.GetSharedDeviceModel();
+        StateHasChanged();
+    }
+
+    private bool CheckTagsError()
+    {
+        bool tagValidationError = false;
+
+        foreach (DeviceTagDto tag in TagList)
+        {
+            if (tag.Required && string.IsNullOrEmpty(Device.Tags[tag.Name]))
+            {
+                tagValidationError = true;
+            }
+        }
+        return tagValidationError;
+    }
+
+    private bool CheckLoRaValidation()
+    {
+        if (!IsLoRa)
+        {
+            return false;
+        }
+
+        if (this.Device is LoRaDeviceDetails loRaDeviceDetails)
+        {
+            return !this.loraValidator.Validate(loRaDeviceDetails).IsValid;
+        }
+
+        return true;
+    }
+
+    private bool CheckGeneralValidation()
+    {
+        if (!IsLoRa && this.Device is DeviceDetails deviceDetails)
+        {
+            return !this.standardValidator.Validate(deviceDetails).IsValid;
+        }
+
+        return CheckLoRaValidation();
+    }
+
+    /// <summary>
+    /// Allows to autocomplete the Device Model field in the form.
+    /// </summary>
+    /// <param name="value">Text entered in the field</param>
+    /// <returns>Item of the device model list that matches the user's value</returns>
+    private async Task<IEnumerable<IDeviceModel>> Search(string value)
+    {
+        var filter = new DeviceModelFilter
+        {
+            SearchText = value,
+            PageNumber = 0,
+            PageSize = 100,
+            OrderBy = new string[]
+            {
+                string.Empty
+            }
+        };
+
+        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();      
+    }
+
+    private void SetSaveButtonText(DeviceSaveAction saveAction)
+    {
+        deviceSaveAction = saveAction;
+        saveButtonText = deviceSaveAction switch
+        {
+            DeviceSaveAction.Save => "Save",
+            DeviceSaveAction.SaveAndAddNew => "Save and add new",
+            DeviceSaveAction.SaveAndDuplicate => "Save and duplicate",
+            _ => saveButtonText
+        };
+    }
+
+    internal async Task ChangeModel(IDeviceModel model)
+    {
+        try
+        {
+            Properties.Clear();
+
+            _deviceModel = model;
+
+            Device = new DeviceDetails
+                {
+                    DeviceID = Device.DeviceID,
+                    ModelId = model?.ModelId!,
+                    ModelName = model?.Name,
+                    ImageUrl = model?.ImageUrl!,
+                    DeviceName = Device.DeviceName,
+                    IsEnabled = Device.IsEnabled,
+                    Tags = Device.Tags
+                };
+
+            if (model == null || string.IsNullOrWhiteSpace(model.ModelId))
+            {
+                return;
+            }
+
+            if (model.SupportLoRaFeatures)
+            {
+                var loRaDeviceModelResult = await LoRaWanDeviceModelsClientService.GetDeviceModel(model.ModelId);
+
+                this.Device = new LoRaDeviceDetails
+                    {
+                        DeviceID = this.Device.DeviceID,
+                        ModelId = model.ModelId,
+                        ImageUrl = model.ImageUrl,
+                        DeviceName = this.Device.DeviceName,
+                        IsEnabled = this.Device.IsEnabled,
+                        Tags = this.Device.Tags,
+                        SensorDecoder = loRaDeviceModelResult.SensorDecoder,
+                        UseOTAA = loRaDeviceModelResult.UseOTAA
+                    };
+
+                LoRaDeviceModelDto = loRaDeviceModelResult;
+            }
+            else
+            {
+                var properties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
+
+                Properties.AddRange(properties.Select(x => new DevicePropertyValue
+                    {
+                        DisplayName = x.DisplayName,
+                        IsWritable = x.IsWritable,
+                        Name = x.Name,
+                        Order = x.Order,
+                        PropertyType = x.PropertyType
+                    }));
+            }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

@@ -33,11 +33,11 @@ services:
        - pgadmin:/var/lib/pgadmin
     depends_on:
       - "database"
-  azureiothub.portal.server:
-    image: ${DOCKER_REGISTRY-}azureiothubportalserver
+  IoTHub.Portal.Server:
+    image: ${DOCKER_REGISTRY-}iothubportalserver
     build:
       context: .
-      dockerfile: AzureIoTHub.Portal.Server/Dockerfile
+      dockerfile: IoTHub.Portal.Server/Dockerfile
     depends_on:
       - "database"
 volumes:

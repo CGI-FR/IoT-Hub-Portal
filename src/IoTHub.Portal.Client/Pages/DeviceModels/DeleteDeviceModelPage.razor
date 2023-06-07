@@ -1,0 +1,44 @@
+﻿@inject ISnackbar Snackbar
+@inject IDeviceModelsClientService DeviceModelsClientService
+
+<MudDialog>
+    <DialogContent>
+        <p>Delete @deviceModelName ?</p>
+        <br />
+        <p><i>Warning : this cannot  be undone.</i></p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string deviceModelID { get; set; } = default!;
+    [Parameter] public string deviceModelName { get; set; } = default!;
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    /// <summary>
+    /// Sends a POST request to the DevicesController, to delete the device from the Azure IoT Hub
+    /// </summary>
+    /// <returns></returns>
+    private async Task DeleteDevice()
+    {
+        try
+        {
+            await DeviceModelsClientService.DeleteDeviceModel(deviceModelID);
+            Snackbar.Add($"Device model {deviceModelName} has been successfully deleted!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+}

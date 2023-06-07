@@ -1,0 +1,90 @@
+﻿@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Shared.Models
+@using Microsoft.AspNetCore.Components
+@using System.Web
+
+@inject IDeviceClientService DeviceClientService
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
+@inject IDeviceLayoutService DeviceLayoutService
+
+<MudAutocomplete id="search-device"
+                 T="DeviceListItem"
+                 Label="Search a device to duplicate"
+                 SearchFunc="@SearchDevicesToDuplicate"
+                 ToStringFunc="@(x => x?.DeviceName)"
+                 DebounceInterval="300"
+                 ValueChanged="OnDeviceSelected"
+                 Dense=true
+                 Clearable=true
+                 CoerceText=true
+                 CoerceValue=false
+                 Variant="Variant.Outlined"
+                 Required="true">
+    <ItemTemplate>
+        @context.DeviceName
+        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+            Id: @context.DeviceID
+        </MudText>
+        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+            LoRaWAN: @(@context.SupportLoRaFeatures ? "Yes" : "No")
+        </MudText>
+    </ItemTemplate>
+    <NoItemsTemplate>
+        <MudText Align="Align.Center" Class="px-4 py-1">
+            Type to search devices by id or name
+        </MudText>
+    </NoItemsTemplate>
+</MudAutocomplete>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    private async Task<IEnumerable<DeviceListItem>> SearchDevicesToDuplicate(string query)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return Array.Empty<DeviceListItem>();
+            }
+            var uri = $"api/devices?pageSize=10&searchText={HttpUtility.UrlEncode(query)}";
+            var result = await DeviceClientService.GetDevices(uri);
+            return result.Items;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+            return new List<DeviceListItem>();
+        }
+    }
+
+    private async Task OnDeviceSelected(DeviceListItem deviceToDuplicate)
+    {
+        try
+        {
+            IDeviceDetails device;
+            IDeviceModel deviceModel;
+
+            if (deviceToDuplicate.SupportLoRaFeatures)
+            {
+                device = await LoRaWanDeviceClientService.GetDevice(deviceToDuplicate.DeviceID);
+                deviceModel = await LoRaWanDeviceModelsClientService.GetDeviceModel(device.ModelId);
+            }
+            else
+            {
+                device = await DeviceClientService.GetDevice(deviceToDuplicate.DeviceID);
+                deviceModel = await DeviceModelsClientService.GetDeviceModel(device.ModelId);
+            }
+            DeviceLayoutService.DuplicateSharedDevice(device);
+            DeviceLayoutService.DuplicateSharedDeviceModel(deviceModel);
+            DeviceLayoutService.RefreshDevice();
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+}
