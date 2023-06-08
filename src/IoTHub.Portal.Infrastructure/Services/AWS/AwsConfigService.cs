@@ -231,9 +231,24 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             }
         }
 
-        public Task<int> GetFailedDeploymentsCount()
+        public async Task<int> GetFailedDeploymentsCount()
         {
-            throw new NotImplementedException();
+            var failedDeploymentCount = 0;
+
+            var deployments = await this.greengrass.ListDeploymentsAsync(new ListDeploymentsRequest
+            {
+                NextToken = string.Empty
+            });
+
+            foreach (var deployment in deployments.Deployments)
+            {
+                if (deployment.DeploymentStatus.Equals(DeploymentStatus.FAILED))
+                {
+                    failedDeploymentCount++;
+                }
+            }
+
+            return failedDeploymentCount;
         }
 
         public async Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)

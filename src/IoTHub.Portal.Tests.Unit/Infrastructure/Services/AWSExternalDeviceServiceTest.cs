@@ -28,6 +28,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
+    using IoTHub.Portal.Domain.Entities;
 
     [TestFixture]
     public class AWSExternalDeviceServiceTest : BackendUnitTest
@@ -537,6 +538,53 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             //Assert
             _ = result.Should().BeNull();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAllThingShouldReturnsAllAWSThings()
+        {
+
+            //Arrange
+            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            var newDevice = new Device
+            {
+                Id = Fixture.Create<string>(),
+                Name = Fixture.Create<string>(),
+                DeviceModel = expectedDeviceModel,
+                DeviceModelId = expectedDeviceModel.Id,
+                Version = 1
+            };
+
+            var thingsListing = new ListThingsResponse
+            {
+                Things = new List<ThingAttribute>()
+                {
+                    new ThingAttribute
+                    {
+                        ThingName = newDevice.Name
+                    }
+                }
+            };
+
+            _ = this.mockAmazonIotClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(thingsListing);
+
+            _ = this.mockAmazonIotClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DescribeThingResponse()
+                {
+                    ThingId = newDevice.Id,
+                    ThingName = newDevice.Name,
+                    ThingTypeName = newDevice.DeviceModel.Name,
+                    Version = newDevice.Version,
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+
+            //Act
+            var result = await this.awsExternalDeviceService.GetAllThings();
+
+            //Assert
             MockRepository.VerifyAll();
         }
     }

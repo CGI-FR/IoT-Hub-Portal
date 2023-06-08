@@ -12,21 +12,25 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
     using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Models.v10;
+    using Microsoft.Extensions.Logging;
 
     public class AWSExternalDeviceService : IAWSExternalDeviceService
     {
         private readonly IAmazonIoT amazonIotClient;
         private readonly IAmazonIotData amazonIotDataClient;
         private readonly IAmazonGreengrassV2 amazonGreenGrasss;
+        private readonly ILogger<AWSExternalDeviceService> logger;
 
         public AWSExternalDeviceService(
             IAmazonIoT amazonIoTClient,
             IAmazonIotData amazonIotDataClient,
-            IAmazonGreengrassV2 amazonGreenGrasss)
+            IAmazonGreengrassV2 amazonGreenGrasss,
+            ILogger<AWSExternalDeviceService> logger)
         {
             this.amazonIotClient = amazonIoTClient;
             this.amazonIotDataClient = amazonIotDataClient;
             this.amazonGreenGrasss = amazonGreenGrasss;
+            this.logger = logger;
         }
 
         public async Task<DescribeThingResponse> GetDevice(string deviceName)
@@ -176,6 +180,42 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 return bool.TryParse(iotEdgeTag.Single().Value, out var result) ? result : null;
 
             } while (true);
+        }
+
+        public async Task<List<DescribeThingResponse>> GetAllThings()
+        {
+            var things = new List<DescribeThingResponse>();
+
+            var marker = string.Empty;
+
+            do
+            {
+                var request = new ListThingsRequest
+                {
+                    Marker = marker
+                };
+
+                var response = await this.amazonIotClient.ListThingsAsync(request);
+
+                foreach (var requestDescribeThing in response.Things.Select(thing => new DescribeThingRequest { ThingName = thing.ThingName }))
+                {
+                    try
+                    {
+                        things.Add(await this.amazonIotClient.DescribeThingAsync(requestDescribeThing));
+                    }
+                    catch (AmazonIoTException e)
+                    {
+                        this.logger.LogWarning($"Cannot import device '{requestDescribeThing.ThingName}' due to an error in the Amazon IoT API.", e);
+
+                        continue;
+                    }
+                }
+
+                marker = response.NextMarker;
+            }
+            while (!string.IsNullOrEmpty(marker));
+
+            return things;
         }
     }
 }

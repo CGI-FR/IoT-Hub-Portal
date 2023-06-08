@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain;
+    using IoTHub.Portal.Infrastructure.Jobs;
     using IoTHub.Portal.Infrastructure.Jobs.AWS;
     using IoTHub.Portal.Infrastructure.Managers;
     using IoTHub.Portal.Infrastructure.Services;
@@ -99,6 +100,30 @@ namespace IoTHub.Portal.Infrastructure.Startup
                     .AddTrigger(t => t
                         .WithIdentity($"{nameof(SyncGreenGrassDeploymentsJob)}")
                         .ForJob(nameof(SyncGreenGrassDeploymentsJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<DeviceMetricLoaderJob>(j => j.WithIdentity(nameof(DeviceMetricLoaderJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(DeviceMetricLoaderJob)}")
+                        .ForJob(nameof(DeviceMetricLoaderJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<DeviceMetricExporterJob>(j => j.WithIdentity(nameof(DeviceMetricExporterJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(DeviceMetricExporterJob)}")
+                        .ForJob(nameof(DeviceMetricExporterJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<EdgeDeviceMetricLoaderJob>(j => j.WithIdentity(nameof(EdgeDeviceMetricLoaderJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(EdgeDeviceMetricLoaderJob)}")
+                        .ForJob(nameof(EdgeDeviceMetricLoaderJob))
                     .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
