@@ -25,5 +25,7 @@ namespace IoTHub.Portal.Application.Services.AWS
 
         Task<bool?> IsEdgeThingType(DescribeThingTypeResponse thingType);
 
+        Task<List<DescribeThingResponse>> GetAllThings();
+
     }
 }

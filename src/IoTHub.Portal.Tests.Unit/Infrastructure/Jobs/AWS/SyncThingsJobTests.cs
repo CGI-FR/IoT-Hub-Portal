@@ -82,38 +82,29 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
             var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
             var newDevice = new Device
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
                 DeviceModel = expectedDeviceModel,
                 DeviceModelId = expectedDeviceModel.Id,
-                Version = 1
+                Version = 1,
             };
 
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    new ThingAttribute
+                    new DescribeThingResponse
                     {
-                        ThingName = newDevice.Name
+                        ThingId = newDevice.Id,
+                        ThingName = newDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        HttpStatusCode = HttpStatusCode.OK
                     }
-                }
-            };
+                };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
-                {
-                    ThingId = newDevice.Id,
-                    ThingName = newDevice.Name,
-                    ThingTypeName = newDevice.DeviceModel.Name,
-                    Version = newDevice.Version,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -178,6 +169,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
             var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
             var existingDevice = new Device
             {
                 Id = Fixture.Create<string>(),
@@ -196,29 +188,21 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 }
             };
 
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    new ThingAttribute
+                    new DescribeThingResponse
                     {
-                        ThingName = existingDevice.Name
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 2,
+                        HttpStatusCode = HttpStatusCode.OK
                     }
-                }
-            };
+                };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
-                {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 2,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -268,38 +252,39 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
             var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
             var existingDevice = new Device
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
                 DeviceModel = expectedDeviceModel,
                 DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+                Version = 2,
+                Tags = new List<DeviceTagValue>()
                 {
-                    new ThingAttribute
+                    new()
                     {
-                        ThingName = existingDevice.Name
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+                    new DescribeThingResponse
+                    {
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 1,
+                        HttpStatusCode = HttpStatusCode.OK
+                    }
+                };
+
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -338,112 +323,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             MockRepository.VerifyAll();
         }
 
-        [Test]
-        public async Task ExecuteNewDeviceWithDescribeThingErrorSkipped()
-        {
-            // Arrange
-            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
-
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
-            {
-                Id = Fixture.Create<string>(),
-                Name = Fixture.Create<string>(),
-                DeviceModel = expectedDeviceModel,
-                DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
-                {
-                    new ThingAttribute
-                    {
-                        ThingName = existingDevice.Name
-                    }
-                }
-            };
-
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
-                {
-                    HttpStatusCode = HttpStatusCode.RequestTimeout
-                });
-
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
-
-            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<EdgeDevice>());
-
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
-
-            // Assert
-            MockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task ExecuteNewDeviceWithoutThingTypeSkipped()
-        {
-            // Arrange
-            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
-
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
-            var existingDevice = new Device
-            {
-                Id = Fixture.Create<string>(),
-                Name = Fixture.Create<string>(),
-                DeviceModel = expectedDeviceModel,
-                DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
-                {
-                    new ThingAttribute
-                    {
-                        ThingName = existingDevice.Name
-                    }
-                }
-            };
-
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
-                {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<Device>());
-
-            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
-                .ReturnsAsync(new List<EdgeDevice>());
-
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            // Act
-            await this.syncThingsJob.Execute(mockJobExecutionContext.Object);
-
-            // Assert
-            MockRepository.VerifyAll();
-        }
 
         [Test]
         public async Task ExecuteNewDeviceWithUnknownIsEdgeTagSkipped()
@@ -452,38 +331,39 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
             var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
             var existingDevice = new Device
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
                 DeviceModel = expectedDeviceModel,
                 DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+                Version = 2,
+                Tags = new List<DeviceTagValue>()
                 {
-                    new ThingAttribute
+                    new()
                     {
-                        ThingName = existingDevice.Name
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+                    new DescribeThingResponse
+                    {
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 1,
+                        HttpStatusCode = HttpStatusCode.OK
+                    }
+                };
+
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -519,38 +399,39 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
             var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
             var existingDevice = new Device
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
                 DeviceModel = expectedDeviceModel,
                 DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+                Version = 2,
+                Tags = new List<DeviceTagValue>()
                 {
-                    new ThingAttribute
+                    new()
                     {
-                        ThingName = existingDevice.Name
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+                    new DescribeThingResponse
+                    {
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 1,
+                        HttpStatusCode = HttpStatusCode.OK
+                    }
+                };
+
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -591,38 +472,39 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
             var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
             var existingDevice = new Device
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
                 DeviceModel = expectedDeviceModel,
                 DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+                Version = 2,
+                Tags = new List<DeviceTagValue>()
                 {
-                    new ThingAttribute
+                    new()
                     {
-                        ThingName = existingDevice.Name
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+                    new DescribeThingResponse
+                    {
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 1,
+                        HttpStatusCode = HttpStatusCode.OK
+                    }
+                };
+
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -665,31 +547,40 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
             var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
             var existingDevice = new Device
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
                 DeviceModel = expectedDeviceModel,
                 DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+                Version = 2,
+                Tags = new List<DeviceTagValue>()
                 {
-                    new ThingAttribute
+                    new()
                     {
-                        ThingName = existingDevice.Name
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
+            var listDescribeThingResponse = new List<DescribeThingResponse>
+                {
+                    new DescribeThingResponse
+                    {
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 1,
+                        HttpStatusCode = HttpStatusCode.BadGateway
+                    }
+                };
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .Throws(new AmazonIoTException(""));
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
+
 
             _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new List<Device>());
@@ -714,38 +605,40 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
 
             var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
             var existingDevice = new Device
             {
                 Id = Fixture.Create<string>(),
                 Name = Fixture.Create<string>(),
                 DeviceModel = expectedDeviceModel,
                 DeviceModelId = expectedDeviceModel.Id,
-                Version = 2
-            };
-
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+                Version = 2,
+                Tags = new List<DeviceTagValue>()
                 {
-                    new ThingAttribute
+                    new()
                     {
-                        ThingName = existingDevice.Name
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
                     }
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+                    new DescribeThingResponse
+                    {
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 1,
+                        HttpStatusCode = HttpStatusCode.OK
+                    }
+                };
+
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
+
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -808,18 +701,21 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    ThingId = newDevice.Id,
-                    ThingName = newDevice.Name,
-                    ThingTypeName = newDevice.DeviceModel.Name,
-                    Version = newDevice.Version,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+                    new DescribeThingResponse
+                    {
+                        ThingId = newDevice.Id,
+                        ThingName = newDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 1,
+                        HttpStatusCode = HttpStatusCode.OK
+                    }
+                };
+
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
+
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -902,29 +798,20 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 }
             };
 
-            var thingsListing = new ListThingsResponse
-            {
-                Things = new List<ThingAttribute>()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    new ThingAttribute
+                    new DescribeThingResponse
                     {
-                        ThingName = existingDevice.Name
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 2,
+                        HttpStatusCode = HttpStatusCode.OK
                     }
-                }
-            };
+                };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
-                {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 2,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -994,18 +881,20 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+                    new DescribeThingResponse
+                    {
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 2,
+                        HttpStatusCode = HttpStatusCode.OK
+                    }
+                };
+
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -1071,18 +960,20 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    ThingId = existingDevice.Id,
-                    ThingName = existingDevice.Name,
-                    ThingTypeName = existingDevice.DeviceModel.Name,
-                    Version = 1,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+                    new DescribeThingResponse
+                    {
+                        ThingId = existingDevice.Id,
+                        ThingName = existingDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 2,
+                        HttpStatusCode = HttpStatusCode.OK
+                    }
+                };
+
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()
@@ -1142,18 +1033,20 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 }
             };
 
-            _ = this.amazonIoTClient.Setup(client => client.ListThingsAsync(It.IsAny<ListThingsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(thingsListing);
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingAsync(It.IsAny<DescribeThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingResponse()
+            var listDescribeThingResponse = new List<DescribeThingResponse>
                 {
-                    ThingId = newDevice.Id,
-                    ThingName = newDevice.Name,
-                    ThingTypeName = newDevice.DeviceModel.Name,
-                    Version = newDevice.Version,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+                    new DescribeThingResponse
+                    {
+                        ThingId = newDevice.Id,
+                        ThingName = newDevice.Name,
+                        ThingTypeName = expectedDeviceModel.Name,
+                        Version = 2,
+                        HttpStatusCode = HttpStatusCode.OK
+                    }
+                };
+
+            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+                .ReturnsAsync(listDescribeThingResponse);
 
             _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DescribeThingTypeResponse()

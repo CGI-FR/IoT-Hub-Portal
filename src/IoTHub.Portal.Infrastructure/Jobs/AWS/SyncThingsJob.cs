@@ -85,7 +85,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
 
         private async Task SyncThingsAsDevices()
         {
-            var things = await GetAllThings();
+            var things = await this.awsExternalDeviceService.GetAllThings();
 
             foreach (var thing in things)
             {
@@ -223,41 +223,6 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             }
 
             await this.unitOfWork.SaveAsync();
-        }
-
-        private async Task<List<DescribeThingResponse>> GetAllThings()
-        {
-            var things = new List<DescribeThingResponse>();
-
-            var marker = string.Empty;
-
-            do
-            {
-                var request = new ListThingsRequest
-                {
-                    Marker = marker
-                };
-
-                var response = await amazonIoTClient.ListThingsAsync(request);
-
-                foreach (var requestDescribeThing in response.Things.Select(thing => new DescribeThingRequest { ThingName = thing.ThingName }))
-                {
-                    try
-                    {
-                        things.Add(await this.amazonIoTClient.DescribeThingAsync(requestDescribeThing));
-                    }
-                    catch (AmazonIoTException e)
-                    {
-                        this.logger.LogWarning($"Cannot import device '{requestDescribeThing.ThingName}' due to an error in the Amazon IoT API.", e);
-                        continue;
-                    }
-                }
-
-                marker = response.NextMarker;
-            }
-            while (!string.IsNullOrEmpty(marker));
-
-            return things;
         }
 
         private async Task CreateOrUpdateDevice(Device device)

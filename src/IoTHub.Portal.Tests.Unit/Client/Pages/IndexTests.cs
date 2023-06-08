@@ -12,6 +12,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages
     using Moq;
     using NUnit.Framework;
     using Index = Portal.Client.Pages.Index;
+    using IoTHub.Portal.Models.v10;
 
     [TestFixture]
     public class IndexTests : BlazorUnitTest
@@ -29,9 +30,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages
         }
 
         [Test]
-        public void IndexShouldRenderCorrectly()
+        public void IndexShouldRenderCorrectlyForAzure()
         {
             // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
+
             var portalMetric = new PortalMetric();
 
             _ = this.mockDashboardMetricsClientService.Setup(c => c.GetPortalMetrics())
@@ -44,6 +47,28 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages
             cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-icon").Count.Should().Be(6));
             cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(6));
             cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(6));
+
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void IndexShouldRenderCorrectlyForAWS()
+        {
+            // Arrange
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS", IsLoRaSupported = false });
+
+            var portalMetric = new PortalMetric();
+
+            _ = this.mockDashboardMetricsClientService.Setup(c => c.GetPortalMetrics())
+                .ReturnsAsync(portalMetric);
+
+            // Act
+            var cut = RenderComponent<Index>();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-icon").Count.Should().Be(4));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(4));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(4));
 
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
