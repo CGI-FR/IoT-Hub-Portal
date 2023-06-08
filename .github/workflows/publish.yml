@@ -140,7 +140,8 @@ jobs:
       
       - name: Update IoTHub Portal docker image tag in awsdeploy.yml
         working-directory: arm-templates/templates/aws
-        run: sed -i 's/\${AWS::AccountId}.dkr.ecr.\${AWS::Region}.amazonaws.com\/iot-hub-portal:latest/public.ecr.aws\/cgi-fr\/iothub-portal:${{ fromJSON(steps.version.outputs.json).labels['org.opencontainers.image.version'] }}/g' awsdeploy.yml
+        run: |
+          sed -i 's/public.ecr.aws\/cgi-fr\/iothub-portal:latest/public.ecr.aws\/cgi-fr\/iothub-portal:${{ fromJSON(steps.version.outputs.json).labels['org.opencontainers.image.version'] }}/g' awsdeploy.yml
 
       - name: Generate ARM file
         working-directory: arm-templates/templates/azure
