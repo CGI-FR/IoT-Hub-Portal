@@ -17,7 +17,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using AutoMapper;
     using Azure;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
@@ -67,7 +66,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton(this.mockGreenGrass.Object);
-            _ = ServiceCollection.AddSingleton<IAWSExternalDeviceService, AWSExternalDeviceService>();
             _ = ServiceCollection.AddSingleton<IDevicePropertyService, AWSDevicePropertyService>();
 
             Services = ServiceCollection.BuildServiceProvider();

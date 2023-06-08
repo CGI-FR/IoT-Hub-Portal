@@ -8,10 +8,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
     using Amazon.IoT.Model;
     using AutoMapper;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services.AWS;
+    using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
+    using IoTHub.Portal.Domain.Shared;
     using Microsoft.Extensions.Logging;
     using Quartz;
 
@@ -25,7 +26,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
         private readonly IDeviceModelRepository deviceModelRepository;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IDeviceModelImageManager deviceModelImageManager;
-        private readonly IAWSExternalDeviceService awsExternalDeviceService;
+        private readonly IExternalDeviceService externalDeviceService;
 
         public SyncThingTypesJob(
             ILogger<SyncThingTypesJob> logger,
@@ -34,14 +35,14 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             IDeviceModelRepository deviceModelRepository,
             IAmazonIoT amazonIoTClient,
             IDeviceModelImageManager awsImageManager,
-            IAWSExternalDeviceService awsExternalDeviceService)
+            IExternalDeviceService externalDeviceService)
         {
             this.deviceModelImageManager = awsImageManager;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.deviceModelRepository = deviceModelRepository;
             this.amazonIoTClient = amazonIoTClient;
-            this.awsExternalDeviceService = awsExternalDeviceService;
+            this.externalDeviceService = externalDeviceService;
             this.logger = logger;
         }
 
@@ -68,7 +69,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
 
             foreach (var thingType in thingTypes)
             {
-                var isEdge = await awsExternalDeviceService.IsEdgeThingType(thingType);
+                var isEdge = await externalDeviceService.IsEdgeDeviceModel(this.mapper.Map<ExternalDeviceModelDto>(thingType));
 
                 // Cannot know if the thing type was created for an iotEdge or not, so skipping...
                 if (!isEdge.HasValue)

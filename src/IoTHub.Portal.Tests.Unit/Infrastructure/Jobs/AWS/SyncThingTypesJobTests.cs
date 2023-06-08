@@ -12,10 +12,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
     using Amazon.IoT.Model;
     using AutoFixture;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services.AWS;
+    using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
+    using IoTHub.Portal.Domain.Shared;
     using IoTHub.Portal.Infrastructure.Jobs.AWS;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 
         private Mock<IAmazonIoT> iaAmazon;
         private Mock<IDeviceModelImageManager> mockAWSImageManager;
-        private Mock<IAWSExternalDeviceService> mockAWSExternalDeviceService;
+        private Mock<IExternalDeviceService> mockExternalDeviceService;
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
 
@@ -38,13 +39,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             base.Setup();
 
             this.mockAWSImageManager = MockRepository.Create<IDeviceModelImageManager>();
-            this.mockAWSExternalDeviceService = MockRepository.Create<IAWSExternalDeviceService>();
+            this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
             this.iaAmazon = MockRepository.Create<IAmazonIoT>();
 
             _ = ServiceCollection.AddSingleton(this.mockAWSImageManager.Object);
-            _ = ServiceCollection.AddSingleton(this.mockAWSExternalDeviceService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.iaAmazon.Object);
@@ -124,7 +125,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             _ = this.iaAmazon.Setup(client => client.DescribeThingTypeAsync(It.Is<DescribeThingTypeRequest>(c => c.ThingTypeName == depcrecatedThingType.ThingTypeName), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(depcrecatedThingType);
 
-            _ = this.mockAWSExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.mockExternalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(false);
 
             var existingDeviceModel = new DeviceModel

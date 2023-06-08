@@ -6,7 +6,6 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Models.v10;
     using Newtonsoft.Json;
@@ -18,20 +17,25 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
     using IoTHub.Portal.Domain.Repositories;
     using Azure;
     using IoTHub.Portal.Application.Helpers;
+    using Amazon.IoT;
+    using Amazon.IotData;
 
     public class AWSDevicePropertyService : IDevicePropertyService
     {
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
-        private readonly IAWSExternalDeviceService externalDeviceService;
         private readonly IDeviceRepository deviceRepository;
+        private readonly IAmazonIoT amazonIoTClient;
+        private readonly IAmazonIotData amazonIotDataClient;
 
         public AWSDevicePropertyService(IDeviceModelPropertiesService deviceModelPropertiesService
-            , IAWSExternalDeviceService externalDeviceService
-            , IDeviceRepository deviceRepository)
+            , IDeviceRepository deviceRepository
+            , IAmazonIoT amazonIoTClient
+            , IAmazonIotData amazonIotDataClient)
         {
             this.deviceModelPropertiesService = deviceModelPropertiesService;
-            this.externalDeviceService = externalDeviceService;
             this.deviceRepository = deviceRepository;
+            this.amazonIoTClient = amazonIoTClient;
+            this.amazonIotDataClient = amazonIotDataClient;
         }
 
         public async Task<IEnumerable<DevicePropertyValue>> GetProperties(string deviceId)
@@ -42,7 +46,14 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 throw new ResourceNotFoundException($"Unable to find the device {deviceId} in DB");
             }
 
-            var deviceShadow = await this.externalDeviceService.GetDeviceShadow(deviceDb.Name);
+            var shadowResponse = await this.amazonIotDataClient.GetThingShadowAsync(new GetThingShadowRequest
+            {
+                ThingName = deviceDb.Name
+            });
+            if (shadowResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Unable to get the thing shadow with device name : {deviceDb.Name} due to an error in the Amazon IoT API : {shadowResponse.HttpStatusCode}");
+            }
 
             IEnumerable<DeviceModelProperty> items;
             try
@@ -60,7 +71,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
             try
             {
-                desiredPropertiesAsJson = AWSDeviceHelper.RetrieveDesiredProperties(deviceShadow);
+                desiredPropertiesAsJson = AWSDeviceHelper.RetrieveDesiredProperties(shadowResponse);
             }
             catch (JsonReaderException e)
             {
@@ -69,7 +80,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
             try
             {
-                reportedPropertiesAsJson = AWSDeviceHelper.RetrieveReportedProperties(deviceShadow);
+                reportedPropertiesAsJson = AWSDeviceHelper.RetrieveReportedProperties(shadowResponse);
             }
             catch (JsonReaderException e)
             {
@@ -137,7 +148,12 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 Payload = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(payload)))
             };
 
-            _ = await this.externalDeviceService.UpdateDeviceShadow(shadowRequest);
+            var shadowResponse = await this.amazonIotDataClient.UpdateThingShadowAsync(shadowRequest);
+
+            if (shadowResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Unable to create/update the thing shadow with device name : {shadowRequest.ThingName} due to an error in the Amazon IoT API : {shadowResponse.HttpStatusCode}");
+            }
         }
     }
 }

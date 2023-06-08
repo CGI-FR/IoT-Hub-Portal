@@ -15,7 +15,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using AutoMapper;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
@@ -31,6 +30,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using NUnit.Framework;
     using Device = Portal.Domain.Entities.Device;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
+    using System.Threading;
 
     [TestFixture]
     public class AWSDeviceServiceTests : BackendUnitTest
@@ -44,7 +44,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         private Mock<IAmazonIoT> mockAmazonIotClient;
         private Mock<IAmazonIotData> mockAmazonIotDataClient;
         private Mock<IConfiguration> mockConfiguration;
-        private Mock<IAWSExternalDeviceService> mockAWSExternalDevicesService;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
 
         private IDeviceService<DeviceDetails> awsDeviceService;
@@ -63,7 +62,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockAmazonIotClient = MockRepository.Create<IAmazonIoT>();
             this.mockAmazonIotDataClient = MockRepository.Create<IAmazonIotData>();
             this.mockConfiguration = MockRepository.Create<IConfiguration>();
-            this.mockAWSExternalDevicesService = MockRepository.Create<IAWSExternalDeviceService>();
             this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
 
             _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
@@ -75,7 +73,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockAmazonIotClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockAmazonIotDataClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
-            _ = ServiceCollection.AddSingleton(this.mockAWSExternalDevicesService.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, AWSDeviceService>();
@@ -96,14 +93,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 DeviceID = Fixture.Create<string>()
             };
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.CreateDevice(It.IsAny<CreateThingRequest>()))
+            _ = this.mockAmazonIotClient.Setup(service => service.CreateThingAsync(It.IsAny<CreateThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateThingResponse()
                 {
                     ThingId = deviceDto.DeviceID,
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDeviceShadow(It.IsAny<UpdateThingShadowRequest>()))
+            _ = this.mockAmazonIotDataClient.Setup(service => service.UpdateThingShadowAsync(It.IsAny<UpdateThingShadowRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new UpdateThingShadowResponse()
                 {
                     HttpStatusCode = HttpStatusCode.OK
@@ -132,14 +129,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 DeviceID = Fixture.Create<string>()
             };
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.CreateDevice(It.IsAny<CreateThingRequest>()))
+            _ = this.mockAmazonIotClient.Setup(service => service.CreateThingAsync(It.IsAny<CreateThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateThingResponse()
                 {
                     ThingId = deviceDto.DeviceID,
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDeviceShadow(It.IsAny<UpdateThingShadowRequest>()))
+            _ = this.mockAmazonIotDataClient.Setup(service => service.UpdateThingShadowAsync(It.IsAny<UpdateThingShadowRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new UpdateThingShadowResponse()
                 {
                     HttpStatusCode = HttpStatusCode.OK
@@ -169,7 +166,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 DeviceName = Fixture.Create<string>(),
             };
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<UpdateThingRequest>()))
+            _ = this.mockAmazonIotClient.Setup(service => service.UpdateThingAsync(It.IsAny<UpdateThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new UpdateThingResponse()
                 {
                     HttpStatusCode = HttpStatusCode.OK
@@ -218,7 +215,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 DeviceName = Fixture.Create<string>(),
             };
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<UpdateThingRequest>()))
+            _ = this.mockAmazonIotClient.Setup(service => service.UpdateThingAsync(It.IsAny<UpdateThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new UpdateThingResponse()
                 {
                     HttpStatusCode = HttpStatusCode.OK
@@ -245,7 +242,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 DeviceName = Fixture.Create<string>(),
             };
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<UpdateThingRequest>()))
+            _ = this.mockAmazonIotClient.Setup(service => service.UpdateThingAsync(It.IsAny<UpdateThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new UpdateThingResponse()
                 {
                     HttpStatusCode = HttpStatusCode.OK
@@ -288,7 +285,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 Labels = Fixture.CreateMany<Label>(5).ToList()
             };
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.DeleteDevice(It.IsAny<DeleteThingRequest>()))
+            _ = this.mockAmazonIotClient.Setup(service => service.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ListThingPrincipalsResponse()
+            {
+                HttpStatusCode = HttpStatusCode.OK
+            });
+
+            _ = this.mockAmazonIotClient.Setup(service => service.DeleteThingAsync(It.IsAny<DeleteThingRequest>(), It.IsAny<CancellationToken>()))
                .ReturnsAsync(new DeleteThingResponse()
                {
                    HttpStatusCode = HttpStatusCode.OK
@@ -320,7 +323,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public async Task DeleteDeviceNothingIsDoneIfDeviceNotExist()
+        public Task DeleteDeviceResourceNotFoundExceptionIfDeviceNotExist()
         {
             // Arrange
             var deviceDto = new DeviceDetails
@@ -328,23 +331,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 DeviceID = Fixture.Create<string>()
             };
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.DeleteDevice(It.IsAny<DeleteThingRequest>()))
-                .ReturnsAsync(new DeleteThingResponse()
-                {
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
-                .ReturnsAsync((Device)null);
-
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
                .ReturnsAsync((Device)null);
 
             // Act
-            await this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+            var response = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
+            _ = response.Should().ThrowAsync<ResourceNotFoundException>();
             MockRepository.VerifyAll();
+            return Task.CompletedTask;
         }
 
         [Test]
@@ -363,7 +359,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 Labels =  new List<Label>(),
             };
 
-            _ = this.mockAWSExternalDevicesService.Setup(service => service.DeleteDevice(It.IsAny<DeleteThingRequest>()))
+            _ = this.mockAmazonIotClient.Setup(service => service.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListThingPrincipalsResponse()
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockAmazonIotClient.Setup(service => service.DeleteThingAsync(It.IsAny<DeleteThingRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DeleteThingResponse()
                 {
                     HttpStatusCode = HttpStatusCode.OK

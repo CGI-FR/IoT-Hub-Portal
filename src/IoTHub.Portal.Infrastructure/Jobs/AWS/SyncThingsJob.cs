@@ -9,17 +9,17 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
     using Amazon.GreengrassV2.Model;
     using Amazon.GreengrassV2;
     using Amazon.IoT;
-    using Amazon.IoT.Model;
     using Amazon.IotData;
     using Amazon.IotData.Model;
     using AutoMapper;
-    using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
     using Microsoft.Extensions.Logging;
     using Quartz;
     using Quartz.Util;
+    using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Domain.Shared;
 
     [DisallowConcurrentExecution]
     public class SyncThingsJob : IJob
@@ -36,7 +36,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonIotData amazonIoTDataClient;
         private readonly IAmazonGreengrassV2 amazonGreenGrass;
-        private readonly IAWSExternalDeviceService awsExternalDeviceService;
+        private readonly IExternalDeviceService externalDeviceService;
 
         public SyncThingsJob(
             ILogger<SyncThingsJob> logger,
@@ -50,7 +50,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             IAmazonIoT amazonIoTClient,
             IAmazonIotData amazonIoTDataClient,
             IAmazonGreengrassV2 amazonGreenGrass,
-            IAWSExternalDeviceService awsExternalDeviceService)
+            IExternalDeviceService externalDeviceService)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -63,7 +63,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             this.amazonIoTDataClient = amazonIoTDataClient;
             this.amazonGreenGrass = amazonGreenGrass;
             this.logger = logger;
-            this.awsExternalDeviceService = awsExternalDeviceService;
+            this.externalDeviceService = externalDeviceService;
         }
 
 
@@ -85,7 +85,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
 
         private async Task SyncThingsAsDevices()
         {
-            var things = await this.awsExternalDeviceService.GetAllThings();
+            var things = await this.externalDeviceService.GetAllThing();
 
             foreach (var thing in things)
             {
@@ -107,12 +107,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                 //Retrieve ThingType to know if it's an iotEdge
                 try
                 {
-                    var thingType = await this.amazonIoTClient.DescribeThingTypeAsync(new DescribeThingTypeRequest()
-                    {
-                        ThingTypeName = thing.ThingTypeName
-                    });
-
-                    isEdge = await awsExternalDeviceService.IsEdgeThingType(thingType);
+                    isEdge = await externalDeviceService.IsEdgeDeviceModel(this.mapper.Map<ExternalDeviceModelDto>(thing));
                 }
                 catch (AmazonIoTException e)
                 {
