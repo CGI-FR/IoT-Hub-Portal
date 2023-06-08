@@ -454,56 +454,7 @@ Resources:
                     - - Fn::Sub: "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:"
                       - Ref: "AWS::StackName"
                       - "-*"
-        - PolicyName: AmazonElasticContainerRegistryPublicReadOnly
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "ecr-public:GetAuthorizationToken"
-                  - "sts:GetServiceBearerToken"
-                  - "ecr-public:BatchCheckLayerAvailability"
-                  - "ecr-public:GetRepositoryPolicy"
-                  - "ecr-public:DescribeRepositories"
-                  - "ecr-public:DescribeRegistries"
-                  - "ecr-public:DescribeImages"
-                  - "ecr-public:DescribeImageTags"
-                  - "ecr-public:GetRepositoryCatalogData"
-                  - "ecr-public:GetRegistryCatalogData"
-                Resource: "*"
-        - PolicyName: AWSAppRunnerFullAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: "iam:CreateServiceLinkedRole"
-                Resource: "arn:aws:iam::*:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner"
-                Condition:
-                  StringLike:
-                    iam:AWSServiceName: "apprunner.amazonaws.com"
-              - Effect: Allow
-                Action: "iam:PassRole"
-                Resource: "*"
-                Condition:
-                  StringLike:
-                    iam:PassedToService: "apprunner.amazonaws.com"
-              - Sid: AppRunnerAdminAccess
-                Effect: Allow
-                Action: "apprunner:*"
-                Resource: "*"
-        - PolicyName: AWSAppRunnerServicePolicyForECRAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "ecr:GetDownloadUrlForLayer"
-                  - "ecr:BatchGetImage"
-                  - "ecr:DescribeImages"
-                  - "ecr:GetAuthorizationToken"
-                  - "ecr:BatchCheckLayerAvailability"
-                Resource: "*"
-
+        
   AppRunnerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -572,9 +523,6 @@ Resources:
             Ref: AppRunnerServiceVPCConnector
       SourceConfiguration:
         AutoDeploymentsEnabled: false
-        AuthenticationConfiguration:
-          AccessRoleArn:
-            Fn::GetAtt: InstanceRole.Arn
         ImageRepository:
           ImageConfiguration:
             Port: 80
@@ -634,8 +582,8 @@ Resources:
               - Name: CloudProvider
                 Value: AWS            
           ImageIdentifier:
-            Fn::Sub: "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/iot-hub-portal:latest"
-          ImageRepositoryType: ECR
+            Fn::Sub: "public.ecr.aws/cgi-fr/iothub-portal:latest"
+          ImageRepositoryType: ECR_PUBLIC
       Tags:
         - Key: Name
           Value:
