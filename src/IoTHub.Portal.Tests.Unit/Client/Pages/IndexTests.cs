@@ -33,7 +33,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages
         public void IndexShouldRenderCorrectlyForAzure()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
 
             var portalMetric = new PortalMetric();
 
@@ -55,7 +55,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages
         public void IndexShouldRenderCorrectlyForAWS()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS", IsLoRaSupported = false });
 
             var portalMetric = new PortalMetric();
 

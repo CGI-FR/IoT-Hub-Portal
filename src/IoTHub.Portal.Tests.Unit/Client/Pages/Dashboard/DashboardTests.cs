@@ -37,7 +37,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
         public void DashboardShouldRenderCorrectlyForAzure()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
 
             var portalMetric = new PortalMetric
             {

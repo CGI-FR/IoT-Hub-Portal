@@ -37,7 +37,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
         public void DashboardMetricShouldRenderCorrectlyForAzure()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
 
             var portalMetric = new PortalMetric
             {
@@ -101,7 +101,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
         public void OnRefreshDashboardEventDashboardMetricShouldRefreshMetricsForAzure()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
 
             var portalMetric = new PortalMetric
             {
@@ -185,7 +185,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
         public void DashboardMetricShouldProcessProblemDetailsExceptionWhenIssueOccursAzure()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
 
             _ = this.mockDashboardMetricsClientService.Setup(c => c.GetPortalMetrics())
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
