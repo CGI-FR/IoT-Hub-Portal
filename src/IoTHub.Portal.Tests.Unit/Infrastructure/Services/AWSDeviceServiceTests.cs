@@ -31,6 +31,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using Device = Portal.Domain.Entities.Device;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
     using System.Threading;
+    using IoTHub.Portal.Domain.Exceptions;
 
     [TestFixture]
     public class AWSDeviceServiceTests : BackendUnitTest
@@ -121,6 +122,59 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        public async Task CreateDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForCreateThing()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails()
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockAmazonIotClient.Setup(service => service.CreateThingAsync(It.IsAny<CreateThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateThingResponse()
+                {
+                    HttpStatusCode = HttpStatusCode.BadRequest
+                });
+
+            //Act
+            var result = () => this.awsDeviceService.CreateDevice(deviceDto);
+
+            //Assert
+            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForUpdateThingShadow()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails()
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockAmazonIotClient.Setup(service => service.CreateThingAsync(It.IsAny<CreateThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateThingResponse()
+                {
+                    ThingId = deviceDto.DeviceID,
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            _ = this.mockAmazonIotDataClient.Setup(service => service.UpdateThingShadowAsync(It.IsAny<UpdateThingShadowRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UpdateThingShadowResponse()
+                {
+                    HttpStatusCode = HttpStatusCode.BadRequest
+                });
+
+            //Act
+            var result = () => this.awsDeviceService.CreateDevice(deviceDto);
+
+            //Assert
+            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task CreateDeviceDuplicateExceptionIsThrown()
         {
             // Arrange
@@ -202,6 +256,30 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             // Assert
             _ = result.Should().BeEquivalentTo(deviceDto);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForUpdateThing()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>(),
+                DeviceName = Fixture.Create<string>(),
+            };
+
+            _ = this.mockAmazonIotClient.Setup(service => service.UpdateThingAsync(It.IsAny<UpdateThingRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UpdateThingResponse()
+                {
+                    HttpStatusCode = HttpStatusCode.BadRequest
+                });
+
+            // Act
+            var result = () => this.awsDeviceService.UpdateDevice(deviceDto);
+
+            // Assert
+            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
             MockRepository.VerifyAll();
         }
 
@@ -288,6 +366,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = this.mockAmazonIotClient.Setup(service => service.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ListThingPrincipalsResponse()
             {
+                Principals = new List<string>()
+                {
+                    Fixture.Create<string>()
+                },
+                HttpStatusCode = HttpStatusCode.OK
+            });
+
+            _ = this.mockAmazonIotClient.Setup(service => service.DetachThingPrincipalAsync(It.IsAny<DetachThingPrincipalRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DetachThingPrincipalResponse()
+            {
                 HttpStatusCode = HttpStatusCode.OK
             });
 
@@ -323,7 +411,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public Task DeleteDeviceResourceNotFoundExceptionIfDeviceNotExist()
+        public async Task DeleteDeviceResourceNotFoundExceptionIfDeviceNotExist()
         {
             // Arrange
             var deviceDto = new DeviceDetails
@@ -338,9 +426,133 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             var response = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
-            _ = response.Should().ThrowAsync<ResourceNotFoundException>();
+            _ = await response.Should().ThrowAsync<ResourceNotFoundException>();
             MockRepository.VerifyAll();
-            return Task.CompletedTask;
+        }
+
+        [Test]
+        public async Task DeleteDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForListThingPrincipals()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            var device = new Device
+            {
+                Id = deviceDto.DeviceID,
+                Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList(),
+                Labels = Fixture.CreateMany<Label>(5).ToList()
+            };
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(device);
+
+            _ = this.mockAmazonIotClient.Setup(service => service.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ListThingPrincipalsResponse()
+            {
+                HttpStatusCode = HttpStatusCode.BadRequest
+            });
+
+            // Act
+            var result = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForDetachThingPrincipal()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            var device = new Device
+            {
+                Id = deviceDto.DeviceID,
+                Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList(),
+                Labels = Fixture.CreateMany<Label>(5).ToList()
+            };
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(device);
+
+            _ = this.mockAmazonIotClient.Setup(service => service.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ListThingPrincipalsResponse()
+            {
+                Principals = new List<string>()
+                {
+                    Fixture.Create<string>()
+                },
+                HttpStatusCode = HttpStatusCode.OK
+            }); ;
+
+            _ = this.mockAmazonIotClient.Setup(service => service.DetachThingPrincipalAsync(It.IsAny<DetachThingPrincipalRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DetachThingPrincipalResponse()
+            {
+                HttpStatusCode = HttpStatusCode.BadRequest
+            });
+
+            // Act
+            var result = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForDeleteThing()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            var device = new Device
+            {
+                Id = deviceDto.DeviceID,
+                Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList(),
+                Labels = Fixture.CreateMany<Label>(5).ToList()
+            };
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(device);
+
+            _ = this.mockAmazonIotClient.Setup(service => service.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ListThingPrincipalsResponse()
+            {
+                Principals = new List<string>()
+                {
+                    Fixture.Create<string>()
+                },
+                HttpStatusCode = HttpStatusCode.OK
+            }); ;
+
+            _ = this.mockAmazonIotClient.Setup(service => service.DetachThingPrincipalAsync(It.IsAny<DetachThingPrincipalRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DetachThingPrincipalResponse()
+            {
+                HttpStatusCode = HttpStatusCode.OK
+            });
+
+            _ = this.mockAmazonIotClient.Setup(service => service.DeleteThingAsync(It.IsAny<DeleteThingRequest>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new DeleteThingResponse()
+               {
+                   HttpStatusCode = HttpStatusCode.BadRequest
+               });
+
+            // Act
+            var result = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
         }
 
         [Test]
