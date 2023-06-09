@@ -16,10 +16,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
     using Amazon.IotData;
     using Amazon.IotData.Model;
     using AutoFixture;
-    using IoTHub.Portal.Application.Services.AWS;
+    using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
+    using IoTHub.Portal.Domain.Shared;
     using IoTHub.Portal.Infrastructure.Jobs.AWS;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +41,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
         private Mock<IEdgeDeviceModelRepository> mockEdgeDeviceModelRepository;
         private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
-        private Mock<IAWSExternalDeviceService> awsExternalDeviceService;
+        private Mock<IExternalDeviceService> externalDeviceService;
 
         public override void Setup()
         {
@@ -55,7 +56,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             this.amazonIoTClient = MockRepository.Create<IAmazonIoT>();
             this.amazonIoTDataClient = MockRepository.Create<IAmazonIotData>();
             this.amazonGreenGrass = MockRepository.Create<IAmazonGreengrassV2>();
-            this.awsExternalDeviceService = MockRepository.Create<IAWSExternalDeviceService>();
+            this.externalDeviceService = MockRepository.Create<IExternalDeviceService>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
@@ -66,7 +67,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
             _ = ServiceCollection.AddSingleton(this.amazonIoTClient.Object);
             _ = ServiceCollection.AddSingleton(this.amazonIoTDataClient.Object);
             _ = ServiceCollection.AddSingleton(this.amazonGreenGrass.Object);
-            _ = ServiceCollection.AddSingleton(this.awsExternalDeviceService.Object);
+            _ = ServiceCollection.AddSingleton(this.externalDeviceService.Object);
             _ = ServiceCollection.AddSingleton<IJob, SyncThingsJob>();
 
 
@@ -103,18 +104,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(false);
 
             _ = this.mockDeviceModelRepository
@@ -200,19 +193,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(false);
 
             _ = this.mockDeviceModelRepository
@@ -283,18 +267,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(false);
 
             _ = this.mockDeviceModelRepository
@@ -362,18 +338,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync((bool?)null);
 
             _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>(), d => d.Tags, d => d.Labels))
@@ -430,18 +398,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(false);
 
             _ = this.mockDeviceModelRepository
@@ -503,18 +463,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(false);
 
             _ = this.mockDeviceModelRepository
@@ -578,7 +530,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
 
@@ -636,19 +588,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(false);
 
             _ = this.mockDeviceModelRepository
@@ -713,19 +656,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(true);
 
             _ = this.mockEdgeDeviceModelRepository
@@ -810,18 +744,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(true);
 
             _ = this.mockEdgeDeviceModelRepository
@@ -893,18 +819,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(true);
 
             _ = this.mockEdgeDeviceModelRepository
@@ -972,18 +890,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(true);
 
             _ = this.mockEdgeDeviceModelRepository
@@ -1045,18 +955,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     }
                 };
 
-            _ = this.awsExternalDeviceService.Setup(client => client.GetAllThings())
+            _ = this.externalDeviceService.Setup(client => client.GetAllThing())
                 .ReturnsAsync(listDescribeThingResponse);
 
-            _ = this.amazonIoTClient.Setup(client => client.DescribeThingTypeAsync(It.IsAny<DescribeThingTypeRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DescribeThingTypeResponse()
-                {
-                    ThingTypeId = expectedDeviceModel.Id,
-                    ThingTypeName = expectedDeviceModel.Name,
-                    HttpStatusCode = HttpStatusCode.OK
-                });
-
-            _ = this.awsExternalDeviceService.Setup(client => client.IsEdgeThingType(It.IsAny<DescribeThingTypeResponse>()))
+            _ = this.externalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(true);
 
             _ = this.mockEdgeDeviceModelRepository
