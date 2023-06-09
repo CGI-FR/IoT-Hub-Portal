@@ -11,7 +11,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using Amazon.SecretsManager;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Infrastructure.Jobs;
     using IoTHub.Portal.Infrastructure.Jobs.AWS;
@@ -61,7 +60,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IExternalDeviceService, AwsExternalDeviceService>()
                 .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>))
                 .AddTransient<IDeviceService<DeviceDetails>, AWSDeviceService>()
-                .AddTransient<IAWSExternalDeviceService, AWSExternalDeviceService>()
                 .AddTransient<IDevicePropertyService, AWSDevicePropertyService>()
                 .AddTransient<IConfigService, AwsConfigService>()
                 .AddTransient<IEdgeModelService, EdgeModelService>()

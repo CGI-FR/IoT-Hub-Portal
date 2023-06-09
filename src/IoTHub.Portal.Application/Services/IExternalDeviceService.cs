@@ -10,12 +10,15 @@ namespace IoTHub.Portal.Application.Services
     using Microsoft.Azure.Devices.Shared;
     using IoTHub.Portal.Domain.Shared;
     using Shared.Models.v10;
+    using Amazon.IoT.Model;
 
     public interface IExternalDeviceService
     {
         Task<ExternalDeviceModelDto> CreateDeviceModel(ExternalDeviceModelDto deviceModel);
 
         Task DeleteDeviceModel(ExternalDeviceModelDto deviceModel);
+
+        Task<bool?> IsEdgeDeviceModel(ExternalDeviceModelDto deviceModel);
 
         Task<Device> GetDevice(string deviceId);
 
@@ -48,6 +51,8 @@ namespace IoTHub.Portal.Application.Services
             bool? searchState = null,
             Dictionary<string, string>? searchTags = null,
             int pageSize = 10);
+
+        Task<IList<DescribeThingResponse>> GetAllThing();
 
         Task<PaginationResult<Twin>> GetAllEdgeDevice(
             string? continuationToken = null,

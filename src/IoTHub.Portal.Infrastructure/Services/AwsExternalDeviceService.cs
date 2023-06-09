@@ -17,7 +17,6 @@ namespace IoTHub.Portal.Infrastructure.Services
     using AutoMapper;
     using IoTHub.Portal;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Shared;
     using IoTHub.Portal.Models.v10;
@@ -25,6 +24,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Shared.Models.v10;
+    using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
     using ResourceAlreadyExistsException = Amazon.IoT.Model.ResourceAlreadyExistsException;
     using ResourceNotFoundException = Amazon.IoT.Model.ResourceNotFoundException;
     using Tag = Amazon.IoT.Model.Tag;
@@ -41,7 +41,6 @@ namespace IoTHub.Portal.Infrastructure.Services
         private readonly IAmazonGreengrassV2 greengrass;
         private readonly IAmazonSecretsManager amazonSecretsManager;
         private readonly IAmazonIotData amazonIotData;
-        private readonly IAWSExternalDeviceService awsExternalDeviceService;
         private readonly ILogger<AwsExternalDeviceService> logger;
 
 
@@ -52,7 +51,6 @@ namespace IoTHub.Portal.Infrastructure.Services
             IAmazonIoT amazonIoTClient,
             IAmazonGreengrassV2 greengrass,
             IAmazonSecretsManager amazonSecretsManager,
-            IAWSExternalDeviceService awsExternalDeviceService,
             ILogger<AwsExternalDeviceService> logger,
             IAmazonIotData amazonIotData)
         {
@@ -61,7 +59,6 @@ namespace IoTHub.Portal.Infrastructure.Services
             this.amazonIoTClient = amazonIoTClient;
             this.greengrass = greengrass;
             this.amazonSecretsManager = amazonSecretsManager;
-            this.awsExternalDeviceService = awsExternalDeviceService;
             this.logger = logger;
             this.amazonIotData = amazonIotData;
         }
@@ -140,6 +137,43 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
         }
 
+        public async Task<bool?> IsEdgeDeviceModel(ExternalDeviceModelDto deviceModel)
+        {
+            var thingType = await this.amazonIoTClient.DescribeThingTypeAsync(new DescribeThingTypeRequest()
+            {
+                ThingTypeName = deviceModel.Name
+            });
+
+            var response = await this.amazonIoTClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
+            {
+                ResourceArn = thingType.ThingTypeArn
+            });
+
+            do
+            {
+                if (response == null || !response.Tags.Any())
+                {
+                    return null;
+                }
+
+                var iotEdgeTag = response.Tags.Where(c => c.Key.Equals("iotEdge", StringComparison.OrdinalIgnoreCase));
+
+                if (!iotEdgeTag.Any())
+                {
+                    response = await this.amazonIoTClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
+                    {
+                        ResourceArn = thingType.ThingTypeArn,
+                        NextToken = response.NextToken
+                    });
+
+                    continue;
+                }
+
+                return bool.TryParse(iotEdgeTag.Single().Value, out var result) ? result : null;
+
+            } while (true);
+        }
+
         public Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method)
         {
             throw new NotImplementedException();
@@ -153,6 +187,42 @@ namespace IoTHub.Portal.Infrastructure.Services
         public Task<PaginationResult<Twin>> GetAllDevice(string? continuationToken = null, string? filterDeviceType = null, string? excludeDeviceType = null, string? searchText = null, bool? searchStatus = null, bool? searchState = null, Dictionary<string, string>? searchTags = null, int pageSize = 10)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IList<DescribeThingResponse>> GetAllThing()
+        {
+            var things = new List<DescribeThingResponse>();
+
+            var marker = string.Empty;
+
+            do
+            {
+                var request = new ListThingsRequest
+                {
+                    Marker = marker
+                };
+
+                var response = await this.amazonIoTClient.ListThingsAsync(request);
+
+                foreach (var requestDescribeThing in response.Things.Select(thing => new DescribeThingRequest { ThingName = thing.ThingName }))
+                {
+                    try
+                    {
+                        things.Add(await this.amazonIoTClient.DescribeThingAsync(requestDescribeThing));
+                    }
+                    catch (AmazonIoTException e)
+                    {
+                        this.logger.LogWarning($"Cannot import device '{requestDescribeThing.ThingName}' due to an error in the Amazon IoT API.", e);
+
+                        continue;
+                    }
+                }
+
+                marker = response.NextMarker;
+            }
+            while (!string.IsNullOrEmpty(marker));
+
+            return things;
         }
 
         public Task<PaginationResult<Twin>> GetAllEdgeDevice(string? continuationToken = null, string? searchText = null, bool? searchStatus = null, string? searchType = null, int pageSize = 10)
@@ -209,7 +279,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var deviceCount = 0;
             var edgeDeviceCount = 0;
 
-            var devices = await this.awsExternalDeviceService.GetAllThings();
+            var devices = await this.GetAllThing();
             var dico = new Dictionary<string, int>();
 
             bool? isEdge;
@@ -218,12 +288,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 try
                 {
-                    var thingType = await this.amazonIoTClient.DescribeThingTypeAsync(new DescribeThingTypeRequest()
-                    {
-                        ThingTypeName = device.ThingTypeName
-                    });
-
-                    isEdge = await awsExternalDeviceService.IsEdgeThingType(thingType);
+                    isEdge = await this.IsEdgeDeviceModel(this.mapper.Map<ExternalDeviceModelDto>(device));
                 }
                 catch (AmazonIoTException e)
                 {

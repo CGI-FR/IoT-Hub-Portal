@@ -2132,5 +2132,75 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = await act.Should().ThrowAsync<NotImplementedException>();
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task CreateEnrollementScriptShouldThrowNotImplementedException()
+        {
+            // Arrange
+            var template = Fixture.Create<string>();
+            var edgeDevice = new Portal.Domain.Entities.EdgeDevice();
+            var service = CreateService();
+
+            // Act
+            var act = () => service.CreateEnrollementScript(template, edgeDevice);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<NotImplementedException>();
+        }
+
+        [Test]
+        public async Task CreateEdgeDeviceShouldThrowNotImplementedException()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+            var service = CreateService();
+
+            // Act
+            var act = () => service.CreateEdgeDevice(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<NotImplementedException>();
+        }
+
+        [Test]
+        public async Task RemoveDeviceCredentialsShouldThrowNotImplementedException()
+        {
+            // Arrange
+            var edgeDevice = new IoTEdgeDevice();
+            var service = CreateService();
+
+            // Act
+            var act = () => service.RemoveDeviceCredentials(edgeDevice);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<NotImplementedException>();
+        }
+
+        [Test]
+        public async Task IsEdgeDeviceModelShouldThrowNotImplementedException()
+        {
+            // Arrange
+            var externalDeviceModelDto = new ExternalDeviceModelDto();
+            var service = CreateService();
+
+            // Act
+            var act = () => service.IsEdgeDeviceModel(externalDeviceModelDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<NotImplementedException>();
+        }
+
+        [Test]
+        public async Task GetAllThingShouldThrowNotImplementedException()
+        {
+            // Arrange
+            var service = CreateService();
+
+            // Act
+            var act = () => service.GetAllThing();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<NotImplementedException>();
+        }
     }
 }

@@ -734,5 +734,15 @@ namespace IoTHub.Portal.Server.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool?> IsEdgeDeviceModel(ExternalDeviceModelDto deviceModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<Amazon.IoT.Model.DescribeThingResponse>> GetAllThing()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
