@@ -16,6 +16,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Helpers;
     using IoTHub.Portal.Models.v10;
+    using Microsoft.Extensions.Logging;
 
     public class AWSEdgeDevicesService : EdgeDevicesServiceBase, IEdgeDevicesService
     {
@@ -127,12 +128,23 @@ namespace IoTHub.Portal.Infrastructure.Services
         {
             var device = await base.GetEdgeDevice(deviceId);
 
-            await this.externalDeviceService.RemoveDeviceCredentials(device);
-            await this.externalDeviceService.DeleteDevice(device.DeviceName);
+            try
+            {
+                await this.externalDeviceService.RemoveDeviceCredentials(device);
+                await this.externalDeviceService.DeleteDevice(device.DeviceName);
+            }
+            catch (AmazonIoTException ex)
+            {
+                this.logger.LogWarning($"Can not the device {deviceId} because it doesn't exist in AWS IoT", ex);
 
-            await DeleteEdgeDeviceInDatabase(deviceId);
+            }
+            finally
+            {
+                await DeleteEdgeDeviceInDatabase(deviceId);
 
-            await this.unitOfWork.SaveAsync();
+                await this.unitOfWork.SaveAsync();
+            }
+
         }
 
         /// <summary>

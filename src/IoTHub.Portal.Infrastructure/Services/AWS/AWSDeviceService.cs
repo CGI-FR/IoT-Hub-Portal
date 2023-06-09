@@ -123,8 +123,6 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 throw new InternalServerErrorException($"Unable to delete the thing with device name : {device.Name} due to an error in the Amazon IoT API : {deleteResponse.HttpStatusCode}");
             }
 
-            //Delete Thing in DB
-            await DeleteDeviceInDatabase(deviceId);
         }
     }
 }
