@@ -33,7 +33,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         private readonly IMapper mapper;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonGreengrassV2 amazonGreengrass;
-
+        private readonly ILogger<AWSEdgeDevicesService> logger;
         public AWSEdgeDevicesService(
             ConfigHandler configHandler,
             IEdgeEnrollementHelper edgeEnrollementHelper,
@@ -48,7 +48,8 @@ namespace IoTHub.Portal.Infrastructure.Services
             ILabelRepository labelRepository,
             IDeviceModelImageManager deviceModelImageManager,
             IAmazonIoT amazonIoTClient,
-            IAmazonGreengrassV2 amazonGreengrass)
+            IAmazonGreengrassV2 amazonGreengrass,
+            ILogger<AWSEdgeDevicesService> logger)
             : base(deviceTagService, edgeDeviceRepository, mapper, deviceModelImageManager, deviceTagValueRepository, labelRepository)
         {
             this.configHandler = configHandler;
@@ -64,6 +65,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
             this.amazonIoTClient = amazonIoTClient;
             this.amazonGreengrass = amazonGreengrass;
+            this.logger = logger;
         }
 
         /// <summary>
