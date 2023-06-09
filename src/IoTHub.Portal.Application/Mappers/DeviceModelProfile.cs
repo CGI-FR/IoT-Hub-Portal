@@ -37,6 +37,13 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ThingTypeId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName))
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.ThingTypeProperties.ThingTypeDescription ?? string.Empty));
+
+            _ = CreateMap<DescribeThingResponse, ExternalDeviceModelDto>()
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName));
+
+            _ = CreateMap<DescribeThingTypeResponse, ExternalDeviceModelDto>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ThingTypeId))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName));
         }
     }
 }

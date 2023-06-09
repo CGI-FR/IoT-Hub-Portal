@@ -17,7 +17,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using AutoMapper;
     using Azure;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
@@ -67,7 +66,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton(this.mockGreenGrass.Object);
-            _ = ServiceCollection.AddSingleton<IAWSExternalDeviceService, AWSExternalDeviceService>();
             _ = ServiceCollection.AddSingleton<IDevicePropertyService, AWSDevicePropertyService>();
 
             Services = ServiceCollection.BuildServiceProvider();
@@ -89,6 +87,33 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             // Assert
             _ = await result.Should().ThrowAsync<ResourceNotFoundException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetPropertiesShouldThrowInternalServerErrorExceptionWhenHttpStatusCodeIsNotOKForGetThingShadow()
+        {
+            // Arrange
+            var device = new Device()
+            {
+                Id = "aaa",
+                DeviceModelId = "bbb"
+            };
+
+            _ = this.mockDeviceRepository.Setup(c => c.GetByIdAsync("aaa"))
+                .ReturnsAsync(device);
+
+            _ = this.mockAmazonIotDataClient.Setup(iotDataClient => iotDataClient.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetThingShadowResponse
+                {
+                    HttpStatusCode = HttpStatusCode.BadRequest
+                });
+
+            // Act
+            var act = () => this.awsDevicePropertyService.GetProperties(device.Id);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             MockRepository.VerifyAll();
         }
 
@@ -221,6 +246,36 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             _ = this.mockDeviceModelPropertiesService.Setup(c => c.GetModelProperties(device.DeviceModelId))
                     .Throws(new RequestFailedException("test"));
+
+            // Act
+            var act = () => this.awsDevicePropertyService.SetProperties(device.Id, null);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SetPropertiesShouldThrowInternalServerErrorExceptionWhenHttpStatusIsNotOKForUpdateThingShadow()
+        {
+            // Arrange
+            var device = new Device()
+            {
+                Id = "aaa",
+                DeviceModelId = "bbb"
+            };
+
+            _ = this.mockDeviceRepository.Setup(c => c.GetByIdAsync(device.Id))
+                .ReturnsAsync(device);
+
+            _ = this.mockDeviceModelPropertiesService.Setup(c => c.GetModelProperties(device.DeviceModelId))
+                    .ReturnsAsync(Enumerable.Empty<DeviceModelProperty>());
+
+            _ = this.mockAmazonIotDataClient.Setup(iotDataClient => iotDataClient.UpdateThingShadowAsync(It.IsAny<UpdateThingShadowRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UpdateThingShadowResponse
+                {
+                    HttpStatusCode = HttpStatusCode.BadRequest
+                });
 
             // Act
             var act = () => this.awsDevicePropertyService.SetProperties(device.Id, null);

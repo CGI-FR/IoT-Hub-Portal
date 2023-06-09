@@ -6,12 +6,13 @@ namespace IoTHub.Portal.Infrastructure.Services
     using System;
     using System.Threading.Tasks;
     using Amazon.GreengrassV2;
+    using Amazon.IoT;
     using Amazon.IoT.Model;
     using AutoMapper;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Services.AWS;
     using IoTHub.Portal.Domain;
+    using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Helpers;
     using IoTHub.Portal.Models.v10;
@@ -21,7 +22,6 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <summary>
         /// The device idevice service.
         /// </summary>
-        private readonly IAWSExternalDeviceService awsExternalDevicesService;
         private readonly IExternalDeviceService externalDeviceService;
         private readonly IUnitOfWork unitOfWork;
         private readonly IEdgeDeviceRepository edgeDeviceRepository;
@@ -30,12 +30,13 @@ namespace IoTHub.Portal.Infrastructure.Services
         private readonly IConfigService configService;
         private readonly ConfigHandler configHandler;
         private readonly IMapper mapper;
+        private readonly IAmazonIoT amazonIoTClient;
+        private readonly IAmazonGreengrassV2 amazonGreengrass;
 
         public AWSEdgeDevicesService(
             ConfigHandler configHandler,
             IEdgeEnrollementHelper edgeEnrollementHelper,
             IExternalDeviceService externalDeviceService,
-            IAWSExternalDeviceService awsExternalDevicesService,
             IDeviceTagService deviceTagService,
             IConfigService configService,
             IMapper mapper,
@@ -44,12 +45,13 @@ namespace IoTHub.Portal.Infrastructure.Services
             IEdgeDeviceModelRepository deviceModelRepository,
             IDeviceTagValueRepository deviceTagValueRepository,
             ILabelRepository labelRepository,
-            IDeviceModelImageManager deviceModelImageManager)
+            IDeviceModelImageManager deviceModelImageManager,
+            IAmazonIoT amazonIoTClient,
+            IAmazonGreengrassV2 amazonGreengrass)
             : base(deviceTagService, edgeDeviceRepository, mapper, deviceModelImageManager, deviceTagValueRepository, labelRepository)
         {
             this.configHandler = configHandler;
             this.edgeEnrollementHelper = edgeEnrollementHelper;
-            this.awsExternalDevicesService = awsExternalDevicesService;
             this.externalDeviceService = externalDeviceService;
             this.configService = configService;
             this.deviceModelRepository = deviceModelRepository;
@@ -58,6 +60,9 @@ namespace IoTHub.Portal.Infrastructure.Services
             this.edgeDeviceRepository = edgeDeviceRepository;
 
             this.mapper = mapper;
+
+            this.amazonIoTClient = amazonIoTClient;
+            this.amazonGreengrass = amazonGreengrass;
         }
 
         /// <summary>
@@ -69,19 +74,24 @@ namespace IoTHub.Portal.Infrastructure.Services
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
+            //Retrieve Device Model
             var model = await this.deviceModelRepository.GetByIdAsync(edgeDevice.ModelId);
-
             if (model == null)
             {
                 throw new InvalidOperationException($"Edge model '{edgeDevice.ModelId}' doesn't exist!");
             }
 
+            //Create Thing
             var createThingRequest = this.mapper.Map<CreateThingRequest>(edgeDevice);
             createThingRequest.ThingTypeName = model.Name;
+            var thingResponse = await this.amazonIoTClient.CreateThingAsync(createThingRequest);
+            if (thingResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Unable to create the thing with device name : {edgeDevice.DeviceName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
+            }
+            edgeDevice.DeviceId = thingResponse.ThingId;
 
-            var response = await this.awsExternalDevicesService.CreateDevice(createThingRequest);
-            edgeDevice.DeviceId = response.ThingId;
-
+            //Create EdgeDevice in DB
             var result = await base.CreateEdgeDeviceInDatabase(edgeDevice);
             await this.unitOfWork.SaveAsync();
 
@@ -98,11 +108,15 @@ namespace IoTHub.Portal.Infrastructure.Services
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
-            var updateThingRequest = this.mapper.Map<UpdateThingRequest>(edgeDevice);
-            _ = await this.awsExternalDevicesService.UpdateDevice(updateThingRequest);
+            //Update Thing
+            var thingResponse = await this.amazonIoTClient.UpdateThingAsync(this.mapper.Map<UpdateThingRequest>(edgeDevice));
+            if (thingResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException($"Unable to update the thing with device name : {edgeDevice.DeviceName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
+            }
 
+            //Update EdgeDevice in DB
             var result = await UpdateEdgeDeviceInDatabase(edgeDevice);
-
             await this.unitOfWork.SaveAsync();
 
             return result;
@@ -138,7 +152,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var model = await this.deviceModelRepository.GetByIdAsync(deviceDto.ModelId);
 
             deviceDto.Modules = await this.configService.GetConfigModuleList(model.ExternalIdentifier!);
-            deviceDto.NbDevices = await this.awsExternalDevicesService.GetEdgeDeviceNbDevices(deviceDto);
+            deviceDto.NbDevices = await this.GetEdgeDeviceNbDevices(deviceDto);
             deviceDto.NbModules = deviceDto.Modules.Count;
             deviceDto.ConnectionState = deviceDto.RuntimeResponse == CoreDeviceStatus.HEALTHY ? "Connected" : "Disconnected";
 
@@ -176,6 +190,18 @@ namespace IoTHub.Portal.Infrastructure.Services
             var device = await this.edgeDeviceRepository.GetByIdAsync(deviceId);
 
             return await this.externalDeviceService.CreateEnrollementScript(template, device);
+        }
+
+        private async Task<int> GetEdgeDeviceNbDevices(IoTEdgeDevice device)
+        {
+            var listClientDevices = await this.amazonGreengrass.ListClientDevicesAssociatedWithCoreDeviceAsync(
+                new Amazon.GreengrassV2.Model.ListClientDevicesAssociatedWithCoreDeviceRequest
+                {
+                    CoreDeviceThingName = device.DeviceName
+                });
+            return listClientDevices.HttpStatusCode != System.Net.HttpStatusCode.OK
+                ? throw new InternalServerErrorException($"Can not list Client Devices Associated to {device.DeviceName} Core Device due to an error in the Amazon IoT API.")
+                : listClientDevices.AssociatedClientDevices.Count;
         }
 
     }
