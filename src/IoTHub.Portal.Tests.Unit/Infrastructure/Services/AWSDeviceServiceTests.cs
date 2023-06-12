@@ -455,6 +455,23 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 HttpStatusCode = HttpStatusCode.BadRequest
             });
 
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+               .ReturnsAsync(device);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(device);
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
             // Act
             var result = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
 
@@ -497,6 +514,24 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             {
                 HttpStatusCode = HttpStatusCode.BadRequest
             });
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+               .ReturnsAsync(device);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(device);
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
 
             // Act
             var result = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
@@ -546,6 +581,24 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                {
                    HttpStatusCode = HttpStatusCode.BadRequest
                });
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+                .ReturnsAsync(device);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(device);
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
 
             // Act
             var result = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
