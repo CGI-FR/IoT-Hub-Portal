@@ -3,33 +3,32 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 {
-    using Amazon.GreengrassV2;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using NUnit.Framework;
-    using IoTHub.Portal.Application.Services;
-    using AutoMapper;
-    using IoTHub.Portal.Infrastructure.Services.AWS;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using System.Net;
-    using Amazon.GreengrassV2.Model;
-    using System.Threading;
-    using IoTHub.Portal.Models.v10;
-    using AutoFixture;
-    using System.Threading.Tasks;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using IoTHub.Portal.Domain.Entities;
     using System.Collections.Generic;
     using System.IO;
-    using System.Text;
-    using Newtonsoft.Json.Linq;
     using System.Linq;
+    using System.Net;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Amazon.GreengrassV2;
+    using Amazon.GreengrassV2.Model;
+    using Amazon.IoT;
+    using Amazon.IoT.Model;
+    using AutoFixture;
+    using AutoMapper;
     using FluentAssertions;
-    using System;
+    using IoTHub.Portal.Application.Managers;
+    using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Domain;
+    using IoTHub.Portal.Domain.Entities;
+    using IoTHub.Portal.Domain.Repositories;
+    using IoTHub.Portal.Infrastructure.Services.AWS;
+    using IoTHub.Portal.Models.v10;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
+    using Newtonsoft.Json.Linq;
+    using NUnit.Framework;
 
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest

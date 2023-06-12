@@ -115,15 +115,20 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                 ThingTypeMetadata = new ThingTypeMetadata
                 {
                     Deprecated = true,
+                    DeprecationDate = new DateTime(2023, 6, 11, 10, 30, 0)
                 }
             };
 
+
+
             _ = this.iaAmazon.Setup(client => client.DescribeThingTypeAsync(It.Is<DescribeThingTypeRequest>(c => c.ThingTypeName == existingThingType.ThingTypeName), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(existingThingType);
+                .ReturnsAsync(existingThingType);
             _ = this.iaAmazon.Setup(client => client.DescribeThingTypeAsync(It.Is<DescribeThingTypeRequest>(c => c.ThingTypeName == newThingType.ThingTypeName), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(newThingType);
+                .ReturnsAsync(newThingType);
             _ = this.iaAmazon.Setup(client => client.DescribeThingTypeAsync(It.Is<DescribeThingTypeRequest>(c => c.ThingTypeName == depcrecatedThingType.ThingTypeName), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(depcrecatedThingType);
+            _ = this.iaAmazon.Setup(client => client.DeleteThingTypeAsync(It.Is<DeleteThingTypeRequest>(c => c.ThingTypeName == depcrecatedThingType.ThingTypeName), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Fixture.Create<DeleteThingTypeResponse>);
 
             _ = this.mockExternalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(false);
