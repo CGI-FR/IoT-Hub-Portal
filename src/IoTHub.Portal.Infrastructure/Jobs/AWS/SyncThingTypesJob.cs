@@ -87,6 +87,29 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             await DeleteThingTypes(thingTypes);
         }
 
+
+        private async Task<List<DescribeThingTypeResponse>> Remove5mnDeprecatedThingTypes(List<DescribeThingTypeResponse> thingTypes)
+        {
+            var awsThingTypes = new List< DescribeThingTypeResponse>();
+
+            foreach (var thingType in thingTypes)
+            {
+                var diffInMinutes = (DateTime.Now.Subtract(thingType.ThingTypeMetadata.DeprecationDate)).TotalMinutes;
+                if (thingType.ThingTypeMetadata.Deprecated && diffInMinutes > 5)
+                {
+                    _ = await this.amazonIoTClient.DeleteThingTypeAsync(new DeleteThingTypeRequest
+                    {
+                        ThingTypeName = thingType.ThingTypeName
+                    });
+                }
+                else
+                {
+                    awsThingTypes.Add(thingType);
+                }
+            }
+
+            return awsThingTypes;
+        }
         private async Task<List<DescribeThingTypeResponse>> GetAllThingTypes()
         {
             var thingTypes = new List<DescribeThingTypeResponse>();
@@ -115,6 +138,8 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                 nextToken = response.NextToken;
             }
             while (!string.IsNullOrEmpty(nextToken));
+
+            thingTypes = await Remove5mnDeprecatedThingTypes(thingTypes);
 
             return thingTypes;
         }
