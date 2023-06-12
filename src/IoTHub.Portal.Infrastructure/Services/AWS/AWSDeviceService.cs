@@ -130,7 +130,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             }
             catch (AmazonIoTException e)
             {
-                this.logger.LogWarning($"Can not the device {deviceId} because it doesn't exist in AWS IoT", e);
+                this.logger.LogWarning("Can not delete the device because it doesn't exist in AWS IoT", e);
 
             }
             finally
