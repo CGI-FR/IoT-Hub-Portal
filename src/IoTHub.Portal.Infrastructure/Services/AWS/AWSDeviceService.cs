@@ -25,6 +25,8 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
         private readonly IDeviceRepository deviceRepository;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonIotData amazonIotDataClient;
+        private readonly ILogger<AWSDeviceService> logger;
+
 
         public AWSDeviceService(PortalDbContext portalDbContext,
             IMapper mapper,
@@ -44,6 +46,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             this.deviceRepository = deviceRepository;
             this.amazonIoTClient = amazonIoTClient;
             this.amazonIotDataClient = amazonIotDataClient;
+            this.logger = logger;
         }
 
         public override async Task<DeviceDetails> CreateDevice(DeviceDetails device)
@@ -90,41 +93,52 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 throw new ResourceNotFoundException($"The device with id {deviceId} doesn't exist");
             }
 
-            //Retrieve all thing principals and detach it before deleting the thing
-            var principals = await this.amazonIoTClient.ListThingPrincipalsAsync(new ListThingPrincipalsRequest
+            try
             {
-                NextToken = string.Empty,
-                ThingName = device.Name
-            });
-
-            if (principals.HttpStatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new InternalServerErrorException($"Unable to retreive Thing {device.Name} principals due to an error in the Amazon IoT API : {principals.HttpStatusCode}");
-            }
-
-            foreach (var principal in principals.Principals)
-            {
-                var detachPrincipal = await this.amazonIoTClient.DetachThingPrincipalAsync(new DetachThingPrincipalRequest
+                //Retrieve all thing principals and detach it before deleting the thing
+                var principals = await this.amazonIoTClient.ListThingPrincipalsAsync(new ListThingPrincipalsRequest
                 {
-                    Principal = principal,
+                    NextToken = string.Empty,
                     ThingName = device.Name
                 });
 
-                if (detachPrincipal.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                if (principals.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    throw new InternalServerErrorException($"Unable to detach Thing {device.Name} principal due to an error in the Amazon IoT API : {detachPrincipal.HttpStatusCode}");
+                    throw new InternalServerErrorException($"Unable to retreive Thing {device.Name} principals due to an error in the Amazon IoT API : {principals.HttpStatusCode}");
+                }
+
+                foreach (var principal in principals.Principals)
+                {
+                    var detachPrincipal = await this.amazonIoTClient.DetachThingPrincipalAsync(new DetachThingPrincipalRequest
+                    {
+                        Principal = principal,
+                        ThingName = device.Name
+                    });
+
+                    if (detachPrincipal.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        throw new InternalServerErrorException($"Unable to detach Thing {device.Name} principal due to an error in the Amazon IoT API : {detachPrincipal.HttpStatusCode}");
+                    }
+                }
+
+                //Delete the thing type after detaching the principal
+                var deleteResponse = await this.amazonIoTClient.DeleteThingAsync(this.mapper.Map<DeleteThingRequest>(device));
+                if (deleteResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    throw new InternalServerErrorException($"Unable to delete the thing with device name : {device.Name} due to an error in the Amazon IoT API : {deleteResponse.HttpStatusCode}");
                 }
             }
-
-            //Delete the thing type after detaching the principal
-            var deleteResponse = await this.amazonIoTClient.DeleteThingAsync(this.mapper.Map<DeleteThingRequest>(device));
-            if (deleteResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            catch (AmazonIoTException e)
             {
-                throw new InternalServerErrorException($"Unable to delete the thing with device name : {device.Name} due to an error in the Amazon IoT API : {deleteResponse.HttpStatusCode}");
+                this.logger.LogWarning("Can not delete the device because it doesn't exist in AWS IoT", e);
+
+            }
+            finally
+            {
+                //Delete Thing in DB
+                await DeleteDeviceInDatabase(deviceId);
             }
 
-            //Delete Thing in DB
-            await DeleteDeviceInDatabase(deviceId);
         }
     }
 }
