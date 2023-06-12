@@ -194,6 +194,9 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
         {
             var modules = await GetConfigModuleList(modelId);
 
+            //Deprecate Deployment Thing type
+            await DeprecateDeploymentThingType(modelId);
+
             foreach (var module in modules.Where(c => string.IsNullOrEmpty(c.Id)))
             {
                 var deletedComponentResponse = await this.greengrass.DeleteComponentAsync(new DeleteComponentRequest
@@ -228,9 +231,31 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 {
                     throw new InternalServerErrorException("The deletion of the deployment failed due to an error in the Amazon IoT API.");
                 }
+
             }
         }
 
+        private async Task DeprecateDeploymentThingType(string modelId)
+        {
+            try
+            {
+                var deployment = await this.greengrass.GetDeploymentAsync(new GetDeploymentRequest
+                {
+                    DeploymentId = modelId
+                });
+
+                var deploymentThingType = await this.iotClient.DeprecateThingTypeAsync(new DeprecateThingTypeRequest
+                {
+                    ThingTypeName = deployment.DeploymentName
+                });
+
+            }
+            catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
+            {
+                throw new InternalServerErrorException("The deployment is not found");
+
+            }
+        }
         public async Task<int> GetFailedDeploymentsCount()
         {
             var failedDeploymentCount = 0;
