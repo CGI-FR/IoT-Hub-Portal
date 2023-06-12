@@ -246,7 +246,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         }
 
         [Test]
-        public async Task DeleteDeploymentShouldDeleteTheDeploymentVersionAndAllItsComponentsVersions()
+        public async Task DeleteDeploymentShouldDeleteTheDeploymentVersionAndAllItsComponentsVersionsAndDeprecateItsThingType()
         {
             //Act
             var edge = Fixture.Create<IoTEdgeModel>();
@@ -264,6 +264,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                         {"test", new ComponentDeploymentSpecification()}
 
                     }
+                });
+
+            _ = this.mockIotClient.Setup(s3 => s3.DeprecateThingTypeAsync(It.IsAny<DeprecateThingTypeRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DeprecateThingTypeResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK
                 });
 
             _ = this.mockGreengrasClient.Setup(s3 => s3.GetComponentAsync(It.IsAny<GetComponentRequest>(), It.IsAny<CancellationToken>()))
