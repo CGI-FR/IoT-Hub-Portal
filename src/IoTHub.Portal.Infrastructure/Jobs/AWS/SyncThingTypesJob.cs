@@ -88,27 +88,27 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
         }
 
 
-        private async Task<List<DescribeThingTypeResponse>> Remove5mnDeprecatedThings(List<DescribeThingTypeResponse> things)
+        private async Task<List<DescribeThingTypeResponse>> Remove5mnDeprecatedThingTypes(List<DescribeThingTypeResponse> thingTypes)
         {
-            var awsThings = new List< DescribeThingTypeResponse>();
+            var awsThingTypes = new List< DescribeThingTypeResponse>();
 
-            foreach (var thing in things)
+            foreach (var thingType in thingTypes)
             {
-                var diffInMinutes = (DateTime.Now.Subtract(thing.ThingTypeMetadata.DeprecationDate)).TotalMinutes;
-                if (thing.ThingTypeMetadata.Deprecated && diffInMinutes > 5)
+                var diffInMinutes = (DateTime.Now.Subtract(thingType.ThingTypeMetadata.DeprecationDate)).TotalMinutes;
+                if (thingType.ThingTypeMetadata.Deprecated && diffInMinutes > 5)
                 {
                     _ = await this.amazonIoTClient.DeleteThingTypeAsync(new DeleteThingTypeRequest
                     {
-                        ThingTypeName = thing.ThingTypeName
+                        ThingTypeName = thingType.ThingTypeName
                     });
                 }
                 else
                 {
-                    awsThings.Add(thing);
+                    awsThingTypes.Add(thingType);
                 }
             }
 
-            return awsThings;
+            return awsThingTypes;
         }
         private async Task<List<DescribeThingTypeResponse>> GetAllThingTypes()
         {
@@ -139,7 +139,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             }
             while (!string.IsNullOrEmpty(nextToken));
 
-            thingTypes = await Remove5mnDeprecatedThings(thingTypes);
+            thingTypes = await Remove5mnDeprecatedThingTypes(thingTypes);
 
             return thingTypes;
         }
