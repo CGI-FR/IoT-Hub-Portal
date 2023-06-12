@@ -16,6 +16,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Helpers;
     using IoTHub.Portal.Models.v10;
+    using Microsoft.Extensions.Logging;
 
     public class AWSEdgeDevicesService : EdgeDevicesServiceBase, IEdgeDevicesService
     {
@@ -32,7 +33,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         private readonly IMapper mapper;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonGreengrassV2 amazonGreengrass;
-
+        private readonly ILogger<AWSEdgeDevicesService> logger;
         public AWSEdgeDevicesService(
             ConfigHandler configHandler,
             IEdgeEnrollementHelper edgeEnrollementHelper,
@@ -47,7 +48,8 @@ namespace IoTHub.Portal.Infrastructure.Services
             ILabelRepository labelRepository,
             IDeviceModelImageManager deviceModelImageManager,
             IAmazonIoT amazonIoTClient,
-            IAmazonGreengrassV2 amazonGreengrass)
+            IAmazonGreengrassV2 amazonGreengrass,
+            ILogger<AWSEdgeDevicesService> logger)
             : base(deviceTagService, edgeDeviceRepository, mapper, deviceModelImageManager, deviceTagValueRepository, labelRepository)
         {
             this.configHandler = configHandler;
@@ -63,6 +65,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
             this.amazonIoTClient = amazonIoTClient;
             this.amazonGreengrass = amazonGreengrass;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -127,12 +130,23 @@ namespace IoTHub.Portal.Infrastructure.Services
         {
             var device = await base.GetEdgeDevice(deviceId);
 
-            await this.externalDeviceService.RemoveDeviceCredentials(device);
-            await this.externalDeviceService.DeleteDevice(device.DeviceName);
+            try
+            {
+                await this.externalDeviceService.RemoveDeviceCredentials(device);
+                await this.externalDeviceService.DeleteDevice(device.DeviceName);
+            }
+            catch (AmazonIoTException ex)
+            {
+                this.logger.LogWarning("Can not delete the edge device because it doesn't exist in AWS IoT", ex);
 
-            await DeleteEdgeDeviceInDatabase(deviceId);
+            }
+            finally
+            {
+                await DeleteEdgeDeviceInDatabase(deviceId);
 
-            await this.unitOfWork.SaveAsync();
+                await this.unitOfWork.SaveAsync();
+            }
+
         }
 
         /// <summary>
