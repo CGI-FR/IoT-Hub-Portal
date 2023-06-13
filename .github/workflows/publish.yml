@@ -23,7 +23,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
 
       - id: docker-tag
         uses: yuya-takeyama/docker-tag-from-github-ref-action@v1
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
 
       - name: Get semver
         id: version
@@ -85,18 +85,18 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
       
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
         with:
           path: IoT-Hub-Portal
 
       - name: Checkout Azure/iotedge-lorawan-starterkit
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v3.5.3
         with: 
           repository: Azure/iotedge-lorawan-starterkit
           ref: dev
           path: iotedge-lorawan-starterkit
 
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
         with:
          ref: arm/main
          path: arm-templates

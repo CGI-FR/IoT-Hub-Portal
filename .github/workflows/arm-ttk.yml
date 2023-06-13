@@ -39,16 +39,16 @@ jobs:
               repo: context.repo.repo,
               labels: ['arm-templates']
             })
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
 
       - name: Checkout Azure/arm-ttk
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v3.5.3
         with: 
           repository: Azure/arm-ttk
           path: arm-ttk
 
       - name: Checkout Azure/iotedge-lorawan-starterkit
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v3.5.3
         with: 
           repository: Azure/iotedge-lorawan-starterkit
           ref: dev
