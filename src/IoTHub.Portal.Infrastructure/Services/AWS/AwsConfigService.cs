@@ -56,14 +56,18 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 TargetArn = await GetThingGroupArn(edgeModel!)
             };
 
-            var createDeploymentResponse = await this.greengrass.CreateDeploymentAsync(createDeploymentRequest);
-
-            if (createDeploymentResponse.HttpStatusCode != HttpStatusCode.Created)
+            try
             {
-                throw new InternalServerErrorException("The deployment creation failed due to an error in the Amazon IoT API.");
+                var createDeploymentResponse = await this.greengrass.CreateDeploymentAsync(createDeploymentRequest);
+
+                return createDeploymentResponse.DeploymentId;
+
+            }
+            catch (AmazonGreengrassV2Exception e)
+            {
+                throw new InternalServerErrorException("The deployment creation failed due to an error in the Amazon IoT API.", e);
             }
 
-            return createDeploymentResponse.DeploymentId;
         }
 
         private async Task<string> GetThingGroupArn(IoTEdgeModel edgeModel)
@@ -83,13 +87,20 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             }
             catch (Amazon.IoT.Model.ResourceNotFoundException)
             {
-                var createThingGroupResponse = await this.iotClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
+                try
                 {
-                    ThingGroupName = edgeModel!.Name,
-                    QueryString = $"thingTypeName: {edgeModel!.Name}"
-                });
+                    var createThingGroupResponse = await this.iotClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
+                    {
+                        ThingGroupName = edgeModel!.Name,
+                        QueryString = $"thingTypeName: {edgeModel!.Name}"
+                    });
 
-                return createThingGroupResponse.ThingGroupArn;
+                    return createThingGroupResponse.ThingGroupArn;
+                }
+                catch (AmazonIoTException e)
+                {
+                    throw new InternalServerErrorException("The creation of the dynamic thing group failed due to an error in the Amazon IoT API.", e);
+                }
             }
         }
 
@@ -106,10 +117,12 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             }
             catch (Amazon.IoT.Model.ResourceNotFoundException)
             {
-                _ = await this.iotClient.CreateThingTypeAsync(new CreateThingTypeRequest
+                try
                 {
-                    ThingTypeName = thingTypeName,
-                    Tags = new List<Tag>
+                    _ = await this.iotClient.CreateThingTypeAsync(new CreateThingTypeRequest
+                    {
+                        ThingTypeName = thingTypeName,
+                        Tags = new List<Tag>
                     {
                         new Tag
                         {
@@ -117,7 +130,12 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                             Value = "True"
                         }
                     }
-                });
+                    });
+                }
+                catch (AmazonIoTException e)
+                {
+                    throw new InternalServerErrorException("Unable to create the thing type due to an error in the Amazon IoT API.", e);
+                }
             }
         }
 
@@ -130,7 +148,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 {
                     var componentArn = !string.IsNullOrEmpty(component.Id) ?
                         $"{component.Id}:versions:{component.Version}" : // Public greengrass component
-                        $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{component.ModuleName}:versions:{component.Version}"; //
+                        $"arn:aws:greengrass:{this.config.AWSRegion}:{this.config.AWSAccountId}:components:{component.ModuleName}:versions:{component.Version}"; // Private greengrass component
 
                     _ = await this.greengrass.DescribeComponentAsync(new DescribeComponentRequest
                     {
@@ -145,13 +163,17 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     {
                         InlineRecipe = new MemoryStream(Encoding.UTF8.GetBytes(component.ContainerCreateOptions))
                     };
-                    var response = await greengrass.CreateComponentVersionAsync(componentVersion);
-                    if (response.HttpStatusCode != HttpStatusCode.Created)
+
+                    try
+                    {
+                        var response = await greengrass.CreateComponentVersionAsync(componentVersion);
+
+                        components.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = component.Version });
+                    }
+                    catch (AmazonGreengrassV2Exception e)
                     {
                         throw new InternalServerErrorException("The component creation failed due to an error in the Amazon IoT API.");
-
                     }
-                    components.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = component.Version });
                 }
             }
 
@@ -199,40 +221,44 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
             foreach (var module in modules.Where(c => string.IsNullOrEmpty(c.Id)))
             {
-                var deletedComponentResponse = await this.greengrass.DeleteComponentAsync(new DeleteComponentRequest
+                try
                 {
-                    Arn = $"arn:aws:greengrass:{config.AWSRegion}:{config.AWSAccountId}:components:{module.ModuleName}:versions:{module.Version}"
-                });
-
-                if (deletedComponentResponse.HttpStatusCode != HttpStatusCode.NoContent)
+                    _ = await this.greengrass.DeleteComponentAsync(new DeleteComponentRequest
+                    {
+                        Arn = $"arn:aws:greengrass:{this.config.AWSRegion}:{this.config.AWSAccountId}:components:{module.ModuleName}:versions:{module.Version}"
+                    });
+                }
+                catch (AmazonGreengrassV2Exception e)
                 {
-                    throw new InternalServerErrorException("The deletion of the component failed due to an error in the Amazon IoT API.");
+                    throw new InternalServerErrorException("The deletion of the component failed due to an error in the Amazon IoT API.", e);
                 }
             }
 
-            var cancelDeploymentResponse = await this.greengrass.CancelDeploymentAsync(new CancelDeploymentRequest
+            try
             {
-                DeploymentId = modelId
-            });
-
-            if (cancelDeploymentResponse.HttpStatusCode != HttpStatusCode.OK)
-            {
-                throw new InternalServerErrorException("The cancellation of the deployment failed due to an error in the Amazon IoT API.");
-
-            }
-            else
-            {
-                var deleteDeploymentResponse = await this.greengrass.DeleteDeploymentAsync(new DeleteDeploymentRequest
+                _ = await this.greengrass.CancelDeploymentAsync(new CancelDeploymentRequest
                 {
                     DeploymentId = modelId
                 });
+            }
+            catch (AmazonGreengrassV2Exception e)
+            {
+                throw new InternalServerErrorException("The cancellation of the deployment failed due to an error in the Amazon IoT API.", e);
+            }
 
-                if (deleteDeploymentResponse.HttpStatusCode != HttpStatusCode.NoContent)
+            try
+            {
+                _ = await this.greengrass.DeleteDeploymentAsync(new DeleteDeploymentRequest
                 {
-                    throw new InternalServerErrorException("The deletion of the deployment failed due to an error in the Amazon IoT API.");
-                }
+                    DeploymentId = modelId
+                });
+            }
+            catch (AmazonGreengrassV2Exception e)
+            {
+                throw new InternalServerErrorException("The deletion of the deployment failed due to an error in the Amazon IoT API.", e);
 
             }
+
         }
 
         private async Task DeprecateDeploymentThingType(string modelId)
@@ -244,36 +270,50 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     DeploymentId = modelId
                 });
 
-                var deploymentThingType = await this.iotClient.DeprecateThingTypeAsync(new DeprecateThingTypeRequest
+                try
                 {
-                    ThingTypeName = deployment.DeploymentName
-                });
-
+                    var deploymentThingType = await this.iotClient.DeprecateThingTypeAsync(new DeprecateThingTypeRequest
+                    {
+                        ThingTypeName = deployment.DeploymentName
+                    });
+                }
+                catch (AmazonIoTException e)
+                {
+                    throw new InternalServerErrorException($"Unable to deprecate the Thing type associated with {deployment.DeploymentName} due to an error in the Amazon IoT API", e);
+                }
             }
             catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
             {
-                throw new InternalServerErrorException("The deployment is not found");
-
+                throw new InternalServerErrorException("Unable to find the deployment due to an error in the Amazon IoT API.");
             }
         }
         public async Task<int> GetFailedDeploymentsCount()
         {
+
             var failedDeploymentCount = 0;
 
-            var deployments = await this.greengrass.ListDeploymentsAsync(new ListDeploymentsRequest
+            try
             {
-                NextToken = string.Empty
-            });
-
-            foreach (var deployment in deployments.Deployments)
-            {
-                if (deployment.DeploymentStatus.Equals(DeploymentStatus.FAILED))
+                var deployments = await this.greengrass.ListDeploymentsAsync(new ListDeploymentsRequest
                 {
-                    failedDeploymentCount++;
+                    NextToken = string.Empty
+                });
+
+                foreach (var deployment in deployments.Deployments)
+                {
+                    if (deployment.DeploymentStatus.Equals(DeploymentStatus.FAILED))
+                    {
+                        failedDeploymentCount++;
+                    }
                 }
+
+                return failedDeploymentCount;
+            }
+            catch (AmazonGreengrassV2Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get the list of the deployments due to an error in the Amazon IoT API.", e);
             }
 
-            return failedDeploymentCount;
         }
 
         public async Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
@@ -337,7 +377,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             }
             catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
             {
-                throw new InternalServerErrorException("The deployment is not found");
+                throw new InternalServerErrorException("Unable to find the deployment due to an error in the Amazon IoT API. ");
 
             }
         }
@@ -360,15 +400,22 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
             do
             {
-                var response = await this.greengrass.ListComponentsAsync(new ListComponentsRequest
+                try
                 {
-                    Scope = ComponentVisibilityScope.PUBLIC,
-                    NextToken = nextToken
-                });
+                    var response = await this.greengrass.ListComponentsAsync(new ListComponentsRequest
+                    {
+                        Scope = ComponentVisibilityScope.PUBLIC,
+                        NextToken = nextToken
+                    });
 
-                publicComponents.AddRange(response.Components);
+                    publicComponents.AddRange(response.Components);
 
-                nextToken = response.NextToken;
+                    nextToken = response.NextToken;
+                }
+                catch (AmazonGreengrassV2Exception e)
+                {
+                    throw new InternalServerErrorException("Unable to list the public components due to an error in the Amazon IoT API.", e);
+                }
             }
             while (!string.IsNullOrEmpty(nextToken));
 
