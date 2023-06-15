@@ -51,7 +51,7 @@
     <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Service" Version="1.18.3" />
     <PackageReference Include="Microsoft.Azure.Devices.Shared" Version="1.30.3" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.1">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
