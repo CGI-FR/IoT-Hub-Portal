@@ -12,14 +12,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
     using Amazon.S3;
     using Amazon.S3.Model;
     using AutoFixture;
-    using Azure;
+    using FluentAssertions;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Options;
     using IoTHub.Portal.Infrastructure.Managers;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
     using Moq;
@@ -121,10 +120,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PutObjectResponse
-                {
-                    HttpStatusCode = HttpStatusCode.BadGateway
-                });
+                .ThrowsAsync(new AmazonS3Exception("Unable to upload the image in S3 Bucket due to an error in Amazon S3 API."));
+
 
 
             // Assert
@@ -133,7 +130,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 // Act
                 _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
 
-            }, "Error by uploading the image in S3 Storage");
+            }, "Unable to upload the image in S3 Bucket due to an error in Amazon S3 API.");
             this.s3ClientMock.VerifyAll();
         }
 
@@ -157,10 +154,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                     HttpStatusCode = HttpStatusCode.OK
                 });
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PutACLResponse
-                {
-                    HttpStatusCode = HttpStatusCode.BadGateway
-                });
+                .ThrowsAsync(new AmazonS3Exception("Unable to set the image access to public and read-only due to an error in Amazon S3 API."));
 
             // Assert
             _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
@@ -168,7 +162,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 // Act
                 _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
 
-            }, "Error by setting the image access to public and read-only");
+            }, "Unable to set the image access to public and read-only due to an error in Amazon S3 API.");
             this.s3ClientMock.VerifyAll();
         }
 
@@ -184,13 +178,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
 
             _ = this.s3ClientMock.Setup(s3 => s3.DeleteObjectAsync(It.IsAny<DeleteObjectRequest>(), It.IsAny<CancellationToken>()))
-                .Throws(new RequestFailedException(""));
+                .ThrowsAsync(new AmazonS3Exception("Unable to delete the image from S3 storage due to an error in Amazon S3 API."));
 
             // Act
             var act = async () => await this.awsDeviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelId);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>("Unable to delete the image from the blob storage.");
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>("Unable to delete the image from S3 storage due to an error in Amazon S3 API.\"");
             this.s3ClientMock.VerifyAll();
         }
 
@@ -266,10 +260,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PutObjectResponse
-                {
-                    HttpStatusCode = HttpStatusCode.BadGateway
-                });
+                .ThrowsAsync(new AmazonS3Exception("Unable to upload the image in S3 Bucket due to an error in Amazon S3 API."));
 
 
             // Assert
@@ -278,7 +269,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 // Act
                 _ = await this.awsDeviceModelImageManager.SetDefaultImageToModel(deviceModelId);
 
-            }, "Error by uploading the image in S3 Storage");
+            }, "Unable to upload the image in S3 Bucket due to an error in Amazon S3 API.");
             this.s3ClientMock.VerifyAll();
         }
 
@@ -301,10 +292,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                     HttpStatusCode = HttpStatusCode.OK
                 });
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PutACLResponse
-                {
-                    HttpStatusCode = HttpStatusCode.BadGateway
-                });
+                .ThrowsAsync(new AmazonS3Exception("Unable to set the image access to public and read-only due to an error in Amazon S3 API"));
+
 
             // Assert
             _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
@@ -312,7 +301,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 // Act
                 _ = await this.awsDeviceModelImageManager.SetDefaultImageToModel(deviceModelId);
 
-            }, "Error by setting the image access to public and read-only");
+            }, "Unable to set the image access to public and read-only due to an error in Amazon S3 API");
             this.s3ClientMock.VerifyAll();
         }
 
@@ -358,10 +347,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PutObjectResponse
-                {
-                    HttpStatusCode = HttpStatusCode.BadGateway
-                });
+                .ThrowsAsync(new AmazonS3Exception("Unable to set the image access to public and read-only due to an error in Amazon S3 API."));
 
 
             // Assert
@@ -370,7 +356,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 // Act
                 await this.awsDeviceModelImageManager.InitializeDefaultImageBlob();
 
-            }, "Error by uploading the image in S3 Storage");
+            }, "Unable to upload the image in S3 Bucket due to an error in Amazon S3 API.");
             this.s3ClientMock.VerifyAll();
         }
 
@@ -389,10 +375,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                     HttpStatusCode = HttpStatusCode.OK
                 });
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PutACLResponse
-                {
-                    HttpStatusCode = HttpStatusCode.BadGateway
-                });
+                .ThrowsAsync(new AmazonS3Exception("Unable to set the image access to public and read-only due to an error in Amazon S3 API."));
 
             // Assert
             _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
@@ -400,7 +383,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 // Act
                 await this.awsDeviceModelImageManager.InitializeDefaultImageBlob();
 
-            }, "Error by setting the image access to public and read-only");
+            }, "Unable to set the image access to public and read-only due to an error in Amazon S3 API.");
             this.s3ClientMock.VerifyAll();
         }
 

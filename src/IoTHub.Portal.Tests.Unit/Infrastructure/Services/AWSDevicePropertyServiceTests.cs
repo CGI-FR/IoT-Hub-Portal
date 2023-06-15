@@ -104,10 +104,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .ReturnsAsync(device);
 
             _ = this.mockAmazonIotDataClient.Setup(iotDataClient => iotDataClient.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetThingShadowResponse
-                {
-                    HttpStatusCode = HttpStatusCode.BadRequest
-                });
+                .ThrowsAsync(new AmazonIotDataException("Unable to get the thing shadow due to an error in the Amazon IoT API"));
 
             // Act
             var act = () => this.awsDevicePropertyService.GetProperties(device.Id);
@@ -272,10 +269,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                     .ReturnsAsync(Enumerable.Empty<DeviceModelProperty>());
 
             _ = this.mockAmazonIotDataClient.Setup(iotDataClient => iotDataClient.UpdateThingShadowAsync(It.IsAny<UpdateThingShadowRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new UpdateThingShadowResponse
-                {
-                    HttpStatusCode = HttpStatusCode.BadRequest
-                });
+                .ThrowsAsync(new AmazonIotDataException("Unable to upadate the thing shadow due to an error in the Amazon IoT API"));
+
 
             // Act
             var act = () => this.awsDevicePropertyService.SetProperties(device.Id, null);

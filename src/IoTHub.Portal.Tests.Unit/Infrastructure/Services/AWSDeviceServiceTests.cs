@@ -131,10 +131,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             };
 
             _ = this.mockAmazonIotClient.Setup(service => service.CreateThingAsync(It.IsAny<CreateThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new CreateThingResponse()
-                {
-                    HttpStatusCode = HttpStatusCode.BadRequest
-                });
+                .ThrowsAsync(new AmazonIoTException(It.IsAny<string>()));
 
             //Act
             var result = () => this.awsDeviceService.CreateDevice(deviceDto);
@@ -161,10 +158,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 });
 
             _ = this.mockAmazonIotDataClient.Setup(service => service.UpdateThingShadowAsync(It.IsAny<UpdateThingShadowRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new UpdateThingShadowResponse()
-                {
-                    HttpStatusCode = HttpStatusCode.BadRequest
-                });
+                .ThrowsAsync(new AmazonIotDataException(It.IsAny<string>()));
 
             //Act
             var result = () => this.awsDeviceService.CreateDevice(deviceDto);
@@ -270,10 +264,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             };
 
             _ = this.mockAmazonIotClient.Setup(service => service.UpdateThingAsync(It.IsAny<UpdateThingRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new UpdateThingResponse()
-                {
-                    HttpStatusCode = HttpStatusCode.BadRequest
-                });
+                .ThrowsAsync(new AmazonIoTException(It.IsAny<string>()));
 
             // Act
             var result = () => this.awsDeviceService.UpdateDevice(deviceDto);
@@ -450,10 +441,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .ReturnsAsync(device);
 
             _ = this.mockAmazonIotClient.Setup(service => service.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ListThingPrincipalsResponse()
-            {
-                HttpStatusCode = HttpStatusCode.BadRequest
-            });
+                .ThrowsAsync(new AmazonIoTException(It.IsAny<string>()));
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                .ReturnsAsync(device);
@@ -510,10 +498,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             }); ;
 
             _ = this.mockAmazonIotClient.Setup(service => service.DetachThingPrincipalAsync(It.IsAny<DetachThingPrincipalRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new DetachThingPrincipalResponse()
-            {
-                HttpStatusCode = HttpStatusCode.BadRequest
-            });
+                .ThrowsAsync(new AmazonIoTException(It.IsAny<string>()));
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                .ReturnsAsync(device);
@@ -577,10 +562,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             });
 
             _ = this.mockAmazonIotClient.Setup(service => service.DeleteThingAsync(It.IsAny<DeleteThingRequest>(), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(new DeleteThingResponse()
-               {
-                   HttpStatusCode = HttpStatusCode.BadRequest
-               });
+                .ThrowsAsync(new AmazonIoTException(It.IsAny<string>()));
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(device);
