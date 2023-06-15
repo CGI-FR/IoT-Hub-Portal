@@ -165,13 +165,13 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
                     try
                     {
-                        var response = await greengrass.CreateComponentVersionAsync(componentVersion);
+                        _ = await greengrass.CreateComponentVersionAsync(componentVersion);
 
                         components.Add(component.ModuleName, new ComponentDeploymentSpecification { ComponentVersion = component.Version });
                     }
                     catch (AmazonGreengrassV2Exception e)
                     {
-                        throw new InternalServerErrorException("The component creation failed due to an error in the Amazon IoT API.");
+                        throw new InternalServerErrorException("The component creation failed due to an error in the Amazon IoT API.", e);
                     }
                 }
             }
@@ -271,7 +271,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
                 try
                 {
-                    var deploymentThingType = await this.iotClient.DeprecateThingTypeAsync(new DeprecateThingTypeRequest
+                    _ = await this.iotClient.DeprecateThingTypeAsync(new DeprecateThingTypeRequest
                     {
                         ThingTypeName = deployment.DeploymentName
                     });

@@ -18,6 +18,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
+    using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Shared;
     using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
@@ -107,7 +108,10 @@ namespace IoTHub.Portal.Infrastructure.Services
                     CoreDeviceThingName = deviceId,
                 });
             }
-            catch (Amazon.GreengrassV2.Model.ResourceNotFoundException) { }
+            catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
+            {
+                this.logger.LogWarning($"Unable to Delete Core Device {deviceId} because it doesn't exist");
+            }
 
             try
             {
@@ -116,7 +120,11 @@ namespace IoTHub.Portal.Infrastructure.Services
                     ThingName = deviceId
                 });
             }
-            catch (ResourceNotFoundException) { }
+            catch (ResourceNotFoundException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException($"Unable to delete the thing {deviceId} due to an error in Amazon Iot API", e);
+
+            }
         }
 
         public async Task DeleteDeviceModel(ExternalDeviceModelDto deviceModel)
