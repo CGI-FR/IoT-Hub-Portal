@@ -109,7 +109,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
             {
-                this.logger.LogWarning($"Unable to Delete Core Device {deviceId} because it doesn't exist");
+                this.logger.LogWarning("Unable to Delete Core Device because it doesn't exist");
             }
 
             try
@@ -121,9 +121,9 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (ResourceNotFoundException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException($"Unable to delete the thing {deviceId} due to an error in Amazon Iot API", e);
-
+                this.logger.LogWarning("Unable to delete the thing because it doesn't exist", e);
             }
+
         }
 
         public async Task DeleteDeviceModel(ExternalDeviceModelDto deviceModel)
@@ -648,18 +648,10 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         private async Task<GetSecretValueResponse> GetSecret(string secretId)
         {
-            try
+            return await this.amazonSecretsManager.GetSecretValueAsync(new GetSecretValueRequest
             {
-                return await this.amazonSecretsManager.GetSecretValueAsync(new GetSecretValueRequest
-                {
-                    SecretId = secretId,
-                });
-            }
-            catch (AmazonSecretsManagerException e)
-            {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to Get Secret value due to an error in the Amazon IoT API.", e);
-
-            }
+                SecretId = secretId,
+            });
         }
 
         public async Task<string> CreateEnrollementScript(string template, Domain.Entities.EdgeDevice device)
@@ -705,15 +697,16 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public async Task RemoveDeviceCredentials(IoTEdgeDevice device)
         {
-            var request = new ListThingPrincipalsRequest
+            try
             {
-                ThingName = device.DeviceName
-            };
-
-            do
-            {
-                try
+                var request = new ListThingPrincipalsRequest
                 {
+                    ThingName = device.DeviceName
+                };
+
+                do
+                {
+
                     var principalResponse = await this.amazonIoTClient.ListThingPrincipalsAsync(request);
 
                     if (!principalResponse.Principals.Any())
@@ -727,13 +720,14 @@ namespace IoTHub.Portal.Infrastructure.Services
                     }
 
                     request.NextToken = principalResponse.NextToken;
+
                 }
-                catch (AmazonIoTException e)
-                {
-                    throw new Domain.Exceptions.InternalServerErrorException("Unable to List Thing principal due to an error in the Amazon IoT API.", e);
-                }
+                while (true);
             }
-            while (true);
+            catch (AmazonIoTException e)
+            {
+                this.logger.LogWarning("Unable to List Thing principal due to an error in the Amazon IoT API.", e);
+            }
         }
 
 

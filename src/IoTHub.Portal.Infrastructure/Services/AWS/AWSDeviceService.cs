@@ -129,7 +129,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                         }
                         catch (AmazonIoTException e)
                         {
-                            throw new InternalServerErrorException($"Unable to detach Thing {device.Name} principal due to an error in the Amazon IoT API.", e);
+                            this.logger.LogWarning("Can not detach Thing principal because it doesn't exist in AWS IoT", e);
                         }
                     }
 
@@ -140,15 +140,13 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     }
                     catch (AmazonIoTException e)
                     {
-                        throw new InternalServerErrorException($"Unable to delete the thing with device name : {device.Name} due to an error in the Amazon IoT API.", e);
-
+                        this.logger.LogWarning("Can not delete the thing because it doesn't exist in AWS IoT", e);
                     }
 
                 }
                 catch (AmazonIoTException e)
                 {
-                    throw new InternalServerErrorException($"Unable to retreive Thing {device.Name} principals due to an error in the Amazon IoT API.", e);
-
+                    this.logger.LogWarning("Can not retreive Thing  because it doesn't exist in AWS IoT", e);
                 }
 
             }

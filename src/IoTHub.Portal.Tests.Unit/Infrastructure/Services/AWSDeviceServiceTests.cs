@@ -461,10 +461,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
             // Act
-            var result = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
-            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
             MockRepository.VerifyAll();
         }
 
@@ -519,10 +518,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
-            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
             MockRepository.VerifyAll();
         }
 
@@ -583,10 +581,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = () => this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.awsDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
-            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
             MockRepository.VerifyAll();
         }
 
