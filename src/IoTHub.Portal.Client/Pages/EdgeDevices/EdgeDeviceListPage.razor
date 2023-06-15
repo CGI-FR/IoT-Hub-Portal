@@ -60,10 +60,10 @@
                         <MudText>Status</MudText>
                         <MudRadioGroup @bind-SelectedOption="@searchModel.Status" Style="display:flex;align-items:baseline">
                             <MudItem md="4" sm="12">
-                                <MudRadio Option=@("true") Color="Color.Primary">Enabled</MudRadio>
+                                <MudRadio Option=@("true") Color="Color.Primary">Connected</MudRadio>
                             </MudItem>
                             <MudItem md="4" sm="12">
-                                <MudRadio Option=@("false") Color="Color.Primary">Disabled</MudRadio>
+                                <MudRadio Option=@("false") Color="Color.Primary">Disconnected</MudRadio>
                             </MudItem>
                             <MudItem md="4" sm="12">
                                 <MudRadio Option=@("true") Color="Color.Secondary">All</MudRadio>
@@ -102,8 +102,8 @@
             <HeaderContent>
                 <MudTh></MudTh>
                 <MudTh><MudTableSortLabel SortLabel="Id" T="IoTEdgeListItem" id="sortDeviceId">Device ID</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="IoTEdgeListItem">Allowed</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="NbDevices" T="IoTEdgeListItem">Nb devices</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="IoTEdgeListItem">Connected</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="NbDevices" T="IoTEdgeListItem">Connected leaf devices</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -123,13 +123,13 @@
                 <MudTd DataLabel="Status" Style="text-align: center">
                     @if (context.Status == "Enabled")
                     {
-                        <MudTooltip Text="Device can connect">
+                        <MudTooltip Text="Device is connected">
                             <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
                         </MudTooltip>
                     }
                     else
                     {
-                        <MudTooltip Text="Device cannot connect">
+                        <MudTooltip Text="Device is disconnected">
                             <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Default" />
                         </MudTooltip>
                     }

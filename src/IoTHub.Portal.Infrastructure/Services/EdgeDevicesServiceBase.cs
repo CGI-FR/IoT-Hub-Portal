@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
             if (deviceListFilter.IsEnabled != null)
             {
-                devicePredicate = devicePredicate.And(device => device.IsEnabled.Equals(deviceListFilter.IsEnabled));
+                devicePredicate = devicePredicate.And(device => device.ConnectionState.Equals(deviceListFilter.IsEnabled.Value ? "Connected" : "Disconnected"));
             }
 
             if (!string.IsNullOrWhiteSpace(deviceListFilter.ModelId))
