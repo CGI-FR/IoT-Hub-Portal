@@ -4,7 +4,6 @@
 namespace IoTHub.Portal.Infrastructure.Services
 {
     using System.Collections.Generic;
-    using System.Net;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Amazon.GreengrassV2;
@@ -19,7 +18,6 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Shared;
     using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
