@@ -63,7 +63,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.NbDevices, opts => opts.MapFrom(src => src.NbDevices))
                 .ForMember(dest => dest.ImageUrl, opts => opts.MapFrom((src, _, _, context) => context.Items["imageUrl"]))
-                .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.IsEnabled ? DeviceStatus.Enabled.ToString() : DeviceStatus.Disabled.ToString()))
+                .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.ConnectionState))
                 .ForMember(dest => dest.Labels, opts => opts.MapFrom(src => src.Labels.Union(src.DeviceModel.Labels)));
         }
 
