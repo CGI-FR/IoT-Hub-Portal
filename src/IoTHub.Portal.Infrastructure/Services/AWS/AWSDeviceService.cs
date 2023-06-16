@@ -121,7 +121,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     {
                         foreach (var principal in principals.Principals)
                         {
-                            var detachPrincipal = await this.amazonIoTClient.DetachThingPrincipalAsync(new DetachThingPrincipalRequest
+                            _ = await this.amazonIoTClient.DetachThingPrincipalAsync(new DetachThingPrincipalRequest
                             {
                                 Principal = principal,
                                 ThingName = device.Name
@@ -136,7 +136,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     try
                     {
                         //Delete the thing type after detaching the principal
-                        var deleteResponse = await this.amazonIoTClient.DeleteThingAsync(this.mapper.Map<DeleteThingRequest>(device));
+                        _ = await this.amazonIoTClient.DeleteThingAsync(this.mapper.Map<DeleteThingRequest>(device));
                     }
                     catch (AmazonIoTException e)
                     {

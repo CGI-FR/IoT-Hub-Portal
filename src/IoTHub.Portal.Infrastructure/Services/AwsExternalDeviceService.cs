@@ -381,7 +381,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     }
                     catch (ResourceNotFoundException e)
                     {
-                        this.logger.LogInformation($"Cannot import device '{device.ThingName}' since it doesn't have related classic thing shadow");
+                        this.logger.LogInformation($"Cannot import device '{device.ThingName}' since it doesn't have related classic thing shadow", e);
                         continue;
                     }
                     catch (AmazonIotDataException e)
