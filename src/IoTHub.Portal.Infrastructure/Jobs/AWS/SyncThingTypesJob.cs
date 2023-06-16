@@ -103,6 +103,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                         {
                             ThingTypeName = thingType.ThingTypeName
                         });
+
+                        _ = await this.amazonIoTClient.DeleteDynamicThingGroupAsync(new DeleteDynamicThingGroupRequest
+                        {
+                            ThingGroupName = thingType.ThingTypeName
+                        });
                     }
                     catch (AmazonIoTException e)
                     {
