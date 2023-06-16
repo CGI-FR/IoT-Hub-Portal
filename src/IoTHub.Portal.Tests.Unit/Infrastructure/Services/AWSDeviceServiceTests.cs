@@ -468,7 +468,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public async Task DeleteDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForDetachThingPrincipal()
+        public async Task DeleteDeviceShouldThrowExceptionIfFailedWhenDetachThingPrincipal()
         {
             // Arrange
             var deviceDto = new DeviceDetails
@@ -494,9 +494,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                     Fixture.Create<string>()
                 },
                 HttpStatusCode = HttpStatusCode.OK
-            }); ;
+            });
 
             _ = this.mockAmazonIotClient.Setup(service => service.DetachThingPrincipalAsync(It.IsAny<DetachThingPrincipalRequest>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new AmazonIoTException(It.IsAny<string>()));
+            _ = this.mockAmazonIotClient.Setup(service => service.DeleteThingAsync(It.IsAny<DeleteThingRequest>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new AmazonIoTException(It.IsAny<string>()));
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))

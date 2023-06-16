@@ -117,9 +117,9 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                         ThingName = device.Name
                     });
 
-                    foreach (var principal in principals.Principals)
+                    try
                     {
-                        try
+                        foreach (var principal in principals.Principals)
                         {
                             var detachPrincipal = await this.amazonIoTClient.DetachThingPrincipalAsync(new DetachThingPrincipalRequest
                             {
@@ -127,10 +127,10 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                                 ThingName = device.Name
                             });
                         }
-                        catch (AmazonIoTException e)
-                        {
-                            this.logger.LogWarning("Can not detach Thing principal because it doesn't exist in AWS IoT", e);
-                        }
+                    }
+                    catch (AmazonIoTException e)
+                    {
+                        this.logger.LogWarning("Can not detach Thing principal because it doesn't exist in AWS IoT", e);
                     }
 
                     try

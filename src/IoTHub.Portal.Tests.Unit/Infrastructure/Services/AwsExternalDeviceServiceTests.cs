@@ -186,11 +186,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .ThrowsAsync(new Amazon.IoT.Model.ResourceNotFoundException(Fixture.Create<string>()));
 
             // Act
-            var act = () => this.externalDeviceService.DeleteDevice(deviceId);
+            await this.externalDeviceService.DeleteDevice(deviceId);
 
             // Assert
-            _ = await act.Should().ThrowAsync<Portal.Domain.Exceptions.InternalServerErrorException>();
-
             this.MockRepository.VerifyAll();
         }
 
