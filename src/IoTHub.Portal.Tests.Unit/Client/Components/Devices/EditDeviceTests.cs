@@ -8,22 +8,25 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using AzureIoTHub.Portal.Client.Components.Devices;
-    using AzureIoTHub.Portal.Client.Enums;
-    using AzureIoTHub.Portal.Client.Exceptions;
-    using AzureIoTHub.Portal.Client.Models;
-    using AzureIoTHub.Portal.Client.Pages.Devices;
-    using AzureIoTHub.Portal.Client.Services;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Shared.Models;
-    using AzureIoTHub.Portal.Shared.Models.v1._0;
-    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
-    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Mocks;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions;
+    using IoTHub.Portal;
+    using IoTHub.Portal.Client.Components.Devices;
+    using IoTHub.Portal.Client.Enums;
+    using IoTHub.Portal.Client.Exceptions;
+    using IoTHub.Portal.Client.Models;
+    using IoTHub.Portal.Client.Pages.Devices;
+    using IoTHub.Portal.Client.Services;
+    using IoTHub.Portal.Models;
+    using IoTHub.Portal.Models.v10;
+    using IoTHub.Portal.Models.v10.LoRaWAN;
+    using IoTHub.Portal.Shared.Constants;
+    using IoTHub.Portal.Shared.Models;
+    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10.Filters;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Mocks;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
@@ -34,7 +37,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
     public class EditDeviceTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
-        //private Mock<ISnackbar> mockSnackbarService;
         private FakeNavigationManager mockNavigationManager;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
         private Mock<ILoRaWanDeviceModelsClientService> mockLoRaWanDeviceModelsClientService;
@@ -47,7 +49,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             base.Setup();
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
-            //this.mockSnackbarService = MockRepository.Create<ISnackbar>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
             this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
             this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
@@ -55,14 +56,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             this.mockLoRaWanDeviceClientService = MockRepository.Create<ILoRaWanDeviceClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
-            //_ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
-
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
+
+            _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
@@ -88,7 +89,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -297,7 +298,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -443,7 +444,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -513,7 +514,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -673,7 +674,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                         Name = Guid.NewGuid().ToString(),
                         DisplayName = Guid.NewGuid().ToString(),
                         Order = 1,
-                        PropertyType = Models.DevicePropertyType.Boolean,
+                        PropertyType = DevicePropertyType.Boolean,
                         IsWritable = true
                     },
                     new()
@@ -681,7 +682,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                         Name = Guid.NewGuid().ToString(),
                         DisplayName = Guid.NewGuid().ToString(),
                         Order = 1,
-                        PropertyType = Models.DevicePropertyType.Float,
+                        PropertyType = DevicePropertyType.Float,
                         IsWritable = true
                     },
                     new()
@@ -689,7 +690,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                         Name = Guid.NewGuid().ToString(),
                         DisplayName = Guid.NewGuid().ToString(),
                         Order = 1,
-                        PropertyType = Models.DevicePropertyType.Double,
+                        PropertyType = DevicePropertyType.Double,
                         IsWritable = true
                     },
                     new()
@@ -697,7 +698,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                         Name = Guid.NewGuid().ToString(),
                         DisplayName = Guid.NewGuid().ToString(),
                         Order = 1,
-                        PropertyType = Models.DevicePropertyType.Integer,
+                        PropertyType = DevicePropertyType.Integer,
                         IsWritable = true
                     },
                     new()
@@ -705,7 +706,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                         Name = Guid.NewGuid().ToString(),
                         DisplayName = Guid.NewGuid().ToString(),
                         Order = 1,
-                        PropertyType = Models.DevicePropertyType.Long,
+                        PropertyType = DevicePropertyType.Long,
                         IsWritable = true
                     },
                     new()
@@ -713,7 +714,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                         Name = Guid.NewGuid().ToString(),
                         DisplayName = Guid.NewGuid().ToString(),
                         Order = 1,
-                        PropertyType = Models.DevicePropertyType.String,
+                        PropertyType = DevicePropertyType.String,
                         IsWritable = true
                     }
                 });

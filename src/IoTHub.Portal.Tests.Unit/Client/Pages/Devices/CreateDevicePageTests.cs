@@ -24,10 +24,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using System.Linq;
     using IoTHub.Portal.Shared.Models;
     using IoTHub.Portal.Shared.Constants;
+    using MudBlazor;
+    using Bunit.TestDoubles;
 
     [TestFixture]
     public class CreateDevicePageTests : BlazorUnitTest
     {
+        private Mock<IDialogService> mockDialogService;
+        private FakeNavigationManager mockNavigationManager;
+
         private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
         private Mock<ILoRaWanDeviceClientService> mockLoRaWanDeviceClientService;
         private Mock<IDeviceClientService> mockDeviceClientService;
@@ -38,19 +43,26 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
         {
             base.Setup();
 
-            this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
-            this.mockLoRaWanDeviceClientService = MockRepository.Create<ILoRaWanDeviceClientService>();
-            this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
-            this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
+            this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
+            this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
+            this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
+            this.mockLoRaWanDeviceClientService = MockRepository.Create<ILoRaWanDeviceClientService>();
 
+            _ = Services.AddSingleton(this.mockDialogService.Object);
+            _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
+            _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
 
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
+
+            this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }
 
         private void PortalSettingsCloudProvider(string cloudProvider)
@@ -59,7 +71,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
         }
 
         [Test]
-        public void CreateDevicePageShouldRenderCorrectly()
+        public async Task CreateDevicePageShouldRenderCorrectly()
         {
             var mockDeviceModel = new DeviceModelDto
             {
@@ -91,11 +103,27 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     }
                 });
 
-            // Act
+            _ = this.mockDeviceModelsClientService
+                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .ReturnsAsync(new List<DeviceProperty>());
+
+            _ = this.mockDeviceClientService
+                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+                .Returns(Task.CompletedTask);
+
             var cut = RenderComponent<CreateDevicePage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            // Act
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            await cut.Instance.ChangeModel(mockDeviceModel);
+
+            saveButton.Click();
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/devices"));
         }
 
         [Test]
