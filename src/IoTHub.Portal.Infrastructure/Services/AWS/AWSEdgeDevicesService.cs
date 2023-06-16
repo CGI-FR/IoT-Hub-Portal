@@ -120,7 +120,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             try
             {
                 //Update Thing
-                var thingResponse = await this.amazonIoTClient.UpdateThingAsync(this.mapper.Map<UpdateThingRequest>(edgeDevice));
+                _ = await this.amazonIoTClient.UpdateThingAsync(this.mapper.Map<UpdateThingRequest>(edgeDevice));
 
                 //Update EdgeDevice in DB
                 var result = await UpdateEdgeDeviceInDatabase(edgeDevice);
