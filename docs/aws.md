@@ -17,6 +17,14 @@ This schema represent the various components and how they interact to have a bet
 ### Prerequisites
 
 * You must have an AWS Account. Get an [AWS Free account](https://portal.aws.amazon.com/billing/signup#/start/email) to get started.
+* You must enable Fleet Indexing for registry and shadow  
+    ***Using AWS CLI:***
+
+    ```console
+    aws iot update-indexing-configuration --thing-indexing-configuration thingIndexingMode=REGISTRY_AND_SHADOW
+    ```
+
+    > Please note that you'll need the necessary permissions to execute this command. Make sure your AWS IAM user or role has the appropriate permissions to access and modify the IoT indexing configuration.
 
 ### Deployed Resources
 
