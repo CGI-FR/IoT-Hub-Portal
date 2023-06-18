@@ -66,20 +66,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aws", "aws", "{AD6BE5D2-0FF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{EB8B706B-11C0-4D53-B5DA-603A4C1668F9}"
 	ProjectSection(SolutionItems) = preProject
-		..\templates\app_insights.bicep = ..\templates\app_insights.bicep
-		..\templates\app_service.bicep = ..\templates\app_service.bicep
-		..\templates\app_service_plan.bicep = ..\templates\app_service_plan.bicep
-		..\templates\azuredeploy.bicep = ..\templates\azuredeploy.bicep
-		..\templates\azuredeployUI.json = ..\templates\azuredeployUI.json
-		..\templates\blob_container.bicep = ..\templates\blob_container.bicep
-		..\templates\database.bicep = ..\templates\database.bicep
-		..\templates\dps.bicep = ..\templates\dps.bicep
-		..\templates\iothub.bicep = ..\templates\iothub.bicep
-		..\templates\iothub_eventhub_consumer_group.bicep = ..\templates\iothub_eventhub_consumer_group.bicep
-		..\templates\portal_without_lorawan.bicep = ..\templates\portal_without_lorawan.bicep
-		..\templates\portal_with_lorawan.bicep = ..\templates\portal_with_lorawan.bicep
-		..\templates\portal_with_lorawan_and_starter_kit.bicep = ..\templates\portal_with_lorawan_and_starter_kit.bicep
-		..\templates\storage.bicep = ..\templates\storage.bicep
+		..\templates\azure\app_insights.bicep = ..\templates\azure\app_insights.bicep
+		..\templates\azure\app_service.bicep = ..\templates\azure\app_service.bicep
+		..\templates\azure\app_service_plan.bicep = ..\templates\azure\app_service_plan.bicep
+		..\templates\azure\azuredeploy.bicep = ..\templates\azure\azuredeploy.bicep
+		..\templates\azure\azuredeployUI.json = ..\templates\azure\azuredeployUI.json
+		..\templates\azure\blob_container.bicep = ..\templates\azure\blob_container.bicep
+		..\templates\azure\database.bicep = ..\templates\azure\database.bicep
+		..\templates\azure\dps.bicep = ..\templates\azure\dps.bicep
+		..\templates\azure\iothub.bicep = ..\templates\azure\iothub.bicep
+		..\templates\azure\iothub_eventhub_consumer_group.bicep = ..\templates\azure\iothub_eventhub_consumer_group.bicep
+		..\templates\azure\portal_without_lorawan.bicep = ..\templates\azure\portal_without_lorawan.bicep
+		..\templates\azure\portal_with_lorawan.bicep = ..\templates\azure\portal_with_lorawan.bicep
+		..\templates\azure\portal_with_lorawan_and_starter_kit.bicep = ..\templates\azure\portal_with_lorawan_and_starter_kit.bicep
+		..\templates\azure\storage.bicep = ..\templates\azure\storage.bicep
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IoTHub Portal", "IoTHub Portal", "{2CEFBA09-E7DB-409B-97F5-BBA272E6CFC3}"
