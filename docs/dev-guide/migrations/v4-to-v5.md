@@ -4,10 +4,12 @@ In this v5, the major change is the integration of AWS in the portal.
 Some changes have also been made at the portal web app settings.
 
 ## AWS
+
 Starting from version 5, the portal now supports `AWS` integration.  
 To learn how to deploy `AWS services` using the portal, please refer to the [Quick Start](/aws/#quick-start) for AWS documentation. It provides step-by-step instructions on setting up and deploying AWS resources using the portal's interface.
 
 ## Azure
+
 To migrate from v4 to v5 `manually`, you have to add `CloudProvider` with `Azure` as default value.  
 You have to add also `Azure__` prefix in all setting to the portal web app.  
 
