@@ -4,7 +4,6 @@
 namespace IoTHub.Portal.Infrastructure.Services
 {
     using System.Collections.Generic;
-    using System.Net;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Amazon.GreengrassV2;
@@ -12,6 +11,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using Amazon.IotData;
+    using Amazon.IotData.Model;
     using Amazon.SecretsManager;
     using Amazon.SecretsManager.Model;
     using AutoMapper;
@@ -24,6 +24,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Shared.Models.v10;
+    using Device = Microsoft.Azure.Devices.Device;
     using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
     using ResourceAlreadyExistsException = Amazon.IoT.Model.ResourceAlreadyExistsException;
     using ResourceNotFoundException = Amazon.IoT.Model.ResourceNotFoundException;
@@ -76,7 +77,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 });
 
                 var response = await this.amazonIoTClient.CreateThingTypeAsync(createThingTypeRequest);
-                await this.CreateDynamicGroupForThingType(response.ThingTypeName);
+                await CreateDynamicGroupForThingType(response.ThingTypeName);
 
                 deviceModel.Id = response.ThingTypeId;
 
@@ -84,7 +85,11 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (ResourceAlreadyExistsException e)
             {
-                throw new Domain.Exceptions.ResourceAlreadyExistsException($"Unable to create the device model {deviceModel.Name}: {e.Message}", e);
+                throw new Domain.Exceptions.ResourceAlreadyExistsException($"Device Model already exists. Unable to create the device model {deviceModel.Name}: {e.Message}", e);
+            }
+            catch (AmazonIoTException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException($"Unable to create the device model {deviceModel.Name}: {e.Message}", e);
             }
         }
 
@@ -102,7 +107,10 @@ namespace IoTHub.Portal.Infrastructure.Services
                     CoreDeviceThingName = deviceId,
                 });
             }
-            catch (Amazon.GreengrassV2.Model.ResourceNotFoundException) { }
+            catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
+            {
+                this.logger.LogWarning("Unable to Delete Core Device because it doesn't exist");
+            }
 
             try
             {
@@ -111,7 +119,11 @@ namespace IoTHub.Portal.Infrastructure.Services
                     ThingName = deviceId
                 });
             }
-            catch (Amazon.IoT.Model.ResourceNotFoundException) { }
+            catch (ResourceNotFoundException e)
+            {
+                this.logger.LogWarning("Unable to delete the thing because it doesn't exist", e);
+            }
+
         }
 
         public async Task DeleteDeviceModel(ExternalDeviceModelDto deviceModel)
@@ -126,52 +138,94 @@ namespace IoTHub.Portal.Infrastructure.Services
 
                 _ = await this.amazonIoTClient.DeprecateThingTypeAsync(deprecated);
 
-                _ = await this.amazonIoTClient.DeleteDynamicThingGroupAsync(new DeleteDynamicThingGroupRequest
+                try
                 {
-                    ThingGroupName = deviceModel.Name
-                });
+                    _ = await this.amazonIoTClient.DeleteDynamicThingGroupAsync(new DeleteDynamicThingGroupRequest
+                    {
+                        ThingGroupName = deviceModel.Name
+                    });
+                }
+                catch (ResourceNotFoundException e)
+                {
+                    throw new Domain.Exceptions.ResourceNotFoundException($"Thing Group not found. Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
+                }
+                catch (AmazonIoTException e)
+                {
+                    throw new Domain.Exceptions.InternalServerErrorException($"Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
+                }
+
             }
             catch (ResourceNotFoundException e)
             {
-                throw new Domain.Exceptions.ResourceNotFoundException($"Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
+                throw new Domain.Exceptions.ResourceNotFoundException($"Thing type not Found. Unable to deprecate the device model {deviceModel.Name}: {e.Message}", e);
+            }
+            catch (AmazonIoTException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException($"Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
             }
         }
 
         public async Task<bool?> IsEdgeDeviceModel(ExternalDeviceModelDto deviceModel)
         {
-            var thingType = await this.amazonIoTClient.DescribeThingTypeAsync(new DescribeThingTypeRequest()
-            {
-                ThingTypeName = deviceModel.Name
-            });
 
-            var response = await this.amazonIoTClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
+            try
             {
-                ResourceArn = thingType.ThingTypeArn
-            });
-
-            do
-            {
-                if (response == null || !response.Tags.Any())
+                var thingType = await this.amazonIoTClient.DescribeThingTypeAsync(new DescribeThingTypeRequest()
                 {
-                    return null;
-                }
+                    ThingTypeName = deviceModel.Name
+                });
 
-                var iotEdgeTag = response.Tags.Where(c => c.Key.Equals("iotEdge", StringComparison.OrdinalIgnoreCase));
-
-                if (!iotEdgeTag.Any())
+                try
                 {
-                    response = await this.amazonIoTClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
+                    var response = await this.amazonIoTClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
                     {
-                        ResourceArn = thingType.ThingTypeArn,
-                        NextToken = response.NextToken
+                        ResourceArn = thingType.ThingTypeArn
                     });
 
-                    continue;
+                    do
+                    {
+                        if (response == null || !response.Tags.Any())
+                        {
+                            return null;
+                        }
+
+                        var iotEdgeTag = response.Tags.Where(c => c.Key.Equals("iotEdge", StringComparison.OrdinalIgnoreCase));
+
+                        if (!iotEdgeTag.Any())
+                        {
+                            try
+                            {
+                                response = await this.amazonIoTClient.ListTagsForResourceAsync(new ListTagsForResourceRequest
+                                {
+                                    ResourceArn = thingType.ThingTypeArn,
+                                    NextToken = response.NextToken
+                                });
+
+                                continue;
+                            }
+                            catch (AmazonIoTException e)
+                            {
+                                throw new Domain.Exceptions.InternalServerErrorException($"Unable to list tags thing type {deviceModel.Name}: {e.Message}", e);
+
+                            }
+                        }
+
+                        return bool.TryParse(iotEdgeTag.Single().Value, out var result) ? result : null;
+
+                    } while (true);
                 }
+                catch (AmazonIoTException e)
+                {
+                    throw new Domain.Exceptions.InternalServerErrorException($"Unable to list tags thing type {deviceModel.Name}: {e.Message}", e);
 
-                return bool.TryParse(iotEdgeTag.Single().Value, out var result) ? result : null;
+                }
+            }
+            catch (AmazonIoTException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException($"Unable to describe the the thing type {deviceModel.Name}: {e.Message}", e);
 
-            } while (true);
+            }
+
         }
 
         public Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method)
@@ -202,23 +256,30 @@ namespace IoTHub.Portal.Infrastructure.Services
                     Marker = marker
                 };
 
-                var response = await this.amazonIoTClient.ListThingsAsync(request);
-
-                foreach (var requestDescribeThing in response.Things.Select(thing => new DescribeThingRequest { ThingName = thing.ThingName }))
+                try
                 {
-                    try
-                    {
-                        things.Add(await this.amazonIoTClient.DescribeThingAsync(requestDescribeThing));
-                    }
-                    catch (AmazonIoTException e)
-                    {
-                        this.logger.LogWarning($"Cannot import device '{requestDescribeThing.ThingName}' due to an error in the Amazon IoT API.", e);
+                    var response = await this.amazonIoTClient.ListThingsAsync(request);
 
-                        continue;
+                    foreach (var requestDescribeThing in response.Things.Select(thing => new DescribeThingRequest { ThingName = thing.ThingName }))
+                    {
+                        try
+                        {
+                            things.Add(await this.amazonIoTClient.DescribeThingAsync(requestDescribeThing));
+                        }
+                        catch (AmazonIoTException e)
+                        {
+                            this.logger.LogWarning($"Cannot import device '{requestDescribeThing.ThingName}' due to an error in the Amazon IoT API.", e);
+
+                            continue;
+                        }
                     }
+
+                    marker = response.NextMarker;
                 }
-
-                marker = response.NextMarker;
+                catch (AmazonIoTException e)
+                {
+                    throw new Domain.Exceptions.InternalServerErrorException($"Unable to list thing types : {e.Message}", e);
+                }
             }
             while (!string.IsNullOrEmpty(marker));
 
@@ -247,12 +308,19 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public async Task<int> GetConnectedEdgeDevicesCount()
         {
-            var coreDevices = await this.greengrass.ListCoreDevicesAsync(new ListCoreDevicesRequest
+            try
             {
-                NextToken = string.Empty
-            });
+                var coreDevices = await this.greengrass.ListCoreDevicesAsync(new ListCoreDevicesRequest
+                {
+                    NextToken = string.Empty
+                });
 
-            return coreDevices.CoreDevices.Where(c => c.Status == CoreDeviceStatus.HEALTHY).Count();
+                return coreDevices.CoreDevices.Where(c => c.Status == CoreDeviceStatus.HEALTHY).Count();
+            }
+            catch (AmazonGreengrassV2Exception e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException($"Unable to List Core Devices due to an error in the Amazon IoT API.", e);
+            }
         }
 
         public Task<Device> GetDevice(string deviceId)
@@ -306,18 +374,15 @@ namespace IoTHub.Portal.Infrastructure.Services
                 {
                     try
                     {
-                        var thingShadow = await this.amazonIotData.GetThingShadowAsync(new Amazon.IotData.Model.GetThingShadowRequest
+                        _ = await this.amazonIotData.GetThingShadowAsync(new GetThingShadowRequest
                         {
                             ThingName = device.ThingName,
                         });
-                        if (thingShadow.HttpStatusCode != HttpStatusCode.OK)
-                        {
-                            if (thingShadow.HttpStatusCode.Equals(HttpStatusCode.NotFound))
-                                this.logger.LogInformation($"Cannot import device '{device.ThingName}' since it doesn't have related classic thing shadow");
-                            else
-                                this.logger.LogWarning($"Cannot import device '{device.ThingName}' due to an error retrieving thing shadow in the Amazon IoT API : {thingShadow.HttpStatusCode}");
-                            continue;
-                        }
+                    }
+                    catch (ResourceNotFoundException e)
+                    {
+                        this.logger.LogInformation($"Cannot import device '{device.ThingName}' since it doesn't have related classic thing shadow", e);
+                        continue;
                     }
                     catch (AmazonIotDataException e)
                     {
@@ -459,63 +524,108 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         private async Task<Tuple<DeviceCredentials, string>> GenerateCertificate(string deviceName)
         {
-            var response = await this.amazonIoTClient.CreateKeysAndCertificateAsync(true);
 
-            _ = await this.amazonIoTClient.AttachThingPrincipalAsync(deviceName, response.CertificateArn);
-
-            _ = await CreatePrivateKeySecret(deviceName, response.KeyPair.PrivateKey);
-            _ = await CreatePublicKeySecret(deviceName, response.KeyPair.PublicKey);
-            _ = await CreateCertificateSecret(deviceName, response.CertificatePem);
-            _ = await AttachCertificateToThing(deviceName, response.CertificateArn);
-
-            return new Tuple<DeviceCredentials, string>(new DeviceCredentials
+            try
             {
-                AuthenticationMode = AuthenticationMode.Certificate,
-                CertificateCredentials = new CertificateCredentials
+                var response = await this.amazonIoTClient.CreateKeysAndCertificateAsync(true);
+
+                try
                 {
-                    CertificatePem = response.CertificatePem,
-                    PrivateKey = response.KeyPair.PrivateKey,
-                    PublicKey = response.KeyPair.PublicKey,
+                    _ = await this.amazonIoTClient.AttachThingPrincipalAsync(deviceName, response.CertificateArn);
+
+                    _ = await CreatePrivateKeySecret(deviceName, response.KeyPair.PrivateKey);
+                    _ = await CreatePublicKeySecret(deviceName, response.KeyPair.PublicKey);
+                    _ = await CreateCertificateSecret(deviceName, response.CertificatePem);
+                    _ = await AttachCertificateToThing(deviceName, response.CertificateArn);
+
+                    return new Tuple<DeviceCredentials, string>(new DeviceCredentials
+                    {
+                        AuthenticationMode = AuthenticationMode.Certificate,
+                        CertificateCredentials = new CertificateCredentials
+                        {
+                            CertificatePem = response.CertificatePem,
+                            PrivateKey = response.KeyPair.PrivateKey,
+                            PublicKey = response.KeyPair.PublicKey,
+                        }
+                    }, response.CertificateArn);
+
                 }
-            }, response.CertificateArn);
+                catch (AmazonIoTException e)
+                {
+                    throw new Domain.Exceptions.InternalServerErrorException("Unable to Attach Thing Principal due to an error in the Amazon IoT API.", e);
+                }
+            }
+            catch (AmazonIoTException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to Create Keys and Certificate due to an error in the Amazon IoT API.", e);
+            }
         }
 
         private async Task<AttachThingPrincipalResponse> AttachCertificateToThing(string deviceName, string certificateArn)
         {
-            return await this.amazonIoTClient.AttachThingPrincipalAsync(deviceName, certificateArn);
+            try
+            {
+                return await this.amazonIoTClient.AttachThingPrincipalAsync(deviceName, certificateArn);
+            }
+            catch (AmazonIoTException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to Attach Thing Principal due to an error in the Amazon IoT API.", e);
+            }
         }
 
         private async Task<CreateSecretResponse> CreatePrivateKeySecret(string deviceName, string privateKey)
         {
-            var request = new CreateSecretRequest
+            try
             {
-                Name = deviceName + PrivateKeyKey,
-                Description = "Private key for the certificate of device " + deviceName,
-                SecretString = privateKey
-            };
-            return await this.amazonSecretsManager.CreateSecretAsync(request);
+                var request = new CreateSecretRequest
+                {
+                    Name = deviceName + PrivateKeyKey,
+                    Description = "Private key for the certificate of device " + deviceName,
+                    SecretString = privateKey
+                };
+                return await this.amazonSecretsManager.CreateSecretAsync(request);
+            }
+            catch (AmazonSecretsManagerException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to Create Private Secret due to an error in the Amazon IoT API.", e);
+            }
         }
 
         private async Task<CreateSecretResponse> CreatePublicKeySecret(string deviceName, string privateKey)
         {
-            var request = new CreateSecretRequest
+            try
             {
-                Name = deviceName + PublicKeyKey,
-                Description = "Public key for the certificate of device " + deviceName,
-                SecretString = privateKey
-            };
-            return await this.amazonSecretsManager.CreateSecretAsync(request);
+                var request = new CreateSecretRequest
+                {
+                    Name = deviceName + PublicKeyKey,
+                    Description = "Public key for the certificate of device " + deviceName,
+                    SecretString = privateKey
+                };
+                return await this.amazonSecretsManager.CreateSecretAsync(request);
+            }
+            catch (AmazonSecretsManagerException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to Create Public Secret due to an error in the Amazon IoT API.", e);
+            }
         }
 
         private async Task<CreateSecretResponse> CreateCertificateSecret(string deviceName, string certificatePem)
         {
-            var request = new CreateSecretRequest
+            try
             {
-                Name = deviceName + CertificateKey,
-                Description = "Certificate for the certificate of device " + deviceName,
-                SecretString = certificatePem
-            };
-            return await this.amazonSecretsManager.CreateSecretAsync(request);
+                var request = new CreateSecretRequest
+                {
+                    Name = deviceName + CertificateKey,
+                    Description = "Certificate for the certificate of device " + deviceName,
+                    SecretString = certificatePem
+                };
+                return await this.amazonSecretsManager.CreateSecretAsync(request);
+            }
+            catch (AmazonSecretsManagerException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to Create Certificate due to an error in the Amazon IoT API.", e);
+
+            }
         }
 
 
@@ -546,26 +656,33 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public async Task<string> CreateEnrollementScript(string template, Domain.Entities.EdgeDevice device)
         {
-            var iotDataEndpointResponse = await this.amazonIoTClient.DescribeEndpointAsync(new DescribeEndpointRequest
+            try
             {
-                EndpointType = "iot:Data-ATS"
-            });
+                var iotDataEndpointResponse = await this.amazonIoTClient.DescribeEndpointAsync(new DescribeEndpointRequest
+                {
+                    EndpointType = "iot:Data-ATS"
+                });
 
-            var credentialProviderEndpointResponse = await this.amazonIoTClient.DescribeEndpointAsync(new DescribeEndpointRequest
+                var credentialProviderEndpointResponse = await this.amazonIoTClient.DescribeEndpointAsync(new DescribeEndpointRequest
+                {
+                    EndpointType = "iot:CredentialProvider"
+                });
+
+                var credentials = await this.GetDeviceCredentials(device.Name);
+
+                return template.Replace("%DATA_ENDPOINT%", iotDataEndpointResponse!.EndpointAddress, StringComparison.OrdinalIgnoreCase)
+                   .Replace("%CREDENTIALS_ENDPOINT%", credentialProviderEndpointResponse.EndpointAddress, StringComparison.OrdinalIgnoreCase)
+                   .Replace("%CERTIFICATE%", credentials.CertificateCredentials.CertificatePem, StringComparison.OrdinalIgnoreCase)
+                   .Replace("%PRIVATE_KEY%", credentials.CertificateCredentials.PrivateKey, StringComparison.OrdinalIgnoreCase)
+                   .Replace("%REGION%", this.configHandler.AWSRegion, StringComparison.OrdinalIgnoreCase)
+                   .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", this.configHandler.AWSGreengrassCoreTokenExchangeRoleAliasName, StringComparison.OrdinalIgnoreCase)
+                   .Replace("%THING_NAME%", device.Name, StringComparison.OrdinalIgnoreCase)
+                   .ReplaceLineEndings();
+            }
+            catch (AmazonIoTException e)
             {
-                EndpointType = "iot:CredentialProvider"
-            });
-
-            var credentials = await this.GetDeviceCredentials(device.Name);
-
-            return template.Replace("%DATA_ENDPOINT%", iotDataEndpointResponse!.EndpointAddress, StringComparison.OrdinalIgnoreCase)
-               .Replace("%CREDENTIALS_ENDPOINT%", credentialProviderEndpointResponse.EndpointAddress, StringComparison.OrdinalIgnoreCase)
-               .Replace("%CERTIFICATE%", credentials.CertificateCredentials.CertificatePem, StringComparison.OrdinalIgnoreCase)
-               .Replace("%PRIVATE_KEY%", credentials.CertificateCredentials.PrivateKey, StringComparison.OrdinalIgnoreCase)
-               .Replace("%REGION%", this.configHandler.AWSRegion, StringComparison.OrdinalIgnoreCase)
-               .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", this.configHandler.AWSGreengrassCoreTokenExchangeRoleAliasName, StringComparison.OrdinalIgnoreCase)
-               .Replace("%THING_NAME%", device.Name, StringComparison.OrdinalIgnoreCase)
-               .ReplaceLineEndings();
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to Describe Endpoint due to an error in the Amazon IoT API.", e);
+            }
         }
 
         public Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled)
@@ -580,28 +697,37 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public async Task RemoveDeviceCredentials(IoTEdgeDevice device)
         {
-            var request = new ListThingPrincipalsRequest
+            try
             {
-                ThingName = device.DeviceName
-            };
-
-            do
-            {
-                var principalResponse = await this.amazonIoTClient.ListThingPrincipalsAsync(request);
-
-                if (!principalResponse.Principals.Any())
+                var request = new ListThingPrincipalsRequest
                 {
-                    break;
-                }
+                    ThingName = device.DeviceName
+                };
 
-                foreach (var item in principalResponse.Principals)
+                do
                 {
-                    await RemoveGreengrassCertificateFromPrincipal(device, item);
-                }
 
-                request.NextToken = principalResponse.NextToken;
+                    var principalResponse = await this.amazonIoTClient.ListThingPrincipalsAsync(request);
+
+                    if (!principalResponse.Principals.Any())
+                    {
+                        break;
+                    }
+
+                    foreach (var item in principalResponse.Principals)
+                    {
+                        await RemoveGreengrassCertificateFromPrincipal(device, item);
+                    }
+
+                    request.NextToken = principalResponse.NextToken;
+
+                }
+                while (true);
             }
-            while (true);
+            catch (AmazonIoTException e)
+            {
+                this.logger.LogWarning("Unable to List Thing principal due to an error in the Amazon IoT API.", e);
+            }
         }
 
 
@@ -609,32 +735,34 @@ namespace IoTHub.Portal.Infrastructure.Services
         {
             foreach (var item in this.configHandler.AWSGreengrassRequiredRoles)
             {
-                _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
+                try
                 {
-                    PolicyName = item,
-                    Target = principalId
-                });
+                    _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
+                    {
+                        PolicyName = item,
+                        Target = principalId
+                    });
+                }
+                catch (AmazonIoTException e)
+                {
+                    throw new Domain.Exceptions.InternalServerErrorException("Unable to attach policy due to an error in the Amazon IoT API.", e);
+                }
             }
 
-            _ = await this.amazonIoTClient.DetachThingPrincipalAsync(device.DeviceName, principalId);
-
-            _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
+            try
             {
-                ForceDeleteWithoutRecovery = true,
-                SecretId = device.DeviceName + PublicKeyKey,
-            });
+                _ = await this.amazonIoTClient.DetachThingPrincipalAsync(device.DeviceName, principalId);
 
-            _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
+            }
+            catch (AmazonIoTException e)
             {
-                ForceDeleteWithoutRecovery = true,
-                SecretId = device.DeviceName + PrivateKeyKey,
-            });
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to detach thing Principal due to an error in the Amazon IoT API.", e);
 
-            _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
-            {
-                ForceDeleteWithoutRecovery = true,
-                SecretId = device.DeviceName + CertificateKey,
-            });
+            }
+
+            await DeleteSecret(device.DeviceName + PublicKeyKey);
+            await DeleteSecret(device.DeviceName + PrivateKeyKey);
+            await DeleteSecret(device.DeviceName + CertificateKey);
 
             var awsPricipalCertRegex = new Regex("/arn:aws:iot:([a-z0-9-]*):(\\d*):cert\\/([0-9a-fA-F]*)/gm");
 
@@ -647,8 +775,39 @@ namespace IoTHub.Portal.Infrastructure.Services
 
             var certificateId = matches.Captures[2].Value;
 
-            _ = await this.amazonIoTClient.UpdateCertificateAsync(certificateId, CertificateStatus.REGISTER_INACTIVE);
-            _ = await this.amazonIoTClient.DeleteCertificateAsync(certificateId);
+            try
+            {
+                _ = await this.amazonIoTClient.UpdateCertificateAsync(certificateId, CertificateStatus.REGISTER_INACTIVE);
+
+            }
+            catch (AmazonIoTException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to update certificate due to an error in the Amazon IoT API.", e);
+            }
+            try
+            {
+                _ = await this.amazonIoTClient.DeleteCertificateAsync(certificateId);
+            }
+            catch (AmazonIoTException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to delete certificate due to an error in the Amazon IoT API.", e);
+            }
+        }
+
+        private async Task DeleteSecret(string secretId)
+        {
+            try
+            {
+                _ = await this.amazonSecretsManager.DeleteSecretAsync(new DeleteSecretRequest
+                {
+                    ForceDeleteWithoutRecovery = true,
+                    SecretId = secretId,
+                });
+            }
+            catch (AmazonSecretsManagerException e)
+            {
+                throw new Domain.Exceptions.InternalServerErrorException("Unable to delete secret due to an error in the Amazon IoT API.", e);
+            }
         }
     }
 }

@@ -87,18 +87,24 @@ namespace IoTHub.Portal.Infrastructure.Services
             //Create Thing
             var createThingRequest = this.mapper.Map<CreateThingRequest>(edgeDevice);
             createThingRequest.ThingTypeName = model.Name;
-            var thingResponse = await this.amazonIoTClient.CreateThingAsync(createThingRequest);
-            if (thingResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+
+            try
             {
-                throw new InternalServerErrorException($"Unable to create the thing with device name : {edgeDevice.DeviceName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
+                var thingResponse = await this.amazonIoTClient.CreateThingAsync(createThingRequest);
+                edgeDevice.DeviceId = thingResponse.ThingId;
+
+                //Create EdgeDevice in DB
+                var result = await base.CreateEdgeDeviceInDatabase(edgeDevice);
+                await this.unitOfWork.SaveAsync();
+
+                return result;
+
             }
-            edgeDevice.DeviceId = thingResponse.ThingId;
+            catch (AmazonIoTException e)
+            {
+                throw new InternalServerErrorException($"Unable to create the thing with device name : {edgeDevice.DeviceName} due to an error in the Amazon IoT API.", e);
+            }
 
-            //Create EdgeDevice in DB
-            var result = await base.CreateEdgeDeviceInDatabase(edgeDevice);
-            await this.unitOfWork.SaveAsync();
-
-            return result;
         }
 
 
@@ -111,18 +117,22 @@ namespace IoTHub.Portal.Infrastructure.Services
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
-            //Update Thing
-            var thingResponse = await this.amazonIoTClient.UpdateThingAsync(this.mapper.Map<UpdateThingRequest>(edgeDevice));
-            if (thingResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            try
             {
-                throw new InternalServerErrorException($"Unable to update the thing with device name : {edgeDevice.DeviceName} due to an error in the Amazon IoT API : {thingResponse.HttpStatusCode}");
+                //Update Thing
+                _ = await this.amazonIoTClient.UpdateThingAsync(this.mapper.Map<UpdateThingRequest>(edgeDevice));
+
+                //Update EdgeDevice in DB
+                var result = await UpdateEdgeDeviceInDatabase(edgeDevice);
+                await this.unitOfWork.SaveAsync();
+
+                return result;
+            }
+            catch (AmazonIoTException e)
+            {
+                throw new InternalServerErrorException($"Unable to update the thing with device name : {edgeDevice.DeviceName} due to an error in the Amazon IoT API.", e);
             }
 
-            //Update EdgeDevice in DB
-            var result = await UpdateEdgeDeviceInDatabase(edgeDevice);
-            await this.unitOfWork.SaveAsync();
-
-            return result;
         }
 
 
@@ -208,14 +218,20 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         private async Task<int> GetEdgeDeviceNbDevices(IoTEdgeDevice device)
         {
-            var listClientDevices = await this.amazonGreengrass.ListClientDevicesAssociatedWithCoreDeviceAsync(
+            try
+            {
+                var listClientDevices = await this.amazonGreengrass.ListClientDevicesAssociatedWithCoreDeviceAsync(
                 new Amazon.GreengrassV2.Model.ListClientDevicesAssociatedWithCoreDeviceRequest
                 {
                     CoreDeviceThingName = device.DeviceName
                 });
-            return listClientDevices.HttpStatusCode != System.Net.HttpStatusCode.OK
-                ? throw new InternalServerErrorException($"Can not list Client Devices Associated to {device.DeviceName} Core Device due to an error in the Amazon IoT API.")
-                : listClientDevices.AssociatedClientDevices.Count;
+
+                return listClientDevices.AssociatedClientDevices.Count;
+            }
+            catch (AmazonGreengrassV2Exception e)
+            {
+                throw new InternalServerErrorException($"Can not list Client Devices Associated to {device.DeviceName} Core Device due to an error in the Amazon IoT API.", e);
+            }
         }
 
     }

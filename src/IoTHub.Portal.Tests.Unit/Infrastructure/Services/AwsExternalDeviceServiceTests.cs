@@ -174,13 +174,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public async Task WhenThingNotExistsOrCoreNotExistsDeviceDeleteShouldPass()
+        public async Task WhenThingNotExistsAndCoreReturnBadRequestDeviceDeleteShouldPass()
         {
             // Arrange
             var deviceId = Fixture.Create<string>();
 
             _ = this.mockGreengrassV2.Setup(c => c.DeleteCoreDeviceAsync(It.Is<DeleteCoreDeviceRequest>(r => r.CoreDeviceThingName == deviceId), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new Amazon.GreengrassV2.Model.ResourceNotFoundException(Fixture.Create<string>()));
+                .ReturnsAsync(new DeleteCoreDeviceResponse { HttpStatusCode = HttpStatusCode.BadRequest });
 
             _ = this.mockAmazonIot.Setup(c => c.DeleteThingAsync(It.Is<DeleteThingRequest>(r => r.ThingName == deviceId), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Amazon.IoT.Model.ResourceNotFoundException(Fixture.Create<string>()));
@@ -189,6 +189,46 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             await this.externalDeviceService.DeleteDevice(deviceId);
 
             // Assert
+            this.MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenThingExistsAndCoreDoesNotExistDeviceDeleteShouldPass()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            _ = this.mockGreengrassV2.Setup(c => c.DeleteCoreDeviceAsync(It.Is<DeleteCoreDeviceRequest>(r => r.CoreDeviceThingName == deviceId), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Amazon.GreengrassV2.Model.ResourceNotFoundException(Fixture.Create<string>()));
+
+            _ = this.mockAmazonIot.Setup(c => c.DeleteThingAsync(It.Is<DeleteThingRequest>(r => r.ThingName == deviceId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DeleteThingResponse { HttpStatusCode = HttpStatusCode.NoContent });
+
+            // Act
+            await this.externalDeviceService.DeleteDevice(deviceId);
+
+            // Assert
+
+            this.MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenThingNotExistsAndCoreDoesExistDeviceDeleteShouldPass()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            _ = this.mockGreengrassV2.Setup(c => c.DeleteCoreDeviceAsync(It.Is<DeleteCoreDeviceRequest>(r => r.CoreDeviceThingName == deviceId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DeleteCoreDeviceResponse { HttpStatusCode = HttpStatusCode.NoContent });
+
+            _ = this.mockAmazonIot.Setup(c => c.DeleteThingAsync(It.Is<DeleteThingRequest>(r => r.ThingName == deviceId), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Amazon.IoT.Model.ResourceNotFoundException(Fixture.Create<string>()));
+
+            // Act
+            await this.externalDeviceService.DeleteDevice(deviceId);
+
+            // Assert
+
             this.MockRepository.VerifyAll();
         }
 

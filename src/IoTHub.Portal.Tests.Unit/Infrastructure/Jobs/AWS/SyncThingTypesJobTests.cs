@@ -129,6 +129,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
                     .ReturnsAsync(depcrecatedThingType);
             _ = this.iaAmazon.Setup(client => client.DeleteThingTypeAsync(It.Is<DeleteThingTypeRequest>(c => c.ThingTypeName == depcrecatedThingType.ThingTypeName), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Fixture.Create<DeleteThingTypeResponse>);
+            _ = this.iaAmazon.Setup(client => client.DeleteDynamicThingGroupAsync(It.Is<DeleteDynamicThingGroupRequest>(c => c.ThingGroupName == depcrecatedThingType.ThingTypeName), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Fixture.Create<DeleteDynamicThingGroupResponse>);
 
             _ = this.mockExternalDeviceService.Setup(client => client.IsEdgeDeviceModel(It.IsAny<ExternalDeviceModelDto>()))
                 .ReturnsAsync(false);

@@ -89,31 +89,44 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                     HistoryFilter = DeploymentHistoryFilter.LATEST_ONLY
                 };
 
-                var response = await this.amazonGreenGrass.ListDeploymentsAsync(request);
-
-                foreach (var deployment in response.Deployments)
+                try
                 {
-                    var awsThingGroupRegex = new Regex(@"/([^/]+)$");
-                    var matches = awsThingGroupRegex.Match(deployment.TargetArn);
+                    var response = await this.amazonGreenGrass.ListDeploymentsAsync(request);
 
-                    if (matches.Success && matches.Groups.Count > 1)
+                    foreach (var deployment in response.Deployments)
                     {
-                        var thinggroupName = matches.Groups[1].Value;
-                        var s = await this.amazonIoTClient.DescribeThingGroupAsync(new Amazon.IoT.Model.DescribeThingGroupRequest { ThingGroupName = thinggroupName });
-                        if (s.QueryString != null)
+                        var awsThingGroupRegex = new Regex(@"/([^/]+)$");
+                        var matches = awsThingGroupRegex.Match(deployment.TargetArn);
+
+                        if (matches.Success && matches.Groups.Count > 1)
                         {
-                            var iotEdgeModel = new IoTEdgeModel
+                            var thinggroupName = matches.Groups[1].Value;
+                            try
                             {
-                                ModelId = deployment.DeploymentId, //Instead of giving a random Id here, we can give the deploymentID
-                                Name = deployment.DeploymentName,
-                                ExternalIdentifier = deployment.DeploymentId
-                            };
-                            deployments.Add(iotEdgeModel);
+                                var s = await this.amazonIoTClient.DescribeThingGroupAsync(new Amazon.IoT.Model.DescribeThingGroupRequest { ThingGroupName = thinggroupName });
+                                if (s.QueryString != null)
+                                {
+                                    var iotEdgeModel = new IoTEdgeModel
+                                    {
+                                        ModelId = deployment.DeploymentId, //Instead of giving a random Id here, we can give the deploymentID
+                                        Name = deployment.DeploymentName,
+                                        ExternalIdentifier = deployment.DeploymentId
+                                    };
+                                    deployments.Add(iotEdgeModel);
+                                }
+                            }
+                            catch (AmazonIoTException e)
+                            {
+                                throw new Domain.Exceptions.InternalServerErrorException("Unable to Describe The thing group due to an error in the Amazon IoT API.", e);
+                            }
                         }
                     }
+                    nextToken = response.NextToken;
                 }
-
-                nextToken = response.NextToken;
+                catch (AmazonGreengrassV2Exception e)
+                {
+                    throw new Domain.Exceptions.InternalServerErrorException("Unable to List The deployments due to an error in the Amazon IoT API.", e);
+                }
             }
             while (!string.IsNullOrEmpty(nextToken));
 
