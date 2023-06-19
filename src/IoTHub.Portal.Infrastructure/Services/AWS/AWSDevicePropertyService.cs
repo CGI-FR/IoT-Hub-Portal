@@ -46,13 +46,17 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 throw new ResourceNotFoundException($"Unable to find the device {deviceId} in DB");
             }
 
-            var shadowResponse = await this.amazonIotDataClient.GetThingShadowAsync(new GetThingShadowRequest
+            GetThingShadowResponse shadowResponse;
+            try
             {
-                ThingName = deviceDb.Name
-            });
-            if (shadowResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                shadowResponse = await this.amazonIotDataClient.GetThingShadowAsync(new GetThingShadowRequest
+                {
+                    ThingName = deviceDb.Name
+                });
+            }
+            catch (AmazonIotDataException e)
             {
-                throw new InternalServerErrorException($"Unable to get the thing shadow with device name : {deviceDb.Name} due to an error in the Amazon IoT API : {shadowResponse.HttpStatusCode}");
+                throw new InternalServerErrorException($"Unable to get the thing shadow with device name : {deviceDb.Name} due to an error in the Amazon IoT API", e);
             }
 
             IEnumerable<DeviceModelProperty> items;
@@ -120,7 +124,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to get templates properties fro device with id {deviceId}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to get templates properties for device with id {deviceId}: {e.Message}", e);
             }
 
             var desiredState = new Dictionary<string, string?>();
@@ -148,11 +152,13 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 Payload = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(payload)))
             };
 
-            var shadowResponse = await this.amazonIotDataClient.UpdateThingShadowAsync(shadowRequest);
-
-            if (shadowResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            try
             {
-                throw new InternalServerErrorException($"Unable to create/update the thing shadow with device name : {shadowRequest.ThingName} due to an error in the Amazon IoT API : {shadowResponse.HttpStatusCode}");
+                _ = await this.amazonIotDataClient.UpdateThingShadowAsync(shadowRequest);
+            }
+            catch (AmazonIotDataException e)
+            {
+                throw new InternalServerErrorException($"Unable to create/update the thing shadow with device name : {device.Name} due to an error in the Amazon IoT API", e);
             }
         }
     }

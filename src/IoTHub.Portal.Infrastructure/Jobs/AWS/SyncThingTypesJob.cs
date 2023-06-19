@@ -94,13 +94,25 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
 
             foreach (var thingType in thingTypes)
             {
-                var diffInMinutes = (DateTime.Now.Subtract(thingType.ThingTypeMetadata.DeprecationDate)).TotalMinutes;
+                var diffInMinutes = DateTime.Now.Subtract(thingType.ThingTypeMetadata.DeprecationDate).TotalMinutes;
                 if (thingType.ThingTypeMetadata.Deprecated && diffInMinutes > 5)
                 {
-                    _ = await this.amazonIoTClient.DeleteThingTypeAsync(new DeleteThingTypeRequest
+                    try
                     {
-                        ThingTypeName = thingType.ThingTypeName
-                    });
+                        _ = await this.amazonIoTClient.DeleteThingTypeAsync(new DeleteThingTypeRequest
+                        {
+                            ThingTypeName = thingType.ThingTypeName
+                        });
+
+                        _ = await this.amazonIoTClient.DeleteDynamicThingGroupAsync(new DeleteDynamicThingGroupRequest
+                        {
+                            ThingGroupName = thingType.ThingTypeName
+                        });
+                    }
+                    catch (AmazonIoTException e)
+                    {
+                        throw new Domain.Exceptions.InternalServerErrorException("Unable to Delete The thing type due to an error in the Amazon IoT API.", e);
+                    }
                 }
                 else
                 {
@@ -123,19 +135,33 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                     NextToken = nextToken
                 };
 
-                var response = await amazonIoTClient.ListThingTypesAsync(request);
-
-                foreach (var thingType in response.ThingTypes)
+                try
                 {
-                    var requestDescribeThingType = new DescribeThingTypeRequest
+                    var response = await amazonIoTClient.ListThingTypesAsync(request);
+
+                    foreach (var thingType in response.ThingTypes)
                     {
-                        ThingTypeName = thingType.ThingTypeName,
-                    };
+                        var requestDescribeThingType = new DescribeThingTypeRequest
+                        {
+                            ThingTypeName = thingType.ThingTypeName,
+                        };
 
-                    thingTypes.Add(await this.amazonIoTClient.DescribeThingTypeAsync(requestDescribeThingType));
+                        try
+                        {
+                            thingTypes.Add(await this.amazonIoTClient.DescribeThingTypeAsync(requestDescribeThingType));
+                        }
+                        catch (AmazonIoTException e)
+                        {
+                            throw new Domain.Exceptions.InternalServerErrorException("Unable to Describe The thing type due to an error in the Amazon IoT API.", e);
+                        }
+                    }
+
+                    nextToken = response.NextToken;
                 }
-
-                nextToken = response.NextToken;
+                catch (AmazonIoTException e)
+                {
+                    throw new Domain.Exceptions.InternalServerErrorException("Unable to list Thing types due to an error in the Amazon IoT API.", e);
+                }
             }
             while (!string.IsNullOrEmpty(nextToken));
 

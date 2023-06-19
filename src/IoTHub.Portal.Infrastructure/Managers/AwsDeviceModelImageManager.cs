@@ -8,7 +8,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
     using System.Threading.Tasks;
     using Amazon.S3;
     using Amazon.S3.Model;
-    using Azure;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
@@ -38,39 +37,48 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
         {
+
             this.logger.LogInformation($"Uploading Image to AWS S3 storage");
 
-
-            //Portal must be able to upload images to Amazon S3
-            var putObjectRequest = new PutObjectRequest
+            try
             {
-                BucketName = this.configHandler.AWSBucketName,
-                Key = deviceModelId,
-                InputStream = stream,
-                ContentType = "image/*",
-                Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
-            };
-            var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
-
-            if (putObjectResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
-            {
-                //Images on S3 are publicly accessible and read-only 
-                var putAclRequest = new PutACLRequest
+                //Portal must be able to upload images to Amazon S3
+                var putObjectRequest = new PutObjectRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = deviceModelId,
-                    CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
+                    InputStream = stream,
+                    ContentType = "image/*",
+                    Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
                 };
-                var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
 
-                return putACLResponse.HttpStatusCode == System.Net.HttpStatusCode.OK
-                    ? ComputeImageUri(deviceModelId).ToString()
-                    : throw new InternalServerErrorException("Error by setting the image access to public and read-only");
+                _ = await this.s3Client.PutObjectAsync(putObjectRequest);
+
+                try
+                {
+                    //Images on S3 are publicly accessible and read-only 
+                    var putAclRequest = new PutACLRequest
+                    {
+                        BucketName = this.configHandler.AWSBucketName,
+                        Key = deviceModelId,
+                        CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
+                    };
+
+                    _ = await this.s3Client.PutACLAsync(putAclRequest);
+
+                    return ComputeImageUri(deviceModelId).ToString();
+                }
+                catch (AmazonS3Exception e)
+                {
+                    throw new InternalServerErrorException("Unable to set the image access to public and read-only due to an error in Amazon S3 API.", e);
+                }
+
             }
-            else
+            catch (AmazonS3Exception e)
             {
-                throw new InternalServerErrorException("Error by uploading the image in S3 Storage");
+                throw new InternalServerErrorException(" Unable to upload the image in S3 Bucket due to an error in Amazon S3 API.", e);
             }
+
         }
 
         public Uri ComputeImageUri(string deviceModelId)
@@ -84,61 +92,68 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             this.logger.LogInformation($"Deleting image from AWS S3 storage");
 
-            var deleteImageObject = new DeleteObjectRequest
-            {
-                BucketName = this.configHandler.AWSBucketName,
-                Key = deviceModelId
-            };
             try
             {
+                var deleteImageObject = new DeleteObjectRequest
+                {
+                    BucketName = this.configHandler.AWSBucketName,
+                    Key = deviceModelId
+                };
+
                 _ = await this.s3Client.DeleteObjectAsync(deleteImageObject);
 
             }
-            catch (RequestFailedException e)
+            catch (AmazonS3Exception e)
             {
-                throw new InternalServerErrorException("Unable to delete the image from S3 storage.", e);
+                throw new InternalServerErrorException("Unable to delete the image from S3 storage due to an error in Amazon S3 API.", e);
             }
         }
 
         public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
+
             this.logger.LogInformation($"Uploading Default Image to AWS S3 storage");
+
             var currentAssembly = Assembly.GetExecutingAssembly();
             var defaultImageStream = currentAssembly
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
 
-
-            //Portal must be able to upload images to Amazon S3
-            var putObjectRequest = new PutObjectRequest
+            try
             {
-                BucketName = this.configHandler.AWSBucketName,
-                Key = deviceModelId,
-                InputStream = defaultImageStream,
-                ContentType = "image/*", // image content type
-                Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
-
-            };
-
-            var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
-
-            if (putObjectResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
-            {
-                //Images on S3 are publicly accessible and read-only 
-                var putAclRequest = new PutACLRequest
+                //Portal must be able to upload images to Amazon S3
+                var putObjectRequest = new PutObjectRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = deviceModelId,
-                    CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
-                };
-                var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
+                    InputStream = defaultImageStream,
+                    ContentType = "image/*", // image content type
+                    Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 
-                return putACLResponse.HttpStatusCode == System.Net.HttpStatusCode.OK
-                    ? ComputeImageUri(deviceModelId).ToString()
-                    : throw new InternalServerErrorException("Error by setting the image access to public and read-only");
+                };
+
+                _ = await this.s3Client.PutObjectAsync(putObjectRequest);
+
+                try
+                {
+                    //Images on S3 are publicly accessible and read-only 
+                    var putAclRequest = new PutACLRequest
+                    {
+                        BucketName = this.configHandler.AWSBucketName,
+                        Key = deviceModelId,
+                        CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
+                    };
+                    _ = await this.s3Client.PutACLAsync(putAclRequest);
+
+                    return ComputeImageUri(deviceModelId).ToString();
+                }
+                catch (AmazonS3Exception e)
+                {
+                    throw new InternalServerErrorException("Unable to set the image access to public and read-only due to an error in Amazon S3 API.", e);
+                }
             }
-            else
+            catch (AmazonS3Exception e)
             {
-                throw new InternalServerErrorException("Error by uploading the image in S3 Storage");
+                throw new InternalServerErrorException("Unable to upload the image in S3 Bucket due to an error in Amazon S3 API.", e);
             }
 
         }
@@ -152,37 +167,41 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             var defaultImageStream = currentAssembly
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
-            var putObjectRequest = new PutObjectRequest
+
+            try
             {
-                BucketName = this.configHandler.AWSBucketName,
-                Key = this.imageOptions.Value.DefaultImageName,
-                InputStream = defaultImageStream,
-                ContentType = "image/*", // image content type
-                Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
-
-            };
-
-            var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
-
-            if (putObjectResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
-            {
-                //Images on S3 are publicly accessible and read-only 
-                var putAclRequest = new PutACLRequest
+                var putObjectRequest = new PutObjectRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = this.imageOptions.Value.DefaultImageName,
-                    CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
-                };
-                var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
+                    InputStream = defaultImageStream,
+                    ContentType = "image/*", // image content type
+                    Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 
-                if (putACLResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                };
+
+                _ = await this.s3Client.PutObjectAsync(putObjectRequest);
+
+                try
                 {
-                    throw new InternalServerErrorException("Error by setting the image access to public and read-only");
+                    //Images on S3 are publicly accessible and read-only 
+                    var putAclRequest = new PutACLRequest
+                    {
+                        BucketName = this.configHandler.AWSBucketName,
+                        Key = this.imageOptions.Value.DefaultImageName,
+                        CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
+                    };
+
+                    _ = await this.s3Client.PutACLAsync(putAclRequest);
+                }
+                catch (AmazonS3Exception e)
+                {
+                    throw new InternalServerErrorException("Unable to set the image access to public and read-only due to an error in Amazon S3 API.", e);
                 }
             }
-            else
+            catch (AmazonS3Exception e)
             {
-                throw new InternalServerErrorException("Error by uploading the image in S3 Storage");
+                throw new InternalServerErrorException("Unable to upload the image in S3 Bucket due to an error in Amazon S3 API.", e);
             }
 
         }
