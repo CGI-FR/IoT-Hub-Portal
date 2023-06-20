@@ -4,7 +4,7 @@
       1
     ],
     "JoinEui": [],
-    "region": "AS923",
+    "region": "AU915",
     "hwspec": "sx1301/1",
     "freq_range": [
       915000000,
@@ -55,7 +55,7 @@
         },
         "radio_1": {
           "enable": true,
-          "freq": 925900000
+          "freq": 926000000
         },
         "chan_FSK": {
           "enable": true,
