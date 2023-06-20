@@ -550,13 +550,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task GetDeviceCredentialsShouldReturnExisitingDeviceCredentials()
         {
             // Arrange
-            var deviceName = Fixture.Create<string>();
+            var device = Fixture.Create<DeviceDetails>();
 
             _ = this.mockSecretsManager.Setup(c => c.GetSecretValueAsync(It.IsAny<GetSecretValueRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetSecretValueResponse());
 
             // Act
-            var result = this.externalDeviceService.GetDeviceCredentials(deviceName);
+            var result = this.externalDeviceService.GetDeviceCredentials(device);
 
             // Assert
             _ = result.Should().NotBeNull();
@@ -567,7 +567,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task GetDeviceCredentialsShouldCreateAndReturnDeviceCredentials()
         {
             // Arrange
-            var deviceName = Fixture.Create<string>();
+            var device = Fixture.Create<DeviceDetails>();
 
             _ = this.mockSecretsManager.Setup(c => c.GetSecretValueAsync(It.IsAny<GetSecretValueRequest>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Amazon.SecretsManager.Model.ResourceNotFoundException("Resource Not found"));
@@ -586,7 +586,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .ReturnsAsync(new CreateSecretResponse());
 
             // Act
-            var result = this.externalDeviceService.GetDeviceCredentials(deviceName);
+            var result = this.externalDeviceService.GetDeviceCredentials(device);
 
             // Assert
             _ = result.Should().NotBeNull();

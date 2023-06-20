@@ -11,6 +11,7 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Shared;
     using Shared.Models.v10;
     using Amazon.IoT.Model;
+    using IoTHub.Portal.Shared.Models;
 
     public interface IExternalDeviceService
     {
@@ -73,7 +74,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<int> GetConcentratorsCount();
 
-        Task<DeviceCredentials> GetDeviceCredentials(string deviceName);
+        Task<DeviceCredentials> GetDeviceCredentials(IDeviceDetails device);
 
         Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device);
 
@@ -85,7 +86,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<IEnumerable<string>> GetDevicesToExport();
 
-        Task<string> CreateEnrollementScript(string template, Domain.Entities.EdgeDevice device);
+        Task<string> CreateEnrollementScript(string template, IoTEdgeDevice device);
 
         Task RemoveDeviceCredentials(IoTEdgeDevice device);
     }

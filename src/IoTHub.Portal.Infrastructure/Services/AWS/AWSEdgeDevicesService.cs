@@ -211,7 +211,8 @@ namespace IoTHub.Portal.Infrastructure.Services
         public async Task<string> GetEdgeDeviceEnrollementScript(string deviceId, string templateName)
         {
             var template = edgeEnrollementHelper.GetEdgeEnrollementTemplate($"{configHandler.CloudProvider}.{templateName}");
-            var device = await this.edgeDeviceRepository.GetByIdAsync(deviceId);
+
+            var device = await this.GetEdgeDevice(deviceId);
 
             return await this.externalDeviceService.CreateEnrollementScript(template, device);
         }

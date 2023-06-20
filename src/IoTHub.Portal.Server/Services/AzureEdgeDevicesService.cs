@@ -221,7 +221,7 @@ namespace IoTHub.Portal.Server.Services
         {
             var template = edgeEnrollementHelper.GetEdgeEnrollementTemplate($"{configHandler.CloudProvider}.{templateName}");
 
-            var device = await this.edgeDeviceRepository.GetByIdAsync(deviceId);
+            var device = await GetEdgeDevice(deviceId);
 
             return await this.externalDevicesService.CreateEnrollementScript(template, device);
         }

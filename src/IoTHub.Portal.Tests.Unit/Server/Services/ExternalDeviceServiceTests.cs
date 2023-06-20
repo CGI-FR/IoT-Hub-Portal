@@ -27,6 +27,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Newtonsoft.Json;
     using NUnit.Framework;
     using Shared.Models.v10;
+    using IoTHub.Portal.Domain.Entities;
+    using Device = Microsoft.Azure.Devices.Device;
 
     [TestFixture]
     public class ExternalDeviceServiceTests
@@ -931,6 +933,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(expected, result);
+
             this.mockRepository.VerifyAll();
         }
 
@@ -1788,12 +1791,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
 
             var service = CreateService();
-            var deviceId = Guid.NewGuid().ToString();
-            var mockTwin = new Twin(deviceId);
-            mockTwin.Tags["modelId"] = "bbb";
+            var device = Fixture.Create<DeviceDetails>();
+            var model = Fixture.Create<DeviceModel>();
 
-            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
-                .ReturnsAsync(mockTwin);
+            device.ModelId = model.Id;
+            device.ModelName = model.Name;
 
             var mockRegistrationCredentials = new DeviceCredentials
             {
@@ -1805,61 +1807,17 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 }
             };
 
-            _ = this.mockDeviceModelRepository.Setup(c => c.GetByIdAsync("bbb"))
-                .ReturnsAsync(new Portal.Domain.Entities.DeviceModel
-                {
-                    Id = "bbb",
-                    Name = "ccc"
-                });
+            _ = this.mockDeviceModelRepository.Setup(c => c.GetByIdAsync(device.ModelId))
+                .ReturnsAsync(model);
 
-            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
+            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(device.DeviceID, model.Id))
                 .ReturnsAsync(mockRegistrationCredentials);
 
             // Act
-            var enrollmentCredentials = await service.GetDeviceCredentials(deviceId);
+            var enrollmentCredentials = await service.GetDeviceCredentials(device);
 
             // Assert
             _ = enrollmentCredentials.Should().BeEquivalentTo(mockRegistrationCredentials);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenDeviceTypePropertyNotExistGetEnrollmentCredentialsShouldThrowResourceNotFoundException()
-        {
-            // Arrange
-            var service = CreateService();
-            var deviceId = Guid.NewGuid().ToString();
-            var mockTwin = new Twin(deviceId);
-
-
-            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
-                .ReturnsAsync(mockTwin);
-
-            // Act
-            var act = () => service.GetDeviceCredentials(deviceId);
-
-            // Assert
-            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenDeviceNotExistGetEnrollmentCredentialsShouldThrowResourceNotFoundException()
-        {
-            // Arrange
-            var service = CreateService();
-            var deviceId = Guid.NewGuid().ToString();
-
-            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
-                .ReturnsAsync((Twin)null);
-
-            // Act
-            var act = () => service.GetDeviceCredentials(deviceId);
-
-            // Assert
-            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -1869,25 +1827,19 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var service = CreateService();
-            var deviceId = Guid.NewGuid().ToString();
-            var mockTwin = new Twin(deviceId);
-            mockTwin.Tags["modelId"] = "bbb";
+            var device = Fixture.Create<DeviceDetails>();
+            var model = Fixture.Create<DeviceModel>();
 
-            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
-                .ReturnsAsync(mockTwin);
+            device.ModelId = model.Id;
 
-            _ = this.mockDeviceModelRepository.Setup(c => c.GetByIdAsync("bbb"))
-                .ReturnsAsync(new Portal.Domain.Entities.DeviceModel
-                {
-                    Id = "bbb",
-                    Name = "ccc"
-                });
+            _ = this.mockDeviceModelRepository.Setup(c => c.GetByIdAsync(model.Id))
+                .ReturnsAsync(model);
 
-            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
+            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(device.DeviceID, model.Id))
                 .Throws(new RequestFailedException("test"));
 
             // Act
-            var act = () => service.GetDeviceCredentials(deviceId);
+            var act = () => service.GetDeviceCredentials(device);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -2138,7 +2090,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var template = Fixture.Create<string>();
-            var edgeDevice = new Portal.Domain.Entities.EdgeDevice();
+            var edgeDevice = new IoTEdgeDevice();
             var service = CreateService();
 
             // Act

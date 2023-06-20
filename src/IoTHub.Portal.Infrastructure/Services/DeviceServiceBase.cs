@@ -202,7 +202,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public virtual Task<DeviceCredentials> GetCredentials(TDto device)
         {
-            return this.externalDevicesService.GetDeviceCredentials(device.DeviceName);
+            return this.externalDevicesService.GetDeviceCredentials(device);
         }
 
         public abstract Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);

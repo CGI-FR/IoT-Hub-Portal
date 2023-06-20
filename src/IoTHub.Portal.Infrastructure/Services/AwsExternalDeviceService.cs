@@ -20,6 +20,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Shared;
     using IoTHub.Portal.Models.v10;
+    using IoTHub.Portal.Shared.Models;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
@@ -455,15 +456,15 @@ namespace IoTHub.Portal.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public async Task<DeviceCredentials> GetDeviceCredentials(string deviceName)
+        public async Task<DeviceCredentials> GetDeviceCredentials(IDeviceDetails device)
         {
             try
             {
-                return await GetDeviceCredentialsFromSecretsManager(deviceName);
+                return await GetDeviceCredentialsFromSecretsManager(device.DeviceName);
             }
             catch (Amazon.SecretsManager.Model.ResourceNotFoundException)
             {
-                var deviceCredentialsTuple = await GenerateCertificate(deviceName);
+                var deviceCredentialsTuple = await GenerateCertificate(device.DeviceName);
 
                 return deviceCredentialsTuple.Item1;
             }
@@ -654,7 +655,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             });
         }
 
-        public async Task<string> CreateEnrollementScript(string template, Domain.Entities.EdgeDevice device)
+        public async Task<string> CreateEnrollementScript(string template, IoTEdgeDevice device)
         {
             try
             {
@@ -668,7 +669,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     EndpointType = "iot:CredentialProvider"
                 });
 
-                var credentials = await this.GetDeviceCredentials(device.Name);
+                var credentials = await this.GetEdgeDeviceCredentials(device);
 
                 return template.Replace("%DATA_ENDPOINT%", iotDataEndpointResponse!.EndpointAddress, StringComparison.OrdinalIgnoreCase)
                    .Replace("%CREDENTIALS_ENDPOINT%", credentialProviderEndpointResponse.EndpointAddress, StringComparison.OrdinalIgnoreCase)
@@ -676,7 +677,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                    .Replace("%PRIVATE_KEY%", credentials.CertificateCredentials.PrivateKey, StringComparison.OrdinalIgnoreCase)
                    .Replace("%REGION%", this.configHandler.AWSRegion, StringComparison.OrdinalIgnoreCase)
                    .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", this.configHandler.AWSGreengrassCoreTokenExchangeRoleAliasName, StringComparison.OrdinalIgnoreCase)
-                   .Replace("%THING_NAME%", device.Name, StringComparison.OrdinalIgnoreCase)
+                   .Replace("%THING_NAME%", device.DeviceName, StringComparison.OrdinalIgnoreCase)
                    .ReplaceLineEndings();
             }
             catch (AmazonIoTException e)

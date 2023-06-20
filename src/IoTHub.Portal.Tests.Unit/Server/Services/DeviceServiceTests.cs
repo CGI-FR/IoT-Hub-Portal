@@ -552,7 +552,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var expectedEnrollmentCredentials = Fixture.Create<DeviceCredentials>();
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceCredentials(deviceDto.DeviceName))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceCredentials(deviceDto))
                 .ReturnsAsync(expectedEnrollmentCredentials);
 
             // Act

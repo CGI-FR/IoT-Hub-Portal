@@ -17,6 +17,7 @@ namespace IoTHub.Portal.Server.Services
     using Domain.Exceptions;
     using Domain.Repositories;
     using Domain.Shared;
+    using IoTHub.Portal.Shared.Models;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -589,29 +590,17 @@ namespace IoTHub.Portal.Server.Services
             }
         }
 
-        public async Task<DeviceCredentials> GetDeviceCredentials(string deviceId)
+        public async Task<DeviceCredentials> GetDeviceCredentials(IDeviceDetails device)
         {
-            var device = await GetDeviceTwin(deviceId);
-
-            if (device == null)
-            {
-                throw new ResourceNotFoundException($"Unable to find the device {deviceId}");
-            }
-
-            if (!device.Tags.Contains("modelId"))
-            {
-                throw new ResourceNotFoundException($"Device {deviceId} has no modelId tag value");
-            }
-
             try
             {
-                var model = await this.deviceModelRepository.GetByIdAsync(device.Tags["modelId"].ToString());
+                var model = await this.deviceModelRepository.GetByIdAsync(device.ModelId);
 
-                return await this.deviceRegistryProvider.GetEnrollmentCredentialsAsync(deviceId, model.Name);
+                return await this.deviceRegistryProvider.GetEnrollmentCredentialsAsync(device.DeviceID, model.Id);
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to get model of the device with id {deviceId}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to get model {device.ModelName}: {e.Message}", e);
             }
         }
 
@@ -720,7 +709,7 @@ namespace IoTHub.Portal.Server.Services
             throw new NotImplementedException();
         }
 
-        public Task<string> CreateEnrollementScript(string template, Domain.Entities.EdgeDevice device)
+        public Task<string> CreateEnrollementScript(string template, IoTEdgeDevice device)
         {
             throw new NotImplementedException();
         }
