@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using IoTHub.Portal.Models.v10
 @using Blazored.LocalStorage
+@using IoTHub.Portal.Shared.Constants
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
 @inject ILayoutService LayoutService
@@ -32,13 +33,17 @@
                     </MudTooltip>
                 </MudPaper>
 
-                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/device-configurations/">Configurations</MudNavLink>
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/>
-                    <MudTooltip Text="Add device model">
-                        <MudIconButton id="addDeviceConfigurationButton" OnClick="AddDeviceConfig" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
-                    </MudTooltip>
-                </MudPaper>
+                @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                {
+                    <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                        <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/device-configurations/">Configurations</MudNavLink>
+                        <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                        <MudTooltip Text="Add device configuration">
+                            <MudIconButton id="addDeviceConfigurationButton" OnClick="AddDeviceConfig" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                        </MudTooltip>
+                    </MudPaper>
+                }
+                
             </MudNavGroup>
 
             <MudNavGroup Title="IoT Edge" Icon="@Icons.Material.Outlined.DeveloperBoard"
