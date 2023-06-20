@@ -4,19 +4,18 @@
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
     using System;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Client.Shared;
-    using Models.v10;
-    using UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Components.Web.Extensions.Head;
+    using IoTHub.Portal.Client.Services;
+    using IoTHub.Portal.Client.Shared;
+    using Microsoft.AspNetCore.Components.Web;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
     using MudBlazor;
     using NUnit.Framework;
     using Portal.Client.Constants;
-    using Microsoft.AspNetCore.Components.Web;
+    using UnitTests.Bases;
 
     [TestFixture]
     public class MainLayoutTests : BlazorUnitTest
@@ -34,7 +33,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             _ = Services.AddSingleton(new PortalSettings
             {
                 PortalName = "TEST",
-                IsLoRaSupported = false
+                IsLoRaSupported = false,
+                CloudProvider = "Azure"
             });
         }
 

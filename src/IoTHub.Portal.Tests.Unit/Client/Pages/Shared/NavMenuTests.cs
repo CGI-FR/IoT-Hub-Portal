@@ -33,6 +33,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             _ = Services.AddScoped<ILayoutService, LayoutService>();
 
             _ = TestContext?.AddTestAuthorization().SetAuthorized(Guid.NewGuid().ToString());
+
         }
 
         [TestCase("Devices", "Devices")]
@@ -42,7 +43,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public async Task CollapseButtonNavGroupShouldSaveNewState(string title, string property)
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
             var cut = RenderComponent<NavMenu>();
             var navGroups = cut.FindComponents<MudNavGroup>();
 
@@ -63,7 +64,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public async Task ExpandButtonNavGroupShouldSaveState(string title, string property)
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             var dic = new Dictionary<string, bool>
             {
@@ -94,7 +95,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public async Task CollapseButtonNavGroupShouldSaveState(string title, string property)
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
             var dic = new Dictionary<string, bool>
             {
                 { property, true }
@@ -124,7 +125,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public async Task WhenFalseCollapseNavGroupShouldBeCollapsed(string title, string property)
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
             var dic = new Dictionary<string, bool>
             {
                 { property, false }
@@ -150,7 +151,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public async Task WhenTrueCollapseNavGroupShouldBeExpanded(string title, string property)
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
             var dic = new Dictionary<string, bool>
             {
                 { property, true }
@@ -170,7 +171,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public async Task NavGroupsExpendedValuesShouldBeTrueWhenFirstTime()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<NavMenu>();
@@ -191,7 +192,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public void LoRaNavGroupShouldBeDisplayedOnlyIfSupported(bool supported)
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = supported });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = supported, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<NavMenu>();
@@ -215,7 +216,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public void WhenClickToNewButtonShouldNavigate(string buttonName, string path)
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
             var cut = RenderComponent<NavMenu>();
             var button = cut.WaitForElement($"#{buttonName}");
 
