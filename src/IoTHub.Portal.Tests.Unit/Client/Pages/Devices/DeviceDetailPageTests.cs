@@ -54,7 +54,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
