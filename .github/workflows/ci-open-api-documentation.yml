@@ -26,15 +26,15 @@ jobs:
       working-directory: src/
 
     - name: Restore dependencies
-      run: dotnet restore AzureIoTHub.Portal.sln 
+      run: dotnet restore IoTHub.Portal.sln 
       working-directory: src/
 
     - name: Build
-      run: dotnet build AzureIoTHub.Portal.sln --no-restore -p:ClientAssetsRestoreCommand="npm ci"
+      run: dotnet build IoTHub.Portal.sln --no-restore -p:ClientAssetsRestoreCommand="npm ci"
       working-directory: src/
 
     - name: Generate Open API documentation
-      run: dotnet swagger tofile --output ./swagger.json AzureIoTHub.Portal.Server/bin/Debug/net7.0/AzureIoTHub.Portal.Server.dll v1
+      run: dotnet swagger tofile --output ./swagger.json IoTHub.Portal.Server/bin/Debug/net7.0/IoTHub.Portal.Server.dll v1
       working-directory: src/
 
     # Upload swagger docs to GitHub

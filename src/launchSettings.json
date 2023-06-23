@@ -4,10 +4,10 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "composeLaunchAction": "LaunchBrowser",
-      "composeLaunchServiceName": "azureiothub.portal.server",
+      "composeLaunchServiceName": "IoTHub.Portal.Server",
       "composeLaunchUrl": "https://localhost:8001",
       "serviceActions": {
-        "azureiothub.portal.server": "StartDebugging",
+        "IoTHub.Portal.Server": "StartDebugging",
         "database": "StartWithoutDebugging"
       }
     }

@@ -1,5 +1,6 @@
 [![Tests](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/ci-tests.yml/badge.svg?branch=main)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/ci-tests.yml)
-[![Deploy Staging](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml/badge.svg)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml)
+[![Deploy Azure Staging](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml/badge.svg)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml)
+[![Deploy AWS Staging](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/aws_deploy_staging.yml/badge.svg)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/aws_deploy_staging.yml)
 [![Publish](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/publish.yml/badge.svg?event=release)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/publish.yml)
 [![codecov](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal/branch/main/graph/badge.svg?token=S1A59KMRV6)](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal)
 [![Open Source Helpers](https://img.shields.io/github/contributors/CGI-FR/IoT-Hub-Portal)](https://img.shields.io/github/contributors/CGI-FR/IoT-Hub-Portal)
@@ -8,10 +9,8 @@
 
 # IoT Hub Portal
 
-This project aims to provide a solution for handling IoT Devices easyly.
-It leverages on Azure IoT Hub for connectivity and device management.
-
-![IoT Hub Portal Architecture](https://github.com/CGI-FR/IoT-Hub-Portal/raw/docs/main/docs/images/architecture.png)
+This project aims to provide a solution for handling IoT Devices easily.
+It leverages on Azure IoT Hub or AWS IoT Core for connectivity and device management.
 
 ## Features
 
@@ -21,59 +20,24 @@ It leverages on Azure IoT Hub for connectivity and device management.
 * C2D Methods
 * LoRA WAN device connectivity
 
-## Prerequisites
-
-The following should be completed before proceeding with the IoT Hub Portal development or deployment in your environment.
-
-* You must have an Azure subscription. Get an [Azure Free account](https://azure.microsoft.com/en-us/offers/ms-azr-0044p/) to get started.
-* You must have configured an Azure AD B2C Tenant with applications. See [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications) page.
-* Understand how IoT Edge LoraWAN StarterKit work. Have a look at [https://azure.github.io/iotedge-lorawan-starterkit](https://azure.github.io/iotedge-lorawan-starterkit) to get started.
-
 ## Quick Start
 
-### Deployed Azure Resources
+Ready to get started with IoT Hub Portal? Great! Follow these simple steps to quickly set up your environment:
 
-The template will deploy in your Azure subscription the Following resources:
+### Step 1: Choose Your Cloud Provider
 
-* IoT Hub
-* Azure Function and Consumption Service Plan
-* Redis Cache
-* Application Insights
-* Log Analytics (when opted in to use Azure Monitor)
-* Azure WebApp and Service Plan
-* Azure Database for PostgreSQL
+IoT Hub Portal works seamlessly with both Azure and Amazon Web Services. Simply click on the link below that corresponds to your cloud provider of choice:
 
-### Instructions 
+* For Azure users, follow the [Azure Quick Start guide](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/azure/#quick-start).
+* For Amazon Web Services users, follow the [AWS Quick Start guide](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/aws/#quick-start).
 
-1. Choose a solution prefix for your deployment.
-1. Use [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications) page to configure your AD B2C Tenant.
-    > You should have recorded the following information:
-    > * OpenID authority: `<your-openid-authority>`
-    > * OpenID metadata URL: `<your-openid-provider-metadata-url>`
-    > * Client ID: `<your-client-id>`
-    > * API Client ID: `<your-client-id>`
+### Step 2: Configure Your Environment
 
-1. Press on the button here below to start your Azure Deployment.
+Once you've selected your cloud provider, you'll need to configure your environment by following the detailed instructions provided in the Quick Start guide. Don't worry, we've made it easy to follow along!
 
-    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain%2Ftemplates%2Fazuredeploy.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain%2Ftemplates%2FazuredeployUI.json)
+### Step 3: Start Using IoT Hub Portal
 
-1. You will get to a page asking you to fill the following fields :
-    * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name. 
-    * **Location**: In which DataCenter the resources should be deployed. Make sure to choose a location where IoT Hub is available
-    * **Unique Solution Prefix**: A string that would be used as prefix for all the resources name to ensure their uniqueness.
-    * **PostgreSQL user**: The PostgreSQL user name to be used for the IoT Hub Portal database.
-    * **PostgreSQL password**: The PostgreSQL password to be used for the IoT Hub Portal database.
-    * **Confirm PostgreSQL password**: The PostgreSQL password to be used for the IoT Hub Portal database.
-    * **Open Id Authority**: The OpenID authority used by the portal.
-    * **OpenId Metadata URL**: The OpenID metadata URL used by the portal.
-    * **Client Id**: the ID of the web client that will be used to authenticate the portal.
-    * **Api Client Id**: the ID of the API client that will be used to authenticate the portal.
-    * **Edge gateway name**: the name of your LoRa Gateway node in the IoT Hub.
-    * **Deploy Device**: Do you want demo end devices to be already provisioned (one using OTAA and one using ABP)? If yes set this to true, the code located in the Arduino folder would be ready to use immediately.
-    * **Reset pin**:  The reset pin of your gateway (the value should be 7 for the Seed Studio LoRaWan, 25 for the IC880A)
-    * **Region**:  In what region are you operating your device (currently only EU868 and US915 is supported)
-
-    > see: [https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure](https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure) for more information about the LoRaWan IoT Hub and Azure deployment.
+Congratulations, you're now ready to start using IoT Hub Portal! With our intuitive user interface and comprehensive set of features, you'll be able to easily manage your IoT devices and leverage the power of Azure IoT Hub or AWS IoT Core. Get started today!
 
 ## Documentation
 

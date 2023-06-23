@@ -39,11 +39,11 @@ services:
     depends_on:
       database:
         condition: service_healthy
-  azureiothub.portal.server:
-    image: ${DOCKER_REGISTRY-}azureiothubportalserver
+  IoTHub.Portal.Server:
+    image: ${DOCKER_REGISTRY-}iothubportalserver
     build:
       context: .
-      dockerfile: AzureIoTHub.Portal.Server/Dockerfile
+      dockerfile: IoTHub.Portal.Server/Dockerfile
     depends_on:
       database:
         condition: service_healthy

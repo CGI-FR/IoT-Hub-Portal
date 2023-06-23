@@ -5,8 +5,9 @@ using System.Runtime.CompilerServices;
 
 [assembly: System.CLSCompliant(false)]
 
-[assembly: InternalsVisibleTo("AzureIoTHub.Portal.Shared")]
-[assembly: InternalsVisibleTo("AzureIoTHub.Portal.Server")]
-[assembly: InternalsVisibleTo("AzureIoTHub.Portal.Client")]
-[assembly: InternalsVisibleTo("AzureIoTHub.Portal.Tests.Unit")]
+[assembly: InternalsVisibleTo("IoTHub.Portal.Shared")]
+[assembly: InternalsVisibleTo("IoTHub.Portal.Infrastructure")]
+[assembly: InternalsVisibleTo("IoTHub.Portal.Server")]
+[assembly: InternalsVisibleTo("IoTHub.Portal.Client")]
+[assembly: InternalsVisibleTo("IoTHub.Portal.Tests.Unit")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

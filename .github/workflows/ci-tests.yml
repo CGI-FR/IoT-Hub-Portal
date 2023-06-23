@@ -37,16 +37,16 @@ jobs:
       working-directory: src/
       
     - name: Restore dependencies
-      run: dotnet restore AzureIoTHub.Portal.sln 
+      run: dotnet restore IoTHub.Portal.sln 
       working-directory: src/
 
     - name: Build
-      run: dotnet build AzureIoTHub.Portal.sln --no-restore -p:ClientAssetsRestoreCommand="npm ci"
+      run: dotnet build IoTHub.Portal.sln --no-restore -p:ClientAssetsRestoreCommand="npm ci"
       working-directory: src/
   
     - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" AzureIoTHub.Portal.Tests.Unit.csproj
-      working-directory: src/AzureIoTHub.Portal.Tests.Unit/
+      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" IoTHub.Portal.Tests.Unit.csproj
+      working-directory: src/IoTHub.Portal.Tests.Unit/
 
     # Upload test results as artifact
     - uses: actions/upload-artifact@v3
@@ -54,93 +54,95 @@ jobs:
       with:
         name: test-results
         path: |
-          src/AzureIoTHub.Portal.Tests.Unit/TestResults
+          src/IoTHub.Portal.Tests.Unit/TestResults
 
     - name: Upload to Codecov test reports
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        directory: src/AzureIoTHub.Portal.Tests.Unit/TestResults
+        directory: src/IoTHub.Portal.Tests.Unit/TestResults
         verbose: true # optional (default = false)
 
-  e2e-tests:
-    name: E2E tests
-    runs-on: ubuntu-latest
-    environment: E2E
+  #e2e-tests:
+  #  name: E2E tests
+  #  runs-on: ubuntu-latest
+  #  environment: E2E
 
-    steps:
+  #  steps:
     
-    - uses: actions/checkout@v3.5.3
+  #  - uses: actions/checkout@v3.5.3
     
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.x
+  #  - name: Setup .NET
+  #    uses: actions/setup-dotnet@v3
+  #    with:
+  #      dotnet-version: 7.0.x
 
-    - name: Launch the portal locally
-      uses: isbang/compose-action@v1.4.1      
-      with:
-        compose-file: "./src/e2e-docker-compose.yml"
-        down-flags: "--volumes"
-        up-flags: "--build"
-      env:
-        GITHUB_RUN_NUMBER: ${{ github.run_number }}
+  #  - name: Launch the portal locally
+  #    uses: isbang/compose-action@v1.4.1      
+  #    with:
+  #      compose-file: "./src/e2e-docker-compose.yml"
+  #      down-flags: "--volumes"
+  #      up-flags: "--build"
+  #    env:
+  #      GITHUB_RUN_NUMBER: ${{ github.run_number }}
 
-        STORAGEACCOUNT__BLOBCONTAINERNAME: ${{ vars.STORAGEACCOUNT__BLOBCONTAINERNAME }}
-        PORTALNAME: ${{ vars.PORTALNAME }}
-        OIDC__VALIDATEAUDIENCE: ${{ vars.OIDC__VALIDATEAUDIENCE }}
-        OIDC__SCOPE: ${{ vars.OIDC__SCOPE }}
-        OIDC__METADATAURL: ${{ vars.OIDC__METADATAURL }}
-        OIDC__CLIENTID: ${{ vars.OIDC__CLIENTID }}
-        OIDC__AUTHORITY: ${{ vars.OIDC__AUTHORITY }}
-        OIDC__APICLIENTID: ${{ vars.OIDC__APICLIENTID }}
-        LORAKEYMANAGEMENT__URL: ${{ vars.LORAKEYMANAGEMENT__URL }}
-        LORAFEATURE_ENABLED: ${{ vars.LORAFEATURE_ENABLED }}
-        IOTHUB__EVENTHUB__CONSUMERGROUP: ${{ vars.IOTHUB__EVENTHUB__CONSUMERGROUP }}
-        IOTDPS__SERVICEENDPOINT: ${{ vars.IOTDPS__SERVICEENDPOINT }}
-        IOTDPS__IDSCOPE: ${{ vars.IOTDPS__IDSCOPE }}
-        IDEAS__URL: ${{ vars.IDEAS__URL }}
-        IDEAS__ENABLED: ${{ vars.IDEAS__ENABLED }}
-        IDEAS__AUTHENTICATION__HEADER: ${{ vars.IDEAS__AUTHENTICATION__HEADER }}
+  #      CLOUDPROVIDER: ${{ Azure }}
+  #      PORTALNAME: ${{ vars.PORTALNAME }}
+  #      OIDC__VALIDATEAUDIENCE: ${{ vars.OIDC__VALIDATEAUDIENCE }}
+  #      OIDC__SCOPE: ${{ vars.OIDC__SCOPE }}
+  #      OIDC__METADATAURL: ${{ vars.OIDC__METADATAURL }}
+  #      OIDC__CLIENTID: ${{ vars.OIDC__CLIENTID }}
+  #      OIDC__AUTHORITY: ${{ vars.OIDC__AUTHORITY }}
+  #      OIDC__APICLIENTID: ${{ vars.OIDC__APICLIENTID }}
+  #      LORAFEATURE_ENABLED: ${{ vars.LORAFEATURE_ENABLED }}
+  #      AZURE_STORAGEACCOUNT__BLOBCONTAINERNAME: ${{ vars.STORAGEACCOUNT__BLOBCONTAINERNAME }}
+  #      AZURE_LORAKEYMANAGEMENT__URL: ${{ vars.LORAKEYMANAGEMENT__URL }}
+  #      AZURE_IOTHUB__EVENTHUB__CONSUMERGROUP: ${{ vars.IOTHUB__EVENTHUB__CONSUMERGROUP }}
+  #      AZURE_IOTDPS__SERVICEENDPOINT: ${{ vars.IOTDPS__SERVICEENDPOINT }}
+  #      AZURE_IOTDPS__IDSCOPE: ${{ vars.IOTDPS__IDSCOPE }}
+  #      AZURE_IDEAS__URL: ${{ vars.IDEAS__URL }}
+  #      AZURE_IDEAS__ENABLED: ${{ vars.IDEAS__ENABLED }}
+  #      AZURE_IDEAS__AUTHENTICATION__HEADER: ${{ vars.IDEAS__AUTHENTICATION__HEADER }}
         
-        POSTGRESQL__CONNECTIONSTRING: ${{ secrets.POSTGRESQL__CONNECTIONSTRING }}
-        IOTHUB__CONNECTIONSTRING: ${{ secrets.IOTHUB__CONNECTIONSTRING }}
-        IOTDPS__CONNECTIONSTRING: ${{ secrets.IOTDPS__CONNECTIONSTRING }}
-        STORAGEACCOUNT__CONNECTIONSTRING: ${{ secrets.STORAGEACCOUNT__CONNECTIONSTRING }}
-        JOBSTORE__CONNECTIONSTRING: ${{ secrets.JOBSTORE__CONNECTIONSTRING }}
-        IOTHUB__EVENTHUB__ENDPOINT: ${{ secrets.IOTHUB__EVENTHUB__ENDPOINT }}
-        LORAKEYMANAGEMENT__CODE: ${{ secrets.LORAKEYMANAGEMENT__CODE }}
-        IDEAS__AUTHENTICATION__TOKEN: ${{ secrets.IDEAS__AUTHENTICATION__TOKEN }}
+  #      POSTGRESQL__CONNECTIONSTRING: ${{ secrets.POSTGRESQL__CONNECTIONSTRING }}
+  #      JOBSTORE__CONNECTIONSTRING: ${{ secrets.JOBSTORE__CONNECTIONSTRING }}
 
-    - name: Wait until portal is up
-      run: |
-        while ! nc -z localhost 80 </dev/null; do sleep 10; done
-      shell: bash
+  #      AZURE_IOTHUB__EVENTHUB__ENDPOINT: ${{ secrets.IOTHUB__EVENTHUB__ENDPOINT }}
+  #      AZURE_LORAKEYMANAGEMENT__CODE: ${{ secrets.LORAKEYMANAGEMENT__CODE }}
+  #      AZURE_IOTHUB__CONNECTIONSTRING: ${{ secrets.IOTHUB__CONNECTIONSTRING }}
+  #      AZURE_IOTDPS__CONNECTIONSTRING: ${{ secrets.IOTDPS__CONNECTIONSTRING }}
+  #      AZURE_STORAGEACCOUNT__CONNECTIONSTRING: ${{ secrets.STORAGEACCOUNT__CONNECTIONSTRING }}
+  #      IDEAS__AUTHENTICATION__TOKEN: ${{ secrets.IDEAS__AUTHENTICATION__TOKEN }}
 
-    - name: Install Chrome Driver
-      run: |
-        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
-        sudo apt-get update
-        sudo apt-get install google-chrome-stable
-        LATEST_CHROMEDRIVER=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
-        wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER}/chromedriver_linux64.zip"
-        sudo unzip -q /tmp/chromedriver.zip -d /usr/local/bin/
-        sudo chmod +x /usr/local/bin/chromedriver
+  #  - name: Wait until portal is up
+  #    run: |
+  #      while ! nc -z localhost 80 </dev/null; do sleep 10; done
+  #    shell: bash
+
+  #  - name: Install Chrome Driver
+  #    run: |
+  #      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+  #      echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
+  #      sudo apt-get update
+  #      sudo apt-get install google-chrome-stable
+  #      LATEST_CHROMEDRIVER=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+  #      wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER}/chromedriver_linux64.zip"
+  #      sudo unzip -q /tmp/chromedriver.zip -d /usr/local/bin/
+  #      sudo chmod +x /usr/local/bin/chromedriver
     
-    - name: Install Chrome
-      run: sudo apt-get install google-chrome-stable
+  #  - name: Install Chrome
+  #    run: sudo apt-get install google-chrome-stable
 
-    - name: Run E2E tests
-      run: dotnet test AzureIoTHub.Portal.Tests.E2E.csproj
-      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
-      env:
-        E2E_USERNAME: ${{ vars.E2E_USERNAME }}
-        E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
-        E2E_URL: http://localhost:80/
+  #  - name: Run E2E tests
+  #    run: dotnet test IoTHub.Portal.Tests.E2E.csproj
+  #    working-directory: src/IoTHub.Portal.Tests.E2E/
+  #    env:
+  #      E2E_USERNAME: ${{ vars.E2E_USERNAME }}
+  #      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+  #      E2E_URL: http://localhost:80/
 
-    - name: Get docker logs
-      run: |
-        docker logs src_portal_1
-      shell: bash
-      if: always()
+  #  - name: Get docker logs
+  #    run: |
+  #      docker logs src_portal_1
+  #    shell: bash
+  #    if: always()

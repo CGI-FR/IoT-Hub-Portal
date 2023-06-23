@@ -1,0 +1,76 @@
+﻿@using IoTHub.Portal.Shared.Models.v1._0
+@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Shared.Constants
+
+@inject PortalSettings Portal
+@inject IDashboardLayoutService DashboardLayoutService
+@inject IDashboardMetricsClientService DashboardMetricsClientService
+
+@implements IDisposable
+
+<MudGrid Spacing="1">
+    <MudItem xs="12" sm="6" md="3">
+        <DashboardMetricCounter Title="Devices" Counter="portalMetric.DeviceCount" Icon="@Icons.Material.Filled.Memory" Color="Color.Info" />
+    </MudItem>
+
+    @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+    {
+        <MudItem xs="12" sm="6" md="3">
+            <DashboardMetricCounter Title="Connected Devices" Counter="portalMetric.ConnectedDeviceCount" Icon="@Icons.Material.Filled.Memory" Color="Color.Success" />
+        </MudItem>
+    }
+
+    <MudItem xs="12" sm="6" md="3">
+        <DashboardMetricCounter Title="Edge Devices" Counter="portalMetric.EdgeDeviceCount" Icon="@Icons.Material.Filled.DeveloperBoard" Color="Color.Info" />
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <DashboardMetricCounter Title="Connected Edge Devices" Counter="portalMetric.ConnectedEdgeDeviceCount" Icon="@Icons.Material.Filled.DeveloperBoard" Color="Color.Success" />
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <DashboardMetricCounter Title="Failed Deployments" Counter="portalMetric.FailedDeploymentCount" Icon="@Icons.Material.Filled.DeveloperBoard" Color="Color.Error" />
+    </MudItem>
+
+    @if (Portal.IsLoRaSupported)
+    {
+        <MudItem xs="12" sm="6" md="3">
+            <DashboardMetricCounter Title="Concentrators" Counter="portalMetric.ConcentratorCount" Icon="@Icons.Material.Filled.WifiTethering" Color="Color.Info" />
+        </MudItem>
+    }
+
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    private PortalMetric portalMetric = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        DashboardLayoutService.RefreshDashboardOccurred += DashboardLayoutServiceOnRefreshDashboardOccurred!;
+        await LoadMetrics();
+    }
+
+    public void Dispose()
+    {
+        DashboardLayoutService.RefreshDashboardOccurred -= DashboardLayoutServiceOnRefreshDashboardOccurred!;
+    }
+
+    private async Task LoadMetrics()
+    {
+        try
+        {
+            portalMetric = await DashboardMetricsClientService.GetPortalMetrics();
+            StateHasChanged();
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    private void DashboardLayoutServiceOnRefreshDashboardOccurred(object sender, EventArgs e)
+    {
+        Task.Run(LoadMetrics);
+    }
+}
