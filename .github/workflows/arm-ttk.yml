@@ -52,14 +52,14 @@ jobs:
         with: 
           repository: Azure/iotedge-lorawan-starterkit
           ref: dev
-          path: iotedge-lorawan-starterkit
+          path: templates/iotedge-lorawan-starterkit
 
       - name: Generate ARM file
-        working-directory: templates
+        working-directory: templates/azure
         run: az bicep build --file azuredeploy.bicep --outfile azuredeploy.json 
           
       - name: Run arm-ttk
         shell: pwsh
         run: |
           Import-Module ./arm-ttk/arm-ttk/arm-ttk.psd1
-          Test-AzTemplate -TemplatePath ./templates/azuredeploy.json -Skip 'Template Should Not Contain Blanks','URIs Should Be Properly Constructed'
+          Test-AzTemplate -TemplatePath ./templates/azure/azuredeploy.json -Skip 'Template Should Not Contain Blanks','URIs Should Be Properly Constructed'

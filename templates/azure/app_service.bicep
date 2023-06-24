@@ -140,9 +140,9 @@ resource site 'Microsoft.Web/sites@2022-03-01' = {
       ]
       appSettings: [
         {
-          name: 'CloudProvider',
+          name: 'CloudProvider'
           value: 'Azure'
-        },
+        }
         {
           name: 'Azure__IoTHub__EventHub__ConsumerGroup'
           value: isLoRaFeatureEnabled ? ioTHubEventHubConsumerGroupName : ''
