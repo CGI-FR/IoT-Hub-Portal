@@ -36,6 +36,8 @@ jobs:
     - name: Generate Open API documentation
       run: dotnet swagger tofile --output ./swagger.json IoTHub.Portal.Server/bin/Debug/net7.0/IoTHub.Portal.Server.dll v1
       working-directory: src/
+      env: 
+        CloudProvider: Azure
 
     # Upload swagger docs to GitHub
     - uses: actions/upload-artifact@v3
