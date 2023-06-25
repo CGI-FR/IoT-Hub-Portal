@@ -51,13 +51,13 @@ namespace IoTHub.Portal.Infrastructure.Startup
         {
             _ = services.Configure<LoRaWANOptions>(opts =>
             {
-                opts.Enabled = configuration.AzureIsLoRaEnabled;
+                opts.Enabled = configuration.IsLoRaEnabled;
                 opts.KeyManagementApiVersion = configuration.AzureLoRaKeyManagementApiVersion;
                 opts.KeyManagementCode = configuration.AzureLoRaKeyManagementCode;
                 opts.KeyManagementUrl = configuration.AzureLoRaKeyManagementUrl;
             });
 
-            if (!configuration.AzureIsLoRaEnabled)
+            if (!configuration.IsLoRaEnabled)
             {
                 return services;
             }
@@ -162,14 +162,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
 
-                _ = q.AddJob<SyncConcentratorsJob>(j => j.WithIdentity(nameof(SyncConcentratorsJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(SyncConcentratorsJob)}")
-                        .ForJob(nameof(SyncConcentratorsJob))
-                    .WithSimpleSchedule(s => s
-                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
-                            .RepeatForever()));
-
                 _ = q.AddJob<SyncEdgeDeviceJob>(j => j.WithIdentity(nameof(SyncEdgeDeviceJob)))
                     .AddTrigger(t => t
                         .WithIdentity($"{nameof(SyncEdgeDeviceJob)}")
@@ -178,21 +170,29 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
 
-                _ = q.AddJob<SyncGatewayIDJob>(j => j.WithIdentity(nameof(SyncGatewayIDJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(SyncGatewayIDJob)}")
-                        .ForJob(nameof(SyncGatewayIDJob))
-                        .WithSimpleSchedule(s => s
-                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
-                        .RepeatForever()));
-
-                if (configuration.AzureIsLoRaEnabled)
+                if (configuration.IsLoRaEnabled)
                 {
+                    _ = q.AddJob<SyncConcentratorsJob>(j => j.WithIdentity(nameof(SyncConcentratorsJob)))
+                        .AddTrigger(t => t
+                            .WithIdentity($"{nameof(SyncConcentratorsJob)}")
+                            .ForJob(nameof(SyncConcentratorsJob))
+                        .WithSimpleSchedule(s => s
+                                .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                                .RepeatForever()));
+
+                    _ = q.AddJob<SyncGatewayIDJob>(j => j.WithIdentity(nameof(SyncGatewayIDJob)))
+                       .AddTrigger(t => t
+                           .WithIdentity($"{nameof(SyncGatewayIDJob)}")
+                           .ForJob(nameof(SyncGatewayIDJob))
+                           .WithSimpleSchedule(s => s
+                               .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                           .RepeatForever()));
+
                     _ = q.AddJob<SyncLoRaDeviceTelemetryJob>(j => j.WithIdentity(nameof(SyncLoRaDeviceTelemetryJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(SyncLoRaDeviceTelemetryJob)}")
-                        .ForJob(nameof(SyncLoRaDeviceTelemetryJob))
-                        .StartAt(DateTimeOffset.Now.AddMinutes(1)));
+                        .AddTrigger(t => t
+                            .WithIdentity($"{nameof(SyncLoRaDeviceTelemetryJob)}")
+                            .ForJob(nameof(SyncLoRaDeviceTelemetryJob))
+                            .StartAt(DateTimeOffset.Now.AddMinutes(1)));
                 }
             });
         }

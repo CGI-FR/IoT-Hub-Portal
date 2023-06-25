@@ -175,7 +175,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             Assert.IsFalse(result);
         }
 
-        [TestCase(ConfigHandlerBase.AzureIsLoRaFeatureEnabledKey, nameof(ConfigHandlerBase.AzureIsLoRaEnabled))]
+        [TestCase(ConfigHandlerBase.IsLoRaFeatureEnabledKey, nameof(ConfigHandlerBase.IsLoRaEnabled))]
         public void SettingsShouldGetBoolFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange

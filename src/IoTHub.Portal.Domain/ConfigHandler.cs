@@ -45,7 +45,7 @@ namespace IoTHub.Portal.Domain
 
         public abstract bool OIDCValidateTokenReplay { get; }
 
-        public abstract bool AzureIsLoRaEnabled { get; }
+        public abstract bool IsLoRaEnabled { get; }
 
         public abstract string AzureLoRaKeyManagementUrl { get; }
 

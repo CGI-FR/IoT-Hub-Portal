@@ -31,7 +31,7 @@ namespace IoTHub.Portal.Infrastructure
         internal const string OIDCValidateActorKey = "OIDC:ValidateActor";
         internal const string OIDCValidateTokenReplayKey = "OIDC:ValidateTokenReplay";
 
-        internal const string AzureIsLoRaFeatureEnabledKey = "Azure:LoRaFeature:Enabled";
+        internal const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
         internal const string AzureStorageAccountConnectionStringKey = "Azure:StorageAccount:ConnectionString";
         internal const string StorageAccountDeviceModelImageMaxAgeKey = "StorageAccount:DeviceModel:Image:MaxAgeInSeconds";

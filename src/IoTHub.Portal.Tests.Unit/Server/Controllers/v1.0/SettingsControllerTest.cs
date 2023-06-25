@@ -79,7 +79,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             _ = this.mockConfiguration.SetupGet(c => c.Value).Returns(value: null);
 
             _ = this.mockConfigHandler
-                .SetupGet(c => c.AzureIsLoRaEnabled)
+                .SetupGet(c => c.IsLoRaEnabled)
                 .Returns(loraFeatureStatus);
 
             _ = this.mockConfigHandler
@@ -124,7 +124,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             _ = this.mockConfiguration.SetupGet(c => c.Value).Returns(value: null);
 
             _ = this.mockConfigHandler
-                .SetupGet(c => c.AzureIsLoRaEnabled)
+                .SetupGet(c => c.IsLoRaEnabled)
                 .Returns(loraFeatureStatus);
 
             _ = this.mockConfigHandler

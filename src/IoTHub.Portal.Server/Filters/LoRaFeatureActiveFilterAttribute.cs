@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Server.Filters
 
             var configHandler = context.HttpContext.RequestServices.GetService<ConfigHandler>();
 
-            if (!configHandler.AzureIsLoRaEnabled)
+            if (!configHandler.IsLoRaEnabled)
             {
                 context.Result = new BadRequestObjectResult(context.ModelState)
                 {
