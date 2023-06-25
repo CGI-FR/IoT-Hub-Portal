@@ -2,7 +2,7 @@ name: AWS Deploy Staging
 
 on:
   push:
-    branches: [ main-vnext ]
+    branches: [ main, main-vnext ]
   workflow_dispatch:
 
 jobs:
