@@ -80,16 +80,15 @@ _Secrets_ are used to fill in the login credentials to the cloud platform. You h
 ```json
 {
   "CloudProvider": "Azure",
-  "Azure:StorageAccount:ConnectionString": "<CONNECTION_STRING_STORAGE_ACCOUNT>",
   "OIDC:Scope": "<SCOPE>",
   "OIDC:MetadataUrl": "<METADATA_URL>",
   "OIDC:ClientId": "<CLIENT_ID>",
   "OIDC:Authority": "<AUTHORITY>",
   "OIDC:ApiClientId": "<API_CLIENT_ID>",
+  "LoRaFeature:Enabled": "<TRUE_OR_FALSE>",
   "Azure:LoRaRegionRouterConfig:Url": "<LORA_WAN_ROUTER_CONFIGURATION_URL>",
   "Azure:LoRaKeyManagement:Url": "<LORA_WAN_KEY_MANAGEMENT_URL>",
   "Azure:LoRaKeyManagement:Code": "<LORA_WAN_KEY_MANAGEMENT_CODE>",
-  "Azure:LoRaFeature:Enabled": "<TRUE_OR_FALSE>",
   "Kestrel:Certificates:Development:Password": "<DEV_PASSWORD>",
   "Azure:IoTHub:ConnectionString": "<IOT_HUB_CONNECTION_STRING>",
   "Azure:IoTHub:EventHub:Endpoint": "<IOT_HUB_EVENT_HUB_ENDPOINT>",
@@ -98,7 +97,8 @@ _Secrets_ are used to fill in the login credentials to the cloud platform. You h
   "Azure:IoTDPS:LoRaEnrollmentGroup": "<LORA_WAN_ENROLLMENT_GROUP>",
   "Azure:IoTDPS:DefaultEnrollmentGroup": "<LORA_WAN_DEFAULT_ENROLLMENT_GROUP>",
   "Azure:IoTDPS:ConnectionString": "<IOT_DPS_CONNECTION_STRING>",
-  "PostgreSQL:ConnectionString": "<POSTGRE_SQL_CONNECTION_STRING>"
+  "PostgreSQL:ConnectionString": "<POSTGRE_SQL_CONNECTION_STRING>",
+  "Azure:StorageAccount:ConnectionString": "<CONNECTION_STRING_STORAGE_ACCOUNT>"
 }
 ```
 
