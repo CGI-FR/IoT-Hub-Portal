@@ -219,10 +219,19 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
         public async Task DeleteConfiguration(string modelId)
         {
-            var modules = await GetConfigModuleList(modelId);
-
-            //Deprecate Deployment Thing type
+            // Deprecate Deployment Thing type
             await DeprecateDeploymentThingType(modelId);
+
+            IEnumerable<IoTEdgeModule> modules = Array.Empty<IoTEdgeModule>();
+
+            try
+            {
+                modules = await GetConfigModuleList(modelId);
+            }
+            catch (InternalServerErrorException e)
+            {
+                this.logger.LogError($"Failed to get model modules when deleting. Some resources might persist in AWS for model {modelId}.");
+            }
 
             foreach (var module in modules.Where(c => string.IsNullOrEmpty(c.Id)))
             {
@@ -261,9 +270,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             catch (AmazonGreengrassV2Exception e)
             {
                 throw new InternalServerErrorException("The deletion of the deployment failed due to an error in the Amazon IoT API.", e);
-
             }
-
         }
 
         private async Task DeprecateDeploymentThingType(string modelId)
@@ -387,7 +394,6 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
             {
                 throw new InternalServerErrorException("Unable to find the deployment due to an error in the Amazon IoT API. ");
-
             }
         }
 
