@@ -944,17 +944,17 @@ Below an example on how to:</p>
 <ol>
 <li>
 <p>Go into the Server project folder with terminal</p>
-<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="go">cd .\AzureIoTHub.Portal.Server\</span>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="go">cd .\IoTHub.Portal.Server\</span>
 </code></pre></div></td></tr></table></div>
 </li>
 <li>
 <p>Execute this command for PostgreSQL provider</p>
-<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="go">dotnet ef migrations add "&lt;nameofyourmigration&gt;" -p ..\AzureIoTHub.Portal.Postgres\ -v -- --DbProvider PostgreSQL</span>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="go">dotnet ef migrations add "&lt;nameofyourmigration&gt;" -p ..\IoTHub.Portal.Postgres\ -v -- --DbProvider PostgreSQL</span>
 </code></pre></div></td></tr></table></div>
 </li>
 <li>
 <p>Execute this command for MySQL provider</p>
-<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="go">dotnet ef migrations add "&lt;nameofyourmigration&gt;" -p ..\AzureIoTHub.Portal.MySql\ -v -- --DbProvider MySQL</span>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="go">dotnet ef migrations add "&lt;nameofyourmigration&gt;" -p ..\IoTHub.Portal.MySql\ -v -- --DbProvider MySQL</span>
 </code></pre></div></td></tr></table></div>
 </li>
 <li>
