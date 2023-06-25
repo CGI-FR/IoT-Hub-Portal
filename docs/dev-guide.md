@@ -337,19 +337,19 @@ Follow the next steps to create EF migration:
 1. Go into the Server project folder with terminal
 
     ```console
-    cd .\AzureIoTHub.Portal.Server\
+    cd .\IoTHub.Portal.Server\
     ```
 
 1. Execute this command for PostgreSQL provider
 
     ```console
-    dotnet ef migrations add "<nameofyourmigration>" -p ..\AzureIoTHub.Portal.Postgres\ -v -- --DbProvider PostgreSQL
+    dotnet ef migrations add "<nameofyourmigration>" -p ..\IoTHub.Portal.Postgres\ -v -- --DbProvider PostgreSQL
     ```
 
 1. Execute this command for MySQL provider
 
     ```console
-    dotnet ef migrations add "<nameofyourmigration>" -p ..\AzureIoTHub.Portal.MySql\ -v -- --DbProvider MySQL
+    dotnet ef migrations add "<nameofyourmigration>" -p ..\IoTHub.Portal.MySql\ -v -- --DbProvider MySQL
     ```
 
 1. Open the created migration and follow the following steps:
