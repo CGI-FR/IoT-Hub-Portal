@@ -10,6 +10,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
     using Amazon.GreengrassV2.Model;
     using Amazon.IoT;
     using Amazon.IoT.Model;
+    using Amazon.Runtime.Internal.Util;
     using AutoMapper;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
@@ -17,6 +18,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Models.v10;
+    using Microsoft.Extensions.Logging;
     using Configuration = Microsoft.Azure.Devices.Configuration;
 
     public class AwsConfigService : IConfigService
@@ -29,12 +31,15 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
         private readonly ConfigHandler config;
         private readonly IMapper mapper;
 
+        private readonly ILogger<AwsConfigService> logger;
+
         public AwsConfigService(
             IAmazonGreengrassV2 greengrass,
             IAmazonIoT iot,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IEdgeDeviceModelRepository edgeModelRepository,
+            ILogger<AwsConfigService> logger,
             ConfigHandler config)
         {
             this.greengrass = greengrass;
@@ -42,6 +47,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.edgeModelRepository = edgeModelRepository;
+            this.logger = logger;
             this.config = config;
         }
 
@@ -275,6 +281,10 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     {
                         ThingTypeName = deployment.DeploymentName
                     });
+                }
+                catch (Amazon.IoT.Model.ResourceNotFoundException e)
+                {
+                    this.logger.LogWarning($"Failed to depreciate thing type {deployment.DeploymentName} since it does'nt exist.");
                 }
                 catch (AmazonIoTException e)
                 {
