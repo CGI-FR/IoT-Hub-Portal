@@ -105,30 +105,30 @@ resource site 'Microsoft.Web/sites@2022-03-01' = {
     reserved: true
     siteConfig: {
       numberOfWorkers: 1
-      linuxFxVersion: 'DOCKER|ghcr.io/cgi-fr/iothub-portal:4.12.0'
+      linuxFxVersion: 'DOCKER|ghcr.io/cgi-fr/iothub-portal:5.0.0-rc9'
       connectionStrings: [
         {
-          name: 'IoTHub__ConnectionString'
+          name: 'Azure__IoTHub__ConnectionString'
           type: 'Custom'
           connectionString: 'HostName=${iotHubName}.azure-devices.net;SharedAccessKeyName=${iotHubOwnerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', iotHubName, iotHubOwnerPolicyName), '2021-07-02').primaryKey}'
         }
         {
-          name: 'IoTHub__EventHub__Endpoint'
+          name: 'Azure__IoTHub__EventHub__Endpoint'
           type: 'Custom'
           connectionString: isLoRaFeatureEnabled ? 'Endpoint=${iotHubEventHubEndpoint};SharedAccessKeyName=service;SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', iotHubName, 'service'), '2021-07-02').primaryKey};EntityPath=${iotHubName}' : ''
         }
         {
-          name: 'IoTDPS__ConnectionString'
+          name: 'Azure__IoTDPS__ConnectionString'
           type: 'Custom'
           connectionString: 'HostName=${dpsName}.azure-devices-provisioning.net;SharedAccessKeyName=${dpsOwnerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', dpsName, dpsOwnerPolicyName), '2021-10-15').primaryKey}'
         }
         {
-          name: 'StorageAccount__ConnectionString'
+          name: 'Azure__StorageAccount__ConnectionString'
           type: 'Custom'
           connectionString: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${listKeys(storageAccountId, '2015-05-01-preview').key1}'
         }
         {
-          name: 'LoRaKeyManagement__Code'
+          name: 'Azure__LoRaKeyManagement__Code'
           type: 'Custom'
           connectionString: isLoRaFeatureEnabled ? listkeys(functionAppDefaultHost, '2021-02-01').masterKey : ''
         }
@@ -140,15 +140,19 @@ resource site 'Microsoft.Web/sites@2022-03-01' = {
       ]
       appSettings: [
         {
-          name: 'IoTHub__EventHub__ConsumerGroup'
+          name: 'CloudProvider'
+          value: 'Azure'
+        }
+        {
+          name: 'Azure__IoTHub__EventHub__ConsumerGroup'
           value: isLoRaFeatureEnabled ? ioTHubEventHubConsumerGroupName : ''
         }
         {
-          name: 'IoTDPS__ServiceEndpoint'
+          name: 'Azure__IoTDPS__ServiceEndpoint'
           value: '${dpsName}.azure-devices-provisioning.net'
         }
         {
-          name: 'IoTDPS__IDScope'
+          name: 'Azure__IoTDPS__IDScope'
           value: dpsIdScope
         }
         {
@@ -176,11 +180,11 @@ resource site 'Microsoft.Web/sites@2022-03-01' = {
           value: '${isLoRaFeatureEnabled}'
         }
         {
-          name: 'LoRaKeyManagement__Url'
+          name: 'Azure__LoRaKeyManagement__Url'
           value: isLoRaFeatureEnabled ? 'https://${functionAppName}.azurewebsites.net' : ''
         }
         {
-          name: 'LoRaRegionRouterConfig__Url'
+          name: 'Azure__LoRaRegionRouterConfig__Url'
           value: isLoRaFeatureEnabled ? 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/' : ''
         }
         {
