@@ -319,4 +319,4 @@ src/IoTHub.Portal/Client/assets/package-lock.json
 
 # Folder for iotedge-lorawan-starterkit bicep templates
 iotedge-lorawan-starterkit/
-src/IoTHub.Portal.Server/appsettings.Development.json
+**/appsettings.Development.json
