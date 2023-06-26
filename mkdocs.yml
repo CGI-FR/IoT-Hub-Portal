@@ -110,6 +110,8 @@ extra:
 # Navigation
 nav:
   - index.md
+  - Azure: 'azure.md'
+  - AWS: 'aws.md'
   - Dev Guide:
     - 'Developer Guide': 'dev-guide.md'
     - 'Testing':
@@ -117,6 +119,7 @@ nav:
       - 'dev-guide/testing/unit-tests-on-blazor-components.md'
     - 'Migrations':
       - 'dev-guide/migrations/v3-to-v4.md'
+      - 'dev-guide/migrations/v4-to-v5.md'
     - 'Project conception':
       - 'dev-guide/conception/diagrams.md'
   - Concepts: 'concepts.md'
