@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "4977068666072073534"
+      "version": "0.18.4.5664",
+      "templateHash": "8034019958554967281"
     }
   },
   "parameters": {
@@ -281,8 +281,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "1509936309417078016"
+              "version": "0.18.4.5664",
+              "templateHash": "5507020420098674317"
             }
           },
           "parameters": {
@@ -543,8 +543,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "8606162565222975305"
+                      "version": "0.18.4.5664",
+                      "templateHash": "6749978009363089346"
                     }
                   },
                   "parameters": {
@@ -683,8 +683,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "9287179988741833707"
+                              "version": "0.18.4.5664",
+                              "templateHash": "2334074625842347828"
                             }
                           },
                           "parameters": {
@@ -742,8 +742,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "16331137669930902178"
+                              "version": "0.18.4.5664",
+                              "templateHash": "4980973606707269007"
                             }
                           },
                           "parameters": {
@@ -820,8 +820,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "10771542791332490815"
+                              "version": "0.18.4.5664",
+                              "templateHash": "677979412581774555"
                             }
                           },
                           "parameters": {
@@ -912,8 +912,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "4876947167733937040"
+                              "version": "0.18.4.5664",
+                              "templateHash": "13556063947987529383"
                             }
                           },
                           "parameters": {
@@ -1106,8 +1106,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "10014347008238702953"
+                              "version": "0.18.4.5664",
+                              "templateHash": "6068800678619025869"
                             }
                           },
                           "parameters": {
@@ -1184,8 +1184,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.17.1.54307",
-                                      "templateHash": "9786750537116583575"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "4216126903270649616"
                                     }
                                   },
                                   "parameters": {
@@ -1250,8 +1250,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.17.1.54307",
-                                      "templateHash": "7663153206042027400"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "16130799228261133924"
                                     }
                                   },
                                   "parameters": {
@@ -1620,8 +1620,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "10199967087211384674"
+                              "version": "0.18.4.5664",
+                              "templateHash": "12717140895967844403"
                             }
                           },
                           "parameters": {
@@ -1784,8 +1784,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "15182334973468770222"
+                              "version": "0.18.4.5664",
+                              "templateHash": "11683758364332152224"
                             }
                           },
                           "parameters": {
@@ -2037,8 +2037,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "10777472372771229985"
+                      "version": "0.18.4.5664",
+                      "templateHash": "14745556745298855640"
                     }
                   },
                   "parameters": {
@@ -2221,8 +2221,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "3437028045086743466"
+                              "version": "0.18.4.5664",
+                              "templateHash": "3700831045559667392"
                             }
                           },
                           "parameters": {
@@ -2275,8 +2275,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "540949460528513478"
+                              "version": "0.18.4.5664",
+                              "templateHash": "17764239113434409822"
                             }
                           },
                           "parameters": {
@@ -2332,8 +2332,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "17398592727796213376"
+                              "version": "0.18.4.5664",
+                              "templateHash": "12610330282804158469"
                             }
                           },
                           "parameters": {
@@ -2422,8 +2422,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "9075451194439364831"
+                              "version": "0.18.4.5664",
+                              "templateHash": "9775531172346944338"
                             }
                           },
                           "parameters": {
@@ -2504,8 +2504,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "4180906800354335515"
+                              "version": "0.18.4.5664",
+                              "templateHash": "5390438900476707594"
                             }
                           },
                           "parameters": {
@@ -2660,8 +2660,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "9750597385702860207"
+                              "version": "0.18.4.5664",
+                              "templateHash": "10338776082964630935"
                             }
                           },
                           "parameters": {
@@ -2866,30 +2866,30 @@
                                 "reserved": true,
                                 "siteConfig": {
                                   "numberOfWorkers": 1,
-                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.12.0",
+                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.0.0",
                                   "connectionStrings": [
                                     {
-                                      "name": "IoTHub__ConnectionString",
+                                      "name": "Azure__IoTHub__ConnectionString",
                                       "type": "Custom",
                                       "connectionString": "[format('HostName={0}.azure-devices.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('iotHubName'), parameters('iotHubOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', parameters('iotHubName'), parameters('iotHubOwnerPolicyName')), '2021-07-02').primaryKey)]"
                                     },
                                     {
-                                      "name": "IoTHub__EventHub__Endpoint",
+                                      "name": "Azure__IoTHub__EventHub__Endpoint",
                                       "type": "Custom",
                                       "connectionString": "[if(parameters('isLoRaFeatureEnabled'), format('Endpoint={0};SharedAccessKeyName=service;SharedAccessKey={1};EntityPath={2}', parameters('iotHubEventHubEndpoint'), listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', parameters('iotHubName'), 'service'), '2021-07-02').primaryKey, parameters('iotHubName')), '')]"
                                     },
                                     {
-                                      "name": "IoTDPS__ConnectionString",
+                                      "name": "Azure__IoTDPS__ConnectionString",
                                       "type": "Custom",
                                       "connectionString": "[format('HostName={0}.azure-devices-provisioning.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('dpsName'), parameters('dpsOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', parameters('dpsName'), parameters('dpsOwnerPolicyName')), '2021-10-15').primaryKey)]"
                                     },
                                     {
-                                      "name": "StorageAccount__ConnectionString",
+                                      "name": "Azure__StorageAccount__ConnectionString",
                                       "type": "Custom",
                                       "connectionString": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}', parameters('storageAccountName'), listKeys(parameters('storageAccountId'), '2015-05-01-preview').key1)]"
                                     },
                                     {
-                                      "name": "LoRaKeyManagement__Code",
+                                      "name": "Azure__LoRaKeyManagement__Code",
                                       "type": "Custom",
                                       "connectionString": "[if(parameters('isLoRaFeatureEnabled'), listkeys(parameters('functionAppDefaultHost'), '2021-02-01').masterKey, '')]"
                                     },
@@ -2901,15 +2901,19 @@
                                   ],
                                   "appSettings": [
                                     {
-                                      "name": "IoTHub__EventHub__ConsumerGroup",
+                                      "name": "CloudProvider",
+                                      "value": "Azure"
+                                    },
+                                    {
+                                      "name": "Azure__IoTHub__EventHub__ConsumerGroup",
                                       "value": "[if(parameters('isLoRaFeatureEnabled'), parameters('ioTHubEventHubConsumerGroupName'), '')]"
                                     },
                                     {
-                                      "name": "IoTDPS__ServiceEndpoint",
+                                      "name": "Azure__IoTDPS__ServiceEndpoint",
                                       "value": "[format('{0}.azure-devices-provisioning.net', parameters('dpsName'))]"
                                     },
                                     {
-                                      "name": "IoTDPS__IDScope",
+                                      "name": "Azure__IoTDPS__IDScope",
                                       "value": "[parameters('dpsIdScope')]"
                                     },
                                     {
@@ -2937,11 +2941,11 @@
                                       "value": "[format('{0}', parameters('isLoRaFeatureEnabled'))]"
                                     },
                                     {
-                                      "name": "LoRaKeyManagement__Url",
+                                      "name": "Azure__LoRaKeyManagement__Url",
                                       "value": "[if(parameters('isLoRaFeatureEnabled'), format('https://{0}.azurewebsites.net', parameters('functionAppName')), '')]"
                                     },
                                     {
-                                      "name": "LoRaRegionRouterConfig__Url",
+                                      "name": "Azure__LoRaRegionRouterConfig__Url",
                                       "value": "[if(parameters('isLoRaFeatureEnabled'), 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/', '')]"
                                     },
                                     {
@@ -3076,8 +3080,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "10447018142392675727"
+              "version": "0.18.4.5664",
+              "templateHash": "18013718973811119697"
             }
           },
           "parameters": {
@@ -3250,8 +3254,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "14036553937497116756"
+                      "version": "0.18.4.5664",
+                      "templateHash": "6380340950181308960"
                     }
                   },
                   "parameters": {
@@ -3313,8 +3317,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "17398592727796213376"
+                      "version": "0.18.4.5664",
+                      "templateHash": "12610330282804158469"
                     }
                   },
                   "parameters": {
@@ -3400,8 +3404,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "8105964366560586021"
+                      "version": "0.18.4.5664",
+                      "templateHash": "7196691877347242070"
                     }
                   },
                   "parameters": {
@@ -3456,8 +3460,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "540949460528513478"
+                      "version": "0.18.4.5664",
+                      "templateHash": "17764239113434409822"
                     }
                   },
                   "parameters": {
@@ -3516,8 +3520,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "9075451194439364831"
+                      "version": "0.18.4.5664",
+                      "templateHash": "9775531172346944338"
                     }
                   },
                   "parameters": {
@@ -3598,8 +3602,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "3128486135408193117"
+                      "version": "0.18.4.5664",
+                      "templateHash": "15153037522040855947"
                     }
                   },
                   "parameters": {
@@ -3660,8 +3664,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "4180906800354335515"
+                      "version": "0.18.4.5664",
+                      "templateHash": "5390438900476707594"
                     }
                   },
                   "parameters": {
@@ -3804,8 +3808,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "9750597385702860207"
+                      "version": "0.18.4.5664",
+                      "templateHash": "10338776082964630935"
                     }
                   },
                   "parameters": {
@@ -4010,30 +4014,30 @@
                         "reserved": true,
                         "siteConfig": {
                           "numberOfWorkers": 1,
-                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.12.0",
+                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.0.0",
                           "connectionStrings": [
                             {
-                              "name": "IoTHub__ConnectionString",
+                              "name": "Azure__IoTHub__ConnectionString",
                               "type": "Custom",
                               "connectionString": "[format('HostName={0}.azure-devices.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('iotHubName'), parameters('iotHubOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', parameters('iotHubName'), parameters('iotHubOwnerPolicyName')), '2021-07-02').primaryKey)]"
                             },
                             {
-                              "name": "IoTHub__EventHub__Endpoint",
+                              "name": "Azure__IoTHub__EventHub__Endpoint",
                               "type": "Custom",
                               "connectionString": "[if(parameters('isLoRaFeatureEnabled'), format('Endpoint={0};SharedAccessKeyName=service;SharedAccessKey={1};EntityPath={2}', parameters('iotHubEventHubEndpoint'), listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', parameters('iotHubName'), 'service'), '2021-07-02').primaryKey, parameters('iotHubName')), '')]"
                             },
                             {
-                              "name": "IoTDPS__ConnectionString",
+                              "name": "Azure__IoTDPS__ConnectionString",
                               "type": "Custom",
                               "connectionString": "[format('HostName={0}.azure-devices-provisioning.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('dpsName'), parameters('dpsOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', parameters('dpsName'), parameters('dpsOwnerPolicyName')), '2021-10-15').primaryKey)]"
                             },
                             {
-                              "name": "StorageAccount__ConnectionString",
+                              "name": "Azure__StorageAccount__ConnectionString",
                               "type": "Custom",
                               "connectionString": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}', parameters('storageAccountName'), listKeys(parameters('storageAccountId'), '2015-05-01-preview').key1)]"
                             },
                             {
-                              "name": "LoRaKeyManagement__Code",
+                              "name": "Azure__LoRaKeyManagement__Code",
                               "type": "Custom",
                               "connectionString": "[if(parameters('isLoRaFeatureEnabled'), listkeys(parameters('functionAppDefaultHost'), '2021-02-01').masterKey, '')]"
                             },
@@ -4045,15 +4049,19 @@
                           ],
                           "appSettings": [
                             {
-                              "name": "IoTHub__EventHub__ConsumerGroup",
+                              "name": "CloudProvider",
+                              "value": "Azure"
+                            },
+                            {
+                              "name": "Azure__IoTHub__EventHub__ConsumerGroup",
                               "value": "[if(parameters('isLoRaFeatureEnabled'), parameters('ioTHubEventHubConsumerGroupName'), '')]"
                             },
                             {
-                              "name": "IoTDPS__ServiceEndpoint",
+                              "name": "Azure__IoTDPS__ServiceEndpoint",
                               "value": "[format('{0}.azure-devices-provisioning.net', parameters('dpsName'))]"
                             },
                             {
-                              "name": "IoTDPS__IDScope",
+                              "name": "Azure__IoTDPS__IDScope",
                               "value": "[parameters('dpsIdScope')]"
                             },
                             {
@@ -4081,11 +4089,11 @@
                               "value": "[format('{0}', parameters('isLoRaFeatureEnabled'))]"
                             },
                             {
-                              "name": "LoRaKeyManagement__Url",
+                              "name": "Azure__LoRaKeyManagement__Url",
                               "value": "[if(parameters('isLoRaFeatureEnabled'), format('https://{0}.azurewebsites.net', parameters('functionAppName')), '')]"
                             },
                             {
-                              "name": "LoRaRegionRouterConfig__Url",
+                              "name": "Azure__LoRaRegionRouterConfig__Url",
                               "value": "[if(parameters('isLoRaFeatureEnabled'), 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/', '')]"
                             },
                             {
