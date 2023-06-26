@@ -6,11 +6,11 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="IoT Hub Portal for device management" name="description"/>
-<link href="../concepts/" rel="prev"/>
-<link href="../about/issues/" rel="next"/>
+<link href=".." rel="prev"/>
+<link href="../aws/" rel="next"/>
 <link href="../assets/images/favicon.svg" rel="icon"/>
 <meta content="mkdocs-1.4.3, mkdocs-material-9.0.6" name="generator"/>
-<title>Web API Reference - IoT Hub Portal</title>
+<title>Azure - IoT Hub Portal</title>
 <link href="../assets/stylesheets/main.558e4712.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.2505c338.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -24,7 +24,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#web-api-reference">
+<a class="md-skip" href="#azure-configurations">
           Skip to content
         </a>
 </div>
@@ -50,7 +50,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Web API Reference
+              Azure
             
           </span>
 </div>
@@ -122,7 +122,7 @@
     </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../azure/">
+<a class="md-tabs__link md-tabs__link--active" href="./">
       Azure
     </a>
 </li>
@@ -142,7 +142,7 @@
     </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link md-tabs__link--active" href="./">
+<a class="md-tabs__link" href="../open-api/">
       Web API Reference
     </a>
 </li>
@@ -182,10 +182,57 @@
         IoT Hub Portal
       </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../azure/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+          Azure
+          <span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
         Azure
       </a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overall-architecture">
+    Overall Architecture
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quick-start">
+    Quick Start
+  </a>
+<nav aria-label="Quick Start" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisites">
+    Prerequisites
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deployed-resources">
+    Deployed Resources
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#instructions">
+    Instructions
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configurationssecrets">
+    Configurations/Secrets
+  </a>
+</li>
+</ul>
+</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="../aws/">
@@ -287,9 +334,8 @@
         Concepts
       </a>
 </li>
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
-<a class="md-nav__link md-nav__link--active" href="./">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../open-api/">
         Web API Reference
       </a>
 </li>
@@ -337,14 +383,184 @@
 <div class="md-sidebar__scrollwrap">
 <div class="md-sidebar__inner">
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overall-architecture">
+    Overall Architecture
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quick-start">
+    Quick Start
+  </a>
+<nav aria-label="Quick Start" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisites">
+    Prerequisites
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deployed-resources">
+    Deployed Resources
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#instructions">
+    Instructions
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configurationssecrets">
+    Configurations/Secrets
+  </a>
+</li>
+</ul>
 </nav>
 </div>
 </div>
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="web-api-reference">Web API Reference<a class="headerlink" href="#web-api-reference" title="Permanent link">¶</a></h1>
-<p><iframe class="swagger-ui-iframe" frameborder="0" id="bfad9173" src="swagger-bfad9173.html" style="overflow:hidden;width:100%;" width="100%"></iframe></p>
+<h1 id="azure-configurations">Azure Configurations<a class="headerlink" href="#azure-configurations" title="Permanent link">¶</a></h1>
+<h2 id="overall-architecture">Overall Architecture<a class="headerlink" href="#overall-architecture" title="Permanent link">¶</a></h2>
+<p>This schema represent the various components and how they interact to have a better understanding of the various solution elements.</p>
+<p><img alt="images/overall-architecture.png" src="../images/overall-architecture.png"/></p>
+<ol>
+<li>The user is authenticated by the OpenID Connect server.</li>
+<li>The user access to the IoT Hub Portal with the OAuth2.0 token.</li>
+<li>The IoT Hub portal uses the Azure IoT Hub REST API to retrieve the data.</li>
+<li>The IoT Hub portal uses the Azure Device Provisioning Service to manage IoT Edge devices.</li>
+<li>The IoT Hub portal uses the Azure Storage account to store the device models configuration (Images, Commands, etc.).</li>
+<li>The IoT Hub portal uses the LoRa Key Management Facade to send Cloud to Device (C2D) messages to LoRa devices.</li>
+<li>The LoRa Key Management Facade uses Redis to store its cached data.</li>
+<li>The LoRa Key Management Facade uses the Azure IoT Hub REST API to retrieve the LoRa device keys and send C2D messages.</li>
+<li>The IoT Hub portal synchronizes its data with the IoT Hub to provide a consistent view of the data.</li>
+</ol>
+<blockquote>
+<p>Note: For more information about the LoRa Key Management Facade, see the <a href="https://azure.github.io/iotedge-lorawan-starterkit">Azure IoT Edge LoRaWAN Starter Kit</a> page.</p>
+</blockquote>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">¶</a></h2>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h3>
+<ul>
+<li>You must have an Azure subscription. Get an <a href="https://azure.microsoft.com/en-us/offers/ms-azr-0044p/">Azure Free account</a> to get started.</li>
+<li>You must have configured an Azure AD B2C Tenant with applications. See <a href="https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications">Portal AD applications configuration</a> page.</li>
+<li>Understand how IoT Edge LoraWAN StarterKit work. Have a look at <a href="https://azure.github.io/iotedge-lorawan-starterkit">https://azure.github.io/iotedge-lorawan-starterkit</a> to get started.</li>
+</ul>
+<h3 id="deployed-resources">Deployed Resources<a class="headerlink" href="#deployed-resources" title="Permanent link">¶</a></h3>
+<p>The template will deploy in your Azure subscription the Following resources:  </p>
+<ul>
+<li>IoT Hub</li>
+<li>Azure Function and Consumption Service Plan</li>
+<li>Redis Cache</li>
+<li>Application Insights</li>
+<li>Log Analytics (when opted in to use Azure Monitor)</li>
+<li>Azure WebApp and Service Plan</li>
+<li>Azure Database for PostgreSQL</li>
+</ul>
+<h3 id="instructions">Instructions<a class="headerlink" href="#instructions" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Choose a solution prefix for your Azure Deployment.</p>
+</li>
+<li>
+<p>Configure your AD to connect to the portal.
+    Use <a href="https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications">Portal AD applications configuration</a> page to configure your AD B2C Tenant :</p>
+<blockquote>
+<p>You should have recorded the following information:  </p>
+<ul>
+<li>OpenID authority: <code>&lt;your-openid-authority&gt;</code> </li>
+<li>OpenID metadata URL: <code>&lt;your-openid-provider-metadata-url&gt;</code> </li>
+<li>Client ID: <code>&lt;your-client-id&gt;</code> </li>
+<li>API Client ID: <code>&lt;your-client-id&gt;</code></li>
+</ul>
+</blockquote>
+</li>
+<li>
+<p>Press on the button here below to start your deployment on Azure:<br/>
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain-vnext%2Ftemplates%2Fazure%2Fazuredeploy.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain-vnext%2Ftemplates%2Fazure%2FazuredeployUI.json"><img alt="Deploy to Azure" src="https://aka.ms/deploytoazurebutton"/></a></p>
+</li>
+<li>
+<p>You will get to a page asking you to fill the following fields:</p>
+<ul>
+<li><strong>Resource Group</strong>: A logical "folder" where all the template resource would be put into, just choose a meaningful name.</li>
+<li><strong>Location</strong>: In which DataCenter the resources should be deployed. Make sure to choose a location where IoT Hub is available</li>
+<li><strong>Unique Solution Prefix</strong>: A string that would be used as prefix for all the resources name to ensure their uniqueness.</li>
+<li><strong>PostgreSQL user</strong>: The PostgreSQL user name to be used for the IoT Hub Portal database.</li>
+<li><strong>PostgreSQL password</strong>: The PostgreSQL password to be used for the IoT Hub Portal database.</li>
+<li><strong>Confirm PostgreSQL password</strong>: The PostgreSQL password to be used for the IoT Hub Portal database.</li>
+<li><strong>Open Id Authority</strong>: The OpenID authority used by the portal.</li>
+<li><strong>OpenId Metadata URL</strong>: The OpenID metadata URL used by the portal.</li>
+<li><strong>Client Id</strong>: the ID of the web client that will be used to authenticate the portal.</li>
+<li><strong>Api Client Id</strong>: the ID of the API client that will be used to authenticate the portal.</li>
+<li><strong>Edge gateway name</strong>: the name of your LoRa Gateway node in the IoT Hub.</li>
+<li><strong>Deploy Device</strong>: Do you want demo end devices to be already provisioned (one using OTAA and one using ABP)? If yes set this to true, the code located in the Arduino folder would be ready to use immediately.</li>
+<li><strong>Reset pin</strong>:  The reset pin of your gateway (the value should be 7 for the Seed Studio LoRaWan, 25 for the IC880A)</li>
+<li><strong>Region</strong>:  In what region are you operating your device (currently only EU868 and US915 is supported)</li>
+</ul>
+<blockquote>
+<p>see: <a href="https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure">https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure</a> for more information about the LoRaWan IoT Hub and Azure deployment.</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="configurationssecrets">Configurations/Secrets<a class="headerlink" href="#configurationssecrets" title="Permanent link">¶</a></h2>
+<p><em>Secrets</em> are used to fill in the login credentials to the cloud platform. You have to enter them in a <code>json</code> file to be able to connect to the IoT Hub Portal. Here is a template of a such <code>json</code> file :</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">JSON</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">"CloudProvider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Azure"</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">"OIDC:Scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SCOPE&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">"OIDC:MetadataUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;METADATA_URL&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span><span class="nt">"OIDC:ClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CLIENT_ID&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span><span class="nt">"OIDC:Authority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AUTHORITY&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">  </span><span class="nt">"OIDC:ApiClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;API_CLIENT_ID&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">  </span><span class="nt">"LoRaFeature:Enabled"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;TRUE_OR_FALSE&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">  </span><span class="nt">"Azure:LoRaRegionRouterConfig:Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_ROUTER_CONFIGURATION_URL&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">  </span><span class="nt">"Azure:LoRaKeyManagement:Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_KEY_MANAGEMENT_URL&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">  </span><span class="nt">"Azure:LoRaKeyManagement:Code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_KEY_MANAGEMENT_CODE&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">  </span><span class="nt">"Kestrel:Certificates:Development:Password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;DEV_PASSWORD&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">  </span><span class="nt">"Azure:IoTHub:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_CONNECTION_STRING&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">  </span><span class="nt">"Azure:IoTHub:EventHub:Endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_EVENT_HUB_ENDPOINT&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">  </span><span class="nt">"Azure:IoTHub:EventHub:ConsumerGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_EVENT_HUB_CONSUMER_GROUP&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">  </span><span class="nt">"Azure:IoTDPS:ServiceEndpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SERVICE_END_POINT&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="nt">"Azure:IoTDPS:LoRaEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="nt">"Azure:IoTDPS:DefaultEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_DEFAULT_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="nt">"Azure:IoTDPS:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_CONNECTION_STRING&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">  </span><span class="nt">"Azure:StorageAccount:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CONNECTION_STRING_STORAGE_ACCOUNT&gt;"</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<blockquote>
+<p><u>Note:</u> You must replace all values in the brackets by your own Azure settings. If you can't find them in the Azure Portal, please contact an administrator of this project to have more information.</p>
+</blockquote>
+<p>This <code>json</code> file must be added into your project solution. To do that, click on the <code>AzureIoTHub.Server</code> project in Visual Studio and select <code>Manage User Secrets</code> from the context menu. You can now add your secrets inside this file.</p>
+<p>You are now ready to start your IoT Hub Portal development !</p>
 </article>
 </div>
 </div>
