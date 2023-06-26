@@ -316,7 +316,7 @@ Temporary Items
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
 src/IoTHub.Portal/Client/assets/package-lock.json
-src/IoTHub.Portal/Server/appsettings.Development.json
 
 # Folder for iotedge-lorawan-starterkit bicep templates
 iotedge-lorawan-starterkit/
+src/IoTHub.Portal.Server/appsettings.Development.json
