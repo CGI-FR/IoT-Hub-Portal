@@ -71,7 +71,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="8.0.0" />
     <PackageReference Include="Quartz" Version="3.6.3" />
-    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.2" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.3" />
     <PackageReference Include="Quartz.Serialization.Json" Version="3.6.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="UAParser" Version="3.1.47" />
