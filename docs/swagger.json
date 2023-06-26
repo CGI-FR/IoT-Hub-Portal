@@ -591,17 +591,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                  "$ref": "#/components/schemas/DeviceCredentials"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                  "$ref": "#/components/schemas/DeviceCredentials"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                  "$ref": "#/components/schemas/DeviceCredentials"
                 }
               }
             }
@@ -1119,17 +1119,67 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                  "$ref": "#/components/schemas/SymmetricCredentials"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                  "$ref": "#/components/schemas/SymmetricCredentials"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                  "$ref": "#/components/schemas/SymmetricCredentials"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices/{deviceId}/enrollementScript/{templateName}": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Gets the IoT Edge device enrollement script Url.",
+        "operationId": "GET Device enrollment script URL",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "templateName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -1240,6 +1290,45 @@
                   "items": {
                     "$ref": "#/components/schemas/LabelDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices/enroll": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "operationId": "GET Device enrollment script",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -1600,6 +1689,66 @@
         "responses": {
           "204": {
             "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/models/public-modules": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Get public edge modules",
+        "operationId": "GET edge public modules",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModel"
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Not Found",
@@ -3787,6 +3936,28 @@
         "additionalProperties": false,
         "description": "Cloud to Device message result."
       },
+      "CertificateCredentials": {
+        "type": "object",
+        "properties": {
+          "certificatePem": {
+            "type": "string",
+            "description": "The Certificate Pem",
+            "nullable": true
+          },
+          "publicKey": {
+            "type": "string",
+            "description": "The public key",
+            "nullable": true
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "The private key",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Certificate credentials."
+      },
       "Channel": {
         "type": "object",
         "properties": {
@@ -4056,9 +4227,29 @@
         },
         "additionalProperties": false
       },
+      "DeviceCredentials": {
+        "type": "object",
+        "properties": {
+          "authenticationMode": {
+            "enum": [
+              0,
+              1
+            ],
+            "type": "integer",
+            "description": "The authentication mode (either SymmetricKey or Certificate)",
+            "format": "int32"
+          },
+          "symmetricCredentials": {
+            "$ref": "#/components/schemas/SymmetricCredentials"
+          },
+          "certificateCredentials": {
+            "$ref": "#/components/schemas/CertificateCredentials"
+          }
+        },
+        "additionalProperties": false
+      },
       "DeviceDetails": {
         "required": [
-          "deviceID",
           "deviceName",
           "modelId"
         ],
@@ -4066,10 +4257,10 @@
         "properties": {
           "deviceID": {
             "maxLength": -1,
-            "minLength": 1,
             "pattern": "^[a-zA-Z0-9\\-.+%_#*?!(),:=@$']{1,128}$",
             "type": "string",
-            "description": "The device identifier."
+            "description": "The device identifier.",
+            "nullable": true
           },
           "deviceName": {
             "minLength": 1,
@@ -4080,6 +4271,11 @@
             "minLength": 1,
             "type": "string",
             "description": "The model identifier."
+          },
+          "modelName": {
+            "type": "string",
+            "description": "The model name. (For AWS)",
+            "nullable": true
           },
           "imageUrl": {
             "type": "string",
@@ -4478,33 +4674,6 @@
         },
         "additionalProperties": false
       },
-      "EnrollmentCredentials": {
-        "type": "object",
-        "properties": {
-          "registrationID": {
-            "type": "string",
-            "description": "The registration identifier.",
-            "nullable": true
-          },
-          "symmetricKey": {
-            "type": "string",
-            "description": "The symmetric key.",
-            "nullable": true
-          },
-          "scopeID": {
-            "type": "string",
-            "description": "The scope identifier.",
-            "nullable": true
-          },
-          "provisioningEndpoint": {
-            "type": "string",
-            "description": "The provisioning endpoint.",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Enrollment credentials."
-      },
       "FrequencyPlan": {
         "type": "object",
         "properties": {
@@ -4573,16 +4742,15 @@
       },
       "IoTEdgeDevice": {
         "required": [
-          "deviceId",
           "deviceName",
           "modelId"
         ],
         "type": "object",
         "properties": {
           "deviceId": {
-            "minLength": 1,
             "type": "string",
-            "description": "The IoT Edge identifier."
+            "description": "The IoT Edge identifier.",
+            "nullable": true
           },
           "deviceName": {
             "minLength": 1,
@@ -4783,6 +4951,11 @@
             "format": "uri",
             "nullable": true
           },
+          "externalIdentifier": {
+            "type": "string",
+            "description": "The aws deployment ID.",
+            "nullable": true
+          },
           "labels": {
             "type": "array",
             "items": {
@@ -4842,6 +5015,11 @@
             "format": "uri",
             "nullable": true
           },
+          "externalIdentifier": {
+            "type": "string",
+            "description": "The aws deployment ID.",
+            "nullable": true
+          },
           "labels": {
             "type": "array",
             "items": {
@@ -4856,10 +5034,16 @@
       "IoTEdgeModule": {
         "required": [
           "imageURI",
-          "moduleName"
+          "moduleName",
+          "version"
         ],
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "The module name, only used for AWS IoT Greengrass.",
+            "nullable": true
+          },
           "moduleName": {
             "minLength": 1,
             "type": "string",
@@ -4902,6 +5086,9 @@
             },
             "description": "The module commands.",
             "nullable": true
+          },
+          "version": {
+            "type": "string"
           }
         },
         "additionalProperties": false,
@@ -5131,6 +5318,11 @@
             "minLength": 1,
             "type": "string",
             "description": "The model identifier."
+          },
+          "modelName": {
+            "type": "string",
+            "description": "The model name.",
+            "nullable": true
           },
           "imageUrl": {
             "type": "string",
@@ -5578,6 +5770,11 @@
           },
           "isIdeasFeatureEnabled": {
             "type": "boolean"
+          },
+          "cloudProvider": {
+            "type": "string",
+            "description": "The poral cloudProvider.",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -5690,6 +5887,33 @@
         },
         "additionalProperties": false,
         "description": "Router configuration."
+      },
+      "SymmetricCredentials": {
+        "type": "object",
+        "properties": {
+          "registrationID": {
+            "type": "string",
+            "description": "The registration identifier.",
+            "nullable": true
+          },
+          "symmetricKey": {
+            "type": "string",
+            "description": "The symmetric key.",
+            "nullable": true
+          },
+          "scopeID": {
+            "type": "string",
+            "description": "The scope identifier.",
+            "nullable": true
+          },
+          "provisioningEndpoint": {
+            "type": "string",
+            "description": "The provisioning endpoint.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Enrollment credentials."
       }
     },
     "securitySchemes": {
