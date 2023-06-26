@@ -6,16 +6,17 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="IoT Hub Portal for device management" name="description"/>
-<link href="azure/" rel="next"/>
-<link href="assets/images/favicon.svg" rel="icon"/>
+<link href="../azure/" rel="prev"/>
+<link href="../dev-guide/" rel="next"/>
+<link href="../assets/images/favicon.svg" rel="icon"/>
 <meta content="mkdocs-1.4.3, mkdocs-material-9.0.6" name="generator"/>
-<title>IoT Hub Portal</title>
-<link href="assets/stylesheets/main.558e4712.min.css" rel="stylesheet"/>
-<link href="assets/stylesheets/palette.2505c338.min.css" rel="stylesheet"/>
+<title>AWS - IoT Hub Portal</title>
+<link href="../assets/stylesheets/main.558e4712.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.2505c338.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-<script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
 <body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
 <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
@@ -23,7 +24,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#iot-hub-portal">
+<a class="md-skip" href="#aws-configurations">
           Skip to content
         </a>
 </div>
@@ -33,8 +34,8 @@
 </div>
 <header class="md-header" data-md-component="header">
 <nav aria-label="Header" class="md-header__inner md-grid">
-<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="." title="IoT Hub Portal">
-<img alt="logo" src="assets/images/logo.svg"/>
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href=".." title="IoT Hub Portal">
+<img alt="logo" src="../assets/images/logo.svg"/>
 </a>
 <label class="md-header__button md-icon" for="__drawer">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
@@ -49,7 +50,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              IoT Hub Portal
+              AWS
             
           </span>
 </div>
@@ -116,37 +117,37 @@
 <div class="md-tabs__inner md-grid">
 <ul class="md-tabs__list">
 <li class="md-tabs__item">
-<a class="md-tabs__link md-tabs__link--active" href=".">
+<a class="md-tabs__link" href="..">
       IoT Hub Portal
     </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="azure/">
+<a class="md-tabs__link" href="../azure/">
       Azure
     </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="aws/">
+<a class="md-tabs__link md-tabs__link--active" href="./">
       AWS
     </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="dev-guide/">
+<a class="md-tabs__link" href="../dev-guide/">
         Dev Guide
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="concepts/">
+<a class="md-tabs__link" href="../concepts/">
       Concepts
     </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="open-api/">
+<a class="md-tabs__link" href="../open-api/">
       Web API Reference
     </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="about/issues/">
+<a class="md-tabs__link" href="../about/issues/">
         About
       </a>
 </li>
@@ -160,8 +161,8 @@
 <div class="md-sidebar__inner">
 <nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
 <label class="md-nav__title" for="__drawer">
-<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="." title="IoT Hub Portal">
-<img alt="logo" src="assets/images/logo.svg"/>
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href=".." title="IoT Hub Portal">
+<img alt="logo" src="../assets/images/logo.svg"/>
 </a>
     IoT Hub Portal
   </label>
@@ -176,14 +177,24 @@
 </a>
 </div>
 <ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+        IoT Hub Portal
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../azure/">
+        Azure
+      </a>
+</li>
 <li class="md-nav__item md-nav__item--active">
 <input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
 <label class="md-nav__link md-nav__link--active" for="__toc">
-          IoT Hub Portal
+          AWS
           <span class="md-nav__icon md-icon"></span>
 </label>
-<a class="md-nav__link md-nav__link--active" href=".">
-        IoT Hub Portal
+<a class="md-nav__link md-nav__link--active" href="./">
+        AWS
       </a>
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
 <label class="md-nav__title" for="__toc">
@@ -192,8 +203,8 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#features">
-    Features
+<a class="md-nav__link" href="#overall-architecture">
+    Overall Architecture
   </a>
 </li>
 <li class="md-nav__item">
@@ -203,45 +214,30 @@
 <nav aria-label="Quick Start" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#azure">
-    Azure
+<a class="md-nav__link" href="#prerequisites">
+    Prerequisites
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#amazon-web-services">
-    Amazon Web Services
-  </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#known-issues-and-limitations">
-    Known Issues and Limitations
+<a class="md-nav__link" href="#deployed-resources">
+    Deployed Resources
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#support">
-    Support
-  </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#credits">
-    Credits
+<a class="md-nav__link" href="#instructions">
+    Instructions
   </a>
 </li>
 </ul>
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="azure/">
-        Azure
-      </a>
+<a class="md-nav__link" href="#configurations">
+    Configurations
+  </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="aws/">
-        AWS
-      </a>
+</ul>
+</nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
 <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_4" id="__nav_4" type="checkbox"/>
@@ -256,7 +252,7 @@
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="dev-guide/">
+<a class="md-nav__link" href="../dev-guide/">
         Developer Guide
       </a>
 </li>
@@ -273,12 +269,12 @@
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="dev-guide/testing/unit-tests-common-practices/">
+<a class="md-nav__link" href="../dev-guide/testing/unit-tests-common-practices/">
         Unit Tests Common Practices
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="dev-guide/testing/unit-tests-on-blazor-components/">
+<a class="md-nav__link" href="../dev-guide/testing/unit-tests-on-blazor-components/">
         Unit Tests on Blazor components
       </a>
 </li>
@@ -298,12 +294,12 @@
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="dev-guide/migrations/v3-to-v4/">
+<a class="md-nav__link" href="../dev-guide/migrations/v3-to-v4/">
         Migrate from v3 to v4
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="dev-guide/migrations/v4-to-v5/">
+<a class="md-nav__link" href="../dev-guide/migrations/v4-to-v5/">
         Migrate from v4 to v5
       </a>
 </li>
@@ -323,7 +319,7 @@
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="dev-guide/conception/diagrams/">
+<a class="md-nav__link" href="../dev-guide/conception/diagrams/">
         Diagrams
       </a>
 </li>
@@ -334,12 +330,12 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="concepts/">
+<a class="md-nav__link" href="../concepts/">
         Concepts
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="open-api/">
+<a class="md-nav__link" href="../open-api/">
         Web API Reference
       </a>
 </li>
@@ -356,22 +352,22 @@
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="about/issues/">
+<a class="md-nav__link" href="../about/issues/">
         Known Issues
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="about/support/">
+<a class="md-nav__link" href="../about/support/">
         Support
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="about/credits/">
+<a class="md-nav__link" href="../about/credits/">
         Credits
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="about/license/">
+<a class="md-nav__link" href="../about/license/">
         License
       </a>
 </li>
@@ -393,8 +389,8 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#features">
-    Features
+<a class="md-nav__link" href="#overall-architecture">
+    Overall Architecture
   </a>
 </li>
 <li class="md-nav__item">
@@ -404,31 +400,26 @@
 <nav aria-label="Quick Start" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#azure">
-    Azure
+<a class="md-nav__link" href="#prerequisites">
+    Prerequisites
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#amazon-web-services">
-    Amazon Web Services
+<a class="md-nav__link" href="#deployed-resources">
+    Deployed Resources
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#instructions">
+    Instructions
   </a>
 </li>
 </ul>
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#known-issues-and-limitations">
-    Known Issues and Limitations
-  </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#support">
-    Support
-  </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#credits">
-    Credits
+<a class="md-nav__link" href="#configurations">
+    Configurations
   </a>
 </li>
 </ul>
@@ -438,31 +429,116 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="iot-hub-portal">IoT Hub Portal<a class="headerlink" href="#iot-hub-portal" title="Permanent link">¶</a></h1>
-<p>This project aims to provide a solution for handling IoT Devices easyly.
-It leverages on Azure IoT Hub or AWS IoT Core for connectivity and device management.</p>
-<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">¶</a></h2>
-<ul>
-<li>Portal Authentication</li>
-<li>IoT Device &amp; device Model management</li>
-<li>IoT Edge device management</li>
-<li>C2D Methods</li>
-<li>LoRA WAN device connectivity</li>
-</ul>
+<h1 id="aws-configurations">AWS configurations<a class="headerlink" href="#aws-configurations" title="Permanent link">¶</a></h1>
+<h2 id="overall-architecture">Overall Architecture<a class="headerlink" href="#overall-architecture" title="Permanent link">¶</a></h2>
+<p>This schema represent the various components and how they interact to have a better understanding of the various solution elements.</p>
+<p><img alt="images/awsdeploy-designer.png" src="../images/awsdeploy-designer.png"/></p>
+<ol>
+<li>The user is authenticated by the OpenID Connect server.</li>
+<li>The user access to the IoT Hub Portal with the OAuth2.0 token.</li>
+<li>The IoT Hub portal uses the AWS IoT REST API to retrieve the data.</li>
+<li>The IoT Hub portal uses the AWS S3 storage to store the device models configuration (Images, Commands, etc.).</li>
+<li>The IoT Hub portal synchronizes its data with the IoT Hub to provide a consistent view of the data.</li>
+</ol>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">¶</a></h2>
-<h3 id="azure">Azure<a class="headerlink" href="#azure" title="Permanent link">¶</a></h3>
-<p><a href="azure/#quick-start">Quick Start</a> for Azure environment.</p>
-<h3 id="amazon-web-services">Amazon Web Services<a class="headerlink" href="#amazon-web-services" title="Permanent link">¶</a></h3>
-<p><a href="aws/#quick-start">Quick Start</a> for AWS environment.</p>
-<h2 id="known-issues-and-limitations">Known Issues and Limitations<a class="headerlink" href="#known-issues-and-limitations" title="Permanent link">¶</a></h2>
-<p>Refer to <a href="https://github.com/CGI-FR/IoT-Hub-Portal/issues">Known Issues</a> for known issues, gotchas and limitations.</p>
-<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
-<p>This is an open source solution.
-For bugs and issues with the codebase please log an issue in this repo.</p>
-<h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">¶</a></h2>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h3>
 <ul>
-<li><a href="https://github.com/Azure/iotedge-lorawan-starterkit">Azure IoT Edge LoRaWAN Starter Kit</a></li>
+<li>You must have an AWS Account. Get an <a href="https://portal.aws.amazon.com/billing/signup#/start/email">AWS Free account</a> to get started.</li>
+<li>
+<p>You must enable Fleet Indexing for registry and shadow<br/>
+<strong><em>Using AWS CLI:</em></strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="go">aws iot update-indexing-configuration --thing-indexing-configuration thingIndexingMode=REGISTRY_AND_SHADOW</span>
+</code></pre></div></td></tr></table></div>
+<blockquote>
+<p>Please note that you'll need the necessary permissions to execute this command. Make sure your AWS IAM user or role has the appropriate permissions to access and modify the IoT indexing configuration.</p>
+</blockquote>
+</li>
 </ul>
+<h3 id="deployed-resources">Deployed Resources<a class="headerlink" href="#deployed-resources" title="Permanent link">¶</a></h3>
+<p>The template will deploy in your AWS Account the Following resources:  </p>
+<ul>
+<li>AWS RDS - Database for PostgreSQL</li>
+<li>AWS S3 Bucket</li>
+<li>AWS App Runner Service</li>
+</ul>
+<h3 id="instructions">Instructions<a class="headerlink" href="#instructions" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Choose a stack name for your AWS Deployment.</p>
+</li>
+<li>
+<p>Follow next step below to start your deployment:</p>
+<ol>
+<li>
+<p>Press on the button here below to download the template AWS:<br/>
+<a href="https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/arm/main-vnext/templates/aws/awsdeploy.yml">Download the template</a></p>
+</li>
+<li>
+<p>Import your template :<br/>
+<strong><em>From the AWS console: <a href="https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/create">CloudFormation new stack</a></em></strong><br/>
+        - You can change the deployment region by changing the region directly in the URL<br/>
+        - In "Upload a template file" import the previously downloaded file<br/>
+<strong><em>With AWS CLI:</em></strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="go">aws cloudformation deploy --template /path_to_template/awsdeploy.yml --stack-name your-stack-name --region your-region</span>
+</code></pre></div></td></tr></table></div>
+<blockquote>
+<p>see: <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-deploy.html">https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-deploy.html</a> for more option about aws cloudformation deploy</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>
+<p>You will get to a page asking you to fill the following fields:</p>
+<ul>
+<li><strong>Stack Name</strong>: A name for the stack where all the template resource would be put into, just choose a meaningful name.</li>
+<li><strong>PostgreSQL user</strong>: The PostgreSQL user name to be used for the IoT Hub Portal database.</li>
+<li><strong>PostgreSQL password</strong>: The PostgreSQL password to be used for the IoT Hub Portal database.</li>
+<li><strong>AWS Access Key</strong>: The AWS Access Key of your AWS environment.</li>
+<li><strong>AWS Access Secret Key</strong>: The AWS Access Secret Key of your AWS environment.</li>
+<li><strong>Api Client Id</strong>: the ID of the API client that will be used to authenticate the portal.</li>
+<li><strong>Client Id</strong>: the ID of the web client that will be used to authenticate the portal.</li>
+<li><strong>Open Id Authority</strong>: The OpenID authority used by the portal.</li>
+<li><strong>OpenId Metadata URL</strong>: The OpenID metadata URL used by the portal.</li>
+<li><strong>OpenId Scope Name</strong>: The Open ID Scope name</li>
+</ul>
+</li>
+</ol>
+<h2 id="configurations">Configurations<a class="headerlink" href="#configurations" title="Permanent link">¶</a></h2>
+<p>This configurations are used to get access to AWS cloud Platform. You have to enter them in a <code>json</code> file to be able to connect to the Iot Hub Portal. Here is a template of a such <code>json</code> file.</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">JSON</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span>
+<span class="normal"><a href="#__codelineno-2-13">13</a></span>
+<span class="normal"><a href="#__codelineno-2-14">14</a></span>
+<span class="normal"><a href="#__codelineno-2-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="p">{</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="nt">"CloudProvider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AWS"</span><span class="p">,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="nt">"AWS:Access"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;ACCESS_KEY&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span><span class="nt">"AWS:AccessSecret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;ACCESS_SECRET_KEY&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="nt">"AWS:Region"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;REGION_KEY&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="nt">"AWS:BucketName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;BUCKET_NAME&gt;"</span><span class="p">,</span><span class="w">  </span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="nt">"AWS:AccountId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;ACCOUNT_IDENTIFIER&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">  </span><span class="nt">"AWS:GreengrassRequiredRoles:&lt;ID&gt;"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;GREENGRASS_ROLE_NAME&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">  </span><span class="nt">"OIDC:Scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SCOPE&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">  </span><span class="nt">"OIDC:MetadataUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;METADATA_URL&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">  </span><span class="nt">"OIDC:ClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CLIENT_ID&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">  </span><span class="nt">"OIDC:Authority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AUTHORITY&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">  </span><span class="nt">"OIDC:ApiClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;API_CLIENT_ID&gt;"</span><span class="p">,</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<blockquote>
+<p><u>Note:</u> You must replace all values in the brackets by your own AWS settings. If you can't find them in the AWS Portal, please contact an administrator of this project to have more information.</p>
+</blockquote>
+<p>You are now ready to start your IoT Hub Portal development !</p>
 </article>
 </div>
 </div>
@@ -492,8 +568,8 @@ For bugs and issues with the codebase please log an issue in this repo.</p>
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
-<script src="assets/javascripts/bundle.51d95adb.min.js"></script>
+<script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../assets/javascripts/bundle.51d95adb.min.js"></script>
 <script>document$.subscribe(() => {
             window.update_swagger_ui_iframe_height = function (id) {
                 var iFrameID = document.getElementById(id);
