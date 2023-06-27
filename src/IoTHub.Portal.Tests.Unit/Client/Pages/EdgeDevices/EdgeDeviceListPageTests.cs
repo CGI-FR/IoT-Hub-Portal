@@ -9,6 +9,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Client.Pages.EdgeDevices;
+    using IoTHub.Portal.Client.Dialogs.EdgeDevices;
     using IoTHub.Portal.Client.Services;
     using Models.v10;
     using UnitTests.Bases;
