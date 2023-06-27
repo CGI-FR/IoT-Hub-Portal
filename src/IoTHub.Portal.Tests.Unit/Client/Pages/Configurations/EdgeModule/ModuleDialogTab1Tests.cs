@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
 {
     using System;
     using System.Collections.Generic;
-    using IoTHub.Portal.Client.Pages.EdgeModels.EdgeModule;
+    using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule;
     using Models.v10;
     using IoTHub.Portal.Shared.Models.v10;
     using UnitTests.Bases;

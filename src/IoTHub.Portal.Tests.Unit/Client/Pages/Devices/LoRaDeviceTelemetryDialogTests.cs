@@ -7,6 +7,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using System.Threading.Tasks;
     using IoTHub.Portal.Client.Pages.Devices;
     using IoTHub.Portal.Client.Services;
+    using IoTHub.Portal.Client.Dialogs.Devices;
     using UnitTests.Bases;
     using Bunit;
     using Microsoft.Extensions.DependencyInjection;

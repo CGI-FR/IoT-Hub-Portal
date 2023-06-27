@@ -9,7 +9,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
     using AutoFixture;
     using IoTHub.Portal.Client.Exceptions;
     using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.Ideas;
+    using IoTHub.Portal.Client.Dialogs.Ideas;
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Shared.Models.v1._0;
     using UnitTests.Bases;

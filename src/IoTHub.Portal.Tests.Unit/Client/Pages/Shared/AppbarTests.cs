@@ -4,7 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
     using System;
-    using IoTHub.Portal.Client.Pages.Ideas;
+    using IoTHub.Portal.Client.Dialogs.Ideas;
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Client.Shared;
     using Models.v10;

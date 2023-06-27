@@ -10,6 +10,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
     using IoTHub.Portal.Client.Extensions;
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Shared;
+    using IoTHub.Portal.Client.Dialogs.Shared;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
