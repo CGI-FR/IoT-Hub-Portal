@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
-    using IoTHub.Portal.Infrastructure;
+    using IoTHub.Portal.Infrastructure.Common;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
 

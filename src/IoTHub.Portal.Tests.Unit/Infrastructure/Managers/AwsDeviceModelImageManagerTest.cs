@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Infrastructure.Managers;
+    using IoTHub.Portal.Infrastructure.AWS.Managers;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;

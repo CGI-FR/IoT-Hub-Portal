@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using System.Linq;
     using System.Threading.Tasks;
     using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Infrastructure.Repositories;
+    using IoTHub.Portal.Infrastructure.Common.Repositories;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Moq;
     using NUnit.Framework;

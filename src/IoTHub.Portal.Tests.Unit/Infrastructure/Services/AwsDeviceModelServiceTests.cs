@@ -3,32 +3,32 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using AutoMapper;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Microsoft.Extensions.DependencyInjection;
-    using NUnit.Framework;
-    using IoTHub.Portal.Infrastructure.Services;
-    using Moq;
-    using AutoFixture;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using System.Threading.Tasks;
     using System;
+    using System.IO;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading;
+    using System.Threading.Tasks;
+    using AutoFixture;
+    using AutoMapper;
     using FluentAssertions;
-    using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Shared.Models.v10;
+    using IoTHub.Portal.Application.Managers;
+    using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Domain;
+    using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
-    using Microsoft.AspNetCore.Http;
-    using System.IO;
     using IoTHub.Portal.Domain.Repositories;
+    using IoTHub.Portal.Domain.Shared;
+    using IoTHub.Portal.Infrastructure.AWS.Services;
+    using IoTHub.Portal.Models.v10;
+    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
+    using IoTHub.Portal.Shared.Models.v10.Filters;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
+    using NUnit.Framework;
 
     [TestFixture]
     public class AwsDeviceModelServiceTests : BackendUnitTest
@@ -56,7 +56,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
-            _ = ServiceCollection.AddSingleton<IDeviceModelService<DeviceModelDto, DeviceModelDto>, AwsDeviceModelService<DeviceModelDto, DeviceModelDto>>();
+            _ = ServiceCollection.AddSingleton<IDeviceModelService<DeviceModelDto, DeviceModelDto>, DeviceModelService<DeviceModelDto, DeviceModelDto>>();
 
             Services = ServiceCollection.BuildServiceProvider();
 

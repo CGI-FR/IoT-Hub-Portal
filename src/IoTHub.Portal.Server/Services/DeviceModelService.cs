@@ -4,25 +4,25 @@
 namespace IoTHub.Portal.Server.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Dynamic.Core;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoMapper;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Providers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
+    using IoTHub.Portal.Application.Helpers;
+    using IoTHub.Portal.Application.Managers;
+    using IoTHub.Portal.Application.Providers;
+    using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Infrastructure.Common.Repositories;
+    using IoTHub.Portal.Models.v10;
+    using IoTHub.Portal.Shared.Models;
+    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.EntityFrameworkCore;
@@ -40,7 +40,6 @@ namespace IoTHub.Portal.Server.Services
         private readonly IDeviceRegistryProvider deviceRegistryProvider;
         private readonly IConfigService configService;
         private readonly IDeviceModelImageManager deviceModelImageManager;
-        private readonly IDeviceModelMapper<TListItem, TModel> deviceModelMapper;
         private readonly IExternalDeviceService externalDeviceService;
 
         public DeviceModelService(IMapper mapper,
@@ -51,7 +50,6 @@ namespace IoTHub.Portal.Server.Services
             IDeviceRegistryProvider deviceRegistryProvider,
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
-            IDeviceModelMapper<TListItem, TModel> deviceModelMapper,
             IExternalDeviceService externalDeviceService)
         {
             this.mapper = mapper;
@@ -62,7 +60,6 @@ namespace IoTHub.Portal.Server.Services
             this.deviceRegistryProvider = deviceRegistryProvider;
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
-            this.deviceModelMapper = deviceModelMapper;
             this.externalDeviceService = externalDeviceService;
         }
 
@@ -199,13 +196,11 @@ namespace IoTHub.Portal.Server.Services
 
         private async Task CreateDeviceModelConfiguration(TModel deviceModel)
         {
-            var desiredProperties = this.deviceModelMapper.BuildDeviceModelDesiredProperties(deviceModel);
-
             var deviceModelTwin = new TwinCollection();
 
             _ = await this.deviceRegistryProvider.CreateEnrollmentGroupFromModelAsync(deviceModel.ModelId, deviceModel.Name, deviceModelTwin);
 
-            _ = await this.configService.RollOutDeviceModelConfiguration(deviceModel.ModelId, desiredProperties);
+            _ = await this.configService.RollOutDeviceModelConfiguration(deviceModel.ModelId, new Dictionary<string, object>());
         }
     }
 }

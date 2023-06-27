@@ -3,14 +3,14 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
-    using AutoFixture;
+    using System.Linq;
     using System.Threading.Tasks;
-    using IoTHub.Portal.Infrastructure.Repositories;
+    using AutoFixture;
+    using FluentAssertions;
+    using IoTHub.Portal.Domain.Entities;
+    using IoTHub.Portal.Infrastructure.Common.Repositories;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using NUnit.Framework;
-    using IoTHub.Portal.Domain.Entities;
-    using System.Linq;
-    using FluentAssertions;
 
     public class LorawanDeviceRepositoryTest : BackendUnitTest
     {

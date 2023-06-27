@@ -3,11 +3,12 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
+    using FluentAssertions;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Shared.Constants;
     using IoTHub.Portal.Infrastructure;
-    using FluentAssertions;
+    using IoTHub.Portal.Infrastructure.Common;
+    using IoTHub.Portal.Shared.Constants;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
     using Moq;

@@ -7,6 +7,7 @@ namespace IoTHub.Portal.Infrastructure
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Shared.Constants;
+    using IoTHub.Portal.Infrastructure.Common;
     using IoTHub.Portal.Shared.Constants;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;

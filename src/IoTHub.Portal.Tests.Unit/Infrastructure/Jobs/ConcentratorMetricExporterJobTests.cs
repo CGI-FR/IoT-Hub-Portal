@@ -5,13 +5,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
     using System;
     using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure.Jobs;
     using IoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
     using Prometheus;
+    using IoTHub.Portal.Infrastructure.Azure.Jobs;
 
     [TestFixture]
     public class ConcentratorMetricExporterJobTests : IDisposable

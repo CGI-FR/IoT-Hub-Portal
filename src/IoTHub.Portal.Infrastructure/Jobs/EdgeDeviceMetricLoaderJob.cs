@@ -3,12 +3,12 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs
 {
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Domain.Exceptions;
     using Microsoft.Extensions.Logging;
     using Quartz;
     using Shared.Models.v1._0;
+    using System.Threading.Tasks;
 
     [DisallowConcurrentExecution]
     public class EdgeDeviceMetricLoaderJob : IJob

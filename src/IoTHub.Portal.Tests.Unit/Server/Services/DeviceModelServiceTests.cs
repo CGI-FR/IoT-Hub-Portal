@@ -46,7 +46,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IConfigService> mockConfigService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
         private Mock<IExternalDeviceService> mockDeviceService;
-        private Mock<IDeviceModelMapper<DeviceModelDto, DeviceModelDto>> mockDeviceModelMapper;
 
         private IDeviceModelService<DeviceModelDto, DeviceModelDto> deviceModelService;
 
@@ -62,7 +61,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             this.mockConfigService = MockRepository.Create<IConfigService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
             this.mockDeviceService = MockRepository.Create<IExternalDeviceService>();
-            this.mockDeviceModelMapper = MockRepository.Create<IDeviceModelMapper<DeviceModelDto, DeviceModelDto>>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
@@ -72,7 +70,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockConfigService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceService.Object);
-            _ = ServiceCollection.AddSingleton(this.mockDeviceModelMapper.Object);
             _ = ServiceCollection.AddSingleton<IDeviceModelService<DeviceModelDto, DeviceModelDto>, DeviceModelService<DeviceModelDto, DeviceModelDto>>();
 
             Services = ServiceCollection.BuildServiceProvider();
@@ -176,10 +173,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceModelMapper
-                .Setup(mapper => mapper.BuildDeviceModelDesiredProperties(It.IsAny<DeviceModelDto>()))
-                .Returns(new Dictionary<string, object>());
-
             _ = this.mockRegistryProvider.Setup(manager =>
                     manager.CreateEnrollmentGroupFromModelAsync(deviceModelDto.ModelId, deviceModelDto.Name,
                         It.IsAny<TwinCollection>()))
@@ -244,10 +237,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
-
-            _ = this.mockDeviceModelMapper
-                .Setup(mapper => mapper.BuildDeviceModelDesiredProperties(It.IsAny<DeviceModelDto>()))
-                .Returns(new Dictionary<string, object>());
 
             _ = this.mockRegistryProvider.Setup(manager =>
                     manager.CreateEnrollmentGroupFromModelAsync(deviceModelDto.ModelId, deviceModelDto.Name,

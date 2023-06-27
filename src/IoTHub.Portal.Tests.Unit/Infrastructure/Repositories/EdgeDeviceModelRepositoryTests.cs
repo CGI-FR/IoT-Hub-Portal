@@ -6,11 +6,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Infrastructure.Repositories;
     using FluentAssertions;
-    using UnitTests.Bases;
+    using IoTHub.Portal.Domain.Entities;
+    using IoTHub.Portal.Infrastructure.Common.Repositories;
     using NUnit.Framework;
+    using UnitTests.Bases;
 
     public class EdgeDeviceModelRepositoryTests : BackendUnitTest
     {

@@ -3,18 +3,21 @@
 
 namespace IoTHub.Portal.Infrastructure.Startup
 {
+    using EntityFramework.Exceptions.PostgreSQL;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure.Helpers;
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Models.v10;
+    using IoTHub.Portal.Infrastructure.Azure.Services;
+    using IoTHub.Portal.Infrastructure.Azure.Startup;
+    using IoTHub.Portal.Infrastructure.AWS.Startup;
+    using IoTHub.Portal.Infrastructure.Common;
+    using IoTHub.Portal.Infrastructure.Common.Helpers;
+    using IoTHub.Portal.Infrastructure.Common.Repositories;
+    using IoTHub.Portal.Infrastructure.Common.ServicesHealthCheck;
+    using IoTHub.Portal.Infrastructure.Jobs;
+    using IoTHub.Portal.MySql;
     using IoTHub.Portal.Shared.Constants;
-    using EntityFramework.Exceptions.PostgreSQL;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Quartz;
@@ -27,7 +30,8 @@ namespace IoTHub.Portal.Infrastructure.Startup
             services = services.ConfigureDatabase(configuration)
                                .ConfigureHealthCheck()
                                .ConfigureRepositories()
-                               .ConfigureServices();
+                               .ConfigureServices()
+                               .ConfigureMetricJobs(configuration);
 
             //CloudProvider-dependant configurations
             return configuration.CloudProvider switch
@@ -116,6 +120,36 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>()
                 .AddTransient<IDeviceTagService, DeviceTagService>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
+        }
+
+        private static IServiceCollection ConfigureMetricJobs(this IServiceCollection services, ConfigHandler configuration)
+        {
+            return services.AddQuartz(q =>
+            {
+                _ = q.AddJob<DeviceMetricLoaderJob>(j => j.WithIdentity(nameof(DeviceMetricLoaderJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(DeviceMetricLoaderJob)}")
+                        .ForJob(nameof(DeviceMetricLoaderJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<DeviceMetricExporterJob>(j => j.WithIdentity(nameof(DeviceMetricExporterJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(DeviceMetricExporterJob)}")
+                        .ForJob(nameof(DeviceMetricExporterJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<EdgeDeviceMetricLoaderJob>(j => j.WithIdentity(nameof(EdgeDeviceMetricLoaderJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(EdgeDeviceMetricLoaderJob)}")
+                        .ForJob(nameof(EdgeDeviceMetricLoaderJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+            });
         }
     }
 }

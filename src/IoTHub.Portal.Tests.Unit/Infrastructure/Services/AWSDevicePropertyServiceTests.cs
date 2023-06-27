@@ -16,14 +16,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using Amazon.IotData.Model;
     using AutoMapper;
     using Azure;
+    using FluentAssertions;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Services.AWS;
+    using IoTHub.Portal.Infrastructure.AWS.Services;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using FluentAssertions;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -66,7 +66,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton(this.mockGreenGrass.Object);
-            _ = ServiceCollection.AddSingleton<IDevicePropertyService, AWSDevicePropertyService>();
+            _ = ServiceCollection.AddSingleton<IDevicePropertyService, DevicePropertyService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 

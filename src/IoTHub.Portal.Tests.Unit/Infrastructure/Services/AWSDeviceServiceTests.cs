@@ -6,6 +6,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Threading;
     using System.Threading.Tasks;
     using Amazon.IoT;
     using Amazon.IoT.Model;
@@ -13,16 +14,17 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using Amazon.IotData.Model;
     using AutoFixture;
     using AutoMapper;
+    using EntityFramework.Exceptions.Common;
+    using FluentAssertions;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
+    using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Services.AWS;
+    using IoTHub.Portal.Infrastructure.AWS.Services;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using EntityFramework.Exceptions.Common;
-    using FluentAssertions;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -30,8 +32,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using NUnit.Framework;
     using Device = Portal.Domain.Entities.Device;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
-    using System.Threading;
-    using IoTHub.Portal.Domain.Exceptions;
 
     [TestFixture]
     public class AWSDeviceServiceTests : BackendUnitTest
@@ -76,7 +76,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
-            _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, AWSDeviceService>();
+            _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, DeviceService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 

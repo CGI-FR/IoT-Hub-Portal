@@ -9,7 +9,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
     using System.Threading;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Wrappers;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
+    using IoTHub.Portal.Infrastructure.Azure.ServicesHealthCheck;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Moq;

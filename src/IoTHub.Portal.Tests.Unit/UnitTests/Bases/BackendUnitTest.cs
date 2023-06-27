@@ -6,6 +6,7 @@ namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
     using System;
     using AutoMapper;
     using IoTHub.Portal.Application.Mappers;
+    using IoTHub.Portal.Infrastructure.Common;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
     using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +14,6 @@ namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
     using Microsoft.Extensions.Logging.Abstractions;
     using Moq;
     using NUnit.Framework;
-    using Portal.Infrastructure;
     using Portal.Server;
     using RichardSzalay.MockHttp;
 

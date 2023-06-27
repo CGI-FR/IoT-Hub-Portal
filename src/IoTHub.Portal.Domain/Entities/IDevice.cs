@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    internal interface IDevice
+    public interface IDevice
     {
         /// <summary>
         /// The device Identifier.

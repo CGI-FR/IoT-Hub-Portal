@@ -3,8 +3,7 @@
 
 namespace IoTHub.Portal.MySql
 {
-    using IoTHub.Portal.Infrastructure;
-    using IoTHub.Portal.Infrastructure.Helpers;
+    using IoTHub.Portal.Infrastructure.Common;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Design;
 

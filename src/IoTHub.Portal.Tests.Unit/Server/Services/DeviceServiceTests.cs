@@ -10,14 +10,14 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using AutoFixture;
     using AutoMapper;
     using Azure.Messaging.EventHubs;
+    using EntityFramework.Exceptions.Common;
+    using FluentAssertions;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Infrastructure.Services;
+    using IoTHub.Portal.Infrastructure.Azure.Services;
     using IoTHub.Portal.Shared.Models.v10;
-    using EntityFramework.Exceptions.Common;
-    using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;

@@ -6,14 +6,6 @@ namespace IoTHub.Portal.Server
     using System;
     using System.IO;
     using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Startup;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Infrastructure.Startup;
-    using IoTHub.Portal.Shared.Constants;
     using Domain;
     using Domain.Exceptions;
     using EntityFramework.Exceptions.Common;
@@ -22,6 +14,16 @@ namespace IoTHub.Portal.Server
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Identity;
     using Infrastructure;
+    using IoTHub.Portal.Application.Managers;
+    using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Application.Startup;
+    using IoTHub.Portal.Domain.Shared.Constants;
+    using IoTHub.Portal.Infrastructure.AWS.Services;
+    using IoTHub.Portal.Infrastructure.Azure.Services;
+    using IoTHub.Portal.Infrastructure.Common;
+    using IoTHub.Portal.Infrastructure.Common.ServicesHealthCheck;
+    using IoTHub.Portal.Infrastructure.Startup;
+    using IoTHub.Portal.Shared.Constants;
     using Managers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -307,20 +309,20 @@ namespace IoTHub.Portal.Server
         private static void ConfigureServicesAzure(IServiceCollection services)
         {
             _ = services.AddTransient<IExportManager, ExportManager>();
-            _ = services.AddTransient<IConfigService, ConfigService>();
+            _ = services.AddTransient<IConfigService, Services.ConfigService>();
             _ = services.AddTransient<ILoRaWANCommandService, LoRaWANCommandService>();
             _ = services.AddTransient<IEdgeModelService, EdgeModelService>();
             _ = services.AddTransient<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
             _ = services.AddTransient<IEdgeDevicesService, AzureEdgeDevicesService>();
-            _ = services.AddTransient<IExternalDeviceService, ExternalDeviceService>();
-            _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
+            _ = services.AddTransient<IExternalDeviceService, Services.ExternalDeviceService>();
+            _ = services.AddTransient<IDevicePropertyService, Services.DevicePropertyService>();
             _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
-            _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
+            _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(Services.DeviceModelService<,>));
         }
 
         private static void ConfigureServicesAws(IServiceCollection services)
         {
-            _ = services.AddTransient<IEdgeDevicesService, AWSEdgeDevicesService>();
+            _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
         }
 
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)

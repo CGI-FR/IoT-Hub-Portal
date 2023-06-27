@@ -4,11 +4,11 @@
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
     using System;
-    using System.Globalization;
     using System.Reflection;
+    using FluentAssertions;
     using IoTHub.Portal.Domain.Shared.Constants;
     using IoTHub.Portal.Infrastructure;
-    using FluentAssertions;
+    using IoTHub.Portal.Infrastructure.Common;
     using Microsoft.Extensions.Configuration;
     using Moq;
     using NUnit.Framework;

@@ -4,7 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
 {
     using System;
-    using IoTHub.Portal.Infrastructure.Helpers;
+    using IoTHub.Portal.MySql;
     using Microsoft.EntityFrameworkCore;
     using NUnit.Framework;
 

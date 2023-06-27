@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Services.AWS;
+    using IoTHub.Portal.Infrastructure.AWS.Services;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = ServiceCollection.AddSingleton(this.mockIotClient.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mocDeviceModelImageManager.Object);
-            _ = ServiceCollection.AddSingleton<IConfigService, AwsConfigService>();
+            _ = ServiceCollection.AddSingleton<IConfigService, ConfigService>();
             _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
 
 

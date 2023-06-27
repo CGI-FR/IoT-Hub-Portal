@@ -10,9 +10,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using System.Text;
     using System.Threading.Tasks;
     using AutoFixture;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Infrastructure.Services;
     using FluentAssertions;
+    using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Infrastructure.Azure.Services;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10.LoRaWAN;
     using NUnit.Framework;

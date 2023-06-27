@@ -11,8 +11,8 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Helpers;
-    using IoTHub.Portal.Infrastructure.Services;
+    using IoTHub.Portal.Infrastructure.Common.Helpers;
+    using IoTHub.Portal.Infrastructure.Common.Services;
     using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;

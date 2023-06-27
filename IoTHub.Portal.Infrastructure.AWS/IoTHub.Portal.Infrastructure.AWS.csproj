@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\src\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.GreengrassV2" Version="3.7.103.40" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.106.1" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.102.59" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.6.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IoTHub.Portal.Infrastructure.Common\IoTHub.Portal.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\src\IoTHub.Portal.Application\IoTHub.Portal.Application.csproj" />
+  </ItemGroup>
+
+</Project>

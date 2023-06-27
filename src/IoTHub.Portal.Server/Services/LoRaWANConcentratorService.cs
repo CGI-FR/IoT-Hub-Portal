@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Server.Services
     using AutoMapper;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Infrastructure.Repositories;
+    using IoTHub.Portal.Infrastructure.Common.Repositories;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using Domain;
     using Domain.Entities;

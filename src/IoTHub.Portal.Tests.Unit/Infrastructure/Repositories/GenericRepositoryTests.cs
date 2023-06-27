@@ -7,12 +7,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using UnitTests.Bases;
     using FluentAssertions;
+    using IoTHub.Portal.Domain.Entities;
+    using IoTHub.Portal.Infrastructure.Common.Repositories;
     using Microsoft.EntityFrameworkCore;
     using NUnit.Framework;
+    using UnitTests.Bases;
 
     [TestFixture]
     public class GenericRepositoryTests : RepositoryTestBase

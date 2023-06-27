@@ -4,11 +4,11 @@
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
     using System;
+    using FluentAssertions;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Infrastructure.Jobs;
+    using IoTHub.Portal.Infrastructure.Azure.Jobs;
     using IoTHub.Portal.Shared.Models.v1._0;
-    using FluentAssertions;
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;

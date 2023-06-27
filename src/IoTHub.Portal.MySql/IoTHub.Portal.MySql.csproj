@@ -17,16 +17,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.8" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\IoTHub.Portal.Infrastructure\IoTHub.Portal.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Migrations\SQL\DownQuartzNetTables.sql" />
     <EmbeddedResource Include="Migrations\SQL\UpQuartzNetTables.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\IoTHub.Portal.Infrastructure.Common\IoTHub.Portal.Infrastructure.Common.csproj" />
   </ItemGroup>
 
 </Project>

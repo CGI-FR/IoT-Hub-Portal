@@ -9,11 +9,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading.Tasks;
     using AutoFixture;
     using AutoMapper;
+    using FluentAssertions;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Infrastructure.Services;
-    using FluentAssertions;
+    using IoTHub.Portal.Infrastructure.Azure.Services;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
