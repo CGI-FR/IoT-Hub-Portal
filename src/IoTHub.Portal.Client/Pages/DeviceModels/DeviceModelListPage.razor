@@ -4,7 +4,7 @@
 
 @attribute [Authorize]
 @inject NavigationManager navigationManager
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 @inject IDialogService dialogService
 @inject IDeviceModelsClientService DeviceModelsClientService
 
@@ -126,7 +126,7 @@
                     break;
             }
 
-            var result = await DeviceModelsClientService.GetDeviceModels(new DeviceModelFilter
+            var result = await DeviceModelsClientService.GetDeviceModels(new DeviceModelFilterDto
                 {
                     SearchText = this.deviceModelSearchInfo.SearchText!,
                     PageNumber = state.Page,

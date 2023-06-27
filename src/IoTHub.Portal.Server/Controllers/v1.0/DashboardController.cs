@@ -14,15 +14,15 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
     [ApiExplorerSettings(GroupName = "Metrics")]
     public class DashboardController : ControllerBase
     {
-        private readonly PortalMetric portalMetric;
+        private readonly PortalMetricDto portalMetric;
 
-        public DashboardController(PortalMetric portalMetric)
+        public DashboardController(PortalMetricDto portalMetric)
         {
             this.portalMetric = portalMetric;
         }
 
         [HttpGet("metrics", Name = "Get Portal Metrics")]
-        public ActionResult<PortalMetric> GetPortalMetrics()
+        public ActionResult<PortalMetricDto> GetPortalMetrics()
         {
             return this.portalMetric;
         }

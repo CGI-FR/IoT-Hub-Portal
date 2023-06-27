@@ -44,7 +44,7 @@
 
 @code {
     [Parameter]
-    public IList<IoTEdgeModuleCommand> Commands { get; set; } = new List<IoTEdgeModuleCommand>();
+    public IList<IoTEdgeModuleCommandDto> Commands { get; set; } = new List<IoTEdgeModuleCommandDto>();
     private bool IsLoading = false;
 
     public void AddRow()
@@ -53,11 +53,11 @@
 
         if (Commands.Count == 0 || (last?.Name is not null))
         {
-            Commands.Add(new IoTEdgeModuleCommand());
+            Commands.Add(new IoTEdgeModuleCommandDto());
         }
     }
 
-    public void DeleteRow(IoTEdgeModuleCommand item)
+    public void DeleteRow(IoTEdgeModuleCommandDto item)
     {
         Commands.Remove(item);
     }

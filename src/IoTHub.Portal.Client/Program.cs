@@ -102,7 +102,7 @@ await builder.Build().RunAsync();
 static async Task ConfigurePortalSettings(WebAssemblyHostBuilder builder)
 {
     using var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-    var settings = await httpClient.GetFromJsonAsync<PortalSettings>("api/settings/portal");
+    var settings = await httpClient.GetFromJsonAsync<PortalSettingsDto>("api/settings/portal");
 
     _ = builder.Services.AddSingleton(settings!);
 }

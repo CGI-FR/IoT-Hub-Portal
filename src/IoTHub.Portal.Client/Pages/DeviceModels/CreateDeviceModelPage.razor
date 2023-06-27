@@ -9,7 +9,7 @@
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 @inject ISnackbar Snackbar
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
@@ -88,7 +88,7 @@
                                         <ChildContent>
                                             <MudGrid>
                                                 <MudItem xs="12">
-                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DevicePropertyDto() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
                                                 </MudItem>
                                                 <MudItem xs="12">
                                                     @foreach (var item in this.Properties.OrderBy(x => x.Order))
@@ -183,7 +183,7 @@
     private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
     private List<DeviceModelCommandDto> Commands { get; set; } = new();
-    private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
+    private List<DevicePropertyDto> Properties { get; set; } = new List<DevicePropertyDto>();
 
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
 

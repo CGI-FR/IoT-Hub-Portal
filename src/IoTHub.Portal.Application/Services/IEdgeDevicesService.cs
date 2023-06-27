@@ -11,7 +11,7 @@ namespace IoTHub.Portal.Application.Services
 
     public interface IEdgeDevicesService
     {
-        Task<PaginatedResult<IoTEdgeListItem>> GetEdgeDevicesPage(
+        Task<PaginatedResultDto<IoTEdgeListItemDto>> GetEdgeDevicesPage(
             string? searchText = null,
             bool? searchStatus = null,
             int pageSize = 10,
@@ -20,17 +20,17 @@ namespace IoTHub.Portal.Application.Services
             string? modelId = null,
             List<string>? labels = default);
 
-        Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId);
+        Task<IoTEdgeDeviceDto> GetEdgeDevice(string edgeDeviceId);
 
-        Task<IoTEdgeDevice> CreateEdgeDevice(IoTEdgeDevice edgeDevice);
+        Task<IoTEdgeDeviceDto> CreateEdgeDevice(IoTEdgeDeviceDto edgeDevice);
 
-        Task<IoTEdgeDevice> UpdateEdgeDevice(IoTEdgeDevice edgeDevice);
+        Task<IoTEdgeDeviceDto> UpdateEdgeDevice(IoTEdgeDeviceDto edgeDevice);
 
         Task DeleteEdgeDeviceAsync(string deviceId);
 
-        Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);
+        Task<C2DresultDto> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);
 
-        Task<C2Dresult> ExecuteModuleCommand(string deviceId, string moduleName, string commandName);
+        Task<C2DresultDto> ExecuteModuleCommand(string deviceId, string moduleName, string commandName);
 
         Task<IEnumerable<LabelDto>> GetAvailableLabels();
 

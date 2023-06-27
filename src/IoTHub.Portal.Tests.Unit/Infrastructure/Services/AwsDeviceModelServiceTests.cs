@@ -77,7 +77,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 return deviceModelDto;
             }).ToList();
 
-            var filter = new DeviceModelFilter
+            var filter = new DeviceModelFilterDto
             {
                 SearchText = Fixture.Create<string>(),
                 PageNumber = 1,
@@ -89,7 +89,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             };
 
             _ = this.mockDeviceModelRepository.Setup(u => u.GetPaginatedListAsync(filter.PageNumber, filter.PageSize, filter.OrderBy, It.IsAny<Expression<Func<DeviceModel, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
-                .ReturnsAsync(new PaginatedResult<DeviceModel>
+                .ReturnsAsync(new PaginatedResultDto<DeviceModel>
                 {
                     Data = expectedDeviceModels,
                     PageSize = filter.PageSize,

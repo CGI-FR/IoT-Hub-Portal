@@ -21,7 +21,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<RouterConfig?> GetRouterConfig(string loRaRegion)
+        public async Task<RouterConfigDto?> GetRouterConfig(string loRaRegion)
         {
             var currentAssembly = Assembly.GetExecutingAssembly();
 
@@ -30,7 +30,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
             if (resourceStream == null)
                 return null;
 
-            return await JsonSerializer.DeserializeAsync<RouterConfig>(resourceStream);
+            return await JsonSerializer.DeserializeAsync<RouterConfigDto>(resourceStream);
         }
 
         public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommandDto commandDto)
@@ -38,7 +38,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
             ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
             ArgumentNullException.ThrowIfNull(commandDto, nameof(commandDto));
 
-            var body = new LoRaCloudToDeviceMessage
+            var body = new LoRaCloudToDeviceMessageDto
             {
                 RawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(commandDto.Frame)),
                 Fport = commandDto.Port,

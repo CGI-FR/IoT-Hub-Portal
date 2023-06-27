@@ -58,7 +58,7 @@ namespace IoTHub.Portal.Client.Services
             deviceToDuplicate.DeviceID = string.Empty;
             deviceToDuplicate.DeviceName = $"{deviceToDuplicate.DeviceName} - copy";
 
-            if (deviceToDuplicate is LoRaDeviceDetails loRaDevice)
+            if (deviceToDuplicate is LoRaDeviceDetailsDto loRaDevice)
             {
                 loRaDevice.AppKey = string.Empty;
                 this.sharedDevice = loRaDevice;

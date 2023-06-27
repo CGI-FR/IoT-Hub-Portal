@@ -20,7 +20,7 @@
 @inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
 @inject IDeviceLayoutService DeviceLayoutService
 @inject NavigationManager NavigationManager
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 
 <MudForm Model="@Device" @ref="form">
     <MudGrid>
@@ -49,7 +49,7 @@
                 @if (context.Equals(CreateEditMode.Edit))
                 {
                     <MudCardActions Class="pb-4 pl-4 justify-center">
-                        @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
+                        @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetailsDto)))
                         {
                             <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
                         }
@@ -103,7 +103,7 @@
                                                     else
                                                     {
                                                         <MudAutocomplete T="IDeviceModel"
-                                                                         id="@nameof(DeviceDetails.ModelId)"
+                                                                         id="@nameof(DeviceDetailsDto.ModelId)"
                                                         @bind-Value="DeviceModel"
                                                                          SearchFunc="@Search"
                                                                          Label="Model*"
@@ -135,7 +135,7 @@
                                                 @if (IsLoRa)
                                                 {
                                                     <MudTextField @bind-Value="@Device.DeviceID"
-                                                                  id=@nameof(LoRaDeviceDetails.DeviceID)
+                                                                  id=@nameof(LoRaDeviceDetailsDto.DeviceID)
                                                                   ReadOnly="context.Equals(CreateEditMode.Edit)"
                                                                   Label="Device ID / DevEUI"
                                                                   Variant="Variant.Outlined"
@@ -149,7 +149,7 @@
                                                     if (Portal.CloudProvider.Equals(CloudProviders.Azure))
                                                     {
                                                         <MudTextField @bind-Value="@Device.DeviceID"
-                                                                      id=@nameof(DeviceDetails.DeviceID)
+                                                                      id=@nameof(DeviceDetailsDto.DeviceID)
                                                                       ReadOnly="context.Equals(CreateEditMode.Edit)"
                                                                       Label="Device ID"
                                                                       Variant="Variant.Outlined"
@@ -169,7 +169,7 @@
 
                                             <MudItem xs="12" md="6">
                                                 <MudTextField @bind-Value="@Device.DeviceName"
-                                                              id="@nameof(DeviceDetails.DeviceName)"
+                                                              id="@nameof(DeviceDetailsDto.DeviceName)"
                                                               Label="Device name"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceName)"
@@ -328,7 +328,7 @@
                     if (IsLoRa)
                     {
                         <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
-                            <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraModelDto="@(LoRaDeviceModelDto)" LoraValidator="@(loraValidator)" />
+                            <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetailsDto)" LoraModelDto="@(LoRaDeviceModelDto)" LoraValidator="@(loraValidator)" />
                         </MudTabPanel>
                     }
                 }
@@ -337,7 +337,7 @@
                     if (IsLoRa && Device != null && Commands != null)
                     {
                         <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
-                            <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" />
+                            <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetailsDto)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" />
                         </MudTabPanel>
                     }
                 }
@@ -360,7 +360,7 @@
 
     private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; } = default!;
 
-    private IDeviceDetails Device { get; set; } = new DeviceDetails();
+    private IDeviceDetails Device { get; set; } = new DeviceDetailsDto();
 
     public PatternMask maskLoRaDeviceID = new PatternMask("XXXXXXXXXXXXXXXX")
         {
@@ -393,7 +393,7 @@
     }
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
-    private List<DevicePropertyValue> Properties = new List<DevicePropertyValue>();
+    private List<DevicePropertyValueDto> Properties = new List<DevicePropertyValueDto>();
 
     private bool displayValidationErrorMessages;
 
@@ -519,7 +519,7 @@
 
     public void Dispose()
     {
-        DeviceLayoutService.ResetSharedDevice<DeviceDetails>();
+        DeviceLayoutService.ResetSharedDevice<DeviceDetailsDto>();
         DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
         DeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred!;
     }
@@ -550,10 +550,10 @@
                 }
 
                 if (IsLoRa)
-                    await LoRaWanDeviceClientService.CreateDevice((Device as LoRaDeviceDetails)!);
+                    await LoRaWanDeviceClientService.CreateDevice((Device as LoRaDeviceDetailsDto)!);
                 else
                 {
-                    await DeviceClientService.CreateDevice((Device as DeviceDetails)!);
+                    await DeviceClientService.CreateDevice((Device as DeviceDetailsDto)!);
                     await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
                 }
 
@@ -577,11 +577,11 @@
 
                 if (IsLoRa)
                 {
-                    await LoRaWanDeviceClientService.UpdateDevice((Device as LoRaDeviceDetails)!);
+                    await LoRaWanDeviceClientService.UpdateDevice((Device as LoRaDeviceDetailsDto)!);
                 }
                 else
                 {
-                    await DeviceClientService.UpdateDevice((Device as DeviceDetails)!);
+                    await DeviceClientService.UpdateDevice((Device as DeviceDetailsDto)!);
 
                     await DeviceClientService.SetDeviceProperties(DeviceID, Properties.ToList());
                 }
@@ -619,11 +619,11 @@
                 NavigationManager.NavigateTo("devices");
                 break;
             case DeviceSaveAction.SaveAndAddNew:
-                Device = DeviceLayoutService.ResetSharedDevice<DeviceDetails>(TagList.ToList());
+                Device = DeviceLayoutService.ResetSharedDevice<DeviceDetailsDto>(TagList.ToList());
                 DeviceModel = DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
                 break;
             case DeviceSaveAction.SaveAndDuplicate:
-                Device = DeviceLayoutService.DuplicateSharedDevice((Device as DeviceDetails)!);
+                Device = DeviceLayoutService.DuplicateSharedDevice((Device as DeviceDetailsDto)!);
                 DeviceModel = DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel);
                 break;
         }
@@ -657,7 +657,7 @@
             return false;
         }
 
-        if (this.Device is LoRaDeviceDetails loRaDeviceDetails)
+        if (this.Device is LoRaDeviceDetailsDto loRaDeviceDetails)
         {
             return !this.loraValidator.Validate(loRaDeviceDetails).IsValid;
         }
@@ -667,7 +667,7 @@
 
     private bool CheckGeneralValidation()
     {
-        if (!IsLoRa && this.Device is DeviceDetails deviceDetails)
+        if (!IsLoRa && this.Device is DeviceDetailsDto deviceDetails)
         {
             return !this.standardValidator.Validate(deviceDetails).IsValid;
         }
@@ -705,7 +705,7 @@
 
     private async Task<IEnumerable<IDeviceModel>> Search(string value)
     {
-        var filter = new DeviceModelFilter
+        var filter = new DeviceModelFilterDto
             {
                 SearchText = value,
                 PageNumber = 0,
@@ -751,7 +751,7 @@
 
             _deviceModel = model;
 
-            Device = new DeviceDetails
+            Device = new DeviceDetailsDto
                 {
                     DeviceID = Device.DeviceID,
                     ModelId = model?.ModelId,
@@ -770,7 +770,7 @@
             {
                 var loRaDeviceModelResult = await LoRaWanDeviceModelsClientService.GetDeviceModel(model.ModelId);
 
-                this.Device = new LoRaDeviceDetails
+                this.Device = new LoRaDeviceDetailsDto
                     {
                         DeviceID = this.Device.DeviceID,
                         ModelId = model.ModelId,
@@ -790,7 +790,7 @@
             {
                 var properties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
 
-                Properties.AddRange(properties.Select(x => new DevicePropertyValue
+                Properties.AddRange(properties.Select(x => new DevicePropertyValueDto
                     {
                         DisplayName = x.DisplayName,
                         IsWritable = x.IsWritable,

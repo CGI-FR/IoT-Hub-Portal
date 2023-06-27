@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     while (shouldWait)
                         await Task.Delay(100);
 
-                    return Array.Empty<ImportResultLine>();
+                    return Array.Empty<ImportResultLineDto>();
                 });
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -77,7 +77,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Arrange
             _ = this.mockDeviceClientService
                 .Setup(c => c.ImportDeviceList(It.IsAny<MultipartFormDataContent>()))
-                .ReturnsAsync(Array.Empty<ImportResultLine>());
+                .ReturnsAsync(Array.Empty<ImportResultLineDto>());
 
             var cut = RenderComponent<MudDialogProvider>();
             var parameters = new DialogParameters
@@ -141,14 +141,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .Setup(c => c.ImportDeviceList(It.IsAny<MultipartFormDataContent>()))
                 .ReturnsAsync(new[]
                 {
-                    new ImportResultLine
+                    new ImportResultLineDto
                     {
                         IsErrorMessage = true,
                         DeviceId = "0",
                         LineNumber = 10,
                         Message = "Toto"
                     },
-                    new ImportResultLine
+                    new ImportResultLineDto
                     {
                         IsErrorMessage = false,
                         DeviceId = "0",
@@ -201,7 +201,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = this.mockDeviceClientService
                 .Setup(c => c.ImportDeviceList(It.IsAny<MultipartFormDataContent>()))
-                .ReturnsAsync(Array.Empty<ImportResultLine>());
+                .ReturnsAsync(Array.Empty<ImportResultLineDto>());
 
             var cut = RenderComponent<MudDialogProvider>();
             var parameters = new DialogParameters

@@ -37,9 +37,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
         public void DashboardShouldRenderCorrectlyForAzure()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure", IsLoRaSupported = true });
 
-            var portalMetric = new PortalMetric
+            var portalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 ConnectedDeviceCount = 2,
@@ -70,9 +70,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
         public void DashboardShouldRenderCorrectlyForAWS()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
-            var portalMetric = new PortalMetric
+            var portalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 EdgeDeviceCount = 3,
@@ -102,9 +102,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
         {
             // Arrange
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
-            var portalMetric = new PortalMetric
+            var portalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 ConnectedDeviceCount = 2,
@@ -145,9 +145,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
         {
             // Arrange
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
-            var portalMetric = new PortalMetric
+            var portalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 EdgeDeviceCount = 3,

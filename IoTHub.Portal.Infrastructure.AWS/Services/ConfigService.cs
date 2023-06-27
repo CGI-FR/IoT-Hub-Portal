@@ -50,7 +50,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             this.config = config;
         }
 
-        public async Task<string> RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
+        public async Task<string> RollOutEdgeModelConfiguration(IoTEdgeModelDto edgeModel)
         {
 
             var createDeploymentRequest = new CreateDeploymentRequest
@@ -74,7 +74,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
 
         }
 
-        private async Task<string> GetThingGroupArn(IoTEdgeModel edgeModel)
+        private async Task<string> GetThingGroupArn(IoTEdgeModelDto edgeModel)
         {
             await CreateThingTypeIfNotExists(edgeModel!.Name);
 
@@ -143,7 +143,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             }
         }
 
-        private async Task<Dictionary<string, ComponentDeploymentSpecification>> CreateGreenGrassComponents(IoTEdgeModel edgeModel)
+        private async Task<Dictionary<string, ComponentDeploymentSpecification>> CreateGreenGrassComponents(IoTEdgeModelDto edgeModel)
         {
             var components = new Dictionary<string, ComponentDeploymentSpecification>();
             foreach (var component in edgeModel.EdgeModules)
@@ -221,7 +221,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             // Deprecate Deployment Thing type
             await DeprecateDeploymentThingType(modelId);
 
-            IEnumerable<IoTEdgeModule> modules = Array.Empty<IoTEdgeModule>();
+            IEnumerable<IoTEdgeModuleDto> modules = Array.Empty<IoTEdgeModuleDto>();
 
             try
             {
@@ -331,9 +331,9 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
 
         }
 
-        public async Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
+        public async Task<List<IoTEdgeModuleDto>> GetConfigModuleList(string modelId)
         {
-            var moduleList = new List<IoTEdgeModule>();
+            var moduleList = new List<IoTEdgeModuleDto>();
 
             var getDeployement = new GetDeploymentRequest
             {
@@ -375,7 +375,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
                         jsonRecipe = reader.ReadToEnd();
                     }
 
-                    var iotEdgeModule = new IoTEdgeModule
+                    var iotEdgeModule = new IoTEdgeModuleDto
                     {
                         Id = componentId,
                         ModuleName = compoenent.Key,
@@ -396,17 +396,17 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             }
         }
 
-        public Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId)
+        public Task<List<EdgeModelSystemModuleDto>> GetModelSystemModule(string modelId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<IoTEdgeRoute>> GetConfigRouteList(string modelId)
+        public Task<List<IoTEdgeRouteDto>> GetConfigRouteList(string modelId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<IoTEdgeModule>> GetPublicEdgeModules()
+        public async Task<IEnumerable<IoTEdgeModuleDto>> GetPublicEdgeModules()
         {
             var publicComponents = new List<Component>();
 
@@ -433,7 +433,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             }
             while (!string.IsNullOrEmpty(nextToken));
 
-            return publicComponents.Select(c => new IoTEdgeModule
+            return publicComponents.Select(c => new IoTEdgeModuleDto
             {
                 Id = c.Arn,
                 ModuleName = c.ComponentName,

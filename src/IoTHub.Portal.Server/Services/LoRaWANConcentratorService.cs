@@ -48,8 +48,8 @@ namespace IoTHub.Portal.Server.Services
             this.concentratorRepository = concentratorRepository;
         }
 
-        public async Task<PaginatedResult<ConcentratorDto>> GetAllDeviceConcentrator(
-            ConcentratorFilter concentratorFilter)
+        public async Task<PaginatedResultDto<ConcentratorDto>> GetAllDeviceConcentrator(
+            ConcentratorFilterDto concentratorFilter)
         {
             var concentratorPredicate = PredicateBuilder.True<Concentrator>();
 
@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Server.Services
 
             var paginatedConcentrator = await this.concentratorRepository.GetPaginatedListAsync(concentratorFilter.PageNumber, concentratorFilter.PageSize, concentratorFilter.OrderBy, concentratorPredicate);
 
-            return this.mapper.Map<PaginatedResult<ConcentratorDto>>(paginatedConcentrator);
+            return this.mapper.Map<PaginatedResultDto<ConcentratorDto>>(paginatedConcentrator);
         }
 
         public async Task<ConcentratorDto> GetConcentrator(string deviceId)
@@ -113,7 +113,7 @@ namespace IoTHub.Portal.Server.Services
             concentrator.RouterConfig = await this.loRaWanManagementService.GetRouterConfig(concentrator.LoraRegion);
 
             // Update the twin properties
-            _ = this.mapper.Map(currentTwin, concentrator);
+            _ = this.mapper.Map(concentrator, currentTwin);
 
             _ = await this.externalDevicesService.UpdateDeviceTwin(currentTwin);
 

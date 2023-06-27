@@ -46,7 +46,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             this.labelRepository = labelRepository;
         }
 
-        public async Task<PaginatedResult<IoTEdgeListItem>> GetEdgeDevicesPage(
+        public async Task<PaginatedResultDto<IoTEdgeListItemDto>> GetEdgeDevicesPage(
                 string searchText = null,
                 bool? searchStatus = null,
                 int pageSize = 10,
@@ -55,7 +55,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
                 string modelId = null,
                 List<string> labels = default)
         {
-            var deviceListFilter = new EdgeDeviceListFilter
+            var deviceListFilter = new EdgeDeviceListFilterDto
             {
                 PageSize = pageSize,
                 PageNumber = pageNumber,
@@ -89,9 +89,9 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             });
 
             var paginatedEdgeDevices = await this.edgeDeviceRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy, devicePredicate, includes: new Expression<Func<EdgeDevice, object>>[] { d => d.Labels, d => d.DeviceModel.Labels });
-            var paginateEdgeDeviceDto = new PaginatedResult<IoTEdgeListItem>
+            var paginateEdgeDeviceDto = new PaginatedResultDto<IoTEdgeListItemDto>
             {
-                Data = paginatedEdgeDevices.Data.Select(x => this.mapper.Map<IoTEdgeListItem>(x, opts =>
+                Data = paginatedEdgeDevices.Data.Select(x => this.mapper.Map<IoTEdgeListItemDto>(x, opts =>
                 {
                     opts.Items["imageUrl"] = this.deviceModelImageManager.ComputeImageUri(x.DeviceModelId);
                 })).ToList(),
@@ -100,7 +100,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
                 PageSize = pageSize
             };
 
-            return new PaginatedResult<IoTEdgeListItem>(paginateEdgeDeviceDto.Data, paginateEdgeDeviceDto.TotalCount);
+            return new PaginatedResultDto<IoTEdgeListItemDto>(paginateEdgeDeviceDto.Data, paginateEdgeDeviceDto.TotalCount);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
         /// </summary>
         /// <param name="edgeDeviceId">device id.</param>
         /// <returns>IoTEdgeDevice object.</returns>
-        protected async Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId)
+        protected async Task<IoTEdgeDeviceDto> GetEdgeDevice(string edgeDeviceId)
         {
             var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(edgeDeviceId, d => d.Tags, d => d.Labels);
 
@@ -117,7 +117,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
                 throw new ResourceNotFoundException($"The device with id {edgeDeviceId} doesn't exist");
             }
 
-            var deviceDto = this.mapper.Map<IoTEdgeDevice>(deviceEntity);
+            var deviceDto = this.mapper.Map<IoTEdgeDeviceDto>(deviceEntity);
             deviceDto.ImageUrl = this.deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
             deviceDto.Tags = FilterDeviceTags(deviceDto);
 
@@ -125,7 +125,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
 
         }
 
-        protected async Task<IoTEdgeDevice> CreateEdgeDeviceInDatabase(IoTEdgeDevice device)
+        protected async Task<IoTEdgeDeviceDto> CreateEdgeDeviceInDatabase(IoTEdgeDeviceDto device)
         {
             var edgeDeviceEntity = this.mapper.Map<EdgeDevice>(device);
 
@@ -144,7 +144,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             return this.mapper.Map<List<LabelDto>>(labels);
         }
 
-        protected async Task<IoTEdgeDevice> UpdateEdgeDeviceInDatabase(IoTEdgeDevice device)
+        protected async Task<IoTEdgeDeviceDto> UpdateEdgeDeviceInDatabase(IoTEdgeDeviceDto device)
         {
             var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.DeviceId, d => d.Tags, d => d.Labels);
 
@@ -192,7 +192,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             this.edgeDeviceRepository.Delete(deviceId);
         }
 
-        private Dictionary<string, string> FilterDeviceTags(IoTEdgeDevice device)
+        private Dictionary<string, string> FilterDeviceTags(IoTEdgeDeviceDto device)
         {
             var tags = this.deviceTagService.GetAllTagsNames().ToList();
 

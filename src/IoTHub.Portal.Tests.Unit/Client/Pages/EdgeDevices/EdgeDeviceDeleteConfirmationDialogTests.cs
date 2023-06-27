@@ -31,7 +31,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             this.mockEdgeDeviceClientService = MockRepository.Create<IEdgeDeviceClientService>();
 
             _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = false });
 
             this.dialogService = Services.GetService<IDialogService>() as DialogService;
         }

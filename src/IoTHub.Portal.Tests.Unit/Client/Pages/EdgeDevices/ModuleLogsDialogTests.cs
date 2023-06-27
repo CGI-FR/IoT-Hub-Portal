@@ -39,12 +39,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = Guid.NewGuid().ToString()
             };
 
-            var expectedLogs = new List<IoTEdgeDeviceLog>()
+            var expectedLogs = new List<IoTEdgeDeviceLogDto>()
             {
                 new(),
                 new(),
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = Guid.NewGuid().ToString()
             };
@@ -116,12 +116,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = Guid.NewGuid().ToString()
             };
 
-            var expectedLogs = new List<IoTEdgeDeviceLog>()
+            var expectedLogs = new List<IoTEdgeDeviceLogDto>()
             {
                 new()
             };

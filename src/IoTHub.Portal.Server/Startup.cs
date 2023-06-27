@@ -89,8 +89,8 @@ namespace IoTHub.Portal.Server
             }
 
             //Common configurations
-            _ = services.AddSingleton(new PortalMetric());
-            _ = services.AddSingleton(new LoRaGatewayIDList());
+            _ = services.AddSingleton(new PortalMetricDto());
+            _ = services.AddSingleton(new LoRaGatewayIDListDto());
 
             _ = services.AddRazorPages();
             _ = services.AddMudServices();

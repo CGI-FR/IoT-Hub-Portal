@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Description = Guid.NewGuid().ToString()
             };
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
@@ -68,7 +68,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .ReturnsAsync(deviceModel);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.SetDeviceModelModelProperties(It.IsAny<string>(), new List<DeviceProperty>()))
+                    service.SetDeviceModelModelProperties(It.IsAny<string>(), new List<DevicePropertyDto>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -94,7 +94,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var modelName = Guid.NewGuid().ToString();
             var description = Guid.NewGuid().ToString();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
@@ -128,14 +128,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var propertyName = Guid.NewGuid().ToString();
             var displayName = Guid.NewGuid().ToString();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
                 .ReturnsAsync(deviceModel);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(1))))
+                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DevicePropertyDto>>(properties => properties.Count.Equals(1))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -150,13 +150,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             addPropertyButton.Click();
 
-            cut.WaitForElement($"#property- #{nameof(DeviceProperty.Name)}").Change(propertyName);
+            cut.WaitForElement($"#property- #{nameof(DevicePropertyDto.Name)}").Change(propertyName);
 
             var propertyCssSelector = $"#property-{propertyName}";
 
-            cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.DisplayName)}").Change(displayName);
-            cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.PropertyType)}").Change(nameof(DevicePropertyType.Boolean));
-            cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.IsWritable)}").Change(true);
+            cut.WaitForElement($"{propertyCssSelector} #{nameof(DevicePropertyDto.DisplayName)}").Change(displayName);
+            cut.WaitForElement($"{propertyCssSelector} #{nameof(DevicePropertyDto.PropertyType)}").Change(nameof(DevicePropertyType.Boolean));
+            cut.WaitForElement($"{propertyCssSelector} #{nameof(DevicePropertyDto.IsWritable)}").Change(true);
 
             cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count));
 
@@ -177,14 +177,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Description = Guid.NewGuid().ToString()
             };
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
                 .ReturnsAsync(deviceModel);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(0))))
+                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DevicePropertyDto>>(properties => properties.Count.Equals(0))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -217,7 +217,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void WhenLoraFeatureIsDisabledModelDetailsShouldNotDisplayLoRaWANSwitch()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
@@ -232,7 +232,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void WhenLoraFeatureIsEnabledModelDetailsShouldDisplayLoRaWANSwitch()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
@@ -247,7 +247,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void WhenLoraFeatureIsEnabledModelDetailsShouldDisplayLoRaWANTab()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
@@ -274,7 +274,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var modelName = Guid.NewGuid().ToString();
             var description = Guid.NewGuid().ToString();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.Is<LoRaDeviceModelDto>(model =>

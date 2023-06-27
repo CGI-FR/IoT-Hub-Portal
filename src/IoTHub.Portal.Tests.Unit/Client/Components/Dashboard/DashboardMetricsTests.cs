@@ -37,9 +37,9 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
         public void DashboardMetricShouldRenderCorrectlyForAzure()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure", IsLoRaSupported = true });
 
-            var portalMetric = new PortalMetric
+            var portalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 ConnectedDeviceCount = 2,
@@ -70,9 +70,9 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
         public void DashboardMetricShouldRenderCorrectlyForAWS()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
-            var portalMetric = new PortalMetric
+            var portalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 EdgeDeviceCount = 3,
@@ -101,9 +101,9 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
         public void OnRefreshDashboardEventDashboardMetricShouldRefreshMetricsForAzure()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure", IsLoRaSupported = true });
 
-            var portalMetric = new PortalMetric
+            var portalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 ConnectedDeviceCount = 2,
@@ -144,9 +144,9 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
         public void OnRefreshDashboardEventDashboardMetricShouldRefreshMetricsForAWS()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
-            var portalMetric = new PortalMetric
+            var portalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 EdgeDeviceCount = 3,
@@ -185,7 +185,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
         public void DashboardMetricShouldProcessProblemDetailsExceptionWhenIssueOccursAzure()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure", IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure", IsLoRaSupported = true });
 
             _ = this.mockDashboardMetricsClientService.Setup(c => c.GetPortalMetrics())
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
@@ -208,7 +208,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
         public void DashboardMetricShouldProcessProblemDetailsExceptionWhenIssueOccursForAWS()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
             _ = this.mockDashboardMetricsClientService.Setup(c => c.GetPortalMetrics())
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));

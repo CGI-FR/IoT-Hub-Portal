@@ -8,16 +8,16 @@ namespace IoTHub.Portal.Client.Validators
     using IoTHub.Portal.Models.v10;
     using FluentValidation;
 
-    public class IoTEdgeModuleValidator : AbstractValidator<IEnumerable<IoTEdgeModule>>
+    public class IoTEdgeModuleValidator : AbstractValidator<IEnumerable<IoTEdgeModuleDto>>
     {
-        private class IoTEdgeModuleComparer : IEqualityComparer<IoTEdgeModule>
+        private class IoTEdgeModuleComparer : IEqualityComparer<IoTEdgeModuleDto>
         {
-            public bool Equals(IoTEdgeModule? x, IoTEdgeModule? y)
+            public bool Equals(IoTEdgeModuleDto? x, IoTEdgeModuleDto? y)
             {
                 return x?.ModuleName == y?.ModuleName;
             }
 
-            public int GetHashCode(IoTEdgeModule obj)
+            public int GetHashCode(IoTEdgeModuleDto obj)
             {
                 return obj.ModuleName?.GetHashCode(StringComparison.OrdinalIgnoreCase) ?? 0;
             }

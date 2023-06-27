@@ -5,7 +5,7 @@
 @using IoTHub.Portal.Shared.Models.v10;
 
 @attribute [Authorize]
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @inject IEdgeDeviceClientService EdgeDeviceClientService
@@ -34,8 +34,8 @@
                     </MudItem>
 
                     <MudItem xs="12" md="6">
-                        <MudAutocomplete T="IoTEdgeModelListItem"
-                                         id="@nameof(IoTEdgeModelListItem.ModelId)"
+                        <MudAutocomplete T="IoTEdgeModelListItemDto"
+                                         id="@nameof(IoTEdgeModelListItemDto.ModelId)"
                                          @bind-Value="edgeModel"
                                          SearchFunc="@Search"
                                          Label="Model"
@@ -80,7 +80,7 @@
     </MudItem>
 
     <MudItem xs="12">
-        <MudTable T="IoTEdgeListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+        <MudTable T="IoTEdgeListItemDto" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 5%;" />
                 <col style="width: 40%;" />
@@ -101,9 +101,9 @@
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
-                <MudTh><MudTableSortLabel SortLabel="Id" T="IoTEdgeListItem" id="sortDeviceId">Device ID</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="IoTEdgeListItem">Connected</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="NbDevices" T="IoTEdgeListItem">Connected leaf devices</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortLabel="Id" T="IoTEdgeListItemDto" id="sortDeviceId">Device ID</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="IoTEdgeListItemDto">Connected</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="NbDevices" T="IoTEdgeListItemDto">Connected leaf devices</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -164,12 +164,12 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    private MudTable<IoTEdgeListItem> table = default!;
-    private SearchModel searchModel = new();
+    private MudTable<IoTEdgeListItemDto> table = default!;
+    private SearchModelDto searchModel = new();
 
-    private List<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
-    private IoTEdgeModelListItem _edgeModel = default!;
-    public IoTEdgeModelListItem edgeModel
+    private List<IoTEdgeModelListItemDto> edgeModelList = new List<IoTEdgeModelListItemDto>();
+    private IoTEdgeModelListItemDto _edgeModel = default!;
+    public IoTEdgeModelListItemDto edgeModel
     {
         get => _edgeModel;
         set
@@ -208,7 +208,7 @@
         table.ReloadServerData();
     }
 
-    private async Task<TableData<IoTEdgeListItem>> LoadItems(TableState state)
+    private async Task<TableData<IoTEdgeListItemDto>> LoadItems(TableState state)
     {
         try
         {
@@ -233,7 +233,7 @@
 
             var result = await EdgeDeviceClientService.GetDevices(uri);
 
-            return new TableData<IoTEdgeListItem>
+            return new TableData<IoTEdgeListItemDto>
                 {
                     Items = result.Items,
                     TotalItems = result.TotalItems
@@ -243,7 +243,7 @@
         {
             Error?.ProcessProblemDetails(exception);
 
-            return new TableData<IoTEdgeListItem>();
+            return new TableData<IoTEdgeListItemDto>();
         }
         finally
         {
@@ -253,8 +253,8 @@
 
     private void ResetFilter()
     {
-        searchModel = new SearchModel();
-        edgeModel = new IoTEdgeModelListItem();
+        searchModel = new SearchModelDto();
+        edgeModel = new IoTEdgeModelListItemDto();
         selectedLabels = new List<LabelDto>();
 
         Search();
@@ -262,9 +262,9 @@
 
     private void RedirectToCreatePage() => NavigationManager.NavigateTo("/edge/devices/new");
 
-    public async Task ShowDeleteDialog(IoTEdgeListItem gateway)
+    public async Task ShowDeleteDialog(IoTEdgeListItemDto gateway)
     {
-        var parameters = new DialogParameters { { nameof(IoTEdgeDevice.DeviceId), gateway.DeviceId } };
+        var parameters = new DialogParameters { { nameof(IoTEdgeDeviceDto.DeviceId), gateway.DeviceId } };
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Confirm Deletion", parameters).Result;
 
         if (result.Canceled)
@@ -276,7 +276,7 @@
         Search();
     }
 
-    private void GoToDetails(IoTEdgeListItem item)
+    private void GoToDetails(IoTEdgeListItemDto item)
     {
         NavigationManager.NavigateTo($"/edge/devices/{item.DeviceId}");
     }
@@ -286,7 +286,7 @@
     /// </summary>
     /// <param name="value">Text entered in the field</param>
     /// <returns>Item of the device model list that matches the user's value</returns>
-    public async Task<IEnumerable<IoTEdgeModelListItem>> Search(string value)
+    public async Task<IEnumerable<IoTEdgeModelListItemDto>> Search(string value)
     {
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(0);
@@ -299,7 +299,7 @@
                     .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    internal async Task ChangeModel(IoTEdgeModelListItem edgeModel)
+    internal async Task ChangeModel(IoTEdgeModelListItemDto edgeModel)
     {
 
         this._edgeModel = edgeModel;

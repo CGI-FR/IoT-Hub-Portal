@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Application.Services
         where TListItem : class, IDeviceModel
         where TModel : class, IDeviceModel
     {
-        Task<PaginatedResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter deviceModelFilter);
+        Task<PaginatedResultDto<DeviceModelDto>> GetDeviceModels(DeviceModelFilterDto deviceModelFilter);
 
         Task<TModel> GetDeviceModel(string deviceModelId);
 

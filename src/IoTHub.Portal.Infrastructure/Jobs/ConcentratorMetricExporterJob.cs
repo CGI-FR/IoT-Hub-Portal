@@ -14,11 +14,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     public class ConcentratorMetricExporterJob : IJob
     {
         private readonly ILogger<ConcentratorMetricExporterJob> logger;
-        private readonly PortalMetric portalMetric;
+        private readonly PortalMetricDto portalMetric;
 
         private readonly Counter concentratorCounter = Metrics.CreateCounter(MetricName.ConcentratorCount, "Concentrators count");
 
-        public ConcentratorMetricExporterJob(ILogger<ConcentratorMetricExporterJob> logger, PortalMetric portalMetric)
+        public ConcentratorMetricExporterJob(ILogger<ConcentratorMetricExporterJob> logger, PortalMetricDto portalMetric)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;

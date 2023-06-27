@@ -170,11 +170,11 @@ namespace IoTHub.Portal.Infrastructure.Azure.Helpers
         /// </summary>
         /// <param name="twin">the twin of the device we want.</param>
         /// <returns> List of GatewayModule.</returns>
-        public static IReadOnlyCollection<IoTEdgeModule> RetrieveModuleList(Twin twin)
+        public static IReadOnlyCollection<IoTEdgeModuleDto> RetrieveModuleList(Twin twin)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
-            var list = new List<IoTEdgeModule>();
+            var list = new List<IoTEdgeModuleDto>();
             var reportedProperties = JObject.Parse(twin.Properties.Reported.ToJson());
 
             if (!reportedProperties.TryGetValue("modules", out var modules))
@@ -186,7 +186,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Helpers
             {
                 var propertyObject = property.Value?.Value<JObject>();
 
-                var module = new IoTEdgeModule()
+                var module = new IoTEdgeModuleDto()
                 {
                     ModuleName = property.Key
                 };

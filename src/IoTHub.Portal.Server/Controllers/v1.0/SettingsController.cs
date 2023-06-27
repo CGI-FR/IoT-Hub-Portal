@@ -61,11 +61,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Get the portal settings.
         /// </summary>
         [HttpGet("portal", Name = "GET Portal settings")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PortalSettings))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PortalSettingsDto))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetPortalSetting()
         {
-            return Ok(new PortalSettings
+            return Ok(new PortalSettingsDto
             {
                 IsLoRaSupported = this.configHandler.IsLoRaEnabled,
                 PortalName = this.configHandler.PortalName ?? "Azure IoT Hub Portal",

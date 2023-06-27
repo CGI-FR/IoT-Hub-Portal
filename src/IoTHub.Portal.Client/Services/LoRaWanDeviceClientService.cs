@@ -20,17 +20,17 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public Task<LoRaDeviceDetails> GetDevice(string deviceId)
+        public Task<LoRaDeviceDetailsDto> GetDevice(string deviceId)
         {
-            return this.http.GetFromJsonAsync<LoRaDeviceDetails>($"api/lorawan/devices/{deviceId}")!;
+            return this.http.GetFromJsonAsync<LoRaDeviceDetailsDto>($"api/lorawan/devices/{deviceId}")!;
         }
 
-        public Task CreateDevice(LoRaDeviceDetails device)
+        public Task CreateDevice(LoRaDeviceDetailsDto device)
         {
             return this.http.PostAsJsonAsync("api/lorawan/devices", device);
         }
 
-        public Task UpdateDevice(LoRaDeviceDetails device)
+        public Task UpdateDevice(LoRaDeviceDetailsDto device)
         {
             return this.http.PutAsJsonAsync("api/lorawan/devices", device);
         }
@@ -45,9 +45,9 @@ namespace IoTHub.Portal.Client.Services
             return this.http.PostAsJsonAsync($"api/lorawan/devices/{deviceId}/_command/{commandId}", string.Empty);
         }
 
-        public Task<LoRaGatewayIDList> GetGatewayIdList()
+        public Task<LoRaGatewayIDListDto> GetGatewayIdList()
         {
-            return this.http.GetFromJsonAsync<LoRaGatewayIDList>($"api/lorawan/devices/gateways")!;
+            return this.http.GetFromJsonAsync<LoRaGatewayIDListDto>($"api/lorawan/devices/gateways")!;
         }
 
         public async Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)

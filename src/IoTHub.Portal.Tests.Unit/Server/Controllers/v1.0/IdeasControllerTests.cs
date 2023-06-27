@@ -40,8 +40,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         public async Task SubmitIdeaShouldSubmitIdea()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
-            var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
+            var expectedIdeaResponse = Fixture.Create<IdeaResponseDto>();
 
             ideasController.ControllerContext = new ControllerContext
             {

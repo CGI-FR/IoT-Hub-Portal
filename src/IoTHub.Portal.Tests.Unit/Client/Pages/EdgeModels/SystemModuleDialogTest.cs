@@ -27,12 +27,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public async Task SystemModuleDialogMustCloseOnCLickOnCloseButton()
         {
             // Arrange
-            var module = new EdgeModelSystemModule("edgeAgent")
+            var module = new EdgeModelSystemModuleDto("edgeAgent")
             {
                 ImageUri = Fixture.Create<string>(),
-                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>()
                 {
-                    new IoTEdgeModuleEnvironmentVariable()
+                    new IoTEdgeModuleEnvironmentVariableDto()
                     {
                         Name = Fixture.Create<string>(),
                         Value = Fixture.Create<string>()

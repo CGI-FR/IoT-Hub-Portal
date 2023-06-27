@@ -33,7 +33,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET Device model list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public override async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems([FromQuery] DeviceModelFilter deviceModelFilter)
+        public override async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems([FromQuery] DeviceModelFilterDto deviceModelFilter)
         {
             return await base.GetItems(deviceModelFilter);
         }

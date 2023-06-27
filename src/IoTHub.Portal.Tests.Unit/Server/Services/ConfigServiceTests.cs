@@ -498,11 +498,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 configTest
             };
 
-            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
-            var modules = new Dictionary<string, ConfigModule>()
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesiredDto();
+            var modules = new Dictionary<string, ConfigModuleDto>()
             {
-                {"module test 01", new ConfigModule() },
-                {"module test 02", new ConfigModule() }
+                {"module test 01", new ConfigModuleDto() },
+                {"module test 02", new ConfigModuleDto() }
             };
 
             edgeAgentPropertiesDesired.Modules = modules;
@@ -575,11 +575,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 configTest
             };
 
-            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
-            var modules = new Dictionary<string, ConfigModule>()
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesiredDto();
+            var modules = new Dictionary<string, ConfigModuleDto>()
             {
-                {"module test 01", new ConfigModule() },
-                {"module test 02", new ConfigModule() }
+                {"module test 01", new ConfigModuleDto() },
+                {"module test 02", new ConfigModuleDto() }
             };
 
             edgeAgentPropertiesDesired.Modules = modules;
@@ -624,10 +624,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 configTest
             };
 
-            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
-            var modules = new Dictionary<string, ConfigModule>()
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesiredDto();
+            var modules = new Dictionary<string, ConfigModuleDto>()
             {
-                {"module test 01", new ConfigModule() },
+                {"module test 01", new ConfigModuleDto() },
             };
 
             edgeAgentPropertiesDesired.Modules = modules;
@@ -700,11 +700,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 configTest
             };
 
-            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
-            var modules = new Dictionary<string, ConfigModule>()
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesiredDto();
+            var modules = new Dictionary<string, ConfigModuleDto>()
             {
-                {"module test 01", new ConfigModule() },
-                {"module test 02", new ConfigModule() }
+                {"module test 01", new ConfigModuleDto() },
+                {"module test 02", new ConfigModuleDto() }
             };
 
             edgeAgentPropertiesDesired.Modules = modules;
@@ -749,7 +749,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 configTest
             };
 
-            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesiredDto();
             var routes = new Dictionary<string, object>()
             {
                 {"Route1", new object() },
@@ -826,7 +826,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 configTest
             };
 
-            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesiredDto();
             var routes = new Dictionary<string, object>()
             {
                 {"Route1", new object() },
@@ -870,7 +870,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var configsServices = CreateConfigsServices();
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 ModelId = modelId
             };
@@ -907,7 +907,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var configsServices = CreateConfigsServices();
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 ModelId = modelId
             };
@@ -943,7 +943,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var configsServices = CreateConfigsServices();
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 ModelId = modelId
             };
@@ -1000,7 +1000,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var publicEdgeModules = await configsServices.GetPublicEdgeModules();
 
             //Assert
-            _ = publicEdgeModules.Should().BeEquivalentTo(Array.Empty<IoTEdgeModule>());
+            _ = publicEdgeModules.Should().BeEquivalentTo(Array.Empty<IoTEdgeModuleDto>());
             this.mockRepository.VerifyAll();
         }
     }

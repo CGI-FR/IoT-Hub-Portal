@@ -12,7 +12,7 @@
 
 @inject IDialogService DialogService
 @inject NavigationManager navigationManager
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
 @inject IJSRuntime JS
@@ -115,7 +115,7 @@
         </MudExpansionPanels>
     </MudItem>
     <MudItem xs="12">
-        <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+        <MudTable T="DeviceListItemDto" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 5%;" />
                 <col style="width: 40%;" />
@@ -167,10 +167,10 @@
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
-                <MudTh><MudTableSortLabel id="sortDeviceId" SortLabel="Id" T="DeviceListItem">Device</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="DeviceListItem">Connection state</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="StatusUpdatedTime" T="DeviceListItem">Last status update</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel id="sortDeviceId" SortLabel="Id" T="DeviceListItemDto">Device</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItemDto">Allowed</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="DeviceListItemDto">Connection state</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="StatusUpdatedTime" T="DeviceListItemDto">Last status update</MudTableSortLabel></MudTh>
                 @if (Portal.IsLoRaSupported)
                 {
                     <MudTh Style="text-align: center">Telemetry</MudTh>
@@ -267,7 +267,7 @@
     private string? searchStatus;
     private string? searchState;
 
-    private MudTable<DeviceListItem>? table;
+    private MudTable<DeviceListItemDto>? table;
     private Dictionary<string, string> searchTags = new();
 
     private bool IsLoading { get; set; } = true;   
@@ -300,7 +300,7 @@
         }
     }
 
-    private async Task<TableData<DeviceListItem>> LoadItems(TableState state)
+    private async Task<TableData<DeviceListItemDto>> LoadItems(TableState state)
     {
         try
         {
@@ -330,7 +330,7 @@
 
             var result = await DeviceClientService.GetDevices(uri);
 
-            return new TableData<DeviceListItem>
+            return new TableData<DeviceListItemDto>
                 {
                     Items = result.Items,
                     TotalItems = result.TotalItems
@@ -340,7 +340,7 @@
         {
             Error?.ProcessProblemDetails(exception);
 
-            return new TableData<DeviceListItem>();
+            return new TableData<DeviceListItemDto>();
         }
         finally
         {
@@ -383,7 +383,7 @@
     /// </summary>
     /// <param name="device">Device to delete from the hub</param>
     /// <returns></returns>
-    private async Task DeleteDevice(DeviceListItem device)
+    private async Task DeleteDevice(DeviceListItemDto device)
     {
         var parameters = new DialogParameters();
         parameters.Add("deviceID", device.DeviceID);
@@ -400,7 +400,7 @@
         Search();
     }
 
-    private void GoToDetails(DeviceListItem item)
+    private void GoToDetails(DeviceListItemDto item)
     {
         navigationManager.NavigateTo($"devices/{item.DeviceID}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
     }    
@@ -412,7 +412,7 @@
     /// <returns>Item of the device model list that matches the user's value</returns>
     public async Task<IEnumerable<DeviceModelDto>> Search(string value)
     {
-        var filter = new DeviceModelFilter
+        var filter = new DeviceModelFilterDto
         {
             SearchText = value,
             PageNumber = 0,
@@ -447,7 +447,7 @@
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
-    private async Task ShowDeviceTelemetry(DeviceListItem device)
+    private async Task ShowDeviceTelemetry(DeviceListItemDto device)
     {
         var parameters = new DialogParameters { { "DeviceID", device.DeviceID } };
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };

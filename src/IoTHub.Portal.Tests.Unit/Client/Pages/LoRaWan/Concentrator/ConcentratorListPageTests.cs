@@ -40,7 +40,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanConcentratorClientService.Object);
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = true });
         }
 
         [Test]

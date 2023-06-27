@@ -75,9 +75,9 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             await DeleteGreenGrassDeployments(awsGreenGrassDeployments);
         }
 
-        private async Task<List<IoTEdgeModel>> GetAllGreenGrassDeployments()
+        private async Task<List<IoTEdgeModelDto>> GetAllGreenGrassDeployments()
         {
-            var deployments = new List<IoTEdgeModel>();
+            var deployments = new List<IoTEdgeModelDto>();
 
             var nextToken = string.Empty;
 
@@ -106,7 +106,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                                 var s = await this.amazonIoTClient.DescribeThingGroupAsync(new Amazon.IoT.Model.DescribeThingGroupRequest { ThingGroupName = thinggroupName });
                                 if (s.QueryString != null)
                                 {
-                                    var iotEdgeModel = new IoTEdgeModel
+                                    var iotEdgeModel = new IoTEdgeModelDto
                                     {
                                         ModelId = deployment.DeploymentId, //Instead of giving a random Id here, we can give the deploymentID
                                         Name = deployment.DeploymentName,
@@ -133,7 +133,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             return deployments;
         }
 
-        private async Task CreateNonExisitingGreenGrassDeployment(IoTEdgeModel iotEdgeModel)
+        private async Task CreateNonExisitingGreenGrassDeployment(IoTEdgeModelDto iotEdgeModel)
         {
             var iotEdgeModels = (await this.edgeDeviceModelRepository.GetAllAsync())
                 .Where(edge => string.Equals(edge.ExternalIdentifier, iotEdgeModel.ExternalIdentifier, StringComparison.Ordinal)).ToList();
@@ -153,7 +153,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
 
         }
 
-        private async Task DeleteGreenGrassDeployments(List<IoTEdgeModel> edgeModels)
+        private async Task DeleteGreenGrassDeployments(List<IoTEdgeModelDto> edgeModels)
         {
             //Get All Deployments that are not in AWS
             var deploymentToDelete = (await this.edgeDeviceModelRepository.GetAllAsync())

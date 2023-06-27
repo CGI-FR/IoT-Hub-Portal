@@ -29,8 +29,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
     {
         private IExportManager exportManager;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
-        private Mock<IDeviceService<DeviceDetails>> mockDeviceService;
-        private Mock<IDeviceService<LoRaDeviceDetails>> mockLoraDeviceService;
+        private Mock<IDeviceService<DeviceDetailsDto>> mockDeviceService;
+        private Mock<IDeviceService<LoRaDeviceDetailsDto>> mockLoraDeviceService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelPropertiesService> mockDeviceModelPropertiesService;
         private Mock<IDevicePropertyService> mockDevicePropertyService;
@@ -41,8 +41,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             base.Setup();
 
             this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
-            this.mockDeviceService = MockRepository.Create<IDeviceService<DeviceDetails>>();
-            this.mockLoraDeviceService = MockRepository.Create<IDeviceService<LoRaDeviceDetails>>();
+            this.mockDeviceService = MockRepository.Create<IDeviceService<DeviceDetailsDto>>();
+            this.mockLoraDeviceService = MockRepository.Create<IDeviceService<LoRaDeviceDetailsDto>>();
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
             this.mockDeviceModelPropertiesService = MockRepository.Create<IDeviceModelPropertiesService>();
             this.mockDevicePropertyService = MockRepository.Create<IDevicePropertyService>();
@@ -256,13 +256,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             _ = this.mockLoraDeviceService.Setup(x => x.CheckIfDeviceExists(It.IsAny<string>()))
                 .ReturnsAsync(false);
 
-            _ = this.mockDeviceService.Setup(x => x.CreateDevice(It.IsAny<DeviceDetails>()))
-                .ReturnsAsync(new DeviceDetails());
+            _ = this.mockDeviceService.Setup(x => x.CreateDevice(It.IsAny<DeviceDetailsDto>()))
+                .ReturnsAsync(new DeviceDetailsDto());
 
-            _ = this.mockLoraDeviceService.Setup(x => x.CreateDevice(It.IsAny<LoRaDeviceDetails>()))
-                .ReturnsAsync(new LoRaDeviceDetails());
+            _ = this.mockLoraDeviceService.Setup(x => x.CreateDevice(It.IsAny<LoRaDeviceDetailsDto>()))
+                .ReturnsAsync(new LoRaDeviceDetailsDto());
 
-            _ = this.mockDevicePropertyService.Setup(x => x.SetProperties(It.IsAny<string>(), It.IsAny<IEnumerable<DevicePropertyValue>>()))
+            _ = this.mockDevicePropertyService.Setup(x => x.SetProperties(It.IsAny<string>(), It.IsAny<IEnumerable<DevicePropertyValueDto>>()))
                 .Returns(Task.CompletedTask);
 
             // Correct file format
@@ -316,13 +316,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             _ = this.mockLoraDeviceService.Setup(x => x.CheckIfDeviceExists(It.IsAny<string>()))
                 .ReturnsAsync(true);
 
-            _ = this.mockDeviceService.Setup(x => x.UpdateDevice(It.IsAny<DeviceDetails>()))
-                .ReturnsAsync(new DeviceDetails());
+            _ = this.mockDeviceService.Setup(x => x.UpdateDevice(It.IsAny<DeviceDetailsDto>()))
+                .ReturnsAsync(new DeviceDetailsDto());
 
-            _ = this.mockLoraDeviceService.Setup(x => x.UpdateDevice(It.IsAny<LoRaDeviceDetails>()))
-                .ReturnsAsync(new LoRaDeviceDetails());
+            _ = this.mockLoraDeviceService.Setup(x => x.UpdateDevice(It.IsAny<LoRaDeviceDetailsDto>()))
+                .ReturnsAsync(new LoRaDeviceDetailsDto());
 
-            _ = this.mockDevicePropertyService.Setup(x => x.SetProperties(It.IsAny<string>(), It.IsAny<IEnumerable<DevicePropertyValue>>()))
+            _ = this.mockDevicePropertyService.Setup(x => x.SetProperties(It.IsAny<string>(), It.IsAny<IEnumerable<DevicePropertyValueDto>>()))
                 .Returns(Task.CompletedTask);
 
             // Correct file format
@@ -425,10 +425,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             _ = this.mockLoraDeviceService.Setup(x => x.CheckIfDeviceExists(It.IsAny<string>()))
                 .ReturnsAsync(true);
 
-            _ = this.mockDeviceService.Setup(x => x.UpdateDevice(It.IsAny<DeviceDetails>()))
+            _ = this.mockDeviceService.Setup(x => x.UpdateDevice(It.IsAny<DeviceDetailsDto>()))
                 .Throws(new InternalServerErrorException("Unable to update the device."));
 
-            _ = this.mockLoraDeviceService.Setup(x => x.UpdateDevice(It.IsAny<LoRaDeviceDetails>()))
+            _ = this.mockLoraDeviceService.Setup(x => x.UpdateDevice(It.IsAny<LoRaDeviceDetailsDto>()))
                 .Throws(new InternalServerErrorException("Unable to update the device"));
 
             // Correct file format

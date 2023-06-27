@@ -17,11 +17,11 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public async Task<IdeaResponse> SubmitIdea(IdeaRequest ideaRequest)
+        public async Task<IdeaResponseDto> SubmitIdea(IdeaRequestDto ideaRequest)
         {
             var response = await this.http.PostAsJsonAsync("api/ideas", ideaRequest);
 
-            return await response.Content.ReadFromJsonAsync<IdeaResponse>() ?? new IdeaResponse();
+            return await response.Content.ReadFromJsonAsync<IdeaResponseDto>() ?? new IdeaResponseDto();
         }
     }
 }

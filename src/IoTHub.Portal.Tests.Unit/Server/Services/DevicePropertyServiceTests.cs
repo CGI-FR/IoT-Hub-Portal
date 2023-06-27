@@ -201,7 +201,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Act
             await this.devicePropertyService.SetProperties("aaa", new[]
             {
-                new DevicePropertyValue
+                new DevicePropertyValueDto
                 {
                     Name = "writable",
                     Value = "ccc"
@@ -230,7 +230,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Act
             var act = () => this.devicePropertyService.SetProperties("aaa", new[]
             {
-                new DevicePropertyValue
+                new DevicePropertyValueDto
                 {
                     Name = "writable",
                     Value = "ccc"
@@ -271,7 +271,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Act
             await this.devicePropertyService.SetProperties("aaa", new[]
             {
-                new DevicePropertyValue
+                new DevicePropertyValueDto
                 {
                     Name = "notwritable",
                     Value = "ccc"
@@ -314,7 +314,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Act
             await this.devicePropertyService.SetProperties("aaa", new[]
             {
-                new DevicePropertyValue
+                new DevicePropertyValueDto
                 {
                     Name = "unknown",
                     Value = "eee"

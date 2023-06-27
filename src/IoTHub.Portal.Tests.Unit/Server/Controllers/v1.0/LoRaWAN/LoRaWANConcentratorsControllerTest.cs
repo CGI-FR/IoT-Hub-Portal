@@ -64,7 +64,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             // Arrange
             var concentratorsController = CreateLoRaWANConcentratorsController();
 
-            var expectedPaginatedConcentrator= new PaginatedResult<ConcentratorDto>()
+            var expectedPaginatedConcentrator= new PaginatedResultDto<ConcentratorDto>()
             {
                 Data = Enumerable.Range(0, 100).Select(x => new ConcentratorDto
                 {
@@ -74,7 +74,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             };
 
             _ = this.mockLoRaWANConcentratorService.Setup(service => service.GetAllDeviceConcentrator(
-                    It.IsAny<ConcentratorFilter>()))
+                    It.IsAny<ConcentratorFilterDto>()))
                 .ReturnsAsync(expectedPaginatedConcentrator);
 
             var locationUrl = "http://location/concentrators";
@@ -84,7 +84,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
                 .Returns(locationUrl);
 
             // Act
-            var result = await concentratorsController.GetAllDeviceConcentrator(new ConcentratorFilter()).ConfigureAwait(false);
+            var result = await concentratorsController.GetAllDeviceConcentrator(new ConcentratorFilterDto()).ConfigureAwait(false);
 
 
             // Assert

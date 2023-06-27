@@ -159,12 +159,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
             var expectedContainerCreateOptions = /*lang=json,strict*/
                 "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"443/tcp\":[{\"HostPort\":\"443\"}]}}}";
 
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Name = "Model test",
                 Description = "Description Test",
-                EdgeModules = new List<IoTEdgeModule>()
+                EdgeModules = new List<IoTEdgeModuleDto>()
                 {
                     new()
                     {
@@ -172,31 +172,31 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                         Status = "running",
                         ImageURI = "image",
                         ContainerCreateOptions = expectedContainerCreateOptions,
-                        EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
+                        EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>()
                         {
                             new() { Name = "envTest01", Value = "test" }
                         },
-                        ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>()
+                        ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSettingDto>()
                     }
                 },
-                SystemModules = new List<EdgeModelSystemModule>()
+                SystemModules = new List<EdgeModelSystemModuleDto>()
                 {
-                    new EdgeModelSystemModule("edgeAgent")
+                    new EdgeModelSystemModuleDto("edgeAgent")
                     {
                         ImageUri = "image",
                         ContainerCreateOptions = Guid.NewGuid().ToString(),
-                        EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
+                        EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>()
                         {
-                            new IoTEdgeModuleEnvironmentVariable(){ Name ="test", Value = "test" }
+                            new IoTEdgeModuleEnvironmentVariableDto(){ Name ="test", Value = "test" }
                         }
                     },
-                    new EdgeModelSystemModule("edgeHub")
+                    new EdgeModelSystemModuleDto("edgeHub")
                     {
                         ImageUri = "image",
                         ContainerCreateOptions = Guid.NewGuid().ToString(),
-                        EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
+                        EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>()
                         {
-                            new IoTEdgeModuleEnvironmentVariable(){ Name ="test", Value = "test" }
+                            new IoTEdgeModuleEnvironmentVariableDto(){ Name ="test", Value = "test" }
                         }
                     }
                 }
@@ -209,7 +209,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<Dictionary<string, IDictionary<string, object>>>(result);
             Assert.AreEqual(2, result.Count);
-            var edgeHubPropertiesDesired = (EdgeAgentPropertiesDesired)result["$edgeAgent"]["properties.desired"];
+            var edgeHubPropertiesDesired = (EdgeAgentPropertiesDesiredDto)result["$edgeAgent"]["properties.desired"];
             _ = edgeHubPropertiesDesired.Modules[expectedModuleName].Settings.CreateOptions.Should()
                 .Be(expectedContainerCreateOptions);
         }
@@ -245,14 +245,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
         public void GenerateRoutesContentShouldReturnValue()
         {
             // Arrange
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Name = "Model test",
                 Description = "Description Test",
-                EdgeRoutes = new List<IoTEdgeRoute>()
+                EdgeRoutes = new List<IoTEdgeRouteDto>()
                 {
-                    new IoTEdgeRoute()
+                    new IoTEdgeRouteDto()
                     {
                         Name = "RouteName",
                         Value = "FROM source INTO sink",
@@ -267,7 +267,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<EdgeHubPropertiesDesired>(result);
+            Assert.IsAssignableFrom<EdgeHubPropertiesDesiredDto>(result);
 
             var firstRoute = result.Routes.FirstOrDefault();
             Assert.AreEqual("RouteName", firstRoute.Key);

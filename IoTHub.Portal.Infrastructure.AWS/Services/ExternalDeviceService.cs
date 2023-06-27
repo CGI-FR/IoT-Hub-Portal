@@ -418,9 +418,9 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             throw new NotImplementedException();
         }
 
-        public async Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device)
+        public async Task<DeviceCredentialsDto> GetEdgeDeviceCredentials(IoTEdgeDeviceDto device)
         {
-            DeviceCredentials deviceCredentials;
+            DeviceCredentialsDto deviceCredentials;
 
             try
             {
@@ -445,12 +445,12 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             return deviceCredentials;
         }
 
-        public Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
+        public Task<IEnumerable<IoTEdgeDeviceLogDto>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModuleDto edgeModule)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<DeviceCredentials> GetDeviceCredentials(IDeviceDetails device)
+        public async Task<DeviceCredentialsDto> GetDeviceCredentials(IDeviceDetails device)
         {
             try
             {
@@ -464,7 +464,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             }
         }
 
-        public async Task<ConfigItem> RetrieveLastConfiguration(IoTEdgeDevice ioTEdgeDevice)
+        public async Task<ConfigItemDto> RetrieveLastConfiguration(IoTEdgeDeviceDto ioTEdgeDevice)
         {
             try
             {
@@ -473,7 +473,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
                     CoreDeviceThingName = ioTEdgeDevice.DeviceName
                 });
 
-                return new ConfigItem
+                return new ConfigItemDto
                 {
                     Name = coreDevice.CoreDeviceThingName,
                     DateCreation = coreDevice.LastStatusUpdateTimestamp,
@@ -517,7 +517,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             }
         }
 
-        private async Task<Tuple<DeviceCredentials, string>> GenerateCertificate(string deviceName)
+        private async Task<Tuple<DeviceCredentialsDto, string>> GenerateCertificate(string deviceName)
         {
 
             try
@@ -533,10 +533,10 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
                     _ = await CreateCertificateSecret(deviceName, response.CertificatePem);
                     _ = await AttachCertificateToThing(deviceName, response.CertificateArn);
 
-                    return new Tuple<DeviceCredentials, string>(new DeviceCredentials
+                    return new Tuple<DeviceCredentialsDto, string>(new DeviceCredentialsDto
                     {
                         AuthenticationMode = AuthenticationMode.Certificate,
-                        CertificateCredentials = new CertificateCredentials
+                        CertificateCredentials = new CertificateCredentialsDto
                         {
                             CertificatePem = response.CertificatePem,
                             PrivateKey = response.KeyPair.PrivateKey,
@@ -624,15 +624,15 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
         }
 
 
-        private async Task<DeviceCredentials> GetDeviceCredentialsFromSecretsManager(string deviceName)
+        private async Task<DeviceCredentialsDto> GetDeviceCredentialsFromSecretsManager(string deviceName)
         {
             var certificate = await GetSecret(deviceName + CertificateKey);
             var privateKey = await GetSecret(deviceName + PrivateKeyKey);
             var publicKey = await GetSecret(deviceName + PublicKeyKey);
-            return new DeviceCredentials
+            return new DeviceCredentialsDto
             {
                 AuthenticationMode = AuthenticationMode.Certificate,
-                CertificateCredentials = new CertificateCredentials
+                CertificateCredentials = new CertificateCredentialsDto
                 {
                     CertificatePem = certificate.SecretString,
                     PrivateKey = privateKey.SecretString,
@@ -649,7 +649,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             });
         }
 
-        public async Task<string> CreateEnrollementScript(string template, IoTEdgeDevice device)
+        public async Task<string> CreateEnrollementScript(string template, IoTEdgeDeviceDto device)
         {
             try
             {
@@ -690,7 +690,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             throw new NotImplementedException();
         }
 
-        public async Task RemoveDeviceCredentials(IoTEdgeDevice device)
+        public async Task RemoveDeviceCredentials(IoTEdgeDeviceDto device)
         {
             try
             {
@@ -724,7 +724,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
         }
 
 
-        private async Task RemoveGreengrassCertificateFromPrincipal(IoTEdgeDevice device, string principalId)
+        private async Task RemoveGreengrassCertificateFromPrincipal(IoTEdgeDeviceDto device, string principalId)
         {
             foreach (var item in configHandler.AWSGreengrassRequiredRoles)
             {

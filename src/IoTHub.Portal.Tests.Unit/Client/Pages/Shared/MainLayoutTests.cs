@@ -30,7 +30,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 
             _ = TestContext.AddBlazoredLocalStorage();
             _ = Services.AddScoped<ILayoutService, LayoutService>();
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false,

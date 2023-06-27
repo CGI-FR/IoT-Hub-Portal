@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Server.Services
             }
         }
 
-        public async Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
+        public async Task<List<IoTEdgeModuleDto>> GetConfigModuleList(string modelId)
         {
             var configList = await GetIoTEdgeConfigurations();
 
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Server.Services
                 throw new InternalServerErrorException("Config does not exist.");
             }
 
-            var moduleList = new List<IoTEdgeModule>();
+            var moduleList = new List<IoTEdgeModuleDto>();
 
             // Details of every modules are stored within the EdgeAgent module data
             if (config.Content.ModulesContent != null
@@ -108,7 +108,7 @@ namespace IoTHub.Portal.Server.Services
             return moduleList;
         }
 
-        public async Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId)
+        public async Task<List<EdgeModelSystemModuleDto>> GetModelSystemModule(string modelId)
         {
             var configList = await GetIoTEdgeConfigurations();
 
@@ -119,7 +119,7 @@ namespace IoTHub.Portal.Server.Services
                 throw new InternalServerErrorException("Config does not exist.");
             }
 
-            var moduleList = new List<EdgeModelSystemModule>();
+            var moduleList = new List<EdgeModelSystemModuleDto>();
 
             // Details of every modules are stored within the EdgeAgent module data
             if (config.Content.ModulesContent != null
@@ -137,7 +137,7 @@ namespace IoTHub.Portal.Server.Services
                 {
                     foreach (var newModule in modules.Values<JProperty>().Select(module => ConfigHelper.CreateGatewayModule(config, module)))
                     {
-                        moduleList.Add(new EdgeModelSystemModule(newModule.ModuleName)
+                        moduleList.Add(new EdgeModelSystemModuleDto(newModule.ModuleName)
                         {
                             ImageUri = newModule.ImageURI,
                             EnvironmentVariables = newModule.EnvironmentVariables,
@@ -150,7 +150,7 @@ namespace IoTHub.Portal.Server.Services
             return moduleList;
         }
 
-        public async Task<List<IoTEdgeRoute>> GetConfigRouteList(string modelId)
+        public async Task<List<IoTEdgeRouteDto>> GetConfigRouteList(string modelId)
         {
             var configList = await GetIoTEdgeConfigurations();
 
@@ -161,7 +161,7 @@ namespace IoTHub.Portal.Server.Services
                 throw new InternalServerErrorException("Config does not exist.");
             }
 
-            var routeList = new List<IoTEdgeRoute>();
+            var routeList = new List<IoTEdgeRouteDto>();
 
             // Details of routes are stored within the EdgeHub properties.desired
             if (config.Content.ModulesContent != null
@@ -236,7 +236,7 @@ namespace IoTHub.Portal.Server.Services
             }
         }
 
-        public async Task<string> RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
+        public async Task<string> RollOutEdgeModelConfiguration(IoTEdgeModelDto edgeModel)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
@@ -357,9 +357,9 @@ namespace IoTHub.Portal.Server.Services
             }
         }
 
-        public Task<IEnumerable<IoTEdgeModule>> GetPublicEdgeModules()
+        public Task<IEnumerable<IoTEdgeModuleDto>> GetPublicEdgeModules()
         {
-            return Task.FromResult<IEnumerable<IoTEdgeModule>>(Array.Empty<IoTEdgeModule>());
+            return Task.FromResult<IEnumerable<IoTEdgeModuleDto>>(Array.Empty<IoTEdgeModuleDto>());
         }
     }
 }

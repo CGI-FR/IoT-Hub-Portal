@@ -38,7 +38,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the device models.
         /// </summary>
         /// <returns>The list of device models.</returns>
-        public virtual async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems(DeviceModelFilter deviceModelFilter)
+        public virtual async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems(DeviceModelFilterDto deviceModelFilter)
         {
             var paginatedDevices = await this.deviceModelService.GetDeviceModels(deviceModelFilter);
 

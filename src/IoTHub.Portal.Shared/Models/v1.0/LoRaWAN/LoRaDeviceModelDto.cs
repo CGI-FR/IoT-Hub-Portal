@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
     /// <summary>
     /// LoRa Device model.
     /// </summary>
-    public class LoRaDeviceModelDto : LoRaDeviceBase, IDeviceModel
+    public class LoRaDeviceModelDto : LoRaDeviceBaseDto, IDeviceModel
     {
         /// <summary>
         /// The device model identifier.

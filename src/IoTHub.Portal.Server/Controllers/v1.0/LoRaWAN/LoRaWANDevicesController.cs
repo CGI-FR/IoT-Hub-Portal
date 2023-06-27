@@ -21,17 +21,17 @@ namespace IoTHub.Portal.Server.Controllers.V10
     [Route("api/lorawan/devices")]
     [ApiExplorerSettings(GroupName = "LoRa WAN")]
     [LoRaFeatureActiveFilter]
-    public class LoRaWANDevicesController : DevicesControllerBase<LoRaDeviceDetails>
+    public class LoRaWANDevicesController : DevicesControllerBase<LoRaDeviceDetailsDto>
     {
         private readonly ILoRaWANCommandService loRaWanCommandService;
-        private readonly LoRaGatewayIDList gatewayIdList;
-        private readonly IDeviceService<LoRaDeviceDetails> deviceService;
+        private readonly LoRaGatewayIDListDto gatewayIdList;
+        private readonly IDeviceService<LoRaDeviceDetailsDto> deviceService;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
             ILoRaWANCommandService loRaWanCommandService,
-            IDeviceService<LoRaDeviceDetails> deviceService,
-            LoRaGatewayIDList gatewayIdList)
+            IDeviceService<LoRaDeviceDetailsDto> deviceService,
+            LoRaGatewayIDListDto gatewayIdList)
             : base(logger, deviceService)
         {
             this.loRaWanCommandService = loRaWanCommandService;
@@ -50,7 +50,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="orderBy"></param>
         /// <param name="modelId"></param>
         [HttpGet(Name = "GET LoRaWAN device list")]
-        public Task<PaginationResult<DeviceListItem>> SearchItems(
+        public Task<PaginationResult<DeviceListItemDto>> SearchItems(
             string searchText = null,
             bool? searchStatus = null,
             bool? searchState = null,
@@ -67,7 +67,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpGet("{deviceID}", Name = "GET LoRaWAN device details")]
-        public override Task<LoRaDeviceDetails> GetItem(string deviceID)
+        public override Task<LoRaDeviceDetailsDto> GetItem(string deviceID)
         {
             return base.GetItem(deviceID);
         }
@@ -77,7 +77,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPost(Name = "POST Create LoRaWAN device")]
-        public override Task<IActionResult> CreateDeviceAsync(LoRaDeviceDetails device)
+        public override Task<IActionResult> CreateDeviceAsync(LoRaDeviceDetailsDto device)
         {
             return base.CreateDeviceAsync(device);
         }
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPut(Name = "PUT Update LoRaWAN device")]
-        public override Task<IActionResult> UpdateDeviceAsync(LoRaDeviceDetails device)
+        public override Task<IActionResult> UpdateDeviceAsync(LoRaDeviceDetailsDto device)
         {
             return base.UpdateDeviceAsync(device);
         }
@@ -117,13 +117,13 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public override Task<ActionResult<DeviceCredentials>> GetCredentials(string deviceID)
+        public override Task<ActionResult<DeviceCredentialsDto>> GetCredentials(string deviceID)
         {
-            return Task.FromResult<ActionResult<DeviceCredentials>>(NotFound());
+            return Task.FromResult<ActionResult<DeviceCredentialsDto>>(NotFound());
         }
 
         [HttpGet("gateways", Name = "Get Gateways")]
-        public ActionResult<LoRaGatewayIDList> GetGateways()
+        public ActionResult<LoRaGatewayIDListDto> GetGateways()
         {
             return Ok(this.gatewayIdList);
         }

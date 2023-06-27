@@ -149,9 +149,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var expectedFrequencyPlans = new []
             {
-                    new FrequencyPlan(),
-                    new FrequencyPlan(),
-                    new FrequencyPlan()
+                    new FrequencyPlanDto(),
+                    new FrequencyPlanDto(),
+                    new FrequencyPlanDto()
             };
 
             _ = MockHttpClient.When(HttpMethod.Get, "/api/lorawan/freqencyplans")

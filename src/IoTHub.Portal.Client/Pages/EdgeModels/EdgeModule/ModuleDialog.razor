@@ -3,7 +3,7 @@
 @using IoTHub.Portal.Models.v10
 @using IoTHub.Portal.Shared.Constants
 
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 
 <MudDialog DisableSidePadding="true">
     <DialogContent>
@@ -11,7 +11,7 @@
             <MudGrid>
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="@currentModuleName"
-                                  id=@nameof(IoTEdgeModule.ModuleName)
+                                  id=@nameof(IoTEdgeModuleDto.ModuleName)
                                   Label="Module name"
                                   Variant="Variant.Outlined"
                                   For="@(() => Module.ModuleName)"
@@ -19,7 +19,7 @@
                 </MudItem>
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="@currentImageUri"
-                                  id=@nameof(IoTEdgeModule.ImageURI)
+                                  id=@nameof(IoTEdgeModuleDto.ImageURI)
                                   Label="Image URI"
                                   Variant="Variant.Outlined"
                                   For="@(() => Module.ImageURI)"
@@ -30,7 +30,7 @@
                 {
                     <MudItem xs="12">
                         <MudTextField @bind-Value="@currentContainerCreateOptions"
-                                      id=@nameof(IoTEdgeModule.ContainerCreateOptions)
+                                      id=@nameof(IoTEdgeModuleDto.ContainerCreateOptions)
                                   Label="Container Create Options"
                                   Variant="Variant.Outlined"
                                   For="@(() => Module.ContainerCreateOptions)" />
@@ -43,7 +43,7 @@
                 {
                     <MudItem xs="5">
                         <MudTextField @bind-Value="@currentNumVersion"
-                                      id=@nameof(IoTEdgeModule.Version)
+                                      id=@nameof(IoTEdgeModuleDto.Version)
                                   Label="Version Number"
                                   Variant="Variant.Outlined"
                                   For="@(() => Module.Version)"
@@ -86,16 +86,16 @@
     MudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter]
-    public IoTEdgeModule Module { get; set; } = default!;
+    public IoTEdgeModuleDto Module { get; set; } = default!;
 
     private string currentModuleName = default!;
     private string currentImageUri = default!;
     private string currentContainerCreateOptions = default!;
     private string currentNumVersion = "1.0.0";
 
-    private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
-    private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings = new();
-    private List<IoTEdgeModuleCommand> currentCommands = new();
+    private List<IoTEdgeModuleEnvironmentVariableDto> currentEnvironmentVariables = new();
+    private List<IoTEdgeModuleTwinSeDtotting> currentModuleIdentityTwinSettings = new();
+    private List<IoTEdgeModuleCommandDto> currentCommands = new();
 
 
     public bool IsLoading;
@@ -108,9 +108,9 @@
         currentImageUri = Module.ImageURI;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
         currentNumVersion = Module.Version;
-        currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
-        currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(Module.ModuleIdentityTwinSettings.ToArray());
-        currentCommands = new List<IoTEdgeModuleCommand>(Module.Commands.ToArray());
+        currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>(Module.EnvironmentVariables.ToArray());
+        currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSeDtotting>(Module.ModuleIdentityTwinSettings.ToArray());
+        currentCommands = new List<IoTEdgeModuleCommandDto>(Module.Commands.ToArray());
         await Task.Delay(0);
         IsLoading = false;
     }
@@ -124,9 +124,9 @@
         if (Portal.CloudProvider.Equals(CloudProviders.Azure)) { Module.Version = " "; }
         else { Module.Version = currentNumVersion; }
 
-        Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
-        Module.ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(currentModuleIdentityTwinSettings.ToArray());
-        Module.Commands = new List<IoTEdgeModuleCommand>(currentCommands.ToArray());
+        Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>(currentEnvironmentVariables.ToArray());
+        Module.ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSeDtotting>(currentModuleIdentityTwinSettings.ToArray());
+        Module.Commands = new List<IoTEdgeModuleCommandDto>(currentCommands.ToArray());
         MudDialog.Close(DialogResult.Ok(true));
     }
 }

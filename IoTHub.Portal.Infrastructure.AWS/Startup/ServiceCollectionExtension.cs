@@ -61,7 +61,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Startup
             return services
                 .AddTransient<IExternalDeviceService, ExternalDeviceService>()
                 .AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>))
-                .AddTransient<IDeviceService<DeviceDetails>, DeviceService>()
+                .AddTransient<IDeviceService<DeviceDetailsDto>, DeviceService>()
                 .AddTransient<IDevicePropertyService, DevicePropertyService>()
                 .AddTransient<IConfigService, ConfigService>()
                 .AddTransient<IEdgeModelService, EdgeModelService>()

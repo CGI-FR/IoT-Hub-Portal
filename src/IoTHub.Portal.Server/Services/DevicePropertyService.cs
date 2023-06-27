@@ -26,7 +26,7 @@ namespace IoTHub.Portal.Server.Services
             this.deviceModelPropertiesService = deviceModelPropertiesService;
         }
 
-        public async Task<IEnumerable<DevicePropertyValue>> GetProperties(string deviceId)
+        public async Task<IEnumerable<DevicePropertyValueDto>> GetProperties(string deviceId)
         {
             var device = await this.externalDevicesService.GetDeviceTwin(deviceId);
 
@@ -35,7 +35,7 @@ namespace IoTHub.Portal.Server.Services
                 throw new ResourceNotFoundException($"Unable to find the device {deviceId}");
             }
 
-            var modelId = DeviceHelper.RetrieveTagValue(device, nameof(DeviceDetails.ModelId));
+            var modelId = DeviceHelper.RetrieveTagValue(device, nameof(DeviceDetailsDto.ModelId));
 
             if (string.IsNullOrEmpty(modelId))
             {
@@ -53,7 +53,7 @@ namespace IoTHub.Portal.Server.Services
                 throw new InternalServerErrorException($"Unable to get templates properties fro device with id {deviceId}: {e.Message}", e);
             }
 
-            var result = new List<DevicePropertyValue>();
+            var result = new List<DevicePropertyValueDto>();
             JObject desiredPropertiesAsJson;
             JObject reportedPropertiesAsJson;
 
@@ -80,7 +80,7 @@ namespace IoTHub.Portal.Server.Services
                 var value = item.IsWritable ? desiredPropertiesAsJson.SelectToken(item.Name)?.Value<string>() :
                         reportedPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
 
-                result.Add(new DevicePropertyValue
+                result.Add(new DevicePropertyValueDto
                 {
                     DisplayName = item.DisplayName,
                     IsWritable = item.IsWritable,
@@ -93,7 +93,7 @@ namespace IoTHub.Portal.Server.Services
             return result;
         }
 
-        public async Task SetProperties(string deviceId, IEnumerable<DevicePropertyValue> devicePropertyValues)
+        public async Task SetProperties(string deviceId, IEnumerable<DevicePropertyValueDto> devicePropertyValues)
         {
             var device = await this.externalDevicesService.GetDeviceTwin(deviceId);
 
@@ -102,7 +102,7 @@ namespace IoTHub.Portal.Server.Services
                 throw new ResourceNotFoundException($"Unable to find the device {deviceId}");
             }
 
-            var modelId = DeviceHelper.RetrieveTagValue(device, nameof(DeviceDetails.ModelId));
+            var modelId = DeviceHelper.RetrieveTagValue(device, nameof(DeviceDetailsDto.ModelId));
 
             if (string.IsNullOrEmpty(modelId))
             {

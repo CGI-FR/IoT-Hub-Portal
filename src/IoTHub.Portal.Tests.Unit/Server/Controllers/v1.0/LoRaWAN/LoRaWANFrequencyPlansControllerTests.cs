@@ -29,7 +29,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 
             // Assert
             Assert.NotNull(result);
-            Assert.IsAssignableFrom<ActionResult<IEnumerable<FrequencyPlan>>>(result);
+            Assert.IsAssignableFrom<ActionResult<IEnumerable<FrequencyPlanDto>>>(result);
             base.MockRepository.VerifyAll();
         }
     }

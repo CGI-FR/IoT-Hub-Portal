@@ -98,8 +98,8 @@ namespace IoTHub.Portal.Infrastructure.Azure.Startup
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
             return services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>()
-                .AddTransient<IDeviceService<DeviceDetails>, DeviceService>()
-                .AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>()
+                .AddTransient<IDeviceService<DeviceDetailsDto>, DeviceService>()
+                .AddTransient<IDeviceService<LoRaDeviceDetailsDto>, LoRaWanDeviceService>()
                             .AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
         }
 

@@ -78,7 +78,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = await DbContext.SaveChangesAsync();
 
             _ = this.mockConcentratorRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<Concentrator, bool>>>(), default))
-                .ReturnsAsync(new PaginatedResult<Concentrator>
+                .ReturnsAsync(new PaginatedResultDto<Concentrator>
                 {
                     Data = expectedDevices.Skip(expectedCurrentPage * expectedPageSize).Take(expectedPageSize).ToList(),
                     PageSize = expectedPageSize,
@@ -87,10 +87,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 });
 
             // Act
-            var result = await this.concentratorService.GetAllDeviceConcentrator(new ConcentratorFilter());
+            var result = await this.concentratorService.GetAllDeviceConcentrator(new ConcentratorFilterDto());
 
             // Assert
-            Assert.IsAssignableFrom<PaginatedResult<ConcentratorDto>>(result);
+            Assert.IsAssignableFrom<PaginatedResultDto<ConcentratorDto>>(result);
             _ = result.Data.Count.Should().Be(expectedPageSize);
             _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
             _ = result.PageSize.Should().Be(expectedPageSize);
@@ -111,7 +111,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = await DbContext.SaveChangesAsync();
 
             _ = this.mockConcentratorRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<Concentrator, bool>>>(), default))
-                .ReturnsAsync(new PaginatedResult<Concentrator>
+                .ReturnsAsync(new PaginatedResultDto<Concentrator>
                 {
                     Data = expectedDevices.Skip(expectedCurrentPage * expectedPageSize).Take(expectedPageSize).ToList(),
                     PageSize = expectedPageSize,
@@ -119,7 +119,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                     TotalCount = expectedTotalDevicesCount
                 });
 
-            var concentratorFilter = new ConcentratorFilter
+            var concentratorFilter = new ConcentratorFilterDto
             {
                 SearchText = "keyword",
                 Status = true,
@@ -130,7 +130,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var result = await this.concentratorService.GetAllDeviceConcentrator(concentratorFilter);
 
             // Assert
-            Assert.IsAssignableFrom<PaginatedResult<ConcentratorDto>>(result);
+            Assert.IsAssignableFrom<PaginatedResultDto<ConcentratorDto>>(result);
             _ = result.Data.Count.Should().Be(expectedPageSize);
             _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
             _ = result.PageSize.Should().Be(expectedPageSize);
@@ -190,7 +190,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin { DeviceId = expectedConcentratorDto.DeviceId });
 
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
-                .ReturnsAsync(new RouterConfig());
+                .ReturnsAsync(new RouterConfigDto());
 
             //this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
             //    .Verifiable();
@@ -223,7 +223,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin { DeviceId = expectedConcentratorDto.DeviceId });
 
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
-                .ReturnsAsync(new RouterConfig());
+                .ReturnsAsync(new RouterConfigDto());
 
             //this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
             //    .Verifiable();
@@ -265,7 +265,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
-                .ReturnsAsync(new RouterConfig());
+                .ReturnsAsync(new RouterConfigDto());
 
             _ = this.mockExternalDeviceService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
@@ -298,7 +298,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
-                .ReturnsAsync(new RouterConfig());
+                .ReturnsAsync(new RouterConfigDto());
 
             //this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
             //    .Verifiable();
@@ -340,7 +340,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
-                .ReturnsAsync(new RouterConfig());
+                .ReturnsAsync(new RouterConfigDto());
 
             //this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
             //    .Verifiable();

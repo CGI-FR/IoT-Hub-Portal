@@ -28,19 +28,19 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<IoTEdgeModelListItem>>> GetEdgeModelList([FromQuery] EdgeModelFilter edgeModelFilter)
+        public async Task<ActionResult<IEnumerable<IoTEdgeModelListItemDto>>> GetEdgeModelList([FromQuery] EdgeModelFilterDto edgeModelFilter)
         {
             return Ok(await this.edgeModelService.GetEdgeModels(edgeModelFilter));
         }
 
         [HttpGet("{edgeModelId}")]
-        public async Task<ActionResult<IoTEdgeModel>> GetEdgeDeviceModel(string edgeModelId)
+        public async Task<ActionResult<IoTEdgeModelDto>> GetEdgeDeviceModel(string edgeModelId)
         {
             return Ok(await this.edgeModelService.GetEdgeModel(edgeModelId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateEdgeModel(IoTEdgeModel EdgeModel)
+        public async Task<IActionResult> CreateEdgeModel(IoTEdgeModelDto EdgeModel)
         {
             await this.edgeModelService.CreateEdgeModel(EdgeModel);
 
@@ -48,7 +48,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateEdgeModel(IoTEdgeModel EdgeModel)
+        public async Task<IActionResult> UpdateEdgeModel(IoTEdgeModelDto EdgeModel)
         {
             await this.edgeModelService.UpdateEdgeModel(EdgeModel);
 
@@ -116,7 +116,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         [HttpGet("public-modules", Name = "GET edge public modules")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual async Task<ActionResult<IEnumerable<IoTEdgeModel>>> GetPublicEdgeModules()
+        public virtual async Task<ActionResult<IEnumerable<IoTEdgeModelDto>>> GetPublicEdgeModules()
         {
             return Ok(await this.edgeModelService.GetPublicEdgeModules());
         }

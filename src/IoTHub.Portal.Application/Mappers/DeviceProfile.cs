@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Application.Mappers
     {
         public DeviceProfile()
         {
-            _ = CreateMap<DeviceDetails, Device>()
+            _ = CreateMap<DeviceDetailsDto, Device>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceID))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Application.Mappers
                     Value = pair.Value
                 })));
 
-            _ = CreateMap<Device, DeviceDetails>()
+            _ = CreateMap<Device, DeviceDetailsDto>()
                 .ForMember(dest => dest.DeviceID, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ModelId, opts => opts.MapFrom(src => src.DeviceModelId))
@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Application.Mappers
 
             _ = CreateMap<LorawanDevice, LorawanDevice>();
 
-            _ = CreateMap<LoRaDeviceDetails, LorawanDevice>()
+            _ = CreateMap<LoRaDeviceDetailsDto, LorawanDevice>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceID))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
@@ -42,7 +42,7 @@ namespace IoTHub.Portal.Application.Mappers
                     Value = pair.Value
                 })));
 
-            _ = CreateMap<LorawanDevice, LoRaDeviceDetails>()
+            _ = CreateMap<LorawanDevice, LoRaDeviceDetailsDto>()
                 .ForMember(dest => dest.DeviceID, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ModelId, opts => opts.MapFrom(src => src.DeviceModelId))

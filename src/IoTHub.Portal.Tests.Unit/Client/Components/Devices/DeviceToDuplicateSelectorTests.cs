@@ -64,9 +64,9 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
 
             var url = $"api/devices?pageSize=10&searchText={query}";
             _ = this.mockDeviceClientService.Setup(service => service.GetDevices(url))
-                .ReturnsAsync(new PaginationResult<DeviceListItem>()
+                .ReturnsAsync(new PaginationResult<DeviceListItemDto>()
                 {
-                    Items = new List<DeviceListItem>
+                    Items = new List<DeviceListItemDto>
                     {
                         new()
                         {
@@ -77,7 +77,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<DeviceToDuplicateSelector>();
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItemDto>>();
 
             // Act
             autocompleteComponent.Find(TagNames.Input).Click();
@@ -100,22 +100,22 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
                 ModelId = Fixture.Create<string>()
             };
 
-            var expectedDevice = new DeviceDetails
+            var expectedDevice = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>(),
                 ModelId = expectedDeviceModel.ModelId
             };
 
-            var expectedDeviceItem = new DeviceListItem
+            var expectedDeviceItem = new DeviceListItemDto
             {
                 DeviceID = expectedDevice.DeviceID,
             };
 
             var url = $"api/devices?pageSize=10&searchText={query}";
             _ = this.mockDeviceClientService.Setup(service => service.GetDevices(url))
-                .ReturnsAsync(new PaginationResult<DeviceListItem>()
+                .ReturnsAsync(new PaginationResult<DeviceListItemDto>()
                 {
-                    Items = new List<DeviceListItem>
+                    Items = new List<DeviceListItemDto>
                     {
                         expectedDeviceItem
                     }
@@ -130,7 +130,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<DeviceToDuplicateSelector>();
 
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItemDto>>();
             autocompleteComponent.Find(TagNames.Input).Click();
             autocompleteComponent.Find(TagNames.Input).Input(query);
             popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
@@ -155,22 +155,22 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
                 ModelId = Fixture.Create<string>()
             };
 
-            var expectedDevice = new DeviceDetails
+            var expectedDevice = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>(),
                 ModelId = expectedDeviceModel.ModelId
             };
 
-            var expectedDeviceItem = new DeviceListItem
+            var expectedDeviceItem = new DeviceListItemDto
             {
                 DeviceID = expectedDevice.DeviceID,
             };
 
             var url = $"api/devices?pageSize=10&searchText={query}";
             _ = this.mockDeviceClientService.Setup(service => service.GetDevices(url))
-                .ReturnsAsync(new PaginationResult<DeviceListItem>()
+                .ReturnsAsync(new PaginationResult<DeviceListItemDto>()
                 {
-                    Items = new List<DeviceListItem>
+                    Items = new List<DeviceListItemDto>
                     {
                         expectedDeviceItem
                     }
@@ -182,7 +182,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<DeviceToDuplicateSelector>();
 
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItemDto>>();
             autocompleteComponent.Find(TagNames.Input).Click();
             autocompleteComponent.Find(TagNames.Input).Input(query);
             popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
@@ -207,13 +207,13 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
                 ModelId = Fixture.Create<string>()
             };
 
-            var expectedDevice = new LoRaDeviceDetails
+            var expectedDevice = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>(),
                 ModelId = expectedDeviceModel.ModelId
             };
 
-            var expectedDeviceItem = new DeviceListItem
+            var expectedDeviceItem = new DeviceListItemDto
             {
                 DeviceID = expectedDevice.DeviceID,
                 SupportLoRaFeatures = true
@@ -221,9 +221,9 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
 
             var url = $"api/devices?pageSize=10&searchText={query}";
             _ = this.mockDeviceClientService.Setup(service => service.GetDevices(url))
-                .ReturnsAsync(new PaginationResult<DeviceListItem>()
+                .ReturnsAsync(new PaginationResult<DeviceListItemDto>()
                 {
-                    Items = new List<DeviceListItem>
+                    Items = new List<DeviceListItemDto>
                     {
                         expectedDeviceItem
                     }
@@ -238,7 +238,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<DeviceToDuplicateSelector>();
 
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItemDto>>();
             autocompleteComponent.Find(TagNames.Input).Click();
             autocompleteComponent.Find(TagNames.Input).Input(query);
             popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
@@ -263,7 +263,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Devices
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<DeviceToDuplicateSelector>();
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItemDto>>();
 
             // Act
             autocompleteComponent.Find(TagNames.Input).Click();

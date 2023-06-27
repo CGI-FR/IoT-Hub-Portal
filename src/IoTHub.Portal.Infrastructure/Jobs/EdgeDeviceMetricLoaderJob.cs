@@ -15,11 +15,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     public class EdgeDeviceMetricLoaderJob : IJob
     {
         private readonly ILogger<EdgeDeviceMetricLoaderJob> logger;
-        private readonly PortalMetric portalMetric;
+        private readonly PortalMetricDto portalMetric;
         private readonly IEdgeDeviceRepository edgeDeviceRepository;
         private readonly IConfigService configService;
 
-        public EdgeDeviceMetricLoaderJob(ILogger<EdgeDeviceMetricLoaderJob> logger, PortalMetric portalMetric, IEdgeDeviceRepository edgeDeviceRepository, IConfigService configService)
+        public EdgeDeviceMetricLoaderJob(ILogger<EdgeDeviceMetricLoaderJob> logger, PortalMetricDto portalMetric, IEdgeDeviceRepository edgeDeviceRepository, IConfigService configService)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;

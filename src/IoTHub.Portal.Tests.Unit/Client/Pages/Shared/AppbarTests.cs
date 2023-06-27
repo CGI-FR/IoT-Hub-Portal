@@ -43,7 +43,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -65,7 +65,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             // Arrange
             var menuSelector = ".mud-menu.account-menu .mud-menu-activator";
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             // Arrange
             var menuSelector = ".mud-menu.account-menu .mud-menu-activator";
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -111,7 +111,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             // Arrange
             var menuSelector = ".mud-menu.help-menu .mud-menu-activator";
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -133,7 +133,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             // Arrange
             var menuSelector = ".mud-menu.help-menu .mud-menu-activator";
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -156,7 +156,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -177,7 +177,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -199,7 +199,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -218,7 +218,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetNotAuthorized();
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -237,7 +237,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetNotAuthorized();
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
@@ -257,7 +257,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false,
@@ -276,7 +276,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = Services.AddSingleton(new PortalSettings
+            _ = Services.AddSingleton(new PortalSettingsDto
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false,

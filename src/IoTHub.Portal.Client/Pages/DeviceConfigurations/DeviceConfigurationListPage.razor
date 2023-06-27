@@ -7,7 +7,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable T="ConfigListItem" id="device-configurations-listing" Items=@result Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+        <MudTable T="ConfigListItemDto" id="device-configurations-listing" Items=@result Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 20%;" />
                 <col style="width: 20%;" />
@@ -70,7 +70,7 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
     
-    private readonly List<ConfigListItem> result = new();
+    private readonly List<ConfigListItemDto> result = new();
     private bool IsLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
@@ -104,7 +104,7 @@
     }
 
 
-    private void GoToDetails(ConfigListItem item)
+    private void GoToDetails(ConfigListItemDto item)
     {
         navigationManager.NavigateTo($"/device-configurations/{item.ConfigurationID}");
     }

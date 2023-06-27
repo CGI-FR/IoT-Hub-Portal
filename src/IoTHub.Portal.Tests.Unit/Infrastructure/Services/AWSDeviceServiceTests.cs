@@ -47,7 +47,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         private Mock<IConfiguration> mockConfiguration;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
 
-        private IDeviceService<DeviceDetails> awsDeviceService;
+        private IDeviceService<DeviceDetailsDto> awsDeviceService;
 
         [SetUp]
         public void SetUp()
@@ -76,11 +76,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
-            _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, DeviceService>();
+            _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetailsDto>, DeviceService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.awsDeviceService = Services.GetRequiredService<IDeviceService<DeviceDetails>>();
+            this.awsDeviceService = Services.GetRequiredService<IDeviceService<DeviceDetailsDto>>();
 
             Mapper = Services.GetRequiredService<IMapper>();
         }
@@ -89,7 +89,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task CreateADeviceShouldReturnAValue()
         {
             // Arrange
-            var deviceDto = new DeviceDetails()
+            var deviceDto = new DeviceDetailsDto()
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -125,7 +125,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task CreateDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForCreateThing()
         {
             // Arrange
-            var deviceDto = new DeviceDetails()
+            var deviceDto = new DeviceDetailsDto()
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -145,7 +145,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task CreateDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForUpdateThingShadow()
         {
             // Arrange
-            var deviceDto = new DeviceDetails()
+            var deviceDto = new DeviceDetailsDto()
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -172,7 +172,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task CreateDeviceDuplicateExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails()
+            var deviceDto = new DeviceDetailsDto()
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -208,7 +208,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task UpdateDeviceShouldReturnValue()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>(),
                 DeviceName = Fixture.Create<string>(),
@@ -257,7 +257,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task UpdateDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForUpdateThing()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>(),
                 DeviceName = Fixture.Create<string>(),
@@ -278,7 +278,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task UpdateDeviceThatNotExistThrowResourceNotFoundException()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>(),
                 DeviceName = Fixture.Create<string>(),
@@ -305,7 +305,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task UpdateDeviceWhenDbUpdateExceptionIsRaisedCannotInsertNullExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>(),
                 DeviceName = Fixture.Create<string>(),
@@ -342,7 +342,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task DeleteDevice()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -405,7 +405,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task DeleteDeviceResourceNotFoundExceptionIfDeviceNotExist()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -425,7 +425,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task DeleteDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForListThingPrincipals()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -471,7 +471,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task DeleteDeviceShouldThrowExceptionIfFailedWhenDetachThingPrincipal()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -530,7 +530,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task DeleteDeviceShouldThrowInternalServerErrorIfHttpStatusCodeIsNotOKForDeleteThing()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -593,7 +593,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task DeleteDeviceWhenDbUpdateExceptionIsRaisedDbUpdateExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };

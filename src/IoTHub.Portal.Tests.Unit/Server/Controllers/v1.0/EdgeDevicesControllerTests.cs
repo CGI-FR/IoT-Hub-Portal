@@ -73,9 +73,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Arrange
             var edgeDeviceController = CreateEdgeDevicesController();
 
-            var expectedPaginedEdgeDevice = new PaginatedResult<IoTEdgeListItem>()
+            var expectedPaginedEdgeDevice = new PaginatedResultDto<IoTEdgeListItemDto>()
             {
-                Data = Enumerable.Range(0, 10).Select(x => new IoTEdgeListItem()
+                Data = Enumerable.Range(0, 10).Select(x => new IoTEdgeListItemDto()
                 {
                     DeviceId = FormattableString.Invariant($"{x}"),
                 }).ToList(),
@@ -121,7 +121,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             _ = this.mockEdgeDeviceService
                 .Setup(x => x.GetEdgeDevice(It.IsAny<string>()))
-                .ReturnsAsync(new IoTEdgeDevice()
+                .ReturnsAsync(new IoTEdgeDeviceDto()
                 {
                     DeviceId = deviceId,
                 });
@@ -135,9 +135,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             var okObjectResult = result as ObjectResult;
 
-            Assert.IsAssignableFrom<IoTEdgeDevice>(okObjectResult.Value);
+            Assert.IsAssignableFrom<IoTEdgeDeviceDto>(okObjectResult.Value);
 
-            var iotEdge = okObjectResult.Value as IoTEdgeDevice;
+            var iotEdge = okObjectResult.Value as IoTEdgeDeviceDto;
 
             Assert.IsNotNull(iotEdge);
             Assert.AreEqual(deviceId, iotEdge.DeviceId);
@@ -173,13 +173,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Arrange
             var edgeDeviceController = CreateEdgeDevicesController();
 
-            var edgeDevice = new IoTEdgeDevice()
+            var edgeDevice = new IoTEdgeDeviceDto()
             {
                 DeviceId = Guid.NewGuid().ToString()
             };
 
             _ = this.mockEdgeDeviceService
-                .Setup(x => x.CreateEdgeDevice(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .Setup(x => x.CreateEdgeDevice(It.Is<IoTEdgeDeviceDto>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(edgeDevice);
 
             // Act
@@ -195,9 +195,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             Assert.AreEqual(200, okObjectResult.StatusCode);
 
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<IoTEdgeDevice>(okObjectResult.Value);
+            Assert.IsAssignableFrom<IoTEdgeDeviceDto>(okObjectResult.Value);
 
-            var edgeDeviceObject = okObjectResult.Value as IoTEdgeDevice;
+            var edgeDeviceObject = okObjectResult.Value as IoTEdgeDeviceDto;
             Assert.IsNotNull(edgeDeviceObject);
             Assert.AreEqual(edgeDevice.DeviceId, edgeDeviceObject.DeviceId);
 
@@ -210,13 +210,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Arrange
             var edgeDeviceController = CreateEdgeDevicesController();
 
-            var edgeDevice = new IoTEdgeDevice()
+            var edgeDevice = new IoTEdgeDeviceDto()
             {
                 DeviceId = Guid.NewGuid().ToString(),
             };
 
             _ = this.mockEdgeDeviceService
-                .Setup(x => x.UpdateEdgeDevice(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .Setup(x => x.UpdateEdgeDevice(It.Is<IoTEdgeDeviceDto>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(edgeDevice);
 
             // Act
@@ -262,7 +262,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var edgeDevicesController = CreateEdgeDevicesController();
             var deviceId = Guid.NewGuid().ToString();
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = Guid.NewGuid().ToString()
             };
@@ -276,10 +276,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             _ = this.mockDeviceService.Setup(c => c.GetEdgeDeviceLogs(
                 It.Is<string>(x => x == deviceId),
-                It.Is<IoTEdgeModule>(x => x == edgeModule)))
-                .ReturnsAsync(new List<IoTEdgeDeviceLog>
+                It.Is<IoTEdgeModuleDto>(x => x == edgeModule)))
+                .ReturnsAsync(new List<IoTEdgeDeviceLogDto>
                 {
-                    new IoTEdgeDeviceLog
+                    new IoTEdgeDeviceLogDto
                     {
                         Id = deviceId,
                         Text = Guid.NewGuid().ToString(),
@@ -316,14 +316,14 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Arrange
             var edgeDevicesController = CreateEdgeDevicesController();
 
-            var mockDevice = Fixture.Create<IoTEdgeDevice>();
+            var mockDevice = Fixture.Create<IoTEdgeDeviceDto>();
 
             _ = this.mockEdgeDeviceService.Setup(x => x.GetEdgeDevice(mockDevice.DeviceId))
                 .ReturnsAsync(mockDevice);
 
             _ = this.mockDeviceService
                 .Setup(x => x.GetEdgeDeviceCredentials(mockDevice))
-                .ReturnsAsync(new DeviceCredentials());
+                .ReturnsAsync(new DeviceCredentialsDto());
 
             // Act
             var result = await edgeDevicesController.GetCredentials(mockDevice.DeviceId);
@@ -337,7 +337,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             Assert.AreEqual(200, okObjectResult.StatusCode);
 
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<DeviceCredentials>(okObjectResult.Value);
+            Assert.IsAssignableFrom<DeviceCredentialsDto>(okObjectResult.Value);
 
             this.mockRepository.VerifyAll();
         }
@@ -351,7 +351,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceService.Setup(c => c.GetEdgeDevice(deviceId))
-                .ReturnsAsync((IoTEdgeDevice)null);
+                .ReturnsAsync((IoTEdgeDeviceDto)null);
 
             // Act
             var result = await edgeDevicesController.GetCredentials(deviceId);
@@ -369,7 +369,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Arrange
             var edgeDeviceController = CreateEdgeDevicesController();
 
-            var module = new IoTEdgeModule
+            var module = new IoTEdgeModuleDto
             {
                 ModuleName = "aaa",
             };
@@ -380,7 +380,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 .Setup(x => x.ExecuteModuleMethod(It.IsAny<string>(),
                 It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal)),
                 It.Is<string>(c => c.Equals(methodName, StringComparison.Ordinal))))
-                .ReturnsAsync(new C2Dresult());
+                .ReturnsAsync(new C2DresultDto());
 
             // Act
             var result = await edgeDeviceController.ExecuteModuleMethod(module.ModuleName, deviceId, methodName);
@@ -405,7 +405,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                     It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal)),
                     It.Is<string>(c => c.Equals(moduleName, StringComparison.Ordinal)),
                     It.Is<string>(c => c.Equals(commandName, StringComparison.Ordinal))))
-                .ReturnsAsync(new C2Dresult());
+                .ReturnsAsync(new C2DresultDto());
 
             // Act
             var result = await edgeDeviceController.ExecuteModuleMethod(deviceId, moduleName, commandName);

@@ -45,10 +45,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var expectedDeviceModels = Fixture.CreateMany<DeviceModelDto>(3).ToList();
 
-            var filter = new DeviceModelFilter();
+            var filter = new DeviceModelFilterDto();
 
             _ = this.mockDeviceModelService.Setup(service => service.GetDeviceModels(filter))
-                .ReturnsAsync(new PaginatedResult<DeviceModelDto> { Data = expectedDeviceModels });
+                .ReturnsAsync(new PaginatedResultDto<DeviceModelDto> { Data = expectedDeviceModels });
 
             // Act
             var response = await this.deviceModelsController.GetItems(filter);

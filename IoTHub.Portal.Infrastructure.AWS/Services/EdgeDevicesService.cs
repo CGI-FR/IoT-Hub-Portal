@@ -73,7 +73,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
         /// </summary>
         /// <param name="edgeDevice"> the new edge device.</param>
         /// <returns>the result of the operation.</returns>
-        public async Task<IoTEdgeDevice> CreateEdgeDevice(IoTEdgeDevice edgeDevice)
+        public async Task<IoTEdgeDeviceDto> CreateEdgeDevice(IoTEdgeDeviceDto edgeDevice)
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
@@ -113,7 +113,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
         /// </summary>
         /// <param name="edgeDevice">edge device object update.</param>
         /// <returns>device twin updated.</returns>
-        public async Task<IoTEdgeDevice> UpdateEdgeDevice(IoTEdgeDevice edgeDevice)
+        public async Task<IoTEdgeDeviceDto> UpdateEdgeDevice(IoTEdgeDeviceDto edgeDevice)
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
@@ -165,7 +165,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
         /// <param name="edgeDeviceId">device id.</param>
         /// <returns>IoTEdgeDevice object.</returns>
 #pragma warning disable CS0108 // Un membre masque un membre hérité ; le mot clé new est manquant
-        public async Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId)
+        public async Task<IoTEdgeDeviceDto> GetEdgeDevice(string edgeDeviceId)
 #pragma warning restore CS0108 // Un membre masque un membre hérité ; le mot clé new est manquant
         {
             var deviceDto = await base.GetEdgeDevice(edgeDeviceId);
@@ -191,7 +191,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
         /// <param name="deviceId"></param>
         /// <param name="methodName"></param>
         /// <returns></returns>
-        public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
+        public async Task<C2DresultDto> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
         {
             throw new NotImplementedException();
         }
@@ -203,7 +203,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
         /// <param name="moduleName">the module name.</param>
         /// <param name="commandName">the command name.</param>
         /// <returns></returns>
-        public async Task<C2Dresult> ExecuteModuleCommand(string deviceId, string moduleName, string commandName)
+        public async Task<C2DresultDto> ExecuteModuleCommand(string deviceId, string moduleName, string commandName)
         {
             throw new NotImplementedException();
         }
@@ -217,7 +217,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             return await externalDeviceService.CreateEnrollementScript(template, device);
         }
 
-        private async Task<int> GetEdgeDeviceNbDevices(IoTEdgeDevice device)
+        private async Task<int> GetEdgeDeviceNbDevices(IoTEdgeDeviceDto device)
         {
             try
             {

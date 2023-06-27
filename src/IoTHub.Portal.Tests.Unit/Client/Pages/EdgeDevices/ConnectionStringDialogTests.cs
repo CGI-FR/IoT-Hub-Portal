@@ -35,7 +35,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
             _ = Services.AddSingleton<ClipboardService>();
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = CloudProviders.Azure });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = false, CloudProvider = CloudProviders.Azure });
 
             this.dialogService = Services.GetService<IDialogService>() as DialogService;
         }
@@ -47,7 +47,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(Fixture.Create<DeviceCredentials>());
+                .ReturnsAsync(Fixture.Create<DeviceCredentialsDto>());
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -103,7 +103,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(new DeviceCredentials());
+                .ReturnsAsync(new DeviceCredentialsDto());
 
             var cut = RenderComponent<MudDialogProvider>();
 

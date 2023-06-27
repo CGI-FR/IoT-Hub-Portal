@@ -29,7 +29,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
     using System.Threading.Tasks;
     using static IoTHub.Portal.Infrastructure.ConnectionAuthMethod;
 
-    public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>
+    public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetailsDto>
     {
         private readonly ILogger<LoRaWanDeviceService> logger;
         private readonly IMapper mapper;
@@ -64,7 +64,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public override async Task<LoRaDeviceDetails> GetDevice(string deviceId)
+        public override async Task<LoRaDeviceDetailsDto> GetDevice(string deviceId)
         {
             var deviceEntity = await lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Tags, d => d.Labels);
 
@@ -73,7 +73,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
                 throw new ResourceNotFoundException($"The LoRaWAN device with id {deviceId} doesn't exist");
             }
 
-            var deviceDto = mapper.Map<LoRaDeviceDetails>(deviceEntity);
+            var deviceDto = mapper.Map<LoRaDeviceDetailsDto>(deviceEntity);
 
             deviceDto.ImageUrl = deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
 
@@ -88,7 +88,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
             return deviceEntity != null;
         }
 
-        protected override async Task<LoRaDeviceDetails> CreateDeviceInDatabase(LoRaDeviceDetails device)
+        protected override async Task<LoRaDeviceDetailsDto> CreateDeviceInDatabase(LoRaDeviceDetailsDto device)
         {
             var deviceEntity = mapper.Map<LorawanDevice>(device);
 
@@ -98,7 +98,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
             return device;
         }
 
-        protected override async Task<LoRaDeviceDetails> UpdateDeviceInDatabase(LoRaDeviceDetails device)
+        protected override async Task<LoRaDeviceDetailsDto> UpdateDeviceInDatabase(LoRaDeviceDetailsDto device)
         {
             var deviceEntity = await lorawanDeviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags, d => d.Labels);
 

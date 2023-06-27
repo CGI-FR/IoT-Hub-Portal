@@ -105,8 +105,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             Assert.AreEqual(200, okObjectResult.StatusCode);
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<PortalSettings>(okObjectResult.Value);
-            var okSettings = okObjectResult.Value as PortalSettings;
+            Assert.IsAssignableFrom<PortalSettingsDto>(okObjectResult.Value);
+            var okSettings = okObjectResult.Value as PortalSettingsDto;
 
             Assert.AreEqual(loraFeatureStatus, okSettings?.IsLoRaSupported);
 
@@ -144,7 +144,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Act
             var response = controller.GetPortalSetting();
             var objectResult = response as ObjectResult;
-            var result = objectResult?.Value as PortalSettings;
+            var result = objectResult?.Value as PortalSettingsDto;
 
             // Assert
             _ = result.Should().NotBeNull();

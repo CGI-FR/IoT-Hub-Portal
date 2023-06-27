@@ -20,10 +20,10 @@
     MudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter]
-    public IoTEdgeModule Module { get; set; } = default!;
+    public IoTEdgeModuleDto Module { get; set; } = default!;
 
     [Parameter]
-    public List<IoTEdgeModule> EdgeModules { get; set; } = default!;
+    public List<IoTEdgeModuleDto> EdgeModules { get; set; } = default!;
 
     [Parameter]
     public Context Context { get; set; } = default!;
@@ -91,7 +91,7 @@
 
         if(Context == Context.Create)
         {
-            EdgeModules.Add(new IoTEdgeModule
+            EdgeModules.Add(new IoTEdgeModuleDto
             {
                 ModuleName = currentModuleName,
                 Version = currentModuleVersion,

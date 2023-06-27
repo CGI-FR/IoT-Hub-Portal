@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
         private IJob syncGatewayIDJob;
         private Mock<ILogger<SyncGatewayIDJob>> mockLogger;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
-        private LoRaGatewayIDList loRaGatewayIDList;
+        private LoRaGatewayIDListDto loRaGatewayIDList;
 
         public override void Setup()
         {
@@ -28,7 +28,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 
             this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
             this.mockLogger = MockRepository.Create<ILogger<SyncGatewayIDJob>>();
-            this.loRaGatewayIDList = new LoRaGatewayIDList();
+            this.loRaGatewayIDList = new LoRaGatewayIDListDto();
 
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton<IJob, SyncGatewayIDJob>();

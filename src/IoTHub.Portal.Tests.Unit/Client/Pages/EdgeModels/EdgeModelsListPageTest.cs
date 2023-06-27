@@ -43,10 +43,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void EdgeModelListPageRendersCorrectly()
         {
             // Arrange
-            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()))
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                    new IoTEdgeModelListItemDto() { ModelId = Guid.NewGuid().ToString() },
                 });
 
             // Act
@@ -70,11 +70,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var searchKeyword = Fixture.Create<string>();
 
-            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.Is<EdgeModelFilter>(x => string.IsNullOrEmpty(x.Keyword))))
-                .ReturnsAsync(Fixture.CreateMany<IoTEdgeModelListItem>(3).ToList());
+            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.Is<EdgeModelFilterDto>(x => string.IsNullOrEmpty(x.Keyword))))
+                .ReturnsAsync(Fixture.CreateMany<IoTEdgeModelListItemDto>(3).ToList());
 
-            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.Is<EdgeModelFilter>(x => searchKeyword.Equals(x.Keyword, StringComparison.Ordinal))))
-                .ReturnsAsync(Fixture.CreateMany<IoTEdgeModelListItem>(2).ToList());
+            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.Is<EdgeModelFilterDto>(x => searchKeyword.Equals(x.Keyword, StringComparison.Ordinal))))
+                .ReturnsAsync(Fixture.CreateMany<IoTEdgeModelListItemDto>(2).ToList());
 
             var cut = RenderComponent<EdgeModelListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -96,10 +96,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var modelId = Fixture.Create<string>();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()))
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = modelId},
+                    new IoTEdgeModelListItemDto() { ModelId = modelId},
                 });
 
             var cut = RenderComponent<EdgeModelListPage>();
@@ -119,10 +119,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()))
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = deviceId },
+                    new IoTEdgeModelListItemDto() { ModelId = deviceId },
                 });
 
             // Act
@@ -139,7 +139,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void LoadDeviceModelsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
         {
             // Arrange
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -156,10 +156,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()))
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = deviceId },
+                    new IoTEdgeModelListItemDto() { ModelId = deviceId },
                 });
 
             // Act
@@ -172,7 +172,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             }
 
             // Assert
-            cut.WaitForAssertion(() => this.mockEdgeModelServiceClient.Verify(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()), Times.Exactly(4)));
+            cut.WaitForAssertion(() => this.mockEdgeModelServiceClient.Verify(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()), Times.Exactly(4)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -182,10 +182,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()))
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = deviceId },
+                    new IoTEdgeModelListItemDto() { ModelId = deviceId },
                 });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
@@ -210,10 +210,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()))
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = deviceId },
+                    new IoTEdgeModelListItemDto() { ModelId = deviceId },
                 });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
@@ -229,7 +229,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             deleteButton.Click();
 
             // Assert
-            cut.WaitForAssertion(() => this.mockEdgeModelServiceClient.Verify(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()), Times.Exactly(2)));
+            cut.WaitForAssertion(() => this.mockEdgeModelServiceClient.Verify(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()), Times.Exactly(2)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -237,15 +237,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnSortLabel()
         {
             // Arrange
-            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.IsAny<EdgeModelFilterDto>()))
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>()
                 {
-                    new IoTEdgeModelListItem()
+                    new IoTEdgeModelListItemDto()
                     {
                         ModelId = Guid.NewGuid().ToString(),
                         Name = Guid.NewGuid().ToString()
                     },
-                    new IoTEdgeModelListItem()
+                    new IoTEdgeModelListItemDto()
                     {
                         ModelId = Guid.NewGuid().ToString(),
                         Name = Guid.NewGuid().ToString()

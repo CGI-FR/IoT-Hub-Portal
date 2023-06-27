@@ -49,8 +49,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task SubmitIdeaShouldSubmitIdea()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
-            var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
+            var expectedIdeaResponse = Fixture.Create<IdeaResponseDto>();
             var uaString = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3";
             var uaParser = Fixture.Create<Parser>();
 
@@ -98,7 +98,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task SubmitIdeaShouldThrowInternalServerErrorExceptionWhenIssueOccursOnSubmittingIdea()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
 
             var uaString = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3";
 
@@ -129,7 +129,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task SubmitIdeaShouldThrowInternalServerErrorExceptionWhenIdeasFeatureIsNotEnabled()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
 
             _ = this.mockConfigHandler.Setup(handler => handler.IdeasEnabled)
                 .Returns(false);
@@ -146,8 +146,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task SubmitIdeaWithoutConsentShouldSubmitIdea()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
-            var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
+            var expectedIdeaResponse = Fixture.Create<IdeaResponseDto>();
             var uaString = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3";
 
             ideaRequest.ConsentToCollectTechnicalDetails = false;

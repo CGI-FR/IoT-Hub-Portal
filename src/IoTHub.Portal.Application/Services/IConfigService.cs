@@ -19,7 +19,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task DeleteDeviceModelConfigurationByConfigurationNamePrefix(string configurationNamePrefix);
 
-        Task<string> RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel);
+        Task<string> RollOutEdgeModelConfiguration(IoTEdgeModelDto edgeModel);
 
         Task<string> RollOutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags, int priority = 0);
 
@@ -29,12 +29,12 @@ namespace IoTHub.Portal.Application.Services
 
         Task<int> GetFailedDeploymentsCount();
 
-        Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId);
+        Task<List<IoTEdgeModuleDto>> GetConfigModuleList(string modelId);
 
-        Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId);
+        Task<List<EdgeModelSystemModuleDto>> GetModelSystemModule(string modelId);
 
-        Task<List<IoTEdgeRoute>> GetConfigRouteList(string modelId);
+        Task<List<IoTEdgeRouteDto>> GetConfigRouteList(string modelId);
 
-        Task<IEnumerable<IoTEdgeModule>> GetPublicEdgeModules();
+        Task<IEnumerable<IoTEdgeModuleDto>> GetPublicEdgeModules();
     }
 }

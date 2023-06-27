@@ -7,7 +7,7 @@
     using Microsoft.Azure.Devices.Shared;
     using System;
 
-    public class DeviceImageUrlValueResolver : IValueResolver<Twin, DeviceDetails, Uri>
+    public class DeviceImageUrlValueResolver : IValueResolver<Twin, DeviceDetailsDto, Uri>
     {
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
@@ -16,7 +16,7 @@
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public Uri Resolve(Twin source, DeviceDetails destination, Uri destMember, ResolutionContext context)
+        public Uri Resolve(Twin source, DeviceDetailsDto destination, Uri destMember, ResolutionContext context)
         {
             return this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(source, nameof(destination.ModelId))!);
         }

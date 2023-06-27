@@ -52,7 +52,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginationResult<ConcentratorDto>>> GetAllDeviceConcentrator([FromQuery] ConcentratorFilter concentratorFilter)
+        public async Task<ActionResult<PaginationResult<ConcentratorDto>>> GetAllDeviceConcentrator([FromQuery] ConcentratorFilterDto concentratorFilter)
         {
             var paginatedDevices = await this.loRaWANConcentratorService.GetAllDeviceConcentrator(concentratorFilter);
 

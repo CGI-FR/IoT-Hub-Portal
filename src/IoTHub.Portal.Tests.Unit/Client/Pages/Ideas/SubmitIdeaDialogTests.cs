@@ -92,7 +92,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
         public async Task SubmitButtonMustNotBeDisabledWhenFormIsValid()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
             var cut = RenderComponent<MudDialogProvider>();
             var dialogService = Services.GetService<IDialogService>() as DialogService;
 
@@ -120,10 +120,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
         public async Task IdeaShouldBeSubmittedOnClickOnSubmit()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
-            var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
+            var expectedIdeaResponse = Fixture.Create<IdeaResponseDto>();
 
-            _ = this.mockIdeaClientService.Setup(service => service.SubmitIdea(It.Is<IdeaRequest>(request => ideaRequest.Title.Equals(request.Title, StringComparison.Ordinal) &&
+            _ = this.mockIdeaClientService.Setup(service => service.SubmitIdea(It.Is<IdeaRequestDto>(request => ideaRequest.Title.Equals(request.Title, StringComparison.Ordinal) &&
                     ideaRequest.Body.Equals(request.Body, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedIdeaResponse);
 
@@ -153,9 +153,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
         public async Task ClickOnSubmitShouldProcessProblemDetailsException()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
 
-            _ = this.mockIdeaClientService.Setup(service => service.SubmitIdea(It.Is<IdeaRequest>(request =>
+            _ = this.mockIdeaClientService.Setup(service => service.SubmitIdea(It.Is<IdeaRequestDto>(request =>
                     ideaRequest.Title.Equals(request.Title, StringComparison.Ordinal) &&
                     ideaRequest.Body.Equals(request.Body, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
@@ -186,11 +186,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
         public async Task SetConsentToCollectTechnicalDetailsByDefault()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
             ideaRequest.ConsentToCollectTechnicalDetails = true;
-            var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
+            var expectedIdeaResponse = Fixture.Create<IdeaResponseDto>();
 
-            _ = this.mockIdeaClientService.Setup(service => service.SubmitIdea(It.Is<IdeaRequest>(request => ideaRequest.Title.Equals(request.Title, StringComparison.Ordinal) &&
+            _ = this.mockIdeaClientService.Setup(service => service.SubmitIdea(It.Is<IdeaRequestDto>(request => ideaRequest.Title.Equals(request.Title, StringComparison.Ordinal) &&
                     ideaRequest.Body.Equals(request.Body, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedIdeaResponse);
 

@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             this.logger = logger;
         }
 
-        public override async Task<DeviceDetails> CreateDevice(DeviceDetails device)
+        public override async Task<DeviceDetailsDto> CreateDevice(DeviceDetailsDto device)
         {
             //Create Thing
             try
@@ -79,7 +79,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
 
         }
 
-        public override async Task<DeviceDetails> UpdateDevice(DeviceDetails device)
+        public override async Task<DeviceDetailsDto> UpdateDevice(DeviceDetailsDto device)
         {
             try
             {

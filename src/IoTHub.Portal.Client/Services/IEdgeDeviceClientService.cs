@@ -10,23 +10,23 @@ namespace IoTHub.Portal.Client.Services
 
     public interface IEdgeDeviceClientService
     {
-        Task<PaginationResult<IoTEdgeListItem>> GetDevices(string continuationUri);
+        Task<PaginationResult<IoTEdgeListItemDto>> GetDevices(string continuationUri);
 
-        Task<IoTEdgeDevice> GetDevice(string deviceId);
+        Task<IoTEdgeDeviceDto> GetDevice(string deviceId);
 
-        Task CreateDevice(IoTEdgeDevice device);
+        Task CreateDevice(IoTEdgeDeviceDto device);
 
-        Task UpdateDevice(IoTEdgeDevice device);
+        Task UpdateDevice(IoTEdgeDeviceDto device);
 
         Task DeleteDevice(string deviceId);
 
-        Task<DeviceCredentials> GetEnrollmentCredentials(string deviceId);
+        Task<DeviceCredentialsDto> GetEnrollmentCredentials(string deviceId);
 
         Task<string> GetEnrollmentScriptUrl(string deviceId, string templateName);
 
-        Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule);
+        Task<List<IoTEdgeDeviceLogDto>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModuleDto edgeModule);
 
-        Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);
+        Task<C2DresultDto> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);
 
         Task<IEnumerable<LabelDto>> GetAvailableLabels();
 

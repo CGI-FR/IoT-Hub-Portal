@@ -91,7 +91,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = await DbContext.SaveChangesAsync();
 
             _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default, new Expression<Func<EdgeDevice, object>>[] { d => d.Labels, d => d.DeviceModel.Labels }))
-                .ReturnsAsync(new PaginatedResult<EdgeDevice>
+                .ReturnsAsync(new PaginatedResultDto<EdgeDevice>
                 {
                     Data = expectedEdgeDevices.Skip(expectedCurrentPage * expectedPageSize).Take(expectedPageSize).ToList(),
                     PageSize = expectedPageSize,
@@ -174,7 +174,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = await DbContext.SaveChangesAsync();
 
             _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default, new Expression<Func<EdgeDevice, object>>[] { d => d.Labels, d => d.DeviceModel.Labels }))
-                .ReturnsAsync(new PaginatedResult<EdgeDevice>
+                .ReturnsAsync(new PaginatedResultDto<EdgeDevice>
                 {
                     Data = expectedEdgeDevices,
                     PageSize = expectedPageSize,
@@ -201,7 +201,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var expectedEdgeDevice = Fixture.Create<EdgeDevice>();
 
             var expectedImageUri = Fixture.Create<Uri>();
-            var expectedEdgeDeviceDto = Mapper.Map<IoTEdgeDevice>(expectedEdgeDevice);
+            var expectedEdgeDeviceDto = Mapper.Map<IoTEdgeDeviceDto>(expectedEdgeDevice);
             expectedEdgeDeviceDto.ImageUrl = expectedImageUri;
 
             _ = this.mockEdgeDeviceRepository
@@ -213,8 +213,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin(expectedEdgeDevice.Id));
 
             _ = this.mockDeviceService
-                .Setup(x => x.RetrieveLastConfiguration(It.IsAny<IoTEdgeDevice>()))
-                .ReturnsAsync(new ConfigItem());
+                .Setup(x => x.RetrieveLastConfiguration(It.IsAny<IoTEdgeDeviceDto>()))
+                .ReturnsAsync(new ConfigItemDto());
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
                 .Returns(expectedImageUri);
@@ -261,7 +261,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 IsSuccessful = true
             };
 
-            var edgeDevice = new IoTEdgeDevice()
+            var edgeDevice = new IoTEdgeDeviceDto()
             {
                 DeviceId = "aaa",
                 Tags = new Dictionary<string, string>()
@@ -302,7 +302,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 IsSuccessful = true
             };
 
-            var edgeDevice = new IoTEdgeDevice()
+            var edgeDevice = new IoTEdgeDeviceDto()
             {
                 DeviceId = "aaa",
             };
@@ -340,7 +340,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateEdgeDeviceShouldReturnUpdatedTwin()
         {
             // Arrange
-            var edgeDevice = new IoTEdgeDevice()
+            var edgeDevice = new IoTEdgeDeviceDto()
             {
                 DeviceId = Guid.NewGuid().ToString(),
                 Status = DeviceStatus.Enabled.ToString(),
@@ -405,7 +405,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateEdgeDeviceDeviceNotExistResourceNotFoundExceptionIsThrown()
         {
             // Arrange
-            var edgeDevice = new IoTEdgeDevice()
+            var edgeDevice = new IoTEdgeDeviceDto()
             {
                 DeviceId = Guid.NewGuid().ToString(),
                 Status = DeviceStatus.Enabled.ToString(),
@@ -446,7 +446,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateEdgeDeviceDbUpdateExceptionIsThrownNumericOverflowExceptionIsThrown()
         {
             // Arrange
-            var edgeDevice = new IoTEdgeDevice()
+            var edgeDevice = new IoTEdgeDeviceDto()
             {
                 DeviceId = Guid.NewGuid().ToString(),
                 Status = DeviceStatus.Enabled.ToString(),
@@ -514,7 +514,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteEdgeDeviceAsyncDeviceExistDeviceDeleted()
         {
             // Arrange
-            var deviceDto = new IoTEdgeDevice()
+            var deviceDto = new IoTEdgeDeviceDto()
             {
                 DeviceId = Fixture.Create<string>()
             };
@@ -552,7 +552,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteEdgeDeviceDeviceNotExistNothingIsDone()
         {
             // Arrange
-            var deviceDto = new IoTEdgeDevice
+            var deviceDto = new IoTEdgeDeviceDto
             {
                 DeviceId = Fixture.Create<string>()
             };
@@ -577,7 +577,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteEdgeDeviceDbUpdateExceptionIsRaisedReferenceConstraintExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new IoTEdgeDevice
+            var deviceDto = new IoTEdgeDeviceDto
             {
                 DeviceId = Fixture.Create<string>()
             };
@@ -610,7 +610,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task ExecuteMethodRestartModuleShouldExecuteC2DMethod(string methodName, string expected)
         {
             // Arrange
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = "aaa",
             };
@@ -639,7 +639,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task ExecuteMethodTestShouldExecuteC2DMethod(string methodName)
         {
             // Arrange
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = "aaa",
             };
@@ -676,7 +676,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task ExecuteModuleCommand(string commandName)
         {
             // Arrange
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = "aaa",
             };
@@ -706,7 +706,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public void WhenDeviceIdIsNullExecuteModuleCommandShouldThrowArgumentNullException(string commandName)
         {
             // Arrange
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = "aaa",
             };
@@ -741,7 +741,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = string.Empty;
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = "aaa",
             };

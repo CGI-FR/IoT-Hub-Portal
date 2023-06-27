@@ -15,7 +15,7 @@
         <EdgeModelSearch OnSearch=@Search />
     </MudItem>
     <MudItem xs="12">
-        <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
+        <MudTable T="IoTEdgeModelListItemDto" Items="@EdgeModelList" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 5%;" />
                 <col style="width: 30%;" />
@@ -35,8 +35,8 @@
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItem, object>(x => x.Name)" id="NameLabel" >Name</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItem, object>(x => x.Description)" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItemDto, object>(x => x.Name)" id="NameLabel" >Name</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItemDto, object>(x => x.Description)" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center">Details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -85,7 +85,7 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    private List<IoTEdgeModelListItem> EdgeModelList = new List<IoTEdgeModelListItem>();
+    private List<IoTEdgeModelListItemDto> EdgeModelList = new List<IoTEdgeModelListItemDto>();
 
     private bool IsLoading { get; set; } = true;
     private readonly int[] pageSizeOptions = { 3, 5, 10 };
@@ -102,7 +102,7 @@
         try
         {
             IsLoading = true;
-            EdgeModelList = await EdgeModelService.GetIoTEdgeModelList(new EdgeModelFilter
+            EdgeModelList = await EdgeModelService.GetIoTEdgeModelList(new EdgeModelFilterDto
             {
                 Keyword = searchKeyword
             });
@@ -129,7 +129,7 @@
         NavigationManager.NavigateTo("/edge/models/new");
     }
 
-    private async Task DeleteDeviceModel(IoTEdgeModelListItem ioTEdgeModel)
+    private async Task DeleteDeviceModel(IoTEdgeModelListItemDto ioTEdgeModel)
     {
         var parameters = new DialogParameters();
         parameters.Add("deviceModelID", ioTEdgeModel.ModelId);
@@ -144,7 +144,7 @@
         await this.LoadEdgeModels();
     }
 
-    private void GoToDetails(IoTEdgeModelListItem item)
+    private void GoToDetails(IoTEdgeModelListItemDto item)
     {
         NavigationManager.NavigateTo($"/edge/models/{item.ModelId}");
     }

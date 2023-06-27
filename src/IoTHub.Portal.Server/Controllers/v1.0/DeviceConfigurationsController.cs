@@ -28,35 +28,35 @@ namespace IoTHub.Portal.Server.Controllers.v10
 
         [HttpGet(Name = "GET Device configurations")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IEnumerable<ConfigListItem>> Get()
+        public async Task<IEnumerable<ConfigListItemDto>> Get()
         {
             return await this.deviceConfigurationsService.GetDeviceConfigurationListAsync();
         }
 
         [HttpGet("{configurationId}", Name = "GET Device configuration")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<DeviceConfig>> Get(string configurationId)
+        public async Task<ActionResult<DeviceConfigDto>> Get(string configurationId)
         {
             return Ok(await this.deviceConfigurationsService.GetDeviceConfigurationAsync(configurationId));
         }
 
         [HttpGet("{configurationId}/metrics", Name = "GET Device configuration metrics")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ConfigurationMetrics>> GetConfigurationMetrics(string configurationId)
+        public async Task<ActionResult<ConfigurationMetricsDto>> GetConfigurationMetrics(string configurationId)
         {
             return Ok(await this.deviceConfigurationsService.GetConfigurationMetricsAsync(configurationId));
         }
 
         [HttpPost(Name = "POST Create Device configuration")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task CreateConfig(DeviceConfig deviceConfig)
+        public async Task CreateConfig(DeviceConfigDto deviceConfig)
         {
             await this.deviceConfigurationsService.CreateConfigurationAsync(deviceConfig);
         }
 
         [HttpPut("{configurationId}", Name = "PUT Update Device configuration")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task UpdateConfig(DeviceConfig deviceConfig)
+        public async Task UpdateConfig(DeviceConfigDto deviceConfig)
         {
             await this.deviceConfigurationsService.UpdateConfigurationAsync(deviceConfig);
         }

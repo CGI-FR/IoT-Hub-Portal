@@ -68,7 +68,7 @@
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
     [Parameter] public string deviceId { get; set; } = default!;
-    private DeviceCredentials credentials = new();
+    private DeviceCredentialsDto credentials = new();
 
     protected override async Task OnInitializedAsync()
     {

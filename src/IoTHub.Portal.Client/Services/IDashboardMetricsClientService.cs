@@ -8,6 +8,6 @@ namespace IoTHub.Portal.Client.Services
 
     public interface IDashboardMetricsClientService
     {
-        Task<PortalMetric> GetPortalMetrics();
+        Task<PortalMetricDto> GetPortalMetrics();
     }
 }

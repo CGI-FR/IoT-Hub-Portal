@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Domain
 
         void Delete(object id);
 
-        Task<PaginatedResult<T>> GetPaginatedListAsync(int pageNumber, int pageSize, string[]? orderBy = null, Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
+        Task<PaginatedResultDto<T>> GetPaginatedListAsync(int pageNumber, int pageSize, string[]? orderBy = null, Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
 
         Task<int> CountAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default);
 

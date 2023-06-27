@@ -11,12 +11,12 @@ namespace IoTHub.Portal.Application.Services
 
     public interface IEdgeModelService
     {
-        Task<IEnumerable<IoTEdgeModelListItem>> GetEdgeModels(EdgeModelFilter edgeModelFilter);
+        Task<IEnumerable<IoTEdgeModelListItemDto>> GetEdgeModels(EdgeModelFilterDto edgeModelFilter);
 
-        Task<IoTEdgeModel> GetEdgeModel(string modelId);
+        Task<IoTEdgeModelDto> GetEdgeModel(string modelId);
 
-        Task CreateEdgeModel(IoTEdgeModel edgeModel);
-        Task UpdateEdgeModel(IoTEdgeModel edgeModel);
+        Task CreateEdgeModel(IoTEdgeModelDto edgeModel);
+        Task UpdateEdgeModel(IoTEdgeModelDto edgeModel);
 
         Task DeleteEdgeModel(string edgeModelId);
 
@@ -26,6 +26,6 @@ namespace IoTHub.Portal.Application.Services
 
         Task DeleteEdgeModelAvatar(string edgeModelId);
 
-        Task<IEnumerable<IoTEdgeModule>> GetPublicEdgeModules();
+        Task<IEnumerable<IoTEdgeModuleDto>> GetPublicEdgeModules();
     }
 }

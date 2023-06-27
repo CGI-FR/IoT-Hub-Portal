@@ -14,13 +14,13 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     public class EdgeDeviceMetricExporterJob : IJob
     {
         private readonly ILogger<EdgeDeviceMetricExporterJob> logger;
-        private readonly PortalMetric portalMetric;
+        private readonly PortalMetricDto portalMetric;
 
         private readonly Counter edgeDeviceCounter = Metrics.CreateCounter(MetricName.EdgeDeviceCount, "Edge devices count");
         private readonly Counter connectedEdgeDeviceCounter = Metrics.CreateCounter(MetricName.ConnectedEdgeDeviceCount, "Connected edge devices count");
         private readonly Counter failedDeploymentCount = Metrics.CreateCounter(MetricName.FailedDeploymentCount, "Failed deployments count");
 
-        public EdgeDeviceMetricExporterJob(ILogger<EdgeDeviceMetricExporterJob> logger, PortalMetric portalMetric)
+        public EdgeDeviceMetricExporterJob(ILogger<EdgeDeviceMetricExporterJob> logger, PortalMetricDto portalMetric)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;

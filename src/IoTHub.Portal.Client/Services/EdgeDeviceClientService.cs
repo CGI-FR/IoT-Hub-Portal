@@ -19,22 +19,22 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public Task<PaginationResult<IoTEdgeListItem>> GetDevices(string continuationUri)
+        public Task<PaginationResult<IoTEdgeListItemDto>> GetDevices(string continuationUri)
         {
-            return this.http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(continuationUri)!;
+            return this.http.GetFromJsonAsync<PaginationResult<IoTEdgeListItemDto>>(continuationUri)!;
         }
 
-        public Task<IoTEdgeDevice> GetDevice(string deviceId)
+        public Task<IoTEdgeDeviceDto> GetDevice(string deviceId)
         {
-            return this.http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/devices/{deviceId}")!;
+            return this.http.GetFromJsonAsync<IoTEdgeDeviceDto>($"api/edge/devices/{deviceId}")!;
         }
 
-        public Task CreateDevice(IoTEdgeDevice device)
+        public Task CreateDevice(IoTEdgeDeviceDto device)
         {
             return this.http.PostAsJsonAsync("api/edge/devices", device);
         }
 
-        public Task UpdateDevice(IoTEdgeDevice device)
+        public Task UpdateDevice(IoTEdgeDeviceDto device)
         {
             return this.http.PutAsJsonAsync($"api/edge/devices/{device.DeviceId}", device);
         }
@@ -44,9 +44,9 @@ namespace IoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"api/edge/devices/{deviceId}");
         }
 
-        public Task<DeviceCredentials> GetEnrollmentCredentials(string deviceId)
+        public Task<DeviceCredentialsDto> GetEnrollmentCredentials(string deviceId)
         {
-            return this.http.GetFromJsonAsync<DeviceCredentials>($"api/edge/devices/{deviceId}/credentials")!;
+            return this.http.GetFromJsonAsync<DeviceCredentialsDto>($"api/edge/devices/{deviceId}/credentials")!;
         }
 
         public Task<string> GetEnrollmentScriptUrl(string deviceId, string templateName)
@@ -54,18 +54,18 @@ namespace IoTHub.Portal.Client.Services
             return this.http.GetStringAsync($"api/edge/devices/{deviceId}/enrollementScript/{templateName}")!;
         }
 
-        public async Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
+        public async Task<List<IoTEdgeDeviceLogDto>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModuleDto edgeModule)
         {
             var response = await this.http.PostAsJsonAsync($"api/edge/devices/{deviceId}/logs", edgeModule);
 
-            return await response.Content.ReadFromJsonAsync<List<IoTEdgeDeviceLog>>() ?? new List<IoTEdgeDeviceLog>();
+            return await response.Content.ReadFromJsonAsync<List<IoTEdgeDeviceLogDto>>() ?? new List<IoTEdgeDeviceLogDto>();
         }
 
-        public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
+        public async Task<C2DresultDto> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
         {
             var response = await this.http.PostAsJsonAsync<HttpResponseMessage?>($"api/edge/devices/{deviceId}/{moduleName}/{methodName}", null);
 
-            return await response.Content.ReadFromJsonAsync<C2Dresult>() ?? new C2Dresult();
+            return await response.Content.ReadFromJsonAsync<C2DresultDto>() ?? new C2DresultDto();
         }
 
         public async Task<IEnumerable<LabelDto>> GetAvailableLabels()

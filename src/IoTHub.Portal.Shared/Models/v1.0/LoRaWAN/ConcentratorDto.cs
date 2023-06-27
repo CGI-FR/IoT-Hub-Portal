@@ -60,6 +60,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The router configuration.
         /// </summary>
-        public RouterConfig RouterConfig { get; set; } = new RouterConfig();
+        public RouterConfigDto RouterConfig { get; set; } = new RouterConfigDto();
     }
 }

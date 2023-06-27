@@ -35,7 +35,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         private Mock<IDevicePropertyService> mockDevicePropertyService;
         private Mock<IDeviceTagService> mockDeviceTagService;
 
-        private Mock<IDeviceService<DeviceDetails>> mockDeviceService;
+        private Mock<IDeviceService<DeviceDetailsDto>> mockDeviceService;
 
         [SetUp]
         public void SetUp()
@@ -47,7 +47,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockDevicePropertyService = this.mockRepository.Create<IDevicePropertyService>();
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
-            this.mockDeviceService = this.mockRepository.Create<IDeviceService<DeviceDetails>>();
+            this.mockDeviceService = this.mockRepository.Create<IDeviceService<DeviceDetailsDto>>();
         }
 
         private DevicesController CreateDevicesController()
@@ -86,9 +86,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             devicesController.ControllerContext = new ControllerContext(
                 new ActionContext(mockHttpContext.Object, new RouteData(), new ControllerActionDescriptor()));
 
-            var expectedPaginatedDevices = new PaginatedResult<DeviceListItem>()
+            var expectedPaginatedDevices = new PaginatedResultDto<DeviceListItemDto>()
             {
-                Data = Enumerable.Range(0, 100).Select(x => new DeviceListItem
+                Data = Enumerable.Range(0, 100).Select(x => new DeviceListItemDto
                 {
                     DeviceID = FormattableString.Invariant($"{x}")
                 }).ToList(),
@@ -120,7 +120,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var devicesController = CreateDevicesController();
-            var device = new DeviceDetails
+            var device = new DeviceDetailsDto
             {
                 DeviceID = "aaa",
             };
@@ -142,7 +142,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var devicesController = CreateDevicesController();
-            var device = new DeviceDetails
+            var device = new DeviceDetailsDto
             {
                 DeviceID = "aaa",
             };
@@ -164,7 +164,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var devicesController = CreateDevicesController();
-            var device = new DeviceDetails
+            var device = new DeviceDetailsDto
             {
                 DeviceID = "aaa",
             };
@@ -184,7 +184,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var devicesController = CreateDevicesController();
-            var device = new DeviceDetails
+            var device = new DeviceDetailsDto
             {
                 DeviceID = "aaa"
             };
@@ -206,7 +206,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var devicesController = CreateDevicesController();
-            var device = new DeviceDetails
+            var device = new DeviceDetailsDto
             {
                 DeviceID = "aaa"
             };
@@ -246,15 +246,15 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var devicesController = CreateDevicesController();
             const string deviceId = "aaa";
-            var deviceDetails = new DeviceDetails
+            var deviceDetails = new DeviceDetailsDto
             {
                 DeviceName = "aaa"
             };
 
-            var expectedEnrollmentCredentials = new DeviceCredentials
+            var expectedEnrollmentCredentials = new DeviceCredentialsDto
             {
                 AuthenticationMode = AuthenticationMode.SymmetricKey,
-                SymmetricCredentials = new SymmetricCredentials
+                SymmetricCredentials = new SymmetricCredentialsDto
                 {
                     RegistrationID = "aaa",
                     SymmetricKey = "dfhjkfdgh"
@@ -288,7 +288,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             var deviceId = Guid.NewGuid().ToString();
 
-            var expectedDevicePropertyValues = new List<DevicePropertyValue>
+            var expectedDevicePropertyValues = new List<DevicePropertyValueDto>
             {
                 new()
                 {
@@ -317,7 +317,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             var deviceId = Guid.NewGuid().ToString();
 
-            var devicePropertyValues = new List<DevicePropertyValue>
+            var devicePropertyValues = new List<DevicePropertyValueDto>
             {
                 new()
                 {

@@ -43,7 +43,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanConcentratorsClientService.Object);
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = true });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
@@ -64,7 +64,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
                 .ReturnsAsync(new[]
                 {
-                    new FrequencyPlan()
+                    new FrequencyPlanDto()
                 });
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
@@ -104,7 +104,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
                 .ReturnsAsync(new[]
                 {
-                    new FrequencyPlan()
+                    new FrequencyPlanDto()
                 });
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
@@ -135,7 +135,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
                 .ReturnsAsync(new[]
                 {
-                    new FrequencyPlan()
+                    new FrequencyPlanDto()
                 });
 
             var cut = RenderComponent<CreateConcentratorPage>();

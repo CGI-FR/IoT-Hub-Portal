@@ -15,7 +15,7 @@
 @inject IEdgeModelClientService EdgeModelService
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
@@ -31,7 +31,7 @@
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
                         <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@imageDataUrl" id="@(nameof(IoTEdgeModel.ImageUrl))" />
+                            <MudImage Src="@imageDataUrl" id="@(nameof(IoTEdgeModelDto.ImageUrl))" />
                         </MudAvatar>
                     </div>
                 </MudCardContent>
@@ -97,10 +97,10 @@
 
                                                     <RowTemplate Context="sysModule">
                                                         <MudTd DataLabel="System module Name" Style="word-break: break-all;">
-                                                            <MudTextField id=@nameof(EdgeModelSystemModule.Name) @bind-Value="@sysModule.Name" Margin="Margin.Dense" Label="Module name" For="@(() => sysModule.Name )" Variant="Variant.Outlined" Disabled />
+                                                            <MudTextField id=@nameof(EdgeModelSystemModuleDto.Name) @bind-Value="@sysModule.Name" Margin="Margin.Dense" Label="Module name" For="@(() => sysModule.Name )" Variant="Variant.Outlined" Disabled />
                                                         </MudTd>
                                                         <MudTd DataLabel="System module Image URI" Style="word-break: break-all;">
-                                                            <MudTextField id=@nameof(EdgeModelSystemModule.ImageUri) @bind-Value="@sysModule.ImageUri" Margin="Margin.Dense" Label="Image URI" For="@(() => sysModule.ImageUri )" Variant="Variant.Outlined" />
+                                                            <MudTextField id=@nameof(EdgeModelSystemModuleDto.ImageUri) @bind-Value="@sysModule.ImageUri" Margin="Margin.Dense" Label="Image URI" For="@(() => sysModule.ImageUri )" Variant="Variant.Outlined" />
                                                         </MudTd>
                                                         <MudTd DataLabel="See detail" Style="text-align: center;">
                                                             <MudButton Variant="Variant.Filled" id="@("editSystModuleButton_"+sysModule.Name)" OnClick="@(async () => await ShowSystemModuleDetail(sysModule))">Detail</MudButton>
@@ -134,10 +134,10 @@
                                                     </HeaderContent>
                                                     <RowTemplate Context="ModuleContext">
                                                         <MudTd DataLabel="Module Name" Style="word-break: break-all;">
-                                                            <MudTextField id="@(nameof(IoTEdgeModule.ModuleName))" @bind-Value="@ModuleContext.ModuleName" Margin="Margin.Dense" Label="Module name" For="@(() => ModuleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                            <MudTextField id="@(nameof(IoTEdgeModuleDto.ModuleName))" @bind-Value="@ModuleContext.ModuleName" Margin="Margin.Dense" Label="Module name" For="@(() => ModuleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
                                                         </MudTd>
                                                         <MudTd DataLabel="Image Uri" Style="word-break: break-all;">
-                                                            <MudTextField id="@(nameof(IoTEdgeModule.ImageURI))" @bind-Value="@ModuleContext.ImageURI" Margin="Margin.Dense" Label="Image URI" For="@(() => ModuleContext.ImageURI )" Variant="Variant.Outlined" Required="true" />
+                                                            <MudTextField id="@(nameof(IoTEdgeModuleDto.ImageURI))" @bind-Value="@ModuleContext.ImageURI" Margin="Margin.Dense" Label="Image URI" For="@(() => ModuleContext.ImageURI )" Variant="Variant.Outlined" Required="true" />
                                                         </MudTd>
                                                         <MudTd DataLabel="See detail" Style="text-align: center;">
                                                             <MudButton Variant="Variant.Filled" id="editButton" OnClick="(async () => await ShowEditEdgeModuleDialog(ModuleContext))">Detail</MudButton>
@@ -178,10 +178,10 @@
                                                     </HeaderContent>
                                                     <RowTemplate Context="RouteContext">
                                                         <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                                            <MudTextField id="@(nameof(IoTEdgeRoute.Name))" @bind-Value="@RouteContext.Name" Margin="Margin.Dense" Label="Name" For="@(() => RouteContext.Name )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                            <MudTextField id="@(nameof(IoTEdgeRouteDto.Name))" @bind-Value="@RouteContext.Name" Margin="Margin.Dense" Label="Name" For="@(() => RouteContext.Name )" Variant="Variant.Outlined" Required="true"></MudTextField>
                                                         </MudTd>
                                                         <MudTd DataLabel="Value" Style="word-break: break-all;">
-                                                            <MudTextField id="@(nameof(IoTEdgeRoute.Value))" @bind-Value="@RouteContext.Value" Margin="Margin.Dense" Label="Value" For="@(() => RouteContext.Value )" Variant="Variant.Outlined" Required="true" />
+                                                            <MudTextField id="@(nameof(IoTEdgeRouteDto.Value))" @bind-Value="@RouteContext.Value" Margin="Margin.Dense" Label="Value" For="@(() => RouteContext.Value )" Variant="Variant.Outlined" Required="true" />
                                                         </MudTd>
                                                         <MudTd DataLabel="Priority" Style="text-align: center;">
                                                             <MudNumericField @bind-Value="@RouteContext.Priority" Label="Priority" For="@(() => RouteContext.Priority)" Variant="Variant.Outlined"></MudNumericField>
@@ -272,7 +272,7 @@
     [Parameter]
     public string ModelID { get; set; } = default!;
 
-    private IoTEdgeModel EdgeModel { get; set; } = default!;
+    private IoTEdgeModelDto EdgeModel { get; set; } = default!;
 
     public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
     public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
@@ -293,7 +293,7 @@
         try
         {
             isProcessing = true;
-            EdgeModel = new IoTEdgeModel();
+            EdgeModel = new IoTEdgeModelDto();
 
             await loadModel();
             this.imageDataUrl = await this.EdgeModelService.GetAvatarUrl(this.ModelID);
@@ -397,7 +397,7 @@
 
     private void AddModule()
     {
-        EdgeModel.EdgeModules.Add(new IoTEdgeModule());
+        EdgeModel.EdgeModules.Add(new IoTEdgeModuleDto());
     }
 
     private async Task ShowAddNewEdgeModuleDialog()
@@ -424,7 +424,7 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task ShowEditEdgeModuleDialog(IoTEdgeModule module)
+    private async Task ShowEditEdgeModuleDialog(IoTEdgeModuleDto module)
     {
         var parameters = new DialogParameters();
         parameters.Add("module", module);
@@ -447,7 +447,7 @@
         }
     }
 
-    private void DeleteModule(IoTEdgeModule module)
+    private void DeleteModule(IoTEdgeModuleDto module)
     {
         EdgeModel.EdgeModules.Remove(module);
     }
@@ -472,7 +472,7 @@
         this.NavigationManager.NavigateTo("/edge/models");
     }
 
-    private void DeleteRoute(IoTEdgeRoute route)
+    private void DeleteRoute(IoTEdgeRouteDto route)
     {
         EdgeModel.EdgeRoutes.Remove(route);
     }
@@ -483,11 +483,11 @@
 
         if (EdgeModel.EdgeRoutes.Count == 0 || (last?.Name is not null && last?.Value is not null))
         {
-            EdgeModel.EdgeRoutes.Add(new IoTEdgeRoute());
+            EdgeModel.EdgeRoutes.Add(new IoTEdgeRouteDto());
         }
     }
 
-    private async Task ShowSystemModuleDetail(EdgeModelSystemModule systemModule)
+    private async Task ShowSystemModuleDetail(EdgeModelSystemModuleDto systemModule)
     {
         var parameters = new DialogParameters();
         parameters.Add("module", systemModule);

@@ -459,11 +459,11 @@ namespace IoTHub.Portal.Server.Services
         /// <param name="deviceId">Device Id</param>
         /// <param name="edgeModule">Edge module</param>
         /// <returns>Edge device logs</returns>
-        public async Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
+        public async Task<IEnumerable<IoTEdgeDeviceLogDto>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModuleDto edgeModule)
         {
             var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
 
-            var logs = new List<IoTEdgeDeviceLog>();
+            var logs = new List<IoTEdgeDeviceLogDto>();
 
             var payload = JsonConvert.SerializeObject(new
             {
@@ -499,7 +499,7 @@ namespace IoTHub.Portal.Server.Services
                 {
                     var payloadResponseAsJson = JsonConvert.DeserializeObject<dynamic[]>(payloadResponse).Single().payload.ToString();
 
-                    logs.AddRange(JsonConvert.DeserializeObject<List<IoTEdgeDeviceLog>>(payloadResponseAsJson));
+                    logs.AddRange(JsonConvert.DeserializeObject<List<IoTEdgeDeviceLogDto>>(payloadResponseAsJson));
                 }
             }
             else
@@ -590,7 +590,7 @@ namespace IoTHub.Portal.Server.Services
             }
         }
 
-        public async Task<DeviceCredentials> GetDeviceCredentials(IDeviceDetails device)
+        public async Task<DeviceCredentialsDto> GetDeviceCredentials(IDeviceDetails device)
         {
             try
             {
@@ -610,7 +610,7 @@ namespace IoTHub.Portal.Server.Services
         /// <param name="edgeDeviceId">the edge device id.</param>
         /// <returns>Enrollment credentials.</returns>
         /// <exception cref="ResourceNotFoundException"></exception>
-        public async Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device)
+        public async Task<DeviceCredentialsDto> GetEdgeDeviceCredentials(IoTEdgeDeviceDto device)
         {
             var deviceTwin = await GetDeviceTwin(device.DeviceId);
 
@@ -619,7 +619,7 @@ namespace IoTHub.Portal.Server.Services
                 throw new ResourceNotFoundException($"IoT Edge {device.DeviceId} doesn't exist.");
             }
 
-            var modelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId));
+            var modelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDeviceDto.ModelId));
 
             return await this.deviceRegistryProvider.GetEnrollmentCredentialsAsync(device.DeviceId, modelId);
         }
@@ -628,10 +628,10 @@ namespace IoTHub.Portal.Server.Services
         /// Retrieves the last configuration of the IoT Edge.
         /// </summary>
         /// <param name="twin">The twin.</param>
-        public async Task<ConfigItem> RetrieveLastConfiguration(IoTEdgeDevice ioTEdgeDevice)
+        public async Task<ConfigItemDto> RetrieveLastConfiguration(IoTEdgeDeviceDto ioTEdgeDevice)
         {
             var twin = await this.registryManager.GetTwinAsync(ioTEdgeDevice.DeviceId);
-            var item = new ConfigItem();
+            var item = new ConfigItemDto();
 
             if (twin.Configurations?.Count > 0)
             {
@@ -709,7 +709,7 @@ namespace IoTHub.Portal.Server.Services
             throw new NotImplementedException();
         }
 
-        public Task<string> CreateEnrollementScript(string template, IoTEdgeDevice device)
+        public Task<string> CreateEnrollementScript(string template, IoTEdgeDeviceDto device)
         {
             throw new NotImplementedException();
         }
@@ -719,7 +719,7 @@ namespace IoTHub.Portal.Server.Services
             throw new NotImplementedException();
         }
 
-        public Task RemoveDeviceCredentials(IoTEdgeDevice device)
+        public Task RemoveDeviceCredentials(IoTEdgeDeviceDto device)
         {
             throw new NotImplementedException();
         }

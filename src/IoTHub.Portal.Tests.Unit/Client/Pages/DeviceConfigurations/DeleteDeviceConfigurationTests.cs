@@ -34,7 +34,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockDeviceConfigurationsClientService.Object);
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = true });
 
             this.dialogService = Services.GetService<IDialogService>() as DialogService;
         }

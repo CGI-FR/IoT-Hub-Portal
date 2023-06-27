@@ -11,7 +11,7 @@ namespace IoTHub.Portal.Client.Services
 
     public interface IDeviceModelsClientService
     {
-        Task<PaginationResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter? deviceModelFilter = null);
+        Task<PaginationResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilterDto? deviceModelFilter = null);
 
         Task<DeviceModelDto> GetDeviceModel(string deviceModelId);
 
@@ -21,9 +21,9 @@ namespace IoTHub.Portal.Client.Services
 
         Task DeleteDeviceModel(string deviceModelId);
 
-        Task<IList<DeviceProperty>> GetDeviceModelModelProperties(string deviceModelId);
+        Task<IList<DevicePropertyDto>> GetDeviceModelModelProperties(string deviceModelId);
 
-        Task SetDeviceModelModelProperties(string deviceModelId, IList<DeviceProperty> deviceProperties);
+        Task SetDeviceModelModelProperties(string deviceModelId, IList<DevicePropertyDto> deviceProperties);
 
         Task<string> GetAvatarUrl(string deviceModelId);
 

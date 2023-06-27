@@ -44,9 +44,9 @@ namespace IoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"api/lorawan/concentrators/{deviceId}");
         }
 
-        public Task<IEnumerable<FrequencyPlan>> GetFrequencyPlans()
+        public Task<IEnumerable<FrequencyPlanDto>> GetFrequencyPlans()
         {
-            return this.http.GetFromJsonAsync<IEnumerable<FrequencyPlan>>("api/lorawan/freqencyplans")!;
+            return this.http.GetFromJsonAsync<IEnumerable<FrequencyPlanDto>>("api/lorawan/freqencyplans")!;
         }
     }
 }

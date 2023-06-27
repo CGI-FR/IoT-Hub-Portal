@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Client.Validators
     using IoTHub.Portal.Models.v10;
     using FluentValidation;
 
-    public class IoTEdgeRouteValidator : AbstractValidator<IEnumerable<IoTEdgeRoute>>
+    public class IoTEdgeRouteValidator : AbstractValidator<IEnumerable<IoTEdgeRouteDto>>
     {
         public IoTEdgeRouteValidator()
         {

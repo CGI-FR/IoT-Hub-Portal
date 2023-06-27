@@ -14,6 +14,6 @@ namespace IoTHub.Portal.Application.Managers
 
         Task ExportTemplateFile(Stream stream);
 
-        Task<IEnumerable<ImportResultLine>> ImportDeviceList(Stream stream);
+        Task<IEnumerable<ImportResultLineDto>> ImportDeviceList(Stream stream);
     }
 }

@@ -60,9 +60,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
 
             var url = $"api/edge/devices?pageSize=10&searchText={query}";
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(url))
-                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>()
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItemDto>()
                 {
-                    Items = new List<IoTEdgeListItem>
+                    Items = new List<IoTEdgeListItemDto>
                     {
                         new()
                         {
@@ -73,7 +73,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EdgeDeviceToDuplicateSelector>();
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeListItem>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeListItemDto>>();
 
             // Act
             autocompleteComponent.Find(TagNames.Input).Click();
@@ -91,27 +91,27 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
             // Arrange
             var query = Fixture.Create<string>();
 
-            var expectedDeviceModel = new IoTEdgeModel
+            var expectedDeviceModel = new IoTEdgeModelDto
             {
                 ModelId = Fixture.Create<string>()
             };
 
-            var expectedDevice = new IoTEdgeDevice
+            var expectedDevice = new IoTEdgeDeviceDto
             {
                 DeviceId = Fixture.Create<string>(),
                 ModelId = expectedDeviceModel.ModelId
             };
 
-            var expectedDeviceItem = new IoTEdgeListItem
+            var expectedDeviceItem = new IoTEdgeListItemDto
             {
                 DeviceId = expectedDevice.DeviceId,
             };
 
             var url = $"api/edge/devices?pageSize=10&searchText={query}";
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(url))
-                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>()
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItemDto>()
                 {
-                    Items = new List<IoTEdgeListItem>
+                    Items = new List<IoTEdgeListItemDto>
                     {
                         expectedDeviceItem
                     }
@@ -126,7 +126,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EdgeDeviceToDuplicateSelector>();
 
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeListItem>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeListItemDto>>();
             autocompleteComponent.Find(TagNames.Input).Click();
             autocompleteComponent.Find(TagNames.Input).Input(query);
             popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
@@ -146,27 +146,27 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
             // Arrange
             var query = Fixture.Create<string>();
 
-            var expectedDeviceModel = new IoTEdgeModel
+            var expectedDeviceModel = new IoTEdgeModelDto
             {
                 ModelId = Fixture.Create<string>()
             };
 
-            var expectedDevice = new IoTEdgeDevice
+            var expectedDevice = new IoTEdgeDeviceDto
             {
                 DeviceId = Fixture.Create<string>(),
                 ModelId = expectedDeviceModel.ModelId
             };
 
-            var expectedDeviceItem = new IoTEdgeListItem
+            var expectedDeviceItem = new IoTEdgeListItemDto
             {
                 DeviceId = expectedDevice.DeviceId,
             };
 
             var url = $"api/edge/devices?pageSize=10&searchText={query}";
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(url))
-                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>()
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItemDto>()
                 {
-                    Items = new List<IoTEdgeListItem>
+                    Items = new List<IoTEdgeListItemDto>
                     {
                         expectedDeviceItem
                     }
@@ -178,7 +178,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EdgeDeviceToDuplicateSelector>();
 
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeListItem>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeListItemDto>>();
             autocompleteComponent.Find(TagNames.Input).Click();
             autocompleteComponent.Find(TagNames.Input).Input(query);
             popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
@@ -203,7 +203,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<EdgeDeviceToDuplicateSelector>();
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeListItem>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeListItemDto>>();
 
             // Act
             autocompleteComponent.Find(TagNames.Input).Click();

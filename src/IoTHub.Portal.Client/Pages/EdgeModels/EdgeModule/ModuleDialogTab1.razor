@@ -53,7 +53,7 @@
 
 @code {
     [Parameter]
-    public IList<IoTEdgeModuleEnvironmentVariable> EnvironmentVariables { get; set; } = new List<IoTEdgeModuleEnvironmentVariable>();
+    public IList<IoTEdgeModuleEnvironmentVariableDto> EnvironmentVariables { get; set; } = new List<IoTEdgeModuleEnvironmentVariableDto>();
     private bool IsLoading = false;
 
     public void AddRow()
@@ -62,11 +62,11 @@
 
         if (EnvironmentVariables.Count == 0 || (last?.Name is not null && last?.Value is not null))
         {
-            EnvironmentVariables.Add(new IoTEdgeModuleEnvironmentVariable());
+            EnvironmentVariables.Add(new IoTEdgeModuleEnvironmentVariableDto());
         }
     }
 
-    public void DeleteRow(IoTEdgeModuleEnvironmentVariable item)
+    public void DeleteRow(IoTEdgeModuleEnvironmentVariableDto item)
     {
         EnvironmentVariables.Remove(item);
     }

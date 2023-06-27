@@ -36,8 +36,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
         public async Task AwsGreengrassPublicComponentsDialog_AfterOnInitializedAsync_PublicEdgeComponentsAreLoaded()
         {
             // Arrange
-            var edgeModules = Array.Empty<IoTEdgeModule>().ToList();
-            var publicEdgeComponents = Fixture.CreateMany<IoTEdgeModule>(10).ToList();
+            var edgeModules = Array.Empty<IoTEdgeModuleDto>().ToList();
+            var publicEdgeComponents = Fixture.CreateMany<IoTEdgeModuleDto>(10).ToList();
 
             _ = this.mockEdgeModelClientService.Setup(s => s.GetPublicEdgeModules())
                 .ReturnsAsync(publicEdgeComponents);
@@ -62,8 +62,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
         public async Task AwsGreengrassPublicComponentsDialog_ClickOnCancel_DialogCanceled()
         {
             // Arrange
-            var edgeModules = Array.Empty<IoTEdgeModule>().ToList();
-            var publicEdgeComponents = Fixture.CreateMany<IoTEdgeModule>(10).ToList();
+            var edgeModules = Array.Empty<IoTEdgeModuleDto>().ToList();
+            var publicEdgeComponents = Fixture.CreateMany<IoTEdgeModuleDto>(10).ToList();
 
             _ = this.mockEdgeModelClientService.Setup(s => s.GetPublicEdgeModules())
                 .ReturnsAsync(publicEdgeComponents);
@@ -95,8 +95,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
         public async Task AwsGreengrassPublicComponentsDialog_ClickOnSubmitWithoutSelectingPublicComponents_EdgeModulesNotUpdated()
         {
             // Arrange
-            var edgeModules = Array.Empty<IoTEdgeModule>().ToList();
-            var publicEdgeComponents = Fixture.CreateMany<IoTEdgeModule>(10).ToList();
+            var edgeModules = Array.Empty<IoTEdgeModuleDto>().ToList();
+            var publicEdgeComponents = Fixture.CreateMany<IoTEdgeModuleDto>(10).ToList();
 
             _ = this.mockEdgeModelClientService.Setup(s => s.GetPublicEdgeModules())
                 .ReturnsAsync(publicEdgeComponents);
@@ -128,8 +128,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
         public async Task AwsGreengrassPublicComponentsDialog_ClickOnSubmitAfterSelectingPublicComponent_EdgeModulesNotUpdated()
         {
             // Arrange
-            var edgeModules = Array.Empty<IoTEdgeModule>().ToList();
-            var publicEdgeComponents = Fixture.CreateMany<IoTEdgeModule>(10).ToList();
+            var edgeModules = Array.Empty<IoTEdgeModuleDto>().ToList();
+            var publicEdgeComponents = Fixture.CreateMany<IoTEdgeModuleDto>(10).ToList();
 
             _ = this.mockEdgeModelClientService.Setup(s => s.GetPublicEdgeModules())
                 .ReturnsAsync(publicEdgeComponents);

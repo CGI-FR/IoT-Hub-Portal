@@ -19,13 +19,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
         public void ModuleDialogTab3ShouldBeRenderedProperly()
         {
             //Arrange
-            var module = new IoTEdgeModule()
+            var module = new IoTEdgeModuleDto()
             {
                 ModuleName = Guid.NewGuid().ToString(),
                 Status = "running",
-                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
-                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>(),
+                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSettingDto>(),
+                Commands = new List<IoTEdgeModuleCommandDto>()
             };
 
             var cut = RenderComponent<ModuleDialogTab3>
@@ -39,19 +39,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
         public void ClickOnAddShouldAddRow()
         {
             //Arrange
-            var module = new IoTEdgeModule()
+            var module = new IoTEdgeModuleDto()
             {
                 ModuleName = Guid.NewGuid().ToString(),
                 Status = "running",
-                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
-                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>(),
+                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSettingDto>(),
+                Commands = new List<IoTEdgeModuleCommandDto>()
                 {
-                    new IoTEdgeModuleCommand()
+                    new IoTEdgeModuleCommandDto()
                     {
                         Name = Guid.NewGuid().ToString()
                     },
-                    new IoTEdgeModuleCommand()
+                    new IoTEdgeModuleCommandDto()
                     {
                         Name = Guid.NewGuid().ToString()
                     }
@@ -71,19 +71,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
         public void ClickOnRemoveShouldDeleteRow()
         {
             //Arrange
-            var module = new IoTEdgeModule()
+            var module = new IoTEdgeModuleDto()
             {
                 ModuleName = Guid.NewGuid().ToString(),
                 Status = "running",
-                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
-                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>(),
+                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSettingDto>(),
+                Commands = new List<IoTEdgeModuleCommandDto>()
                 {
-                    new IoTEdgeModuleCommand()
+                    new IoTEdgeModuleCommandDto()
                     {
                         Name = Guid.NewGuid().ToString()
                     },
-                    new IoTEdgeModuleCommand()
+                    new IoTEdgeModuleCommandDto()
                     {
                         Name = Guid.NewGuid().ToString()
                     }

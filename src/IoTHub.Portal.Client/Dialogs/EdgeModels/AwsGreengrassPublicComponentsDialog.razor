@@ -4,7 +4,7 @@
 
 <MudDialog>
     <DialogContent>
-        <MudTable T="IoTEdgeModule" Items="@publicComponents" MultiSelection="true" SelectOnRowClick="true"
+        <MudTable T="IoTEdgeModuleDto" Items="@publicComponents" MultiSelection="true" SelectOnRowClick="true"
             @bind-SelectedItems="selectedPublicComponents" Hover="true">
             <HeaderContent>
                 <MudTh>Name</MudTh>
@@ -29,15 +29,15 @@
     MudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter]
-    public List<IoTEdgeModule> EdgeModules { get; set; } = default!;
+    public List<IoTEdgeModuleDto> EdgeModules { get; set; } = default!;
 
-    private List<IoTEdgeModule> publicComponents = new();
-    private HashSet<IoTEdgeModule> selectedPublicComponents = new HashSet<IoTEdgeModule>();
+    private List<IoTEdgeModuleDto> publicComponents = new();
+    private HashSet<IoTEdgeModuleDto> selectedPublicComponents = new HashSet<IoTEdgeModuleDto>();
 
     protected async override Task OnInitializedAsync()
     {
         publicComponents = await EdgeModelClientService.GetPublicEdgeModules();
-        selectedPublicComponents = new HashSet<IoTEdgeModule>(publicComponents.Where(m => EdgeModules.Any(e => m.Id.Equals(e.Id))));
+        selectedPublicComponents = new HashSet<IoTEdgeModuleDto>(publicComponents.Where(m => EdgeModules.Any(e => m.Id.Equals(e.Id))));
     }
 
     private void Cancel() => MudDialog.Cancel();

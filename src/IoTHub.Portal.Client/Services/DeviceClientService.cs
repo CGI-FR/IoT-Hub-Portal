@@ -19,17 +19,17 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public Task<PaginationResult<DeviceListItem>> GetDevices(string continuationUri)
+        public Task<PaginationResult<DeviceListItemDto>> GetDevices(string continuationUri)
         {
-            return this.http.GetFromJsonAsync<PaginationResult<DeviceListItem>>(continuationUri)!;
+            return this.http.GetFromJsonAsync<PaginationResult<DeviceListItemDto>>(continuationUri)!;
         }
 
-        public Task<DeviceDetails> GetDevice(string deviceId)
+        public Task<DeviceDetailsDto> GetDevice(string deviceId)
         {
-            return this.http.GetFromJsonAsync<DeviceDetails>($"api/devices/{deviceId}")!;
+            return this.http.GetFromJsonAsync<DeviceDetailsDto>($"api/devices/{deviceId}")!;
         }
 
-        public async Task<string> CreateDevice(DeviceDetails device)
+        public async Task<string> CreateDevice(DeviceDetailsDto device)
         {
             var response = await this.http.PostAsJsonAsync("api/devices", device);
 
@@ -40,29 +40,29 @@ namespace IoTHub.Portal.Client.Services
 
             //Retrieve Device ID
             var responseJson = await response.Content.ReadAsStringAsync();
-            var updatedDevice = Newtonsoft.Json.JsonConvert.DeserializeObject<DeviceDetails>(responseJson);
+            var updatedDevice = Newtonsoft.Json.JsonConvert.DeserializeObject<DeviceDetailsDto>(responseJson);
 
             return updatedDevice!.DeviceID;
         }
 
-        public Task UpdateDevice(DeviceDetails device)
+        public Task UpdateDevice(DeviceDetailsDto device)
         {
             return this.http.PutAsJsonAsync("api/devices", device);
         }
 
-        public async Task<IList<DevicePropertyValue>> GetDeviceProperties(string deviceId)
+        public async Task<IList<DevicePropertyValueDto>> GetDeviceProperties(string deviceId)
         {
-            return await this.http.GetFromJsonAsync<List<DevicePropertyValue>>($"api/devices/{deviceId}/properties") ?? new List<DevicePropertyValue>();
+            return await this.http.GetFromJsonAsync<List<DevicePropertyValueDto>>($"api/devices/{deviceId}/properties") ?? new List<DevicePropertyValueDto>();
         }
 
-        public Task SetDeviceProperties(string deviceId, IList<DevicePropertyValue> deviceProperties)
+        public Task SetDeviceProperties(string deviceId, IList<DevicePropertyValueDto> deviceProperties)
         {
             return this.http.PostAsJsonAsync($"api/devices/{deviceId}/properties", deviceProperties);
         }
 
-        public Task<DeviceCredentials> GetEnrollmentCredentials(string deviceId)
+        public Task<DeviceCredentialsDto> GetEnrollmentCredentials(string deviceId)
         {
-            return this.http.GetFromJsonAsync<DeviceCredentials>($"api/devices/{deviceId}/credentials")!;
+            return this.http.GetFromJsonAsync<DeviceCredentialsDto>($"api/devices/{deviceId}/credentials")!;
         }
 
         public Task DeleteDevice(string deviceId)
@@ -81,11 +81,11 @@ namespace IoTHub.Portal.Client.Services
             var response = await this.http.PostAsync($"/api/admin/devices/_template", null);
             return response.Content;
         }
-        public async Task<ImportResultLine[]> ImportDeviceList(MultipartFormDataContent dataContent)
+        public async Task<ImportResultLineDto[]> ImportDeviceList(MultipartFormDataContent dataContent)
         {
             var result = await this.http.PostAsync($"/api/admin/devices/_import", dataContent);
             _ = result.EnsureSuccessStatusCode();
-            return await result.Content.ReadFromJsonAsync<ImportResultLine[]>() ?? Array.Empty<ImportResultLine>();
+            return await result.Content.ReadFromJsonAsync<ImportResultLineDto[]>() ?? Array.Empty<ImportResultLineDto>();
         }
 
         public async Task<IEnumerable<LabelDto>> GetAvailableLabels()

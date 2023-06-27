@@ -32,14 +32,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             this.mockDeviceConfigurationsClientService = MockRepository.Create<IDeviceConfigurationsClientService>();
 
             _ = Services.AddSingleton(this.mockDeviceConfigurationsClientService.Object);
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettingsDto { IsLoRaSupported = true });
         }
 
         [Test]
         public void DeviceConfigurationListPageShouldLoadAndShowConfigurations()
         {
             // Arrange
-            var expectedConfigurations = Fixture.Build<ConfigListItem>().CreateMany(3).ToList();
+            var expectedConfigurations = Fixture.Build<ConfigListItemDto>().CreateMany(3).ToList();
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service => service.GetDeviceConfigurations())
                 .ReturnsAsync(expectedConfigurations);
@@ -78,7 +78,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
 
-            var configurations = new List<ConfigListItem>
+            var configurations = new List<ConfigListItemDto>
             {
                 new()
                 {

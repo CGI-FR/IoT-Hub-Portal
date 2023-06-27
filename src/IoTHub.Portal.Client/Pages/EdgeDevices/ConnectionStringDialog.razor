@@ -4,7 +4,7 @@
 @inject IJSRuntime JS
 @inject ClipboardService ClipboardService
 @inject IEdgeDeviceClientService EdgeDeviceClientService
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 
 <MudDialog>
     <DialogContent>
@@ -106,7 +106,7 @@
 
     [Parameter] public string deviceId { get; set; } = default!;
 
-    private DeviceCredentials Credentials = new DeviceCredentials();
+    private DeviceCredentialsDto Credentials = new DeviceCredentialsDto();
 
     public string EnrollementScriptCommand { get; set; } = default!;
 

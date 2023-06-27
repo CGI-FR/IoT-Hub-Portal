@@ -6,7 +6,7 @@
             <MudGrid>
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="@currentModuleName"
-                                  id=@nameof(EdgeModelSystemModule.Name)
+                                  id=@nameof(EdgeModelSystemModuleDto.Name)
                                   Label="Module name"
                                   Variant="Variant.Outlined"
                                   For="@(()=> Module.Name)"
@@ -14,7 +14,7 @@
                 </MudItem>
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="@currentImageUri"
-                                  id=@nameof(EdgeModelSystemModule.ImageUri)
+                                  id=@nameof(EdgeModelSystemModuleDto.ImageUri)
                                   Label="Image URI"
                                   Variant="Variant.Outlined"
                                   For="@(()=> Module.ImageUri)"
@@ -22,7 +22,7 @@
                 </MudItem>
                 <MudItem xs="12">
                     <MudTextField @bind-Value="@currentContainerCreateOptions"
-                                  id=@nameof(EdgeModelSystemModule.ContainerCreateOptions)
+                                  id=@nameof(EdgeModelSystemModuleDto.ContainerCreateOptions)
                                   Label="Container Create Options"
                                   Variant="Variant.Outlined"
                                   For="@(()=> Module.ContainerCreateOptions)" Lines="8" />
@@ -51,13 +51,13 @@
     MudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter]
-    public EdgeModelSystemModule Module { get; set; } = default!;
+    public EdgeModelSystemModuleDto Module { get; set; } = default!;
 
     private string currentModuleName = default!;
     private string currentImageUri = default!;
     private string currentContainerCreateOptions = default!;
 
-    private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
+    private List<IoTEdgeModuleEnvironmentVariableDto> currentEnvironmentVariables = new();
 
     public bool IsLoading;
 
@@ -68,7 +68,7 @@
         currentModuleName = Module.Name;
         currentImageUri = Module.ImageUri;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
-        currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
+        currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>(Module.EnvironmentVariables.ToArray());
         await Task.Delay(0);
         IsLoading = false;
     }
@@ -78,7 +78,7 @@
         Module.Name = currentModuleName;
         Module.ImageUri = currentImageUri;
         Module.ContainerCreateOptions = currentContainerCreateOptions;
-        Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
+        Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>(currentEnvironmentVariables.ToArray());
         MudDialog.Close(DialogResult.Ok(true));
     }
 }

@@ -40,12 +40,12 @@ namespace IoTHub.Portal.Application.Helpers
         /// <param name="config">Configuration object from Azure IoT Hub.</param>
         /// <param name="moduleList">List of modules related to this configuration.</param>
         /// <returns>A configuration converted to a ConfigListItem.</returns>
-        public static ConfigListItem CreateConfigListItem(Configuration config, IReadOnlyCollection<IoTEdgeModule> moduleList)
+        public static ConfigListItemDto CreateConfigListItem(Configuration config, IReadOnlyCollection<IoTEdgeModuleDto> moduleList)
         {
             ArgumentNullException.ThrowIfNull(config, nameof(config));
             ArgumentNullException.ThrowIfNull(moduleList, nameof(moduleList));
 
-            return new ConfigListItem
+            return new ConfigListItemDto
             {
                 ConfigurationID = config.Id,
                 Conditions = config.TargetCondition,
@@ -64,11 +64,11 @@ namespace IoTHub.Portal.Application.Helpers
         /// </summary>
         /// <param name="config">Configuration object from Azure IoT Hub.</param>
         /// <returns>A configuration converted to a ConfigListItem.</returns>
-        public static ConfigListItem CreateConfigListItem(Configuration config)
+        public static ConfigListItemDto CreateConfigListItem(Configuration config)
         {
             ArgumentNullException.ThrowIfNull(config, nameof(config));
 
-            return new ConfigListItem
+            return new ConfigListItemDto
             {
                 ConfigurationID = config.Id,
                 Conditions = config.TargetCondition,
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <param name="config">Configuration object from Azure IoT Hub.</param>
         /// <returns>A configuration converted to a DeviceConfig.</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static DeviceConfig CreateDeviceConfig(Configuration config)
+        public static DeviceConfigDto CreateDeviceConfig(Configuration config)
         {
             ArgumentNullException.ThrowIfNull(config, nameof(config));
 
@@ -106,7 +106,7 @@ namespace IoTHub.Portal.Application.Helpers
                 throw new InvalidOperationException("Target condition is not formed as expected.");
             }
 
-            var result = new DeviceConfig
+            var result = new DeviceConfigDto
             {
                 ConfigurationId = config.Labels.TryGetValue("configuration-id", out var id) ? id: config.Id,
                 Priority = config.Priority
@@ -140,12 +140,12 @@ namespace IoTHub.Portal.Application.Helpers
         /// <param name="config">Configuration object from Azure IoT Hub.</param>
         /// <param name="module">Dictionnary containing the module's name and its properties.</param>
         /// <returns>A module with all its details as a GatewayModule object.</returns>
-        public static IoTEdgeModule CreateGatewayModule(Configuration config, JProperty module)
+        public static IoTEdgeModuleDto CreateGatewayModule(Configuration config, JProperty module)
         {
             ArgumentNullException.ThrowIfNull(config, nameof(config));
             ArgumentNullException.ThrowIfNull(module, nameof(module));
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = module.Name,
                 ImageURI = module.Value["settings"]?["image"]?.Value<string>(),
@@ -156,7 +156,7 @@ namespace IoTHub.Portal.Application.Helpers
             foreach (var item in GetEnvironmentVariables(module))
             {
                 edgeModule.EnvironmentVariables.Add(
-                    new IoTEdgeModuleEnvironmentVariable()
+                    new IoTEdgeModuleEnvironmentVariableDto()
                     {
                         Name = item.Key,
                         Value = item.Value
@@ -172,15 +172,15 @@ namespace IoTHub.Portal.Application.Helpers
         /// <param name="modulesContent">the configuration modules content.</param>
         /// <param name="moduleName">the module name.</param>
         /// <returns>List of IoTEdgeModuleTwinSetting.</returns>
-        public static List<IoTEdgeModuleTwinSetting> CreateModuleTwinSettings(IDictionary<string, IDictionary<string, object>> modulesContent, string moduleName)
+        public static List<IoTEdgeModuleTwinSettingDto> CreateModuleTwinSettings(IDictionary<string, IDictionary<string, object>> modulesContent, string moduleName)
         {
-            var moduleTwinSettings = new List<IoTEdgeModuleTwinSetting>();
+            var moduleTwinSettings = new List<IoTEdgeModuleTwinSettingDto>();
 
             if (modulesContent.TryGetValue(moduleName, out var twinSettings))
             {
                 foreach (var desiredProperty in twinSettings)
                 {
-                    moduleTwinSettings.Add(new IoTEdgeModuleTwinSetting()
+                    moduleTwinSettings.Add(new IoTEdgeModuleTwinSettingDto()
                     {
                         Name = desiredProperty.Key.Replace("properties.desired.", "", StringComparison.Ordinal),
                         Value = desiredProperty.Value.ToString()
@@ -223,9 +223,9 @@ namespace IoTHub.Portal.Application.Helpers
         /// </summary>
         /// <param name="edgeModel">the IoT edge model.</param>
         /// <returns>new Dictionary.</returns>
-        public static Dictionary<string, IDictionary<string, object>> GenerateModulesContent(IoTEdgeModel edgeModel)
+        public static Dictionary<string, IDictionary<string, object>> GenerateModulesContent(IoTEdgeModelDto edgeModel)
         {
-            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesiredDto();
 
             if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri))
             {
@@ -263,7 +263,7 @@ namespace IoTHub.Portal.Application.Helpers
 
             foreach (var module in edgeModel.EdgeModules)
             {
-                var configModule = new ConfigModule
+                var configModule = new ConfigModuleDto
                 {
                     Type = "docker",
                     Status = "running",
@@ -317,11 +317,11 @@ namespace IoTHub.Portal.Application.Helpers
             return modulesContent;
         }
 
-        public static EdgeHubPropertiesDesired GenerateRoutesContent(List<IoTEdgeRoute> edgeRoutes)
+        public static EdgeHubPropertiesDesiredDto GenerateRoutesContent(List<IoTEdgeRouteDto> edgeRoutes)
         {
             ArgumentNullException.ThrowIfNull(edgeRoutes, nameof(edgeRoutes));
 
-            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesiredDto();
 
             // Defines routes in the IoTEdgeHub module
             foreach (var route in edgeRoutes)
@@ -337,11 +337,11 @@ namespace IoTHub.Portal.Application.Helpers
             return edgeHubPropertiesDesired;
         }
 
-        public static IoTEdgeRoute CreateIoTEdgeRouteFromJProperty(JProperty route)
+        public static IoTEdgeRouteDto CreateIoTEdgeRouteFromJProperty(JProperty route)
         {
             ArgumentNullException.ThrowIfNull(route, nameof(route));
 
-            return new IoTEdgeRoute
+            return new IoTEdgeRouteDto
             {
                 Name = route.Name,
                 Value = route.Value["route"]?.Value<string>(),

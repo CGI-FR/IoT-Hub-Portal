@@ -19,7 +19,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Jobs
         private readonly ILogger<SyncLoRaDeviceTelemetryJob> logger;
         private readonly ConfigHandler configHandler;
         private readonly BlobServiceClient blobServiceClient;
-        private readonly IDeviceService<LoRaDeviceDetails> deviceService;
+        private readonly IDeviceService<LoRaDeviceDetailsDto> deviceService;
 
         private const string CHECKPOINTS_BLOBSTORAGE_NAME = "iothub-portal-events-checkpoints";
 
@@ -27,7 +27,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Jobs
             ILogger<SyncLoRaDeviceTelemetryJob> logger,
             ConfigHandler configHandler,
             BlobServiceClient blobServiceClient,
-            IDeviceService<LoRaDeviceDetails> deviceService)
+            IDeviceService<LoRaDeviceDetailsDto> deviceService)
         {
             this.logger = logger;
             this.configHandler = configHandler;

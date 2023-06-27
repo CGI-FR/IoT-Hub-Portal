@@ -27,8 +27,8 @@ namespace IoTHub.Portal.Server.Managers
     public class ExportManager : IExportManager
     {
         private readonly IExternalDeviceService externalDevicesService;
-        private readonly IDeviceService<DeviceDetails> deviceService;
-        private readonly IDeviceService<LoRaDeviceDetails> loraDeviceService;
+        private readonly IDeviceService<DeviceDetailsDto> deviceService;
+        private readonly IDeviceService<LoRaDeviceDetailsDto> loraDeviceService;
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
         private readonly IDevicePropertyService devicePropertyService;
@@ -38,8 +38,8 @@ namespace IoTHub.Portal.Server.Managers
         private const string PropertyPrefix = "PROPERTY";
 
         public ExportManager(IExternalDeviceService externalDevicesService,
-            IDeviceService<DeviceDetails> deviceService,
-            IDeviceService<LoRaDeviceDetails> loraDeviceService,
+            IDeviceService<DeviceDetailsDto> deviceService,
+            IDeviceService<LoRaDeviceDetailsDto> loraDeviceService,
             IDeviceTagService deviceTagService,
             IDeviceModelPropertiesService deviceModelPropertiesService,
             IDevicePropertyService devicePropertyService,
@@ -113,26 +113,26 @@ namespace IoTHub.Portal.Server.Managers
             if (this.loRaWANOptions.Value.Enabled)
             {
                 properties.AddRange(new[] {
-                    nameof(LoRaDeviceDetails.AppKey),
-                    nameof(LoRaDeviceDetails.AppEUI),
-                    nameof(LoRaDeviceDetails.AppSKey),
-                    nameof(LoRaDeviceDetails.NwkSKey),
-                    nameof(LoRaDeviceDetails.DevAddr),
-                    nameof(LoRaDeviceDetails.GatewayID),
-                    nameof(LoRaDeviceDetails.Downlink),
-                    nameof(LoRaDeviceDetails.ClassType),
-                    nameof(LoRaDeviceDetails.PreferredWindow),
-                    nameof(LoRaDeviceDetails.Deduplication),
-                    nameof(LoRaDeviceDetails.RX1DROffset),
-                    nameof(LoRaDeviceDetails.RX2DataRate),
-                    nameof(LoRaDeviceDetails.RXDelay),
-                    nameof(LoRaDeviceDetails.ABPRelaxMode),
-                    nameof(LoRaDeviceDetails.SensorDecoder),
-                    nameof(LoRaDeviceDetails.FCntUpStart),
-                    nameof(LoRaDeviceDetails.FCntDownStart),
-                    nameof(LoRaDeviceDetails.FCntResetCounter),
-                    nameof(LoRaDeviceDetails.Supports32BitFCnt),
-                    nameof(LoRaDeviceDetails.KeepAliveTimeout)
+                    nameof(LoRaDeviceDetailsDto.AppKey),
+                    nameof(LoRaDeviceDetailsDto.AppEUI),
+                    nameof(LoRaDeviceDetailsDto.AppSKey),
+                    nameof(LoRaDeviceDetailsDto.NwkSKey),
+                    nameof(LoRaDeviceDetailsDto.DevAddr),
+                    nameof(LoRaDeviceDetailsDto.GatewayID),
+                    nameof(LoRaDeviceDetailsDto.Downlink),
+                    nameof(LoRaDeviceDetailsDto.ClassType),
+                    nameof(LoRaDeviceDetailsDto.PreferredWindow),
+                    nameof(LoRaDeviceDetailsDto.Deduplication),
+                    nameof(LoRaDeviceDetailsDto.RX1DROffset),
+                    nameof(LoRaDeviceDetailsDto.RX2DataRate),
+                    nameof(LoRaDeviceDetailsDto.RXDelay),
+                    nameof(LoRaDeviceDetailsDto.ABPRelaxMode),
+                    nameof(LoRaDeviceDetailsDto.SensorDecoder),
+                    nameof(LoRaDeviceDetailsDto.FCntUpStart),
+                    nameof(LoRaDeviceDetailsDto.FCntDownStart),
+                    nameof(LoRaDeviceDetailsDto.FCntResetCounter),
+                    nameof(LoRaDeviceDetailsDto.Supports32BitFCnt),
+                    nameof(LoRaDeviceDetailsDto.KeepAliveTimeout)
                 });
             }
 
@@ -166,9 +166,9 @@ namespace IoTHub.Portal.Server.Managers
             }
         }
 
-        public async Task<IEnumerable<ImportResultLine>> ImportDeviceList(Stream stream)
+        public async Task<IEnumerable<ImportResultLineDto>> ImportDeviceList(Stream stream)
         {
-            var report = new List<ImportResultLine>();
+            var report = new List<ImportResultLineDto>();
 
             using var reader = new StreamReader(stream);
 
@@ -217,7 +217,7 @@ namespace IoTHub.Portal.Server.Managers
                 }
                 catch (Exception e)
                 {
-                    report.Add(new ImportResultLine
+                    report.Add(new ImportResultLineDto
                     {
                         DeviceId = deviceId,
                         LineNumber = lineNumber,
@@ -246,11 +246,11 @@ namespace IoTHub.Portal.Server.Managers
             return deviceTags;
         }
 
-        private static bool TryReadMandatoryFields(CsvReader reader, int lineNumber, ref string deviceId, ref string deviceName, ref string modelId, ref List<ImportResultLine> report)
+        private static bool TryReadMandatoryFields(CsvReader reader, int lineNumber, ref string deviceId, ref string deviceName, ref string modelId, ref List<ImportResultLineDto> report)
         {
             if (!reader.TryGetField<string>("Id", out deviceId) || deviceId.IsNullOrEmpty())
             {
-                report.Add(new ImportResultLine
+                report.Add(new ImportResultLineDto
                 {
                     DeviceId = "-1",
                     LineNumber = lineNumber,
@@ -264,7 +264,7 @@ namespace IoTHub.Portal.Server.Managers
 
             if (!reader.TryGetField<string>("Name", out deviceName) || deviceName.IsNullOrEmpty())
             {
-                report.Add(new ImportResultLine
+                report.Add(new ImportResultLineDto
                 {
                     DeviceId = deviceId,
                     LineNumber = lineNumber,
@@ -278,7 +278,7 @@ namespace IoTHub.Portal.Server.Managers
 
             if (!reader.TryGetField<string>("ModelId", out modelId) || modelId.IsNullOrEmpty())
             {
-                report.Add(new ImportResultLine
+                report.Add(new ImportResultLineDto
                 {
                     DeviceId = deviceId,
                     LineNumber = lineNumber,
@@ -298,7 +298,7 @@ namespace IoTHub.Portal.Server.Managers
             string deviceId, string deviceName, string modelId,
             Dictionary<string, string> deviceTags)
         {
-            var newDevice = new LoRaDeviceDetails()
+            var newDevice = new LoRaDeviceDetailsDto()
             {
                 DeviceID = deviceId,
                 DeviceName = deviceName,
@@ -337,12 +337,12 @@ namespace IoTHub.Portal.Server.Managers
             string deviceId, string deviceName, string modelId,
             Dictionary<string, string> deviceTags)
         {
-            var deviceProperties = new List<DevicePropertyValue>();
+            var deviceProperties = new List<DevicePropertyValueDto>();
             var properties = await this.deviceModelPropertiesService.GetModelProperties(modelId);
 
             foreach (var property in properties)
             {
-                deviceProperties.Add(new DevicePropertyValue()
+                deviceProperties.Add(new DevicePropertyValueDto()
                 {
                     Name = property.Name,
                     PropertyType = property.PropertyType,
@@ -350,7 +350,7 @@ namespace IoTHub.Portal.Server.Managers
                 });
             }
 
-            var newDevice = new DeviceDetails()
+            var newDevice = new DeviceDetailsDto()
             {
                 DeviceID = deviceId,
                 DeviceName = deviceName,

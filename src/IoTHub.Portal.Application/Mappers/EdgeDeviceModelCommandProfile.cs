@@ -11,7 +11,7 @@ namespace IoTHub.Portal.Application.Mappers
     {
         public EdgeDeviceModelCommandProfile()
         {
-            _ = CreateMap<IoTEdgeModuleCommand, EdgeDeviceModelCommand>()
+            _ = CreateMap<IoTEdgeModuleCommandDto, EdgeDeviceModelCommand>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.CommandId))
                 .ReverseMap();
         }

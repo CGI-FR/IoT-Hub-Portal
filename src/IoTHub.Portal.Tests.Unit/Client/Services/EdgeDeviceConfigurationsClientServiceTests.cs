@@ -34,7 +34,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceConfigurationsShouldReturnDeviceConfigurations()
         {
             // Arrange
-            var expectedConfigurations = Fixture.Build<ConfigListItem>().CreateMany(3).ToList();
+            var expectedConfigurations = Fixture.Build<ConfigListItemDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, "/api/edge/configurations")
                 .RespondJson(expectedConfigurations);
@@ -52,7 +52,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceConfigurationShouldReturnDeviceConfiguration()
         {
             // Arrange
-            var expectedConfiguration = Fixture.Create<ConfigListItem>();
+            var expectedConfiguration = Fixture.Create<ConfigListItemDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/configurations/{expectedConfiguration.ConfigurationID}")
                 .RespondJson(expectedConfiguration);

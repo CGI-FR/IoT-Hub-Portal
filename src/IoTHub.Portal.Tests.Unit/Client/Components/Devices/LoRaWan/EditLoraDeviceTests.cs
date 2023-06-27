@@ -53,7 +53,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 UseOTAA = true
             };
 
-            var deviceDetails = new LoRaDeviceDetails()
+            var deviceDetails = new LoRaDeviceDetailsDto()
             {
                 DeviceID = Guid.NewGuid().ToString(),
                 ModelId = mockLoRaModel.ModelId,
@@ -64,7 +64,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIDListDto>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -74,8 +74,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
 
 
             // Assert
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppEUI, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.AppEUI)}").GetAttribute("value")));
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppKey, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.AppKey)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppEUI, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.AppEUI)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppKey, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.AppKey)}").GetAttribute("value")));
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 UseOTAA = false
             };
 
-            var deviceDetails= new LoRaDeviceDetails()
+            var deviceDetails= new LoRaDeviceDetailsDto()
             {
                 DeviceID = Guid.NewGuid().ToString(),
                 ModelId = mockLoRaModel.ModelId,
@@ -98,7 +98,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIDListDto>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -107,9 +107,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
             // Assert
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppSKey, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.AppSKey)}").GetAttribute("value")));
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.NwkSKey, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.NwkSKey)}").GetAttribute("value")));
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.DevAddr, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.DevAddr)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppSKey, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.AppSKey)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.NwkSKey, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.NwkSKey)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.DevAddr, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.DevAddr)}").GetAttribute("value")));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 UseOTAA = false
             };
 
-            var deviceDetails= new LoRaDeviceDetails()
+            var deviceDetails= new LoRaDeviceDetailsDto()
             {
                 DeviceID = Guid.NewGuid().ToString(),
                 ModelId = mockLoRaModel.ModelId,
@@ -134,7 +134,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIDListDto>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -144,8 +144,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
 
             // Assert   
             cut.WaitForAssertion(() => cut.FindAll(".mud-expand-panel").Count.Should().Be(3));
-            Assert.AreEqual(deviceDetails.Deduplication, Enum.Parse<DeduplicationMode>(cut.WaitForElement($"#{nameof(LoRaDeviceDetails.Deduplication)}").GetAttribute("value")));
-            Assert.AreEqual(deviceDetails.ClassType, Enum.Parse<ClassType>(cut.WaitForElement($"#{nameof(LoRaDeviceDetails.ClassType)}").GetAttribute("value")));
+            Assert.AreEqual(deviceDetails.Deduplication, Enum.Parse<DeduplicationMode>(cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.Deduplication)}").GetAttribute("value")));
+            Assert.AreEqual(deviceDetails.ClassType, Enum.Parse<ClassType>(cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.ClassType)}").GetAttribute("value")));
             Assert.AreEqual(3, cut.Instance.GatewayIdList.Count);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
@@ -159,7 +159,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 UseOTAA = false
             };
 
-            var deviceDetails= new LoRaDeviceDetails()
+            var deviceDetails= new LoRaDeviceDetailsDto()
             {
                 DeviceID = Guid.NewGuid().ToString(),
                 ModelId = mockLoRaModel.ModelId,
@@ -200,13 +200,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 }
             };
 
-            var device = new LoRaDeviceDetails()
+            var device = new LoRaDeviceDetailsDto()
             {
                 ModelId = model.ModelId
             };
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIDListDto>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -236,14 +236,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 }
             };
 
-            var device = new LoRaDeviceDetails()
+            var device = new LoRaDeviceDetailsDto()
             {
                 ModelId = model.ModelId,
                 AlreadyLoggedInOnce = true
             };
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIDListDto>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -272,7 +272,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 }
             };
 
-            var device = new LoRaDeviceDetails()
+            var device = new LoRaDeviceDetailsDto()
             {
                 ModelId = model.ModelId,
                 AlreadyLoggedInOnce = true
@@ -285,7 +285,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 .Returns((Snackbar)null);
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIDListDto>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -311,7 +311,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 UseOTAA = false
             };
 
-            var deviceDetails= new LoRaDeviceDetails()
+            var deviceDetails= new LoRaDeviceDetailsDto()
             {
                 DeviceID = Guid.NewGuid().ToString(),
                 ModelId = mockLoRaModel.ModelId,
@@ -322,7 +322,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIDListDto>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -331,12 +331,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
             // Assert
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.DataRate, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.DataRate)}").GetAttribute("value")));
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.TxPower, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.TxPower)}").GetAttribute("value")));
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.NbRep, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.NbRep)}").GetAttribute("value")));
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.ReportedRX1DROffset, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.ReportedRX1DROffset)}").GetAttribute("value")));
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.ReportedRX2DataRate, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.ReportedRX2DataRate)}").GetAttribute("value")));
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.ReportedRXDelay, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.ReportedRXDelay)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.DataRate, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.DataRate)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.TxPower, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.TxPower)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.NbRep, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.NbRep)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.ReportedRX1DROffset, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.ReportedRX1DROffset)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.ReportedRX2DataRate, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.ReportedRX2DataRate)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.ReportedRXDelay, cut.WaitForElement($"#{nameof(LoRaDeviceDetailsDto.ReportedRXDelay)}").GetAttribute("value")));
         }
 
         [Test]
@@ -349,7 +349,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 UseOTAA = false
             };
 
-            var deviceDetails= new LoRaDeviceDetails()
+            var deviceDetails= new LoRaDeviceDetailsDto()
             {
                 DeviceID = Guid.NewGuid().ToString(),
                 ModelId = mockLoRaModel.ModelId,
@@ -360,7 +360,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIDListDto>);
 
             // Act
             var popoverProvider = RenderComponent<MudPopoverProvider>();
@@ -391,7 +391,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 UseOTAA = false
             };
 
-            var deviceDetails= new LoRaDeviceDetails()
+            var deviceDetails= new LoRaDeviceDetailsDto()
             {
                 DeviceID = Guid.NewGuid().ToString(),
                 ModelId = mockLoRaModel.ModelId,
@@ -402,7 +402,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(new LoRaGatewayIDList()
+                .ReturnsAsync(new LoRaGatewayIDListDto()
                 {
                     GatewayIds = new List<string>()
                     {

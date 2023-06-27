@@ -5,9 +5,9 @@
 @using IoTHub.Portal.Shared.Constants
 
 @attribute [Authorize]
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 @inject ISnackbar Snackbar
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 @inject NavigationManager NavigationManager
 @inject IEdgeDeviceClientService EdgeDeviceClientService
 @inject IEdgeModelClientService EdgeModelClientService
@@ -30,7 +30,7 @@
                     <MudCardContent>
                         <div class="d-flex justify-center mb-4">
                             <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                                <MudImage Src="@edgeModel?.ImageUrl?.ToString()" id="@(nameof(IoTEdgeDevice.ImageUrl))" />
+                                <MudImage Src="@edgeModel?.ImageUrl?.ToString()" id="@(nameof(IoTEdgeDeviceDto.ImageUrl))" />
                             </MudAvatar>
                         </div>
                     </MudCardContent>
@@ -95,7 +95,7 @@
                                                 @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
                                                 {
                                                     <MudTextField @bind-Value="@EdgeDevice.DeviceId"
-                                                                  id=@nameof(IoTEdgeDevice.DeviceId)
+                                                                  id=@nameof(IoTEdgeDeviceDto.DeviceId)
                                                                   Label="Device ID"
                                                                   Variant="Variant.Outlined"
                                                                   For="@(()=> EdgeDevice.DeviceId)"
@@ -108,7 +108,7 @@
                                             </MudItem>
                                             <MudItem xs="12">
                                                 <MudTextField @bind-Value="@EdgeDevice.DeviceName"
-                                                              id="@nameof(IoTEdgeDevice.DeviceName)"
+                                                              id="@nameof(IoTEdgeDeviceDto.DeviceName)"
                                                               Label="Device name"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> EdgeDevice.DeviceName)"
@@ -184,9 +184,9 @@
 
     private MudForm form = default!;
 
-    private IoTEdgeDevice EdgeDevice = new IoTEdgeDevice();
+    private IoTEdgeDeviceDto EdgeDevice = new IoTEdgeDeviceDto();
 
-    private IEnumerable<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
+    private IEnumerable<IoTEdgeModelListItemDto> edgeModelList = new List<IoTEdgeModelListItemDto>();
     private IoTEdgeModel _edgeModel = default!;
     private IoTEdgeModel edgeModel
     {
@@ -341,7 +341,7 @@
         {
             this._edgeModel = await this.EdgeModelClientService.GetIoTEdgeModel(edgeModel.ModelId);
 
-            this.EdgeDevice = new IoTEdgeDevice()
+            this.EdgeDevice = new IoTEdgeDeviceDto()
                 {
                     DeviceId = this.EdgeDevice.DeviceId,
                     DeviceName = this.EdgeDevice.DeviceName,

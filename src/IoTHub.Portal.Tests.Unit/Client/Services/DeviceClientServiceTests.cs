@@ -40,9 +40,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var uri = "/api/devices?pageSize=10&searchText=&searchStatus=&searchState=";
 
-            var expectedDevices = new PaginationResult<DeviceListItem>
+            var expectedDevices = new PaginationResult<DeviceListItemDto>
             {
-                Items = new List<DeviceListItem>()
+                Items = new List<DeviceListItemDto>()
                 {
                     new ()
                 }
@@ -66,7 +66,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            var expectedDevice = new DeviceDetails
+            var expectedDevice = new DeviceDetailsDto
             {
                 DeviceID = deviceId
             };
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateDeviceShouldCreateDevice()
         {
             // Arrange
-            var device = new DeviceDetails()
+            var device = new DeviceDetailsDto()
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -95,8 +95,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             _ = MockHttpClient.When(HttpMethod.Post, "/api/devices")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceDetails>>();
-                    var body = m.Content as ObjectContent<DeviceDetails>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceDetailsDto>>();
+                    var body = m.Content as ObjectContent<DeviceDetailsDto>;
                     _ = body.Value.Should().BeEquivalentTo(device);
                     return true;
                 })
@@ -114,13 +114,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task UpdateDeviceShouldUpdateDevice()
         {
             // Arrange
-            var device = new DeviceDetails();
+            var device = new DeviceDetailsDto();
 
             _ = MockHttpClient.When(HttpMethod.Put, "/api/devices")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceDetails>>();
-                    var body = m.Content as ObjectContent<DeviceDetails>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceDetailsDto>>();
+                    var body = m.Content as ObjectContent<DeviceDetailsDto>;
                     _ = body.Value.Should().BeEquivalentTo(device);
                     return true;
                 })
@@ -139,7 +139,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceId = Fixture.Create<string>();
-            var expectedDeviceProperties = Fixture.Build<DevicePropertyValue>().CreateMany(3).ToList();
+            var expectedDeviceProperties = Fixture.Build<DevicePropertyValueDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/properties")
                 .RespondJson(expectedDeviceProperties);
@@ -158,13 +158,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceId = Fixture.Create<string>();
-            var deviceProperties = Fixture.Build<DevicePropertyValue>().CreateMany(3).ToList();
+            var deviceProperties = Fixture.Build<DevicePropertyValueDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/devices/{deviceId}/properties")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DevicePropertyValue>>>();
-                    var body = m.Content as ObjectContent<IList<DevicePropertyValue>>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DevicePropertyValueDto>>>();
+                    var body = m.Content as ObjectContent<IList<DevicePropertyValueDto>>;
                     _ = body.Value.Should().BeEquivalentTo(deviceProperties);
                     return true;
                 })
@@ -183,7 +183,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceId = Fixture.Create<string>();
-            var expectedEnrollmentCredentials = Fixture.Create<DeviceCredentials>();
+            var expectedEnrollmentCredentials = Fixture.Create<DeviceCredentialsDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/credentials")
                 .RespondJson(expectedEnrollmentCredentials);
@@ -263,8 +263,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             using var dataContent = new MultipartFormDataContent();
 
             var expectedResult = new []{
-                new ImportResultLine(),
-                new ImportResultLine()
+                new ImportResultLineDto(),
+                new ImportResultLineDto()
             };
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/admin/devices/_import")

@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Application.Services
     public interface IDeviceService<TDto>
         where TDto : IDeviceDetails
     {
-        Task<PaginatedResult<DeviceListItem>> GetDevices(
+        Task<PaginatedResultDto<DeviceListItemDto>> GetDevices(
             string? searchText = null,
             bool? searchStatus = null,
             bool? searchState = null,
@@ -35,7 +35,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task DeleteDevice(string deviceId);
 
-        Task<DeviceCredentials> GetCredentials(TDto device);
+        Task<DeviceCredentialsDto> GetCredentials(TDto device);
 
         Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
 

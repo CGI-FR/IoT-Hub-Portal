@@ -18,15 +18,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var propertiesValidator = new DevicePropertyValidator();
-            var properties = new List<DeviceProperty>(){
-                new DeviceProperty()
+            var properties = new List<DevicePropertyDto>(){
+                new DevicePropertyDto()
                 {
                     DisplayName = Guid.NewGuid().ToString(),
                     Name = Guid.NewGuid().ToString(),
                     PropertyType = DevicePropertyType.Integer,
                     IsWritable = true
                 },
-                new DeviceProperty()
+                new DevicePropertyDto()
                 {
                     DisplayName = Guid.NewGuid().ToString(),
                     Name = Guid.NewGuid().ToString(),
@@ -53,8 +53,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var propertiesValidator = new DevicePropertyValidator();
-            var properties = new List<DeviceProperty>(){
-                new DeviceProperty()
+            var properties = new List<DevicePropertyDto>(){
+                new DevicePropertyDto()
                 {
                     DisplayName = DisplayNameValue,
                     Name = NameValue,
@@ -78,8 +78,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var propertiesValidator = new DevicePropertyValidator();
-            var properties = new List<DeviceProperty>(){
-                new DeviceProperty(),
+            var properties = new List<DevicePropertyDto>(){
+                new DevicePropertyDto(),
             };
 
             // Act
@@ -96,7 +96,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var propertiesValidator = new DevicePropertyValidator();
-            var properties = new List<DeviceProperty>(){
+            var properties = new List<DevicePropertyDto>(){
                 null,
             };
 
@@ -116,15 +116,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var propertiesValidator = new DevicePropertyValidator();
-            var properties = new List<DeviceProperty>(){
-                new DeviceProperty()
+            var properties = new List<DevicePropertyDto>(){
+                new DevicePropertyDto()
                 {
                     DisplayName = Guid.NewGuid().ToString(),
                     Name = "PropertyWithSameName",
                     PropertyType = DevicePropertyType.Integer,
                     IsWritable = true
                 },
-                new DeviceProperty()
+                new DevicePropertyDto()
                 {
                     DisplayName = Guid.NewGuid().ToString(),
                     Name = "PropertyWithSameName",

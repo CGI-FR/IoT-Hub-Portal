@@ -20,6 +20,6 @@ namespace IoTHub.Portal.Client.Services
 
         Task DeleteConcentrator(string deviceId);
 
-        Task<IEnumerable<FrequencyPlan>> GetFrequencyPlans();
+        Task<IEnumerable<FrequencyPlanDto>> GetFrequencyPlans();
     }
 }

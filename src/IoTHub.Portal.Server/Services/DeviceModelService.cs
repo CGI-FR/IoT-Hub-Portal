@@ -63,7 +63,7 @@ namespace IoTHub.Portal.Server.Services
             this.externalDeviceService = externalDeviceService;
         }
 
-        public async Task<PaginatedResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter deviceModelFilter)
+        public async Task<PaginatedResultDto<DeviceModelDto>> GetDeviceModels(DeviceModelFilterDto deviceModelFilter)
         {
             var deviceModelPredicate = PredicateBuilder.True<DeviceModel>();
 
@@ -74,7 +74,7 @@ namespace IoTHub.Portal.Server.Services
 
             var paginatedDeviceModels = await this.deviceModelRepository.GetPaginatedListAsync(deviceModelFilter.PageNumber, deviceModelFilter.PageSize, deviceModelFilter.OrderBy, deviceModelPredicate, includes: new Expression<Func<DeviceModel, object>>[] { d => d.Labels });
 
-            var paginateDeviceModelsDto = new PaginatedResult<DeviceModelDto>
+            var paginateDeviceModelsDto = new PaginatedResultDto<DeviceModelDto>
             {
                 Data = paginatedDeviceModels.Data.Select(x => this.mapper.Map<DeviceModelDto>(x, opts =>
                 {
@@ -85,7 +85,7 @@ namespace IoTHub.Portal.Server.Services
                 PageSize = deviceModelFilter.PageSize
             };
 
-            return new PaginatedResult<DeviceModelDto>(paginateDeviceModelsDto.Data, paginateDeviceModelsDto.TotalCount, paginateDeviceModelsDto.CurrentPage, paginateDeviceModelsDto.PageSize);
+            return new PaginatedResultDto<DeviceModelDto>(paginateDeviceModelsDto.Data, paginateDeviceModelsDto.TotalCount, paginateDeviceModelsDto.CurrentPage, paginateDeviceModelsDto.PageSize);
         }
 
         public async Task<TModel> GetDeviceModel(string deviceModelId)

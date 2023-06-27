@@ -27,7 +27,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.DevicesModels
         public void SearchDeviceModelsClickOnSearchSearchIsFired()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var searchText = Fixture.Create<string>();
             var receivedEvents = new List<DeviceModelSearchInfo>();
@@ -56,7 +56,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.DevicesModels
         public void SearchDeviceModelsClickOnResetSearchTextIsSetToEmptyAndSearchIsFired()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var searchText = Fixture.Create<string>();
             var receivedEvents = new List<DeviceModelSearchInfo>();
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.DevicesModels
         public void SearchThingTypeClickOnSearchSearchIsFired()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
             var searchText = Fixture.Create<string>();
             var receivedEvents = new List<DeviceModelSearchInfo>();
@@ -116,7 +116,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.DevicesModels
         public void SearchThingTypeClickOnResetSearchTextIsSetToEmptyAndSearchIsFired()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
             var searchText = Fixture.Create<string>();
             var receivedEvents = new List<DeviceModelSearchInfo>();

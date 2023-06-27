@@ -21,7 +21,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public class DeviceService : DeviceServiceBase<DeviceDetails>
+    public class DeviceService : DeviceServiceBase<DeviceDetailsDto>
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
@@ -51,7 +51,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
         }
 
 
-        public override async Task<DeviceDetails> GetDevice(string deviceId)
+        public override async Task<DeviceDetailsDto> GetDevice(string deviceId)
         {
             var deviceEntity = await deviceRepository.GetByIdAsync(deviceId, d => d.Tags, d => d.Labels);
 
@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
                 throw new ResourceNotFoundException($"The device with id {deviceId} doesn't exist");
             }
 
-            var deviceDto = mapper.Map<DeviceDetails>(deviceEntity);
+            var deviceDto = mapper.Map<DeviceDetailsDto>(deviceEntity);
 
             deviceDto.ImageUrl = deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
 
@@ -75,7 +75,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
             return deviceEntity != null;
         }
 
-        protected override async Task<DeviceDetails> CreateDeviceInDatabase(DeviceDetails device)
+        protected override async Task<DeviceDetailsDto> CreateDeviceInDatabase(DeviceDetailsDto device)
         {
             var deviceEntity = mapper.Map<Device>(device);
 
@@ -85,7 +85,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
             return device;
         }
 
-        protected override async Task<DeviceDetails> UpdateDeviceInDatabase(DeviceDetails device)
+        protected override async Task<DeviceDetailsDto> UpdateDeviceInDatabase(DeviceDetailsDto device)
         {
             var deviceEntity = await deviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags, d => d.Labels);
 

@@ -11,19 +11,19 @@ namespace IoTHub.Portal.Client.Services
 
     public interface IDeviceClientService
     {
-        Task<PaginationResult<DeviceListItem>> GetDevices(string continuationUri);
+        Task<PaginationResult<DeviceListItemDto>> GetDevices(string continuationUri);
 
-        Task<DeviceDetails> GetDevice(string deviceId);
+        Task<DeviceDetailsDto> GetDevice(string deviceId);
 
-        Task<string> CreateDevice(DeviceDetails device);
+        Task<string> CreateDevice(DeviceDetailsDto device);
 
-        Task UpdateDevice(DeviceDetails device);
+        Task UpdateDevice(DeviceDetailsDto device);
 
-        Task<IList<DevicePropertyValue>> GetDeviceProperties(string deviceId);
+        Task<IList<DevicePropertyValueDto>> GetDeviceProperties(string deviceId);
 
-        Task SetDeviceProperties(string deviceId, IList<DevicePropertyValue> deviceProperties);
+        Task SetDeviceProperties(string deviceId, IList<DevicePropertyValueDto> deviceProperties);
 
-        Task<DeviceCredentials> GetEnrollmentCredentials(string deviceId);
+        Task<DeviceCredentialsDto> GetEnrollmentCredentials(string deviceId);
 
         Task DeleteDevice(string deviceId);
 
@@ -31,7 +31,7 @@ namespace IoTHub.Portal.Client.Services
 
         Task<HttpContent> ExportTemplateFile();
 
-        Task<ImportResultLine[]> ImportDeviceList(MultipartFormDataContent dataContent);
+        Task<ImportResultLineDto[]> ImportDeviceList(MultipartFormDataContent dataContent);
 
         Task<IEnumerable<LabelDto>> GetAvailableLabels();
     }

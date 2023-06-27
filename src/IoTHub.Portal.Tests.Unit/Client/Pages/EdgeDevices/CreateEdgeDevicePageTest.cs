@@ -46,9 +46,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = Services.AddSingleton(this.mockIEdgeModelClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = CloudProviders.Azure });
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = CloudProviders.Azure });
 
             _ = Services.AddSingleton<IEdgeDeviceLayoutService, EdgeDeviceLayoutService>();
 
@@ -59,15 +59,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public async Task SaveShouldCreateEdgeDeviceAndRedirectToEdgeDeviceList()
         {
             // Arrange
-            var edgeModel = new IoTEdgeModel(){ Name = "model01", ModelId = "model01"};
+            var edgeModel = new IoTEdgeModelDto(){ Name = "model01", ModelId = "model01"};
 
-            var edgeDevice = new IoTEdgeDevice()
+            var edgeDevice = new IoTEdgeDeviceDto()
             {
                 DeviceId = Guid.NewGuid().ToString()
             };
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>() { edgeModel });
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModel(edgeModel.ModelId))
                 .ReturnsAsync(edgeModel);
@@ -79,7 +79,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 });
 
             _ = this.mockEdgeDeviceClientService
-                .Setup(x => x.CreateDevice(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .Setup(x => x.CreateDevice(It.Is<IoTEdgeDeviceDto>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns(value: null);
@@ -88,8 +88,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var cut = RenderComponent<CreateEdgeDevicePage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceName)}").Change("testName");
-            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceId)}").Change(edgeDevice.DeviceId);
+            cut.WaitForElement($"#{nameof(IoTEdgeDeviceDto.DeviceName)}").Change("testName");
+            cut.WaitForElement($"#{nameof(IoTEdgeDeviceDto.DeviceId)}").Change(edgeDevice.DeviceId);
             cut.WaitForElement($"#tag01").Change("testTag01");
             await cut.Instance.ChangeModel(edgeModel);
 
@@ -116,15 +116,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public async Task CreateEdgeDevicePageSaveShouldProcessProblemDetailsExceptionWhenIssueOccurs()
         {
             // Arrange
-            var edgeModel = new IoTEdgeModel(){ Name = "model01", ModelId = "model01"};
+            var edgeModel = new IoTEdgeModelDto(){ Name = "model01", ModelId = "model01"};
 
-            var edgeDevice = new IoTEdgeDevice()
+            var edgeDevice = new IoTEdgeDeviceDto()
             {
                 DeviceId = Guid.NewGuid().ToString()
             };
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>() { edgeModel });
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModel(edgeModel.ModelId))
                 .ReturnsAsync(edgeModel);
@@ -136,14 +136,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 });
 
             _ = this.mockEdgeDeviceClientService
-                .Setup(x => x.CreateDevice(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .Setup(x => x.CreateDevice(It.Is<IoTEdgeDeviceDto>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<CreateEdgeDevicePage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceName)}").Change("testName");
-            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceId)}").Change(edgeDevice.DeviceId);
+            cut.WaitForElement($"#{nameof(IoTEdgeDeviceDto.DeviceName)}").Change("testName");
+            cut.WaitForElement($"#{nameof(IoTEdgeDeviceDto.DeviceId)}").Change(edgeDevice.DeviceId);
             cut.WaitForElement($"#tag01").Change("testTag01");
             await cut.Instance.ChangeModel(edgeModel);
 
@@ -172,7 +172,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public async Task ClickOnSaveAndDuplicateShouldCreateDeviceAndDuplicateEdgeDeviceDetailsInCreateEdgeDevicePage()
         {
-            var mockEdgeDeviceModel = new IoTEdgeModel
+            var mockEdgeDeviceModel = new IoTEdgeModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -180,7 +180,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ImageUrl = Fixture.Create<Uri>(),
             };
 
-            var expectedEdgeDevice = new IoTEdgeDevice
+            var expectedEdgeDevice = new IoTEdgeDeviceDto
             {
                 DeviceId = Guid.NewGuid().ToString(),
                 DeviceName = Guid.NewGuid().ToString(),
@@ -188,11 +188,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             };
 
             _ = this.mockEdgeDeviceClientService
-                .Setup(service => service.CreateDevice(It.Is<IoTEdgeDevice>(device => expectedEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
+                .Setup(service => service.CreateDevice(It.Is<IoTEdgeDeviceDto>(device => expectedEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockIEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>
                 {
                     mockEdgeDeviceModel
                 });
@@ -218,8 +218,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var cut = RenderComponent<CreateEdgeDevicePage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceName)}").Change("testName");
-            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceId)}").Change(expectedEdgeDevice.DeviceId);
+            cut.WaitForElement($"#{nameof(IoTEdgeDeviceDto.DeviceName)}").Change("testName");
+            cut.WaitForElement($"#{nameof(IoTEdgeDeviceDto.DeviceId)}").Change(expectedEdgeDevice.DeviceId);
             await cut.Instance.ChangeModel(mockEdgeDeviceModel);
 
             var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
@@ -244,7 +244,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public async Task ClickOnSaveAndAddNewShouldCreateEdgeDeviceAndResetCreateEdgeDevicePage()
         {
-            var mockEdgeDeviceModel = new IoTEdgeModel
+            var mockEdgeDeviceModel = new IoTEdgeModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -252,7 +252,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ImageUrl = Fixture.Create<Uri>(),
             };
 
-            var expectedEdgeDevice = new IoTEdgeDevice
+            var expectedEdgeDevice = new IoTEdgeDeviceDto
             {
                 DeviceId = Guid.NewGuid().ToString(),
                 DeviceName = Guid.NewGuid().ToString(),
@@ -260,11 +260,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             };
 
             _ = this.mockEdgeDeviceClientService
-                .Setup(service => service.CreateDevice(It.Is<IoTEdgeDevice>(device => expectedEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
+                .Setup(service => service.CreateDevice(It.Is<IoTEdgeDeviceDto>(device => expectedEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockIEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>
                 {
                     mockEdgeDeviceModel
                 });
@@ -290,8 +290,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var cut = RenderComponent<CreateEdgeDevicePage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceName)}").Change("testName");
-            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceId)}").Change(expectedEdgeDevice.DeviceId);
+            cut.WaitForElement($"#{nameof(IoTEdgeDeviceDto.DeviceName)}").Change("testName");
+            cut.WaitForElement($"#{nameof(IoTEdgeDeviceDto.DeviceId)}").Change(expectedEdgeDevice.DeviceId);
             await cut.Instance.ChangeModel(mockEdgeDeviceModel);
 
             var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
@@ -310,8 +310,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeDevice.DeviceName)}").TextContent.Should().BeEmpty());
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeDevice.DeviceId)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeDeviceDto.DeviceName)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeDeviceDto.DeviceId)}").TextContent.Should().BeEmpty());
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("/edge/devices"));
         }
 
@@ -319,7 +319,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public async Task ChangeEdgeModelShouldDisplayModelImage()
         {
             // Arrange
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -328,7 +328,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             };
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>() { edgeModel });
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModel(edgeModel.ModelId))
                 .ReturnsAsync(edgeModel);
@@ -341,7 +341,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var cut = RenderComponent<CreateEdgeDevicePage>();
 
-            var ModelImageElement = cut.WaitForElement($"#{nameof(IoTEdgeDevice.ImageUrl)}");
+            var ModelImageElement = cut.WaitForElement($"#{nameof(IoTEdgeDeviceDto.ImageUrl)}");
 
             await cut.Instance.ChangeModel(edgeModel);
 
@@ -354,7 +354,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public void SearchEdgeDeviceModels_InputExisingEdgeDeviceModelName_EdgeDeviceModelReturned()
         {
             // Arrange
-            var edgeDeviceModels = Fixture.CreateMany<IoTEdgeModelListItem>(2).ToList();
+            var edgeDeviceModels = Fixture.CreateMany<IoTEdgeModelListItemDto>(2).ToList();
             var expectedEdgeDeviceModel = edgeDeviceModels.First();
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
@@ -369,7 +369,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<CreateEdgeDevicePage>();
 
-            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeModel>>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeModelDto>>();
 
             // Act
             autocompleteComponent.Find("input").Input(expectedEdgeDeviceModel.Name);

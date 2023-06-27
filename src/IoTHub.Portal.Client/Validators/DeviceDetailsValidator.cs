@@ -11,7 +11,7 @@ namespace IoTHub.Portal.Client.Validators
     using IoTHub.Portal.Shared.Constants;
     using FluentValidation;
 
-    public class DeviceDetailsValidator : AbstractValidator<DeviceDetails>
+    public class DeviceDetailsValidator : AbstractValidator<DeviceDetailsDto>
     {
         public DeviceDetailsValidator(string? cloudProvider = null)
         {
@@ -45,7 +45,7 @@ namespace IoTHub.Portal.Client.Validators
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
         {
-            var result = await ValidateAsync(ValidationContext<DeviceDetails>.CreateWithOptions((DeviceDetails)model, x => x.IncludeProperties(propertyName)));
+            var result = await ValidateAsync(ValidationContext<DeviceDetailsDto>.CreateWithOptions((DeviceDetailsDto)model, x => x.IncludeProperties(propertyName)));
             if (result.IsValid)
                 return Array.Empty<string>();
             return result.Errors.Select(e => e.ErrorMessage);

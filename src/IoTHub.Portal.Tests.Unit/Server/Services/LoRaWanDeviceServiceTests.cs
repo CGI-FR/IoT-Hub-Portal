@@ -45,7 +45,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
 
-        private IDeviceService<LoRaDeviceDetails> lorawanDeviceService;
+        private IDeviceService<LoRaDeviceDetailsDto> lorawanDeviceService;
 
         public override void Setup()
         {
@@ -69,11 +69,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
-            _ = ServiceCollection.AddSingleton<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
+            _ = ServiceCollection.AddSingleton<IDeviceService<LoRaDeviceDetailsDto>, LoRaWanDeviceService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.lorawanDeviceService = Services.GetRequiredService<IDeviceService<LoRaDeviceDetails>>();
+            this.lorawanDeviceService = Services.GetRequiredService<IDeviceService<LoRaDeviceDetailsDto>>();
             Mapper = Services.GetRequiredService<IMapper>();
         }
 
@@ -103,7 +103,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var expectedDevice = Fixture.Create<LorawanDevice>();
 
             var expectedImageUri = Fixture.Create<Uri>();
-            var expectedDeviceDto = Mapper.Map<LoRaDeviceDetails>(expectedDevice);
+            var expectedDeviceDto = Mapper.Map<LoRaDeviceDetailsDto>(expectedDevice);
             expectedDeviceDto.ImageUrl = expectedImageUri;
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags, d => d.Labels))
@@ -144,7 +144,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateDevice_NewDevice_DeviceCreated()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -174,7 +174,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateDevice_DbUpdateExceptionIsThrown_UniqueConstraintExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -208,7 +208,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateDevice_DeviceExist_DeviceUpdated()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -262,7 +262,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateDevice_DeviceNotExist_ResourceNotFoundExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -298,7 +298,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateDevice_DbUpdateExceptionIsRaised_CannotInsertNullExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -340,7 +340,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DeviceExist_DeviceDeleted()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -378,7 +378,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DeviceNotExist_NothingIsDone()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -400,7 +400,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DbUpdateExceptionIsRaised_ReferenceConstraintExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -433,7 +433,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task GetDeviceTelemetry_ExistingDevice_ReturnsTelemetry()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -461,7 +461,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task GetDeviceTelemetry_NonExistingDevice_ReturnsEmptyArray()
         {
             // Arrange
-            var deviceDto = new LoRaDeviceDetails
+            var deviceDto = new LoRaDeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };

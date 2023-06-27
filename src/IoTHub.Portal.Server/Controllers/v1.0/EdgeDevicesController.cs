@@ -82,8 +82,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="modelId"></param>
         /// <param name="labels"></param>
         [HttpGet(Name = "GET IoT Edge devices")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<IoTEdgeListItem>))]
-        public async Task<PaginationResult<IoTEdgeListItem>> Get(
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<IoTEdgeListItemDto>))]
+        public async Task<PaginationResult<IoTEdgeListItemDto>> Get(
             string searchText = null,
             bool? searchStatus = null,
             int pageSize = 10,
@@ -119,7 +119,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 });
             }
 
-            return new PaginationResult<IoTEdgeListItem>
+            return new PaginationResult<IoTEdgeListItemDto>
             {
                 Items = paginatedEdgeDevices.Data,
                 TotalItems = paginatedEdgeDevices.TotalCount,
@@ -132,7 +132,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         [HttpGet("{deviceId}", Name = "GET IoT Edge device")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IoTEdgeDevice))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IoTEdgeDeviceDto))]
         public async Task<IActionResult> Get(string deviceId)
         {
             try
@@ -152,7 +152,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [HttpPost(Name = "POST Create IoT Edge")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateEdgeDeviceAsync(IoTEdgeDevice edgeDevice)
+        public async Task<IActionResult> CreateEdgeDeviceAsync(IoTEdgeDeviceDto edgeDevice)
         {
             return Ok(await this.edgeDevicesService.CreateEdgeDevice(edgeDevice));
         }
@@ -163,7 +163,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="edgeDevice">The IoT Edge device.</param>
         [HttpPut("{deviceId}", Name = "PUT Update IoT Edge")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateDeviceAsync(IoTEdgeDevice edgeDevice)
+        public async Task<IActionResult> UpdateDeviceAsync(IoTEdgeDeviceDto edgeDevice)
         {
             return Ok(await this.edgeDevicesService.UpdateEdgeDevice(edgeDevice));
         }
@@ -188,7 +188,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceId">The device identifier.</param>
         [HttpGet("{deviceId}/credentials", Name = "GET Device enrollment credentials")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<SymmetricCredentials>> GetCredentials(string deviceId)
+        public async Task<ActionResult<SymmetricCredentialsDto>> GetCredentials(string deviceId)
         {
             var device = await this.edgeDevicesService.GetEdgeDevice(deviceId);
 
@@ -255,7 +255,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="methodName">Name of the method.</param>
         [HttpPost("{deviceId}/{moduleName}/{methodName}", Name = "POST Execute module command")]
-        public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
+        public async Task<C2DresultDto> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
         {
             return await this.edgeDevicesService.ExecuteModuleMethod(deviceId, moduleName, methodName);
         }
@@ -267,7 +267,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="edgeModule">Edge module</param>
         /// <returns></returns>
         [HttpPost("{deviceId}/logs", Name = "Get Edge Device logs")]
-        public async Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
+        public async Task<IEnumerable<IoTEdgeDeviceLogDto>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModuleDto edgeModule)
         {
             ArgumentNullException.ThrowIfNull(edgeModule, nameof(edgeModule));
 

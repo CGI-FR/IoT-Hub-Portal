@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         public void GetPortalMetricsShouldReturnMetrics()
         {
             // Arrange
-            var portalMetric = new PortalMetric
+            var portalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 ConnectedDeviceCount = 2,

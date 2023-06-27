@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var loraValidator = new LoRaDeviceDetailsValidator();
-            var loraDevice = new LoRaDeviceDetails()
+            var loraDevice = new LoRaDeviceDetailsDto()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = true,
@@ -40,7 +40,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var loraValidator = new LoRaDeviceDetailsValidator();
-            var loraDevice = new LoRaDeviceDetails()
+            var loraDevice = new LoRaDeviceDetailsDto()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = false,
@@ -63,7 +63,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var loraValidator = new LoRaDeviceDetailsValidator();
-            var loraDevice = new LoRaDeviceDetails()
+            var loraDevice = new LoRaDeviceDetailsDto()
             {
                 UseOTAA = false,
                 AppSKey = Guid.NewGuid().ToString(),
@@ -92,7 +92,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var loraValidator = new LoRaDeviceDetailsValidator();
-            var loraDevice = new LoRaDeviceDetails()
+            var loraDevice = new LoRaDeviceDetailsDto()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = false,
@@ -119,7 +119,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var loraValidator = new LoRaDeviceDetailsValidator();
-            var loraDevice = new LoRaDeviceDetails()
+            var loraDevice = new LoRaDeviceDetailsDto()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = true,

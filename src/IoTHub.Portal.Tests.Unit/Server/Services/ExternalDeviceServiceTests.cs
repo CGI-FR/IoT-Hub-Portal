@@ -1369,7 +1369,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = Guid.NewGuid().ToString()
             };
@@ -1430,7 +1430,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = Guid.NewGuid().ToString()
             };
@@ -1491,7 +1491,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = Guid.NewGuid().ToString()
             };
@@ -1791,16 +1791,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
 
             var service = CreateService();
-            var device = Fixture.Create<DeviceDetails>();
+            var device = Fixture.Create<DeviceDetailsDto>();
             var model = Fixture.Create<DeviceModel>();
 
             device.ModelId = model.Id;
             device.ModelName = model.Name;
 
-            var mockRegistrationCredentials = new DeviceCredentials
+            var mockRegistrationCredentials = new DeviceCredentialsDto
             {
                 AuthenticationMode = AuthenticationMode.SymmetricKey,
-                SymmetricCredentials = new SymmetricCredentials
+                SymmetricCredentials = new SymmetricCredentialsDto
                 {
                     RegistrationID = "aaa",
                     SymmetricKey = "dfhjkfdgh"
@@ -1827,7 +1827,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var service = CreateService();
-            var device = Fixture.Create<DeviceDetails>();
+            var device = Fixture.Create<DeviceDetailsDto>();
             var model = Fixture.Create<DeviceModel>();
 
             device.ModelId = model.Id;
@@ -1888,9 +1888,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var service = CreateService();
 
-            var fakeDevice = Fixture.Create<IoTEdgeDevice>();
+            var fakeDevice = Fixture.Create<IoTEdgeDeviceDto>();
 
-            var mockRegistrationCredentials = Fixture.Create<DeviceCredentials>();
+            var mockRegistrationCredentials = Fixture.Create<DeviceCredentialsDto>();
 
             var mockTwin = new Twin(fakeDevice.DeviceId);
 
@@ -1916,7 +1916,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var service = CreateService();
 
-            var fakeDevice = Fixture.Create<IoTEdgeDevice>();
+            var fakeDevice = Fixture.Create<IoTEdgeDeviceDto>();
 
             _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == fakeDevice.DeviceId)))
                 .ReturnsAsync(value: null);
@@ -2046,7 +2046,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var service = CreateService();
-            var mockDevice = Fixture.Create<IoTEdgeDevice>();
+            var mockDevice = Fixture.Create<IoTEdgeDeviceDto>();
             _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(mockDevice.DeviceId)).ReturnsAsync(Fixture.Create<Twin>());
             // Act
             var result = await service.RetrieveLastConfiguration(mockDevice);
@@ -2090,7 +2090,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var template = Fixture.Create<string>();
-            var edgeDevice = new IoTEdgeDevice();
+            var edgeDevice = new IoTEdgeDeviceDto();
             var service = CreateService();
 
             // Act
@@ -2118,7 +2118,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task RemoveDeviceCredentialsShouldThrowNotImplementedException()
         {
             // Arrange
-            var edgeDevice = new IoTEdgeDevice();
+            var edgeDevice = new IoTEdgeDeviceDto();
             var service = CreateService();
 
             // Act

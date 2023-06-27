@@ -31,14 +31,14 @@ namespace IoTHub.Portal.Server.Services
             this.deviceModelPropertiesService = deviceModelPropertiesService;
         }
 
-        public async Task<IEnumerable<ConfigListItem>> GetDeviceConfigurationListAsync()
+        public async Task<IEnumerable<ConfigListItemDto>> GetDeviceConfigurationListAsync()
         {
             var configList = await this.configService.GetDevicesConfigurations();
 
             return configList.Select(ConfigHelper.CreateConfigListItem);
         }
 
-        public async Task<DeviceConfig> GetDeviceConfigurationAsync(string configurationId)
+        public async Task<DeviceConfigDto> GetDeviceConfigurationAsync(string configurationId)
         {
             try
             {
@@ -52,11 +52,11 @@ namespace IoTHub.Portal.Server.Services
             }
         }
 
-        public async Task<ConfigurationMetrics> GetConfigurationMetricsAsync(string configurationId)
+        public async Task<ConfigurationMetricsDto> GetConfigurationMetricsAsync(string configurationId)
         {
             var configItem = await this.configService.GetConfigItem(configurationId);
 
-            return new ConfigurationMetrics
+            return new ConfigurationMetricsDto
             {
                 MetricsTargeted = ConfigHelper.RetrieveMetricValue(configItem, "targetedCount"),
                 MetricsApplied = ConfigHelper.RetrieveMetricValue(configItem, "appliedCount"),
@@ -66,12 +66,12 @@ namespace IoTHub.Portal.Server.Services
             };
         }
 
-        public async Task CreateConfigurationAsync(DeviceConfig deviceConfig)
+        public async Task CreateConfigurationAsync(DeviceConfigDto deviceConfig)
         {
             await CreateOrUpdateConfiguration(deviceConfig);
         }
 
-        public async Task UpdateConfigurationAsync(DeviceConfig deviceConfig)
+        public async Task UpdateConfigurationAsync(DeviceConfigDto deviceConfig)
         {
             await CreateOrUpdateConfiguration(deviceConfig);
         }
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Server.Services
             await this.configService.DeleteConfiguration(configurationId);
         }
 
-        private async Task CreateOrUpdateConfiguration(DeviceConfig deviceConfig)
+        private async Task CreateOrUpdateConfiguration(DeviceConfigDto deviceConfig)
         {
             IEnumerable<DeviceModelProperty> items;
             try

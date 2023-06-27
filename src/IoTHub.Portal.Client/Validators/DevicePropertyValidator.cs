@@ -9,12 +9,12 @@ namespace IoTHub.Portal.Client.Validators
     using System.Collections.Generic;
     using System.Linq;
 
-    public class DevicePropertyValidator : AbstractValidator<IEnumerable<DeviceProperty>>
+    public class DevicePropertyValidator : AbstractValidator<IEnumerable<DevicePropertyDto>>
     {
-        private class DevicePropertyComparer : IEqualityComparer<DeviceProperty>
+        private class DevicePropertyComparer : IEqualityComparer<DevicePropertyDto>
         {
-            public bool Equals(DeviceProperty? x, DeviceProperty? y) => x?.Name == y?.Name;
-            public int GetHashCode(DeviceProperty obj) => obj.Name?.GetHashCode(StringComparison.OrdinalIgnoreCase) ?? 0;
+            public bool Equals(DevicePropertyDto? x, DevicePropertyDto? y) => x?.Name == y?.Name;
+            public int GetHashCode(DevicePropertyDto obj) => obj.Name?.GetHashCode(StringComparison.OrdinalIgnoreCase) ?? 0;
         }
 
         public DevicePropertyValidator()

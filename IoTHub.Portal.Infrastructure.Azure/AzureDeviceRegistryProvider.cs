@@ -110,7 +110,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Providers
             return attetationMechanism.GetAttestation();
         }
 
-        public async Task<DeviceCredentials> GetEnrollmentCredentialsAsync(string deviceId, string modelId)
+        public async Task<DeviceCredentialsDto> GetEnrollmentCredentialsAsync(string deviceId, string modelId)
         {
             Attestation attestation;
 
@@ -133,10 +133,10 @@ namespace IoTHub.Portal.Infrastructure.Azure.Providers
 
             var symmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceId, CheckAttestation(attestation));
 
-            return new DeviceCredentials
+            return new DeviceCredentialsDto
             {
                 AuthenticationMode = AuthenticationMode.SymmetricKey,
-                SymmetricCredentials = new SymmetricCredentials
+                SymmetricCredentials = new SymmetricCredentialsDto
                 {
                     SymmetricKey = symmetricKey,
                     RegistrationID = deviceId,

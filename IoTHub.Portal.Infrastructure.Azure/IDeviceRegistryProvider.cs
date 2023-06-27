@@ -38,7 +38,7 @@ namespace IoTHub.Portal.Infrastructure.Azure
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="modelId">The device model id.</param>
-        Task<DeviceCredentials> GetEnrollmentCredentialsAsync(string deviceId, string modelId);
+        Task<DeviceCredentialsDto> GetEnrollmentCredentialsAsync(string deviceId, string modelId);
 
         Task DeleteEnrollmentGroupAsync(EnrollmentGroup enrollmentGroup, CancellationToken cancellationToken);
 

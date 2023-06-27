@@ -9,8 +9,8 @@ namespace IoTHub.Portal.Application.Services
 
     public interface IDevicePropertyService
     {
-        Task<IEnumerable<DevicePropertyValue>> GetProperties(string deviceId);
+        Task<IEnumerable<DevicePropertyValueDto>> GetProperties(string deviceId);
 
-        Task SetProperties(string deviceId, IEnumerable<DevicePropertyValue> devicePropertyValues);
+        Task SetProperties(string deviceId, IEnumerable<DevicePropertyValueDto> devicePropertyValues);
     }
 }

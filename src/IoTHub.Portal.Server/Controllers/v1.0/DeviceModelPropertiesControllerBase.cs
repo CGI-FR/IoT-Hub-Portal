@@ -44,15 +44,15 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the device model properties.
         /// </summary>
         /// <param name="id">The device model properties</param>
-        public virtual async Task<ActionResult<IEnumerable<DeviceProperty>>> GetProperties(string id)
+        public virtual async Task<ActionResult<IEnumerable<DevicePropertyDto>>> GetProperties(string id)
         {
-            var result = new List<DeviceProperty>();
+            var result = new List<DevicePropertyDto>();
 
             try
             {
                 foreach (var item in await this.deviceModelPropertiesService.GetModelProperties(id))
                 {
-                    result.Add(this.mapper.Map<DeviceProperty>(item));
+                    result.Add(this.mapper.Map<DevicePropertyDto>(item));
                 }
 
                 return Ok(result);
@@ -68,7 +68,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model properties</param>
         /// <param name="properties">The model properties</param>
-        public virtual async Task<ActionResult> SetProperties(string id, IEnumerable<DeviceProperty> properties)
+        public virtual async Task<ActionResult> SetProperties(string id, IEnumerable<DevicePropertyDto> properties)
         {
             if (!ModelState.IsValid)
             {

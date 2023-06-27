@@ -79,7 +79,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
             _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
 
-            var edge = Fixture.Create<IoTEdgeModel>();
+            var edge = Fixture.Create<IoTEdgeModelDto>();
             // Simulate a custom/private component
             edge.EdgeModules.First().Id = string.Empty;
 
@@ -126,7 +126,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
             _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
 
-            var edge = Fixture.Create<IoTEdgeModel>();
+            var edge = Fixture.Create<IoTEdgeModelDto>();
             // Simulate a custom/private component
             edge.EdgeModules.First().Id = string.Empty;
 
@@ -169,7 +169,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
             _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
 
-            var edge = Fixture.Create<IoTEdgeModel>();
+            var edge = Fixture.Create<IoTEdgeModelDto>();
             // Simulate a custom/private component
             edge.EdgeModules.First().Id = string.Empty;
 
@@ -212,7 +212,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         public async Task GetAllDeploymentComponentsShouldRetreiveImageUriAndEnvironmentVariables()
         {
             //Act
-            var edge = Fixture.Create<IoTEdgeModel>();
+            var edge = Fixture.Create<IoTEdgeModelDto>();
             using var recipeAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<JObject>().ToString()));
 
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
@@ -248,7 +248,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         public async Task DeleteDeploymentShouldDeleteTheDeploymentVersionAndAllItsComponentsVersionsAndDeprecateItsThingType()
         {
             //Act
-            var edge = Fixture.Create<IoTEdgeModel>();
+            var edge = Fixture.Create<IoTEdgeModelDto>();
             using var recipeAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<JObject>().ToString()));
 
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
@@ -310,7 +310,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             //Arrange
             var components = Fixture.CreateMany<Component>(2).ToList();
 
-            var expectedPublicEdgeModules = components.Select(c => new IoTEdgeModule
+            var expectedPublicEdgeModules = components.Select(c => new IoTEdgeModuleDto
             {
                 Id = c.Arn,
                 ModuleName = c.ComponentName,

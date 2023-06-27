@@ -1,0 +1,44 @@
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+#nullable enable
+
+namespace IoTHub.Portal.Models.v10
+{
+    using System.ComponentModel.DataAnnotations;
+
+    /// <summary>
+    /// Device search model.
+    /// </summary>
+    public class SearchModelDto
+    {
+        /// <summary>
+        /// The device identifier.
+        /// </summary>
+        [Required(ErrorMessage = "The device identifier is required.")]
+        public string? DeviceId { get; set; }
+
+        /// <summary>
+        /// The device status.
+        /// </summary>
+        public string? Status { get; set; }
+
+        /// <summary>
+        /// The device type.
+        /// </summary>
+        public string? Type { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SearchModelDto"/> class.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="status">The device status.</param>
+        /// <param name="type">The device type.</param>
+        public SearchModelDto(string? id = null, string? status = null, string? type = null)
+        {
+            DeviceId = id;
+            Status = status;
+            Type = type;
+        }
+    }
+}

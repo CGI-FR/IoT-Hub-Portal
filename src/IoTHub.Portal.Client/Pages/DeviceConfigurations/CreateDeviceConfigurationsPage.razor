@@ -229,7 +229,7 @@
     public DeviceConfig Configuration { get; set; } = new();
 
     IEnumerable<DeviceTagDto> AvailableTags { get; set; } = Array.Empty<DeviceTagDto>();
-    IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
+    IEnumerable<DevicePropertyDto> AvailableProperties = Array.Empty<DevicePropertyDto>();
     IEnumerable<DeviceModelDto> AvailableModels = Array.Empty<DeviceModelDto>();
 
     public string SelectedTag { get; set; } = default!;
@@ -243,7 +243,7 @@
         {
             isProcessing = true;
 
-            var filter = new DeviceModelFilter
+            var filter = new DeviceModelFilterDto
             {
                 SearchText = string.Empty,
                 PageNumber = 0,

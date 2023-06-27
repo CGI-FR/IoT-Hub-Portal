@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetPortalMetricsMustReturnLogsWhenNoError()
         {
             // Arrange
-            var expectedPortalMetric = new PortalMetric
+            var expectedPortalMetric = new PortalMetricDto
             {
                 DeviceCount = 1,
                 ConnectedDeviceCount = 2,

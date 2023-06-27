@@ -62,7 +62,7 @@ namespace IoTHub.Portal.Application.Services
             string? searchType = null,
             int pageSize = 10);
 
-        Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule);
+        Task<IEnumerable<IoTEdgeDeviceLogDto>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModuleDto edgeModule);
 
         Task<int> GetDevicesCount();
 
@@ -74,11 +74,11 @@ namespace IoTHub.Portal.Application.Services
 
         Task<int> GetConcentratorsCount();
 
-        Task<DeviceCredentials> GetDeviceCredentials(IDeviceDetails device);
+        Task<DeviceCredentialsDto> GetDeviceCredentials(IDeviceDetails device);
 
-        Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device);
+        Task<DeviceCredentialsDto> GetEdgeDeviceCredentials(IoTEdgeDeviceDto device);
 
-        Task<ConfigItem> RetrieveLastConfiguration(IoTEdgeDevice ioTEdgeDevice);
+        Task<ConfigItemDto> RetrieveLastConfiguration(IoTEdgeDeviceDto ioTEdgeDevice);
 
         Task<Twin> CreateNewTwinFromDeviceId(string deviceId);
 
@@ -86,8 +86,8 @@ namespace IoTHub.Portal.Application.Services
 
         Task<IEnumerable<string>> GetDevicesToExport();
 
-        Task<string> CreateEnrollementScript(string template, IoTEdgeDevice device);
+        Task<string> CreateEnrollementScript(string template, IoTEdgeDeviceDto device);
 
-        Task RemoveDeviceCredentials(IoTEdgeDevice device);
+        Task RemoveDeviceCredentials(IoTEdgeDeviceDto device);
     }
 }

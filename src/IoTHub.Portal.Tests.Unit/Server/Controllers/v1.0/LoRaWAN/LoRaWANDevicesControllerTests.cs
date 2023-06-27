@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 
         private Mock<ILogger<LoRaWANDevicesController>> mockLogger;
         private Mock<ILoRaWANCommandService> mockLoRaWANCommandService;
-        private Mock<IDeviceService<LoRaDeviceDetails>> mockDeviceService;
+        private Mock<IDeviceService<LoRaDeviceDetailsDto>> mockDeviceService;
         private Mock<IUrlHelper> mockUrlHelper;
 
         [SetUp]
@@ -42,13 +42,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 
             this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANDevicesController>>();
             this.mockLoRaWANCommandService = this.mockRepository.Create<ILoRaWANCommandService>();
-            this.mockDeviceService = this.mockRepository.Create<IDeviceService<LoRaDeviceDetails>>();
+            this.mockDeviceService = this.mockRepository.Create<IDeviceService<LoRaDeviceDetailsDto>>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
         }
 
         private LoRaWANDevicesController CreateLoRaWANDevicesController()
         {
-            var loRaGatewayIDList = new LoRaGatewayIDList
+            var loRaGatewayIDList = new LoRaGatewayIDListDto
             {
                 GatewayIds = new List<string>(){ "GatewayId1", "GatewayId2" }
             };
@@ -105,9 +105,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             devicesController.ControllerContext = new ControllerContext(
                 new ActionContext(mockHttpContext.Object, new RouteData(), new ControllerActionDescriptor()));
 
-            var expectedPaginatedDevices = new PaginatedResult<DeviceListItem>()
+            var expectedPaginatedDevices = new PaginatedResultDto<DeviceListItemDto>()
             {
-                Data = Enumerable.Range(0, 100).Select(x => new DeviceListItem
+                Data = Enumerable.Range(0, 100).Select(x => new DeviceListItemDto
                 {
                     DeviceID = FormattableString.Invariant($"{x}")
                 }).ToList(),
@@ -140,7 +140,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             // Arrange
             var devicesController = CreateLoRaWANDevicesController();
 
-            var device = new LoRaDeviceDetails
+            var device = new LoRaDeviceDetailsDto
             {
                 DeviceID = "aaa",
             };
@@ -162,7 +162,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         {
             // Arrange
             var devicesController = CreateLoRaWANDevicesController();
-            var device = new LoRaDeviceDetails
+            var device = new LoRaDeviceDetailsDto
             {
                 DeviceID = "AF441BB83C90E946",
             };
@@ -184,7 +184,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         {
             // Arrange
             var devicesController = CreateLoRaWANDevicesController();
-            var device = new LoRaDeviceDetails
+            var device = new LoRaDeviceDetailsDto
             {
                 DeviceID = "aaa",
             };
@@ -204,7 +204,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         {
             // Arrange
             var devicesController = CreateLoRaWANDevicesController();
-            var device = new LoRaDeviceDetails
+            var device = new LoRaDeviceDetailsDto
             {
                 DeviceID = "AF441BB83C90E946"
             };
@@ -226,7 +226,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         {
             // Arrange
             var devicesController = CreateLoRaWANDevicesController();
-            var device = new LoRaDeviceDetails
+            var device = new LoRaDeviceDetailsDto
             {
                 DeviceID = "aaa"
             };
@@ -282,7 +282,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             // Arrange
             var devicesController = CreateLoRaWANDevicesController();
 
-            var loRaGatewayIDList = new LoRaGatewayIDList
+            var loRaGatewayIDList = new LoRaGatewayIDListDto
             {
                 GatewayIds = new List<string>(){ "GatewayId1", "GatewayId2" }
             };
@@ -298,7 +298,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(okObjectResult.Value);
 
-            Assert.IsAssignableFrom<LoRaGatewayIDList>(okObjectResult.Value);
+            Assert.IsAssignableFrom<LoRaGatewayIDListDto>(okObjectResult.Value);
             _ = okObjectResult.Value.Should().BeEquivalentTo(loRaGatewayIDList);
 
             this.mockRepository.VerifyAll();

@@ -46,15 +46,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnSaveShouldPostEdgeModelData()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 Name = Guid.NewGuid().ToString(),
             };
 
             _ = this.mockEdgeModelClientService
-                .Setup(x => x.CreateIoTEdgeModel(It.Is<IoTEdgeModel>(x => edgeModel.Name.Equals(x.Name, StringComparison.Ordinal))))
+                .Setup(x => x.CreateIoTEdgeModel(It.Is<IoTEdgeModelDto>(x => edgeModel.Name.Equals(x.Name, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService
@@ -65,7 +65,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var cut = RenderComponent<CreateEdgeModelsPage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+            cut.WaitForElement($"#{nameof(IoTEdgeModelDto.Name)}").Change(edgeModel.Name);
 
             saveButton.Click();
 
@@ -78,7 +78,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void WhenEdgeModelRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             _ = this.mockSnackbarService
                 .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
@@ -98,9 +98,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void WhenModulesRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 Name = Guid.NewGuid().ToString(),
             };
@@ -113,12 +113,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var cut = RenderComponent<CreateEdgeModelsPage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+            cut.WaitForElement($"#{nameof(IoTEdgeModelDto.Name)}").Change(edgeModel.Name);
 
             var addModuleButton = cut.WaitForElement("#addModuleButton");
             addModuleButton.Click();
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModule.ModuleName)}").Change("module_test");
+            cut.WaitForElement($"#{nameof(IoTEdgeModuleDto.ModuleName)}").Change("module_test");
 
             saveButton.Click();
 
@@ -130,9 +130,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void WhenRoutesRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 Name = Guid.NewGuid().ToString(),
             };
@@ -145,12 +145,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var cut = RenderComponent<CreateEdgeModelsPage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+            cut.WaitForElement($"#{nameof(IoTEdgeModelDto.Name)}").Change(edgeModel.Name);
 
             var addRouteButton = cut.WaitForElement("#addRouteButton");
             addRouteButton.Click();
 
-            cut.WaitForElement($"#{nameof(IoTEdgeRoute.Name)}").Change("RouteTest");
+            cut.WaitForElement($"#{nameof(IoTEdgeRouteDto.Name)}").Change("RouteTest");
 
             saveButton.Click();
 
@@ -162,22 +162,22 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnSaveShouldPostProcessProblemDetailsExceptionWhenIssueOccurs()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 Name = Guid.NewGuid().ToString(),
             };
 
             _ = this.mockEdgeModelClientService
-                .Setup(x => x.CreateIoTEdgeModel(It.Is<IoTEdgeModel>(x => edgeModel.Name.Equals(x.Name, StringComparison.Ordinal))))
+                .Setup(x => x.CreateIoTEdgeModel(It.Is<IoTEdgeModelDto>(x => edgeModel.Name.Equals(x.Name, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+            cut.WaitForElement($"#{nameof(IoTEdgeModelDto.Name)}").Change(edgeModel.Name);
 
             saveButton.Click();
 
@@ -189,7 +189,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnAddModuleShouldAddModuleOnEdgeModelData()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
@@ -206,7 +206,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnDeleteModuleShouldRemoveModule()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
@@ -228,7 +228,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnShowAddEdgeModuleDialogShouldShowDialog()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
@@ -247,8 +247,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             var editButton = cut.WaitForElement("#editButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModule.ModuleName)}").Change("module test");
-            cut.WaitForElement($"#{nameof(IoTEdgeModule.ImageURI)}").Change("image test");
+            cut.WaitForElement($"#{nameof(IoTEdgeModuleDto.ModuleName)}").Change("module test");
+            cut.WaitForElement($"#{nameof(IoTEdgeModuleDto.ImageURI)}").Change("image test");
 
             editButton.Click();
 
@@ -260,7 +260,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickShowAddEdgeModuleDialogShouldDisplayAddModuleDialogAndReturnIfAborted()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
@@ -279,8 +279,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             var editButton = cut.WaitForElement("#editButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModule.ModuleName)}").Change("module test");
-            cut.WaitForElement($"#{nameof(IoTEdgeModule.ImageURI)}").Change("image test");
+            cut.WaitForElement($"#{nameof(IoTEdgeModuleDto.ModuleName)}").Change("module test");
+            cut.WaitForElement($"#{nameof(IoTEdgeModuleDto.ImageURI)}").Change("image test");
 
             editButton.Click();
 
@@ -292,7 +292,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnShowSystemModuleDetailShouldShowDialog()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
@@ -306,8 +306,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             var editEdgeAgentButton = cut.WaitForElement("#editSystModuleButton_edgeAgent");
 
-            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.Name)}").Change("newTest");
-            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.ImageUri)}").Change("image/test");
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModuleDto.Name)}").Change("newTest");
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModuleDto.ImageUri)}").Change("image/test");
 
             editEdgeAgentButton.Click();
 
@@ -319,7 +319,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnShowSystemModuleDetailShouldShowDialogAndReturnIfAborted()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
@@ -333,7 +333,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             var editEdgeAgentButton = cut.WaitForElement("#editSystModuleButton_edgeAgent");
 
-            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.ImageUri)}").Change("image/test");
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModuleDto.ImageUri)}").Change("image/test");
 
             editEdgeAgentButton.Click();
 
@@ -345,7 +345,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnAddRouteShouldAddRouteOnEdgeModelData()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
@@ -362,7 +362,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnDeleteRouteShouldRemoveRouteFromEdgeModelData()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
@@ -384,9 +384,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void CreateEdgeModelsPage_ClickOnAddEdgeModule_ShowAwsGreengrassComponentDialog()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 Name = Guid.NewGuid().ToString(),
             };
@@ -400,7 +400,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             var cut = RenderComponent<CreateEdgeModelsPage>();
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+            cut.WaitForElement($"#{nameof(IoTEdgeModelDto.Name)}").Change(edgeModel.Name);
 
             // Act
             cut.WaitForElement("#add-edge-module").Click();
@@ -413,9 +413,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void CreateEdgeModelsPage_ClickOnAddPublicEdgeModules_ShowAwsGreengrassPublicComponentsDialog()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
-            var edgeModel = new IoTEdgeModel()
+            var edgeModel = new IoTEdgeModelDto()
             {
                 Name = Guid.NewGuid().ToString(),
             };
@@ -429,7 +429,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             var cut = RenderComponent<CreateEdgeModelsPage>();
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+            cut.WaitForElement($"#{nameof(IoTEdgeModelDto.Name)}").Change(edgeModel.Name);
 
             // Act
             cut.WaitForElement("#add-public-edge-modules").Click();

@@ -42,9 +42,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             _ = this.mockDeviceConfigurationsService
                 .Setup(x => x.GetDeviceConfigurationListAsync())
-                .ReturnsAsync(new List<ConfigListItem>()
+                .ReturnsAsync(new List<ConfigListItemDto>()
                 {
-                    new ConfigListItem()
+                    new ConfigListItemDto()
                 });
 
             // Act
@@ -67,7 +67,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             _ = this.mockDeviceConfigurationsService
                 .Setup(x => x.GetDeviceConfigurationAsync(It.Is<string>(c => c.Equals(configId, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig()
+                .ReturnsAsync(new DeviceConfigDto()
                 {
                     ConfigurationId = configId,
                     ModelId = Guid.NewGuid().ToString(),
@@ -84,7 +84,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             if (response.Result is OkObjectResult okObjectResult)
             {
                 Assert.IsNotNull(okObjectResult.Value);
-                Assert.IsAssignableFrom<DeviceConfig>(okObjectResult.Value);
+                Assert.IsAssignableFrom<DeviceConfigDto>(okObjectResult.Value);
             }
             else
             {
@@ -104,7 +104,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             _ = this.mockDeviceConfigurationsService
                 .Setup(x => x.GetConfigurationMetricsAsync(It.Is<string>(c => c.Equals(configId, StringComparison.Ordinal))))
-                .ReturnsAsync(new Shared.Models.v10.ConfigurationMetrics() { CreationDate = DateTime.Now });
+                .ReturnsAsync(new Shared.Models.v10.ConfigurationMetricsDto() { CreationDate = DateTime.Now });
 
             // Act
             var result = await deviceConfigController.GetConfigurationMetrics(configId);
@@ -121,13 +121,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var deviceConfigController = CreateDeviceConfigurationsController();
 
-            var deviceConfig = new DeviceConfig()
+            var deviceConfig = new DeviceConfigDto()
             {
                 ConfigurationId= Guid.NewGuid().ToString(),
             };
 
             _ = this.mockDeviceConfigurationsService
-                .Setup(x => x.CreateConfigurationAsync(It.Is<DeviceConfig>(c => c.ConfigurationId.Equals(deviceConfig.ConfigurationId, StringComparison.Ordinal))))
+                .Setup(x => x.CreateConfigurationAsync(It.Is<DeviceConfigDto>(c => c.ConfigurationId.Equals(deviceConfig.ConfigurationId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -143,13 +143,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var deviceConfigController = CreateDeviceConfigurationsController();
 
-            var deviceConfig = new DeviceConfig()
+            var deviceConfig = new DeviceConfigDto()
             {
                 ConfigurationId= Guid.NewGuid().ToString(),
             };
 
             _ = this.mockDeviceConfigurationsService
-                .Setup(x => x.UpdateConfigurationAsync(It.Is<DeviceConfig>(c => c.ConfigurationId.Equals(deviceConfig.ConfigurationId, StringComparison.Ordinal))))
+                .Setup(x => x.UpdateConfigurationAsync(It.Is<DeviceConfigDto>(c => c.ConfigurationId.Equals(deviceConfig.ConfigurationId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -165,7 +165,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var deviceConfigController = CreateDeviceConfigurationsController();
 
-            var deviceConfig = new DeviceConfig()
+            var deviceConfig = new DeviceConfigDto()
             {
                 ConfigurationId= Guid.NewGuid().ToString(),
             };

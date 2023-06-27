@@ -222,7 +222,7 @@
     public Error Error { get; set; } = default!;
 
     IEnumerable<DeviceTagDto> AvailableTags { get; set; } = Array.Empty<DeviceTagDto>();
-    IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
+    IEnumerable<DevicePropertyDto> AvailableProperties = Array.Empty<DevicePropertyDto>();
 
     public string SelectedTag { get; set; } = default!;
     public string SelectedProperty { get; set; } = default!;
@@ -232,7 +232,7 @@
 
     public DeviceConfig Configuration { get; set; } = new();
     public DeviceModelDto DeviceModel { get; set; } = new();
-    private ConfigurationMetrics Metrics { get; set; } = new();
+    private ConfigurationMetricsDto Metrics { get; set; } = new();
     private void Return() => navigationManager.NavigateTo("/device-configurations");
 
     private bool isProcessing;

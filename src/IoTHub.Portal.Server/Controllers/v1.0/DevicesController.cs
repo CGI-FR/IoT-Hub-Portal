@@ -17,14 +17,14 @@ namespace IoTHub.Portal.Server.Controllers.V10
     [ApiVersion("1.0")]
     [Route("api/devices")]
     [ApiExplorerSettings(GroupName = "IoT Devices")]
-    public class DevicesController : DevicesControllerBase<DeviceDetails>
+    public class DevicesController : DevicesControllerBase<DeviceDetailsDto>
     {
         private readonly IDevicePropertyService devicePropertyService;
 
         public DevicesController(
             ILogger<DevicesController> logger,
             IDevicePropertyService devicePropertyService,
-            IDeviceService<DeviceDetails> deviceService)
+            IDeviceService<DeviceDetailsDto> deviceService)
             : base(logger, deviceService)
         {
             this.devicePropertyService = devicePropertyService;
@@ -42,7 +42,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="modelId"></param>
         /// <param name="labels"></param>
         [HttpGet(Name = "GET Device list")]
-        public Task<PaginationResult<DeviceListItem>> SearchItems(
+        public Task<PaginationResult<DeviceListItemDto>> SearchItems(
             string searchText = null,
             bool? searchStatus = null,
             bool? searchState = null,
@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpGet("{deviceID}", Name = "GET Device details")]
-        public override Task<DeviceDetails> GetItem(string deviceID)
+        public override Task<DeviceDetailsDto> GetItem(string deviceID)
         {
             return base.GetItem(deviceID);
         }
@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPost(Name = "POST Create device")]
-        public override Task<IActionResult> CreateDeviceAsync(DeviceDetails device)
+        public override Task<IActionResult> CreateDeviceAsync(DeviceDetailsDto device)
         {
             return base.CreateDeviceAsync(device);
         }
@@ -80,7 +80,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPut(Name = "PUT Update device")]
-        public override Task<IActionResult> UpdateDeviceAsync(DeviceDetails device)
+        public override Task<IActionResult> UpdateDeviceAsync(DeviceDetailsDto device)
         {
             return base.UpdateDeviceAsync(device);
         }
@@ -100,7 +100,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpGet("{deviceID}/credentials", Name = "GET Device Credentials")]
-        public override Task<ActionResult<DeviceCredentials>> GetCredentials(string deviceID)
+        public override Task<ActionResult<DeviceCredentialsDto>> GetCredentials(string deviceID)
         {
             return base.GetCredentials(deviceID);
         }
@@ -110,7 +110,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpGet("{deviceID}/properties", Name = "GET Device Properties")]
-        public async Task<IEnumerable<DevicePropertyValue>> GetProperties(string deviceID)
+        public async Task<IEnumerable<DevicePropertyValueDto>> GetProperties(string deviceID)
         {
             return await this.devicePropertyService.GetProperties(deviceID);
         }
@@ -121,7 +121,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceID">The device identifier.</param>
         /// <param name="values">The properties values.</param>
         [HttpPost("{deviceID}/properties", Name = "POST Device Properties")]
-        public async Task<ActionResult<IEnumerable<DevicePropertyValue>>> SetProperties(string deviceID, IEnumerable<DevicePropertyValue> values)
+        public async Task<ActionResult<IEnumerable<DevicePropertyValueDto>>> SetProperties(string deviceID, IEnumerable<DevicePropertyValueDto> values)
         {
             await this.devicePropertyService.SetProperties(deviceID, values);
 

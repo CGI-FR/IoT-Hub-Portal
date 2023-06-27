@@ -21,29 +21,29 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public async Task<List<IoTEdgeModelListItem>> GetIoTEdgeModelList(EdgeModelFilter? edgeModelFilter = null)
+        public async Task<List<IoTEdgeModelListItemDto>> GetIoTEdgeModelList(EdgeModelFilterDto? edgeModelFilter = null)
         {
             var query = new Dictionary<string, string>
             {
-                { nameof(EdgeModelFilter.Keyword), edgeModelFilter?.Keyword ?? string.Empty }
+                { nameof(EdgeModelFilterDto.Keyword), edgeModelFilter?.Keyword ?? string.Empty }
             };
 
             var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
 
-            return await this.http.GetFromJsonAsync<List<IoTEdgeModelListItem>>(uri) ?? new List<IoTEdgeModelListItem>();
+            return await this.http.GetFromJsonAsync<List<IoTEdgeModelListItemDto>>(uri) ?? new List<IoTEdgeModelListItemDto>();
         }
 
-        public async Task<IoTEdgeModel> GetIoTEdgeModel(string modelId)
+        public async Task<IoTEdgeModelDto> GetIoTEdgeModel(string modelId)
         {
-            return await this.http.GetFromJsonAsync<IoTEdgeModel>($"{this.apiUrlBase}/{modelId}") ?? new IoTEdgeModel();
+            return await this.http.GetFromJsonAsync<IoTEdgeModelDto>($"{this.apiUrlBase}/{modelId}") ?? new IoTEdgeModelDto();
         }
 
-        public Task CreateIoTEdgeModel(IoTEdgeModel model)
+        public Task CreateIoTEdgeModel(IoTEdgeModelDto model)
         {
             return this.http.PostAsJsonAsync(this.apiUrlBase, model);
         }
 
-        public Task UpdateIoTEdgeModel(IoTEdgeModel model)
+        public Task UpdateIoTEdgeModel(IoTEdgeModelDto model)
         {
             return this.http.PutAsJsonAsync(this.apiUrlBase, model);
         }
@@ -68,9 +68,9 @@ namespace IoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"{this.apiUrlBase}/{id}/avatar");
         }
 
-        public async Task<List<IoTEdgeModule>> GetPublicEdgeModules()
+        public async Task<List<IoTEdgeModuleDto>> GetPublicEdgeModules()
         {
-            return await this.http.GetFromJsonAsync<List<IoTEdgeModule>>($"{this.apiUrlBase}/public-modules") ?? new List<IoTEdgeModule>();
+            return await this.http.GetFromJsonAsync<List<IoTEdgeModuleDto>>($"{this.apiUrlBase}/public-modules") ?? new List<IoTEdgeModuleDto>();
         }
     }
 }

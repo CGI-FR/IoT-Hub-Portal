@@ -48,7 +48,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             _ = MockHttpClient.When(HttpMethod.Get, "/api/models?SearchText=&PageNumber=1&PageSize=10&OrderBy=")
                 .RespondJson(expectedDeviceModels);
 
-            var filter = new DeviceModelFilter
+            var filter = new DeviceModelFilterDto
             {
                 SearchText = string.Empty,
                 PageNumber = 1,
@@ -160,7 +160,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModelDto>();
-            var expectedDeviceModelProperties = Fixture.Build<DeviceProperty>().CreateMany(3).ToList();
+            var expectedDeviceModelProperties = Fixture.Build<DevicePropertyDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/properties")
                 .RespondJson(expectedDeviceModelProperties);
@@ -179,13 +179,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModelDto>();
-            var expectedDeviceModelProperties = Fixture.Build<DeviceProperty>().CreateMany(3).ToList();
+            var expectedDeviceModelProperties = Fixture.Build<DevicePropertyDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/properties")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceProperty>>>();
-                    var body = m.Content as ObjectContent<IList<DeviceProperty>>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DevicePropertyDto>>>();
+                    var body = m.Content as ObjectContent<IList<DevicePropertyDto>>;
                     _ = body.Value.Should().BeEquivalentTo(expectedDeviceModelProperties);
                     return true;
                 })

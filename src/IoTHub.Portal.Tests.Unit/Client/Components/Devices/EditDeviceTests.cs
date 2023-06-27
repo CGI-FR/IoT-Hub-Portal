@@ -66,7 +66,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = CloudProviders.Azure });
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
@@ -85,14 +85,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var expectedDeviceDetails = new DeviceDetails
+            var expectedDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
                 DeviceID = Guid.NewGuid().ToString(),
             };
 
-            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetailsDto>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -109,18 +109,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceClientService
-                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValueDto>>()))
                 .Returns(Task.CompletedTask);
 
             var cut = RenderComponent<EditDevice>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
             // Act
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             saveButton.Click();
@@ -155,14 +155,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             var cut = RenderComponent<EditDevice>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
             // Act
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(string.Empty);
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(string.Empty);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceName)}").Change(string.Empty);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceID)}").Change(string.Empty);
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             saveButton.Click();
@@ -197,14 +197,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var expectedDeviceDetails = new DeviceDetails
+            var expectedDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
                 DeviceID = Guid.NewGuid().ToString(),
             };
 
-            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetailsDto>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -221,14 +221,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             // Act
             var cut = RenderComponent<EditDevice>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             saveButton.Click();
@@ -249,7 +249,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var expectedDeviceDetails = new DeviceDetails
+            var expectedDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
@@ -275,8 +275,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             var cut = RenderComponent<EditDevice>();
 
             // Act
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             // Assert
@@ -294,14 +294,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var expectedDeviceDetails = new DeviceDetails
+            var expectedDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
                 DeviceID = Guid.NewGuid().ToString(),
             };
 
-            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetailsDto>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -318,18 +318,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceClientService
-                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValueDto>>()))
                 .Returns(Task.CompletedTask);
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Create));
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
@@ -362,7 +362,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var expectedDeviceDetails = new DeviceDetails
+            var expectedDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
@@ -370,16 +370,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             };
 
             _ = this.mockDeviceClientService.Setup(service => service.GetDevice(It.IsAny<string>()))
-                .ReturnsAsync(new DeviceDetails());
+                .ReturnsAsync(new DeviceDetailsDto());
 
             _ = this.mockDeviceClientService.Setup(service => service.GetDeviceProperties(It.IsAny<string>()))
-                .ReturnsAsync(new List<DevicePropertyValue>());
+                .ReturnsAsync(new List<DevicePropertyValueDto>());
 
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModel(It.IsAny<string>()))
                 .ReturnsAsync(new DeviceModelDto());
 
-            _ = this.mockDeviceClientService.Setup(service => service.UpdateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockDeviceClientService.Setup(service => service.UpdateDevice(It.Is<DeviceDetailsDto>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -396,18 +396,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceClientService
-                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValueDto>>()))
                 .Returns(Task.CompletedTask);
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, expectedDeviceDetails.DeviceID));
             var saveButton = cut.WaitForElement("#saveButton");
 
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
@@ -440,14 +440,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var expectedDeviceDetails = new DeviceDetails
+            var expectedDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
                 DeviceID = Guid.NewGuid().ToString(),
             };
 
-            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetailsDto>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -464,18 +464,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceClientService
-                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValueDto>>()))
                 .Returns(Task.CompletedTask);
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EditDevice>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
@@ -494,8 +494,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceName)}").TextContent.Should().BeEmpty());
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceID)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetailsDto.DeviceName)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetailsDto.DeviceID)}").TextContent.Should().BeEmpty());
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("/devices"));
         }
 
@@ -510,14 +510,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var expectedDeviceDetails = new DeviceDetails
+            var expectedDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
                 DeviceID = Guid.NewGuid().ToString(),
             };
 
-            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetailsDto>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -534,18 +534,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceClientService
-                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValueDto>>()))
                 .Returns(Task.CompletedTask);
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EditDevice>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
@@ -564,8 +564,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceName)}").TextContent.Should().BeEmpty());
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceID)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetailsDto.DeviceName)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetailsDto.DeviceID)}").TextContent.Should().BeEmpty());
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("/devices"));
         }
 
@@ -576,7 +576,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             var deviceModels = Fixture.CreateMany<DeviceModelDto>(2).ToList();
             var expectedDeviceModel = deviceModels.First();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText, StringComparison.Ordinal))))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilterDto>(x => expectedDeviceModel.Name.Equals(x.SearchText, StringComparison.Ordinal))))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = deviceModels.Where(x => expectedDeviceModel.Name.Equals(x.Name, StringComparison.Ordinal))
@@ -650,7 +650,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var expectedDeviceDetails = new DeviceDetails
+            var expectedDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
@@ -671,7 +671,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
-                .ReturnsAsync(new List<DeviceProperty>
+                .ReturnsAsync(new List<DevicePropertyDto>
                 {
                     new()
                     {
@@ -726,8 +726,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             var cut = RenderComponent<EditDevice>();
 
             // Act
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
-            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetailsDto.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             // Assert
@@ -755,7 +755,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .ReturnsAsync(new LoRaDeviceModelDto());
 
             _ = this.mockLoRaWanDeviceClientService.Setup(service => service.GetGatewayIdList())
-                .ReturnsAsync(new LoRaGatewayIDList());
+                .ReturnsAsync(new LoRaGatewayIDListDto());
 
             var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Create));
 
@@ -776,11 +776,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDevice(deviceId))
-                .ReturnsAsync(new DeviceDetails() { ModelId = modelId });
+                .ReturnsAsync(new DeviceDetailsDto() { ModelId = modelId });
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDeviceProperties(deviceId))
-                .ReturnsAsync(new List<DevicePropertyValue>());
+                .ReturnsAsync(new List<DevicePropertyValueDto>());
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
                 .ReturnsAsync(new DeviceModelDto());
@@ -807,18 +807,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDevice(deviceId))
-                .ReturnsAsync(new DeviceDetails());
+                .ReturnsAsync(new DeviceDetailsDto());
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDeviceProperties(deviceId))
-                .ReturnsAsync(new List<DevicePropertyValue>());
+                .ReturnsAsync(new List<DevicePropertyValueDto>());
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(null))
                 .ReturnsAsync(new DeviceModelDto());
 
             _ = this.mockLoRaWanDeviceClientService
                 .Setup(service => service.GetDevice(deviceId))
-                .ReturnsAsync(new LoRaDeviceDetails() { ModelId = modelId });
+                .ReturnsAsync(new LoRaDeviceDetailsDto() { ModelId = modelId });
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
                 .ReturnsAsync(new LoRaDeviceModelDto());
@@ -848,11 +848,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDevice(deviceId))
-                .ReturnsAsync(new DeviceDetails() { ModelId = modelId });
+                .ReturnsAsync(new DeviceDetailsDto() { ModelId = modelId });
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDeviceProperties(deviceId))
-                .ReturnsAsync(new List<DevicePropertyValue>());
+                .ReturnsAsync(new List<DevicePropertyValueDto>());
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
                 .ReturnsAsync(new DeviceModelDto());
@@ -960,7 +960,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Searchable = false
             };
 
-            var mockDeviceDetails = new DeviceDetails
+            var mockDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
@@ -971,7 +971,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 }
             };
 
-            _ = this.mockDeviceClientService.Setup(service => service.UpdateDevice(It.Is<DeviceDetails>(details => mockDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockDeviceClientService.Setup(service => service.UpdateDevice(It.Is<DeviceDetailsDto>(details => mockDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = this.mockDeviceClientService
@@ -989,7 +989,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
-                .ReturnsAsync(new List<DevicePropertyValue>());
+                .ReturnsAsync(new List<DevicePropertyValueDto>());
 
             // Act
             var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, mockDeviceDetails.DeviceID));
@@ -1082,7 +1082,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Searchable = false
             };
 
-            var mockDeviceDetails = new DeviceDetails
+            var mockDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
@@ -1108,7 +1108,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
-                .ReturnsAsync(new List<DevicePropertyValue>());
+                .ReturnsAsync(new List<DevicePropertyValueDto>());
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
             _ = this.mockDialogService.Setup(c => c.Show<ConnectionStringDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
@@ -1143,7 +1143,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Searchable = false
             };
 
-            var mockDeviceDetails = new DeviceDetails
+            var mockDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
@@ -1169,7 +1169,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
-                .ReturnsAsync(new List<DevicePropertyValue>());
+                .ReturnsAsync(new List<DevicePropertyValueDto>());
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
@@ -1205,7 +1205,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Searchable = false
             };
 
-            var mockDeviceDetails = new DeviceDetails
+            var mockDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
@@ -1231,7 +1231,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
-                .ReturnsAsync(new List<DevicePropertyValue>());
+                .ReturnsAsync(new List<DevicePropertyValueDto>());
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
@@ -1268,7 +1268,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Searchable = false
             };
 
-            var mockDeviceDetails = new DeviceDetails
+            var mockDeviceDetails = new DeviceDetailsDto
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
@@ -1294,7 +1294,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
-                .ReturnsAsync(new List<DevicePropertyValue>());
+                .ReturnsAsync(new List<DevicePropertyValueDto>());
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, mockDeviceDetails.DeviceID));

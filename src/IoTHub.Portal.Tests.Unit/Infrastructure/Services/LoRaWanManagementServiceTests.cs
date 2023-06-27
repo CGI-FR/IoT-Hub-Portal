@@ -77,7 +77,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 {
                     _ = m.Content.Should().BeAssignableTo<JsonContent>();
                     var body = (JsonContent) m.Content;
-                    var loRaCloudToDeviceMessage = (LoRaCloudToDeviceMessage)body?.Value;
+                    var loRaCloudToDeviceMessage = (LoRaCloudToDeviceMessageDto)body?.Value;
                     _ = loRaCloudToDeviceMessage?.Should().NotBeNull();
                     _ = loRaCloudToDeviceMessage?.Fport.Should().Be(command.Port);
                     _ = loRaCloudToDeviceMessage?.Confirmed.Should().Be(command.Confirmed);

@@ -36,9 +36,9 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model properties</param>
         [HttpGet(Name = "GET Device model properties")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DeviceProperty>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DevicePropertyDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override async Task<ActionResult<IEnumerable<DeviceProperty>>> GetProperties(string id)
+        public override async Task<ActionResult<IEnumerable<DevicePropertyDto>>> GetProperties(string id)
         {
             return await base.GetProperties(id);
         }
@@ -51,7 +51,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [HttpPost(Name = "POST Device model properties")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override async Task<ActionResult> SetProperties(string id, IEnumerable<DeviceProperty> properties)
+        public override async Task<ActionResult> SetProperties(string id, IEnumerable<DevicePropertyDto> properties)
         {
             return await base.SetProperties(id, properties);
         }

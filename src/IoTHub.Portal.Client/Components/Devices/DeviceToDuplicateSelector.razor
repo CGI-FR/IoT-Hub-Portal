@@ -10,7 +10,7 @@
 @inject IDeviceLayoutService DeviceLayoutService
 
 <MudAutocomplete id="search-device"
-                 T="DeviceListItem"
+                 T="DeviceListItemDto"
                  Label="Search a device to duplicate"
                  SearchFunc="@SearchDevicesToDuplicate"
                  ToStringFunc="@(x => x?.DeviceName)"
@@ -42,13 +42,13 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    private async Task<IEnumerable<DeviceListItem>> SearchDevicesToDuplicate(string query)
+    private async Task<IEnumerable<DeviceListItemDto>> SearchDevicesToDuplicate(string query)
     {
         try
         {
             if (string.IsNullOrWhiteSpace(query))
             {
-                return Array.Empty<DeviceListItem>();
+                return Array.Empty<DeviceListItemDto>();
             }
             var uri = $"api/devices?pageSize=10&searchText={HttpUtility.UrlEncode(query)}";
             var result = await DeviceClientService.GetDevices(uri);
@@ -57,11 +57,11 @@
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
-            return new List<DeviceListItem>();
+            return new List<DeviceListItemDto>();
         }
     }
 
-    private async Task OnDeviceSelected(DeviceListItem deviceToDuplicate)
+    private async Task OnDeviceSelected(DeviceListItemDto deviceToDuplicate)
     {
         try
         {

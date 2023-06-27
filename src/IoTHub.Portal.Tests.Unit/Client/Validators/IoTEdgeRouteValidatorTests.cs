@@ -16,9 +16,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var edgeRouteValidator = new IoTEdgeRouteValidator();
-            var edgeRouteList = new List<IoTEdgeRoute>()
+            var edgeRouteList = new List<IoTEdgeRouteDto>()
             {
-                new IoTEdgeRoute()
+                new IoTEdgeRouteDto()
                 {
                     Name = "Route1",
                     Value = "FROM source WHERE condition INTO sink",
@@ -40,7 +40,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var edgeRouteValidator = new IoTEdgeRouteValidator();
-            var edgeRouteList = new List<IoTEdgeRoute>()
+            var edgeRouteList = new List<IoTEdgeRouteDto>()
             {
                 null
             };
@@ -59,9 +59,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var edgeRouteValidator = new IoTEdgeRouteValidator();
-            var edgeRouteList = new List<IoTEdgeRoute>()
+            var edgeRouteList = new List<IoTEdgeRouteDto>()
             {
-                new IoTEdgeRoute()
+                new IoTEdgeRouteDto()
                 {
                     Name = null,
                     Value = null,
@@ -85,9 +85,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var edgeRouteValidator = new IoTEdgeRouteValidator();
-            var edgeRouteList = new List<IoTEdgeRoute>()
+            var edgeRouteList = new List<IoTEdgeRouteDto>()
             {
-                new IoTEdgeRoute()
+                new IoTEdgeRouteDto()
                 {
                     Name = "Route1",
                     Value = "FROM source WHERE condition INTO sink",
@@ -111,9 +111,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var edgeRouteValidator = new IoTEdgeRouteValidator();
-            var edgeRouteList = new List<IoTEdgeRoute>()
+            var edgeRouteList = new List<IoTEdgeRouteDto>()
             {
-                new IoTEdgeRoute()
+                new IoTEdgeRouteDto()
                 {
                     Name = "Route1",
                     Value = route,

@@ -54,7 +54,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             var deviceName = Fixture.Create<string>();
 
             // Act
-            var result = this.deviceLayoutService.DuplicateSharedDevice(new DeviceDetails
+            var result = this.deviceLayoutService.DuplicateSharedDevice(new DeviceDetailsDto
             {
                 DeviceID = deviceId,
                 DeviceName = deviceName
@@ -74,7 +74,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             var appKey = Fixture.Create<string>();
 
             // Act
-            var loraWanDevice = this.deviceLayoutService.DuplicateSharedDevice(new LoRaDeviceDetails
+            var loraWanDevice = this.deviceLayoutService.DuplicateSharedDevice(new LoRaDeviceDetailsDto
             {
                 DeviceID = deviceId,
                 DeviceName = deviceName,
@@ -104,10 +104,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public void ResetSharedDeviceShouldReturnNewDevice()
         {
             // Arrange
-            var expectedDevice = new DeviceDetails();
+            var expectedDevice = new DeviceDetailsDto();
 
             // Act
-            var result = this.deviceLayoutService.ResetSharedDevice<DeviceDetails>();
+            var result = this.deviceLayoutService.ResetSharedDevice<DeviceDetailsDto>();
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDevice);
@@ -119,7 +119,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var expectedTags = Fixture.CreateMany<DeviceTagDto>(2).ToList();
 
-            var expectedDevice = new DeviceDetails();
+            var expectedDevice = new DeviceDetailsDto();
 
             foreach (var tag in expectedTags)
             {
@@ -127,7 +127,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             }
 
             // Act
-            var result = this.deviceLayoutService.ResetSharedDevice<DeviceDetails>(expectedTags);
+            var result = this.deviceLayoutService.ResetSharedDevice<DeviceDetailsDto>(expectedTags);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDevice);

@@ -160,7 +160,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceConfigurationsService = CreateService();
 
-            var deviceConfig = new DeviceConfig
+            var deviceConfig = new DeviceConfigDto
             {
                 ConfigurationId = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()
@@ -197,7 +197,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceConfigurationsService = CreateService();
 
-            var deviceConfig = new DeviceConfig
+            var deviceConfig = new DeviceConfigDto
             {
                 ConfigurationId = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()
@@ -220,7 +220,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceConfigurationsService = CreateService();
 
-            var deviceConfig = new DeviceConfig
+            var deviceConfig = new DeviceConfigDto
             {
                 ConfigurationId = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()
@@ -257,7 +257,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceConfigurationsService = CreateService();
 
-            var deviceConfig = new DeviceConfig
+            var deviceConfig = new DeviceConfigDto
             {
                 ConfigurationId = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()
@@ -298,7 +298,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceConfigurationsService = CreateService();
 
-            var deviceConfig = new DeviceConfig
+            var deviceConfig = new DeviceConfigDto
             {
                 ConfigurationId = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()
@@ -349,7 +349,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var deviceConfigurationsService = CreateService();
             var propertyName = Guid.NewGuid().ToString();
 
-            var deviceConfig = new DeviceConfig
+            var deviceConfig = new DeviceConfigDto
             {
                 ConfigurationId = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()
@@ -408,7 +408,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var deviceConfigurationsService = CreateService();
             var propertyName = Guid.NewGuid().ToString();
 
-            var deviceConfig = new DeviceConfig
+            var deviceConfig = new DeviceConfigDto
             {
                 ConfigurationId = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()
@@ -457,7 +457,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var deviceConfigurationsService = CreateService();
             var propertyName = Guid.NewGuid().ToString();
 
-            var deviceConfig = new DeviceConfig
+            var deviceConfig = new DeviceConfigDto
             {
                 ConfigurationId = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()
@@ -508,7 +508,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var deviceConfigurationsService = CreateService();
             var propertyName = Guid.NewGuid().ToString();
 
-            var deviceConfig = new DeviceConfig
+            var deviceConfig = new DeviceConfigDto
             {
                 ConfigurationId = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()

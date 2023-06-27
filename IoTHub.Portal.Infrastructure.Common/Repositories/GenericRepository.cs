@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Repositories
             _ = this.context.Set<T>().Remove(existing!);
         }
 
-        public async Task<PaginatedResult<T>> GetPaginatedListAsync(
+        public async Task<PaginatedResultDto<T>> GetPaginatedListAsync(
             int pageNumber,
             int pageSize,
             string[]? orderBy = null,
@@ -98,7 +98,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Repositories
                 .Take(pageSize)
                 .ToDynamicListAsync<T>(cancellationToken: cancellationToken);
 
-            return new PaginatedResult<T>(items, count, pageNumber, pageSize);
+            return new PaginatedResultDto<T>(items, count, pageNumber, pageSize);
         }
 
         public async Task<int> CountAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default)

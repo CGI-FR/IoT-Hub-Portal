@@ -10,7 +10,7 @@ namespace IoTHub.Portal.Client.Validators
     using FluentValidation;
     using System.Linq;
 
-    public class LoRaDeviceDetailsValidator : AbstractValidator<LoRaDeviceDetails>
+    public class LoRaDeviceDetailsValidator : AbstractValidator<LoRaDeviceDetailsDto>
     {
         public LoRaDeviceDetailsValidator()
         {
@@ -56,7 +56,7 @@ namespace IoTHub.Portal.Client.Validators
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
         {
-            var result = await ValidateAsync(ValidationContext<LoRaDeviceDetails>.CreateWithOptions((LoRaDeviceDetails)model, x => x.IncludeProperties(propertyName)));
+            var result = await ValidateAsync(ValidationContext<LoRaDeviceDetailsDto>.CreateWithOptions((LoRaDeviceDetailsDto)model, x => x.IncludeProperties(propertyName)));
 
             if (result.IsValid)
                 return Array.Empty<string>();

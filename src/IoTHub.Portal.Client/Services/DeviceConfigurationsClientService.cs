@@ -19,27 +19,27 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public async Task<IList<ConfigListItem>> GetDeviceConfigurations()
+        public async Task<IList<ConfigListItemDto>> GetDeviceConfigurations()
         {
-            return await this.http.GetFromJsonAsync<List<ConfigListItem>>("api/device-configurations") ?? new List<ConfigListItem>();
+            return await this.http.GetFromJsonAsync<List<ConfigListItemDto>>("api/device-configurations") ?? new List<ConfigListItemDto>();
         }
 
-        public Task<DeviceConfig> GetDeviceConfiguration(string deviceConfigurationId)
+        public Task<DeviceConfigDto> GetDeviceConfiguration(string deviceConfigurationId)
         {
-            return this.http.GetFromJsonAsync<DeviceConfig>($"api/device-configurations/{deviceConfigurationId}")!;
+            return this.http.GetFromJsonAsync<DeviceConfigDto>($"api/device-configurations/{deviceConfigurationId}")!;
         }
 
-        public Task<ConfigurationMetrics> GetDeviceConfigurationMetrics(string deviceConfigurationId)
+        public Task<ConfigurationMetricsDto> GetDeviceConfigurationMetrics(string deviceConfigurationId)
         {
-            return this.http.GetFromJsonAsync<ConfigurationMetrics>($"api/device-configurations/{deviceConfigurationId}/metrics")!;
+            return this.http.GetFromJsonAsync<ConfigurationMetricsDto>($"api/device-configurations/{deviceConfigurationId}/metrics")!;
         }
 
-        public Task CreateDeviceConfiguration(DeviceConfig deviceConfiguration)
+        public Task CreateDeviceConfiguration(DeviceConfigDto deviceConfiguration)
         {
             return this.http.PostAsJsonAsync("api/device-configurations", deviceConfiguration);
         }
 
-        public Task UpdateDeviceConfiguration(DeviceConfig deviceConfiguration)
+        public Task UpdateDeviceConfiguration(DeviceConfigDto deviceConfiguration)
         {
             return this.http.PutAsJsonAsync($"api/device-configurations/{deviceConfiguration.ConfigurationId}", deviceConfiguration);
         }

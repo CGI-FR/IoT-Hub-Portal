@@ -40,7 +40,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET LoRaWAN device model list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public override async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems([FromQuery] DeviceModelFilter deviceModelFilter)
+        public override async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems([FromQuery] DeviceModelFilterDto deviceModelFilter)
         {
             var devices = await this.deviceModelService.GetDeviceModels(deviceModelFilter);
 

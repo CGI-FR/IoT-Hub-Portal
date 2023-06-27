@@ -50,10 +50,10 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             this.logger = logger;
         }
 
-        public async Task<PaginatedResult<DeviceListItem>> GetDevices(string searchText = null, bool? searchStatus = null, bool? searchState = null, int pageSize = 10,
+        public async Task<PaginatedResultDto<DeviceListItemDto>> GetDevices(string searchText = null, bool? searchStatus = null, bool? searchState = null, int pageSize = 10,
             int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null, List<string> labels = default)
         {
-            var deviceListFilter = new DeviceListFilter
+            var deviceListFilter = new DeviceListFilterDto
             {
                 PageSize = pageSize,
                 PageNumber = pageNumber,
@@ -113,7 +113,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             var devices = await query
                 .Skip(deviceListFilter.PageNumber * deviceListFilter.PageSize)
                 .Take(deviceListFilter.PageSize)
-                .Select(device => new DeviceListItem
+                .Select(device => new DeviceListItemDto
                 {
                     DeviceID = device.Id,
                     DeviceName = device.Name,
@@ -138,7 +138,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
                 device.ImageUrl = this.deviceModelImageManager.ComputeImageUri(device.DeviceModelId);
             });
 
-            return new PaginatedResult<DeviceListItem>(devices, resultCount);
+            return new PaginatedResultDto<DeviceListItemDto>(devices, resultCount);
         }
 
         public abstract Task<TDto> GetDevice(string deviceId);
@@ -195,7 +195,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
 
         protected abstract Task DeleteDeviceInDatabase(string deviceId);
 
-        public virtual Task<DeviceCredentials> GetCredentials(TDto device)
+        public virtual Task<DeviceCredentialsDto> GetCredentials(TDto device)
         {
             return this.externalDevicesService.GetDeviceCredentials(device);
         }

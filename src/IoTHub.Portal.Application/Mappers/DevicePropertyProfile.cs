@@ -11,9 +11,9 @@ namespace IoTHub.Portal.Application.Mappers
     {
         public DevicePropertyProfile()
         {
-            _ = CreateMap<DeviceModelProperty, DeviceProperty>();
+            _ = CreateMap<DeviceModelProperty, DevicePropertyDto>();
 
-            _ = CreateMap<DeviceProperty, DeviceModelProperty>()
+            _ = CreateMap<DevicePropertyDto, DeviceModelProperty>()
                 .ForMember(c => c.ModelId, opts => opts.MapFrom((_, _, _, context) => context.Items[nameof(DeviceModelProperty.ModelId)]));
         }
     }

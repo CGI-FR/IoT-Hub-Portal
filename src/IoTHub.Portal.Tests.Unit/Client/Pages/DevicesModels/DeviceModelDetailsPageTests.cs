@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         {
             // Arrange
             var expectedProperties = Enumerable.Range(0, 2)
-                .Select(_ => new DeviceProperty
+                .Select(_ => new DevicePropertyDto
                 {
                     DisplayName = Guid.NewGuid().ToString(),
                     IsWritable = true,
@@ -65,7 +65,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     PropertyType = DevicePropertyType.Double
                 }).ToArray();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
 
@@ -75,7 +75,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(list => list.Count.Equals(expectedProperties.Length))))
+                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DevicePropertyDto>>(list => list.Count.Equals(expectedProperties.Length))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -97,7 +97,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         {
             // Arrange
             var expectedProperties = Enumerable.Range(0, 2)
-                .Select(_ => new DeviceProperty
+                .Select(_ => new DevicePropertyDto
                 {
                     DisplayName = Guid.NewGuid().ToString(),
                     IsWritable = true,
@@ -105,7 +105,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     PropertyType = DevicePropertyType.Double
                 }).ToArray();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
 
@@ -131,7 +131,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         {
             // Arrange
             var expectedProperties = Enumerable.Range(0, 2)
-                .Select(_ => new DeviceProperty
+                .Select(_ => new DevicePropertyDto
                 {
                     DisplayName = Guid.NewGuid().ToString(),
                     IsWritable = true,
@@ -139,7 +139,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     PropertyType = DevicePropertyType.Double
                 }).ToArray();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
 
             _ = SetupMockDeviceModel(properties: expectedProperties);
@@ -174,12 +174,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(this.mockModelId))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetAvatarUrl(this.mockModelId))
@@ -190,7 +190,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(1))))
+                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DevicePropertyDto>>(properties => properties.Count.Equals(1))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns(value: null);
@@ -203,13 +203,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var addPropertyButton = cut.WaitForElement("#addPropertyButton");
             addPropertyButton.Click();
 
-            cut.WaitForElement($"#property- #{nameof(DeviceProperty.Name)}").Change(propertyName);
+            cut.WaitForElement($"#property- #{nameof(DevicePropertyDto.Name)}").Change(propertyName);
 
             var propertyCssSelector = $"#property-{propertyName}";
 
-            cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.DisplayName)}").Change(displayName);
-            cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.PropertyType)}").Change(nameof(DevicePropertyType.Boolean));
-            cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.IsWritable)}").Change(true);
+            cut.WaitForElement($"{propertyCssSelector} #{nameof(DevicePropertyDto.DisplayName)}").Change(displayName);
+            cut.WaitForElement($"{propertyCssSelector} #{nameof(DevicePropertyDto.PropertyType)}").Change(nameof(DevicePropertyType.Boolean));
+            cut.WaitForElement($"{propertyCssSelector} #{nameof(DevicePropertyDto.IsWritable)}").Change(true);
 
             saveButton.Click();
 
@@ -223,7 +223,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         {
             // Arrange
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(this.mockModelId))
@@ -237,7 +237,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     service.GetDeviceModelModelProperties(this.mockModelId))
                 .ReturnsAsync(new[]
                 {
-                    new DeviceProperty()
+                    new DevicePropertyDto()
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -249,7 +249,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(0))))
+                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DevicePropertyDto>>(properties => properties.Count.Equals(0))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -274,10 +274,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         {
             // Arrange
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var properties = Enumerable.Range(0, 10)
-                .Select(_ => new DeviceProperty
+                .Select(_ => new DevicePropertyDto
                 {
                     DisplayName = Guid.NewGuid().ToString(),
                     IsWritable = true,
@@ -314,7 +314,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = SetupMockDeviceModel();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>
@@ -336,7 +336,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = SetupMockLoRaWANDeviceModel();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>(
@@ -360,7 +360,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = SetupMockLoRaWANDeviceModelThrowingException();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
 
             // Act
@@ -372,7 +372,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
-        private DeviceModelDto SetupMockDeviceModel(DeviceProperty[] properties = null)
+        private DeviceModelDto SetupMockDeviceModel(DevicePropertyDto[] properties = null)
         {
             var deviceModel = new DeviceModelDto
             {
@@ -390,7 +390,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(this.mockModelId))
-                .ReturnsAsync(properties ?? Array.Empty<DeviceProperty>());
+                .ReturnsAsync(properties ?? Array.Empty<DevicePropertyDto>());
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetAvatarUrl(this.mockModelId))
@@ -450,7 +450,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = SetupMockDeviceModel();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>(ComponentParameter.CreateParameter("ModelId", this.mockModelId ));
@@ -469,7 +469,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = SetupMockDeviceModel();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var cut = RenderComponent<DeviceModelDetailPage>
                 (ComponentParameter.CreateParameter(nameof(DeviceModelDetailPage.ModelID), this.mockModelId));
@@ -494,7 +494,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = SetupMockDeviceModel();
 
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));

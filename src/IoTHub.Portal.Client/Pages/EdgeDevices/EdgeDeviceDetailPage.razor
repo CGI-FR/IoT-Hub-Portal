@@ -5,7 +5,7 @@
 @using IoTHub.Portal.Shared.Constants
 
 @attribute [Authorize]
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
@@ -27,7 +27,7 @@
             <MudCard>
                 <MudCardHeader Class="DeviceCardHeader">
                     <CardHeaderContent>
-                        <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModel.Name)>Model: <b>@edgeModel.Name</b></MudText>
+                        <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModelDto.Name)>Model: <b>@edgeModel.Name</b></MudText>
                         <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(edgeDevice.DeviceName) ? edgeDevice.DeviceId : edgeDevice.DeviceName)</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
@@ -115,7 +115,7 @@
 
                                             <MudItem xs="12" md="6">
                                                 <MudTextField @bind-Value="@edgeDevice.DeviceName"
-                                                              id=@nameof(IoTEdgeDevice.DeviceName)
+                                                              id=@nameof(IoTEdgeDeviceDto.DeviceName)
                                                               Label="Device name"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> edgeDevice.DeviceName)"
@@ -263,8 +263,8 @@
     private bool btn_disable = false;
     private void Return() => NavigationManager.NavigateTo("edge/devices");
 
-    private IoTEdgeDevice edgeDevice = default!;
-    private IoTEdgeModel edgeModel = new IoTEdgeModel();
+    private IoTEdgeDeviceDto edgeDevice = default!;
+    private IoTEdgeModelDto edgeModel = new IoTEdgeModelDto();
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
 
@@ -276,7 +276,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        edgeDevice = new IoTEdgeDevice();
+        edgeDevice = new IoTEdgeDeviceDto();
         await LoadDevice();
     }
 
@@ -409,7 +409,7 @@
         }
     }
 
-    public async Task ShowEdgeDeviceLogs(IoTEdgeModule module)
+    public async Task ShowEdgeDeviceLogs(IoTEdgeModuleDto module)
     {
         var parameter = new DialogParameters
         {

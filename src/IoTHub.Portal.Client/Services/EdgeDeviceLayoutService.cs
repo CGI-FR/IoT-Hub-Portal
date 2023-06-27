@@ -9,8 +9,8 @@ namespace IoTHub.Portal.Client.Services
 
     public class EdgeDeviceLayoutService : IEdgeDeviceLayoutService
     {
-        private IoTEdgeDevice sharedDevice = default!;
-        private IoTEdgeModel sharedDeviceModel = default!;
+        private IoTEdgeDeviceDto sharedDevice = default!;
+        private IoTEdgeModelDto sharedDeviceModel = default!;
 
         public event EventHandler RefreshDeviceOccurred = default!;
 
@@ -19,19 +19,19 @@ namespace IoTHub.Portal.Client.Services
             OnRefreshDeviceOccurred();
         }
 
-        public IoTEdgeDevice GetSharedDevice()
+        public IoTEdgeDeviceDto GetSharedDevice()
         {
             return this.sharedDevice;
         }
 
-        public IoTEdgeModel GetSharedDeviceModel()
+        public IoTEdgeModelDto GetSharedDeviceModel()
         {
             return this.sharedDeviceModel;
         }
 
-        public IoTEdgeDevice ResetSharedDevice(List<DeviceTagDto>? tags = null)
+        public IoTEdgeDeviceDto ResetSharedDevice(List<DeviceTagDto>? tags = null)
         {
-            this.sharedDevice = new IoTEdgeDevice();
+            this.sharedDevice = new IoTEdgeDeviceDto();
 
             foreach (var tag in tags ?? new List<DeviceTagDto>())
             {
@@ -41,14 +41,14 @@ namespace IoTHub.Portal.Client.Services
             return this.sharedDevice;
         }
 
-        public IoTEdgeModel ResetSharedDeviceModel()
+        public IoTEdgeModelDto ResetSharedDeviceModel()
         {
-            this.sharedDeviceModel = new IoTEdgeModel();
+            this.sharedDeviceModel = new IoTEdgeModelDto();
 
             return this.sharedDeviceModel;
         }
 
-        public IoTEdgeDevice DuplicateSharedDevice(IoTEdgeDevice deviceToDuplicate)
+        public IoTEdgeDeviceDto DuplicateSharedDevice(IoTEdgeDeviceDto deviceToDuplicate)
         {
             deviceToDuplicate.DeviceId = string.Empty;
             deviceToDuplicate.DeviceName = $"{deviceToDuplicate.DeviceName} - copy";
@@ -58,7 +58,7 @@ namespace IoTHub.Portal.Client.Services
             return this.sharedDevice;
         }
 
-        public IoTEdgeModel DuplicateSharedDeviceModel(IoTEdgeModel deviceModelToDuplicate)
+        public IoTEdgeModelDto DuplicateSharedDeviceModel(IoTEdgeModelDto deviceModelToDuplicate)
         {
             this.sharedDeviceModel = deviceModelToDuplicate;
 

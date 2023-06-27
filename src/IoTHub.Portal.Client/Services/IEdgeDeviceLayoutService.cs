@@ -13,11 +13,11 @@ namespace IoTHub.Portal.Client.Services
 
         void RefreshDevice();
 
-        IoTEdgeDevice GetSharedDevice();
-        IoTEdgeModel GetSharedDeviceModel();
-        IoTEdgeDevice ResetSharedDevice(List<DeviceTagDto>? tags = null);
-        IoTEdgeModel ResetSharedDeviceModel();
-        IoTEdgeDevice DuplicateSharedDevice(IoTEdgeDevice deviceToDuplicate);
-        IoTEdgeModel DuplicateSharedDeviceModel(IoTEdgeModel deviceModelToDuplicate);
+        IoTEdgeDeviceDto GetSharedDevice();
+        IoTEdgeModelDto GetSharedDeviceModel();
+        IoTEdgeDeviceDto ResetSharedDevice(List<DeviceTagDto>? tags = null);
+        IoTEdgeModelDto ResetSharedDeviceModel();
+        IoTEdgeDeviceDto DuplicateSharedDevice(IoTEdgeDeviceDto deviceToDuplicate);
+        IoTEdgeModelDto DuplicateSharedDeviceModel(IoTEdgeModelDto deviceModelToDuplicate);
     }
 }

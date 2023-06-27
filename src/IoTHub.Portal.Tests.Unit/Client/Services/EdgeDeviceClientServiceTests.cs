@@ -38,9 +38,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDevicesShouldReturnDevices()
         {
             // Arrange
-            var expectedDevices = new PaginationResult<IoTEdgeListItem>
+            var expectedDevices = new PaginationResult<IoTEdgeListItemDto>
             {
-                Items = new List<IoTEdgeListItem>()
+                Items = new List<IoTEdgeListItemDto>()
                 {
                     new ()
                 }
@@ -66,7 +66,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            var expectedDevice = new IoTEdgeDevice
+            var expectedDevice = new IoTEdgeDeviceDto
             {
                 DeviceId = deviceId
             };
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateDeviceShouldCreateDevice()
         {
             // Arrange
-            var device = new IoTEdgeDevice
+            var device = new IoTEdgeDeviceDto
             {
                 DeviceId = Fixture.Create<string>()
             };
@@ -95,8 +95,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             _ = MockHttpClient.When(HttpMethod.Post, "/api/edge/devices")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeDevice>>();
-                    var body = m.Content as ObjectContent<IoTEdgeDevice>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeDeviceDto>>();
+                    var body = m.Content as ObjectContent<IoTEdgeDeviceDto>;
                     _ = body.Value.Should().BeEquivalentTo(device);
                     return true;
                 })
@@ -114,7 +114,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task UpdateDeviceShouldUpdateDevice()
         {
             // Arrange
-            var device = new IoTEdgeDevice
+            var device = new IoTEdgeDeviceDto
             {
                 DeviceId = Fixture.Create<string>()
             };
@@ -122,8 +122,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             _ = MockHttpClient.When(HttpMethod.Put, $"/api/edge/devices/{device.DeviceId}")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeDevice>>();
-                    var body = m.Content as ObjectContent<IoTEdgeDevice>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeDeviceDto>>();
+                    var body = m.Content as ObjectContent<IoTEdgeDeviceDto>;
                     _ = body.Value.Should().BeEquivalentTo(device);
                     return true;
                 })
@@ -160,7 +160,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            var expectedEnrollmentCredentials = Fixture.Create<DeviceCredentials>();
+            var expectedEnrollmentCredentials = Fixture.Create<DeviceCredentialsDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
                 .RespondJson(expectedEnrollmentCredentials);
@@ -180,12 +180,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = Guid.NewGuid().ToString()
             };
 
-            var expectedLog = new IoTEdgeDeviceLog
+            var expectedLog = new IoTEdgeDeviceLogDto
             {
                 Id = deviceId,
                 Text = Guid.NewGuid().ToString(),
@@ -193,7 +193,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 TimeStamp = DateTime.UtcNow
             };
 
-            var expectedLogs = new List<IoTEdgeDeviceLog>
+            var expectedLogs = new List<IoTEdgeDeviceLogDto>
             {
                 expectedLog
             };
@@ -216,13 +216,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            var edgeModule = new IoTEdgeModule()
+            var edgeModule = new IoTEdgeModuleDto()
             {
                 ModuleName = Guid.NewGuid().ToString()
             };
 
             var methodName = Fixture.Create<string>();
-            var c2Dresult = Fixture.Create<C2Dresult>();
+            var c2Dresult = Fixture.Create<C2DresultDto>();
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/devices/{deviceId}/{edgeModule.ModuleName}/{methodName}")
                 .RespondJson(c2Dresult);
@@ -244,7 +244,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             var commandName = Fixture.Create<string>();
             var moduleName = Fixture.Create<string>();
 
-            var c2Dresult = Fixture.Create<C2Dresult>();
+            var c2Dresult = Fixture.Create<C2DresultDto>();
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/devices/{deviceId}/{moduleName}/{commandName}")
                 .RespondJson(c2Dresult);

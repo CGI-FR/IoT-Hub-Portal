@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Client.Validators
     using IoTHub.Portal.Models.v10;
     using FluentValidation;
 
-    public class EdgeModelValidator : AbstractValidator<IoTEdgeModel>
+    public class EdgeModelValidator : AbstractValidator<IoTEdgeModelDto>
     {
         public EdgeModelValidator()
         {

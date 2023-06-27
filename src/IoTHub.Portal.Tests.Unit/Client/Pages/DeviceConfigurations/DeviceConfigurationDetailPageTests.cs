@@ -59,7 +59,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -94,7 +94,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -162,7 +162,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -174,7 +174,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -197,7 +197,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -242,7 +242,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -254,7 +254,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -273,7 +273,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -311,7 +311,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -323,7 +323,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -351,7 +351,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -396,7 +396,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -408,7 +408,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -436,7 +436,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -486,7 +486,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -498,7 +498,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -525,7 +525,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -574,7 +574,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -586,7 +586,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -619,7 +619,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>
+                .ReturnsAsync(new List<DevicePropertyDto>
                 {
                     new() {
                         Name = "prop1",
@@ -690,7 +690,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -702,7 +702,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -731,7 +731,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>
+                .ReturnsAsync(new List<DevicePropertyDto>
                 {
                     new() {
                         Name = "prop1",
@@ -800,7 +800,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -812,7 +812,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -841,7 +841,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>
+                .ReturnsAsync(new List<DevicePropertyDto>
                 {
                     new() {
                         Name = "prop1",
@@ -912,7 +912,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -924,7 +924,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = configurationId,
@@ -956,7 +956,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>
+                .ReturnsAsync(new List<DevicePropertyDto>
                 {
                     new() {
                         Name = "prop1",
@@ -993,7 +993,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
-                    service.UpdateDeviceConfiguration(It.Is<DeviceConfig>(config =>
+                    service.UpdateDeviceConfiguration(It.Is<DeviceConfigDto>(config =>
                         configurationId.Equals(config.ConfigurationId, StringComparison.Ordinal) && modelId.Equals(config.ModelId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
@@ -1033,7 +1033,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -1045,7 +1045,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = configurationId,
@@ -1077,7 +1077,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>
+                .ReturnsAsync(new List<DevicePropertyDto>
                 {
                     new() {
                         Name = "prop1",
@@ -1114,7 +1114,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
-                    service.UpdateDeviceConfiguration(It.Is<DeviceConfig>(config =>
+                    service.UpdateDeviceConfiguration(It.Is<DeviceConfigDto>(config =>
                         configurationId.Equals(config.ConfigurationId, StringComparison.Ordinal) &&
                         modelId.Equals(config.ModelId, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
@@ -1156,7 +1156,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 Name = Guid.NewGuid().ToString()
             };
 
-            var metrics = new ConfigurationMetrics
+            var metrics = new ConfigurationMetricsDto
             {
                 CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
                 MetricsApplied = Random.Shared.Next(),
@@ -1168,7 +1168,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new DeviceConfig
+                .ReturnsAsync(new DeviceConfigDto
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -1191,7 +1191,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelModelProperties(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new List<DeviceProperty>());
+                .ReturnsAsync(new List<DevicePropertyDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())

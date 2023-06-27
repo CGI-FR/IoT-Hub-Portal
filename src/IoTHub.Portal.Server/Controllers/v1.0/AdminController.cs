@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpPost("devices/_import", Name = "Import devices")]
-        public async Task<ActionResult<ImportResultLine[]>> ImportDeviceList(IFormFile file)
+        public async Task<ActionResult<ImportResultLineDto[]>> ImportDeviceList(IFormFile file)
         {
             using var stream = file.OpenReadStream();
             var errorReport = await this.exportManager.ImportDeviceList(stream);

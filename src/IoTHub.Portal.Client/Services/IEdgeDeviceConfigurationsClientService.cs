@@ -9,8 +9,8 @@ namespace IoTHub.Portal.Client.Services
 
     public interface IEdgeDeviceConfigurationsClientService
     {
-        Task<IList<ConfigListItem>> GetDeviceConfigurations();
+        Task<IList<ConfigListItemDto>> GetDeviceConfigurations();
 
-        Task<ConfigListItem> GetDeviceConfiguration(string deviceConfigurationId);
+        Task<ConfigListItemDto> GetDeviceConfiguration(string deviceConfigurationId);
     }
 }

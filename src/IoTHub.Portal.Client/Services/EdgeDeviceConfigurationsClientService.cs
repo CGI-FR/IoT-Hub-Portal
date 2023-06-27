@@ -18,14 +18,14 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public async Task<IList<ConfigListItem>> GetDeviceConfigurations()
+        public async Task<IList<ConfigListItemDto>> GetDeviceConfigurations()
         {
-            return await this.http.GetFromJsonAsync<List<ConfigListItem>>("api/edge/configurations") ?? new List<ConfigListItem>();
+            return await this.http.GetFromJsonAsync<List<ConfigListItemDto>>("api/edge/configurations") ?? new List<ConfigListItemDto>();
         }
 
-        public Task<ConfigListItem> GetDeviceConfiguration(string deviceConfigurationId)
+        public Task<ConfigListItemDto> GetDeviceConfiguration(string deviceConfigurationId)
         {
-            return this.http.GetFromJsonAsync<ConfigListItem>($"api/edge/configurations/{deviceConfigurationId}")!;
+            return this.http.GetFromJsonAsync<ConfigListItemDto>($"api/edge/configurations/{deviceConfigurationId}")!;
         }
     }
 }

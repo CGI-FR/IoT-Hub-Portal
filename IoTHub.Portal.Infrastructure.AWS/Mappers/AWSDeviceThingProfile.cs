@@ -16,13 +16,13 @@ namespace IoTHub.Portal.Application.Mappers.AWS
     {
         public AWSDeviceThingProfile()
         {
-            _ = CreateMap<DeviceDetails, CreateThingRequest>()
+            _ = CreateMap<DeviceDetailsDto, CreateThingRequest>()
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.ModelName))
                 .ForPath(dest => dest.AttributePayload.Attributes, opts => opts.MapFrom(src => src.Tags))
                 .ReverseMap();
 
-            _ = CreateMap<DeviceDetails, UpdateThingRequest>()
+            _ = CreateMap<DeviceDetailsDto, UpdateThingRequest>()
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
                 .ForPath(dest => dest.AttributePayload.Attributes, opts => opts.MapFrom(src => src.Tags))
                 .ReverseMap();
@@ -31,7 +31,7 @@ namespace IoTHub.Portal.Application.Mappers.AWS
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.Name))
                 .ReverseMap();
 
-            _ = CreateMap<DeviceDetails, UpdateThingShadowRequest>()
+            _ = CreateMap<DeviceDetailsDto, UpdateThingShadowRequest>()
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.Payload, opts => opts.MapFrom(src => EmptyPayload()))
                 .ReverseMap();
@@ -58,12 +58,12 @@ namespace IoTHub.Portal.Application.Mappers.AWS
                     Value = att.Value
                 })));
 
-            _ = CreateMap<IoTEdgeDevice, CreateThingRequest>()
+            _ = CreateMap<IoTEdgeDeviceDto, CreateThingRequest>()
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
                 .ForPath(dest => dest.AttributePayload.Attributes, opts => opts.MapFrom(src => src.Tags))
                 .ReverseMap();
 
-            _ = CreateMap<IoTEdgeDevice, UpdateThingRequest>()
+            _ = CreateMap<IoTEdgeDeviceDto, UpdateThingRequest>()
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
                 .ForPath(dest => dest.AttributePayload.Attributes, opts => opts.MapFrom(src => src.Tags))
                 .ReverseMap();

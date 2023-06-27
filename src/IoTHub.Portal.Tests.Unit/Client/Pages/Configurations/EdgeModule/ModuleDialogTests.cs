@@ -24,19 +24,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
         public async Task ModuleDialogTestMustBeRenderedOnShow()
         {
             //Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var moduleName = Guid.NewGuid().ToString();
             var moduleImageUri = Guid.NewGuid().ToString();
 
-            var module = new IoTEdgeModule()
+            var module = new IoTEdgeModuleDto()
             {
                 ModuleName = moduleName,
                 Status = "running",
                 ImageURI = moduleImageUri,
-                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
-                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>(),
+                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSettingDto>(),
+                Commands = new List<IoTEdgeModuleCommandDto>()
             };
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -53,8 +53,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").OuterHtml.Should().Contain(moduleName));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ImageURI)}").OuterHtml.Should().Contain(moduleImageUri));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModuleDto.ModuleName)}").OuterHtml.Should().Contain(moduleName));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModuleDto.ImageURI)}").OuterHtml.Should().Contain(moduleImageUri));
 
             // Assert
             var tabs = cut.WaitForElements(".mud-tabs .mud-tab");
@@ -68,19 +68,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
         public async Task ClickOnSubmitShouldUpdateModuleValues()
         {
             //Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "Azure" });
 
             var moduleName = Guid.NewGuid().ToString();
             var moduleImageUri = Guid.NewGuid().ToString();
 
-            var module = new IoTEdgeModule()
+            var module = new IoTEdgeModuleDto()
             {
                 ModuleName = moduleName,
                 Status = "running",
                 ImageURI = moduleImageUri,
-                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
-                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>(),
+                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSettingDto>(),
+                Commands = new List<IoTEdgeModuleCommandDto>()
             };
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -98,8 +98,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
 
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").Change("newModuleNameValue"));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ImageURI)}").Change("newModuleImageUriValue"));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModuleDto.ModuleName)}").Change("newModuleNameValue"));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModuleDto.ImageURI)}").Change("newModuleImageUriValue"));
 
             var submitButton = cut.WaitForElement("#SubmitButton");
             submitButton.Click();
@@ -114,17 +114,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
         public async Task ForAWSModuleDialogTestMustBeRenderedOnShow()
         {
             //Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
             var moduleName = Guid.NewGuid().ToString();
             var moduleImageUri = Guid.NewGuid().ToString();
 
-            var module = new IoTEdgeModule()
+            var module = new IoTEdgeModuleDto()
             {
                 ModuleName = moduleName,
                 Status = "running",
                 ImageURI = moduleImageUri,
-                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>()
             };
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -141,8 +141,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").OuterHtml.Should().Contain(moduleName));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ImageURI)}").OuterHtml.Should().Contain(moduleImageUri));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModuleDto.ModuleName)}").OuterHtml.Should().Contain(moduleName));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModuleDto.ImageURI)}").OuterHtml.Should().Contain(moduleImageUri));
 
             // Assert
             var tabs = cut.WaitForElements(".mud-tabs .mud-tab");
@@ -155,17 +155,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
         public async Task ForAWSClickOnSubmitShouldUpdateModuleValues()
         {
             //Arrange
-            _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
+            _ = Services.AddSingleton(new PortalSettingsDto { CloudProvider = "AWS" });
 
             var moduleName = Guid.NewGuid().ToString();
             var moduleImageUri = Guid.NewGuid().ToString();
 
-            var module = new IoTEdgeModule()
+            var module = new IoTEdgeModuleDto()
             {
                 ModuleName = moduleName,
                 Status = "running",
                 ImageURI = moduleImageUri,
-                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariableDto>()
             };
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -183,8 +183,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
 
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").Change("newModuleNameValue"));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ImageURI)}").Change("newModuleImageUriValue"));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModuleDto.ModuleName)}").Change("newModuleNameValue"));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModuleDto.ImageURI)}").Change("newModuleImageUriValue"));
 
             var submitButton = cut.WaitForElement("#SubmitButton");
             submitButton.Click();

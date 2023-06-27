@@ -8,6 +8,6 @@ namespace IoTHub.Portal.Client.Services
 
     public interface IIdeaClientService
     {
-        Task<IdeaResponse> SubmitIdea(IdeaRequest ideaRequest);
+        Task<IdeaResponseDto> SubmitIdea(IdeaRequestDto ideaRequest);
     }
 }

@@ -52,7 +52,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var expectedDeviceModels = Fixture.CreateMany<DeviceModelDto>(24).ToList();
 
-            var filter = new DeviceModelFilter
+            var filter = new DeviceModelFilterDto
             {
                 SearchText = string.Empty,
                 PageNumber = 0,
@@ -64,7 +64,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             };
 
             _ = this.mockDeviceModelService.Setup(service => service.GetDeviceModels(filter))
-                .ReturnsAsync((DeviceModelFilter filter) => new PaginatedResult<DeviceModelDto>
+                .ReturnsAsync((DeviceModelFilterDto filter) => new PaginatedResultDto<DeviceModelDto>
                 {
                     Data = expectedDeviceModels.Skip(filter.PageSize * filter.PageNumber).Take(filter.PageSize).ToList(),
                     TotalCount = expectedDeviceModels.Count

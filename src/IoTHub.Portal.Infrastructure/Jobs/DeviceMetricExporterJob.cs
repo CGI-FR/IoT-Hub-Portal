@@ -14,12 +14,12 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     public class DeviceMetricExporterJob : IJob
     {
         private readonly ILogger<DeviceMetricExporterJob> logger;
-        private readonly PortalMetric portalMetric;
+        private readonly PortalMetricDto portalMetric;
 
         private readonly Counter deviceCounter = Metrics.CreateCounter(MetricName.DeviceCount, "Devices count");
         private readonly Counter connectedDeviceCounter = Metrics.CreateCounter(MetricName.ConnectedDeviceCount, "Connected devices count");
 
-        public DeviceMetricExporterJob(ILogger<DeviceMetricExporterJob> logger, PortalMetric portalMetric)
+        public DeviceMetricExporterJob(ILogger<DeviceMetricExporterJob> logger, PortalMetricDto portalMetric)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;

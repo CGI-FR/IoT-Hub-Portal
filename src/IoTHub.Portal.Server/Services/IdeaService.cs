@@ -31,7 +31,7 @@ namespace IoTHub.Portal.Server.Services
             this.configHandler = configHandler;
         }
 
-        public async Task<IdeaResponse> SubmitIdea(IdeaRequest ideaRequest, string? userAgent = null)
+        public async Task<IdeaResponseDto> SubmitIdea(IdeaRequestDto ideaRequest, string? userAgent = null)
         {
             if (!this.configHandler.IdeasEnabled)
             {
@@ -78,7 +78,7 @@ namespace IoTHub.Portal.Server.Services
 
             if (response.IsSuccessStatusCode)
             {
-                var responseBody = await response.Content.ReadFromJsonAsync<IdeaResponse>();
+                var responseBody = await response.Content.ReadFromJsonAsync<IdeaResponseDto>();
 
                 this.logger.LogInformation($"User idea has been successfully submitted: {responseBody?.Url}");
 

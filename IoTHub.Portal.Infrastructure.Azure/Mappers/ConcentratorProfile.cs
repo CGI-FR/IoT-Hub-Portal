@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Infrastructure.Azure.Mappers
 {
     using AutoMapper;
+    using IoTHub.Portal.Crosscutting.Extensions;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Infrastructure.Azure.Helpers;
     using Microsoft.Azure.Devices.Shared;
@@ -32,21 +33,21 @@ namespace IoTHub.Portal.Infrastructure.Azure.Mappers
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
                 .ForMember(dest => dest.ClientThumbprint, opts => opts.MapFrom(src => DeviceHelper.RetrieveClientThumbprintValue(src)))
                 .ForMember(dest => dest.LoraRegion, opts => opts.MapFrom(src => DeviceHelper.RetrieveTagValue(src, nameof(Concentrator.LoraRegion))))
-                .ForMember(dest => dest.LoraRegion, opts => opts.MapFrom(src => DeviceHelper.RetrieveTagValue(src, nameof(Concentrator.DeviceType))));
+                .ForMember(dest => dest.DeviceType, opts => opts.MapFrom(src => DeviceHelper.RetrieveTagValue(src, nameof(Concentrator.DeviceType))));
 
-            _ = CreateMap<PaginatedResult<Concentrator>, PaginatedResult<ConcentratorDto>>();
+            _ = CreateMap<PaginatedResultDto<Concentrator>, PaginatedResultDto<ConcentratorDto>>();
 
             _ = CreateMap<ConcentratorDto, Twin>()
                 .AfterMap((src, dest) => DeviceHelper.SetTagValue(dest, nameof(ConcentratorDto.DeviceName), src.DeviceName))
                 .AfterMap((src, dest) => DeviceHelper.SetTagValue(dest, nameof(ConcentratorDto.LoraRegion), src.LoraRegion))
-                .AfterMap((src, dest) => DeviceHelper.SetDesiredProperty(dest, nameof(ConcentratorDto.ClientThumbprint), src.ClientThumbprint))
-                .AfterMap((src, dest) => DeviceHelper.SetDesiredProperty(dest, nameof(ConcentratorDto.RouterConfig), src.RouterConfig));
+                .AfterMap((src, dest) => DeviceHelper.SetDesiredProperty(dest, nameof(ConcentratorDto.ClientThumbprint).ToCamelCase(), new[] { src.ClientThumbprint }))
+                .AfterMap((src, dest) => DeviceHelper.SetDesiredProperty(dest, nameof(ConcentratorDto.RouterConfig).ToCamelCase(), src.RouterConfig));
 
             _ = CreateMap<Twin, ConcentratorDto>()
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => DeviceHelper.RetrieveTagValue(src, nameof(ConcentratorDto.DeviceName))))
                 .ForMember(dest => dest.LoraRegion, opts => opts.MapFrom(src => DeviceHelper.RetrieveTagValue(src, nameof(ConcentratorDto.LoraRegion))))
-                .ForMember(dest => dest.ClientThumbprint, opts => opts.MapFrom(src => DeviceHelper.RetrieveTagValue(src, nameof(ConcentratorDto.ClientThumbprint))))
-                .ForMember(dest => dest.RouterConfig, opts => opts.MapFrom(src => DeviceHelper.RetrieveTagValue(src, nameof(ConcentratorDto.RouterConfig)))); ;
+                .ForMember(dest => dest.ClientThumbprint, opts => opts.MapFrom(src => DeviceHelper.RetrieveClientThumbprintValue(src)))
+                .ForMember(dest => dest.RouterConfig, opts => opts.MapFrom(src => DeviceHelper.RetrieveTagValue(src, nameof(ConcentratorDto.RouterConfig).ToCamelCase())));
         }
     }
 }

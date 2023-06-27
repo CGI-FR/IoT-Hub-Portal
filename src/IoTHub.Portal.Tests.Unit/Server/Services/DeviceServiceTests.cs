@@ -42,7 +42,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
 
-        private IDeviceService<DeviceDetails> deviceService;
+        private IDeviceService<DeviceDetailsDto> deviceService;
 
         public override void Setup()
         {
@@ -64,11 +64,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
-            _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, DeviceService>();
+            _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetailsDto>, DeviceService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.deviceService = Services.GetRequiredService<IDeviceService<DeviceDetails>>();
+            this.deviceService = Services.GetRequiredService<IDeviceService<DeviceDetailsDto>>();
             Mapper = Services.GetRequiredService<IMapper>();
         }
 
@@ -199,7 +199,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var expectedDevice = Fixture.Create<Device>();
 
             var expectedImageUri = Fixture.Create<Uri>();
-            var expectedDeviceDto = Mapper.Map<DeviceDetails>(expectedDevice);
+            var expectedDeviceDto = Mapper.Map<DeviceDetailsDto>(expectedDevice);
             expectedDeviceDto.ImageUrl = expectedImageUri;
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags, d => d.Labels))
@@ -240,7 +240,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateDevice_NewDevice_DeviceCreated()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -270,7 +270,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateDevice_DbUpdateExceptionIsThrown_InternalServerErrorExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -300,7 +300,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateDevice_DeviceExist_DeviceUpdated()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -357,7 +357,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateDevice_DeviceNotExist_ResourceNotFoundExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -396,7 +396,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateDevice_DbUpdateExceptionIsRaised_CannotInsertNullExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -442,7 +442,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DeviceExist_DeviceDeleted()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -480,7 +480,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DeviceNotExist_NothingIsDone()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -502,7 +502,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DbUpdateExceptionIsRaised_DbUpdateExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -535,12 +535,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task GetCredentials_DeviceExist_ReturnsEnrollmentCredentials()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
 
-            var expectedEnrollmentCredentials = Fixture.Create<DeviceCredentials>();
+            var expectedEnrollmentCredentials = Fixture.Create<DeviceCredentialsDto>();
 
             _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceCredentials(deviceDto))
                 .ReturnsAsync(expectedEnrollmentCredentials);
@@ -557,7 +557,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task GetDeviceTelemetry_AnyDeviceId_ReturnsEmptyArray()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -648,7 +648,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DeviceNotFoundOnAzure_DeviceDeletedInDatabase()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new DeviceDetailsDto
             {
                 DeviceID = Fixture.Create<string>()
             };

@@ -38,7 +38,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             this.amazonIotDataClient = amazonIotDataClient;
         }
 
-        public async Task<IEnumerable<DevicePropertyValue>> GetProperties(string deviceId)
+        public async Task<IEnumerable<DevicePropertyValueDto>> GetProperties(string deviceId)
         {
             var deviceDb = await deviceRepository.GetByIdAsync(deviceId);
             if (deviceDb == null)
@@ -69,7 +69,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
                 throw new InternalServerErrorException($"Unable to get templates properties for device with id {deviceId}: {e.Message}", e);
             }
 
-            var result = new List<DevicePropertyValue>();
+            var result = new List<DevicePropertyValueDto>();
             JObject desiredPropertiesAsJson;
             JObject reportedPropertiesAsJson;
 
@@ -96,7 +96,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
                 var value = item.IsWritable ? desiredPropertiesAsJson?.SelectToken(item.Name)?.Value<string>() :
                         reportedPropertiesAsJson?.SelectToken(item.Name)?.Value<string>();
 
-                result.Add(new DevicePropertyValue
+                result.Add(new DevicePropertyValueDto
                 {
                     DisplayName = item.DisplayName,
                     IsWritable = item.IsWritable,
@@ -109,7 +109,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             return result;
         }
 
-        public async Task SetProperties(string deviceId, IEnumerable<DevicePropertyValue> devicePropertyValues)
+        public async Task SetProperties(string deviceId, IEnumerable<DevicePropertyValueDto> devicePropertyValues)
         {
             var device = await deviceRepository.GetByIdAsync(deviceId);
             if (device == null)

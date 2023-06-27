@@ -40,7 +40,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
-                .ReturnsAsync(new DeviceCredentials());
+                .ReturnsAsync(new DeviceCredentialsDto());
 
             var cut = RenderComponent<MudDialogProvider>();
             var service = Services.GetService<IDialogService>() as DialogService;

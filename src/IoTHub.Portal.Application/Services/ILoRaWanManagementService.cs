@@ -12,6 +12,6 @@ namespace IoTHub.Portal.Application.Services
     {
         Task<HttpResponseMessage> CheckAzureFunctionReturn(CancellationToken cancellationToken);
         Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommandDto commandDto);
-        Task<RouterConfig?> GetRouterConfig(string loRaRegion);
+        Task<RouterConfigDto?> GetRouterConfig(string loRaRegion);
     }
 }

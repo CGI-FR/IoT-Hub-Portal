@@ -39,7 +39,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            var expectedDevice = new LoRaDeviceDetails
+            var expectedDevice = new LoRaDeviceDetailsDto
             {
                 DeviceID = deviceId
             };
@@ -60,13 +60,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateDeviceShouldCreateDevice()
         {
             // Arrange
-            var device = new LoRaDeviceDetails();
+            var device = new LoRaDeviceDetailsDto();
 
             _ = MockHttpClient.When(HttpMethod.Post, "/api/lorawan/devices")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceDetails>>();
-                    var body = m.Content as ObjectContent<LoRaDeviceDetails>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceDetailsDto>>();
+                    var body = m.Content as ObjectContent<LoRaDeviceDetailsDto>;
                     _ = body.Value.Should().BeEquivalentTo(device);
                     return true;
                 })
@@ -84,13 +84,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task UpdateDeviceShouldUpdateDevice()
         {
             // Arrange
-            var device = new LoRaDeviceDetails();
+            var device = new LoRaDeviceDetailsDto();
 
             _ = MockHttpClient.When(HttpMethod.Put, "/api/lorawan/devices")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceDetails>>();
-                    var body = m.Content as ObjectContent<LoRaDeviceDetails>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceDetailsDto>>();
+                    var body = m.Content as ObjectContent<LoRaDeviceDetailsDto>;
                     _ = body.Value.Should().BeEquivalentTo(device);
                     return true;
                 })
@@ -126,7 +126,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetGatewayIdListShouldReturnGatewayIdList()
         {
             // Arrange
-            var expectedLoRaGatewayIDList = Fixture.Create<LoRaGatewayIDList>();
+            var expectedLoRaGatewayIDList = Fixture.Create<LoRaGatewayIDListDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/devices/gateways")
                 .RespondJson(expectedLoRaGatewayIDList);

@@ -18,7 +18,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var standardValidator = new DeviceDetailsValidator();
-            var device = new DeviceDetails()
+            var device = new DeviceDetailsDto()
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString(),
@@ -39,7 +39,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var standardValidator = new DeviceDetailsValidator(CloudProviders.AWS);
-            var device = new DeviceDetails()
+            var device = new DeviceDetailsDto()
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString()
@@ -64,7 +64,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var standardValidator = new DeviceDetailsValidator(CloudProviders.Azure);
-            var device = new DeviceDetails()
+            var device = new DeviceDetailsDto()
             {
                 DeviceName = DeviceNameValue,
                 ModelId =ModelIdValue,
@@ -90,7 +90,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var standardValidator = new DeviceDetailsValidator(CloudProviders.AWS);
-            var device = new DeviceDetails()
+            var device = new DeviceDetailsDto()
             {
                 DeviceName = DeviceNameValue,
                 ModelId =ModelIdValue,
@@ -111,7 +111,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var standardValidator = new DeviceDetailsValidator(CloudProviders.Azure);
-            var device = new DeviceDetails();
+            var device = new DeviceDetailsDto();
 
             // Act
             var standardValidation = standardValidator.Validate(device);
@@ -126,7 +126,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var standardValidator = new DeviceDetailsValidator(CloudProviders.AWS);
-            var device = new DeviceDetails();
+            var device = new DeviceDetailsDto();
 
             // Act
             var standardValidation = standardValidator.Validate(device);

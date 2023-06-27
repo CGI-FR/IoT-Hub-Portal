@@ -33,14 +33,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task SubmitIdeaShouldSubmitIdea()
         {
             // Arrange
-            var ideaRequest = Fixture.Create<IdeaRequest>();
-            var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
+            var ideaRequest = Fixture.Create<IdeaRequestDto>();
+            var expectedIdeaResponse = Fixture.Create<IdeaResponseDto>();
 
             _ = MockHttpClient.When(HttpMethod.Post, "/api/ideas")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IdeaRequest>>();
-                    var body = (ObjectContent<IdeaRequest>) m.Content;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IdeaRequestDto>>();
+                    var body = (ObjectContent<IdeaRequestDto>) m.Content;
                     _ = body?.Value.Should().BeEquivalentTo(ideaRequest);
                     return true;
                 })

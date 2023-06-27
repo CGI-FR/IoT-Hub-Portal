@@ -14,10 +14,10 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     public class ConcentratorMetricLoaderJob : IJob
     {
         private readonly ILogger<ConcentratorMetricLoaderJob> logger;
-        private readonly PortalMetric portalMetric;
+        private readonly PortalMetricDto portalMetric;
         private readonly IConcentratorRepository concentratorRepository;
 
-        public ConcentratorMetricLoaderJob(ILogger<ConcentratorMetricLoaderJob> logger, PortalMetric portalMetric, IConcentratorRepository concentratorRepository)
+        public ConcentratorMetricLoaderJob(ILogger<ConcentratorMetricLoaderJob> logger, PortalMetricDto portalMetric, IConcentratorRepository concentratorRepository)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;

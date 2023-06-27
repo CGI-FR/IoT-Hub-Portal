@@ -44,7 +44,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="orderBy"></param>
         /// <param name="modelId"></param>
         /// <param name="labels"></param>
-        protected async Task<PaginationResult<DeviceListItem>> GetItems(
+        protected async Task<PaginationResult<DeviceListItemDto>> GetItems(
             string routeName = null,
             string searchText = null,
             bool? searchStatus = null,
@@ -86,7 +86,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 });
             }
 
-            return new PaginationResult<DeviceListItem>
+            return new PaginationResult<DeviceListItemDto>
             {
                 Items = paginatedDevices.Data,
                 TotalItems = paginatedDevices.TotalCount,
@@ -170,7 +170,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Returns the device enrollment credentials.
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
-        public virtual async Task<ActionResult<DeviceCredentials>> GetCredentials(string deviceID)
+        public virtual async Task<ActionResult<DeviceCredentialsDto>> GetCredentials(string deviceID)
         {
             var device = await this.deviceService.GetDevice(deviceID);
 

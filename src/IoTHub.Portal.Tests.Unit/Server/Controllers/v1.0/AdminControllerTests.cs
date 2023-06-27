@@ -105,7 +105,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         public async Task ImportDeviceListShouldReturnErrorReport()
         {
             // Arrange
-            var expectedResult = Array.Empty<ImportResultLine>();
+            var expectedResult = Array.Empty<ImportResultLineDto>();
             using var stream = new MemoryStream();
             var file = new FormFile(stream,1,1,"a","a");
 

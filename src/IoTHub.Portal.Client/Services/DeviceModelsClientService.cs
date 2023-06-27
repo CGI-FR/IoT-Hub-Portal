@@ -21,16 +21,16 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public async Task<PaginationResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter? deviceModelFilter = null)
+        public async Task<PaginationResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilterDto? deviceModelFilter = null)
         {
             var query = new Dictionary<string, string>
             {
-                { nameof(DeviceModelFilter.SearchText), deviceModelFilter?.SearchText ?? string.Empty },
+                { nameof(DeviceModelFilterDto.SearchText), deviceModelFilter?.SearchText ?? string.Empty },
 #pragma warning disable CA1305
-                { nameof(DeviceModelFilter.PageNumber), deviceModelFilter?.PageNumber.ToString() ?? string.Empty },
-                { nameof(DeviceModelFilter.PageSize), deviceModelFilter?.PageSize.ToString() ?? string.Empty },
+                { nameof(DeviceModelFilterDto.PageNumber), deviceModelFilter?.PageNumber.ToString() ?? string.Empty },
+                { nameof(DeviceModelFilterDto.PageSize), deviceModelFilter?.PageSize.ToString() ?? string.Empty },
 #pragma warning restore CA1305
-                { nameof(DeviceModelFilter.OrderBy), string.Join("", deviceModelFilter?.OrderBy!) ?? string.Empty }
+                { nameof(DeviceModelFilterDto.OrderBy), string.Join("", deviceModelFilter?.OrderBy!) ?? string.Empty }
             };
 
             var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
@@ -60,12 +60,12 @@ namespace IoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"api/models/{deviceModelId}");
         }
 
-        public async Task<IList<DeviceProperty>> GetDeviceModelModelProperties(string deviceModelId)
+        public async Task<IList<DevicePropertyDto>> GetDeviceModelModelProperties(string deviceModelId)
         {
-            return await this.http.GetFromJsonAsync<List<DeviceProperty>>($"api/models/{deviceModelId}/properties") ?? new List<DeviceProperty>();
+            return await this.http.GetFromJsonAsync<List<DevicePropertyDto>>($"api/models/{deviceModelId}/properties") ?? new List<DevicePropertyDto>();
         }
 
-        public Task SetDeviceModelModelProperties(string deviceModelId, IList<DeviceProperty> deviceProperties)
+        public Task SetDeviceModelModelProperties(string deviceModelId, IList<DevicePropertyDto> deviceProperties)
         {
             return this.http.PostAsJsonAsync($"api/models/{deviceModelId}/properties", deviceProperties);
         }

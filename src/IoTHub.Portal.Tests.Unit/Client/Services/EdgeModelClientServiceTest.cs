@@ -37,7 +37,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var modelId = Fixture.Create<string>();
 
-            var expectedModel = new IoTEdgeModel
+            var expectedModel = new IoTEdgeModelDto
             {
                 ModelId = modelId
             };
@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         [Test]
         public async Task GetIoTEdgeModelListShouldReturnList()
         {
-            var expectedModels = Fixture.Build<IoTEdgeModelListItem>().CreateMany(3).ToList();
+            var expectedModels = Fixture.Build<IoTEdgeModelListItemDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, "/api/edge/models")
                 .RespondJson(expectedModels);
@@ -75,14 +75,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateIoTEdgeModelShouldCreateEdgeModel()
         {
             // Arrange
-            var expectedEdgeModel = Fixture.Create<IoTEdgeModel>();
+            var expectedEdgeModel = Fixture.Create<IoTEdgeModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Post, "api/edge/models")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeModel>>();
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeModelDto>>();
 
-                    if (m.Content is ObjectContent<IoTEdgeModel> body)
+                    if (m.Content is ObjectContent<IoTEdgeModelDto> body)
                     {
                         _ = body.Value.Should().BeEquivalentTo(expectedEdgeModel);
                     }
@@ -103,14 +103,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task UpdateIoTEdgeModelShouldUpdateEdgeModel()
         {
             // Arrange
-            var expectedEdgeModel = Fixture.Create<IoTEdgeModel>();
+            var expectedEdgeModel = Fixture.Create<IoTEdgeModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Put, $"api/edge/models/{expectedEdgeModel.ModelId}")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeModel>>();
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeModelDto>>();
 
-                    if (m.Content is ObjectContent<IoTEdgeModel> body)
+                    if (m.Content is ObjectContent<IoTEdgeModelDto> body)
                     {
                         _ = body.Value.Should().BeEquivalentTo(expectedEdgeModel);
                     }
@@ -147,7 +147,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetAvatarUrlShouldReturnAvatarUrl()
         {
             // Arrange
-            var edgeModel = Fixture.Create<IoTEdgeModel>();
+            var edgeModel = Fixture.Create<IoTEdgeModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/models/{edgeModel.ModelId}/avatar")
                 .RespondJson(edgeModel.ImageUrl.ToString());
@@ -165,7 +165,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task ChangeAvatarPropertiesShouldChangeAvatar()
         {
             // Arrange
-            var deviceModel = Fixture.Create<IoTEdgeModel>();
+            var deviceModel = Fixture.Create<IoTEdgeModelDto>();
             using var content = new MultipartFormDataContent();
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/models/{deviceModel.ModelId}/avatar")
@@ -188,7 +188,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task DeleteAvatarPropertiesShouldChangeAvatar()
         {
             // Arrange
-            var deviceModel = Fixture.Create<IoTEdgeModel>();
+            var deviceModel = Fixture.Create<IoTEdgeModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/models/{deviceModel.ModelId}/avatar")
                 .Respond(HttpStatusCode.NoContent);
@@ -205,7 +205,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetPublicEdgeModules_GetPublicEdgeModules_EdgeModulesReturned()
         {
             // Arrange
-            var expectedModels = Fixture.Build<IoTEdgeModule>().CreateMany(3).ToList();
+            var expectedModels = Fixture.Build<IoTEdgeModuleDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, "/api/edge/models/public-modules")
                 .RespondJson(expectedModels);

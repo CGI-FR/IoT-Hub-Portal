@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Application.Mappers
         {
             _ = CreateMap<EdgeDevice, EdgeDevice>();
 
-            _ = CreateMap<EdgeDevice, IoTEdgeDevice>()
+            _ = CreateMap<EdgeDevice, IoTEdgeDeviceDto>()
                 .ForMember(dest => dest.DeviceId, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ConnectionState, opts => opts.MapFrom(src => src.ConnectionState))
@@ -25,7 +25,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.NbModules, opts => opts.MapFrom(src => src.NbModules))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Name, tag => tag.Value)));
 
-            _ = CreateMap<IoTEdgeDevice, EdgeDevice>()
+            _ = CreateMap<IoTEdgeDeviceDto, EdgeDevice>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
@@ -40,7 +40,7 @@ namespace IoTHub.Portal.Application.Mappers
                     Value = pair.Value
                 })));
 
-            _ = CreateMap<EdgeDevice, IoTEdgeListItem>()
+            _ = CreateMap<EdgeDevice, IoTEdgeListItemDto>()
                 .ForMember(dest => dest.DeviceId, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.NbDevices, opts => opts.MapFrom(src => src.NbDevices))

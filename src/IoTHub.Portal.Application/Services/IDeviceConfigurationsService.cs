@@ -10,15 +10,15 @@ namespace IoTHub.Portal.Application.Services
 
     public interface IDeviceConfigurationsService
     {
-        Task<IEnumerable<ConfigListItem>> GetDeviceConfigurationListAsync();
+        Task<IEnumerable<ConfigListItemDto>> GetDeviceConfigurationListAsync();
 
-        Task<DeviceConfig> GetDeviceConfigurationAsync(string configurationId);
+        Task<DeviceConfigDto> GetDeviceConfigurationAsync(string configurationId);
 
-        Task<ConfigurationMetrics> GetConfigurationMetricsAsync(string configurationId);
+        Task<ConfigurationMetricsDto> GetConfigurationMetricsAsync(string configurationId);
 
-        Task CreateConfigurationAsync(DeviceConfig deviceConfig);
+        Task CreateConfigurationAsync(DeviceConfigDto deviceConfig);
 
-        Task UpdateConfigurationAsync(DeviceConfig deviceConfig);
+        Task UpdateConfigurationAsync(DeviceConfigDto deviceConfig);
 
         Task DeleteConfigurationAsync(string configurationId);
     }

@@ -55,8 +55,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                             }
                         });
 
-            _ = this.mockMapper.Setup(c => c.Map<DeviceProperty>(It.Is<DeviceModelProperty>(x => x.ModelId == modelId)))
-                .Returns((DeviceModelProperty x) => new DeviceProperty
+            _ = this.mockMapper.Setup(c => c.Map<DevicePropertyDto>(It.Is<DeviceModelProperty>(x => x.ModelId == modelId)))
+                .Returns((DeviceModelProperty x) => new DevicePropertyDto
                 {
                     Name = x.Name,
                 });
@@ -69,8 +69,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var okObjectResult = response.Result as ObjectResult;
 
             Assert.NotNull(okObjectResult);
-            Assert.IsAssignableFrom<List<DeviceProperty>>(okObjectResult.Value);
-            var result = (List<DeviceProperty>)okObjectResult.Value;
+            Assert.IsAssignableFrom<List<DevicePropertyDto>>(okObjectResult.Value);
+            var result = (List<DevicePropertyDto>)okObjectResult.Value;
 
             Assert.NotNull(result);
             Assert.AreEqual(1, result.Count);
@@ -104,7 +104,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             var properties = new[]
             {
-                new DeviceProperty
+                new DevicePropertyDto
                 {
                     DisplayName =Guid.NewGuid().ToString(),
                     Name = Guid.NewGuid().ToString()
@@ -115,9 +115,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 .Returns(Task.CompletedTask);
 
             _ = this.mockMapper.Setup(c => c.Map(
-                It.IsAny<DeviceProperty>(),
+                It.IsAny<DevicePropertyDto>(),
                 It.IsAny<Action<IMappingOperationOptions<object, DeviceModelProperty>>>()))
-                .Returns((DeviceProperty x, Action<IMappingOperationOptions<object, DeviceModelProperty>> _) => new DeviceModelProperty
+                .Returns((DevicePropertyDto x, Action<IMappingOperationOptions<object, DeviceModelProperty>> _) => new DeviceModelProperty
                 {
                     Name = x.Name,
                     ModelId = modelId
@@ -139,7 +139,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             var properties = new[]
             {
-                new DeviceProperty()
+                new DevicePropertyDto()
             };
 
             deviceModelPropertiesController.ModelState.AddModelError("Key", "Device model is invalid");
@@ -162,7 +162,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 .Throws(new ResourceNotFoundException("Not Found"));
 
             // Act
-            var result = await deviceModelPropertiesController.SetProperties(Guid.NewGuid().ToString(), Array.Empty<DeviceProperty>());
+            var result = await deviceModelPropertiesController.SetProperties(Guid.NewGuid().ToString(), Array.Empty<DevicePropertyDto>());
 
             // Assert
             Assert.IsAssignableFrom<NotFoundObjectResult>(result);

@@ -18,7 +18,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public void PortalFooterShouldRenderCopyrightYearAndVersion()
         {
             // Arrange
-            var portalSettings = new PortalSettings
+            var portalSettings = new PortalSettingsDto
             {
                 CopyrightYear = "9999",
                 Version = "1.2.3"

@@ -57,10 +57,10 @@
     
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
     [Parameter] public string deviceId { get; set; } = default!;
-    [Parameter] public IoTEdgeModule edgeModule { get; set; } = default!;
+    [Parameter] public IoTEdgeModuleDto edgeModule { get; set; } = default!;
     
     private int[] pageSizeOptions = new int[] { 3, 5 , 10};
-    private List<IoTEdgeDeviceLog> logs = new();
+    private List<IoTEdgeDeviceLogDto> logs = new();
 
     void Cancel() => MudDialog.Cancel();
 

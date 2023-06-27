@@ -11,11 +11,11 @@ namespace IoTHub.Portal.Application.Mappers
     {
         public EdgeDeviceModelProfile()
         {
-            _ = CreateMap<IoTEdgeModel, EdgeDeviceModel>()
+            _ = CreateMap<IoTEdgeModelDto, EdgeDeviceModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ModelId))
                 .ReverseMap();
 
-            _ = CreateMap<IoTEdgeModelListItem, EdgeDeviceModel>()
+            _ = CreateMap<IoTEdgeModelListItemDto, EdgeDeviceModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ModelId))
                 .ReverseMap();
         }

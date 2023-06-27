@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
     {
         private MockRepository mockRepository;
         private EdgeDeviceMetricLoaderJob edgeDeviceMetricLoaderService;
-        private PortalMetric portalMetric;
+        private PortalMetricDto portalMetric;
 
         private Mock<ILogger<EdgeDeviceMetricLoaderJob>> mockLogger;
         private Mock<IEdgeDeviceRepository> mockEdgeDeviceRepository;
@@ -35,7 +35,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             this.mockEdgeDeviceRepository = this.mockRepository.Create<IEdgeDeviceRepository>();
             this.mockConfigService = this.mockRepository.Create<IConfigService>();
 
-            this.portalMetric = new PortalMetric();
+            this.portalMetric = new PortalMetricDto();
 
             this.edgeDeviceMetricLoaderService =
                 new EdgeDeviceMetricLoaderJob(this.mockLogger.Object, this.portalMetric, this.mockEdgeDeviceRepository.Object, this.mockConfigService.Object);

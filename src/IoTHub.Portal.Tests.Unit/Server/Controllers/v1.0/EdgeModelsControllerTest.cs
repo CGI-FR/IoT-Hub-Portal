@@ -42,14 +42,14 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var edgeModelController = CreateController();
 
             _ = this.mockEdgeModelService
-                .Setup(x => x.GetEdgeModels(It.IsAny<EdgeModelFilter>()))
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                .Setup(x => x.GetEdgeModels(It.IsAny<EdgeModelFilterDto>()))
+                .ReturnsAsync(new List<IoTEdgeModelListItemDto>()
                 {
-                    new IoTEdgeModelListItem()
+                    new IoTEdgeModelListItemDto()
                 });
 
             // Act
-            var response = await edgeModelController.GetEdgeModelList(new EdgeModelFilter());
+            var response = await edgeModelController.GetEdgeModelList(new EdgeModelFilterDto());
 
             // Assert
             Assert.IsNotNull(response);
@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 Assert.AreEqual(200, okResponse.StatusCode);
 
                 Assert.IsNotNull(okResponse.Value);
-                if (okResponse.Value is List<IoTEdgeModelListItem> result)
+                if (okResponse.Value is List<IoTEdgeModelListItemDto> result)
                 {
                     Assert.AreEqual(1, result.Count);
                 }
@@ -79,7 +79,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var edgeModelController = CreateController();
 
-            var expectedEdgeModel = new IoTEdgeModel()
+            var expectedEdgeModel = new IoTEdgeModelDto()
             {
                 ModelId = Guid.NewGuid().ToString()
             };
@@ -98,7 +98,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             if (response.Result is OkObjectResult okObjectResult)
             {
                 Assert.IsNotNull(okObjectResult.Value);
-                Assert.IsAssignableFrom<IoTEdgeModel>(okObjectResult.Value);
+                Assert.IsAssignableFrom<IoTEdgeModelDto>(okObjectResult.Value);
             }
             else
             {
@@ -114,13 +114,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var edgeModelController = CreateController();
 
-            var expectedEdgeModel = new IoTEdgeModel
+            var expectedEdgeModel = new IoTEdgeModelDto
             {
                 ModelId = Guid.NewGuid().ToString()
             };
 
             _ = this.mockEdgeModelService
-                .Setup(x => x.CreateEdgeModel(It.IsAny<IoTEdgeModel>()))
+                .Setup(x => x.CreateEdgeModel(It.IsAny<IoTEdgeModelDto>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -138,13 +138,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var edgeModelController = CreateController();
 
-            var expectedEdgeModel = new IoTEdgeModel
+            var expectedEdgeModel = new IoTEdgeModelDto
             {
                 ModelId = Guid.NewGuid().ToString()
             };
 
             _ = this.mockEdgeModelService
-                .Setup(x => x.UpdateEdgeModel(It.IsAny<IoTEdgeModel>()))
+                .Setup(x => x.UpdateEdgeModel(It.IsAny<IoTEdgeModelDto>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -261,9 +261,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var edgeModelController = CreateController();
-            var publicEdgeModules = new List<IoTEdgeModule>
+            var publicEdgeModules = new List<IoTEdgeModuleDto>
             {
-                new IoTEdgeModule{
+                new IoTEdgeModuleDto{
                     Id = Guid.NewGuid().ToString()
                 }
             };
@@ -284,7 +284,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 Assert.AreEqual(200, okResponse.StatusCode);
 
                 Assert.IsNotNull(okResponse.Value);
-                if (okResponse.Value is List<IoTEdgeModule> result)
+                if (okResponse.Value is List<IoTEdgeModuleDto> result)
                 {
                     Assert.AreEqual(1, result.Count);
                 }

@@ -17,9 +17,9 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public Task<PortalMetric> GetPortalMetrics()
+        public Task<PortalMetricDto> GetPortalMetrics()
         {
-            return this.http.GetFromJsonAsync<PortalMetric>("api/dashboard/metrics")!;
+            return this.http.GetFromJsonAsync<PortalMetricDto>("api/dashboard/metrics")!;
         }
     }
 }

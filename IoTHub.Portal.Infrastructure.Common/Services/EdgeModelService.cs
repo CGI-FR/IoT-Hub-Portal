@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
         /// Return the edge model template list.
         /// </summary>
         /// <returns>IEnumerable IoTEdgeModelListItem.</returns>
-        public async Task<IEnumerable<IoTEdgeModelListItem>> GetEdgeModels(EdgeModelFilter edgeModelFilter)
+        public async Task<IEnumerable<IoTEdgeModelListItemDto>> GetEdgeModels(EdgeModelFilterDto edgeModelFilter)
         {
             var edgeDeviceModelPredicate = PredicateBuilder.True<EdgeDeviceModel>();
 
@@ -86,7 +86,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             return edgeModels
                 .Select(model =>
                 {
-                    var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);
+                    var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItemDto>(model);
                     edgeDeviceModelListItem.ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeDeviceModelListItem.ModelId);
                     return edgeDeviceModelListItem;
                 })
@@ -101,7 +101,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
         /// <returns>nothing.</returns>
         /// <exception cref="ResourceAlreadyExistsException">If edge model template already exist return ResourceAlreadyExistsException.</exception>
         /// <exception cref="InternalServerErrorException"></exception>
-        public async Task CreateEdgeModel(IoTEdgeModel edgeModel)
+        public async Task CreateEdgeModel(IoTEdgeModelDto edgeModel)
         {
             var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
 
@@ -134,10 +134,10 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
         /// <param name="deviceModelObject">The device model object.</param>
         /// <returns></returns>
         /// <exception cref="InternalServerErrorException"></exception>
-        private async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
+        private async Task SaveModuleCommands(IoTEdgeModelDto deviceModelObject)
         {
-            IEnumerable<IoTEdgeModuleCommand> moduleCommands = deviceModelObject.EdgeModules
-                .SelectMany(x => x.Commands.Select(cmd => new IoTEdgeModuleCommand
+            IEnumerable<IoTEdgeModuleCommandDto> moduleCommands = deviceModelObject.EdgeModules
+                .SelectMany(x => x.Commands.Select(cmd => new IoTEdgeModuleCommandDto
                 {
                     EdgeDeviceModelId = deviceModelObject.ModelId,
                     CommandId = Guid.NewGuid().ToString(),
@@ -164,7 +164,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
         /// <param name="modelId">The model identifier.</param>
         /// <returns>An edge model object.</returns>
         /// <exception cref="ResourceNotFoundException">Resource not found if template does not exist.</exception>
-        public async Task<IoTEdgeModel> GetEdgeModel(string modelId)
+        public async Task<IoTEdgeModelDto> GetEdgeModel(string modelId)
         {
             var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(modelId, m => m.Labels);
 
@@ -182,7 +182,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             }
         }
 
-        private async Task<IoTEdgeModel> GetAzureEdgeModel(EdgeDeviceModel edgeModelEntity)
+        private async Task<IoTEdgeModelDto> GetAzureEdgeModel(EdgeDeviceModel edgeModelEntity)
         {
             var modules = await this.configService.GetConfigModuleList(edgeModelEntity.Id);
             var sysModules = await this.configService.GetModelSystemModule(edgeModelEntity.Id);
@@ -191,7 +191,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
 
             //TODO : User a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
-            var result = new IoTEdgeModel
+            var result = new IoTEdgeModelDto
             {
                 ModelId = edgeModelEntity.Id,
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
@@ -211,18 +211,18 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
                     continue;
                 }
 
-                module.Commands.Add(this.mapper.Map<IoTEdgeModuleCommand>(command));
+                module.Commands.Add(this.mapper.Map<IoTEdgeModuleCommandDto>(command));
             }
 
             return result;
         }
 
-        private async Task<IoTEdgeModel> GetAwsEdgeModel(EdgeDeviceModel edgeModelEntity)
+        private async Task<IoTEdgeModelDto> GetAwsEdgeModel(EdgeDeviceModel edgeModelEntity)
         {
             var modules = await this.configService.GetConfigModuleList(edgeModelEntity.ExternalIdentifier!);
             //TODO : User a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
-            var result = new IoTEdgeModel
+            var result = new IoTEdgeModelDto
             {
                 ModelId = edgeModelEntity.Id,
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
@@ -242,7 +242,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
         /// <param name="edgeModel">The edge model.</param>
         /// <returns>nothing.</returns>
         /// <exception cref="InternalServerErrorException"></exception>
-        public async Task UpdateEdgeModel(IoTEdgeModel edgeModel)
+        public async Task UpdateEdgeModel(IoTEdgeModelDto edgeModel)
         {
             var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId, m => m.Labels);
             if (edgeModelEntity == null)
@@ -347,7 +347,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             return Task.Run(() => this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModelId));
         }
 
-        public Task<IEnumerable<IoTEdgeModule>> GetPublicEdgeModules()
+        public Task<IEnumerable<IoTEdgeModuleDto>> GetPublicEdgeModules()
         {
             return this.configService.GetPublicEdgeModules();
         }

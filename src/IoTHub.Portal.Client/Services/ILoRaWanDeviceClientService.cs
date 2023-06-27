@@ -11,17 +11,17 @@ namespace IoTHub.Portal.Client.Services
 
     public interface ILoRaWanDeviceClientService
     {
-        Task<LoRaDeviceDetails> GetDevice(string deviceId);
+        Task<LoRaDeviceDetailsDto> GetDevice(string deviceId);
 
-        Task CreateDevice(LoRaDeviceDetails device);
+        Task CreateDevice(LoRaDeviceDetailsDto device);
 
-        Task UpdateDevice(LoRaDeviceDetails device);
+        Task UpdateDevice(LoRaDeviceDetailsDto device);
 
         Task DeleteDevice(string deviceId);
 
         Task ExecuteCommand(string deviceId, string commandId);
 
-        Task<LoRaGatewayIDList> GetGatewayIdList();
+        Task<LoRaGatewayIDListDto> GetGatewayIdList();
 
         Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
     }

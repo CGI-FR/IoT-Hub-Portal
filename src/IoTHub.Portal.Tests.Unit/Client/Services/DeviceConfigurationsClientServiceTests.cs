@@ -36,7 +36,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceConfigurationsShouldReturnDeviceConfigurations()
         {
             // Arrange
-            var expectedConfigurations = Fixture.Build<ConfigListItem>().CreateMany(3).ToList();
+            var expectedConfigurations = Fixture.Build<ConfigListItemDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, "/api/device-configurations")
                 .RespondJson(expectedConfigurations);
@@ -54,7 +54,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceConfigurationShouldReturnDeviceConfiguration()
         {
             // Arrange
-            var expectedConfiguration = Fixture.Create<DeviceConfig>();
+            var expectedConfiguration = Fixture.Create<DeviceConfigDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/device-configurations/{expectedConfiguration.ConfigurationId}")
                 .RespondJson(expectedConfiguration);
@@ -72,8 +72,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceConfigurationMetricsShouldReturnDeviceConfigurationMetrics()
         {
             // Arrange
-            var configuration = Fixture.Create<DeviceConfig>();
-            var expectedConfigurationMetrics = Fixture.Create<ConfigurationMetrics>();
+            var configuration = Fixture.Create<DeviceConfigDto>();
+            var expectedConfigurationMetrics = Fixture.Create<ConfigurationMetricsDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/device-configurations/{configuration.ConfigurationId}/metrics")
                 .RespondJson(expectedConfigurationMetrics);
@@ -91,13 +91,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateDeviceConfigurationShouldCreateDeviceConfiguration()
         {
             // Arrange
-            var configuration = Fixture.Create<DeviceConfig>();
+            var configuration = Fixture.Create<DeviceConfigDto>();
 
             _ = MockHttpClient.When(HttpMethod.Post,
                     "/api/device-configurations")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceConfig>>();
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceConfigDto>>();
                     return true;
                 })
                 .Respond(HttpStatusCode.Created);
@@ -114,12 +114,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task UpdateDeviceConfigurationShouldUpdateDeviceConfiguration()
         {
             // Arrange
-            var configuration = Fixture.Create<DeviceConfig>();
+            var configuration = Fixture.Create<DeviceConfigDto>();
 
             _ = MockHttpClient.When(HttpMethod.Put, $"/api/device-configurations/{configuration.ConfigurationId}")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceConfig>>();
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceConfigDto>>();
                     return true;
                 })
                 .Respond(HttpStatusCode.Created);

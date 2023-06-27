@@ -14,13 +14,13 @@ namespace IoTHub.Portal.Infrastructure.Azure.Jobs
     public class SyncGatewayIDJob : IJob
     {
         private readonly IExternalDeviceService externalDeviceService;
-        private readonly LoRaGatewayIDList gatewayIdList;
+        private readonly LoRaGatewayIDListDto gatewayIdList;
 
         private readonly ILogger<SyncGatewayIDJob> logger;
 
         public SyncGatewayIDJob(
             IExternalDeviceService externalDeviceService,
-            LoRaGatewayIDList gatewayIdList,
+            LoRaGatewayIDListDto gatewayIdList,
             ILogger<SyncGatewayIDJob> logger)
         {
             this.externalDeviceService = externalDeviceService;

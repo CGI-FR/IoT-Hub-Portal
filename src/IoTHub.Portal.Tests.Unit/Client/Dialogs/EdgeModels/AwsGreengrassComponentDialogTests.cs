@@ -28,7 +28,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
         public async Task AwsGreengrassComponentDialog_ClickOnCancel_DialogCanceled()
         {
             // Arrange
-            var edgeModules = Array.Empty<IoTEdgeModule>().ToList();
+            var edgeModules = Array.Empty<IoTEdgeModuleDto>().ToList();
 
             var cut = RenderComponent<MudDialogProvider>();
             var service = Services.GetService<IDialogService>() as DialogService;
@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
         public async Task AwsGreengrassComponentDialog_CreateAWSComponentAndSubmit_EdgeModuleAdded()
         {
             // Arrange
-            var edgeModules = Array.Empty<IoTEdgeModule>().ToList();
+            var edgeModules = Array.Empty<IoTEdgeModuleDto>().ToList();
 
             var inputJsonRecipe = /*lang=json*/ @"
 {
@@ -104,7 +104,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
   ""ComponentVersion"": ""1.0.0""
 }
 ";
-            var edgeModule = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModuleDto
             {
                 ModuleName = "com.example.DDboxAdvantech",
                 Version = "1.0.0",

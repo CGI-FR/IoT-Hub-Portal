@@ -13,7 +13,7 @@
 @inject IDialogService DialogService
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
-@inject PortalSettings Portal
+@inject PortalSettingsDto Portal
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
@@ -77,7 +77,7 @@
                                         <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
                                         <ChildContent>
                                             <MudItem xs="12">
-                                                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DevicePropertyDto() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
                                             </MudItem>
                                             <MudItem xs="12">
                                                 @foreach (var item in this.Properties.OrderBy(x => x.Order))
@@ -179,7 +179,7 @@
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
 
     private List<DeviceModelCommandDto> Commands { get; set; } = new List<DeviceModelCommandDto>();
-    private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
+    private List<DevicePropertyDto> Properties { get; set; } = new List<DevicePropertyDto>();
 
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
 

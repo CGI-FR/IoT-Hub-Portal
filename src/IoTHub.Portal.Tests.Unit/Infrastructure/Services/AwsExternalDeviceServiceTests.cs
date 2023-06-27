@@ -420,7 +420,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task GetEdgeDeviceLogsShouldThrowNotImplementedException()
         {
             // Act
-            var act = () => this.externalDeviceService.GetEdgeDeviceLogs(It.IsAny<string>(), Fixture.Create<IoTEdgeModule>());
+            var act = () => this.externalDeviceService.GetEdgeDeviceLogs(It.IsAny<string>(), Fixture.Create<IoTEdgeModuleDto>());
 
             // Assert
             _ = await act.Should().ThrowAsync<NotImplementedException>();
@@ -460,7 +460,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task RetrieveLastConfigurationShouldThrowNotImplementedException()
         {
             // Act
-            var act = () => this.externalDeviceService.RetrieveLastConfiguration(Fixture.Create<IoTEdgeDevice>());
+            var act = () => this.externalDeviceService.RetrieveLastConfiguration(Fixture.Create<IoTEdgeDeviceDto>());
 
             // Assert
             _ = act.Should().NotBeNull();
@@ -503,7 +503,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task GetEdgeDeviceCredentialsShouldReturnExisitingDeviceCredentials()
         {
             // Arrange
-            var device = Fixture.Create<IoTEdgeDevice>();
+            var device = Fixture.Create<IoTEdgeDeviceDto>();
 
             _ = this.mockSecretsManager.Setup(c => c.GetSecretValueAsync(It.IsAny<GetSecretValueRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetSecretValueResponse());
@@ -520,7 +520,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task GetEdgeDeviceCredentialsShouldCreateAndReturnDeviceCredentials()
         {
             // Arrange
-            var device = Fixture.Create<IoTEdgeDevice>();
+            var device = Fixture.Create<IoTEdgeDeviceDto>();
 
             _ = this.mockSecretsManager.Setup(c => c.GetSecretValueAsync(It.IsAny<GetSecretValueRequest>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Amazon.SecretsManager.Model.ResourceNotFoundException("Resource Not found"));
@@ -550,7 +550,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task GetDeviceCredentialsShouldReturnExisitingDeviceCredentials()
         {
             // Arrange
-            var device = Fixture.Create<DeviceDetails>();
+            var device = Fixture.Create<DeviceDetailsDto>();
 
             _ = this.mockSecretsManager.Setup(c => c.GetSecretValueAsync(It.IsAny<GetSecretValueRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetSecretValueResponse());
@@ -567,7 +567,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task GetDeviceCredentialsShouldCreateAndReturnDeviceCredentials()
         {
             // Arrange
-            var device = Fixture.Create<DeviceDetails>();
+            var device = Fixture.Create<DeviceDetailsDto>();
 
             _ = this.mockSecretsManager.Setup(c => c.GetSecretValueAsync(It.IsAny<GetSecretValueRequest>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Amazon.SecretsManager.Model.ResourceNotFoundException("Resource Not found"));
@@ -596,7 +596,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task RetriveEdgeDeviceLastDeploymentShouldRetuenLastDeployment()
         {
             //Arrange
-            var device = Fixture.Create<IoTEdgeDevice>();
+            var device = Fixture.Create<IoTEdgeDeviceDto>();
 
             _ = this.mockGreengrassV2.Setup(c => c.GetCoreDeviceAsync(It.IsAny<GetCoreDeviceRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetCoreDeviceResponse());
@@ -612,7 +612,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task RemoveDeviceCredentialsShouldRemoveDeviceCredentials()
         {
             // Arrange
-            var device = Fixture.Create<IoTEdgeDevice>();
+            var device = Fixture.Create<IoTEdgeDeviceDto>();
 
             _ = this.mockAmazonIot.Setup(c => c.ListThingPrincipalsAsync(It.IsAny<ListThingPrincipalsRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ListThingPrincipalsResponse
