@@ -149,9 +149,9 @@
                             <MudButton id="exportTemplateButton" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportTemplateFile">Download template file</MudButton>
                         </MudItem>
                         <MudItem>
-                            <MudFileUpload id="importDevicesButton" T="IBrowserFile" FilesChanged="ImportDeviceList">
+                            <MudFileUpload T="IBrowserFile" FilesChanged="ImportDeviceList">
                                 <ButtonTemplate>
-                                    <MudButton Variant="Variant.Text"
+                                    <MudButton id="importDevicesButton" Variant="Variant.Text"
                                                HtmlTag="label"
                                                Color="Color.Primary"
                                                StartIcon="@Icons.Material.Outlined.Upload"
