@@ -33,7 +33,6 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
         private readonly IExternalDeviceService externalDevicesService;
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelImageManager deviceModelImageManager;
-        private readonly IDeviceTwinMapper<DeviceListItem, TDto> deviceTwinMapper;
         private readonly ILogger<DeviceServiceBase<TDto>> logger;
 
         protected DeviceServiceBase(PortalDbContext portalDbContext,
@@ -41,7 +40,6 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             IDeviceModelImageManager deviceModelImageManager,
-            IDeviceTwinMapper<DeviceListItem, TDto> deviceTwinMapper,
             ILogger<DeviceServiceBase<TDto>> logger)
         {
             this.portalDbContext = portalDbContext;
@@ -49,7 +47,6 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             this.externalDevicesService = externalDevicesService;
             this.deviceTagService = deviceTagService;
             this.deviceModelImageManager = deviceModelImageManager;
-            this.deviceTwinMapper = deviceTwinMapper;
             this.logger = logger;
         }
 
@@ -152,10 +149,9 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
         {
             var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(device.DeviceID);
 
-            this.deviceTwinMapper.UpdateTwin(newTwin, device);
-            var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+            this.mapper.Map(device, newTwin);
 
-            _ = await this.externalDevicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
+            _ = await this.externalDevicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, newTwin.Status ?? DeviceStatus.Enabled);
 
             return await CreateDeviceInDatabase(device);
         }
@@ -174,7 +170,7 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             var currentTwin = await this.externalDevicesService.GetDeviceTwin(device.DeviceID);
 
             // Update the twin properties
-            this.deviceTwinMapper.UpdateTwin(currentTwin, device);
+            device = this.mapper.Map(currentTwin, device);
 
             _ = await this.externalDevicesService.UpdateDeviceTwin(currentTwin);
 

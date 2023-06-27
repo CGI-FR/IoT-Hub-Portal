@@ -7,10 +7,10 @@ namespace IoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using Azure;
-    using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
+    using IoTHub.Portal.Infrastructure.Azure.Helpers;
     using Models.v10;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;

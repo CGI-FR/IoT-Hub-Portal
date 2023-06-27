@@ -19,6 +19,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Startup
     using IoTHub.Portal.Models.v10;
     using Microsoft.Extensions.DependencyInjection;
     using Quartz;
+    using System.Reflection;
     using DeviceService = Services.DeviceService;
 
     public static class ServiceCollectionExtension
@@ -29,6 +30,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Startup
                 .ConfigureAWSClient(configuration).Result
                 .ConfigureAWSServices()
                 .ConfigureAWSDeviceModelImages()
+                .ConfigureMappers()
                 .ConfigureSyncJobs(configuration);
         }
         private static async Task<IServiceCollection> ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
@@ -64,6 +66,11 @@ namespace IoTHub.Portal.Infrastructure.AWS.Startup
                 .AddTransient<IConfigService, ConfigService>()
                 .AddTransient<IEdgeModelService, EdgeModelService>()
                 .AddTransient<IEdgeDevicesService, EdgeDevicesService>();
+        }
+
+        private static IServiceCollection ConfigureMappers(this IServiceCollection services)
+        {
+            return services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
         private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)

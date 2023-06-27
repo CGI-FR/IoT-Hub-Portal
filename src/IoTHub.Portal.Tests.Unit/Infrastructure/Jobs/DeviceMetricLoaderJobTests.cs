@@ -4,14 +4,16 @@
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
     using System;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Infrastructure.Jobs;
     using IoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
+    using IoTHub.Portal.Domain.Repositories;
+    using System.Linq.Expressions;
+    using System.Threading;
+    using IoTHub.Portal.Domain.Exceptions;
 
     [TestFixture]
     public class DeviceMetricLoaderJobTests : IDisposable
@@ -21,7 +23,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
         private PortalMetric portalMetric;
 
         private Mock<ILogger<DeviceMetricLoaderJob>> mockLogger;
-        private Mock<IExternalDeviceService> mockDeviceService;
+        private Mock<IDeviceRepository> mockDeviceRepository;
 
         [SetUp]
         public void SetUp()
@@ -29,12 +31,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockLogger = this.mockRepository.Create<ILogger<DeviceMetricLoaderJob>>();
-            this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
+            this.mockDeviceRepository = this.mockRepository.Create<IDeviceRepository>();
 
             this.portalMetric = new PortalMetric();
 
             this.deviceMetricLoaderService =
-                new DeviceMetricLoaderJob(this.mockLogger.Object, this.portalMetric, this.mockDeviceService.Object);
+                new DeviceMetricLoaderJob(this.mockLogger.Object, this.portalMetric, this.mockDeviceRepository.Object);
         }
 
         [Test]
@@ -43,8 +45,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockDeviceService.Setup(service => service.GetDevicesCount()).ReturnsAsync(10);
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedDevicesCount()).ReturnsAsync(3);
+            _ = this.mockDeviceRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(10);
+
+            _ = this.mockDeviceRepository.Setup(c => c.CountAsync(c => c.IsConnected, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(3);
 
             // Act
             _ = this.deviceMetricLoaderService.Execute(null);
@@ -61,8 +66,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockDeviceService.Setup(service => service.GetDevicesCount()).ThrowsAsync(new InternalServerErrorException("test"));
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedDevicesCount()).ReturnsAsync(3);
+            _ = this.mockDeviceRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new InternalServerErrorException(""));
+
+            _ = this.mockDeviceRepository.Setup(c => c.CountAsync(c => c.IsConnected, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(3);
 
             // Act
             _ = this.deviceMetricLoaderService.Execute(null);
@@ -79,9 +87,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
         {
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+            _ = this.mockDeviceRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(10);
 
-            _ = this.mockDeviceService.Setup(service => service.GetDevicesCount()).ReturnsAsync(10);
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedDevicesCount()).ThrowsAsync(new InternalServerErrorException("test"));
+            _ = this.mockDeviceRepository.Setup(c => c.CountAsync(c => c.IsConnected, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new InternalServerErrorException(""));
 
             // Act
             _ = this.deviceMetricLoaderService.Execute(null);

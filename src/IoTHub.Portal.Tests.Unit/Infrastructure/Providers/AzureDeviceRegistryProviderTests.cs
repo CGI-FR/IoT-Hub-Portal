@@ -10,7 +10,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Providers
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Wrappers;
     using IoTHub.Portal.Infrastructure;
-    using IoTHub.Portal.Infrastructure.Providers;
+    using IoTHub.Portal.Infrastructure.Azure.Providers;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;

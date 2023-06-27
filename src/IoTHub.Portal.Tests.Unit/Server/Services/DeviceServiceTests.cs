@@ -13,7 +13,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Infrastructure.Azure.Services;
@@ -42,7 +41,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IExternalDeviceService> mockExternalDevicesService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
-        private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
 
         private IDeviceService<DeviceDetails> deviceService;
 
@@ -57,7 +55,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             this.mockExternalDevicesService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
-            this.mockDeviceTwinMapper = MockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
@@ -66,7 +63,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockExternalDevicesService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
-            _ = ServiceCollection.AddSingleton(this.mockDeviceTwinMapper.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, DeviceService>();
 
@@ -252,10 +248,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
                 .ReturnsAsync(new Twin());
 
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
-                .Verifiable();
-
             _ = this.mockExternalDevicesService.Setup(service =>
                     service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
                 .ReturnsAsync(new BulkRegistryOperationResult());
@@ -285,10 +277,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
                 .ReturnsAsync(new Twin());
-
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
-                .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service =>
                     service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
@@ -324,14 +312,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
-                .ReturnsAsync(new Twin());
-
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
-                .Verifiable();
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
-                .ReturnsAsync(new Twin());
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new Device
@@ -358,6 +342,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(Fixture.Create<Uri>());
+
             // Act
             var result = await this.deviceService.UpdateDevice(deviceDto);
 
@@ -382,17 +369,20 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
-                .ReturnsAsync(new Twin());
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
-                .Verifiable();
+            _ = this.mockDeviceModelImageManager
+                .Setup(c => c.ComputeImageUri(It.IsAny<string>()))
+                .Returns(Fixture.Create<Uri>());
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync((Device)null);
+
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(Fixture.Create<Uri>());
 
             // Act
             var act = () => this.deviceService.UpdateDevice(deviceDto);
@@ -418,14 +408,14 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
-                .ReturnsAsync(new Twin());
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
-                .Verifiable();
+            _ = this.mockDeviceModelImageManager
+                .Setup(c => c.ComputeImageUri(It.IsAny<string>()))
+                .Returns(Fixture.Create<Uri>());
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
-                .ReturnsAsync(new Twin());
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new Device

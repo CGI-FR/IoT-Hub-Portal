@@ -16,7 +16,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
@@ -28,7 +27,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
     using Models.v10.LoRaWAN;
     using Moq;
     using NUnit.Framework;
@@ -46,7 +44,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IExternalDeviceService> mockExternalDevicesService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
-        private Mock<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>> mockDeviceTwinMapper;
 
         private IDeviceService<LoRaDeviceDetails> lorawanDeviceService;
 
@@ -62,7 +59,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             this.mockExternalDevicesService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
-            this.mockDeviceTwinMapper = MockRepository.Create<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockLorawanDeviceRepository.Object);
@@ -72,7 +68,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockExternalDevicesService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
-            _ = ServiceCollection.AddSingleton(this.mockDeviceTwinMapper.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
 
@@ -155,11 +150,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             };
 
             _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
-                .ReturnsAsync(new Twin());
-
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
-                .Verifiable();
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
             _ = this.mockExternalDevicesService.Setup(service =>
                     service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
@@ -191,9 +182,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
                 .ReturnsAsync(new Twin());
 
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
-                .Verifiable();
+            //this.mockDeviceTwinMapper
+            //    .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
+            //    .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service =>
                     service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
@@ -229,14 +220,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
-                .ReturnsAsync(new Twin());
-
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
-                .Verifiable();
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
-                .ReturnsAsync(new Twin());
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice
@@ -287,11 +274,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
-                .ReturnsAsync(new Twin());
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
-                .Verifiable();
+            //this.mockDeviceTwinMapper
+            //    .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
+            //    .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
@@ -323,14 +310,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
-                .ReturnsAsync(new Twin());
-
-            this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
-                .Verifiable();
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
-                .ReturnsAsync(new Twin());
+                .ReturnsAsync(new Twin(deviceDto.DeviceID));
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice

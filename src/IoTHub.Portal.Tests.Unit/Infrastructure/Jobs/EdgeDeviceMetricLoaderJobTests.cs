@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
+    using IoTHub.Portal.Domain.Repositories;
 
     [TestFixture]
     public class EdgeDeviceMetricLoaderJobTests : IDisposable
@@ -22,7 +23,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
         private PortalMetric portalMetric;
 
         private Mock<ILogger<EdgeDeviceMetricLoaderJob>> mockLogger;
-        private Mock<IExternalDeviceService> mockDeviceService;
+        private Mock<IEdgeDeviceRepository> mockEdgeDeviceRepository;
         private Mock<IConfigService> mockConfigService;
 
         [SetUp]
@@ -31,13 +32,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockLogger = this.mockRepository.Create<ILogger<EdgeDeviceMetricLoaderJob>>();
-            this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
+            this.mockEdgeDeviceRepository = this.mockRepository.Create<IEdgeDeviceRepository>();
             this.mockConfigService = this.mockRepository.Create<IConfigService>();
 
             this.portalMetric = new PortalMetric();
 
             this.edgeDeviceMetricLoaderService =
-                new EdgeDeviceMetricLoaderJob(this.mockLogger.Object, this.portalMetric, this.mockDeviceService.Object, this.mockConfigService.Object);
+                new EdgeDeviceMetricLoaderJob(this.mockLogger.Object, this.portalMetric, this.mockEdgeDeviceRepository.Object, this.mockConfigService.Object);
         }
 
         [Test]
@@ -46,8 +47,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockDeviceService.Setup(service => service.GetEdgeDevicesCount()).ReturnsAsync(10);
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ReturnsAsync(3);
+            _ = this.mockEdgeDeviceRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(10);
+
+            _ = this.mockEdgeDeviceRepository.Setup(c => c.CountAsync(c => c.ConnectionState == "Connected", It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(3);
+
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ReturnsAsync(1);
 
             using var cancellationToken = new CancellationTokenSource();
@@ -68,8 +73,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockDeviceService.Setup(service => service.GetEdgeDevicesCount()).ThrowsAsync(new InternalServerErrorException("test"));
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ReturnsAsync(3);
+            _ = this.mockEdgeDeviceRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                    .ThrowsAsync(new InternalServerErrorException(string.Empty));
+
+            _ = this.mockEdgeDeviceRepository.Setup(c => c.CountAsync(c => c.ConnectionState == "Connected", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(3);
+
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ReturnsAsync(1);
 
             // Act
@@ -89,8 +98,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockDeviceService.Setup(service => service.GetEdgeDevicesCount()).ReturnsAsync(10);
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ThrowsAsync(new InternalServerErrorException("test"));
+            _ = this.mockEdgeDeviceRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(10);
+
+            _ = this.mockEdgeDeviceRepository.Setup(c => c.CountAsync(c => c.ConnectionState == "Connected", It.IsAny<CancellationToken>()))
+                    .ThrowsAsync(new InternalServerErrorException(string.Empty));
+
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ReturnsAsync(1);
 
             // Act
@@ -109,8 +122,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockDeviceService.Setup(service => service.GetEdgeDevicesCount()).ReturnsAsync(10);
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ReturnsAsync(3);
+            _ = this.mockEdgeDeviceRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(10);
+
+            _ = this.mockEdgeDeviceRepository.Setup(c => c.CountAsync(c => c.ConnectionState == "Connected", It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(3);
+
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ThrowsAsync(new InternalServerErrorException("test"));
 
             // Act

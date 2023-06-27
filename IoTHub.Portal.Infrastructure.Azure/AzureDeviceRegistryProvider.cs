@@ -1,19 +1,18 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Infrastructure.Providers
+namespace IoTHub.Portal.Infrastructure.Azure.Providers
 {
-    using System;
-    using System.Security.Cryptography;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Providers;
     using IoTHub.Portal.Application.Wrappers;
     using IoTHub.Portal.Domain;
+    using IoTHub.Portal.Infrastructure.Azure.Helpers;
     using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Shared.Models.v10;
+    using System;
+    using System.Security.Cryptography;
+    using System.Threading.Tasks;
 
     internal class AzureDeviceRegistryProvider : IDeviceRegistryProvider
     {

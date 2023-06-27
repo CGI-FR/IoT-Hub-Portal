@@ -40,7 +40,7 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
             IAmazonIotData amazonIotDataClient,
             IExternalDeviceService externalDeviceService,
             ILogger<DeviceService> logger)
-            : base(mapper, unitOfWork, deviceRepository, deviceTagValueRepository, labelRepository, externalDeviceService, deviceTagService, deviceModelImageManager, null!, portalDbContext, logger)
+            : base(mapper, unitOfWork, deviceRepository, deviceTagValueRepository, labelRepository, externalDeviceService, deviceTagService, deviceModelImageManager, portalDbContext, logger)
         {
             this.mapper = mapper;
             this.deviceRepository = deviceRepository;

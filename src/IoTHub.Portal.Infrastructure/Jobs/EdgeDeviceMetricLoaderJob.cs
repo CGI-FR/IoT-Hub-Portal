@@ -5,6 +5,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 {
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
+    using IoTHub.Portal.Domain.Repositories;
     using Microsoft.Extensions.Logging;
     using Quartz;
     using Shared.Models.v1._0;
@@ -15,14 +16,14 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     {
         private readonly ILogger<EdgeDeviceMetricLoaderJob> logger;
         private readonly PortalMetric portalMetric;
-        private readonly IExternalDeviceService externalDeviceService;
+        private readonly IEdgeDeviceRepository edgeDeviceRepository;
         private readonly IConfigService configService;
 
-        public EdgeDeviceMetricLoaderJob(ILogger<EdgeDeviceMetricLoaderJob> logger, PortalMetric portalMetric, IExternalDeviceService externalDeviceService, IConfigService configService)
+        public EdgeDeviceMetricLoaderJob(ILogger<EdgeDeviceMetricLoaderJob> logger, PortalMetric portalMetric, IEdgeDeviceRepository edgeDeviceRepository, IConfigService configService)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;
-            this.externalDeviceService = externalDeviceService;
+            this.edgeDeviceRepository = edgeDeviceRepository;
             this.configService = configService;
         }
 
@@ -42,7 +43,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             try
             {
-                this.portalMetric.EdgeDeviceCount = await this.externalDeviceService.GetEdgeDevicesCount();
+                this.portalMetric.EdgeDeviceCount = await this.edgeDeviceRepository.CountAsync();
             }
             catch (InternalServerErrorException e)
             {
@@ -54,7 +55,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             try
             {
-                this.portalMetric.ConnectedEdgeDeviceCount = await this.externalDeviceService.GetConnectedEdgeDevicesCount();
+                this.portalMetric.ConnectedEdgeDeviceCount = await this.edgeDeviceRepository.CountAsync(c => c.ConnectionState == "Connected");
             }
             catch (InternalServerErrorException e)
             {

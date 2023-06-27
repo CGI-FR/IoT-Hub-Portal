@@ -6,19 +6,17 @@ namespace IoTHub.Portal.Infrastructure.Azure.Startup
     using global::Azure.Storage.Blobs;
     using global::Azure.Storage.Blobs.Models;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Providers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Application.Wrappers;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Options;
     using IoTHub.Portal.Infrastructure.Azure.Jobs;
     using IoTHub.Portal.Infrastructure.Azure.Managers;
+    using IoTHub.Portal.Infrastructure.Azure.Mappers;
+    using IoTHub.Portal.Infrastructure.Azure.Providers;
     using IoTHub.Portal.Infrastructure.Azure.Services;
     using IoTHub.Portal.Infrastructure.Azure.ServicesHealthCheck;
     using IoTHub.Portal.Infrastructure.Azure.Wrappers;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using IoTHub.Portal.Infrastructure.Providers;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices;
@@ -29,6 +27,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Startup
     using Polly.Extensions.Http;
     using Quartz;
     using System.Net;
+    using System.Reflection;
 
     public static class AzureServiceCollectionExtension
     {
@@ -93,18 +92,15 @@ namespace IoTHub.Portal.Infrastructure.Azure.Startup
 
         private static IServiceCollection ConfigureMappers(this IServiceCollection services)
         {
-            return services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>()
-                            .AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>()
-                            .AddTransient<IEdgeDeviceMapper, EdgeDeviceMapper>()
-                            .AddTransient<IDeviceModelImageManager, DeviceModelImageManager>()
-                            .AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
+            return services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
             return services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>()
                 .AddTransient<IDeviceService<DeviceDetails>, DeviceService>()
-                .AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
+                .AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>()
+                            .AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
         }
 
         private static IServiceCollection ConfigureHealthCheck(this IServiceCollection services)

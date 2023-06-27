@@ -14,10 +14,10 @@ namespace IoTHub.Portal.Server.Services
     using Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
-    using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Providers;
     using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Infrastructure.Azure;
+    using IoTHub.Portal.Infrastructure.Azure.Helpers;
     using IoTHub.Portal.Infrastructure.Common.Repositories;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Models;

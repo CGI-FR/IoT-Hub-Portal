@@ -10,13 +10,13 @@ namespace IoTHub.Portal.Server.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Application.Helpers;
-    using Application.Providers;
     using Application.Services;
     using Azure;
     using Domain.Exceptions;
     using Domain.Repositories;
     using Domain.Shared;
+    using IoTHub.Portal.Infrastructure.Azure;
+    using IoTHub.Portal.Infrastructure.Azure.Helpers;
     using IoTHub.Portal.Shared.Models;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;

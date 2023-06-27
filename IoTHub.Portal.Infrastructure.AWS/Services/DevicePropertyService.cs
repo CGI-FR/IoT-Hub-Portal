@@ -7,11 +7,11 @@ namespace IoTHub.Portal.Infrastructure.AWS.Services
     using Amazon.IotData;
     using Amazon.IotData.Model;
     using Azure;
-    using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
+    using IoTHub.Portal.Infrastructure.AWS.Helpers;
     using IoTHub.Portal.Models.v10;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;

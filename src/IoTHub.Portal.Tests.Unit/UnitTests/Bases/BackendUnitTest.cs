@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
     using System;
+    using System.Reflection;
     using AutoMapper;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Infrastructure.Common;
@@ -49,7 +50,11 @@ namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
             _ = ServiceCollection.AddSingleton(httpClient);
 
             // Add AutoMapper Configuration
-            _ = ServiceCollection.AddAutoMapper(typeof(Startup), typeof(DeviceProfile));
+            _ = ServiceCollection.AddAutoMapper(Assembly.Load("IoTHub.Portal.Infrastructure.Azure"),
+                                                Assembly.Load("IoTHub.Portal.Infrastructure.AWS"),
+                                                Assembly.Load("IoTHub.Portal.Infrastructure"),
+                                                Assembly.Load("IoTHub.Portal.Application"),
+                                                Assembly.Load("IoTHub.Portal.Server"));
 
             // Add InMemory Database
             var contextOptions = new DbContextOptionsBuilder<PortalDbContext>()

@@ -19,6 +19,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using NUnit.Framework;
     using UnitTests.Bases;
+    using IoTHub.Portal.Infrastructure.Azure.Helpers;
 
     [TestFixture]
     public class DevicePropertyServiceTests : BackendUnitTest

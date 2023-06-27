@@ -6,11 +6,11 @@ namespace IoTHub.Portal.Server.Services
     using System;
     using System.Threading.Tasks;
     using AutoMapper;
-    using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Repositories;
+    using IoTHub.Portal.Infrastructure.Azure.Helpers;
     using IoTHub.Portal.Infrastructure.Common.Helpers;
     using IoTHub.Portal.Infrastructure.Common.Services;
     using IoTHub.Portal.Models.v10;

@@ -7,12 +7,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Mappers;
+    using FluentAssertions;
+    using Hellang.Middleware.ProblemDetails;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Server.Controllers.V10;
     using IoTHub.Portal.Shared.Models.v10;
-    using FluentAssertions;
-    using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
@@ -35,7 +34,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         private Mock<IExternalDeviceService> mockExternalDeviceService;
         private Mock<IDevicePropertyService> mockDevicePropertyService;
         private Mock<IDeviceTagService> mockDeviceTagService;
-        private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
 
         private Mock<IDeviceService<DeviceDetails>> mockDeviceService;
 
@@ -48,7 +46,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockExternalDeviceService = this.mockRepository.Create<IExternalDeviceService>();
             this.mockDevicePropertyService = this.mockRepository.Create<IDevicePropertyService>();
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
-            this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService<DeviceDetails>>();
         }

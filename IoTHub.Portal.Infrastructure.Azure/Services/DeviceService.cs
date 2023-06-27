@@ -38,10 +38,9 @@ namespace IoTHub.Portal.Infrastructure.Azure.Services
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             IDeviceModelImageManager deviceModelImageManager,
-            IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
             PortalDbContext portalDbContext,
             ILogger<DeviceService> logger)
-            : base(portalDbContext, mapper, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper, logger)
+            : base(portalDbContext, mapper, externalDevicesService, deviceTagService, deviceModelImageManager, logger)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;

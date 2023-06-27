@@ -5,10 +5,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using IoTHub.Portal.Application.Helpers;
+    using FluentAssertions;
     using IoTHub.Portal.Crosscutting.Extensions;
     using IoTHub.Portal.Domain.Entities;
-    using FluentAssertions;
+    using IoTHub.Portal.Infrastructure.Azure.Helpers;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json;

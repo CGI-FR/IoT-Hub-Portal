@@ -3,25 +3,25 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs
 {
-    using IoTHub.Portal.Application.Services;
+    using System.Threading.Tasks;
     using IoTHub.Portal.Domain.Exceptions;
+    using IoTHub.Portal.Domain.Repositories;
     using Microsoft.Extensions.Logging;
     using Quartz;
     using Shared.Models.v1._0;
-    using System.Threading.Tasks;
 
     [DisallowConcurrentExecution]
     public class DeviceMetricLoaderJob : IJob
     {
         private readonly ILogger<DeviceMetricLoaderJob> logger;
         private readonly PortalMetric portalMetric;
-        private readonly IExternalDeviceService externalDeviceService;
+        private readonly IDeviceRepository deviceRepository;
 
-        public DeviceMetricLoaderJob(ILogger<DeviceMetricLoaderJob> logger, PortalMetric portalMetric, IExternalDeviceService externalDeviceService)
+        public DeviceMetricLoaderJob(ILogger<DeviceMetricLoaderJob> logger, PortalMetric portalMetric, IDeviceRepository deviceRepository)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;
-            this.externalDeviceService = externalDeviceService;
+            this.deviceRepository = deviceRepository;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -38,7 +38,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             try
             {
-                this.portalMetric.DeviceCount = await this.externalDeviceService.GetDevicesCount();
+                this.portalMetric.DeviceCount = await this.deviceRepository.CountAsync();
             }
             catch (InternalServerErrorException e)
             {
@@ -50,7 +50,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             try
             {
-                this.portalMetric.ConnectedDeviceCount = await this.externalDeviceService.GetConnectedDevicesCount();
+                this.portalMetric.ConnectedDeviceCount = await this.deviceRepository.CountAsync(c => c.IsConnected);
             }
             catch (InternalServerErrorException e)
             {

@@ -6,8 +6,11 @@ namespace IoTHub.Portal.Infrastructure.Azure.Jobs
     using AutoMapper;
     using Domain;
     using Domain.Repositories;
+    using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Entities;
+    using IoTHub.Portal.Infrastructure.Azure.Helpers;
+    using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Quartz;
@@ -77,12 +80,22 @@ namespace IoTHub.Portal.Infrastructure.Azure.Jobs
                     continue;
                 }
 
-                var deviceModel = await this.deviceModelRepository.GetByIdAsync(twin.Tags[ModelId]?.ToString() ?? string.Empty);
+                var deviceModelId = twin.Tags[ModelId]?.ToString();
+
+                var deviceModel = await this.deviceModelRepository.GetByIdAsync(deviceModelId);
 
                 if (deviceModel == null)
                 {
-                    this.logger.LogWarning($"The device with wont be synched, its model id {twin.Tags[ModelId]?.ToString()} doesn't exist");
-                    continue;
+                    this.logger.LogInformation($"The device model {deviceModelId} does not exist, trying to import it.");
+
+                    deviceModel = new DeviceModel
+                    {
+                        Id = deviceModelId!,
+                        Name = deviceModelId!,
+                        SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceModel.SupportLoRaFeatures)) ?? "false")
+                    };
+
+                    await this.deviceModelRepository.InsertAsync(deviceModel);
                 }
 
                 if (deviceModel.SupportLoRaFeatures)
@@ -93,6 +106,8 @@ namespace IoTHub.Portal.Infrastructure.Azure.Jobs
                 {
                     await CreateOrUpdateDevice(twin);
                 }
+
+                await this.unitOfWork.SaveAsync();
             }
 
             foreach (var item in (await this.deviceRepository.GetAllAsync()).Where(device => !deviceTwins.Exists(x => x.DeviceId == device.Id)))

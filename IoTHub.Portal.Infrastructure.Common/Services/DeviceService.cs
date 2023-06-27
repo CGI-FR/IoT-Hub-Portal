@@ -9,7 +9,6 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
     using Domain.Repositories;
     using global::Azure.Messaging.EventHubs;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Shared.Models.v10;
@@ -36,10 +35,9 @@ namespace IoTHub.Portal.Infrastructure.Common.Services
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             IDeviceModelImageManager deviceModelImageManager,
-            IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
             PortalDbContext portalDbContext,
             ILogger<DeviceService> logger)
-            : base(portalDbContext, mapper, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper, logger)
+            : base(portalDbContext, mapper, externalDevicesService, deviceTagService, deviceModelImageManager, logger)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;

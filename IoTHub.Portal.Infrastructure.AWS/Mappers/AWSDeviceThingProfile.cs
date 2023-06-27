@@ -3,14 +3,14 @@
 
 namespace IoTHub.Portal.Application.Mappers.AWS
 {
-    using System.Text;
-    using Amazon.IoT;
     using Amazon.IoT.Model;
     using Amazon.IotData.Model;
     using AutoMapper;
     using IoTHub.Portal.Domain.Entities;
+    using IoTHub.Portal.Domain.Shared;
     using Models.v10;
     using Newtonsoft.Json;
+    using System.Text;
 
     public class AWSDeviceThingProfile : Profile
     {
@@ -67,6 +67,25 @@ namespace IoTHub.Portal.Application.Mappers.AWS
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))
                 .ForPath(dest => dest.AttributePayload.Attributes, opts => opts.MapFrom(src => src.Tags))
                 .ReverseMap();
+
+            _ = CreateMap<ExternalDeviceModelDto, CreateThingTypeRequest>()
+               .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.Name))
+               .ForMember(dest => dest.ThingTypeProperties, opts => opts.MapFrom(src => new ThingTypeProperties
+               {
+                   ThingTypeDescription = src.Description
+               }));
+
+            _ = CreateMap<DescribeThingTypeResponse, DeviceModel>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ThingTypeId))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.ThingTypeProperties.ThingTypeDescription ?? string.Empty));
+
+            _ = CreateMap<DescribeThingResponse, ExternalDeviceModelDto>()
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName));
+
+            _ = CreateMap<DescribeThingTypeResponse, ExternalDeviceModelDto>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ThingTypeId))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName));
         }
 
         private static MemoryStream EmptyPayload()

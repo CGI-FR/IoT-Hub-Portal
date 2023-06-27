@@ -5,14 +5,13 @@ namespace IoTHub.Portal.Server.Services
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Infrastructure.Common.Repositories;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
+    using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Infrastructure.Common.Repositories;
+    using IoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.Azure.Devices;
     using Models.v10.LoRaWAN;
     using Shared.Models.v1._0;
@@ -23,11 +22,6 @@ namespace IoTHub.Portal.Server.Services
         /// The device Idevice service.
         /// </summary>
         private readonly IExternalDeviceService externalDevicesService;
-
-        /// <summary>
-        /// The device IConcentrator twin mapper.
-        /// </summary>
-        private readonly IConcentratorTwinMapper concentratorTwinMapper;
 
         /// <summary>
         /// The loRaWan management service.
@@ -41,7 +35,6 @@ namespace IoTHub.Portal.Server.Services
 
         public LoRaWANConcentratorService(
             IExternalDeviceService externalDevicesService,
-            IConcentratorTwinMapper concentratorTwinMapper,
             ILoRaWanManagementService loRaWanManagementService,
             IMapper mapper,
             IUnitOfWork unitOfWork,
@@ -49,7 +42,6 @@ namespace IoTHub.Portal.Server.Services
             )
         {
             this.externalDevicesService = externalDevicesService;
-            this.concentratorTwinMapper = concentratorTwinMapper;
             this.loRaWanManagementService = loRaWanManagementService;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -101,10 +93,9 @@ namespace IoTHub.Portal.Server.Services
             concentrator.RouterConfig = await this.loRaWanManagementService.GetRouterConfig(concentrator.LoraRegion);
             concentrator.ClientThumbprint ??= string.Empty;
 
-            this.concentratorTwinMapper.UpdateTwin(newTwin, concentrator);
-            var status = concentrator.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+            _ = this.mapper.Map(newTwin, concentrator);
 
-            _ = await this.externalDevicesService.CreateDeviceWithTwin(concentrator.DeviceId, false, newTwin, status);
+            _ = await this.externalDevicesService.CreateDeviceWithTwin(concentrator.DeviceId, false, newTwin, newTwin.Status ?? DeviceStatus.Enabled);
 
             return await CreateDeviceInDatabase(concentrator);
         }
@@ -122,7 +113,7 @@ namespace IoTHub.Portal.Server.Services
             concentrator.RouterConfig = await this.loRaWanManagementService.GetRouterConfig(concentrator.LoraRegion);
 
             // Update the twin properties
-            this.concentratorTwinMapper.UpdateTwin(currentTwin, concentrator);
+            _ = this.mapper.Map(currentTwin, concentrator);
 
             _ = await this.externalDevicesService.UpdateDeviceTwin(currentTwin);
 

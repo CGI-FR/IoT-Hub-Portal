@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Infrastructure.Azure.Jobs
 {
     using AutoMapper;
+    using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
@@ -86,11 +87,20 @@ namespace IoTHub.Portal.Infrastructure.Azure.Jobs
 
                     if (deviceModel == null)
                     {
-                        this.logger.LogWarning($"The device with wont be synchronized, its model id {modelId} doesn't exist");
-                        continue;
+                        this.logger.LogInformation($"The device model {modelId} does not exist, trying to import it.");
+
+                        deviceModel = new EdgeDeviceModel
+                        {
+                            Id = modelId!,
+                            Name = modelId!,
+                        };
+
+                        await this.edgeDeviceModelRepository.InsertAsync(deviceModel);
                     }
 
                     await CreateOrUpdateDevice(twin);
+
+                    await this.unitOfWork.SaveAsync();
                 }
                 catch (Exception ex)
                 {

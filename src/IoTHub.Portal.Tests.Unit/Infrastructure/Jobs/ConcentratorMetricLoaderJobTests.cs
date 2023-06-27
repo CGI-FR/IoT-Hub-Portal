@@ -4,10 +4,11 @@
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
     using System;
+    using System.Threading;
     using FluentAssertions;
-    using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Infrastructure.Azure.Jobs;
+    using IoTHub.Portal.Domain.Repositories;
+    using IoTHub.Portal.Infrastructure.Jobs;
     using IoTHub.Portal.Shared.Models.v1._0;
     using Microsoft.Extensions.Logging;
     using Moq;
@@ -21,7 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
         private PortalMetric portalMetric;
 
         private Mock<ILogger<ConcentratorMetricLoaderJob>> mockLogger;
-        private Mock<IExternalDeviceService> mockDeviceService;
+        private Mock<IConcentratorRepository> mockConcentratorRepository;
 
         [SetUp]
         public void SetUp()
@@ -29,12 +30,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockLogger = this.mockRepository.Create<ILogger<ConcentratorMetricLoaderJob>>();
-            this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
+            this.mockConcentratorRepository = this.mockRepository.Create<IConcentratorRepository>();
 
             this.portalMetric = new PortalMetric();
 
             this.concentratorMetricLoaderService =
-                new ConcentratorMetricLoaderJob(this.mockLogger.Object, this.portalMetric, this.mockDeviceService.Object);
+                new ConcentratorMetricLoaderJob(this.mockLogger.Object, this.portalMetric, this.mockConcentratorRepository.Object);
         }
 
         [Test]
@@ -43,7 +44,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockDeviceService.Setup(service => service.GetConcentratorsCount()).ReturnsAsync(10);
+            _ = this.mockConcentratorRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(10);
 
             // Act
             _ = this.concentratorMetricLoaderService.Execute(null);
@@ -59,7 +61,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockDeviceService.Setup(service => service.GetConcentratorsCount()).ThrowsAsync(new InternalServerErrorException("test"));
+            _ = this.mockConcentratorRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new InternalServerErrorException("test"));
 
             // Act
             _ = this.concentratorMetricLoaderService.Execute(null);
@@ -76,7 +79,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockDeviceService.Setup(service => service.GetConcentratorsCount()).ReturnsAsync(10);
+            _ = this.mockConcentratorRepository.Setup(c => c.CountAsync(null, It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(10);
 
             // Act
             _ = this.concentratorMetricLoaderService.Execute(null);

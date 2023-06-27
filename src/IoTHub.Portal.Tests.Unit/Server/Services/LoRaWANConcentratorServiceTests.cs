@@ -36,7 +36,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<ILogger<LoRaWANConcentratorService>> mockLogger;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
         private Mock<ILoRaWanManagementService> mockLloRaWanManagementService;
-        private Mock<IConcentratorTwinMapper> mockConcentratorTwinMapper;
         private Mock<IConcentratorRepository> mockConcentratorRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
 
@@ -50,14 +49,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             this.mockLogger = this.MockRepository.Create<ILogger<LoRaWANConcentratorService>>();
             this.mockExternalDeviceService = this.MockRepository.Create<IExternalDeviceService>();
             this.mockLloRaWanManagementService = this.MockRepository.Create<ILoRaWanManagementService>();
-            this.mockConcentratorTwinMapper = this.MockRepository.Create<IConcentratorTwinMapper>();
             this.mockConcentratorRepository = this.MockRepository.Create<IConcentratorRepository>();
             this.mockUnitOfWork = this.MockRepository.Create<IUnitOfWork>();
 
             _ = ServiceCollection.AddSingleton(this.mockLogger.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton(this.mockLloRaWanManagementService.Object);
-            _ = ServiceCollection.AddSingleton(this.mockConcentratorTwinMapper.Object);
             _ = ServiceCollection.AddSingleton(this.mockConcentratorRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
@@ -195,8 +192,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
-            this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
-                .Verifiable();
+            //this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
+            //    .Verifiable();
 
             _ = this.mockExternalDeviceService.Setup(service => service.CreateDeviceWithTwin(It.IsAny<string>(), false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
                 .ReturnsAsync(new BulkRegistryOperationResult());
@@ -228,8 +225,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
-            this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
-                .Verifiable();
+            //this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
+            //    .Verifiable();
 
             _ = this.mockExternalDeviceService.Setup(service => service.CreateDeviceWithTwin(It.IsAny<string>(), false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
                 .ReturnsAsync(new BulkRegistryOperationResult());
@@ -270,9 +267,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
-            this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
-                .Verifiable();
-
             _ = this.mockExternalDeviceService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
@@ -306,8 +300,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
-            this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
-                .Verifiable();
+            //this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
+            //    .Verifiable();
 
             _ = this.mockExternalDeviceService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
@@ -348,8 +342,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
-            this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
-                .Verifiable();
+            //this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
+            //    .Verifiable();
 
             _ = this.mockExternalDeviceService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());

@@ -1,27 +1,27 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Infrastructure.Azure.Jobs
+namespace IoTHub.Portal.Infrastructure.Jobs
 {
-    using IoTHub.Portal.Application.Services;
+    using System.Threading.Tasks;
     using IoTHub.Portal.Domain.Exceptions;
+    using IoTHub.Portal.Domain.Repositories;
     using Microsoft.Extensions.Logging;
     using Quartz;
     using Shared.Models.v1._0;
-    using System.Threading.Tasks;
 
     [DisallowConcurrentExecution]
     public class ConcentratorMetricLoaderJob : IJob
     {
         private readonly ILogger<ConcentratorMetricLoaderJob> logger;
         private readonly PortalMetric portalMetric;
-        private readonly IExternalDeviceService externalDeviceService;
+        private readonly IConcentratorRepository concentratorRepository;
 
-        public ConcentratorMetricLoaderJob(ILogger<ConcentratorMetricLoaderJob> logger, PortalMetric portalMetric, IExternalDeviceService externalDeviceService)
+        public ConcentratorMetricLoaderJob(ILogger<ConcentratorMetricLoaderJob> logger, PortalMetric portalMetric, IConcentratorRepository concentratorRepository)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;
-            this.externalDeviceService = externalDeviceService;
+            this.concentratorRepository = concentratorRepository;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -37,7 +37,7 @@ namespace IoTHub.Portal.Infrastructure.Azure.Jobs
         {
             try
             {
-                this.portalMetric.ConcentratorCount = await this.externalDeviceService.GetConcentratorsCount();
+                this.portalMetric.ConcentratorCount = await this.concentratorRepository.CountAsync();
             }
             catch (InternalServerErrorException e)
             {
