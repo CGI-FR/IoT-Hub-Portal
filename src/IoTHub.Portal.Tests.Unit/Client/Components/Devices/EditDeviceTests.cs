@@ -25,6 +25,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
     using IoTHub.Portal.Shared.Models;
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10.Filters;
+    using IoTHub.Portal.Client.Dialogs.Devices;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using IoTHub.Portal.Tests.Unit.UnitTests.Mocks;
     using Microsoft.Extensions.DependencyInjection;

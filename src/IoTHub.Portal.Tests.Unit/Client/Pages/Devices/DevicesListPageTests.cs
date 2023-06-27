@@ -11,6 +11,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using IoTHub.Portal.Client.Exceptions;
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Pages.Devices;
+    using IoTHub.Portal.Client.Dialogs.Devices;
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Shared.Models.v10;
     using Bunit;
