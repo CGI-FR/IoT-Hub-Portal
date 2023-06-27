@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "11542747555392217944"
+      "templateHash": "13545883471881047451"
     }
   },
   "parameters": {
@@ -282,7 +282,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "1655046424385814847"
+              "templateHash": "7968403591466565140"
             }
           },
           "parameters": {
@@ -2038,7 +2038,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.18.4.5664",
-                      "templateHash": "12959775811739027014"
+                      "templateHash": "16210657935944423682"
                     }
                   },
                   "parameters": {
@@ -2661,7 +2661,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.18.4.5664",
-                              "templateHash": "5875053301554294300"
+                              "templateHash": "1886695374667394349"
                             }
                           },
                           "parameters": {
@@ -2866,30 +2866,30 @@
                                 "reserved": true,
                                 "siteConfig": {
                                   "numberOfWorkers": 1,
-                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.0.1",
+                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.13.1",
                                   "connectionStrings": [
                                     {
-                                      "name": "Azure__IoTHub__ConnectionString",
+                                      "name": "IoTHub__ConnectionString",
                                       "type": "Custom",
                                       "connectionString": "[format('HostName={0}.azure-devices.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('iotHubName'), parameters('iotHubOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', parameters('iotHubName'), parameters('iotHubOwnerPolicyName')), '2021-07-02').primaryKey)]"
                                     },
                                     {
-                                      "name": "Azure__IoTHub__EventHub__Endpoint",
+                                      "name": "IoTHub__EventHub__Endpoint",
                                       "type": "Custom",
                                       "connectionString": "[if(parameters('isLoRaFeatureEnabled'), format('Endpoint={0};SharedAccessKeyName=service;SharedAccessKey={1};EntityPath={2}', parameters('iotHubEventHubEndpoint'), listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', parameters('iotHubName'), 'service'), '2021-07-02').primaryKey, parameters('iotHubName')), '')]"
                                     },
                                     {
-                                      "name": "Azure__IoTDPS__ConnectionString",
+                                      "name": "IoTDPS__ConnectionString",
                                       "type": "Custom",
                                       "connectionString": "[format('HostName={0}.azure-devices-provisioning.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('dpsName'), parameters('dpsOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', parameters('dpsName'), parameters('dpsOwnerPolicyName')), '2021-10-15').primaryKey)]"
                                     },
                                     {
-                                      "name": "Azure__StorageAccount__ConnectionString",
+                                      "name": "StorageAccount__ConnectionString",
                                       "type": "Custom",
                                       "connectionString": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}', parameters('storageAccountName'), listKeys(parameters('storageAccountId'), '2015-05-01-preview').key1)]"
                                     },
                                     {
-                                      "name": "Azure__LoRaKeyManagement__Code",
+                                      "name": "LoRaKeyManagement__Code",
                                       "type": "Custom",
                                       "connectionString": "[if(parameters('isLoRaFeatureEnabled'), listkeys(parameters('functionAppDefaultHost'), '2021-02-01').masterKey, '')]"
                                     },
@@ -2901,19 +2901,15 @@
                                   ],
                                   "appSettings": [
                                     {
-                                      "name": "CloudProvider",
-                                      "value": "Azure"
-                                    },
-                                    {
-                                      "name": "Azure__IoTHub__EventHub__ConsumerGroup",
+                                      "name": "IoTHub__EventHub__ConsumerGroup",
                                       "value": "[if(parameters('isLoRaFeatureEnabled'), parameters('ioTHubEventHubConsumerGroupName'), '')]"
                                     },
                                     {
-                                      "name": "Azure__IoTDPS__ServiceEndpoint",
+                                      "name": "IoTDPS__ServiceEndpoint",
                                       "value": "[format('{0}.azure-devices-provisioning.net', parameters('dpsName'))]"
                                     },
                                     {
-                                      "name": "Azure__IoTDPS__IDScope",
+                                      "name": "IoTDPS__IDScope",
                                       "value": "[parameters('dpsIdScope')]"
                                     },
                                     {
@@ -2941,11 +2937,11 @@
                                       "value": "[format('{0}', parameters('isLoRaFeatureEnabled'))]"
                                     },
                                     {
-                                      "name": "Azure__LoRaKeyManagement__Url",
+                                      "name": "LoRaKeyManagement__Url",
                                       "value": "[if(parameters('isLoRaFeatureEnabled'), format('https://{0}.azurewebsites.net', parameters('functionAppName')), '')]"
                                     },
                                     {
-                                      "name": "Azure__LoRaRegionRouterConfig__Url",
+                                      "name": "LoRaRegionRouterConfig__Url",
                                       "value": "[if(parameters('isLoRaFeatureEnabled'), 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/', '')]"
                                     },
                                     {
@@ -3081,7 +3077,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "6624545021464295716"
+              "templateHash": "11278139376146267482"
             }
           },
           "parameters": {
@@ -3809,7 +3805,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.18.4.5664",
-                      "templateHash": "5875053301554294300"
+                      "templateHash": "1886695374667394349"
                     }
                   },
                   "parameters": {
@@ -4014,30 +4010,30 @@
                         "reserved": true,
                         "siteConfig": {
                           "numberOfWorkers": 1,
-                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.0.1",
+                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.13.1",
                           "connectionStrings": [
                             {
-                              "name": "Azure__IoTHub__ConnectionString",
+                              "name": "IoTHub__ConnectionString",
                               "type": "Custom",
                               "connectionString": "[format('HostName={0}.azure-devices.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('iotHubName'), parameters('iotHubOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', parameters('iotHubName'), parameters('iotHubOwnerPolicyName')), '2021-07-02').primaryKey)]"
                             },
                             {
-                              "name": "Azure__IoTHub__EventHub__Endpoint",
+                              "name": "IoTHub__EventHub__Endpoint",
                               "type": "Custom",
                               "connectionString": "[if(parameters('isLoRaFeatureEnabled'), format('Endpoint={0};SharedAccessKeyName=service;SharedAccessKey={1};EntityPath={2}', parameters('iotHubEventHubEndpoint'), listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', parameters('iotHubName'), 'service'), '2021-07-02').primaryKey, parameters('iotHubName')), '')]"
                             },
                             {
-                              "name": "Azure__IoTDPS__ConnectionString",
+                              "name": "IoTDPS__ConnectionString",
                               "type": "Custom",
                               "connectionString": "[format('HostName={0}.azure-devices-provisioning.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('dpsName'), parameters('dpsOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', parameters('dpsName'), parameters('dpsOwnerPolicyName')), '2021-10-15').primaryKey)]"
                             },
                             {
-                              "name": "Azure__StorageAccount__ConnectionString",
+                              "name": "StorageAccount__ConnectionString",
                               "type": "Custom",
                               "connectionString": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}', parameters('storageAccountName'), listKeys(parameters('storageAccountId'), '2015-05-01-preview').key1)]"
                             },
                             {
-                              "name": "Azure__LoRaKeyManagement__Code",
+                              "name": "LoRaKeyManagement__Code",
                               "type": "Custom",
                               "connectionString": "[if(parameters('isLoRaFeatureEnabled'), listkeys(parameters('functionAppDefaultHost'), '2021-02-01').masterKey, '')]"
                             },
@@ -4049,19 +4045,15 @@
                           ],
                           "appSettings": [
                             {
-                              "name": "CloudProvider",
-                              "value": "Azure"
-                            },
-                            {
-                              "name": "Azure__IoTHub__EventHub__ConsumerGroup",
+                              "name": "IoTHub__EventHub__ConsumerGroup",
                               "value": "[if(parameters('isLoRaFeatureEnabled'), parameters('ioTHubEventHubConsumerGroupName'), '')]"
                             },
                             {
-                              "name": "Azure__IoTDPS__ServiceEndpoint",
+                              "name": "IoTDPS__ServiceEndpoint",
                               "value": "[format('{0}.azure-devices-provisioning.net', parameters('dpsName'))]"
                             },
                             {
-                              "name": "Azure__IoTDPS__IDScope",
+                              "name": "IoTDPS__IDScope",
                               "value": "[parameters('dpsIdScope')]"
                             },
                             {
@@ -4089,11 +4081,11 @@
                               "value": "[format('{0}', parameters('isLoRaFeatureEnabled'))]"
                             },
                             {
-                              "name": "Azure__LoRaKeyManagement__Url",
+                              "name": "LoRaKeyManagement__Url",
                               "value": "[if(parameters('isLoRaFeatureEnabled'), format('https://{0}.azurewebsites.net', parameters('functionAppName')), '')]"
                             },
                             {
-                              "name": "Azure__LoRaRegionRouterConfig__Url",
+                              "name": "LoRaRegionRouterConfig__Url",
                               "value": "[if(parameters('isLoRaFeatureEnabled'), 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/', '')]"
                             },
                             {
