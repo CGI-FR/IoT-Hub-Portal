@@ -9,7 +9,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
     using IoTHub.Portal.Client.Exceptions;
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Pages.EdgeModels;
-    using IoTHub.Portal.Client.Pages.EdgeModels.EdgeModule;
+    using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule;
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Models.v10;
