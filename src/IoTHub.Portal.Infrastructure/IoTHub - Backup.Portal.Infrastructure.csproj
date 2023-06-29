@@ -30,65 +30,19 @@
     <None Remove="RouterConfigFiles\US_902_928_FSB_8.json" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RouterConfigFiles\AS_923_925_1.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AS_923_925_2.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AS_923_925_3.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AU_915_928_FSB_1.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AU_915_928_FSB_2.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AU_915_928_FSB_3.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AU_915_928_FSB_4.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AU_915_928_FSB_5.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AU_915_928_FSB_6.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AU_915_928_FSB_7.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="RouterConfigFiles\AU_915_928_FSB_8.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="EdgeEnrollementScripts\AWS\debian_11_bullseye" />
     <EmbeddedResource Include="Resources\default-template-icon.png" />
+    <EmbeddedResource Include="EdgeEnrollementScripts\AWS\debian_11_bullseye" />
+    <EmbeddedResource Include="RouterConfigFiles\AS_923_925_1.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AS_923_925_2.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AS_923_925_3.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AU_915_928_FSB_1.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AU_915_928_FSB_2.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AU_915_928_FSB_3.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AU_915_928_FSB_4.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AU_915_928_FSB_5.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AU_915_928_FSB_6.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AU_915_928_FSB_7.json" />
+    <EmbeddedResource Include="RouterConfigFiles\AU_915_928_FSB_8.json" />
     <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP1.json" />
     <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP2.json" />
     <EmbeddedResource Include="RouterConfigFiles\EU_863_870.json" />
