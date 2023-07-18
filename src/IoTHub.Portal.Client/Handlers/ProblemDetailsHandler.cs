@@ -3,14 +3,27 @@
 
 namespace IoTHub.Portal.Client.Handlers
 {
+    using System.Net;
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Exceptions;
+    using Microsoft.AspNetCore.Components;
+    using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
     using Models;
+    using MudBlazor;
 
     public class ProblemDetailsHandler : DelegatingHandler
     {
+        private readonly ISnackbar snackbar;
+        private readonly NavigationManager navigationManager;
+
+        public ProblemDetailsHandler(ISnackbar snackbar, NavigationManager navigationManager)
+        {
+            this.snackbar = snackbar;
+            this.navigationManager = navigationManager;
+        }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
         {
             var response = await base.SendAsync(request, cancellationToken);
@@ -18,6 +31,24 @@ namespace IoTHub.Portal.Client.Handlers
             if (response.IsSuccessStatusCode)
             {
                 return response;
+            }
+
+            else if (response.StatusCode.Equals(HttpStatusCode.Unauthorized))
+            {
+                _ = this.snackbar.Add("You are not authorized", Severity.Error, config =>
+                {
+                    config.Action = "Got to login";
+                    config.ActionColor = Color.Primary;
+                    config.RequireInteraction = true;
+                    config.Onclick = _ =>
+                    {
+                        var returnUrl = this.navigationManager.ToBaseRelativePath(this.navigationManager.Uri);
+                        this.navigationManager.NavigateToLogin($"authentication/login?returnUrl={returnUrl}");
+
+                        return Task.CompletedTask;
+                    };
+                });
+
             }
 
             var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetailsWithExceptionDetails>(cancellationToken: cancellationToken);

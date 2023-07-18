@@ -21,6 +21,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+_ = builder.Services.AddSingleton<ISnackbar, SnackbarService>();
 _ = builder.Services.AddTransient<ProblemDetailsHandler>();
 
 _ = builder.Services.AddHttpClient("api", (sp, client) =>
