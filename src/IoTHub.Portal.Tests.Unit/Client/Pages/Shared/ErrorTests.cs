@@ -46,5 +46,31 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 
             _ = errorSnackBar.Severity.Should().Be(Severity.Error);
         }
+
+        [Test]
+        public void ProcessProblemDetails_UnauthorizedHttpStatusCode_SnackbarItemIsNotAdded()
+        {
+            // Arrange
+            var problemDetailsException = new ProblemDetailsException(new ProblemDetailsWithExceptionDetails
+            {
+                Title = "title",
+                Detail = "detail",
+                Status = 401,
+                TraceId = "traceId",
+                ExceptionDetails = new List<ProblemDetailsWithExceptionDetails.ExceptionDetail>()
+            });
+
+            var snackBarService = Services.GetRequiredService<ISnackbar>();
+
+            var cut = RenderComponent<Error>();
+
+            // Act
+            cut.Instance.ProcessProblemDetails(problemDetailsException);
+
+            // Assert
+            var snackBars = snackBarService.ShownSnackbars.ToList();
+
+            _ = snackBars.Count.Should().Be(0);
+        }
     }
 }
