@@ -21,6 +21,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
     using Microsoft.Extensions.DependencyInjection;
     using MudBlazor;
     using System.Linq;
+    using Bunit;
 
     [TestFixture]
     public class ProblemDetailsHandlerTests : BlazorUnitTest
@@ -154,6 +155,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
                 BaseAddress = new Uri("http://fake.com")
             };
 
+            var mudSnackbarProvider = RenderComponent<MudSnackbarProvider>();
+
             // Act
             var result = () => httpClient.GetStringAsync("");
 
@@ -161,14 +164,16 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
             var exceptionAssertions = await result.Should().ThrowAsync<ProblemDetailsException>();
             _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Should().BeEquivalentTo(problemDetailsWithExceptionDetails);
 
-            var snackBars = snackBarService.ShownSnackbars.ToList();
+            _ = snackBarService.ShownSnackbars.Count().Should().Be(1);
 
-            _ = snackBars.Count.Should().Be(1);
-
-            var errorSnackBar = snackBars.First();
+            var errorSnackBar = snackBarService.ShownSnackbars.First();
 
             _ = errorSnackBar.Severity.Should().Be(Severity.Error);
             _ = errorSnackBar.Message.Should().Be("You are not authorized");
+
+            mudSnackbarProvider.Find("button").Click();
+
+            mudSnackbarProvider.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/authentication/login?returnUrl="));
         }
     }
 }
