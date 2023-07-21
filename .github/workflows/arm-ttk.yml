@@ -58,4 +58,4 @@ jobs:
         shell: pwsh
         run: |
           Import-Module ./arm-ttk/arm-ttk/arm-ttk.psd1
-          Test-AzTemplate -TemplatePath ./templates/azure -File azuredeploy.json -Skip 'Template Should Not Contain Blanks','URIs Should Be Properly Constructed'
+          Test-AzTemplate -TemplatePath ./templates/azure/azuredeploy.json -Skip 'Template Should Not Contain Blanks','URIs Should Be Properly Constructed'
