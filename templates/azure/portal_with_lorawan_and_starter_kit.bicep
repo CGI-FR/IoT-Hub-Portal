@@ -95,7 +95,7 @@ param appInsightName string
 @description('Function App Name')
 param functionAppName string
 
-module starterKitDeployment './iotedge-lorawan-starterkit/TemplateBicep/main.bicep' = {
+module starterKitDeployment '../iotedge-lorawan-starterkit/TemplateBicep/main.bicep' = {
   name: 'lorawan-starter-kit'
   params: {
     location: location
