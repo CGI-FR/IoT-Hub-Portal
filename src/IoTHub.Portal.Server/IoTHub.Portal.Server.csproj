@@ -61,7 +61,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.9" />
-    <PackageReference Include="Microsoft.Graph" Version="5.19.0" />
+    <PackageReference Include="Microsoft.Graph" Version="5.20.0" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.6.6" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
     <PackageReference Include="Microsoft.Identity.Web" Version="2.13.1" />
