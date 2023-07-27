@@ -56,11 +56,25 @@ jobs:
         path: |
           src/IoTHub.Portal.Tests.Unit/TestResults
 
+  codecov:
+    name: Codecov
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3.5.3
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: test-results
+        path: |
+          src/IoTHub.Portal.Tests.Unit/TestResults
+
     - name: Upload to Codecov test reports
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: src/IoTHub.Portal.Tests.Unit/TestResults
+        fail_ci_if_error: true # optional (default = false)
         verbose: true # optional (default = false)
 
   #e2e-tests:
