@@ -1,0 +1,4 @@
+[submodule "templates/iotedge-lorawan-starterkit"]
+	path = templates/iotedge-lorawan-starterkit
+	url = https://github.com/Azure/iotedge-lorawan-starterkit.git
+	branch = dev

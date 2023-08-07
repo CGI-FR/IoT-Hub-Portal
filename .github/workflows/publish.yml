@@ -104,13 +104,7 @@ jobs:
       - uses: actions/checkout@v3.5.3
         with:
           path: IoT-Hub-Portal
-
-      - name: Checkout Azure/iotedge-lorawan-starterkit
-        uses: actions/checkout@v3.5.3
-        with: 
-          repository: Azure/iotedge-lorawan-starterkit
-          ref: dev
-          path: iotedge-lorawan-starterkit
+          submodules: recursive
 
       - uses: actions/checkout@v3.5.3
         with:
@@ -131,7 +125,8 @@ jobs:
             mkdir -p templates/azure/iotedge-lorawan-starterkit
             touch ./templates/.gitkeep
             cp -r ../IoT-Hub-Portal/templates/* ./templates/
-            cp -r ../iotedge-lorawan-starterkit/TemplateBicep/* ./templates/azure/iotedge-lorawan-starterkit/
+            rm -rf ./templates/iotedge-lorawan-starterkit/
+            cp -r ../IoT-Hub-Portal/templates/iotedge-lorawan-starterkit/TemplateBicep/* ./templates/azure/iotedge-lorawan-starterkit/
             sed -r -i 's/..\/iotedge-lorawan-starterkit\/TemplateBicep\/main.bicep/.\/iotedge-lorawan-starterkit\/main.bicep/g' ./templates/azure/portal_with_lorawan_and_starter_kit.bicep
       
       - name: Update IoTHub Portal docker image tag in app_service.bicep
