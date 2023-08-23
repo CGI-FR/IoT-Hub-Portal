@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Constants
 
             // Assert
             _ = currentTheme.Palette.GetType().Should().Be(typeof(PaletteLight));
-            _ = currentTheme.Palette.Background.ToString().Should().Be(expectedPaletteBackground);
+            _ = currentTheme.Palette.Background.Value.Should().Be(expectedPaletteBackground);
         }
     }
 }
