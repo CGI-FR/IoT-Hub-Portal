@@ -10,7 +10,7 @@ jobs:
     name: Delete Documentation Version
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
         with:
           ref: docs/main
           fetch-depth: 0

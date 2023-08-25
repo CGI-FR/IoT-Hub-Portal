@@ -28,7 +28,7 @@ jobs:
               repo: context.repo.repo,
               labels: ['cfn-templates']
             })
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       
       - name: Check CloudFormation Syntax
         uses: scottbrenner/cfn-lint-action@v2
