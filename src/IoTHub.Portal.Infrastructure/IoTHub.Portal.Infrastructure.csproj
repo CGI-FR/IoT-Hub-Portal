@@ -108,7 +108,7 @@
     <PackageReference Include="AWSSDK.IotData" Version="3.7.200.26" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.203.1" />
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.200.9" />
-    <PackageReference Include="Azure.Data.Tables" Version="12.8.0" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.8.1" />
     <PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.2" />
     <PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.9.2" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
