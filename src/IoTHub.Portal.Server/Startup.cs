@@ -110,6 +110,13 @@ namespace IoTHub.Portal.Server
                     Status = StatusCodes.Status500InternalServerError
                 });
 
+                setup.Map<ResourceNotFoundException>(exception => new ProblemDetails
+                {
+                    Title = exception.Title,
+                    Detail = exception.Detail,
+                    Status = StatusCodes.Status404NotFound
+                });
+
                 setup.Map<BaseException>(exception => new ProblemDetails
                 {
                     Title = exception.Title,
