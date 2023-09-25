@@ -29,6 +29,6 @@
     </PackageReference>
     <PackageReference Include="MudBlazor" Version="6.10.0" />
     <PackageReference Include="xunit.extensibility.core" Version="2.5.1" />
-    <PackageReference Include="xunit.extensibility.execution" Version="2.5.0" />
+    <PackageReference Include="xunit.extensibility.execution" Version="2.5.1" />
   </ItemGroup>
 </Project>
