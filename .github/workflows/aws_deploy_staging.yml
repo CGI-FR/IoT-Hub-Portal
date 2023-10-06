@@ -30,7 +30,7 @@ jobs:
         
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Get a latest Git tag
         uses: actions-ecosystem/action-get-latest-tag@v1
@@ -94,7 +94,7 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Set outputs
         id: git_sha
