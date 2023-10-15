@@ -10,7 +10,7 @@ param iotHubName string
 @description('IoTHub owner policy name.')
 param iotHubOwnerPolicyName string
 
-resource dps 'Microsoft.Devices/provisioningServices@2021-10-15' = {
+resource dps 'Microsoft.Devices/provisioningServices@2022-12-12' = {
   name: dpsName
   location: location
   sku: {
