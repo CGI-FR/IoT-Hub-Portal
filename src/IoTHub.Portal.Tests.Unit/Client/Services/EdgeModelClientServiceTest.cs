@@ -77,7 +77,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var expectedEdgeModel = Fixture.Create<IoTEdgeModel>();
 
-            _ = MockHttpClient.When(HttpMethod.Post, "api/edge/models")
+            _ = MockHttpClient.When(HttpMethod.Post, "/api/edge/models")
                 .With(m =>
                 {
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeModel>>();
@@ -105,7 +105,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var expectedEdgeModel = Fixture.Create<IoTEdgeModel>();
 
-            _ = MockHttpClient.When(HttpMethod.Put, $"api/edge/models/{expectedEdgeModel.ModelId}")
+            _ = MockHttpClient.When(HttpMethod.Put, $"/api/edge/models")
                 .With(m =>
                 {
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeModel>>();
@@ -132,7 +132,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var expectedEdgeModel = Fixture.Create<DeviceModelDto>();
 
-            _ = MockHttpClient.When(HttpMethod.Delete, $"api/edge/models/{expectedEdgeModel.ModelId}")
+            _ = MockHttpClient.When(HttpMethod.Delete, $"/api/edge/models/{expectedEdgeModel.ModelId}")
                 .Respond(HttpStatusCode.NoContent);
 
             // Act
@@ -190,7 +190,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceModel = Fixture.Create<IoTEdgeModel>();
 
-            _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/models/{deviceModel.ModelId}/avatar")
+            _ = MockHttpClient.When(HttpMethod.Delete, $"/api/edge/models/{deviceModel.ModelId}/avatar")
                 .Respond(HttpStatusCode.NoContent);
 
             // Act

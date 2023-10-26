@@ -121,7 +121,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
 
             var expectedCommands = Fixture.Build<DeviceModelCommandDto>().CreateMany(3).ToList();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/models/{deviceModelId.ModelId}/properties")
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/lorawan/models/{deviceModelId.ModelId}/commands")
                 .With(m =>
                 {
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceModelCommandDto>>>();
