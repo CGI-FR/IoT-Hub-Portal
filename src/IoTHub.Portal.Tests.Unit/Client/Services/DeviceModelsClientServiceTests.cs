@@ -181,7 +181,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             var deviceModel = Fixture.Create<DeviceModelDto>();
             var expectedDeviceModelProperties = Fixture.Build<DeviceProperty>().CreateMany(3).ToList();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/properties")
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/models/{deviceModel.ModelId}/properties")
                 .With(m =>
                 {
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceProperty>>>();
