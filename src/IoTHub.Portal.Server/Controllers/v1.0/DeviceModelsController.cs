@@ -107,7 +107,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
-        [HttpPut("{id}", Name = "PUT Update the device model")]
+        [HttpPut(Name = "PUT Update the device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
