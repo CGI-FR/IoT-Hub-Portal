@@ -441,7 +441,7 @@ namespace IoTHub.Portal.Server
                 // If this is a request for a web page, just do the normal out-of-the-box behaviour.
                 _ = endpoints.MapFallbackToFile("{**slug}", "index.html", new StaticFileOptions
                 {
-                    OnPrepareResponse = ctx => ctx.Context.Response.Headers.Add("Cache-Control", new StringValues("no-cache"))
+                    OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("Cache-Control", new StringValues("no-cache"))
                 });
 
                 _ = endpoints.MapHealthChecks("/healthz", new HealthCheckOptions
