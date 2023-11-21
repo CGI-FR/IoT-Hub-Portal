@@ -143,13 +143,13 @@ jobs:
         run: az bicep build --file azuredeploy.bicep --outfile azuredeploy.json 
     
       - name: Upload azure templates to release assets
-        uses: AButler/upload-release-assets@v2.0
+        uses: AButler/upload-release-assets@v3.0
         with:
           files: 'arm-templates/templates/azure/*.json'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload aws templates to release assets
-        uses: AButler/upload-release-assets@v2.0
+        uses: AButler/upload-release-assets@v3.0
         with:
           files: 'arm-templates/templates/aws/*.yml'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
