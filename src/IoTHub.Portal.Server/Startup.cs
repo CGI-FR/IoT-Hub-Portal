@@ -436,7 +436,9 @@ namespace IoTHub.Portal.Server
                 // endpoints.MapFallbackToFile("index.html");
 
                 // Prevent the user from getting HTML when the controller can't be found.
+#pragma warning disable ASP0018 // Unused route parameter
                 _ = endpoints.Map("api/{**slug}", HandleApiFallback);
+#pragma warning restore ASP0018 // Unused route parameter
 
                 // If this is a request for a web page, just do the normal out-of-the-box behaviour.
                 _ = endpoints.MapFallbackToFile("{**slug}", "index.html", new StaticFileOptions
