@@ -122,7 +122,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (ResourceNotFoundException e)
             {
-                this.logger.LogWarning("Unable to delete the thing because it doesn't exist", e);
+                this.logger.LogWarning(e, "Unable to delete the thing because it doesn't exist");
             }
 
         }
@@ -727,7 +727,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonIoTException e)
             {
-                this.logger.LogWarning("Unable to List Thing principal due to an error in the Amazon IoT API.", e);
+                this.logger.LogWarning(e, "Unable to List Thing principal due to an error in the Amazon IoT API.");
             }
         }
 
