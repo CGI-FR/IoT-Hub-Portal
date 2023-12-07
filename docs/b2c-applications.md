@@ -23,7 +23,6 @@ By the end, you should have recorded the following information:
         * The OpenID Metadata URL for Azure AD B2C tenants is usually in the format: `https://<tenant-name>.b2clogin.com/<tenant-name>.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=<policy-name>`.
         * Replace `<tenant-name>` and `<policy-name>` with your actual tenant name and the policy name you are using (like B2C_1_SignUpSignIn).
     1. Make sure to record the OpenID authority and OpenID metadata URL for future configuration steps.
-    
 1. Configure the requiered AD Applications.
     1. Create the **IoT Hub Portal API** Application:
         * Select **App registrations**, and then select **New registration**.
