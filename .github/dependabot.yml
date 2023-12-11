@@ -10,8 +10,6 @@ updates:
     directory: "/src/"
     schedule:
       interval: "daily"
-    # Maintain dependencies for the web client
-  - package-ecosystem: "npm"
-    directory: "/src/IoTHub.Portal/Client"
-    schedule:
-      interval: "daily"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
