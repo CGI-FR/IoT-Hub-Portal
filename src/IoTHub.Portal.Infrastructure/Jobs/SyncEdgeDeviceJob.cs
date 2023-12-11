@@ -12,6 +12,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
+    using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Quartz;
@@ -130,11 +131,15 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             var twinWithModule = await this.externalDeviceService.GetDeviceTwinWithModule(twin.DeviceId);
             var twinWithClient = await this.externalDeviceService.GetDeviceTwinWithEdgeHubModule(twin.DeviceId);
 
+            var connectionState = twin.ConnectionState == DeviceConnectionState.Connected ? "Connected" : "Disconnected";
+
             var device = this.mapper.Map<EdgeDevice>(twin,opts =>
             {
                 opts.Items["TwinModules"] = twinWithModule;
                 opts.Items["TwinClient"] = twinWithClient;
             }) ;
+
+            device.ConnectionState = connectionState;
 
             var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.Id, d => d.Tags);
 
