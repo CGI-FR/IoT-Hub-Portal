@@ -1,21 +1,14 @@
 # IoT Hub Portal Documentation
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CGI-FR/IoT-Hub-Portal/tree/docs/main)
-
 ## Quick start
 
 > The documentation of IoT Hub Portal is based on [https://squidfunk.github.io/mkdocs-material](mkdocs-material).
 
 ## Configure dev environment
 
-To install mkdocs-material and required dependencies, you have to run the following command at the root of the project:
+To contribute to IoT Hub Portal's documentation:
 
-```console
-pip install -r requirements.txt
-```
+- Solution 1: Open this branch on Codespace
+- Solutuion 2: Open this branch on a devcontainer using VS Code.
 
-After the installation python dependencies, your can start a local review of documentation site by the following command at the root of the project:
-
-```console
-mkdocs serve
-```
+On both solutions, a pre-configured development environment will be built, and the documentation website will be run and opened on an embedded browser.
