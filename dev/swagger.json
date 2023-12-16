@@ -5034,8 +5034,7 @@
       "IoTEdgeModule": {
         "required": [
           "imageURI",
-          "moduleName",
-          "version"
+          "moduleName"
         ],
         "type": "object",
         "properties": {
@@ -5088,7 +5087,8 @@
             "nullable": true
           },
           "version": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false,
