@@ -8,6 +8,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Models.v10;
+    using IoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -49,6 +50,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="tags">List of tags.</param>
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Update the Device tags settings")]
+        [Authorize(Policy = Policies.UpdateDeviceTagSettings)]
         public async Task<IActionResult> Post(IEnumerable<DeviceTagDto> tags)
         {
             ArgumentNullException.ThrowIfNull(tags, nameof(tags));
@@ -62,6 +64,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <returns>The list of tags</returns>
         [HttpGet(Name = "GET Device tags settings")]
+        [Authorize(Policy = Policies.GetAllDeviceTagSettings)]
         public ActionResult<List<DeviceTagDto>> Get()
         {
             return Ok(this.deviceTagService.GetAllTags());
@@ -73,6 +76,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceTag">Device Tag</param>
         /// <returns>The action result</returns>
         [HttpPatch(Name = "Create or update a device tag")]
+        [Authorize(Policy = Policies.CreateOrUpdateDeviceTag)]
         public async Task<IActionResult> CreateOrUpdateDeviceTag([FromBody] DeviceTagDto deviceTag)
         {
             await this.deviceTagService.CreateOrUpdateDeviceTag(deviceTag);
@@ -85,6 +89,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceTagName">Device Tag Name</param>
         /// <returns>The action result</returns>
         [HttpDelete("{deviceTagName}", Name = "Delete a device tag by name")]
+        [Authorize(Policy = Policies.DeleteDeviceTagByName)]
         public async Task<IActionResult> DeleteDeviceTagByName([FromRoute] string deviceTagName)
         {
             await this.deviceTagService.DeleteDeviceTagByName(deviceTagName);
