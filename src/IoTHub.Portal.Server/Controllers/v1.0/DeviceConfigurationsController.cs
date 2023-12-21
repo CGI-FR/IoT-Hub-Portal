@@ -11,6 +11,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Shared.Models.v10;
+    using IoTHub.Portal.Shared.Security;
 
     [Authorize]
     [ApiController]
@@ -27,6 +28,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpGet(Name = "GET Device configurations")]
+        [Authorize(Policy = Policies.GetAllDeviceConfigurations)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IEnumerable<ConfigListItem>> Get()
         {
@@ -34,6 +36,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpGet("{configurationId}", Name = "GET Device configuration")]
+        [Authorize(Policy = Policies.GetDeviceConfiguration)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DeviceConfig>> Get(string configurationId)
         {
@@ -41,6 +44,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpGet("{configurationId}/metrics", Name = "GET Device configuration metrics")]
+        [Authorize(Policy = Policies.GetAllDeviceConfigurationMetrics)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ConfigurationMetrics>> GetConfigurationMetrics(string configurationId)
         {
@@ -48,6 +52,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpPost(Name = "POST Create Device configuration")]
+        [Authorize(Policy = Policies.CreateDeviceConfiguration)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task CreateConfig(DeviceConfig deviceConfig)
         {
@@ -55,6 +60,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpPut("{configurationId}", Name = "PUT Update Device configuration")]
+        [Authorize(Policy = Policies.UpdateDeviceConfiguration)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task UpdateConfig(DeviceConfig deviceConfig)
         {
@@ -62,6 +68,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpDelete("{configurationId}", Name = "DELETE Device configuration")]
+        [Authorize(Policy = Policies.DeleteDeviceConfiguration)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task DeleteConfig(string configurationId)
         {

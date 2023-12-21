@@ -8,6 +8,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Shared.Models.v10;
+    using IoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpPost("devices/_export", Name = "Export devices")]
+        [Authorize(Policy = Policies.ExportDevices)]
         public async Task<IActionResult> ExportDeviceList()
         {
             var stream = new MemoryStream();
@@ -38,6 +40,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpPost("devices/_template", Name = "Download template file")]
+        [Authorize(Policy = Policies.DownloadDeviceTemplate)]
         public async Task<IActionResult> ExportTemplateFile()
         {
             var stream = new MemoryStream();
@@ -49,6 +52,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpPost("devices/_import", Name = "Import devices")]
+        [Authorize(Policy = Policies.ImportDevices)]
         public async Task<ActionResult<ImportResultLine[]>> ImportDeviceList(IFormFile file)
         {
             using var stream = file.OpenReadStream();

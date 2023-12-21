@@ -10,6 +10,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using IoTHub.Portal.Shared.Models.v10.Filters;
+    using IoTHub.Portal.Shared.Security;
 
     [Authorize]
     [ApiController]
@@ -32,6 +33,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET Device model list")]
+        [Authorize(Policy = Policies.GetAllDeviceModels)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public override async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems([FromQuery] DeviceModelFilter deviceModelFilter)
         {
@@ -44,6 +46,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The devic emodel identifier.</param>
         /// <returns>The device model details.</returns>
         [HttpGet("{id}", Name = "GET Device model")]
+        [Authorize(Policy = Policies.GetDeviceModel)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override Task<ActionResult<DeviceModelDto>> GetItem(string id)
@@ -56,6 +59,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model identifier</param>
         [HttpGet("{id}/avatar", Name = "GET Device model avatar URL")]
+        [Authorize(Policy = Policies.GetDeviceModelAvatar)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override Task<ActionResult<string>> GetAvatar(string id)
@@ -70,6 +74,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
         [HttpPost("{id}/avatar", Name = "POST Update the device model avatar")]
+        [Authorize(Policy = Policies.UpdateDeviceModelAvatar)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override Task<ActionResult<string>> ChangeAvatar(string id, IFormFile file)
@@ -82,6 +87,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The model identifier.</param>
         [HttpDelete("{id}/avatar", Name = "DELETE Remove the device model avatar")]
+        [Authorize(Policy = Policies.DeleteDeviceModelAvatar)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override Task<IActionResult> DeleteAvatar(string id)
@@ -95,6 +101,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Create a new device model")]
+        [Authorize(Policy = Policies.CreateDeviceModel)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public override Task<IActionResult> Post(DeviceModelDto deviceModel)
@@ -108,6 +115,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
         [HttpPut("{id}", Name = "PUT Update the device model")]
+        [Authorize(Policy = Policies.UpdateDeviceModel)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -122,6 +130,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The device model identifier.</param>
         /// <returns>The action result.</returns>
         [HttpDelete("{id}", Name = "DELETE Remove the device model")]
+        [Authorize(Policy = Policies.DeleteDeviceModel)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
