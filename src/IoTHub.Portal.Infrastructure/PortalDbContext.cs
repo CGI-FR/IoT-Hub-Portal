@@ -24,6 +24,10 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<LoRaDeviceTelemetry> LoRaDeviceTelemetry { get; set; }
         public DbSet<Label> Labels { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<AccessControl> AccessControls { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
@@ -58,6 +62,10 @@ namespace IoTHub.Portal.Infrastructure
                 .HasOne(x => x.DeviceModel)
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
+            _ = modelBuilder.Entity<User>()
+                .HasOne(x => x.AccessControls)
+                .WithMany()
+                .HasForeignKey(x => x.AccessControls);
         }
     }
 }
