@@ -1,0 +1,40 @@
+name: Validate Bicep templates
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'templates/azure/**'
+      - 'templates/iotedge-lorawan-starterkit/**'
+  push:
+    branches: [ main ]
+    paths:
+      - 'templates/azure/**'
+      - 'templates/iotedge-lorawan-starterkit/**'
+  workflow_dispatch:
+
+jobs:
+  validate_bicep_templates:
+    name: Build and Validate Bicep Templates
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Apply arm-templates label on PR
+        uses: actions/github-script@v7
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['arm-templates']
+            })
+
+      - uses: actions/checkout@v4.1.1
+        with:
+          submodules: recursive
+
+      - name: Lint Bicep templates and Generate ARM template
+        working-directory: templates/azure
+        run: az bicep build --file azuredeploy.bicep --outfile azuredeploy.json 
