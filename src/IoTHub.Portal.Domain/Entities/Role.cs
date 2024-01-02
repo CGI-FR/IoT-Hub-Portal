@@ -4,7 +4,6 @@
 namespace IoTHub.Portal.Domain.Entities
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
     using IoTHub.Portal.Domain.Base;
 
@@ -13,6 +12,7 @@ namespace IoTHub.Portal.Domain.Entities
         [Required]
         public string Name { get; set; }
         public string Avatar { get; set; } = default!;
-        public virtual ICollection<AccessControl> AccessControls { get; set; } = new Collection<AccessControl>();
+        public virtual ICollection<AccessControl>? AccessControls { get; set; }
+        public virtual ICollection<string>? Actions { get; set; }
     }
 }

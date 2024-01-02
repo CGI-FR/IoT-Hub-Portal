@@ -28,6 +28,9 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<AccessControl> AccessControls { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<UserAccessControl> UserAccessControls { get; set; }
+        public DbSet<GroupAccessControl> GroupAccessControls { get; set; }
+
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
@@ -62,10 +65,49 @@ namespace IoTHub.Portal.Infrastructure
                 .HasOne(x => x.DeviceModel)
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
-            _ = modelBuilder.Entity<User>()
-                .HasOne(x => x.AccessControls)
+
+            _ = modelBuilder.Entity<Member>()
+                .HasKey(m => new { m.UserId, m.GroupId });
+
+            _ = modelBuilder.Entity<Member>()
+                .HasOne(m => m.User)
+                .WithMany(u => u.Members)
+                .HasForeignKey(m => m.UserId);
+
+            _ = modelBuilder.Entity<Member>()
+                .HasOne(m => m.Group)
+                .WithMany(g => g.Members)
+                .HasForeignKey(m => m.GroupId);
+            _ = modelBuilder.Entity<UserAccessControl>()
+                .HasKey(ua => new { ua.UserId, ua.AccessControlId });
+
+            _ = modelBuilder.Entity<UserAccessControl>()
+                .HasOne(ua => ua.User)
+                .WithMany(u => u.UserAccessControls)
+                .HasForeignKey(ua => ua.UserId);
+
+            _ = modelBuilder.Entity<UserAccessControl>()
+                .HasOne(ua => ua.AccessControl)
                 .WithMany()
-                .HasForeignKey(x => x.AccessControls);
+                .HasForeignKey(ua => ua.AccessControlId);
+
+            _ = modelBuilder.Entity<GroupAccessControl>()
+                .HasKey(ga => new { ga.GroupId, ga.AccessControlId });
+
+            _ = modelBuilder.Entity<GroupAccessControl>()
+                .HasOne(ga => ga.Group)
+                .WithMany(g => g.GroupAccessControls)
+                .HasForeignKey(ga => ga.GroupId);
+
+            _ = modelBuilder.Entity<GroupAccessControl>()
+                .HasOne(ga => ga.AccessControl)
+                .WithMany()
+                .HasForeignKey(ga => ga.AccessControlId);
+
+            _ = modelBuilder.Entity<AccessControl>()
+                .HasOne(ac => ac.Role)
+                .WithMany(r => r.AccessControls)
+                .HasForeignKey(ac => ac.RoleId);
         }
     }
 }
