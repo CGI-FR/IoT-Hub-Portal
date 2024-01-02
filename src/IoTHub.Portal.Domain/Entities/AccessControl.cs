@@ -4,7 +4,6 @@
 namespace IoTHub.Portal.Domain.Entities
 {
     using System;
-    using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
     using IoTHub.Portal.Domain.Base;
 
@@ -17,6 +16,5 @@ namespace IoTHub.Portal.Domain.Entities
         [Required]
         public virtual Role Role { get; set; } = default!;
 
-        public ICollection<User> Users { get; set; } = new Collection<User>();
     }
 }
