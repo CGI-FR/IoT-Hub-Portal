@@ -3,15 +3,14 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using IoTHub.Portal.Domain.Base;
 
-    public class Role : EntityBase
+    public class Action : EntityBase
     {
         public string Name { get; set; } = default!;
-        public string Avatar { get; set; } = default!;
+        public string ApiEndpoint { get; set; } = default!; //"/api/v1/..."
+        public string HttpMethod { get; set; } = default!; //"GET", "POST", "PUT", "DELETE"...
         public virtual ICollection<RoleAction> RoleActions { get; set; } = new Collection<RoleAction>();
-        public virtual ICollection<AccessControl>? AccessControls { get; set; } = new Collection<AccessControl>();
     }
 }
