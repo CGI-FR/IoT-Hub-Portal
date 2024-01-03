@@ -3,15 +3,14 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System;
     using IoTHub.Portal.Domain.Base;
 
     public class GroupAccessControl : EntityBase
     {
-        public Guid GroupId { get; set; } = default!;
+        public string GroupId { get; set; } = default!;
         public virtual Group Group { get; set; } = default!;
 
-        public Guid AccessControlId { get; set; } = default!;
+        public string AccessControlId { get; set; } = default!;
         public virtual AccessControl AccessControl { get; set; } = default!;
     }
 
