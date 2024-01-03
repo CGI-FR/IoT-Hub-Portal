@@ -12,7 +12,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/dashboard")]
-    [ApiExplorerSettings(GroupName = "Metrics")]
+    //[ApiExplorerSettings(GroupName = "Metrics")]
     public class DashboardController : ControllerBase
     {
         private readonly PortalMetric portalMetric;
@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpGet("metrics", Name = "Get Portal Metrics")]
-        [Authorize(Policy = Policies.GetPortalMetrics)]
+        //[Authorize(Policy = Policies.GetPortalMetrics)]
         public ActionResult<PortalMetric> GetPortalMetrics()
         {
             return this.portalMetric;
