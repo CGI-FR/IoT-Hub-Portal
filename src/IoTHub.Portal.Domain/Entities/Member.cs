@@ -7,10 +7,10 @@ namespace IoTHub.Portal.Domain.Entities
 
     public class Member : EntityBase
     {
-        public Guid UserId { get; set; }
+        public string UserId { get; set; } = default!;
         public virtual User? User { get; set; }
 
-        public Guid GroupId { get; set; }
+        public string GroupId { get; set; } = default!;
         public virtual Group? Group { get; set; }
     }
 }
