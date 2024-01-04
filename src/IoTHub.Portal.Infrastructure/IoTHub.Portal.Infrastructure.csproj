@@ -104,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.GreengrassV2" Version="3.7.300.28" />
-    <PackageReference Include="AWSSDK.IoT" Version="3.7.303.9" />
+    <PackageReference Include="AWSSDK.IoT" Version="3.7.303.10" />
     <PackageReference Include="AWSSDK.IotData" Version="3.7.300.28" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.305.3" />
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.302.3" />
