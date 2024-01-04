@@ -83,7 +83,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="modelId"></param>
         /// <param name="labels"></param>
         [HttpGet(Name = "GET IoT Edge devices")]
-        [Authorize(Policy = Policies.GetAllEdgeDevices)]
+        //[Authorize(Policy = Policies.GetAllEdgeDevices)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<IoTEdgeListItem>))]
         public async Task<PaginationResult<IoTEdgeListItem>> Get(
             string searchText = null,

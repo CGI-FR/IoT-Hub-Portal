@@ -1,34 +1,31 @@
-// Copyright (c) CGI France. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
 namespace IoTHub.Portal.Server.Services
 {
+    using AutoMapper;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Shared.Models.v1._0;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public class RoleManagementService : IRoleManagementService
     {
         private readonly IRoleRepository roleRepository;
+        private readonly IMapper mapper;
 
-        public RoleManagementService(IRoleRepository roleRepository)
+        public RoleManagementService(IRoleRepository roleRepository, IMapper mapper)
         {
             this.roleRepository = roleRepository;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<RoleDto>> GetAllRolesAsync()
         {
             var roles = await roleRepository.GetAllAsync();
-            return (IEnumerable<RoleDto>)roles;
-        }
 
-        Task<IEnumerable<RoleDto>> IRoleManagementService.GetAllRolesAsync()
-        {
-            throw new System.NotImplementedException();
-        }
+            var roleDtos = roles.Select(role => mapper.Map<RoleDto>(role));
 
-        // TODO : Other methods
+            return roleDtos;
+        }
     }
 }

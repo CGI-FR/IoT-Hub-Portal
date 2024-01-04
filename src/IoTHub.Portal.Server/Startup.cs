@@ -311,6 +311,11 @@ namespace IoTHub.Portal.Server
                 .PersistKeysToDbContext<PortalDbContext>();
         }
 
+        private static void ConfigureServicesRBAC(IServiceCollection services)
+        {
+            _ = services.AddTransient<IRoleManagementService, RoleManagementService>();
+        }
+
         private static void ConfigureServicesAzure(IServiceCollection services)
         {
             _ = services.AddTransient<IExportManager, ExportManager>();
@@ -372,6 +377,7 @@ namespace IoTHub.Portal.Server
                     opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
                     opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
                 });
+            ConfigureServicesRBAC(services);
         }
 
         /// <summary>

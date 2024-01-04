@@ -5,6 +5,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 {
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -17,9 +18,9 @@ namespace IoTHub.Portal.Infrastructure.Repositories
             this.context = context;
         }
 
-        public async Task<IEnumerable<Role>> GetAllAsync()
+        public Task<Role[]> GetAllAsync()
         {
-            return await Task.FromResult(context.Roles);
+            return context.Roles.ToArrayAsync();
         }
     }
 }

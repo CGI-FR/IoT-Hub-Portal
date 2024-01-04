@@ -4,11 +4,10 @@
 namespace IoTHub.Portal.Domain.Repositories
 {
     using IoTHub.Portal.Domain.Entities;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public interface IRoleRepository
     {
-        Task<IEnumerable<Role>> GetAllAsync();
+        Task<Role[]> GetAllAsync();
     }
 }

@@ -25,7 +25,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpGet]
-        [Authorize(Policy = "GetAllRoles")]
+        //[Authorize(Policy = "GetAllRoles")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoleDto>))]
         public async Task<IActionResult> GetAllRoles()
         {
