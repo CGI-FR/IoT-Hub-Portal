@@ -8,5 +8,6 @@ namespace IoTHub.Portal.Application.Services
     public interface IRoleManagementService
     {
         Task<IEnumerable<RoleDto>> GetAllRolesAsync();
+        Task<RoleDto> GetRoleByIdAsync(string roleId);
     }
 }

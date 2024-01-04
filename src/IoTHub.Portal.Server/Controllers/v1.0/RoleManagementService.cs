@@ -27,5 +27,10 @@ namespace IoTHub.Portal.Server.Services
 
             return roleDtos;
         }
+        public async Task<RoleDto> GetRoleByIdAsync(string roleId)
+        {
+            var role = await roleRepository.GetByIdAsync(roleId);
+            return role != null ? mapper.Map<RoleDto>(role) : null;
+        }
     }
 }

@@ -6,7 +6,6 @@ namespace IoTHub.Portal.Infrastructure.Repositories
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
     using Microsoft.EntityFrameworkCore;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public class RoleRepository : IRoleRepository
@@ -21,6 +20,10 @@ namespace IoTHub.Portal.Infrastructure.Repositories
         public Task<Role[]> GetAllAsync()
         {
             return context.Roles.ToArrayAsync();
+        }
+        public Task<Role> GetByIdAsync(string roleId)
+        {
+            return context.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
         }
     }
 }

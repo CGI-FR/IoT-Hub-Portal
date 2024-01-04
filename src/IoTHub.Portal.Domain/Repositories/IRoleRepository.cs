@@ -9,5 +9,6 @@ namespace IoTHub.Portal.Domain.Repositories
     public interface IRoleRepository
     {
         Task<Role[]> GetAllAsync();
+        Task<Role> GetByIdAsync(string roleId);
     }
 }

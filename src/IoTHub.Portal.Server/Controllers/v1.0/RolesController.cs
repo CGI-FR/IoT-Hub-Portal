@@ -32,6 +32,18 @@ namespace IoTHub.Portal.Server.Controllers.V10
             var roles = await roleManagementService.GetAllRolesAsync();
             return Ok(roles);
         }
+        [HttpGet("{roleId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetRoleDetails(string roleId)
+        {
+            var role = await roleManagementService.GetRoleByIdAsync(roleId);
+            if (role == null)
+            {
+                return NotFound();
+            }
+            return Ok(role);
+        }
 
         // TODO : Other methods 
     }
