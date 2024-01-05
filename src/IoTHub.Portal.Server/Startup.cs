@@ -314,6 +314,9 @@ namespace IoTHub.Portal.Server
         private static void ConfigureServicesRBAC(IServiceCollection services)
         {
             _ = services.AddTransient<IRoleManagementService, RoleManagementService>();
+            _ = services.AddTransient<IUserManagementService, UserManagementService>();
+            _ = services.AddTransient<IGroupManagementService, GroupManagementService>();
+            _ = services.AddTransient<IAccessControlManagementService, AccessControlManagementService>();
         }
 
         private static void ConfigureServicesAzure(IServiceCollection services)
