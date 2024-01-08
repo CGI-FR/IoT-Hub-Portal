@@ -17,7 +17,15 @@ namespace IoTHub.Portal.Application.Mappers
 
             _ = CreateMap<Group, GroupDetailsModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name));
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Users, opts => opts.MapFrom(src =>
+                                   src.Members.Select(u => new UserModel
+                                   {
+                                       Id = u.User.Id,
+                                       Email = u.User.Email,
+                                       Name = u.User.Name,
+                                       Forename = u.User.Forename
+                                   })));
 
             _ = CreateMap<GroupModel, Group>()
                  .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name));

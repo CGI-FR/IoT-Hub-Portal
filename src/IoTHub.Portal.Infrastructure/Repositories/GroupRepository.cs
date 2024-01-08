@@ -26,6 +26,8 @@ namespace IoTHub.Portal.Infrastructure.Repositories
         public Task<Group?> GetByIdAsync(string groupId)
         {
             return context.Groups
+                .Include(r => r.Members)
+                .ThenInclude(m => m.User)
                 .FirstOrDefaultAsync(r => r.Id == groupId);
         }
     }

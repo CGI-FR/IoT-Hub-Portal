@@ -3,10 +3,13 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
+    using System.Collections.Generic;
+
     public class GroupDetailsModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
         public string Avatar { get; set; }
+        public ICollection<UserModel> Users { get; set; } = new List<UserModel>();
     }
 }
