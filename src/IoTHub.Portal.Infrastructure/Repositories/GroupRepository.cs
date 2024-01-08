@@ -25,5 +25,10 @@ namespace IoTHub.Portal.Infrastructure.Repositories
         {
             return context.Groups.FirstOrDefaultAsync(r => r.Id == groupId);
         }
+        public Task<Group> CreateAsync(Group group)
+        {
+            _ = this.context.Groups.Add(group);
+            return Task.FromResult(group);
+        }
     }
 }

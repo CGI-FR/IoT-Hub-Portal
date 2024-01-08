@@ -3,10 +3,14 @@
 
 namespace IoTHub.Portal.Shared.Models.v1._0
 {
+    using System.Collections.Generic;
+
     public class GroupDto
     {
         public string Id { get; set; }
         public string Name { get; set; }
         public string Avatar { get; set; }
+        public List<AccessControlDto> AccessControls { get; set; } = new List<AccessControlDto>();
+
     }
 }

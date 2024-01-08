@@ -10,5 +10,6 @@ namespace IoTHub.Portal.Domain.Repositories
     {
         Task<Group[]> GetAllAsync();
         Task<Group> GetByIdAsync(string groupId);
+        Task<Group> CreateAsync(Group group);
     }
 }

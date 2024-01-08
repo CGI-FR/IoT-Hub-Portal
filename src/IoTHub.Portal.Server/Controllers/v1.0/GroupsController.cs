@@ -45,6 +45,18 @@ namespace IoTHub.Portal.Server.Controllers.V10
             return Ok(group);
         }
 
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GroupDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateGroup([FromBody] GroupDto group)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var createdGroup = await groupManagementService.CreateGroupAsync(group);
+            return CreatedAtAction(nameof(GetGroupDetails), new { groupId = createdGroup.Id }, createdGroup);
+        }
         // TODO : Other methods 
     }
 }

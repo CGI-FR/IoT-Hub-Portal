@@ -32,5 +32,12 @@ namespace IoTHub.Portal.Server.Services
             var group = await groupRepository.GetByIdAsync(groupId);
             return group != null ? mapper.Map<GroupDto>(group) : null;
         }
+
+        public async Task<GroupDto> CreateGroupAsync(GroupDto groupDto)
+        {
+            var group = mapper.Map<Domain.Entities.Group>(groupDto);
+            var createdGroup = await groupRepository.CreateAsync(group);
+            return mapper.Map<GroupDto>(createdGroup);
+        }
     }
 }

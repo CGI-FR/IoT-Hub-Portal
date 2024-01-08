@@ -9,5 +9,6 @@ namespace IoTHub.Portal.Application.Services
     {
         Task<IEnumerable<GroupDto>> GetAllGroupsAsync();
         Task<GroupDto> GetGroupByIdAsync(string groupId);
+        Task<GroupDto> CreateGroupAsync(GroupDto groupDto);
     }
 }

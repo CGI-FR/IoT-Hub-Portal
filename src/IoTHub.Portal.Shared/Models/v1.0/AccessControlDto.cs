@@ -3,10 +3,14 @@
 
 namespace IoTHub.Portal.Shared.Models.v1._0
 {
+    using System;
+
     public class AccessControlDto
     {
         public string Id { get; set; }
         public string Scope { get; set; }
         public string RoleId { get; set; }
+
+        public static implicit operator string(AccessControlDto v) => throw new NotImplementedException();
     }
 }
