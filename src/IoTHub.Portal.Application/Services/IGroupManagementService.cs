@@ -5,9 +5,10 @@ namespace IoTHub.Portal.Application.Services
 {
     using IoTHub.Portal.Shared.Models.v1._0;
 
-    public interface IRoleManagementService
+    public interface IGroupManagementService
     {
-        Task<IEnumerable<RoleDto>> GetAllRolesAsync();
-        Task<RoleDto> GetRoleByIdAsync(string roleId);
+        Task<IEnumerable<GroupDto>> GetAllGroupsAsync();
+        Task<GroupDto> GetGroupByIdAsync(string groupId);
+        Task<GroupDto> CreateGroupAsync(GroupDto groupDto);
     }
 }

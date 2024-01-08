@@ -5,9 +5,9 @@ namespace IoTHub.Portal.Application.Services
 {
     using IoTHub.Portal.Shared.Models.v1._0;
 
-    public interface IRoleManagementService
+    public interface IUserManagementService
     {
-        Task<IEnumerable<RoleDto>> GetAllRolesAsync();
-        Task<RoleDto> GetRoleByIdAsync(string roleId);
+        Task<IEnumerable<UserDto>> GetAllUsersAsync();
+        Task<UserDto> GetUserByIdAsync(string userId);
     }
 }

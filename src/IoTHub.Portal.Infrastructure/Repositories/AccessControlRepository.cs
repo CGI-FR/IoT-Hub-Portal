@@ -8,22 +8,22 @@ namespace IoTHub.Portal.Infrastructure.Repositories
     using Microsoft.EntityFrameworkCore;
     using System.Threading.Tasks;
 
-    public class RoleRepository : IRoleRepository
+    public class AccessControlRepository : IAccessControlRepository
     {
         private readonly PortalDbContext context;
 
-        public RoleRepository(PortalDbContext context)
+        public AccessControlRepository(PortalDbContext context)
         {
             this.context = context;
         }
 
-        public Task<Role[]> GetAllAsync()
+        public Task<AccessControl[]> GetAllAsync()
         {
-            return context.Roles.ToArrayAsync();
+            return context.AccessControls.ToArrayAsync();
         }
-        public Task<Role> GetByIdAsync(string roleId)
+        public Task<AccessControl> GetByIdAsync(string accessControlId)
         {
-            return context.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
+            return context.AccessControls.FirstOrDefaultAsync(r => r.Id == accessControlId);
         }
     }
 }

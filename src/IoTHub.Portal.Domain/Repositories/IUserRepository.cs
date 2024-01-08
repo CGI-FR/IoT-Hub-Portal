@@ -6,9 +6,9 @@ namespace IoTHub.Portal.Domain.Repositories
     using IoTHub.Portal.Domain.Entities;
     using System.Threading.Tasks;
 
-    public interface IRoleRepository
+    public interface IUserRepository
     {
-        Task<Role[]> GetAllAsync();
-        Task<Role> GetByIdAsync(string roleId);
+        Task<User[]> GetAllAsync();
+        Task<User> GetByIdAsync(string userId);
     }
 }
