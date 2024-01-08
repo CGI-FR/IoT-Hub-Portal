@@ -105,7 +105,8 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddScoped<IConcentratorRepository, ConcentratorRepository>()
                             .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
                             .AddScoped<ILabelRepository, LabelRepository>()
-                            .AddScoped<IRoleRepository, RoleRepository>();
+                            .AddScoped<IRoleRepository, RoleRepository>()
+                            .AddScoped<IGroupRepository, GroupRepository>();
         }
 
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
