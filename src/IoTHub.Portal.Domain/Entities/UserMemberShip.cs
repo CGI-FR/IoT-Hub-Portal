@@ -5,13 +5,12 @@ namespace IoTHub.Portal.Domain.Entities
 {
     using IoTHub.Portal.Domain.Base;
 
-    public class UserAccessControl : EntityBase
+    public class UserMemberShip : EntityBase
     {
         public string UserId { get; set; } = default!;
-        public virtual User User { get; set; } = default!;
+        public virtual User? User { get; set; }
 
-        public string AccessControlId { get; set; } = default!;
-        public virtual AccessControl AccessControl { get; set; } = default!;
+        public string GroupId { get; set; } = default!;
+        public virtual Group? Group { get; set; }
     }
-
 }

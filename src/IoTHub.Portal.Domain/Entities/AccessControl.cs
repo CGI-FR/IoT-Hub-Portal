@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System.Collections.ObjectModel;
     using IoTHub.Portal.Domain.Base;
 
     public class AccessControl : EntityBase
@@ -11,8 +10,5 @@ namespace IoTHub.Portal.Domain.Entities
         public string Scope { get; set; } = default!;
         public string RoleId { get; set; } = default!;
         public Role Role { get; set; } = new Role();
-        public ICollection<UserAccessControl> UserAccessControls { get; set; } = new Collection<UserAccessControl>();
-        public ICollection<GroupAccessControl> GroupAccessControls { get; set; } = new Collection<GroupAccessControl>();
-
     }
 }

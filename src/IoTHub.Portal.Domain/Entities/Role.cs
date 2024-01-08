@@ -10,8 +10,6 @@ namespace IoTHub.Portal.Domain.Entities
     public class Role : EntityBase
     {
         public string Name { get; set; } = default!;
-        public string Avatar { get; set; } = default!;
-        public virtual ICollection<RoleAction> RoleActions { get; set; } = new Collection<RoleAction>();
-        public virtual ICollection<AccessControl>? AccessControls { get; set; } = new Collection<AccessControl>();
+        public virtual ICollection<Action> Actions { get; set; } = new Collection<Action>();
     }
 }
