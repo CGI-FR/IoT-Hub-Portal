@@ -3,9 +3,7 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using IoTHub.Portal.Domain.Base;
-
-    public class UserMemberShip : EntityBase
+    public class UserMemberShip
     {
         public string UserId { get; set; } = default!;
         public virtual User? User { get; set; }

@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Application.Mappers
                                        Id = u.User.Id,
                                        Email = u.User.Email,
                                        Name = u.User.Name,
-                                       Forename = u.User.Forename
+                                       Forename = u.User.FamilyName
                                    })));
 
             _ = CreateMap<GroupModel, Group>()

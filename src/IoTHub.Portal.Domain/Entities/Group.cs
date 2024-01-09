@@ -11,7 +11,7 @@ namespace IoTHub.Portal.Domain.Entities
     public class Group : EntityBase
     {
         public string Name { get; set; } = default!;
-        public string Avatar { get; set; } = default!;
+        public string Description { get; set; } = default!;
         public virtual ICollection<UserMemberShip> Members { get; set; } = new Collection<UserMemberShip>();
         public virtual ICollection<AccessControl> AccessControls { get; set; } = new Collection<AccessControl>();
 

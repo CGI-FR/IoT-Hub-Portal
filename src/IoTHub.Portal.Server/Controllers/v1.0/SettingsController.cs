@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Shared.Security;
+    //using IoTHub.Portal.Shared.Security;
 
     [ApiController]
     [AllowAnonymous]
