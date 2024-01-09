@@ -80,6 +80,7 @@ namespace IoTHub.Portal.Infrastructure
             _ = modelBuilder.Entity<Group>()
                 .HasMany(a => a.AccessControls);
 
+
             _ = modelBuilder.Entity<User>()
                .HasMany(a => a.AccessControls);
 
@@ -88,6 +89,18 @@ namespace IoTHub.Portal.Infrastructure
 
             _ = modelBuilder.Entity<AccessControl>()
                 .HasOne(r => r.Role);
+
+            _ = modelBuilder.Entity<AccessControl>()
+                .HasOne(ac => ac.User)
+                .WithMany(u => u.AccessControls)
+                .HasForeignKey(ac => ac.UserId)
+                .IsRequired(false);
+
+            _ = modelBuilder.Entity<AccessControl>()
+                .HasOne(ac => ac.Group)
+                .WithMany(g => g.AccessControls)
+                .HasForeignKey(ac => ac.GroupId)
+                .IsRequired(false);
         }
     }
 }

@@ -10,5 +10,9 @@ namespace IoTHub.Portal.Domain.Entities
         public string Scope { get; set; } = default!;
         public string RoleId { get; set; } = default!;
         public Role Role { get; set; } = new Role();
+        public User User { get; set; } = new User();
+        public Group Group { get; set; } = new Group();
+        public string? GroupId { get; set; } = default!;
+        public string? UserId { get; set; } = default!;
     }
 }

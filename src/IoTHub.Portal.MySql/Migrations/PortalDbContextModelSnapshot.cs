@@ -623,7 +623,7 @@ namespace IoTHub.Portal.MySql.Migrations
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
                 {
-                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", null)
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", "Group")
                         .WithMany("AccessControls")
                         .HasForeignKey("GroupId");
 
@@ -633,11 +633,15 @@ namespace IoTHub.Portal.MySql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IoTHub.Portal.Domain.Entities.User", null)
+                    b.HasOne("IoTHub.Portal.Domain.Entities.User", "User")
                         .WithMany("AccessControls")
                         .HasForeignKey("UserId");
 
+                    b.Navigation("Group");
+
                     b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Action", b =>
