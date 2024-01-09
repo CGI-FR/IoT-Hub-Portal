@@ -13,22 +13,21 @@ namespace IoTHub.Portal.Application.Mappers
         {
             _ = CreateMap<User, UserModel>()
                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-               .ForMember(dest => dest.Email, opts => opts.MapFrom(src => src.Email))
-               .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
-               .ForMember(dest => dest.Forename, opts => opts.MapFrom(src => src.FamilyName));
+               .ForMember(dest => dest.GivenName, opts => opts.MapFrom(src => src.GivenName));
 
             _ = CreateMap<User, UserDetailsModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name));
-            //  .ForMember(dest => dest.AccessControl, opts => opts.MapFrom(src =>
-            //     src.AccessControls.Select(a => new ActionModel
-            //   {
-            //      Id = a.Id,
-            //    Name = a.Name,
-            //  UserId = src.Id
-            //   })));
-            _ = CreateMap<UserModel, User>()
-                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name));
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Email, opts => opts.MapFrom(src => src.Email))
+                .ForMember(dest => dest.GivenName, opts => opts.MapFrom(src => src.GivenName))
+                .ForMember(dest => dest.FamilyName, opts => opts.MapFrom(src => src.FamilyName))
+                .ForMember(dest => dest.AccessControls, opts => opts.MapFrom(src =>
+                                   src.AccessControls.Select(ac => new AccessControlModel
+                                   {
+                                       Id = ac.Id,
+                                       Scope = ac.Scope,
+                                       Role = new RoleModel { Name = ac.Role.Name }
+                                   })));
         }
     }
 }

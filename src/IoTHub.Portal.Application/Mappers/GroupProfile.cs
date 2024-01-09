@@ -22,9 +22,14 @@ namespace IoTHub.Portal.Application.Mappers
                                    src.Members.Select(u => new UserModel
                                    {
                                        Id = u.User.Id,
-                                       Email = u.User.Email,
-                                       Name = u.User.Name,
-                                       Forename = u.User.FamilyName
+                                       GivenName = u.User.GivenName
+                                   })))
+                .ForMember(dest => dest.AccessControls, opts => opts.MapFrom(src =>
+                                   src.AccessControls.Select(ac => new AccessControlModel
+                                   {
+                                       Id = ac.Id,
+                                       Scope = ac.Scope,
+                                       Role = new RoleModel { Name = ac.Role.Name }
                                    })));
 
             _ = CreateMap<GroupModel, Group>()

@@ -3,13 +3,14 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    //using System.Collections.Generic;
+    using System.Collections.Generic;
     public class UserDetailsModel
     {
         public string Id { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
-        public string Forename { get; set; }
-        //public ICollection<AccessControlModel> AccessControls { get; set; } = new List<AccessControlModel>();
+        public string GivenName { get; set; }
+        public string FamilyName { get; set; }
+        public ICollection<AccessControlModel> AccessControls { get; set; } = new List<AccessControlModel>();
     }
 }

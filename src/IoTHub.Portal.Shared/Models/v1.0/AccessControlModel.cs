@@ -4,9 +4,11 @@
 namespace IoTHub.Portal.Shared.Models.v10
 {
 
-    public class UserModel
+    public class AccessControlModel
     {
+
         public string Id { get; set; }
-        public string GivenName { get; set; }
+        public string Scope { get; set; } = default!;
+        public RoleModel Role { get; set; } = default!;
     }
 }

@@ -27,6 +27,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
         {
             return context.Users
                 .Include(r => r.AccessControls)
+                .ThenInclude(ac => ac.Role)
                 .FirstOrDefaultAsync(r => r.Id == userId);
         }
     }
