@@ -8,6 +8,6 @@ namespace IoTHub.Portal.Shared.Models.v10
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public ICollection<ActionModel> Actions { get; set; } = new List<ActionModel>();
+        public ICollection<string> Actions { get; set; } = new List<string>();
     }
 }

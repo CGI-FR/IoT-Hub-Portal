@@ -19,12 +19,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Actions, opts => opts.MapFrom(src =>
-                    src.Actions.Select(a => new ActionModel
-                    {
-                        Id = a.Id,
-                        Name = a.Name,
-                        RoleId = src.Id
-                    })));
+                    src.Actions.Select(a => a.Name)));
 
             _ = CreateMap<RoleModel, Role>()
                  .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name));
