@@ -6,6 +6,7 @@ namespace IoTHub.Portal.Shared.Models.v10
 
     public class RoleModel
     {
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 }

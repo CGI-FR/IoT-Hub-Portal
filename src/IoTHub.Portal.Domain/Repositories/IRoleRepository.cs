@@ -3,12 +3,11 @@
 
 namespace IoTHub.Portal.Domain.Repositories
 {
+    using System.Linq.Expressions;
     using IoTHub.Portal.Domain.Entities;
-    using System.Threading.Tasks;
 
-    public interface IRoleRepository
+    public interface IRoleRepository : IRepository<Role>
     {
-        Task<Role[]> GetAllAsync();
-        Task<Role?> GetByIdAsync(string roleId);
+        Task<Role?> GetByNameAsync(string roleName, params Expression<Func<Role, object>>[] includeProperties);
     }
 }

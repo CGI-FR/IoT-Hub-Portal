@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IoTHub.Portal.MySql.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    [Migration("20240109104359_RoleBasedAccessControl")]
-    partial class RoleBasedAccessControl
+    [Migration("20240110131148_RoleBasedAccessControl-v1")]
+    partial class RoleBasedAccessControlv1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,12 +61,12 @@ namespace IoTHub.Portal.MySql.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("RoleName")
+                    b.Property<string>("RoleId")
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleName");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Actions");
                 });
@@ -463,14 +463,18 @@ namespace IoTHub.Portal.MySql.Migrations
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Roles");
                 });
@@ -651,7 +655,7 @@ namespace IoTHub.Portal.MySql.Migrations
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Role", null)
                         .WithMany("Actions")
-                        .HasForeignKey("RoleName");
+                        .HasForeignKey("RoleId");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Device", b =>

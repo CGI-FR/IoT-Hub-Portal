@@ -33,18 +33,45 @@ namespace IoTHub.Portal.Server.Controllers.V10
             return Ok(roles);
         }
 
-        [HttpGet("{roleId}")]
+        [HttpGet("{roleName}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleDetailsModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetRoleDetails(string roleId)
+        public async Task<IActionResult> GetRoleDetails(string roleName)
         {
-            var roleDetails = await roleManagementService.GetRoleDetailsAsync(roleId);
+            var roleDetails = await roleManagementService.GetRoleDetailsAsync(roleName);
             if (roleDetails == null)
             {
                 return NotFound();
             }
             return Ok(roleDetails);
         }
+
+        [HttpPost(Name = "POST Create a Role")]
+        //[Authorize(Policy = Policies.CreateRole)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateRoleAsync(RoleDetailsModel role)
+        {
+            return Ok(await this.roleManagementService.CreateRole(role));
+        }
+
+        [HttpPut("{roleName}")]
+        //[Authorize(Policy = Policies.EditRole)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> EditRoleAsync(string roleName, RoleDetailsModel roleDetails)
+        {
+            return Ok(await this.roleManagementService.UpdateRole(roleName, roleDetails));
+        }
+
+        [HttpDelete("{roleName}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteRole(string roleName)
+        {
+            return Ok(await roleManagementService.DeleteRole(roleName));
+        }
+
         // TODO : Other methods 
     }
 }

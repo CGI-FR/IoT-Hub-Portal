@@ -5,10 +5,10 @@ namespace IoTHub.Portal.Domain.Entities
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.ComponentModel.DataAnnotations;
-    public class Role
+    using IoTHub.Portal.Domain.Base;
+
+    public class Role : EntityBase
     {
-        [Key]
         public string Name { get; set; } = default!;
         public string Description { get; set; } = default!;
         public virtual ICollection<Action> Actions { get; set; } = new Collection<Action>();

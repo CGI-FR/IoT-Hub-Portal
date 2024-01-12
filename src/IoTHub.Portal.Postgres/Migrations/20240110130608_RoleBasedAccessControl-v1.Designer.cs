@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IoTHub.Portal.Postgres.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    [Migration("20240109103527_RoleBasedAccessControl-v1")]
+    [Migration("20240110130608_RoleBasedAccessControl-v1")]
     partial class RoleBasedAccessControlv1
     {
         /// <inheritdoc />
@@ -64,12 +64,12 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("RoleName")
+                    b.Property<string>("RoleId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleName");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Actions");
                 });
@@ -466,14 +466,18 @@ namespace IoTHub.Portal.Postgres.Migrations
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Roles");
                 });
@@ -656,7 +660,7 @@ namespace IoTHub.Portal.Postgres.Migrations
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Role", null)
                         .WithMany("Actions")
-                        .HasForeignKey("RoleName");
+                        .HasForeignKey("RoleId");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Device", b =>

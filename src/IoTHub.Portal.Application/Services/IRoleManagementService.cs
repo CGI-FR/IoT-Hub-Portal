@@ -8,7 +8,9 @@ namespace IoTHub.Portal.Application.Services
     public interface IRoleManagementService
     {
         Task<IEnumerable<RoleModel>> GetAllRolesAsync();
-        Task<RoleDetailsModel> GetRoleDetailsAsync(string roleId);
-
+        Task<RoleDetailsModel> GetRoleDetailsAsync(string roleName);
+        Task<RoleDetailsModel> CreateRole(RoleDetailsModel roleDetails);
+        Task<RoleDetailsModel> UpdateRole(string roleName, RoleDetailsModel roleDetails);
+        Task<bool> DeleteRole(string roleName);
     }
 }

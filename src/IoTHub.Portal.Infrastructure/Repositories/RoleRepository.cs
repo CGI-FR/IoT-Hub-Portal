@@ -3,31 +3,24 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
+    using System.Linq.Expressions;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
     using Microsoft.EntityFrameworkCore;
-    using System.Threading.Tasks;
 
-    public class RoleRepository : IRoleRepository
+    public class RoleRepository : GenericRepository<Role>, IRoleRepository
     {
-        private readonly PortalDbContext context;
-
-        public RoleRepository(PortalDbContext context)
+        public RoleRepository(PortalDbContext context) : base(context)
         {
-            this.context = context;
         }
-
-        public Task<Role[]> GetAllAsync()
+        public async Task<Role?> GetByNameAsync(string roleName, params Expression<Func<Role, object>>[] includeProperties)
         {
-            return context.Roles
-                .ToArrayAsync();
-        }
-
-        public Task<Role?> GetByIdAsync(string roleId)
-        {
-            return context.Roles
-                .Include(r => r.Actions)
-                .FirstOrDefaultAsync(r => r.Name == roleId);
+            IQueryable<Role> query = context.Roles;
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+            return await query.FirstOrDefaultAsync(r => r.Name == roleName);
         }
     }
 }
