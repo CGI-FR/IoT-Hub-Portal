@@ -44,7 +44,6 @@ namespace IoTHub.Portal.Server.Services
             var roleEntity = await roleRepository.GetByIdAsync(role.Id);
             if (roleEntity == null) return null;
 
-            // Mise à jour des propriétés
             roleEntity.Name = role.Name;
             roleEntity.Description = role.Description;
             roleEntity.Actions = role.Actions;

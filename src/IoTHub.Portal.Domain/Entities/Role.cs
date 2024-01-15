@@ -14,10 +14,5 @@ namespace IoTHub.Portal.Domain.Entities
         public string Name { get; set; } = default!;
         public string Description { get; set; } = default!;
         public virtual ICollection<Action> Actions { get; set; } = new Collection<Action>();
-
-        public IEnumerable<string> Select(Func<object, object> value)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -74,12 +74,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
             {
                 return NotFound($"Role with name {currentRoleName} not found.");
             }
-
-            // Mise à jour des propriétés du rôle
             existingRole.Name = roleDetails.Name;
             existingRole.Description = roleDetails.Description;
-
-            // Mise à jour des actions
             existingRole.Actions = UpdateRoleActions(existingRole.Actions, roleDetails.Actions.Select(a => new Action { Name = a }).ToList());
 
             var updatedRole = await roleManagementService.UpdateRole(existingRole);
