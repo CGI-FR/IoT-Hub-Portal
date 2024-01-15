@@ -3,14 +3,14 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using IoTHub.Portal.Shared.Models.v10;
+    using IoTHub.Portal.Domain.Entities;
 
     public interface IRoleManagementService
     {
-        Task<IEnumerable<RoleModel>> GetAllRolesAsync();
-        Task<RoleDetailsModel> GetRoleDetailsAsync(string roleName);
-        Task<RoleDetailsModel> CreateRole(RoleDetailsModel roleDetails);
-        Task<RoleDetailsModel> UpdateRole(string roleName, RoleDetailsModel roleDetails);
+        Task<IEnumerable<Role>> GetAllRolesAsync();
+        Task<Role> GetRoleDetailsAsync(string roleName);
+        Task<Role> CreateRole(Role roleEntity);
+        Task<Role?> UpdateRole(Role roleEntity);
         Task<bool> DeleteRole(string roleName);
     }
 }

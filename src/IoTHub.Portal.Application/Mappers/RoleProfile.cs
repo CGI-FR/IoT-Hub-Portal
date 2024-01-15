@@ -26,7 +26,8 @@ namespace IoTHub.Portal.Application.Mappers
                  .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
                  .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
                  .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
-                 .ForMember(dest => dest.Actions, opts => opts.Ignore());
+                 .ForMember(dest => dest.Actions, opts => opts.MapFrom(src =>
+                     src.Actions.Select(a => new Action { Name = a })));
         }
     }
 }
