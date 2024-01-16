@@ -27,7 +27,7 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.Property<string>("GroupId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("RoleId")
+                    b.Property<string>("RoleName")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
@@ -42,7 +42,7 @@ namespace IoTHub.Portal.MySql.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleName");
 
                     b.HasIndex("UserId");
 
@@ -58,12 +58,12 @@ namespace IoTHub.Portal.MySql.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("RoleName")
+                    b.Property<string>("RoleId")
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleName");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Actions");
                 });
@@ -460,14 +460,21 @@ namespace IoTHub.Portal.MySql.Migrations
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Roles");
                 });
@@ -629,8 +636,8 @@ namespace IoTHub.Portal.MySql.Migrations
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("RoleName")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.User", "User")
@@ -648,7 +655,7 @@ namespace IoTHub.Portal.MySql.Migrations
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Role", null)
                         .WithMany("Actions")
-                        .HasForeignKey("RoleName");
+                        .HasForeignKey("RoleId");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Device", b =>

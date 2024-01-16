@@ -87,8 +87,15 @@ namespace IoTHub.Portal.Infrastructure
             _ = modelBuilder.Entity<Role>()
                 .HasMany(a => a.Actions);
 
+            _ = modelBuilder.Entity<Role>()
+                .HasIndex(r => r.Name)
+                .IsUnique();
+
             _ = modelBuilder.Entity<AccessControl>()
-                .HasOne(r => r.Role);
+                .HasOne(ac => ac.Role)
+                .WithMany()
+                .HasForeignKey(ac => ac.RoleName)
+                .OnDelete(DeleteBehavior.Restrict);
 
             _ = modelBuilder.Entity<AccessControl>()
                 .HasOne(ac => ac.User)

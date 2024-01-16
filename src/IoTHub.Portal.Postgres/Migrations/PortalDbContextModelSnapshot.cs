@@ -30,7 +30,7 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.Property<string>("GroupId")
                         .HasColumnType("text");
 
-                    b.Property<string>("RoleId")
+                    b.Property<string>("RoleName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -45,7 +45,7 @@ namespace IoTHub.Portal.Postgres.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleName");
 
                     b.HasIndex("UserId");
 
@@ -61,12 +61,12 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("RoleName")
+                    b.Property<string>("RoleId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleName");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Actions");
                 });
@@ -463,14 +463,21 @@ namespace IoTHub.Portal.Postgres.Migrations
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Roles");
                 });
@@ -634,8 +641,8 @@ namespace IoTHub.Portal.Postgres.Migrations
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("RoleName")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.User", "User")
@@ -653,7 +660,7 @@ namespace IoTHub.Portal.Postgres.Migrations
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Role", null)
                         .WithMany("Actions")
-                        .HasForeignKey("RoleName");
+                        .HasForeignKey("RoleId");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Device", b =>
