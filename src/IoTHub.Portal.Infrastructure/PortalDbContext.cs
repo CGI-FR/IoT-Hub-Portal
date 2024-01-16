@@ -80,14 +80,34 @@ namespace IoTHub.Portal.Infrastructure
             _ = modelBuilder.Entity<Group>()
                 .HasMany(a => a.AccessControls);
 
+
             _ = modelBuilder.Entity<User>()
                .HasMany(a => a.AccessControls);
 
             _ = modelBuilder.Entity<Role>()
                 .HasMany(a => a.Actions);
 
+            _ = modelBuilder.Entity<Role>()
+                .HasIndex(r => r.Name)
+                .IsUnique();
+
             _ = modelBuilder.Entity<AccessControl>()
-                .HasOne(r => r.Role);
+                .HasOne(ac => ac.Role)
+                .WithMany()
+                .HasForeignKey(ac => ac.RoleName)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            _ = modelBuilder.Entity<AccessControl>()
+                .HasOne(ac => ac.User)
+                .WithMany(u => u.AccessControls)
+                .HasForeignKey(ac => ac.UserId)
+                .IsRequired(false);
+
+            _ = modelBuilder.Entity<AccessControl>()
+                .HasOne(ac => ac.Group)
+                .WithMany(g => g.AccessControls)
+                .HasForeignKey(ac => ac.GroupId)
+                .IsRequired(false);
         }
     }
 }

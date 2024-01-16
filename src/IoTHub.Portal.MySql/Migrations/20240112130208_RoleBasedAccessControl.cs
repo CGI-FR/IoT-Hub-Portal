@@ -1,13 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-
 #nullable disable
 
 namespace IoTHub.Portal.MySql.Migrations
 {
     using Microsoft.EntityFrameworkCore.Migrations;
-
     /// <inheritdoc />
     public partial class RoleBasedAccessControl : Migration
     {
@@ -22,7 +20,7 @@ namespace IoTHub.Portal.MySql.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Avatar = table.Column<string>(type: "longtext", nullable: false)
+                    Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -37,7 +35,9 @@ namespace IoTHub.Portal.MySql.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -56,7 +56,9 @@ namespace IoTHub.Portal.MySql.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Forename = table.Column<string>(type: "longtext", nullable: false)
+                    GivenName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FamilyName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -95,7 +97,7 @@ namespace IoTHub.Portal.MySql.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Scope = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    RoleId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    RoleName = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -111,11 +113,11 @@ namespace IoTHub.Portal.MySql.Migrations
                         principalTable: "Groups",
                         principalColumn: "Id");
                     _ = table.ForeignKey(
-                        name: "FK_AccessControls_Roles_RoleId",
-                        column: x => x.RoleId,
+                        name: "FK_AccessControls_Roles_RoleName",
+                        column: x => x.RoleName,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     _ = table.ForeignKey(
                         name: "FK_AccessControls_Users_UserId",
                         column: x => x.UserId,
@@ -131,8 +133,6 @@ namespace IoTHub.Portal.MySql.Migrations
                     UserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Id = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -159,9 +159,9 @@ namespace IoTHub.Portal.MySql.Migrations
                 column: "GroupId");
 
             _ = migrationBuilder.CreateIndex(
-                name: "IX_AccessControls_RoleId",
+                name: "IX_AccessControls_RoleName",
                 table: "AccessControls",
-                column: "RoleId");
+                column: "RoleName");
 
             _ = migrationBuilder.CreateIndex(
                 name: "IX_AccessControls_UserId",
@@ -172,6 +172,12 @@ namespace IoTHub.Portal.MySql.Migrations
                 name: "IX_Actions_RoleId",
                 table: "Actions",
                 column: "RoleId");
+
+            _ = migrationBuilder.CreateIndex(
+                name: "IX_Roles_Name",
+                table: "Roles",
+                column: "Name",
+                unique: true);
 
             _ = migrationBuilder.CreateIndex(
                 name: "IX_UserMemberShip_GroupId",

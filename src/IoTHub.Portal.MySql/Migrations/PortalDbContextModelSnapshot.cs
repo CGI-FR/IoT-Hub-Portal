@@ -27,7 +27,7 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.Property<string>("GroupId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("RoleId")
+                    b.Property<string>("RoleName")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
@@ -42,7 +42,7 @@ namespace IoTHub.Portal.MySql.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleName");
 
                     b.HasIndex("UserId");
 
@@ -385,7 +385,7 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Avatar")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -463,11 +463,18 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Roles");
                 });
@@ -481,7 +488,11 @@ namespace IoTHub.Portal.MySql.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Forename")
+                    b.Property<string>("FamilyName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GivenName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -501,9 +512,6 @@ namespace IoTHub.Portal.MySql.Migrations
 
                     b.Property<string>("GroupId")
                         .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("longtext");
 
                     b.HasKey("UserId", "GroupId");
 
@@ -622,21 +630,25 @@ namespace IoTHub.Portal.MySql.Migrations
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
                 {
-                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", null)
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", "Group")
                         .WithMany("AccessControls")
                         .HasForeignKey("GroupId");
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("RoleName")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("IoTHub.Portal.Domain.Entities.User", null)
+                    b.HasOne("IoTHub.Portal.Domain.Entities.User", "User")
                         .WithMany("AccessControls")
                         .HasForeignKey("UserId");
 
+                    b.Navigation("Group");
+
                     b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Action", b =>

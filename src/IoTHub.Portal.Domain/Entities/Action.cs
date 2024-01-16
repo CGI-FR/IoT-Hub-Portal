@@ -3,10 +3,13 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
+    using System;
     using IoTHub.Portal.Domain.Base;
 
     public class Action : EntityBase
     {
         public string Name { get; set; } = default!;
+
+        public static implicit operator string(Action v) => throw new NotImplementedException();
     }
 }

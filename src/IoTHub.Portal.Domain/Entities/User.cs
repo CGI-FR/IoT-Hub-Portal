@@ -12,7 +12,8 @@ namespace IoTHub.Portal.Domain.Entities
     {
         public string Email { get; set; } = default!;
         public string Name { get; set; } = default!;
-        public string Forename { get; set; } = default!;
+        public string GivenName { get; set; } = default!;
+        public string FamilyName { get; set; } = default!;
         public virtual ICollection<UserMemberShip> Groups { get; set; } = new Collection<UserMemberShip>();
         public virtual ICollection<AccessControl> AccessControls { get; set; } = new Collection<AccessControl>();
     }
