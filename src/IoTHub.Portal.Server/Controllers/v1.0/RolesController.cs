@@ -29,6 +29,10 @@ namespace IoTHub.Portal.Server.Controllers.V10
             this.mapper = mapper;
         }
 
+        /// <summary>
+        ///  Get all roles
+        /// </summary>
+        /// <returns>HTTP Get response</returns>
         [HttpGet]
         //[Authorize(Policy = "GetAllRoles")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoleModel>))]
@@ -39,6 +43,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
             return Ok(rolesModel);
         }
 
+        /// <summary>
+        /// Get role details
+        /// </summary>
+        /// <param name="roleName">Role name</param>
+        /// <returns>HTTP Get response</returns>
         [HttpGet("{roleName}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleDetailsModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -53,6 +62,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
             return Ok(roleDetails);
         }
 
+        /// <summary>
+        /// Create a new role and the associated actions
+        /// </summary>
+        /// <param name="roleDetails">Role details</param>
+        /// <returns>HTTP Post response</returns>
         [HttpPost(Name = "POST Create a Role")]
         //[Authorize(Policy = Policies.CreateRole)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -63,6 +77,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
             return Ok(await this.roleManagementService.CreateRole(role));
         }
 
+        /// <summary>
+        /// Edit an existing role and the associated actions, delete the actions that are not in the new list
+        /// </summary>
+        /// <param name="roleDetails">Role details</param>
+        /// <param name="currentRoleName">Current role name (before any changes)</param>
+        /// <returns>HTTP Put response, updated role</returns>
         [HttpPut("{currentRoleName}")]
         //[Authorize(Policy = Policies.EditRole)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -87,6 +107,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
             return Ok(updatedRole);
         }
 
+        /// <summary>
+        /// Update the role actions
+        /// </summary>
+        /// <param name="existingActions">Old actions</param>
+        /// <param name="newActions">new actions</param>
+        /// <returns>updated actions</returns>
         private static ICollection<Action> UpdateRoleActions(ICollection<Action> existingActions, ICollection<Action> newActions)
         {
             var updatedActions = new HashSet<Action>(existingActions);
@@ -102,6 +128,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
 
+        /// <summary>
+        /// Delete a role by name
+        /// </summary>
+        /// <param name="roleName">Role name that we want to delete</param>
+        /// <returns></returns>
         [HttpDelete("{roleName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
