@@ -105,7 +105,7 @@ resource site 'Microsoft.Web/sites@2022-03-01' = {
     reserved: true
     siteConfig: {
       numberOfWorkers: 1
-      linuxFxVersion: 'DOCKER|ghcr.io/cgi-fr/iothub-portal:5.1.0'
+      linuxFxVersion: 'DOCKER|ghcr.io/cgi-fr/iothub-portal:5.2.0'
       connectionStrings: [
         {
           name: 'Azure__IoTHub__ConnectionString'
@@ -120,7 +120,7 @@ resource site 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'Azure__IoTDPS__ConnectionString'
           type: 'Custom'
-          connectionString: 'HostName=${dpsName}.azure-devices-provisioning.net;SharedAccessKeyName=${dpsOwnerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', dpsName, dpsOwnerPolicyName), '2021-10-15').primaryKey}'
+          connectionString: 'HostName=${dpsName}.azure-devices-provisioning.net;SharedAccessKeyName=${dpsOwnerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', dpsName, dpsOwnerPolicyName), '2022-12-12').primaryKey}'
         }
         {
           name: 'Azure__StorageAccount__ConnectionString'
