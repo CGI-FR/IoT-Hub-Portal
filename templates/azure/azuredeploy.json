@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "13322574177319971458"
+      "version": "0.24.24.22086",
+      "templateHash": "10351433565120618826"
     }
   },
   "parameters": {
@@ -281,8 +281,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "579841224222441913"
+              "version": "0.24.24.22086",
+              "templateHash": "3020874597601851797"
             }
           },
           "parameters": {
@@ -543,8 +543,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "4671074926112048055"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9902766716225604796"
                     }
                   },
                   "parameters": {
@@ -646,7 +646,7 @@
                     },
                     "version": {
                       "type": "string",
-                      "defaultValue": "2.2.1",
+                      "defaultValue": "2.2.2",
                       "metadata": {
                         "description": "The LoRaWAN Starter Kit version to use."
                       }
@@ -683,8 +683,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "787958128162564658"
+                              "version": "0.24.24.22086",
+                              "templateHash": "8106001203086279764"
                             }
                           },
                           "parameters": {
@@ -742,8 +742,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "18412353769936330303"
+                              "version": "0.24.24.22086",
+                              "templateHash": "811463979869272695"
                             }
                           },
                           "parameters": {
@@ -820,8 +820,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "4500447246012344218"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15989640594814945097"
                             }
                           },
                           "parameters": {
@@ -912,8 +912,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "6664524936619008186"
+                              "version": "0.24.24.22086",
+                              "templateHash": "4082513180007884261"
                             }
                           },
                           "parameters": {
@@ -1106,8 +1106,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "9874712747828178177"
+                              "version": "0.24.24.22086",
+                              "templateHash": "4678475755794161140"
                             }
                           },
                           "parameters": {
@@ -1184,8 +1184,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.21.1.54444",
-                                      "templateHash": "797683045173353635"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "15037484959934379226"
                                     }
                                   },
                                   "parameters": {
@@ -1250,8 +1250,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.21.1.54444",
-                                      "templateHash": "4785739916398032277"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "16368105518152998670"
                                     }
                                   },
                                   "parameters": {
@@ -1620,8 +1620,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "13216227168128638736"
+                              "version": "0.24.24.22086",
+                              "templateHash": "17026411299009075970"
                             }
                           },
                           "parameters": {
@@ -1784,8 +1784,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "1052166565600835167"
+                              "version": "0.24.24.22086",
+                              "templateHash": "5823767686139555981"
                             }
                           },
                           "parameters": {
@@ -1843,7 +1843,7 @@
                             }
                           },
                           "variables": {
-                            "$fxv#0": "create_devices_with_lora_cli() {\n    echo \"Downloading lora-cli from $LORA_CLI_URL...\"\n    curl -SsL \"$LORA_CLI_URL\" -o lora-cli.tar.gz\n    mkdir -p lora-cli && tar -xzf ./lora-cli.tar.gz -C ./lora-cli\n\n    cd lora-cli\n    chmod +x ./loradeviceprovisioning\n\n    local monitoringEnabled=\"false\"\n    if [ \"${MONITORING_ENABLED}\" = \"1\" ]; then\n        monitoringEnabled=\"true\"\n    fi\n\n    echo \"Creating gateway $EDGE_GATEWAY_NAME...\"\n    ./loradeviceprovisioning add-gateway --reset-pin \"$RESET_PIN\" --device-id \"$EDGE_GATEWAY_NAME\" --spi-dev \"$SPI_DEV\" --spi-speed \"$SPI_SPEED\" --api-url \"$FACADE_SERVER_URL\" --api-key \"$FACADE_AUTH_CODE\" --lns-host-address \"$LNS_HOST_ADDRESS\" --network \"$NETWORK\" --monitoring \"$monitoringEnabled\" --iothub-resource-id \"$IOTHUB_RESOURCE_ID\" --log-analytics-workspace-id \"$LOG_ANALYTICS_WORKSPACE_ID\" --log-analytics-shared-key \"$LOG_ANALYTICS_SHARED_KEY\" --lora-version \"$LORA_VERSION\"\n\n    echo \"Creating concentrator $STATION_DEVICE_NAME for region $REGION...\"\n    ./loradeviceprovisioning add --type concentrator --region \"$REGION\" --stationeui \"$STATION_DEVICE_NAME\" --no-cups --network \"$NETWORK\"\n\n    # add leaf devices\n    if [ \"${DEPLOY_DEVICE}\" = \"1\" ]; then\n        echo \"Creating leaf devices 46AAC86800430028 and 47AAC86800430028...\"\n        ./loradeviceprovisioning add --type abp --deveui \"46AAC86800430028\" --appskey \"2B7E151628AED2A6ABF7158809CF4F3C\" --nwkskey \"3B7E151628AED2A6ABF7158809CF4F3C\" --devaddr \"0228B1B1\" --decoder \"DecoderValueSensor\" --network \"$NETWORK\"\n        ./loradeviceprovisioning add --type otaa --deveui \"47AAC86800430028\" --appeui \"BE7A0000000014E2\" --appkey \"8AFE71A145B253E49C3031AD068277A1\" --decoder \"DecoderValueSensor\" --network \"$NETWORK\"\n    fi\n}\n\n# Setting default values\nSTATION_DEVICE_NAME=${STATION_DEVICE_NAME:-AA555A0000000101}\nREGION=${REGION:-EU863}\nNETWORK=${NETWORK-quickstartnetwork}\nLNS_HOST_ADDRESS=${LNS_HOST_ADDRESS-ws://mylns:5000}\nSPI_DEV=${SPI_DEV-0}\nSPI_SPEED=${SPI_SPEED-8}\n\ncreate_devices_with_lora_cli\n"
+                            "$fxv#0": "create_devices_with_lora_cli() {\n    echo \"Downloading lora-cli from $LORA_CLI_URL...\"\n    curl -SsL \"$LORA_CLI_URL\" -o lora-cli.tar.gz\n    mkdir -p lora-cli && tar -xzf ./lora-cli.tar.gz -C ./lora-cli\n\n    cd lora-cli\n    chmod +x ./loradeviceprovisioning\n\n    local monitoringEnabled=\"false\"\n    if [ \"${MONITORING_ENABLED}\" = \"1\" ]; then\n        monitoringEnabled=\"true\"\n    fi\n\n    echo \"Creating gateway $EDGE_GATEWAY_NAME...\"\n    ./loradeviceprovisioning add-gateway --reset-pin \"$RESET_PIN\" --device-id \"$EDGE_GATEWAY_NAME\" --spi-dev \"$SPI_DEV\" --spi-speed \"$SPI_SPEED\" --api-url \"$FACADE_SERVER_URL\" --api-key \"$FACADE_AUTH_CODE\" --lns-host-address \"$LNS_HOST_ADDRESS\" --network \"$NETWORK\" --monitoring \"$monitoringEnabled\" --iothub-resource-id \"$IOTHUB_RESOURCE_ID\" --log-analytics-workspace-id \"$LOG_ANALYTICS_WORKSPACE_ID\" --log-analytics-shared-key \"$LOG_ANALYTICS_SHARED_KEY\" --lora-version \"$LORA_VERSION\"\n\n    echo \"Creating concentrator $STATION_DEVICE_NAME for region $REGION...\"\n    ./loradeviceprovisioning add --type concentrator --region \"$REGION\" --stationeui \"$STATION_DEVICE_NAME\" --no-cups --network \"$NETWORK\"\n\n    # add leaf devices\n    if [ \"${DEPLOY_DEVICE}\" = \"1\" ]; then\n        echo \"Creating leaf devices 46AAC86800430028 and 47AAC86800430028...\"\n        abp_apps_key=$(tr -dc 'A-F0-9' < /dev/urandom | head -c32)\n        abp_nwks_key=$(tr -dc 'A-F0-9' < /dev/urandom | head -c32)\n        otaa_key=$(tr -dc 'A-F0-9' < /dev/urandom | head -c32)\n        ./loradeviceprovisioning add --type abp --deveui \"46AAC86800430028\" --appskey $abp_apps_key --nwkskey $abp_nwks_key --devaddr \"0228B1B1\" --decoder \"DecoderValueSensor\" --network \"$NETWORK\"\n        ./loradeviceprovisioning add --type otaa --deveui \"47AAC86800430028\" --appeui \"BE7A0000000014E2\" --appkey $otaa_key --decoder \"DecoderValueSensor\" --network \"$NETWORK\"\n\n        echo \"The ABP device 46AAC86800430028 has an AppSKey of $abp_apps_key and a NwkSKey of $abp_nwks_key\"\n        echo \"The OTAA device 47AAC86800430028 has an OTAA App key of $otaa_key\"\n    fi\n}\n\n# Setting default values\nSTATION_DEVICE_NAME=${STATION_DEVICE_NAME:-AA555A0000000101}\nREGION=${REGION:-EU863}\nNETWORK=${NETWORK-quickstartnetwork}\nLNS_HOST_ADDRESS=${LNS_HOST_ADDRESS-ws://mylns:5000}\nSPI_DEV=${SPI_DEV-0}\nSPI_SPEED=${SPI_SPEED-8}\n\ncreate_devices_with_lora_cli\n"
                           },
                           "resources": [
                             {
@@ -2037,8 +2037,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "2529121270271408762"
+                      "version": "0.24.24.22086",
+                      "templateHash": "2771559600284219001"
                     }
                   },
                   "parameters": {
@@ -2221,8 +2221,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "15797776258019954797"
+                              "version": "0.24.24.22086",
+                              "templateHash": "2808834629617342228"
                             }
                           },
                           "parameters": {
@@ -2275,8 +2275,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "10119465371947706233"
+                              "version": "0.24.24.22086",
+                              "templateHash": "4508974626523373920"
                             }
                           },
                           "parameters": {
@@ -2332,8 +2332,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "11072080598573434304"
+                              "version": "0.24.24.22086",
+                              "templateHash": "1812542781129125178"
                             }
                           },
                           "parameters": {
@@ -2365,7 +2365,7 @@
                           "resources": [
                             {
                               "type": "Microsoft.Devices/provisioningServices",
-                              "apiVersion": "2021-10-15",
+                              "apiVersion": "2022-12-12",
                               "name": "[parameters('dpsName')]",
                               "location": "[parameters('location')]",
                               "sku": {
@@ -2387,7 +2387,7 @@
                           "outputs": {
                             "idScope": {
                               "type": "string",
-                              "value": "[reference(resourceId('Microsoft.Devices/provisioningServices', parameters('dpsName')), '2021-10-15').idScope]"
+                              "value": "[reference(resourceId('Microsoft.Devices/provisioningServices', parameters('dpsName')), '2022-12-12').idScope]"
                             }
                           }
                         }
@@ -2422,8 +2422,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "8517095687996232936"
+                              "version": "0.24.24.22086",
+                              "templateHash": "3879635119169084997"
                             }
                           },
                           "parameters": {
@@ -2504,8 +2504,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "15060070785234269119"
+                              "version": "0.24.24.22086",
+                              "templateHash": "8548435766867625286"
                             }
                           },
                           "parameters": {
@@ -2660,8 +2660,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "6239079203735521612"
+                              "version": "0.24.24.22086",
+                              "templateHash": "18309209272903226512"
                             }
                           },
                           "parameters": {
@@ -2866,7 +2866,7 @@
                                 "reserved": true,
                                 "siteConfig": {
                                   "numberOfWorkers": 1,
-                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.1.0",
+                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.2.0",
                                   "connectionStrings": [
                                     {
                                       "name": "Azure__IoTHub__ConnectionString",
@@ -2881,7 +2881,7 @@
                                     {
                                       "name": "Azure__IoTDPS__ConnectionString",
                                       "type": "Custom",
-                                      "connectionString": "[format('HostName={0}.azure-devices-provisioning.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('dpsName'), parameters('dpsOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', parameters('dpsName'), parameters('dpsOwnerPolicyName')), '2021-10-15').primaryKey)]"
+                                      "connectionString": "[format('HostName={0}.azure-devices-provisioning.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('dpsName'), parameters('dpsOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', parameters('dpsName'), parameters('dpsOwnerPolicyName')), '2022-12-12').primaryKey)]"
                                     },
                                     {
                                       "name": "Azure__StorageAccount__ConnectionString",
@@ -3080,8 +3080,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "6478533549682075965"
+              "version": "0.24.24.22086",
+              "templateHash": "12985941861206621549"
             }
           },
           "parameters": {
@@ -3254,8 +3254,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "5738041213133647733"
+                      "version": "0.24.24.22086",
+                      "templateHash": "1731067462097385073"
                     }
                   },
                   "parameters": {
@@ -3317,8 +3317,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "11072080598573434304"
+                      "version": "0.24.24.22086",
+                      "templateHash": "1812542781129125178"
                     }
                   },
                   "parameters": {
@@ -3350,7 +3350,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Devices/provisioningServices",
-                      "apiVersion": "2021-10-15",
+                      "apiVersion": "2022-12-12",
                       "name": "[parameters('dpsName')]",
                       "location": "[parameters('location')]",
                       "sku": {
@@ -3372,7 +3372,7 @@
                   "outputs": {
                     "idScope": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Devices/provisioningServices', parameters('dpsName')), '2021-10-15').idScope]"
+                      "value": "[reference(resourceId('Microsoft.Devices/provisioningServices', parameters('dpsName')), '2022-12-12').idScope]"
                     }
                   }
                 }
@@ -3404,8 +3404,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "3849047623172079359"
+                      "version": "0.24.24.22086",
+                      "templateHash": "1117581920415922098"
                     }
                   },
                   "parameters": {
@@ -3460,8 +3460,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "10119465371947706233"
+                      "version": "0.24.24.22086",
+                      "templateHash": "4508974626523373920"
                     }
                   },
                   "parameters": {
@@ -3520,8 +3520,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "8517095687996232936"
+                      "version": "0.24.24.22086",
+                      "templateHash": "3879635119169084997"
                     }
                   },
                   "parameters": {
@@ -3602,8 +3602,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "13063194441666787905"
+                      "version": "0.24.24.22086",
+                      "templateHash": "8825167199397237838"
                     }
                   },
                   "parameters": {
@@ -3664,8 +3664,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15060070785234269119"
+                      "version": "0.24.24.22086",
+                      "templateHash": "8548435766867625286"
                     }
                   },
                   "parameters": {
@@ -3808,8 +3808,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "6239079203735521612"
+                      "version": "0.24.24.22086",
+                      "templateHash": "18309209272903226512"
                     }
                   },
                   "parameters": {
@@ -4014,7 +4014,7 @@
                         "reserved": true,
                         "siteConfig": {
                           "numberOfWorkers": 1,
-                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.1.0",
+                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.2.0",
                           "connectionStrings": [
                             {
                               "name": "Azure__IoTHub__ConnectionString",
@@ -4029,7 +4029,7 @@
                             {
                               "name": "Azure__IoTDPS__ConnectionString",
                               "type": "Custom",
-                              "connectionString": "[format('HostName={0}.azure-devices-provisioning.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('dpsName'), parameters('dpsOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', parameters('dpsName'), parameters('dpsOwnerPolicyName')), '2021-10-15').primaryKey)]"
+                              "connectionString": "[format('HostName={0}.azure-devices-provisioning.net;SharedAccessKeyName={1};SharedAccessKey={2}', parameters('dpsName'), parameters('dpsOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', parameters('dpsName'), parameters('dpsOwnerPolicyName')), '2022-12-12').primaryKey)]"
                             },
                             {
                               "name": "Azure__StorageAccount__ConnectionString",
