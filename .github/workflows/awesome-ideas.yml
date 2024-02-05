@@ -9,7 +9,7 @@ jobs:
     name: "Create issue for ${{ github.event.discussion.title }}"
     runs-on: ubuntu-latest
     steps:
-      - uses: hmarr/debug-action@v2
+      - uses: hmarr/debug-action@v3
 
       - uses: actions/checkout@v4.1.1
 
