@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
 
     - name: Restore Dotnet tools
       run: dotnet tool restore
@@ -34,7 +34,7 @@ jobs:
       working-directory: src/
 
     - name: Generate Open API documentation
-      run: dotnet swagger tofile --output ./swagger.json IoTHub.Portal.Server/bin/Debug/net7.0/IoTHub.Portal.Server.dll v1
+      run: dotnet swagger tofile --output ./swagger.json IoTHub.Portal.Server/bin/Debug/net8.0/IoTHub.Portal.Server.dll v1
       working-directory: src/
       env: 
         CloudProvider: Azure

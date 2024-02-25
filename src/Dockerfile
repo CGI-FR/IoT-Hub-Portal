@@ -1,5 +1,5 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -12,7 +12,7 @@ RUN rm packages-microsoft-prod.deb
 RUN  apt-get update; \
 	  apt-get install -y apt-transport-https && \
 	  apt-get update && \
-	  apt-get install -y dotnet-sdk-7.0
+	  apt-get install -y dotnet-sdk-8.0
 
 FROM build AS builder
 ARG BUILD_VERSION=1.2.3

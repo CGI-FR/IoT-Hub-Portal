@@ -130,7 +130,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     }
                     catch (AmazonIoTException e)
                     {
-                        this.logger.LogWarning("Can not detach Thing principal because it doesn't exist in AWS IoT", e);
+                        this.logger.LogWarning(e, "Can not detach Thing principal because it doesn't exist in AWS IoT");
                     }
 
                     try
@@ -140,19 +140,19 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     }
                     catch (AmazonIoTException e)
                     {
-                        this.logger.LogWarning("Can not delete the thing because it doesn't exist in AWS IoT", e);
+                        this.logger.LogWarning(e, "Can not delete the thing because it doesn't exist in AWS IoT");
                     }
 
                 }
                 catch (AmazonIoTException e)
                 {
-                    this.logger.LogWarning("Can not retreive Thing  because it doesn't exist in AWS IoT", e);
+                    this.logger.LogWarning(e, "Can not retreive Thing  because it doesn't exist in AWS IoT");
                 }
 
             }
             catch (AmazonIoTException e)
             {
-                this.logger.LogWarning("Can not delete the device because it doesn't exist in AWS IoT", e);
+                this.logger.LogWarning(e, "Can not delete the device because it doesn't exist in AWS IoT");
 
             }
             finally

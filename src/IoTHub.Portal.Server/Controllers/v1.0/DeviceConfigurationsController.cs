@@ -54,7 +54,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
             await this.deviceConfigurationsService.CreateConfigurationAsync(deviceConfig);
         }
 
-        [HttpPut("{configurationId}", Name = "PUT Update Device configuration")]
+        [HttpPut(Name = "PUT Update Device configuration")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task UpdateConfig(DeviceConfig deviceConfig)
         {

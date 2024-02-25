@@ -145,9 +145,9 @@ namespace IoTHub.Portal.Infrastructure.Services
                 await this.externalDeviceService.RemoveDeviceCredentials(device);
                 await this.externalDeviceService.DeleteDevice(device.DeviceName);
             }
-            catch (AmazonIoTException ex)
+            catch (AmazonIoTException e)
             {
-                this.logger.LogWarning("Can not delete the edge device because it doesn't exist in AWS IoT", ex);
+                this.logger.LogWarning(e, "Can not delete the edge device because it doesn't exist in AWS IoT");
 
             }
             finally
