@@ -188,6 +188,36 @@
             "description": "Success"
           }
         }
+      },
+      "put": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "PUT Update Device configuration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
       }
     },
     "/api/device-configurations/{configurationId}": {
@@ -226,46 +256,6 @@
                 }
               }
             }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "IoT Devices"
-        ],
-        "operationId": "PUT Update Device configuration",
-        "parameters": [
-          {
-            "name": "configurationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeviceConfig"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeviceConfig"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeviceConfig"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
           }
         }
       },
@@ -926,6 +916,38 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Updates the device.",
+        "operationId": "PUT Update IoT Edge",
+        "requestBody": {
+          "description": "The IoT Edge device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
       }
     },
     "/api/edge/devices/{deviceId}": {
@@ -966,48 +988,6 @@
                 }
               }
             }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "IoT Edge Devices"
-        ],
-        "summary": "Updates the device.",
-        "operationId": "PUT Update IoT Edge",
-        "parameters": [
-          {
-            "name": "deviceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "The IoT Edge device.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeDevice"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeDevice"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeDevice"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
           }
         }
       },
@@ -2603,68 +2583,6 @@
             }
           }
         }
-      }
-    },
-    "/api/lorawan/models/{id}": {
-      "get": {
-        "tags": [
-          "LoRa WAN"
-        ],
-        "summary": "Get the device model details.",
-        "operationId": "GET LoRaWAN device model",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The devic emodel identifier.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
       },
       "put": {
         "tags": [
@@ -2672,16 +2590,6 @@
         ],
         "summary": "Updates the specified device model.",
         "operationId": "PUT Update the LoRaWAN device model",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "requestBody": {
           "description": "The device model.",
           "content": {
@@ -2722,6 +2630,68 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/models/{id}": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Get the device model details.",
+        "operationId": "GET LoRaWAN device model",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The devic emodel identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
                 }
               }
             }
@@ -3216,68 +3186,6 @@
             }
           }
         }
-      }
-    },
-    "/api/models/{id}": {
-      "get": {
-        "tags": [
-          "Device Models"
-        ],
-        "summary": "Get the device model details.",
-        "operationId": "GET Device model",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The devic emodel identifier.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceModelDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceModelDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceModelDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
       },
       "put": {
         "tags": [
@@ -3285,16 +3193,6 @@
         ],
         "summary": "Updates the specified device model.",
         "operationId": "PUT Update the device model",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "requestBody": {
           "description": "The device model.",
           "content": {
@@ -3335,6 +3233,68 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{id}": {
+      "get": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Get the device model details.",
+        "operationId": "GET Device model",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The devic emodel identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDto"
                 }
               }
             }
