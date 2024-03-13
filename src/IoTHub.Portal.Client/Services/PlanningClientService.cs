@@ -11,26 +11,42 @@ namespace IoTHub.Portal.Client.Services
     public class PlanningClientService : IPlanningClientService
     {
         private readonly HttpClient http;
+        private readonly string apiUrlBase = "api/planning";
 
         public PlanningClientService(HttpClient http)
         {
             this.http = http;
         }
 
-        public async Task<string> CreatePlanning(PlanningDto planning)
+        public async Task<string> CreatePlanning(PlanningDto Planning)
         {
-            var response = await this.http.PostAsJsonAsync("api/planning", planning);
+            var response = await this.http.PostAsJsonAsync(this.apiUrlBase, Planning);
 
-            //Retrieve Device ID
+            //Retrieve Planning ID
             var responseJson = await response.Content.ReadAsStringAsync();
             var updatedPlanning = Newtonsoft.Json.JsonConvert.DeserializeObject<PlanningDto>(responseJson);
 
             return updatedPlanning.Id.ToString();
         }
 
-        public Task<PlanningDto> GetPlanning(string planningId)
+        public Task UpdatePlanning(PlanningDto Planning)
         {
-            return this.http.GetFromJsonAsync<PlanningDto>($"api/planning/{planningId}")!;
+            return this.http.PutAsJsonAsync(this.apiUrlBase, Planning);
+        }
+
+        public Task DeletePlanning(string PlanningId)
+        {
+            return this.http.DeleteAsync($"{this.apiUrlBase}/{PlanningId}");
+        }
+
+        public Task<PlanningDto> GetPlanning(string PlanningId)
+        {
+            return this.http.GetFromJsonAsync<PlanningDto>($"{this.apiUrlBase}/{PlanningId}")!;
+        }
+
+        public async Task<List<PlanningDto>> GetPlannings()
+        {
+            return await this.http.GetFromJsonAsync<List<PlanningDto>>(this.apiUrlBase) ?? new List<PlanningDto>();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace IoTHub.Portal.Client.Services
     public class ScheduleClientService : IScheduleClientService
     {
         private readonly HttpClient http;
+        private readonly string apiUrlBase = "api/schedule";
 
         public ScheduleClientService(HttpClient http)
         {
@@ -19,18 +20,33 @@ namespace IoTHub.Portal.Client.Services
 
         public async Task<string> CreateSchedule(ScheduleDto schedule)
         {
-            var response = await this.http.PostAsJsonAsync("api/schedule", schedule);
+            var response = await this.http.PostAsJsonAsync(this.apiUrlBase, schedule);
 
-            //Retrieve Device ID
+            //Retrieve Schedule ID
             var responseJson = await response.Content.ReadAsStringAsync();
             var updatedSchedule = Newtonsoft.Json.JsonConvert.DeserializeObject<ScheduleDto>(responseJson);
 
             return updatedSchedule.Id.ToString();
         }
 
+        public Task UpdateSchedule(ScheduleDto schedule)
+        {
+            return this.http.PutAsJsonAsync(this.apiUrlBase, schedule);
+        }
+
+        public Task DeleteSchedule(string scheduleId)
+        {
+            return this.http.DeleteAsync($"{this.apiUrlBase}/{scheduleId}");
+        }
+
         public Task<ScheduleDto> GetSchedule(string scheduleId)
         {
-            return this.http.GetFromJsonAsync<ScheduleDto>($"api/schedule/{scheduleId}")!;
+            return this.http.GetFromJsonAsync<ScheduleDto>($"{this.apiUrlBase}/{scheduleId}")!;
+        }
+
+        public async Task<List<ScheduleDto>> GetSchedules()
+        {
+            return await this.http.GetFromJsonAsync<List<ScheduleDto>>(this.apiUrlBase) ?? new List<ScheduleDto>();
         }
     }
 }

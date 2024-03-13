@@ -7,8 +7,6 @@ namespace IoTHub.Portal.Client.Services
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.WebUtilities;
 
     public class RoomClientService : IRoomClientService
     {
@@ -22,7 +20,7 @@ namespace IoTHub.Portal.Client.Services
 
         public async Task<string> CreateRoom(RoomDto room)
         {
-            var response = await this.http.PostAsJsonAsync("api/building", room);
+            var response = await this.http.PostAsJsonAsync(this.apiUrlBase, room);
 
             //Retrieve Room ID
             var responseJson = await response.Content.ReadAsStringAsync();
@@ -31,10 +29,24 @@ namespace IoTHub.Portal.Client.Services
             return updatedRoom.Id.ToString();
         }
 
+        public Task UpdateRoom(RoomDto room)
+        {
+            return this.http.PutAsJsonAsync(this.apiUrlBase, room);
+        }
+
+        public Task DeleteRoom(string roomId)
+        {
+            return this.http.DeleteAsync($"{this.apiUrlBase}/{roomId}");
+        }
 
         public Task<RoomDto> GetRoom(string roomId)
         {
-            return this.http.GetFromJsonAsync<RoomDto>($"api/building/{roomId}")!;
+            return this.http.GetFromJsonAsync<RoomDto>($"{this.apiUrlBase}/{roomId}")!;
+        }
+
+        public async Task<List<RoomDto>> GetRooms()
+        {
+            return await this.http.GetFromJsonAsync<List<RoomDto>>(this.apiUrlBase) ?? new List<RoomDto>();
         }
     }
 }

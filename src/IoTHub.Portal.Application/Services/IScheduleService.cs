@@ -10,6 +10,9 @@ namespace IoTHub.Portal.Application.Services
     public interface IScheduleService
     {
         Task<ScheduleDto> CreateSchedule(ScheduleDto schedule);
+        Task UpdateSchedule(ScheduleDto schedule);
+        Task DeleteSchedule(string scheduleId);
         Task<Schedule> GetSchedule(string scheduleId);
+        Task<IEnumerable<ScheduleDto>> GetSchedules();
     }
 }
