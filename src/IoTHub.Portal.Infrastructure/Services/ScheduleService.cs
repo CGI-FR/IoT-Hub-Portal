@@ -1,4 +1,4 @@
-// Copyright (c) CGI France. All rights reserved.
+// Copyright(c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace IoTHub.Portal.Infrastructure.Services
@@ -11,6 +11,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Domain.Exceptions;
+    using IoTHub.Portal.Infrastructure.Repositories;
 
     public class ScheduleService : IScheduleService
     {
@@ -26,6 +27,12 @@ namespace IoTHub.Portal.Infrastructure.Services
             this.unitOfWork = unitOfWork;
             this.scheduleRepository = scheduleRepository;
         }
+
+        /// <summary>
+        /// Create a schedule.
+        /// </summary>
+        /// <param name="schedule">Schedule</param>
+        /// <returns>Schedule object.</returns>
         public async Task<ScheduleDto> CreateSchedule(ScheduleDto schedule)
         {
             var scheduleEntity = this.mapper.Map<Schedule>(schedule);
@@ -34,6 +41,47 @@ namespace IoTHub.Portal.Infrastructure.Services
             await this.unitOfWork.SaveAsync();
 
             return schedule;
+        }
+
+        /// <summary>
+        /// Update the schedule.
+        /// </summary>
+        /// <param name="schedule">The schedule.</param>
+        /// <returns>nothing.</returns>
+        /// <exception cref="InternalServerErrorException"></exception>
+        public async Task UpdateSchedule(ScheduleDto schedule)
+        {
+            var scheduleEntity = await this.scheduleRepository.GetByIdAsync(schedule.Id);
+
+            if (scheduleEntity == null)
+            {
+                throw new ResourceNotFoundException($"The schedule with id {schedule.Id} doesn't exist");
+            }
+
+            _ = this.mapper.Map(schedule, scheduleEntity);
+
+            this.scheduleRepository.Update(scheduleEntity);
+
+            await this.unitOfWork.SaveAsync();
+        }
+
+        /// <summary>
+        /// Delete schedule template
+        /// </summary>
+        /// <param name="scheduleId">The schedule indentifier.</param>
+        /// <returns></returns>
+        /// <exception cref="InternalServerErrorException"></exception>
+        public async Task DeleteSchedule(string scheduleId)
+        {
+            var scheduleEntity = await this.scheduleRepository.GetByIdAsync(scheduleId);
+            if (scheduleEntity == null)
+            {
+                return;
+            }
+
+            this.scheduleRepository.Delete(scheduleId);
+
+            await this.unitOfWork.SaveAsync();
         }
 
         /// <summary>
@@ -53,6 +101,25 @@ namespace IoTHub.Portal.Infrastructure.Services
             var schedule = this.mapper.Map<Schedule>(scheduleEntity);
 
             return schedule;
+        }
+
+        /// <summary>
+        /// Return the schedule list.
+        /// </summary>
+        /// <returns>IEnumerable ScheduleDto.</returns>
+        public async Task<IEnumerable<ScheduleDto>> GetSchedules()
+        {
+            var schedulePredicate = PredicateBuilder.True<ScheduleDto>();
+
+            var schedules = await this.scheduleRepository.GetAllAsync();
+
+            return schedules
+                .Select(model =>
+                {
+                    var scheduleListItem = this.mapper.Map<ScheduleDto>(model);
+                    return scheduleListItem;
+                })
+                .ToList();
         }
     }
 }

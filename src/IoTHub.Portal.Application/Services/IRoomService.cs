@@ -5,14 +5,14 @@ namespace IoTHub.Portal.Application.Services
 {
     using System.Threading.Tasks;
     using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
 
     public interface IRoomService
     {
         Task<RoomDto> CreateRoom(RoomDto room);
-        Task<PaginatedResult<RoomDto>> GetRooms(RoomFilter roomFilter);
+        Task UpdateRoom(RoomDto room);
+        Task DeleteRoom(string roomId);
         Task<Room> GetRoom(string roomId);
+        Task<IEnumerable<RoomDto>> GetRooms();
     }
 }

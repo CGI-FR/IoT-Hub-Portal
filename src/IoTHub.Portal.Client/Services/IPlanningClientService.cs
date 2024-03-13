@@ -9,6 +9,9 @@ namespace IoTHub.Portal.Client.Services
     public interface IPlanningClientService
     {
         Task<string> CreatePlanning(PlanningDto planning);
+        Task UpdatePlanning(PlanningDto planning);
+        Task DeletePlanning(string modelId);
         Task<PlanningDto> GetPlanning(string planningId);
+        Task<List<PlanningDto>> GetPlannings();
     }
 }
