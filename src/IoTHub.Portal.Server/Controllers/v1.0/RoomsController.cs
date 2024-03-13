@@ -12,8 +12,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using Hellang.Middleware.ProblemDetails;
     using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices.Common.Exceptions;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Mvc.Routing;
+    using System.Collections.Generic;
+    using IoTHub.Portal.Domain.Exceptions;
 
     [Authorize]
     [ApiController]
@@ -53,6 +53,33 @@ namespace IoTHub.Portal.Server.Controllers.V10
             return Ok(room);
         }
 
+        /// <summary>
+        /// Updates the specified room.
+        /// </summary>
+        /// <param name="Room">The room.</param>
+        /// <returns>The action result.</returns>
+        [HttpPut(Name = "PUT Update the room")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateRoom(RoomDto Room)
+        {
+            await this.roomService.UpdateRoom(Room);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete the room.
+        /// </summary>
+        /// <param name="roomId">the room id.</param>
+        /// <returns>Http response</returns>
+        /// <exception cref="InternalServerErrorException"></exception>
+        [HttpDelete("{roomId}", Name = "DELETE Remove the room")]
+        public async Task<IActionResult> DeleteRoom(string roomId)
+        {
+            await this.roomService.DeleteRoom(roomId);
+
+            return NoContent();
+        }
 
         /// <summary>
         /// Gets the specified room.
@@ -70,6 +97,17 @@ namespace IoTHub.Portal.Server.Controllers.V10
             {
                 return StatusCode(StatusCodes.Status404NotFound, e.Message);
             }
+        }
+
+        /// <summary>
+        /// Gets the room list.
+        /// </summary>
+        /// <returns>An array representing the rooms.</returns>
+        [HttpGet(Name = "GET Room list")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<RoomDto>>> GetRooms()
+        {
+            return Ok(await this.roomService.GetRooms());
         }
     }
 }
