@@ -7,11 +7,11 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Shared.Models.v10;
 
-    public class RoomProfile : Profile
+    public class LevelProfile : Profile
     {
-        public RoomProfile()
+        public LevelProfile()
         {
-            _ = CreateMap<RoomDto, Room>()
+            _ = CreateMap<LevelDto, Level>()
                 .ReverseMap();
         }
     }
