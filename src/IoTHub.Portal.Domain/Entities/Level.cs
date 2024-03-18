@@ -1,32 +1,26 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Shared.Models.v10
+namespace IoTHub.Portal.Domain.Entities
 {
-    using System;
+    using IoTHub.Portal.Domain.Base;
 
-    //using System.ComponentModel.DataAnnotations;
-
-    public class RoomDto
+    public class Level : EntityBase
     {
         /// <summary>
-        /// The room auto ID.
-        /// </summary>
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-
-        /// <summary>
-        /// The room friendly name.
+        /// The Level friendly name.
         /// </summary>
         public string Name { get; set; } = default!;
 
         /// <summary>
-        /// Where room is.
+        /// Where level is.
         /// </summary>
         public string Father { get; set; } = default!;
 
         /// <summary>
-        /// The planning associat with the room.
+        /// The planning associat with the level.
         /// </summary>
         public string Planning { get; set; } = default!;
+
     }
 }
