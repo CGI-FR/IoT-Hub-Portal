@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Shared.Models.v10
 
     //using System.ComponentModel.DataAnnotations;
 
-    public class ScheduleDto
+    public class LevelDto
     {
         /// <summary>
         /// The level auto ID.
@@ -15,22 +15,17 @@ namespace IoTHub.Portal.Shared.Models.v10
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
-        /// The schedule friendly name.
+        /// The level friendly name.
         /// </summary>
-        public string Start { get; set; } = default!;
+        public string Name { get; set; } = default!;
 
         /// <summary>
-        /// Where schedule is.
+        /// Where level is.
         /// </summary>
-        public string End { get; set; } = default!;
+        public string Father { get; set; } = default!;
 
         /// <summary>
-        /// The planning associat with the schedule.
-        /// </summary>
-        public int Command { get; set; } = 19;
-
-        /// <summary>
-        /// The planning associat with the schedule.
+        /// The planning associat with the level.
         /// </summary>
         public string Planning { get; set; } = default!;
     }

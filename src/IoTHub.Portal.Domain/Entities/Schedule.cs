@@ -10,17 +10,17 @@ namespace IoTHub.Portal.Domain.Entities
         /// <summary>
         /// The schedule friendly name.
         /// </summary>
-        public int Start { get; set; } = default!;
+        public string Start { get; set; } = default!;
 
         /// <summary>
         /// Where schedule is.
         /// </summary>
-        public int End { get; set; } = default!;
+        public string End { get; set; } = default!;
 
         /// <summary>
         /// The planning associat with the schedule.
         /// </summary>
-        public int Temperature { get; set; } = default!;
+        public int Command { get; set; } = default!;
 
         /// <summary>
         /// The planning associat with the schedule.
