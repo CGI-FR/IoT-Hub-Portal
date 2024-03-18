@@ -5,22 +5,37 @@ namespace IoTHub.Portal.Domain.Entities
 {
     using IoTHub.Portal.Domain.Base;
 
-    public class Room : EntityBase
+    public class Planning : EntityBase
     {
         /// <summary>
-        /// The room friendly name.
+        /// The planning friendly name.
         /// </summary>
         public string Name { get; set; } = default!;
 
         /// <summary>
-        /// Where room is.
+        /// Where planning start.
         /// </summary>
-        public string Father { get; set; } = default!;
+        public string Start { get; set; } = default!;
 
         /// <summary>
-        /// The planning associat with the room.
+        /// Where planning end.
         /// </summary>
-        public string Planning { get; set; } = default!;
+        public string End { get; set; } = default!;
+
+        /// <summary>
+        /// How much it repeat.
+        /// </summary>
+        public bool Frequency { get; set; } = default!;
+
+        /// <summary>
+        /// When planning is used
+        /// </summary>
+        public string DayOff { get; set; } = default!;
+
+        /// <summary>
+        /// Day off command.
+        /// </summary>
+        public int CommandOff { get; set; } = default!;
 
     }
 }

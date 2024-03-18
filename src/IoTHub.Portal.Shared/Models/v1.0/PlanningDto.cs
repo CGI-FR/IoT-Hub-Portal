@@ -10,7 +10,7 @@ namespace IoTHub.Portal.Shared.Models.v10
     public class PlanningDto
     {
         /// <summary>
-        /// The room auto ID.
+        /// The level auto ID.
         /// </summary>
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
@@ -22,17 +22,17 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// Where planning start.
         /// </summary>
-        public int Start { get; set; } = default!;
+        public string Start { get; set; } = default!;
 
         /// <summary>
         /// Where planning end.
         /// </summary>
-        public int End { get; set; } = default!;
+        public string End { get; set; } = default!;
 
         /// <summary>
         /// How much it repeat.
         /// </summary>
-        public int Frequency { get; set; } = default!;
+        public bool Frequency { get; set; } = default!;
 
         /// <summary>
         /// When planning is used
@@ -40,8 +40,8 @@ namespace IoTHub.Portal.Shared.Models.v10
         public string DayOff { get; set; } = default!;
 
         /// <summary>
-        /// Day off temperature.
+        /// Day off command.
         /// </summary>
-        public int TemperatureOff { get; set; } = default!;
+        public int CommandOff { get; set; } = default!;
     }
 }

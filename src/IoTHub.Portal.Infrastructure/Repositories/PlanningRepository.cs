@@ -6,9 +6,9 @@ namespace IoTHub.Portal.Infrastructure.Repositories
     using IoTHub.Portal.Domain.Repositories;
     using Domain.Entities;
 
-    public class RoomRepository : GenericRepository<Room>, IRoomRepository
+    public class PlanningRepository : GenericRepository<Planning>, IPlanningRepository
     {
-        public RoomRepository(PortalDbContext context) : base(context)
+        public PlanningRepository(PortalDbContext context) : base(context)
         {
         }
     }

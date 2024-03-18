@@ -7,12 +7,12 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Shared.Models.v10;
 
-    public interface IRoomService
+    public interface ILevelService
     {
-        Task<RoomDto> CreateRoom(RoomDto room);
-        Task UpdateRoom(RoomDto room);
-        Task DeleteRoom(string roomId);
-        Task<Room> GetRoom(string roomId);
-        Task<IEnumerable<RoomDto>> GetRooms();
+        Task<LevelDto> CreateLevel(LevelDto level);
+        Task UpdateLevel(LevelDto level);
+        Task DeleteLevel(string levelId);
+        Task<Level> GetLevel(string levelId);
+        Task<IEnumerable<LevelDto>> GetLevels();
     }
 }
