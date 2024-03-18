@@ -20,23 +20,23 @@ namespace IoTHub.Portal.Server.Controllers.V10
     [ApiVersion("1.0")]
     [Route("api/building")]
     [ApiExplorerSettings(GroupName = "IoT Building")]
-    public class RoomsController : ControllerBase
+    public class LevelsController : ControllerBase
     {
-        private readonly IRoomService roomService;
+        private readonly ILevelService levelService;
 
-        public RoomsController(IRoomService roomService)
+        public LevelsController(ILevelService levelService)
         {
-            this.roomService = roomService;
+            this.levelService = levelService;
         }
 
         /// <summary>
-        /// Creates the room.
+        /// Creates the level.
         /// </summary>
-        /// <param name="room">The room.</param>
-        [HttpPost(Name = "POST Create room")]
-        public async Task<IActionResult> CreateRoomAsync(RoomDto room)
+        /// <param name="level">The level.</param>
+        [HttpPost(Name = "POST Create level")]
+        public async Task<IActionResult> CreateLevelAsync(LevelDto level)
         {
-            ArgumentNullException.ThrowIfNull(room, nameof(room));
+            ArgumentNullException.ThrowIfNull(level, nameof(level));
 
             if (!ModelState.IsValid)
             {
@@ -48,50 +48,50 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 throw new ProblemDetailsException(validation);
             }
 
-            _ = await this.roomService.CreateRoom(room);
+            _ = await this.levelService.CreateLevel(level);
 
-            return Ok(room);
+            return Ok(level);
         }
 
         /// <summary>
-        /// Updates the specified room.
+        /// Updates the specified level.
         /// </summary>
-        /// <param name="Room">The room.</param>
+        /// <param name="Level">The level.</param>
         /// <returns>The action result.</returns>
-        [HttpPut(Name = "PUT Update the room")]
+        [HttpPut(Name = "PUT Update the level")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateRoom(RoomDto Room)
+        public async Task<IActionResult> UpdateLevel(LevelDto Level)
         {
-            await this.roomService.UpdateRoom(Room);
+            await this.levelService.UpdateLevel(Level);
 
             return Ok();
         }
 
         /// <summary>
-        /// Delete the room.
+        /// Delete the level.
         /// </summary>
-        /// <param name="roomId">the room id.</param>
+        /// <param name="levelId">the level id.</param>
         /// <returns>Http response</returns>
         /// <exception cref="InternalServerErrorException"></exception>
-        [HttpDelete("{roomId}", Name = "DELETE Remove the room")]
-        public async Task<IActionResult> DeleteRoom(string roomId)
+        [HttpDelete("{levelId}", Name = "DELETE Remove the level")]
+        public async Task<IActionResult> DeleteLevel(string levelId)
         {
-            await this.roomService.DeleteRoom(roomId);
+            await this.levelService.DeleteLevel(levelId);
 
             return NoContent();
         }
 
         /// <summary>
-        /// Gets the specified room.
+        /// Gets the specified level.
         /// </summary>
-        /// <param name="roomId">The room identifier.</param>
-        [HttpGet("{roomId}", Name = "GET Room")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomDto))]
-        public async Task<IActionResult> GetRoom(string roomId)
+        /// <param name="levelId">The level identifier.</param>
+        [HttpGet("{levelId}", Name = "GET Level")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LevelDto))]
+        public async Task<IActionResult> GetLevel(string levelId)
         {
             try
             {
-                return Ok(await this.roomService.GetRoom(roomId));
+                return Ok(await this.levelService.GetLevel(levelId));
             }
             catch (DeviceNotFoundException e)
             {
@@ -100,14 +100,14 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Gets the room list.
+        /// Gets the level list.
         /// </summary>
-        /// <returns>An array representing the rooms.</returns>
-        [HttpGet(Name = "GET Room list")]
+        /// <returns>An array representing the levels.</returns>
+        [HttpGet(Name = "GET Level list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<RoomDto>>> GetRooms()
+        public async Task<ActionResult<IEnumerable<LevelDto>>> GetLevels()
         {
-            return Ok(await this.roomService.GetRooms());
+            return Ok(await this.levelService.GetLevels());
         }
     }
 }
