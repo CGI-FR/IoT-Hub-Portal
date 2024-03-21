@@ -7,9 +7,9 @@ namespace IoTHub.Portal.Infrastructure.Repositories
     using IoTHub.Portal.Domain.Repositories;
     using Domain.Entities;
 
-    public class LevelRepository : GenericRepository<Level>, ILevelRepository
+    public class LayerRepository : GenericRepository<Layer>, ILayerRepository
     {
-        public LevelRepository(PortalDbContext context) : base(context)
+        public LayerRepository(PortalDbContext context) : base(context)
         {
         }
     }

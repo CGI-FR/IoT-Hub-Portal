@@ -12,7 +12,7 @@ namespace IoTHub.Portal.Infrastructure
     {
         public DbSet<DeviceModelProperty> DeviceModelProperties { get; set; }
         public DbSet<DeviceTag> DeviceTags { get; set; }
-        public DbSet<Level> Levels { get; set; }
+        public DbSet<Layer> Layers { get; set; }
         public DbSet<Planning> Plannings { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<DeviceModelCommand> DeviceModelCommands { get; set; }

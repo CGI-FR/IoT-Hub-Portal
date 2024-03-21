@@ -6,12 +6,12 @@ namespace IoTHub.Portal.Client.Services
     using System.Threading.Tasks;
     using IoTHub.Portal.Shared.Models.v10;
 
-    public interface ILevelClientService
+    public interface ILayerClientService
     {
-        Task<string> CreateLevel(LevelDto level);
-        Task UpdateLevel(LevelDto level);
-        Task DeleteLevel(string modelId);
-        Task<LevelDto> GetLevel(string levelId);
-        Task<List<LevelDto>> GetLevels();
+        Task<string> CreateLayer(LayerDto layer);
+        Task UpdateLayer(LayerDto layer);
+        Task DeleteLayer(string modelId);
+        Task<LayerDto> GetLayer(string layerId);
+        Task<List<LayerDto>> GetLayers();
     }
 }

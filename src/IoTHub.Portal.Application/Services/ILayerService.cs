@@ -7,12 +7,12 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Shared.Models.v10;
 
-    public interface ILevelService
+    public interface ILayerService
     {
-        Task<LevelDto> CreateLevel(LevelDto level);
-        Task UpdateLevel(LevelDto level);
-        Task DeleteLevel(string levelId);
-        Task<Level> GetLevel(string levelId);
-        Task<IEnumerable<LevelDto>> GetLevels();
+        Task<LayerDto> CreateLayer(LayerDto level);
+        Task UpdateLayer(LayerDto level);
+        Task DeleteLayer(string levelId);
+        Task<Layer> GetLayer(string levelId);
+        Task<IEnumerable<LayerDto>> GetLayers();
     }
 }

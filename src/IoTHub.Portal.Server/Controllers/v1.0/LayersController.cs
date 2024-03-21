@@ -20,11 +20,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
     [ApiVersion("1.0")]
     [Route("api/building")]
     [ApiExplorerSettings(GroupName = "IoT Building")]
-    public class LevelsController : ControllerBase
+    public class LayersController : ControllerBase
     {
-        private readonly ILevelService levelService;
+        private readonly ILayerService levelService;
 
-        public LevelsController(ILevelService levelService)
+        public LayersController(ILayerService levelService)
         {
             this.levelService = levelService;
         }
@@ -34,7 +34,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="level">The level.</param>
         [HttpPost(Name = "POST Create level")]
-        public async Task<IActionResult> CreateLevelAsync(LevelDto level)
+        public async Task<IActionResult> CreateLayerAsync(LayerDto level)
         {
             ArgumentNullException.ThrowIfNull(level, nameof(level));
 
@@ -48,7 +48,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 throw new ProblemDetailsException(validation);
             }
 
-            _ = await this.levelService.CreateLevel(level);
+            _ = await this.levelService.CreateLayer(level);
 
             return Ok(level);
         }
@@ -56,13 +56,13 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Updates the specified level.
         /// </summary>
-        /// <param name="Level">The level.</param>
+        /// <param name="Layer">The level.</param>
         /// <returns>The action result.</returns>
         [HttpPut(Name = "PUT Update the level")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateLevel(LevelDto Level)
+        public async Task<IActionResult> UpdateLayer(LayerDto Layer)
         {
-            await this.levelService.UpdateLevel(Level);
+            await this.levelService.UpdateLayer(Layer);
 
             return Ok();
         }
@@ -74,9 +74,9 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <returns>Http response</returns>
         /// <exception cref="InternalServerErrorException"></exception>
         [HttpDelete("{levelId}", Name = "DELETE Remove the level")]
-        public async Task<IActionResult> DeleteLevel(string levelId)
+        public async Task<IActionResult> DeleteLayer(string levelId)
         {
-            await this.levelService.DeleteLevel(levelId);
+            await this.levelService.DeleteLayer(levelId);
 
             return NoContent();
         }
@@ -85,13 +85,13 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the specified level.
         /// </summary>
         /// <param name="levelId">The level identifier.</param>
-        [HttpGet("{levelId}", Name = "GET Level")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LevelDto))]
-        public async Task<IActionResult> GetLevel(string levelId)
+        [HttpGet("{levelId}", Name = "GET Layer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LayerDto))]
+        public async Task<IActionResult> GetLayer(string levelId)
         {
             try
             {
-                return Ok(await this.levelService.GetLevel(levelId));
+                return Ok(await this.levelService.GetLayer(levelId));
             }
             catch (DeviceNotFoundException e)
             {
@@ -103,11 +103,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the level list.
         /// </summary>
         /// <returns>An array representing the levels.</returns>
-        [HttpGet(Name = "GET Level list")]
+        [HttpGet(Name = "GET Layer list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<LevelDto>>> GetLevels()
+        public async Task<ActionResult<IEnumerable<LayerDto>>> GetLayers()
         {
-            return Ok(await this.levelService.GetLevels());
+            return Ok(await this.levelService.GetLayers());
         }
     }
 }

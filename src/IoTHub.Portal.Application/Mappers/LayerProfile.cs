@@ -7,11 +7,11 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Shared.Models.v10;
 
-    public class LevelProfile : Profile
+    public class LayerProfile : Profile
     {
-        public LevelProfile()
+        public LayerProfile()
         {
-            _ = CreateMap<LevelDto, Level>()
+            _ = CreateMap<LayerDto, Layer>()
                 .ReverseMap();
         }
     }

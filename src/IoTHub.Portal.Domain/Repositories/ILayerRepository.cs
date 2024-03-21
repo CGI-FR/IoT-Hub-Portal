@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Domain.Repositories
 {
     using Entities;
 
-    public interface ILevelRepository : IRepository<Level>
+    public interface ILayerRepository : IRepository<Layer>
     {
     }
 }
