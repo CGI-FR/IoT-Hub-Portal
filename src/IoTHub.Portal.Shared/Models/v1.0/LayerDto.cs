@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Shared.Models.v10
 
     //using System.ComponentModel.DataAnnotations;
 
-    public class LevelDto
+    public class LayerDto
     {
         /// <summary>
         /// The level auto ID.
@@ -28,5 +28,10 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// The planning associat with the level.
         /// </summary>
         public string Planning { get; set; } = default!;
+
+        /// <summary>
+        /// The planning has a subLayer.
+        /// </summary>
+        public bool hasSub { get; set; } = default!;
     }
 }

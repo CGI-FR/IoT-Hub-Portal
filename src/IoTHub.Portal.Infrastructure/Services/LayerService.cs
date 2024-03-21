@@ -13,15 +13,15 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Infrastructure.Repositories;
 
-    public class LevelService : ILevelService
+    public class LayerService : ILayerService
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
-        private readonly ILevelRepository levelRepository;
+        private readonly ILayerRepository levelRepository;
 
-        public LevelService(IMapper mapper,
+        public LayerService(IMapper mapper,
             IUnitOfWork unitOfWork,
-            ILevelRepository levelRepository)
+            ILayerRepository levelRepository)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -31,11 +31,11 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <summary>
         /// Create a level.
         /// </summary>
-        /// <param name="level">Level</param>
-        /// <returns>Level object.</returns>
-        public async Task<LevelDto> CreateLevel(LevelDto level)
+        /// <param name="level">Layer</param>
+        /// <returns>Layer object.</returns>
+        public async Task<LayerDto> CreateLayer(LayerDto level)
         {
-            var levelEntity = this.mapper.Map<Level>(level);
+            var levelEntity = this.mapper.Map<Layer>(level);
 
             await this.levelRepository.InsertAsync(levelEntity);
             await this.unitOfWork.SaveAsync();
@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <param name="level">The level.</param>
         /// <returns>nothing.</returns>
         /// <exception cref="InternalServerErrorException"></exception>
-        public async Task UpdateLevel(LevelDto level)
+        public async Task UpdateLayer(LayerDto level)
         {
             var levelEntity = await this.levelRepository.GetByIdAsync(level.Id);
 
@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <param name="levelId">The level indentifier.</param>
         /// <returns></returns>
         /// <exception cref="InternalServerErrorException"></exception>
-        public async Task DeleteLevel(string levelId)
+        public async Task DeleteLayer(string levelId)
         {
             var levelEntity = await this.levelRepository.GetByIdAsync(levelId);
             if (levelEntity == null)
@@ -88,8 +88,8 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// Get level.
         /// </summary>
         /// <param name="levelId">level id.</param>
-        /// <returns>Level object.</returns>
-        public async Task<Level> GetLevel(string levelId)
+        /// <returns>Layer object.</returns>
+        public async Task<Layer> GetLayer(string levelId)
         {
             var levelEntity = await this.levelRepository.GetByIdAsync(levelId);
 
@@ -98,7 +98,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 throw new ResourceNotFoundException($"The level with id {levelId} doesn't exist");
             }
 
-            var level = this.mapper.Map<Level>(levelEntity);
+            var level = this.mapper.Map<Layer>(levelEntity);
 
             return level;
         }
@@ -106,17 +106,17 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <summary>
         /// Return the level list.
         /// </summary>
-        /// <returns>IEnumerable LevelDto.</returns>
-        public async Task<IEnumerable<LevelDto>> GetLevels()
+        /// <returns>IEnumerable LayerDto.</returns>
+        public async Task<IEnumerable<LayerDto>> GetLayers()
         {
-            var levelPredicate = PredicateBuilder.True<LevelDto>();
+            var levelPredicate = PredicateBuilder.True<LayerDto>();
 
             var levels = await this.levelRepository.GetAllAsync();
 
             return levels
                 .Select(model =>
                 {
-                    var levelListItem = this.mapper.Map<LevelDto>(model);
+                    var levelListItem = this.mapper.Map<LayerDto>(model);
                     return levelListItem;
                 })
                 .ToList();

@@ -5,10 +5,10 @@ namespace IoTHub.Portal.Domain.Entities
 {
     using IoTHub.Portal.Domain.Base;
 
-    public class Level : EntityBase
+    public class Layer : EntityBase
     {
         /// <summary>
-        /// The Level friendly name.
+        /// The Layer friendly name.
         /// </summary>
         public string Name { get; set; } = default!;
 
@@ -21,6 +21,11 @@ namespace IoTHub.Portal.Domain.Entities
         /// The planning associat with the level.
         /// </summary>
         public string Planning { get; set; } = default!;
+
+        /// <summary>
+        /// The planning has a subLayer.
+        /// </summary>
+        public bool hasSub { get; set; } = default!;
 
     }
 }
