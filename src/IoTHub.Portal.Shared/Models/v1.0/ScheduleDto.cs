@@ -27,11 +27,11 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// The planning associat with the schedule.
         /// </summary>
-        public int Command { get; set; } = 19;
+        public string CommandId { get; set; } = default!;
 
         /// <summary>
         /// The planning associat with the schedule.
         /// </summary>
-        public string Planning { get; set; } = default!;
+        public string PlanningId { get; set; } = default!;
     }
 }
