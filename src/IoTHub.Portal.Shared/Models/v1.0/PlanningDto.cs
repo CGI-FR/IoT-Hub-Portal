@@ -37,11 +37,11 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// When planning is used
         /// </summary>
-        public string DayOff { get; set; } = default!;
+        public string Day { get; set; } = "";
 
         /// <summary>
         /// Day off command.
         /// </summary>
-        public int CommandOff { get; set; } = default!;
+        public string CommandId { get; set; } = default!;
     }
 }

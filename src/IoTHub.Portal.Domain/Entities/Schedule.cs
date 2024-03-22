@@ -20,12 +20,12 @@ namespace IoTHub.Portal.Domain.Entities
         /// <summary>
         /// The planning associat with the schedule.
         /// </summary>
-        public int Command { get; set; } = default!;
+        public string CommandId { get; set; } = default!;
 
         /// <summary>
         /// The planning associat with the schedule.
         /// </summary>
-        public string Planning { get; set; } = default!;
+        public string PlanningId { get; set; } = default!;
 
     }
 }
