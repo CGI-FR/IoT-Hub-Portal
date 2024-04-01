@@ -62,7 +62,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.2" />
     <PackageReference Include="Microsoft.Graph" Version="5.40.0" />
-    <PackageReference Include="Microsoft.OpenApi" Version="1.6.13" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.6.14" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.15.3" />
     <PackageReference Include="MudBlazor" Version="6.11.0" />
