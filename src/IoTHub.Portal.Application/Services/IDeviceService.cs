@@ -23,7 +23,8 @@ namespace IoTHub.Portal.Application.Services
             string[]? orderBy = null,
             Dictionary<string, string>? tags = default,
             string? modelId = null,
-            List<string>? labels = default);
+            List<string>? labels = default,
+            string? layerId = null);
 
         Task<TDto> GetDevice(string deviceId);
 

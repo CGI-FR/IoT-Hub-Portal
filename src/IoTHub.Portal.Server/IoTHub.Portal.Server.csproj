@@ -73,6 +73,7 @@
     <PackageReference Include="Quartz.Serialization.Json" Version="3.13.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="UAParser" Version="3.1.47" />
+    <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
   
 </Project>

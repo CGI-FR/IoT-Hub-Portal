@@ -55,7 +55,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         }
 
         public async Task<PaginatedResult<DeviceListItem>> GetDevices(string searchText = null, bool? searchStatus = null, bool? searchState = null, int pageSize = 10,
-            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null, List<string> labels = default)
+            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null, List<string> labels = default, string layerId = null)
         {
             var deviceListFilter = new DeviceListFilter
             {
@@ -67,7 +67,8 @@ namespace IoTHub.Portal.Infrastructure.Services
                 OrderBy = orderBy,
                 Tags = GetSearchableTags(tags),
                 ModelId = modelId,
-                Labels = labels
+                Labels = labels,
+                LayerId = layerId
             };
 
             var devicePredicate = PredicateBuilder.True<Device>();
@@ -133,7 +134,8 @@ namespace IoTHub.Portal.Infrastructure.Services
                         {
                             Color = x.Color,
                             Name = x.Name,
-                        })
+                        }),
+                    LayerId = device.LayerId
                 })
                 .ToListAsync();
 

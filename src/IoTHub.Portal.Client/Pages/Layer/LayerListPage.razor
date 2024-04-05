@@ -1,0 +1,194 @@
+﻿@page "/layer"
+
+@using System.Web
+@using System.IO
+@using System.Text.RegularExpressions
+@using System.Net.Http.Headers
+
+@using Microsoft.AspNetCore.WebUtilities
+
+@using IoTHub.Portal
+@using IoTHub.Portal.Models
+@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Models.v10.LoRaWAN
+@using IoTHub.Portal.Shared.Models
+@using IoTHub.Portal.Shared.Constants;
+@using IoTHub.Portal.Shared.Models.v10;
+@using IoTHub.Portal.Shared.Models.v10.Filters
+@using IoTHub.Portal.Client.Enums
+@using IoTHub.Portal.Client.Validators
+@using IoTHub.Portal.Client.Pages.Devices
+@using IoTHub.Portal.Client.Dialogs.Devices
+@using IoTHub.Portal.Client.Dialogs.Building
+
+@attribute [Authorize]
+
+@inject NavigationManager navigationManager
+@inject PortalSettings Portal
+@inject ILayerClientService LayerClientService
+@inject IPlanningClientService PlanningClientService
+@inject IDialogService DialogService
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudItem xs="12">
+            <MudTable T="LayerDto" Items="@MainLayers" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
+                <ColGroup>
+                    <col style="width: 50%;" />
+                    @for(int index = 1; index < LAYER_NAMES.Count(); index ++)
+                    {
+                        <col style="width: 10%;" />
+                    }
+                    <col style="width: 10%;" />
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Layers</MudText>
+                    <MudSpacer />
+                    <MudTooltip Text="Refresh list">
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@GetLayers" Class="ma-2"></MudIconButton>
+                    </MudTooltip>
+                    <MudTooltip Text="Add new Layer">
+                        <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@AddLayer" Size="Size.Medium" id="addLayerButton" />
+                    </MudTooltip>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<LayerDto, object>(x => x.Name)" id="NameLabel">Name</MudTableSortLabel></MudTh>
+                    @foreach (string layerName in LAYER_NAMES.GetRange(1, LAYER_NAMES.Count() - 1))
+                    {
+                        <MudTh>@layerName</MudTh>
+                    }
+                    <MudTh>Planning</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Name">
+                        <MudItem>
+                            <MudText Typo="Typo.body1" Inline="true">
+                                @context.Name
+                            </MudText>
+                        </MudItem>
+                    </MudTd>
+                    @foreach (List<LayerDto> layer in Layers.Where(mainLayers => mainLayers[0][0].Id == context.Id).ToList()[0].GetRange(1, LAYER_NAMES.Count() - 1))
+                    {
+                        <MudTh>@layer.Count()</MudTh>
+                    }
+                    <MudTd DataLabel="Planning" Style="word-break: break-all; ">
+                        @(plannings.FirstOrDefault(item => item.Id == context.Planning)!= null ? plannings.FirstOrDefault(item => item.Id == context.Planning).Name : "None")
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                </PagerContent>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+            </MudTable>
+        </MudItem>
+    </MudItem>
+</MudGrid>
+
+@code {
+    public List<string> LAYER_NAMES = new List<string>() { "Main Layer", "Sub-Layer 1", "Sub-Layer 2" };
+
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [Parameter]
+    public CreateEditMode context { get; set; }
+
+    private string id = "";
+
+    private List<List<List<LayerDto>>> Layers = new List<List<List<LayerDto>>>();
+    private List<LayerDto> MainLayers = new List<LayerDto>();
+    private List<PlanningDto> plannings = new List<PlanningDto>();
+
+    private bool isProcessing { get; set; } = false;
+    private bool IsLoading { get; set; } = true;
+    private readonly int[] pageSizeOptions = { 10, 5, 3 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetLayers();
+        plannings = await PlanningClientService.GetPlannings();
+    }
+
+    private async Task GetLayers()
+    {
+        try
+        {
+            IsLoading = true;
+            List<LayerDto> listLayers = await LayerClientService.GetLayers();
+            ReloadSubLayers(listLayers);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private void ReloadSubLayers(List<LayerDto> layers)
+    {
+        if (layers.Count() == 0) return;
+
+        LayerDto firstLayer = layers[0];
+        bool isAdd = false;
+
+        if (firstLayer.Father == "Init")
+        {
+            Layers.Add(new List<List<LayerDto>>() { new List<LayerDto>() { firstLayer } });
+            MainLayers.Add(firstLayer);
+            for (int index = 1; index < LAYER_NAMES.Count(); index++) Layers[Layers.Count() - 1].Add(new List<LayerDto>());
+            isAdd = true;
+        }
+        else foreach(List<List<LayerDto>> mainLayers in Layers)
+            {
+                if (mainLayers[0][0].Id == firstLayer.Father)
+                {
+                    mainLayers[1].Add(firstLayer);
+                    isAdd = true;
+                }
+                else isAdd = addSubLayer(1, mainLayers, firstLayer);
+
+                if (isAdd) break;
+            }
+
+        layers.RemoveAt(0);
+        if (!isAdd) layers.Add(firstLayer);
+
+        if (layers.Count() != 0) ReloadSubLayers(layers);
+    }
+
+    private bool addSubLayer(int index, List<List<LayerDto>> mainLayers, LayerDto layer)
+    {
+        foreach (LayerDto subLayer in mainLayers[index])
+        {
+            if (subLayer.Id == layer.Father)
+            {
+                mainLayers[index + 1].Add(layer);
+                return true;
+            }
+            else if (index + 1 < LAYER_NAMES.Count())
+            {
+                bool isAdd = addSubLayer(index + 1, mainLayers, layer);
+                if (isAdd) return true;
+            }
+        }
+        return false;
+    }
+
+    private void GoToDetails(LayerDto item)
+    {
+        navigationManager.NavigateTo($"/layer/{item.Id}");
+    }
+
+    private void AddLayer()
+    {
+        navigationManager.NavigateTo($"/layer/new");
+    }
+}

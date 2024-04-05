@@ -1,0 +1,19 @@
+﻿@page "/layer/new"
+
+@using IoTHub.Portal.Client.Components.Layers
+@using IoTHub.Portal.Shared.Models.v10
+
+<EditLayer layers=@Layers initLayers=InitLayers mode="New" />
+
+@code {
+    public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
+    public List<LayerDto> InitLayers = new List<LayerDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        LayerDto newLayer = new LayerDto();
+        newLayer.Name = "Main Layer";
+        newLayer.Father = "Init";
+        Layers.Add(new LayerHash(newLayer, 1, true));
+    }
+}
