@@ -37,5 +37,11 @@ namespace IoTHub.Portal.Domain.Entities
         /// Day off command.
         /// </summary>
         public string CommandId { get; set; } = default!;
+
+        /// <summary>
+        /// Day off exceptions.
+        /// </summary>
+        public string DayExceptions { get; set; } = default!;
+
     }
 }

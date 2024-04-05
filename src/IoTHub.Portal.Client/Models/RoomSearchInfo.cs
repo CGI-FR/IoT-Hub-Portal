@@ -1,10 +1,10 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Application.Services
+namespace IoTHub.Portal.Client.Models
 {
-    public interface ISendPlanningCommandService
+    public class RoomSearchInfo
     {
-        void ShoudlUpdateDatabase();
+        public string? SearchText { get; set; }
     }
 }

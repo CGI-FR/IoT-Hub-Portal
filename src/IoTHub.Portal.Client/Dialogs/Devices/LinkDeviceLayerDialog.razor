@@ -1,0 +1,183 @@
+﻿@using IoTHub.Portal.Shared.Models.v10
+@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Shared.Models.v10.Filters
+@using IoTHub.Portal.Shared.Models
+
+@inject ISnackbar Snackbar
+@inject IEdgeDeviceClientService EdgeDeviceClientService
+@inject IDeviceClientService DeviceClientService
+@inject IDeviceModelsClientService DeviceModelsClientService
+
+<MudDialog MaxWidth="800px" MaxHeight="600px">
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" xd="12">
+                @if (!IsLoading)
+                {
+                    <div style="display: flex; align-items: center;">
+                        <MudSelect @bind-Value="@SelectedModel" Label="Device Model" Margin="Margin.Dense" Variant="Variant.Outlined">
+                            @foreach (IDeviceModel model in DeviceModels)
+                            {
+                                <MudSelectItem Value="@(model)">@model.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="LoadItems" id="saveButton">Search</MudButton>
+                    </div>
+                }
+                <MudTable T="DeviceListItem" Items="@Devices" Dense=true Hover=true Loading="@IsLoading" Bordered=true Striped=true RowStyle="cursor: pointer;">
+                    <ColGroup>
+                        <col style="width: 10%;" />
+                        <col style="width: 70%;" />
+                        <col style="width: 20%;" />
+                    </ColGroup>
+                    <HeaderContent>
+                        <MudTh></MudTh>
+                        <MudTh>Device</MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd Style="text-align: center">
+                            <img height="25" src="@context.ImageUrl" />
+                        </MudTd>
+                        <MudTd DataLabel="Device">
+                            <MudItem>
+                                <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText>
+                            </MudItem>
+                        </MudTd>
+                        <MudTd DataLabel="Delete" Style="text-align: center">
+                            <MudTooltip Text="Delete device">
+                                @if (context.LayerId == Layer.Id || DeviceList.Contains(context.DeviceID) )
+                                {
+                                    <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.CheckBox" Size="Size.Medium" @onclick="() => UpdateChecked(context)"></MudIconButton>
+                                }
+                                else if (context.LayerId != null)
+                                {
+                                    <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.IndeterminateCheckBox" Size="Size.Medium" @onclick="() => UpdateChecked(context)"></MudIconButton>
+                                }
+                                else
+                                {
+                                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" Size="Size.Medium" @onclick="() => UpdateChecked(context)"></MudIconButton>
+                                }
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>No matching records found</MudText>
+                    </NoRecordsContent>
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                </MudTable>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="save" Color="Color.Primary" OnClick="SaveDevice">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public LayerDto Layer { get; set; } = default!;
+
+    private MudTable<DeviceListItem>? table;
+    private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
+
+    public IDeviceModel SelectedModel = new DeviceModelDto();
+    public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
+
+    public List<string> DeviceList { get; set; } = new List<string>();
+    public List<string> DeviceRemoveList { get; set; } = new List<string>();
+
+    private bool IsLoading { get; set; } = true;
+
+    void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var filter = new DeviceModelFilter
+            {
+                SearchText = "",
+                PageNumber = 0,
+                PageSize = 100,
+                OrderBy = new string[]
+                                    {
+                    string.Empty
+                                    }
+            };
+
+        DeviceModels = (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
+
+        await LoadItems();
+
+        if (DeviceModels.Count() != 0) SelectedModel = DeviceModels.First();
+
+        IsLoading = false;
+    }
+
+    public async Task LoadItems()
+    {
+        try
+        {
+            string uri = $"api/devices?pageNumber=0&pageSize=1000";
+
+            if (!IsLoading) uri = uri + "&modelId=" + SelectedModel.ModelId;
+
+            var result = await DeviceClientService.GetDevices(uri);
+
+            Devices = result.Items;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    public void UpdateChecked(DeviceListItem device)
+    {
+        if (device.LayerId == Layer.Id)
+        {
+            if (DeviceRemoveList.Contains(device.DeviceID)) DeviceRemoveList.Remove(device.DeviceID);
+            else DeviceRemoveList.Add(device.DeviceID);
+        }
+        else
+        {
+            if (DeviceList.Contains(device.DeviceID)) DeviceList.Remove(device.DeviceID);
+            else DeviceList.Add(device.DeviceID);
+        }
+    }
+
+    private async Task SaveDevice()
+    {
+        try
+        {
+            List<DeviceDetails> devices = new List<DeviceDetails>();
+            foreach(string device in DeviceRemoveList)
+            {
+                DeviceDetails updatedDevice = await DeviceClientService.GetDevice(device);
+                updatedDevice.LayerId = null;
+                await DeviceClientService.UpdateDevice(updatedDevice);
+            }
+            foreach (string device in DeviceList)
+            {
+                DeviceDetails updatedDevice = await DeviceClientService.GetDevice(device);
+                updatedDevice.LayerId = Layer.Id;
+                await DeviceClientService.UpdateDevice(updatedDevice);
+            }
+
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            Cancel();
+        }
+    }
+}
