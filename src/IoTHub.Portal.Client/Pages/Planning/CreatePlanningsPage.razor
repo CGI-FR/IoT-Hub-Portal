@@ -1,0 +1,19 @@
+﻿@page "/planning/new"
+
+@using IoTHub.Portal.Shared.Models.v10
+@using IoTHub.Portal.Client.Components.Planning
+
+<EditPlanning planning=@Planning scheduleList=@ScheduleList mode="New" />
+
+@code {
+    public List<ScheduleDto> ScheduleList { get; set; } = new List<ScheduleDto> {};
+    public PlanningDto Planning { get; set; } = new PlanningDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Planning.Day = "SaSo";
+        ScheduleDto firstSchedule = new ScheduleDto();
+        firstSchedule.Start = "00:00";
+        ScheduleList.Add(firstSchedule);
+    }
+}

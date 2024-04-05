@@ -1,0 +1,78 @@
+﻿@page "/layer/{LayerId}"
+
+@using IoTHub.Portal.Client.Components.Layers
+@using IoTHub.Portal.Shared.Models.v10
+
+@inject ILayerClientService LayerClientService
+
+<EditLayer layers=@Layers initLayers=InitLayers mode="Edit" />
+
+@code {
+    public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
+    public HashSet<LayerHash> fullLayers { get; set; } = new HashSet<LayerHash> { };
+    public List<LayerDto> InitLayers = new List<LayerDto>();
+
+    [Parameter]
+    public string LayerId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        List<LayerDto> listLayers = await LayerClientService.GetLayers();
+        ReloadSubLayers(listLayers);
+
+        foreach (LayerHash layer in fullLayers)
+            if (layer.LayerData.Id == LayerId)
+            {
+                Layers.Add(layer);
+                InitLayers.Add(layer.LayerData);
+                addInitLayer(layer);
+            }
+    }
+
+    private void ReloadSubLayers(List<LayerDto> layers)
+    {
+        if (layers.Count() == 0) return;
+
+        LayerDto firstLayer = layers[0];
+        bool isAdd = false;
+
+        if (firstLayer.Father == "Init")
+        {
+            fullLayers.Add(new LayerHash(firstLayer, 1));
+            isAdd = true;
+        }
+        else isAdd = addSubLayer(fullLayers, firstLayer);
+
+        layers.RemoveAt(0);
+        if (!isAdd) layers.Add(firstLayer);
+
+        if (layers.Count() != 0) ReloadSubLayers(layers);
+    }
+
+    private bool addSubLayer(HashSet<LayerHash> childLayers, LayerDto layer)
+    {
+        foreach (LayerHash subLayer in childLayers)
+        {
+            if (subLayer.LayerData.Id == layer.Father)
+            {
+                subLayer.Children.Add(new LayerHash(layer, subLayer.Level + 1));
+                return true;
+            }
+            else
+            {
+                bool isAdd = addSubLayer(subLayer.Children, layer);
+                if (isAdd) return true;
+            }
+        }
+        return false;
+    }
+
+    private void addInitLayer(LayerHash layer)
+    {
+        foreach (LayerHash subLayer in layer.Children)
+        {
+            InitLayers.Add(subLayer.LayerData);
+            addInitLayer(subLayer);
+        }
+    }
+}

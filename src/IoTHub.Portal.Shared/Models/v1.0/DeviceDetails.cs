@@ -73,5 +73,10 @@ namespace IoTHub.Portal.Models.v10
         /// Labels
         /// </summary>
         public List<LabelDto> Labels { get; set; } = new();
+
+        /// <summary>
+        /// The LayerId of the device.
+        /// </summary>
+        public string LayerId { get; set; } = "None";
     }
 }

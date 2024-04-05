@@ -1,0 +1,16 @@
+﻿@page "/settings/layers"
+
+@attribute [Authorize]
+@inject ISnackbar Snackbar
+
+<MudGrid>
+    <MudItem xs="12">
+       
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+}
