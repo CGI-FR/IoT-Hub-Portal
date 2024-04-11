@@ -50,7 +50,7 @@
                                 {
                                     <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.CheckBox" Size="Size.Medium" @onclick="() => UpdateChecked(context)"></MudIconButton>
                                 }
-                                else if (context.LayerId != null)
+                                else if (context.LayerId.Contains('-'))
                                 {
                                     <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.IndeterminateCheckBox" Size="Size.Medium" @onclick="() => UpdateChecked(context)"></MudIconButton>
                                 }
