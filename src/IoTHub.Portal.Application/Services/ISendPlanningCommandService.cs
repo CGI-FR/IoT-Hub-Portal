@@ -5,6 +5,6 @@ namespace IoTHub.Portal.Application.Services
 {
     public interface ISendPlanningCommandService
     {
-        void ShoudlUpdateDatabase();
+        TimeSpan getTimeSpan(string time);
     }
 }
