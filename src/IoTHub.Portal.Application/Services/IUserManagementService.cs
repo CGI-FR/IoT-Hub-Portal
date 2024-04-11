@@ -9,6 +9,7 @@ namespace IoTHub.Portal.Application.Services
     {
         Task<IEnumerable<UserModel>> GetAllUsersAsync();
         Task<UserDetailsModel> GetUserDetailsAsync(string userId);
+        Task<UserDetailsModel> CreateUserAsync(UserDetailsModel userCreateModel);
 
     }
 }

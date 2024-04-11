@@ -45,6 +45,19 @@ namespace IoTHub.Portal.Server.Controllers.V10
             }
             return Ok(userDetails);
         }
-        // TODO : Other methods 
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserDetailsModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateUser([FromBody] UserDetailsModel userCreateModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userDetails = await userManagementService.CreateUserAsync(userCreateModel);
+            return CreatedAtAction(nameof(GetUserDetails), new { userId = userDetails.Id }, userDetails);
+        }
     }
 }

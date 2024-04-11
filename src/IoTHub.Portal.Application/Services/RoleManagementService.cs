@@ -3,10 +3,14 @@
 
 namespace IoTHub.Portal.Server.Services
 {
+    using IoTHub.Portal;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
+    using IoTHub.Portal.Infrastructure.Repositories;
+    using IoTHub.Portal.Shared.Models.v10;
+    using IoTHub.Portal.Shared.Models.v10.Filters;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -73,6 +77,30 @@ namespace IoTHub.Portal.Server.Services
             roleRepository.Delete(role.Id);
             await unitOfWork.SaveAsync();
             return true;
+        }
+
+        public async Task<PaginationResult<RoleModel>> GetRolePage(
+            string? searchKeyword = null,
+            int pageSize = 10,
+            int pageNumber = 0,
+            string? orderBy = null)
+        {
+            var roleFilter = new RoleFilter
+            {
+                Keyword = searchKeyword,
+                PageSize = pageSize,
+                PageNumber = pageNumber,
+                OrderBy = orderBy
+            };
+
+            var rolePredicate = PredicateBuilder.True<Role>();
+
+            if (!string.IsNullOrWhiteSpace(roleFilter.searchKeyword))
+            {
+                rolePredicate = rolePredicate.And(role => role.Name.ToLower().Contains(roleFilter.searchKeyword.ToLower()) || role.Description.ToLower().Contains(roleFilter.searchKeyword.ToLower()));
+            }
+
+            var paginedRoles = await this.roleRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy, rolePredicate);
         }
     }
 }

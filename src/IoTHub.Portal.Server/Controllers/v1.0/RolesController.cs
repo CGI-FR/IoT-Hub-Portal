@@ -9,38 +9,78 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using IoTHub.Portal.Application.Services;
     using Microsoft.AspNetCore.Http;
     using IoTHub.Portal.Shared.Models.v10;
-    using AutoMapper;
     using IoTHub.Portal.Domain.Entities;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.AspNetCore.Mvc.Routing;
 
     [Authorize]
-    [ApiController]
     [ApiVersion("1.0")]
     [Route("api/roles")]
     [ApiExplorerSettings(GroupName = "Role Management")]
+    [ApiController]
     public class RolesController : ControllerBase
     {
-        private readonly IRoleManagementService roleManagementService;
-        private readonly IMapper mapper;
+        /// <summary>
+        /// The Role Controller logger :
+        /// </summary>
+        private readonly ILogger<RolesController> logger;
 
-        public RolesController(IRoleManagementService roleManagementService, IMapper mapper)
+        /// <summary>
+        /// The Role Management Service :
+        /// </summary>
+        private readonly IRoleManagementService roleManagementService;
+
+        /// <summary>
+        /// Constructor : Initialize an instance of the <see cref="RoleController"/>.
+        /// </summary>
+        /// <param name="logger">The logger</param>
+        /// <param name="roleManagementService">The Role Management Service</param>
+        public RolesController(IRoleManagementService roleManagementService, ILogger<RolesController> logger)
         {
             this.roleManagementService = roleManagementService;
-            this.mapper = mapper;
+            this.logger = logger;
         }
 
         /// <summary>
         ///  Get all roles
         /// </summary>
-        /// <returns>HTTP Get response</returns>
-        [HttpGet]
-        //[Authorize(Policy = "GetAllRoles")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoleModel>))]
-        public async Task<IActionResult> GetAllRoles()
+        /// <param name="searchName">Role name</param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="orderBy"></param>
+        /// <param name="RoleId"></param>
+        [HttpGet(Name = "GetRoles")]
+        //[Authorize(Policy = "GetRoles")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<RoleModel>))]
+        public async Task<IActionResult> Get(
+            string searchKeyword = null,
+            int pageSize = 10,
+            int pageNumber = 0,
+            [FromQuery] string orderBy = null
+        )
         {
-            var roles = await roleManagementService.GetAllRolesAsync();
-            var rolesModel = mapper.Map<IEnumerable<RoleModel>>(roles);
-            return Ok(rolesModel);
+            var paginedResult = await roleManagementService.GetRolePage(
+                searchKeyword,
+                pageSize,
+                pageNumber,
+                orderBy
+            );
+            var nextPage = string.Empty;
+            if (paginedResult.HasNextPage)
+            {
+                nextPage = Url.RouteUrl(new UrlRouteContext
+                {
+                    RouteName = "GetRoles",
+                    Values = new { searchKeyword, pageSize, pageNumber = pageNumber + 1, orderBy },
+                });
+            }
+            return new PaginationResult<RoleModel>
+            {
+                Items = paginedResult.Items,
+                TotalItems = paginedResult.TotalItems,
+                NextPage = nextPage,
+            };
         }
 
         /// <summary>
@@ -58,8 +98,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
             {
                 return NotFound();
             }
-            var roleDetails = mapper.Map<RoleDetailsModel>(role);
-            return Ok(roleDetails);
+            //var roleDetails = mapper.Map<RoleDetailsModel>(role);
+            return Ok();
         }
 
         /// <summary>
@@ -71,10 +111,10 @@ namespace IoTHub.Portal.Server.Controllers.V10
         //[Authorize(Policy = Policies.CreateRole)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateRoleAsync(RoleDetailsModel roleDetails)
+        public async Task<IActionResult> CreateRoleAsync()
         {
-            var role = mapper.Map<Role>(roleDetails);
-            return Ok(await this.roleManagementService.CreateRole(role));
+            //var role = mapper.Map<Role>(roleDetails);
+            return Ok();
         }
 
         /// <summary>
@@ -104,7 +144,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 return BadRequest("Unable to update the role.");
             }
 
-            return Ok(updatedRole);
+            return Ok();
         }
 
         /// <summary>
