@@ -20,7 +20,6 @@ namespace IoTHub.Portal.Server.Services
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using MudBlazor;
 
     public class SendPlanningCommandService : ISendPlanningCommandService, IHostedService, IDisposable
     {
@@ -79,50 +78,10 @@ namespace IoTHub.Portal.Server.Services
 
             this.cancellationTokenSource = new CancellationTokenSource();
 
-            var timeSpanSeconds = 30;
+            var timeSpanSeconds = 600;
             this.timerPeriod = TimeSpan.FromSeconds(timeSpanSeconds);
             this.isUpdating = true;
-
-            //CommandLoop();
         }
-
-        /*
-        public SendPlanningCommandService()
-        {
-            cancellationTokenSource = new CancellationTokenSource();
-
-            CommandLoop();
-        }
-
-        private void CommandLoop()
-        {
-            isUpdating = true;
-            var CommandThread = new Thread(async () =>
-            {
-                while (!cancellationTokenSource.IsCancellationRequested)
-                {
-                    try
-                    {
-                        if (isUpdating)
-                        {
-                            await UpdateDatabase();
-                            isUpdating = false;
-                        }
-                        else
-                        {
-                            await SendCommand();
-                        }
-                        Thread.Sleep(5000);
-                    }
-                    catch (ProblemDetailsException exception)
-                    {
-                        Error?.ProcessProblemDetails(exception);
-                    }
-                }
-            });
-            CommandThread.Start();
-        }
-        */
 
         /// <summary>
         /// Triggered when the application host is ready to start the service.
@@ -150,11 +109,17 @@ namespace IoTHub.Portal.Server.Services
 
             try
             {
+                this.planningCommands.Clear();
                 if (this.isUpdating)
                 {
                     await UpdateDatabase();
                     this.isUpdating = false;
                 }
+                else
+                {
+                    await UpdateDatabase();
+                }
+
                 await SendCommand();
             }
             catch (ProblemDetailsException exception)
@@ -204,7 +169,7 @@ namespace IoTHub.Portal.Server.Services
                 PaginatedResult<DeviceListItem> devices = await this.deviceService.GetDevices();
                 foreach (var device in devices.Data)
                 {
-                    if (device.LayerId != null) await AddNewDevice(device);
+                    if (device.LayerId.Contains('-')) await AddNewDevice(device);
                 }
             }
             catch (ProblemDetailsException exception)
@@ -301,7 +266,10 @@ namespace IoTHub.Portal.Server.Services
 
         public async Task SendCommand()
         {
-            DateTime currentTime = DateTime.Now;
+            string timeZoneId = "Europe/Paris";
+            TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            DateTime currentTime = TimeZoneInfo.ConvertTime(DateTime.Now, timeZone);
+
             DayOfWeek currentDay = currentTime.DayOfWeek;
             TimeSpan currentHour = currentTime.TimeOfDay ;
 
@@ -321,11 +289,6 @@ namespace IoTHub.Portal.Server.Services
         {
             if (devices == null) return;
             foreach (var device in devices) await loRaWANCommandService.ExecuteLoRaWANCommand(device, command);
-        }
-
-        public void ShoudlUpdateDatabase()
-        {
-            isUpdating = true;
         }
 
         /// <summary>
@@ -348,8 +311,6 @@ namespace IoTHub.Portal.Server.Services
 
             this.cancellationTokenSource?.Dispose();
         }
-
-
     }
 
     public class PlanningCommand
