@@ -150,6 +150,7 @@ namespace IoTHub.Portal.Server.Services
 
             try
             {
+                this.planningCommands.Clear();
                 if (this.isUpdating)
                 {
                     this.planningCommands.Clear();
@@ -157,6 +158,11 @@ namespace IoTHub.Portal.Server.Services
                     UpdateDatabase();
                     this.isUpdating = false;
                 }
+                else
+                {
+                    await UpdateDatabase();
+                }
+
                 await SendCommand();
             }
             catch (ProblemDetailsException exception)
