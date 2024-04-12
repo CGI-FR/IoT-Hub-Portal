@@ -25,12 +25,14 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
         private readonly IRoleRepository roleRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
+        private readonly IActionRepository actionRepository;
 
-        public RoleService(IRoleRepository roleRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public RoleService(IRoleRepository roleRepository, IUnitOfWork unitOfWork, IMapper mapper, IActionRepository actionRepository)
         {
             this.roleRepository = roleRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.actionRepository = actionRepository;
         }
 
 
@@ -95,7 +97,7 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
 
         async Task<RoleDetailsModel> IRoleManagementService.GetRoleDetailsAsync(string roleName)
         {
-            var roleEntity = await this.roleRepository.GetByNameAsync(roleName);
+            var roleEntity = await this.roleRepository.GetByNameAsync(roleName, r => r.Actions);
             if (roleEntity is null)
             {
                 throw new ResourceNotFoundException($"The role with name {roleName} doesn't exist");
@@ -115,7 +117,7 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
 
         async Task<RoleDetailsModel?> IRoleManagementService.UpdateRole(string roleName, RoleDetailsModel role)
         {
-            var RoleEntity = await this.roleRepository.GetByNameAsync(roleName, new Expression<Func<Role, object>>[] { r => r.Actions});
+            var RoleEntity = await this.roleRepository.GetByNameAsync(roleName, r => r.Actions);
             if (RoleEntity is null)
             {
                 throw new ResourceNotFoundException($"The role with name {roleName} doesn't exist");
@@ -123,10 +125,26 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
 
             RoleEntity.Name = role.Name;
             RoleEntity.Description = role.Description;
+            RoleEntity.Actions = UpdateRoleActions(RoleEntity.Actions, role.Actions.Select(a => new Action { Name = a }).ToList());
+
 
             this.roleRepository.Update(RoleEntity);
             await this.unitOfWork.SaveAsync();
             return role;
+        }
+
+        private static ICollection<Action> UpdateRoleActions(ICollection<Action> existingActions, ICollection<Action> newActions)
+        {
+            var updatedActions = new HashSet<Action>(existingActions);
+            foreach (var action in newActions)
+            {
+                if (!updatedActions.Any(a => a.Name == action.Name))
+                {
+                    _ = updatedActions.Add(action);
+                }
+            }
+            _ = updatedActions.RemoveWhere(a => !newActions.Any(na => na.Name == a.Name));
+            return updatedActions;
         }
     }
 }

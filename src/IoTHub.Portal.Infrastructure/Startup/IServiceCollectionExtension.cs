@@ -106,6 +106,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
                             .AddScoped<ILabelRepository, LabelRepository>()
                             .AddScoped<IRoleRepository, RoleRepository>()
+                            .AddScoped<IActionRepository, ActionRepository>()
                             .AddScoped<IGroupRepository, GroupRepository>()
                             .AddScoped<IUserRepository, UserRepository>();
         }
