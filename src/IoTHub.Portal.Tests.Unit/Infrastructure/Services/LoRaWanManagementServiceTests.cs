@@ -23,11 +23,22 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     [TestFixture]
     public class LoRaWanManagementServiceTests : BackendUnitTest
     {
+        private Mock<IOptions<LoRaWANOptions>> mockLoRaWANOptions;
         private ILoRaWanManagementService loRaWanManagementService;
 
         public override void Setup()
         {
             base.Setup();
+
+            this.mockLoRaWANOptions = MockRepository.Create<IOptions<LoRaWANOptions>>();
+            _ = ServiceCollection.AddSingleton(this.mockLoRaWANOptions.Object);
+
+            _ = this.mockLoRaWANOptions.Setup(x => x.Value)
+                .Returns(new LoRaWANOptions
+                {
+                    KeyManagementUrl = "http://fake.local",
+                    KeyManagementCode = ""
+                });
 
             _ = ServiceCollection.AddSingleton<ILoRaWanManagementService, LoRaWanManagementService>();
 
