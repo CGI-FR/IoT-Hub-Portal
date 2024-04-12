@@ -18,6 +18,7 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using Action = Domain.Entities.Action;
+    using IoTHub.Portal.Domain.Exceptions;
 
     internal class RoleService : IRoleManagementService
     {
@@ -30,38 +31,6 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
             this.roleRepository = roleRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
-        }
-
-        public async Task<IEnumerable<Role>> GetAllRolesAsync()
-        {
-            return await this.roleRepository.GetAllAsync();
-        }
-        public async Task<Role> GetRoleDetailsAsync(string roleName)
-        {
-            return await this.roleRepository.GetByNameAsync(roleName, r => r.Actions);
-        }
-
-        public async Task<Role> CreateRole(Role roleEntity)
-        {
-            ArgumentNullException.ThrowIfNull(roleEntity, nameof(roleEntity));
-            await roleRepository.InsertAsync(roleEntity);
-            await unitOfWork.SaveAsync();
-            return roleEntity;
-        }
-
-        public async Task<Role?> UpdateRole(Role role)
-        {
-            ArgumentNullException.ThrowIfNull(role, nameof(role));
-            var roleEntity = await roleRepository.GetByIdAsync(role.Id);
-            if (roleEntity == null) return null;
-
-            roleEntity.Name = role.Name;
-            roleEntity.Description = role.Description;
-            roleEntity.Actions = role.Actions;
-
-            roleRepository.Update(roleEntity);
-            await unitOfWork.SaveAsync();
-            return roleEntity;
         }
 
 
@@ -122,6 +91,42 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
 
             return new PaginatedResult<RoleModel>(paginatedRoleDto.Data, paginatedRoleDto.TotalCount);
 
+        }
+
+        async Task<RoleDetailsModel> IRoleManagementService.GetRoleDetailsAsync(string roleName)
+        {
+            var roleEntity = await this.roleRepository.GetByNameAsync(roleName);
+            if (roleEntity is null)
+            {
+                throw new ResourceNotFoundException($"The role with name {roleName} doesn't exist");
+            }
+            var roleModel = this.mapper.Map<RoleDetailsModel>(roleEntity);
+            return roleModel;
+        }
+
+        async Task<RoleDetailsModel> IRoleManagementService.CreateRole(RoleDetailsModel role)
+        {
+            var roleEntity = this.mapper.Map<Role>(role);
+
+            await this.roleRepository.InsertAsync(roleEntity);
+            await this.unitOfWork.SaveAsync();
+            return role;
+        }
+
+        async Task<RoleDetailsModel?> IRoleManagementService.UpdateRole(string roleName, RoleDetailsModel role)
+        {
+            var RoleEntity = await this.roleRepository.GetByNameAsync(roleName, new Expression<Func<Role, object>>[] { r => r.Actions});
+            if (RoleEntity is null)
+            {
+                throw new ResourceNotFoundException($"The role with name {roleName} doesn't exist");
+            }
+
+            RoleEntity.Name = role.Name;
+            RoleEntity.Description = role.Description;
+
+            this.roleRepository.Update(RoleEntity);
+            await this.unitOfWork.SaveAsync();
+            return role;
         }
     }
 }

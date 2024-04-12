@@ -37,7 +37,7 @@ namespace IoTHub.Portal.Server.Services
         public async Task<UserDetailsModel> CreateUserAsync(UserDetailsModel userCreateModel)
         {
             var user = mapper.Map<Domain.Entities.User>(userCreateModel);
-            await userRepository.InsertAsync(user);
+            //await userRepository.InsertAsync(user);
             //await userRepository.SaveAsync();
             return mapper.Map<UserDetailsModel>(user);
         }

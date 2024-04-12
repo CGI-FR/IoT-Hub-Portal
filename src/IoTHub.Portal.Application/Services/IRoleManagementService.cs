@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
 
@@ -15,10 +14,9 @@ namespace IoTHub.Portal.Application.Services
             int pageNumber = 0,
             string[] orderBy = null
         );
-        Task<IEnumerable<Role>> GetAllRolesAsync();
-        Task<Role> GetRoleDetailsAsync(string roleName);
-        Task<Role> CreateRole(Role roleEntity);
-        Task<Role?> UpdateRole(Role roleEntity);
+        Task<RoleDetailsModel> GetRoleDetailsAsync(string roleName);
+        Task<RoleDetailsModel> CreateRole(RoleDetailsModel role);
+        Task<RoleDetailsModel?> UpdateRole(string roleName, RoleDetailsModel role);
         Task<bool> DeleteRole(string roleName);
     }
 }

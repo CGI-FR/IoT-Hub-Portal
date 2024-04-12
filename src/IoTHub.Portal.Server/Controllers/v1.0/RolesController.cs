@@ -4,13 +4,10 @@ namespace IoTHub.Portal.Server.Controllers.V10
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using Microsoft.AspNetCore.Http;
     using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Domain.Entities;
-    using System.Linq;
     using Microsoft.Extensions.Logging;
     using Microsoft.AspNetCore.Mvc.Routing;
 
@@ -88,9 +85,9 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="roleName">Role name</param>
         /// <returns>HTTP Get response</returns>
-        [HttpGet("{roleName}")]
+        [HttpGet("{roleName}", Name = "GetRole")]
+        //[Authorize(Policy = Policies....)
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleDetailsModel))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetRoleDetails(string roleName)
         {
             var role = await roleManagementService.GetRoleDetailsAsync(roleName);
@@ -98,8 +95,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
             {
                 return NotFound();
             }
-            //var roleDetails = mapper.Map<RoleDetailsModel>(role);
-            return Ok();
+            return Ok(role);
         }
 
         /// <summary>
@@ -111,60 +107,23 @@ namespace IoTHub.Portal.Server.Controllers.V10
         //[Authorize(Policy = Policies.CreateRole)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateRoleAsync()
+        public async Task<IActionResult> CreateRoleAsync(RoleDetailsModel role)
         {
-            //var role = mapper.Map<Role>(roleDetails);
-            return Ok();
+            return Ok(await this.roleManagementService.CreateRole(role));
         }
 
         /// <summary>
         /// Edit an existing role and the associated actions, delete the actions that are not in the new list
         /// </summary>
         /// <param name="roleDetails">Role details</param>
-        /// <param name="currentRoleName">Current role name (before any changes)</param>
+        /// <param name="roleName">Current role name (before any changes)</param>
         /// <returns>HTTP Put response, updated role</returns>
-        [HttpPut("{currentRoleName}")]
+        [HttpPut("{roleName}", Name = "PUT Edit Role")]
         //[Authorize(Policy = Policies.EditRole)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> EditRoleAsync(string currentRoleName, RoleDetailsModel roleDetails)
+        public async Task<IActionResult> EditRoleAsync(string roleName, RoleDetailsModel roleDetails)
         {
-            var existingRole = await roleManagementService.GetRoleDetailsAsync(currentRoleName);
-            if (existingRole == null)
-            {
-                return NotFound($"Role with name {currentRoleName} not found.");
-            }
-            existingRole.Name = roleDetails.Name;
-            existingRole.Description = roleDetails.Description;
-            existingRole.Actions = UpdateRoleActions(existingRole.Actions, roleDetails.Actions.Select(a => new Action { Name = a }).ToList());
-
-            var updatedRole = await roleManagementService.UpdateRole(existingRole);
-            if (updatedRole == null)
-            {
-                return BadRequest("Unable to update the role.");
-            }
-
-            return Ok();
-        }
-
-        /// <summary>
-        /// Update the role actions
-        /// </summary>
-        /// <param name="existingActions">Old actions</param>
-        /// <param name="newActions">new actions</param>
-        /// <returns>updated actions</returns>
-        private static ICollection<Action> UpdateRoleActions(ICollection<Action> existingActions, ICollection<Action> newActions)
-        {
-            var updatedActions = new HashSet<Action>(existingActions);
-            foreach (var action in newActions)
-            {
-                if (!updatedActions.Any(a => a.Name == action.Name))
-                {
-                    _ = updatedActions.Add(action);
-                }
-            }
-            _ = updatedActions.RemoveWhere(a => !newActions.Any(na => na.Name == a.Name));
-            return updatedActions;
+            return Ok(await this.roleManagementService.UpdateRole(roleName, roleDetails));
         }
 
 
