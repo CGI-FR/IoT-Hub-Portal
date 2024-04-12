@@ -53,11 +53,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [HttpGet(Name = "GetRoles")]
         //[Authorize(Policy = "GetRoles")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<RoleModel>))]
-        public async Task<IActionResult> Get(
+        public async Task<PaginationResult<RoleModel>> Get(
             string searchKeyword = null,
             int pageSize = 10,
             int pageNumber = 0,
-            [FromQuery] string orderBy = null
+            [FromQuery] string[] orderBy = null
         )
         {
             var paginedResult = await roleManagementService.GetRolePage(
@@ -77,8 +77,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
             }
             return new PaginationResult<RoleModel>
             {
-                Items = paginedResult.Items,
-                TotalItems = paginedResult.TotalItems,
+                Items = paginedResult.Data,
+                TotalItems = paginedResult.TotalCount,
                 NextPage = nextPage,
             };
         }

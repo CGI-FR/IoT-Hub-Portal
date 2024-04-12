@@ -4,15 +4,16 @@
 namespace IoTHub.Portal.Application.Services
 {
     using IoTHub.Portal.Domain.Entities;
+    using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
 
     public interface IRoleManagementService
     {
-        Task<PaginationResult<RoleModel>> GetRolePage(
+        Task<PaginatedResult<RoleModel>> GetRolePage(
             string? searchKeyword = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string? orderBy = null
+            string[] orderBy = null
         );
         Task<IEnumerable<Role>> GetAllRolesAsync();
         Task<Role> GetRoleDetailsAsync(string roleName);

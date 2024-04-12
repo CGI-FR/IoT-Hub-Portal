@@ -42,6 +42,7 @@ namespace IoTHub.Portal.Server
     using Quartz.Impl.AdoJobStore.Common;
     using Services;
     using Shared.Models.v1._0;
+    using IoTHub.Portal.Infrastructure.Services.RBAC;
 
     public class Startup
     {
@@ -313,7 +314,7 @@ namespace IoTHub.Portal.Server
 
         private static void ConfigureServicesRBAC(IServiceCollection services)
         {
-            _ = services.AddTransient<IRoleManagementService, RoleManagementService>();
+            _ = services.AddTransient<IRoleManagementService, RoleService>();
             _ = services.AddTransient<IGroupManagementService, GroupManagementService>();
             _ = services.AddTransient<IUserManagementService, UserManagementService>();
         }

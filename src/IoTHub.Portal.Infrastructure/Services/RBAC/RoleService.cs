@@ -1,28 +1,35 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Services
+namespace IoTHub.Portal.Infrastructure.Services.RBAC
 {
-    using IoTHub.Portal;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using AutoMapper;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Repositories;
+    using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using Action = Domain.Entities.Action;
 
-    public class RoleManagementService : IRoleManagementService
+    internal class RoleService : IRoleManagementService
     {
         private readonly IRoleRepository roleRepository;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
-        public RoleManagementService(IRoleRepository roleRepository, IUnitOfWork unitOfWork)
+        public RoleService(IRoleRepository roleRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.roleRepository = roleRepository;
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<Role>> GetAllRolesAsync()
@@ -79,13 +86,13 @@ namespace IoTHub.Portal.Server.Services
             return true;
         }
 
-        public async Task<PaginationResult<RoleModel>> GetRolePage(
+        public async Task<PaginatedResult<RoleModel>> GetRolePage(
             string? searchKeyword = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string? orderBy = null)
+            string[] orderBy = null)
         {
-            var roleFilter = new RoleFilter
+            var roleFilter = new  RoleFilter
             {
                 Keyword = searchKeyword,
                 PageSize = pageSize,
@@ -94,13 +101,27 @@ namespace IoTHub.Portal.Server.Services
             };
 
             var rolePredicate = PredicateBuilder.True<Role>();
-
-            if (!string.IsNullOrWhiteSpace(roleFilter.searchKeyword))
+            if (!string.IsNullOrWhiteSpace(roleFilter.Keyword))
             {
-                rolePredicate = rolePredicate.And(role => role.Name.ToLower().Contains(roleFilter.searchKeyword.ToLower()) || role.Description.ToLower().Contains(roleFilter.searchKeyword.ToLower()));
+                rolePredicate = rolePredicate.And(role => role.Name.ToLower().Contains(roleFilter.Keyword.ToLower()) || role.Description.ToLower().Contains(roleFilter.Keyword.ToLower()));
             }
 
-            var paginedRoles = await this.roleRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy, rolePredicate);
+            var paginatedRole = await this.roleRepository.GetPaginatedListAsync(pageNumber,
+                pageSize,
+                orderBy,
+                rolePredicate,
+                includes: new Expression<Func<Role, object>>[] { role => role.Actions});
+
+            var paginatedRoleDto = new PaginatedResult<RoleModel>
+            {
+                Data = paginatedRole.Data.Select(x => this.mapper.Map<RoleModel>(x)).ToList(),
+                TotalCount = paginatedRole.TotalCount,
+                CurrentPage = paginatedRole.CurrentPage,
+                PageSize = pageSize
+            };
+
+            return new PaginatedResult<RoleModel>(paginatedRoleDto.Data, paginatedRoleDto.TotalCount);
+
         }
     }
 }
