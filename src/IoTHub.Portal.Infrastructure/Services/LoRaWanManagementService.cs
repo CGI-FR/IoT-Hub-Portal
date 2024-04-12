@@ -45,7 +45,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
             var body = new LoRaCloudToDeviceMessage
             {
-                RawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(commandDto.Frame)),
+                RawPayload = Convert.ToBase64String(Enumerable.Range(0, commandDto.Frame.Length / 2).Select(x => Convert.ToByte(commandDto.Frame.Substring(x * 2, 2), 16)).ToArray()),
                 Fport = commandDto.Port,
                 Confirmed = commandDto.Confirmed
             };
