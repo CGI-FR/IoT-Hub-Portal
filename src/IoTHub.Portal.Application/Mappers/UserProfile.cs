@@ -22,12 +22,12 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.GivenName, opts => opts.MapFrom(src => src.GivenName))
                 .ForMember(dest => dest.FamilyName, opts => opts.MapFrom(src => src.FamilyName))
                 .ForMember(dest => dest.AccessControls, opts => opts.MapFrom(src =>
-                                   src.AccessControls.Select(ac => new AccessControlModel
-                                   {
-                                       Id = ac.Id,
-                                       Scope = ac.Scope,
-                                       Role = new RoleModel { Name = ac.Role.Name }
-                                   })));
+                               src.AccessControls.Select(ac => new AccessControlModel
+                               {
+                                   Id = ac.Id,
+                                   Scope = ac.Scope,
+                                   Role = new RoleModel { Name = ac.Role.Name }
+                               })));
         }
     }
 }

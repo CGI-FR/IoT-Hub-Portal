@@ -317,6 +317,7 @@ namespace IoTHub.Portal.Server
             _ = services.AddTransient<IRoleManagementService, RoleService>();
             _ = services.AddTransient<IGroupManagementService, GroupManagementService>();
             _ = services.AddTransient<IUserManagementService, UserManagementService>();
+            _ = services.AddTransient<IAccessControlManagementService, AccessControlService>();
         }
         private static void ConfigureServicesAzure(IServiceCollection services)
         {

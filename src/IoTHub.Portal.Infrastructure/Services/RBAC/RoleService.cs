@@ -74,7 +74,8 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
             var rolePredicate = PredicateBuilder.True<Role>();
             if (!string.IsNullOrWhiteSpace(roleFilter.Keyword))
             {
-                rolePredicate = rolePredicate.And(role => role.Name.ToLower().Contains(roleFilter.Keyword.ToLower()) || role.Description.ToLower().Contains(roleFilter.Keyword.ToLower()));
+                rolePredicate = rolePredicate.And(role => role.Name.ToLower().Contains(roleFilter.Keyword.ToLower()) ||
+                role.Description.ToLower().Contains(roleFilter.Keyword.ToLower()));
             }
 
             var paginatedRole = await this.roleRepository.GetPaginatedListAsync(pageNumber,
