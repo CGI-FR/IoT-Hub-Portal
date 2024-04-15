@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             this.httpClient = httpClient;
             this.httpClient.BaseAddress = new Uri(loRaWANOptions?.Value.KeyManagementUrl);
             this.httpClient.DefaultRequestHeaders.Add("x-functions-key", loRaWANOptions?.Value.KeyManagementCode);
-            this.httpClient.DefaultRequestHeaders.Add("api-version", "2022-03-04");
+            this.httpClient.DefaultRequestHeaders.Add("api-version", loRaWANOptions?.Value.KeyManagementApiVersion);
         }
 
         public async Task<RouterConfig?> GetRouterConfig(string loRaRegion)
