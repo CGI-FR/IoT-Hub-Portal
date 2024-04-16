@@ -3,12 +3,19 @@
 
 namespace IoTHub.Portal.Application.Services
 {
+    using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
 
     public interface IGroupManagementService
     {
-        Task<IEnumerable<GroupModel>> GetAllGroupsAsync();
+        Task<PaginatedResult<GroupModel>> GetGroupPage(
+            string? searchKeyword = null,
+            int pageSize = 10,
+            int pageNumber = 0,
+            string[] orderBy = null
+        );
         Task<GroupDetailsModel> GetGroupDetailsAsync(string groupId);
-
+        Task<GroupDetailsModel> CreateGroupAsync(GroupDetailsModel groupCreateModel);
+        Task<bool> DeleteGroup(string userId);
     }
 }

@@ -4,11 +4,8 @@
 namespace IoTHub.Portal.Domain.Repositories
 {
     using IoTHub.Portal.Domain.Entities;
-    using System.Threading.Tasks;
 
-    public interface IGroupRepository
+    public interface IGroupRepository : IRepository<Group>
     {
-        Task<Group[]> GetAllAsync();
-        Task<Group?> GetByIdAsync(string groupId);
     }
 }

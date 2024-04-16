@@ -110,7 +110,6 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
         async Task<RoleDetailsModel> IRoleManagementService.CreateRole(RoleDetailsModel role)
         {
             var roleEntity = this.mapper.Map<Role>(role);
-
             await this.roleRepository.InsertAsync(roleEntity);
             await this.unitOfWork.SaveAsync();
             return role;

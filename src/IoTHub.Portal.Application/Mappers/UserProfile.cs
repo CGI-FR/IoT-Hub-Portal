@@ -28,6 +28,19 @@ namespace IoTHub.Portal.Application.Mappers
                                    Scope = ac.Scope,
                                    Role = new RoleModel { Name = ac.Role.Name }
                                })));
+
+            _ = CreateMap<UserDetailsModel, User>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.GivenName, opt => opt.MapFrom(src => src.GivenName))
+                .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName))
+                .ForMember(dest => dest.AccessControls, opt => opt.MapFrom(src => src.AccessControls.Select(ac => new AccessControl
+                {
+                    Id = ac.Id,
+                    Scope = ac.Scope,
+                    Role = new Role { Name = ac.Role.Name }
+                })));
         }
     }
 }

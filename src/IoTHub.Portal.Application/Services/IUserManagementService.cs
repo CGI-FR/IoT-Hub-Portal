@@ -3,13 +3,22 @@
 
 namespace IoTHub.Portal.Application.Services
 {
+    using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
 
     public interface IUserManagementService
     {
-        Task<IEnumerable<UserModel>> GetAllUsersAsync();
+        Task<PaginatedResult<UserModel>> GetUserPage(
+            string? searchName = null,
+            string? searchEmail = null,
+            int pageSize = 10,
+            int pageNumber = 0,
+            string[] orderBy = null
+        );
         Task<UserDetailsModel> GetUserDetailsAsync(string userId);
         Task<UserDetailsModel> CreateUserAsync(UserDetailsModel userCreateModel);
+        Task<UserDetailsModel?> UpdateUser(UserDetailsModel user);
+        Task<bool> DeleteUser(string userId);
 
     }
 }

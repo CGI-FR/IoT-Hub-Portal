@@ -105,7 +105,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <returns>HTTP Post response</returns>
         [HttpPost(Name = "POST Create a Role")]
         //[Authorize(Policy = Policies.CreateRole)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(RoleDetailsModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateRoleAsync(RoleDetailsModel role)
         {
