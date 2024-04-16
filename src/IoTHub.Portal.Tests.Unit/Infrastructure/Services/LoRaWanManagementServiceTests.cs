@@ -103,6 +103,22 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
+        [Test]
+        public void ExecuteLoRaDeviceMessageMustBeSuccessfullWhenParametersAndCommandAreProvided()
+        {
+            var command = "0113007801680100640064";
+
+            // Convert the hex frame to a byte array
+            var hexFrame = Enumerable.Range(0, command.Length / 2)
+                                .Select(x => Convert.ToByte(command.Substring(x * 2, 2), 16))
+                                .ToArray();
+
+            // Convert the byte array to a base64 string
+            var rawPayload = Convert.ToBase64String(hexFrame);
+
+            Assert.AreEqual("ARMAeAFoAQBkAGQ=", rawPayload);
+        }
+
         [TestCase("CN_470_510_RP1")]
         [TestCase("CN_470_510_RP2")]
         [TestCase("EU_863_870")]
