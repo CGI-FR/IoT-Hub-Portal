@@ -85,7 +85,6 @@
 
     [Parameter] public LayerDto Layer { get; set; } = default!;
 
-    private MudTable<DeviceListItem>? table;
     private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
 
     public IDeviceModel SelectedModel = new DeviceModelDto();
