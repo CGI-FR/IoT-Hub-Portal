@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.2
-      - uses: DavidAnson/markdownlint-cli2-action@v15
+      - uses: DavidAnson/markdownlint-cli2-action@v16
         with:
           globs: 'docs/**/*.md'
