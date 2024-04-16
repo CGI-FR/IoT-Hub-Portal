@@ -69,6 +69,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 return services;
             }
 
+            _ = services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>();
+
             var transientHttpErrorPolicy = HttpPolicyExtensions
                                     .HandleTransientHttpError()
                                     .OrResult(c => c.StatusCode == HttpStatusCode.NotFound)
@@ -179,7 +181,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            return services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>();
+            return services;
         }
 
         private static IServiceCollection ConfigureHealthCheck(this IServiceCollection services)
