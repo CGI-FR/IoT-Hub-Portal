@@ -14,16 +14,13 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Extensions.Options;
 
-    internal class LoRaWanManagementService : ILoRaWanManagementService
+    public class LoRaWanManagementService : ILoRaWanManagementService
     {
         private readonly HttpClient httpClient;
 
-        public LoRaWanManagementService(HttpClient httpClient, IOptions<LoRaWANOptions> loRaWANOptions)
+        public LoRaWanManagementService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
-            this.httpClient.BaseAddress = new Uri(loRaWANOptions?.Value.KeyManagementUrl);
-            this.httpClient.DefaultRequestHeaders.Add("x-functions-key", loRaWANOptions?.Value.KeyManagementCode);
-            this.httpClient.DefaultRequestHeaders.Add("api-version", loRaWANOptions?.Value.KeyManagementApiVersion);
         }
 
         public async Task<RouterConfig?> GetRouterConfig(string loRaRegion)
@@ -43,9 +40,17 @@ namespace IoTHub.Portal.Infrastructure.Services
             ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
             ArgumentNullException.ThrowIfNull(commandDto, nameof(commandDto));
 
+            // Convert the hex frame to a byte array
+            var hexFrame = Enumerable.Range(0, commandDto.Frame.Length / 2)
+                                .Select(x => Convert.ToByte(commandDto.Frame.Substring(x * 2, 2), 16))
+                                .ToArray();
+
+            // Convert the byte array to a base64 string
+            var rawPayload = Convert.ToBase64String(hexFrame);
+
             var body = new LoRaCloudToDeviceMessage
             {
-                RawPayload = Convert.ToBase64String(Enumerable.Range(0, commandDto.Frame.Length / 2).Select(x => Convert.ToByte(commandDto.Frame.Substring(x * 2, 2), 16)).ToArray()),
+                RawPayload = rawPayload,
                 Fport = commandDto.Port,
                 Confirmed = commandDto.Confirmed
             };
