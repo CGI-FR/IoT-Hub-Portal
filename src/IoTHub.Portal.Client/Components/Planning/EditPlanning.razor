@@ -227,7 +227,6 @@
     public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
     Dictionary<string, List<DeviceModelCommandDto>> CommandDictionary = new Dictionary<string, List<DeviceModelCommandDto>>();
 
-    private MudForm form = default!;
     private bool isProcessing;
 
     public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
