@@ -14,16 +14,13 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Extensions.Options;
 
-    internal class LoRaWanManagementService : ILoRaWanManagementService
+    public class LoRaWanManagementService : ILoRaWanManagementService
     {
         private readonly HttpClient httpClient;
 
-        public LoRaWanManagementService(HttpClient httpClient, IOptions<LoRaWANOptions> loRaWANOptions)
+        public LoRaWanManagementService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
-            this.httpClient.BaseAddress = new Uri(loRaWANOptions?.Value.KeyManagementUrl);
-            this.httpClient.DefaultRequestHeaders.Add("x-functions-key", loRaWANOptions?.Value.KeyManagementCode);
-            this.httpClient.DefaultRequestHeaders.Add("api-version", loRaWANOptions?.Value.KeyManagementApiVersion);
         }
 
         public async Task<RouterConfig?> GetRouterConfig(string loRaRegion)
