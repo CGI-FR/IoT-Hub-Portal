@@ -97,10 +97,11 @@
 
     public PlanningDto Planning { get; set; } = new PlanningDto();
 
-    public List<PlanningDto> Plannings = new List<PlanningDto>();
+    private List<PlanningDto> Plannings = new List<PlanningDto>();
 
-    public bool IsLoading { get; set; } = true;
-    public readonly int[] pageSizeOptions = { 10, 5, 3 };
+    private bool isProcessing { get; set; } = false;
+    private bool IsLoading { get; set; } = true;
+    private readonly int[] pageSizeOptions = { 10, 5, 3 };
 
     protected override async Task OnInitializedAsync()
     {

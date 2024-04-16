@@ -5,6 +5,5 @@ namespace IoTHub.Portal.Application.Services
 {
     public interface ISendPlanningCommandService
     {
-        TimeSpan getTimeSpan(string time);
     }
 }
