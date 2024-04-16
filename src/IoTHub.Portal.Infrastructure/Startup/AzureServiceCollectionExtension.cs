@@ -25,8 +25,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using IoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
     using Polly;
@@ -62,13 +60,13 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 return services;
             }
 
-            var transientHttpErrorPolicy = HttpPolicyExtensions
-                                    .HandleTransientHttpError()
-                                    .OrResult(c => c.StatusCode == HttpStatusCode.NotFound)
-                                    .WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(100));
+            _ = services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>()
+                        .AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
 
-            _ = services.AddHttpClient("RestClient")
-                .AddPolicyHandler(transientHttpErrorPolicy);
+            var transientHttpErrorPolicy = HttpPolicyExtensions
+                                 .HandleTransientHttpError()
+                                 .OrResult(c => c.StatusCode == HttpStatusCode.NotFound)
+                                 .WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(100));
 
             _ = services.AddHttpClient<ILoRaWanManagementService, LoRaWanManagementService>((sp, client) =>
             {
@@ -109,9 +107,8 @@ namespace IoTHub.Portal.Infrastructure.Startup
 
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            return services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>()
-                .AddTransient<IDeviceService<DeviceDetails>, DeviceService>()
-                .AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
+            return services
+                .AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
         }
 
         private static IServiceCollection ConfigureHealthCheck(this IServiceCollection services)
