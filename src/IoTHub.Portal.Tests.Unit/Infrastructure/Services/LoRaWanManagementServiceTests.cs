@@ -104,19 +104,44 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public void ExecuteLoRaDeviceMessageMustBeSuccessfullWhenParametersAndCommandAreProvided()
+        public async Task ExecuteLoRaDeviceMessageMustBeSuccessfullWhenParametersAndCommandAreProvided()
         {
-            var command = "0113007801680100640064";
+            // Arrange
+            var deviceId = Fixture.Create<string>();
 
-            // Convert the hex frame to a byte array
-            var hexFrame = Enumerable.Range(0, command.Length / 2)
-                                .Select(x => Convert.ToByte(command.Substring(x * 2, 2), 16))
-                                .ToArray();
+            var commandHex = "0113007801680100640064";
 
-            // Convert the byte array to a base64 string
-            var rawPayload = Convert.ToBase64String(hexFrame);
+            var command = new DeviceModelCommandDto
+            {
+                Frame = commandHex,
+                Confirmed = Fixture.Create<bool>(),
+                Port = Fixture.Create<int>()
+            };
 
-            Assert.AreEqual("ARMAeAFoAQBkAGQ=", rawPayload);
+            var expectedRawPayload = "ARMAeAFoAQBkAGQ=";
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/cloudtodevicemessage/{deviceId}")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<JsonContent>();
+                    var body = (JsonContent) m.Content;
+                    var loRaCloudToDeviceMessage = (LoRaCloudToDeviceMessage)body?.Value;
+                    _ = loRaCloudToDeviceMessage?.Should().NotBeNull();
+                    _ = loRaCloudToDeviceMessage?.Fport.Should().Be(command.Port);
+                    _ = loRaCloudToDeviceMessage?.Confirmed.Should().Be(command.Confirmed);
+                    _ = loRaCloudToDeviceMessage?.RawPayload.Should().Be(expectedRawPayload);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            var result = await this.loRaWanManagementService.ExecuteLoRaDeviceMessage(deviceId, command);
+
+            // Assert
+            _ = result.Should().NotBeNull();
+            _ = result.IsSuccessStatusCode.Should().BeTrue();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [TestCase("CN_470_510_RP1")]
