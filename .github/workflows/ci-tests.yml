@@ -71,7 +71,7 @@ jobs:
           src/IoTHub.Portal.Tests.Unit/TestResults
 
     - name: Upload to Codecov test reports
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: src/IoTHub.Portal.Tests.Unit/TestResults
