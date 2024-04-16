@@ -18,6 +18,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
     using UnitTests.Bases;
+    using System.Linq;
+    using Fare;
 
     [TestFixture]
     public class LoRaWanManagementServiceTests : BackendUnitTest
@@ -63,14 +65,60 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         {
             // Arrange
             var deviceId = Fixture.Create<string>();
+
+            string regex = "[0-9A-F]{8,15}";
+
+            Xeger xeger = new Xeger(regex, new Random(0)); // Note zero in Random constructor
+
             var command = new DeviceModelCommandDto
             {
-                Frame = Fixture.Create<string>(),
+                Frame = xeger.Generate(),
                 Confirmed = Fixture.Create<bool>(),
                 Port = Fixture.Create<int>()
             };
 
-            var expectedRawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Frame));
+            var expectedRawPayload = Convert.ToBase64String(Enumerable.Range(0, command.Frame.Length / 2).Select(x => Convert.ToByte(command.Frame.Substring(x * 2, 2), 16)).ToArray());
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/cloudtodevicemessage/{deviceId}")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<JsonContent>();
+                    var body = (JsonContent) m.Content;
+                    var loRaCloudToDeviceMessage = (LoRaCloudToDeviceMessage)body?.Value;
+                    _ = loRaCloudToDeviceMessage?.Should().NotBeNull();
+                    _ = loRaCloudToDeviceMessage?.Fport.Should().Be(command.Port);
+                    _ = loRaCloudToDeviceMessage?.Confirmed.Should().Be(command.Confirmed);
+                    _ = loRaCloudToDeviceMessage?.RawPayload.Should().Be(expectedRawPayload);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            var result = await this.loRaWanManagementService.ExecuteLoRaDeviceMessage(deviceId, command);
+
+            // Assert
+            _ = result.Should().NotBeNull();
+            _ = result.IsSuccessStatusCode.Should().BeTrue();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ExecuteLoRaDeviceMessageMustBeSuccessfullWhenParametersAndCommandAreProvided()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            var commandHex = "0113007801680100640064";
+
+            var command = new DeviceModelCommandDto
+            {
+                Frame = commandHex,
+                Confirmed = Fixture.Create<bool>(),
+                Port = Fixture.Create<int>()
+            };
+
+            var expectedRawPayload = "ARMAeAFoAQBkAGQ=";
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/cloudtodevicemessage/{deviceId}")
                 .With(m =>
