@@ -17,107 +17,107 @@ namespace IoTHub.Portal.Infrastructure.Services
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
-        private readonly ILayerRepository levelRepository;
+        private readonly ILayerRepository layerRepository;
 
         public LayerService(IMapper mapper,
             IUnitOfWork unitOfWork,
-            ILayerRepository levelRepository)
+            ILayerRepository layerRepository)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
-            this.levelRepository = levelRepository;
+            this.layerRepository = layerRepository;
         }
 
         /// <summary>
-        /// Create a level.
+        /// Create a layer.
         /// </summary>
-        /// <param name="level">Layer</param>
+        /// <param name="layer">Layer</param>
         /// <returns>Layer object.</returns>
-        public async Task<LayerDto> CreateLayer(LayerDto level)
+        public async Task<LayerDto> CreateLayer(LayerDto layer)
         {
-            var levelEntity = this.mapper.Map<Layer>(level);
+            var layerEntity = this.mapper.Map<Layer>(layer);
 
-            await this.levelRepository.InsertAsync(levelEntity);
+            await this.layerRepository.InsertAsync(layerEntity);
             await this.unitOfWork.SaveAsync();
 
-            return level;
+            return layer;
         }
 
         /// <summary>
-        /// Update the level.
+        /// Update the layer.
         /// </summary>
-        /// <param name="level">The level.</param>
+        /// <param name="layer">The layer.</param>
         /// <returns>nothing.</returns>
         /// <exception cref="InternalServerErrorException"></exception>
-        public async Task UpdateLayer(LayerDto level)
+        public async Task UpdateLayer(LayerDto layer)
         {
-            var levelEntity = await this.levelRepository.GetByIdAsync(level.Id);
+            var layerEntity = await this.layerRepository.GetByIdAsync(layer.Id);
 
-            if (levelEntity == null)
+            if (layerEntity == null)
             {
-                throw new ResourceNotFoundException($"The level with id {level.Id} doesn't exist");
+                throw new ResourceNotFoundException($"The layer with id {layer.Id} doesn't exist");
             }
 
-            _ = this.mapper.Map(level, levelEntity);
+            _ = this.mapper.Map(layer, layerEntity);
 
-            this.levelRepository.Update(levelEntity);
+            this.layerRepository.Update(layerEntity);
 
             await this.unitOfWork.SaveAsync();
         }
 
         /// <summary>
-        /// Delete level template
+        /// Delete layer template
         /// </summary>
-        /// <param name="levelId">The level indentifier.</param>
+        /// <param name="layerId">The layer indentifier.</param>
         /// <returns></returns>
         /// <exception cref="InternalServerErrorException"></exception>
-        public async Task DeleteLayer(string levelId)
+        public async Task DeleteLayer(string layerId)
         {
-            var levelEntity = await this.levelRepository.GetByIdAsync(levelId);
-            if (levelEntity == null)
+            var layerEntity = await this.layerRepository.GetByIdAsync(layerId);
+            if (layerEntity == null)
             {
-                return;
+                throw new ResourceNotFoundException($"The layer with id {layerId} doesn't exist");
             }
 
-            this.levelRepository.Delete(levelId);
+            this.layerRepository.Delete(layerId);
 
             await this.unitOfWork.SaveAsync();
         }
 
         /// <summary>
-        /// Get level.
+        /// Get layer.
         /// </summary>
-        /// <param name="levelId">level id.</param>
+        /// <param name="layerId">layer id.</param>
         /// <returns>Layer object.</returns>
-        public async Task<Layer> GetLayer(string levelId)
+        public async Task<Layer> GetLayer(string layerId)
         {
-            var levelEntity = await this.levelRepository.GetByIdAsync(levelId);
+            var layerEntity = await this.layerRepository.GetByIdAsync(layerId);
 
-            if (levelEntity is null)
+            if (layerEntity is null)
             {
-                throw new ResourceNotFoundException($"The level with id {levelId} doesn't exist");
+                throw new ResourceNotFoundException($"The layer with id {layerId} doesn't exist");
             }
 
-            var level = this.mapper.Map<Layer>(levelEntity);
+            var layer = this.mapper.Map<Layer>(layerEntity);
 
-            return level;
+            return layer;
         }
 
         /// <summary>
-        /// Return the level list.
+        /// Return the layer list.
         /// </summary>
         /// <returns>IEnumerable LayerDto.</returns>
         public async Task<IEnumerable<LayerDto>> GetLayers()
         {
-            var levelPredicate = PredicateBuilder.True<LayerDto>();
+            var layerPredicate = PredicateBuilder.True<LayerDto>();
 
-            var levels = await this.levelRepository.GetAllAsync();
+            var layers = await this.layerRepository.GetAllAsync();
 
-            return levels
+            return layers
                 .Select(model =>
                 {
-                    var levelListItem = this.mapper.Map<LayerDto>(model);
-                    return levelListItem;
+                    var layerListItem = this.mapper.Map<LayerDto>(model);
+                    return layerListItem;
                 })
                 .ToList();
         }

@@ -76,7 +76,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var scheduleEntity = await this.scheduleRepository.GetByIdAsync(scheduleId);
             if (scheduleEntity == null)
             {
-                return;
+                throw new ResourceNotFoundException($"The schedule with id {scheduleId} doesn't exist");
             }
 
             this.scheduleRepository.Delete(scheduleId);
