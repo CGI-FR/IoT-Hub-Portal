@@ -22,6 +22,11 @@ namespace IoTHub.Portal.Client.Services
         {
             var response = await this.http.PostAsJsonAsync(this.apiUrlBase, Planning);
 
+            if (Planning.Id != null)
+            {
+                return Planning.Id;
+            }
+
             //Retrieve Planning ID
             var responseJson = await response.Content.ReadAsStringAsync();
             var updatedPlanning = Newtonsoft.Json.JsonConvert.DeserializeObject<PlanningDto>(responseJson);

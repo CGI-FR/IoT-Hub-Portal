@@ -76,7 +76,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var planningEntity = await this.planningRepository.GetByIdAsync(planningId);
             if (planningEntity == null)
             {
-                return;
+                throw new ResourceNotFoundException($"The planning with id {planningId} doesn't exist");
             }
 
             this.planningRepository.Delete(planningId);

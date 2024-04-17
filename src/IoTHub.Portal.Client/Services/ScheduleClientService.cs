@@ -22,6 +22,11 @@ namespace IoTHub.Portal.Client.Services
         {
             var response = await this.http.PostAsJsonAsync(this.apiUrlBase, schedule);
 
+            if (schedule.Id != null)
+            {
+                return schedule.Id;
+            }
+
             //Retrieve Schedule ID
             var responseJson = await response.Content.ReadAsStringAsync();
             var updatedSchedule = Newtonsoft.Json.JsonConvert.DeserializeObject<ScheduleDto>(responseJson);

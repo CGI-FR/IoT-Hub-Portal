@@ -22,6 +22,11 @@ namespace IoTHub.Portal.Client.Services
         {
             var response = await this.http.PostAsJsonAsync(this.apiUrlBase, layer);
 
+            if (layer.Id != null)
+            {
+                return layer.Id;
+            }
+
             //Retrieve Layer ID
             var responseJson = await response.Content.ReadAsStringAsync();
             var updatedLayer = Newtonsoft.Json.JsonConvert.DeserializeObject<LayerDto>(responseJson);
