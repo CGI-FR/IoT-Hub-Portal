@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Application.Mappers
                     src.Actions.Select(a => a.Name)));
 
             _ = CreateMap<RoleDetailsModel, Role>()
-                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                  .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
                  .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
                  .ForMember(dest => dest.Actions, opts => opts.MapFrom(src =>

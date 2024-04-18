@@ -36,21 +36,21 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
         }
 
 
-        public async Task<bool> DeleteRole(string roleName)
+        public async Task<bool> DeleteRole(string id)
         {
-            var actionsToRemove = new List<Action>();
-            var role = await roleRepository.GetByNameAsync(roleName, r => r.Actions);
+            var actionsToRemove = new List<string>();
+            var role = await this.roleRepository.GetByIdAsync(id, r => r.Actions);
             if (role == null)
             {
                 return false;
             }
             foreach (var action in role.Actions)
             {
-                actionsToRemove.Add(action);
+                actionsToRemove.Add(action.Id);
             }
             foreach (var action in actionsToRemove)
             {
-                _ = role.Actions.Remove(action);
+                this.actionRepository.Delete(action);
             }
             roleRepository.Delete(role.Id);
             await unitOfWork.SaveAsync();
@@ -112,25 +112,32 @@ namespace IoTHub.Portal.Infrastructure.Services.RBAC
             var roleEntity = this.mapper.Map<Role>(role);
             await this.roleRepository.InsertAsync(roleEntity);
             await this.unitOfWork.SaveAsync();
-            return role;
+
+
+            var createdRole = await this.roleRepository.GetByIdAsync(roleEntity.Id);
+            var createdRoleDto = this.mapper.Map<RoleDetailsModel>(createdRole);
+
+            return createdRoleDto;
         }
 
         async Task<RoleDetailsModel?> IRoleManagementService.UpdateRole(string roleName, RoleDetailsModel role)
         {
-            var RoleEntity = await this.roleRepository.GetByNameAsync(roleName, r => r.Actions);
-            if (RoleEntity is null)
+            var roleEntity = await this.roleRepository.GetByNameAsync(roleName, r => r.Actions);
+            if (roleEntity is null)
             {
                 throw new ResourceNotFoundException($"The role with name {roleName} doesn't exist");
             }
 
-            RoleEntity.Name = role.Name;
-            RoleEntity.Description = role.Description;
-            RoleEntity.Actions = UpdateRoleActions(RoleEntity.Actions, role.Actions.Select(a => new Action { Name = a }).ToList());
-
-
-            this.roleRepository.Update(RoleEntity);
+            roleEntity.Name = role.Name;
+            roleEntity.Description = role.Description;
+            roleEntity.Actions = UpdateRoleActions(roleEntity.Actions, role.Actions.Select(a => new Action { Name = a }).ToList());
+            this.roleRepository.Update(roleEntity);
             await this.unitOfWork.SaveAsync();
-            return role;
+
+            var updatedRole = await this.roleRepository.GetByIdAsync(roleEntity.Id);
+            var updatedRoleDto = this.mapper.Map<RoleDetailsModel>(updatedRole);
+
+            return updatedRoleDto;
         }
 
         private static ICollection<Action> UpdateRoleActions(ICollection<Action> existingActions, ICollection<Action> newActions)

@@ -5,14 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace IoTHub.Portal.Postgres.Migrations
+namespace IoTHub.Portal.MySql.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    [Migration("20240112125617_RoleBasedAccessControl")]
+    [Migration("20240418124423_RoleBasedAccessControl")]
     partial class RoleBasedAccessControl
     {
         /// <inheritdoc />
@@ -21,36 +20,50 @@ namespace IoTHub.Portal.Postgres.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.14")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            modelBuilder.Entity("GroupUser", b =>
+                {
+                    b.Property<string>("GroupsId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("MembersId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("GroupsId", "MembersId");
+
+                    b.HasIndex("MembersId");
+
+                    b.ToTable("GroupUser");
+                });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("GroupId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
-                    b.Property<string>("RoleName")
+                    b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Scope")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("RoleName");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("RoleId", "Scope", "UserId", "GroupId")
+                        .IsUnique();
 
                     b.ToTable("AccessControls");
                 });
@@ -58,14 +71,14 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Action", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -77,31 +90,31 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Concentrator", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ClientThumbprint")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("DeviceType")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsConnected")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LoraRegion")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Version")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -111,27 +124,27 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Device", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("DeviceModelId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("IsConnected")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("StatusUpdatedTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("Version")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -145,50 +158,50 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.DeviceModel", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool?>("ABPRelaxMode")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("AppEUI")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("ClassType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("Deduplication")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<bool?>("Downlink")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsBuiltin")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int?>("KeepAliveTimeout")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int?>("PreferredWindow")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("RXDelay")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("SensorDecoder")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("SupportLoRaFeatures")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool?>("UseOTAA")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 
@@ -198,28 +211,28 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.DeviceModelCommand", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("Confirmed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("DeviceModelId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Frame")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsBuiltin")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Port")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -229,28 +242,28 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.DeviceModelProperty", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsWritable")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ModelId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Order")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("PropertyType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -260,17 +273,17 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.DeviceTag", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Label")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("Required")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("Searchable")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 
@@ -280,21 +293,21 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.DeviceTagValue", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("DeviceId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("EdgeDeviceId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -308,34 +321,34 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.EdgeDevice", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ConnectionState")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("DeviceModelId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("IsEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("NbDevices")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("NbModules")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Scope")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Version")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -347,17 +360,17 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.EdgeDeviceModel", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ExternalIdentifier")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -367,19 +380,19 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.EdgeDeviceModelCommand", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("EdgeDeviceModelId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ModuleName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -389,15 +402,17 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Group", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -407,27 +422,27 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Label", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("DeviceId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("DeviceModelId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("EdgeDeviceId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("EdgeDeviceModelId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -445,17 +460,17 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LoRaDeviceTelemetry", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("EnqueuedTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("LorawanDeviceId")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Telemetry")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -467,15 +482,14 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -488,57 +502,41 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("FamilyName")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("GivenName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.UserMemberShip", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GroupId")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "GroupId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("UserMemberShip");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("int");
 
                     b.Property<string>("FriendlyName")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Xml")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -550,107 +548,124 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.HasBaseType("IoTHub.Portal.Domain.Entities.Device");
 
                     b.Property<bool?>("ABPRelaxMode")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("AlreadyLoggedInOnce")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("AppEUI")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("AppKey")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("AppSKey")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("ClassType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("DataRate")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Deduplication")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("DevAddr")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<bool?>("Downlink")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int?>("FCntDownStart")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("FCntResetCounter")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("FCntUpStart")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("GatewayID")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int?>("KeepAliveTimeout")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("NbRep")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NwkSKey")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("PreferredWindow")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("RX1DROffset")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("RX2DataRate")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("RXDelay")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("ReportedRX1DROffset")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ReportedRX2DataRate")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ReportedRXDelay")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("SensorDecoder")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<bool?>("Supports32BitFCnt")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("TxPower")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("UseOTAA")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.ToTable("LorawanDevices", (string)null);
+                });
+
+            modelBuilder.Entity("GroupUser", b =>
+                {
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IoTHub.Portal.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("MembersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Group", "Group")
                         .WithMany("AccessControls")
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleName")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.User", "User")
                         .WithMany("AccessControls")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Group");
 
@@ -725,25 +740,6 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .HasForeignKey("LorawanDeviceId");
                 });
 
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.UserMemberShip", b =>
-                {
-                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", "Group")
-                        .WithMany("Members")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IoTHub.Portal.Domain.Entities.User", "User")
-                        .WithMany("Groups")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LorawanDevice", b =>
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Device", null)
@@ -780,8 +776,6 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Group", b =>
                 {
                     b.Navigation("AccessControls");
-
-                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
@@ -792,8 +786,6 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.User", b =>
                 {
                     b.Navigation("AccessControls");
-
-                    b.Navigation("Groups");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LorawanDevice", b =>

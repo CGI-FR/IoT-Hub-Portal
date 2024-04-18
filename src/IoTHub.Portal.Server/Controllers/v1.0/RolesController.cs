@@ -132,7 +132,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">Role id that we want to delete</param>
         /// <returns></returns>
-        [HttpDelete("{roleName}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteRole(string id)

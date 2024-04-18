@@ -1,18 +1,16 @@
-// Copyright (c) CGI France. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace IoTHub.Portal.MySql.Migrations
 {
-    using Microsoft.EntityFrameworkCore.Migrations;
     /// <inheritdoc />
     public partial class RoleBasedAccessControl : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "Groups",
                 columns: table => new
                 {
@@ -20,16 +18,18 @@ namespace IoTHub.Portal.MySql.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    Avatar = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.PrimaryKey("PK_Groups", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -37,16 +37,16 @@ namespace IoTHub.Portal.MySql.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_Roles", x => x.Id);
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -54,20 +54,22 @@ namespace IoTHub.Portal.MySql.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Email = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     GivenName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FamilyName = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FamilyName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Avatar = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "Actions",
                 columns: table => new
                 {
@@ -80,8 +82,8 @@ namespace IoTHub.Portal.MySql.Migrations
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_Actions", x => x.Id);
-                    _ = table.ForeignKey(
+                    table.PrimaryKey("PK_Actions", x => x.Id);
+                    table.ForeignKey(
                         name: "FK_Actions_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
@@ -89,15 +91,15 @@ namespace IoTHub.Portal.MySql.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "AccessControls",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Scope = table.Column<string>(type: "longtext", nullable: false)
+                    Scope = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    RoleName = table.Column<string>(type: "varchar(255)", nullable: false)
+                    RoleId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -106,104 +108,107 @@ namespace IoTHub.Portal.MySql.Migrations
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_AccessControls", x => x.Id);
-                    _ = table.ForeignKey(
+                    table.PrimaryKey("PK_AccessControls", x => x.Id);
+                    table.ForeignKey(
                         name: "FK_AccessControls_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
-                        principalColumn: "Id");
-                    _ = table.ForeignKey(
-                        name: "FK_AccessControls_Roles_RoleName",
-                        column: x => x.RoleName,
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccessControls_Roles_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    _ = table.ForeignKey(
+                    table.ForeignKey(
                         name: "FK_AccessControls_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            _ = migrationBuilder.CreateTable(
-                name: "UserMemberShip",
+            migrationBuilder.CreateTable(
+                name: "GroupUser",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    GroupsId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    GroupId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    MembersId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_UserMemberShip", x => new { x.UserId, x.GroupId });
-                    _ = table.ForeignKey(
-                        name: "FK_UserMemberShip_Groups_GroupId",
-                        column: x => x.GroupId,
+                    table.PrimaryKey("PK_GroupUser", x => new { x.GroupsId, x.MembersId });
+                    table.ForeignKey(
+                        name: "FK_GroupUser_Groups_GroupsId",
+                        column: x => x.GroupsId,
                         principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    _ = table.ForeignKey(
-                        name: "FK_UserMemberShip_Users_UserId",
-                        column: x => x.UserId,
+                    table.ForeignKey(
+                        name: "FK_GroupUser_Users_MembersId",
+                        column: x => x.MembersId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "IX_AccessControls_GroupId",
                 table: "AccessControls",
                 column: "GroupId");
 
-            _ = migrationBuilder.CreateIndex(
-                name: "IX_AccessControls_RoleName",
+            migrationBuilder.CreateIndex(
+                name: "IX_AccessControls_RoleId_Scope_UserId_GroupId",
                 table: "AccessControls",
-                column: "RoleName");
+                columns: new[] { "RoleId", "Scope", "UserId", "GroupId" },
+                unique: true);
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "IX_AccessControls_UserId",
                 table: "AccessControls",
                 column: "UserId");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "IX_Actions_RoleId",
                 table: "Actions",
                 column: "RoleId");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupUser_MembersId",
+                table: "GroupUser",
+                column: "MembersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Roles_Name",
                 table: "Roles",
                 column: "Name",
                 unique: true);
-
-            _ = migrationBuilder.CreateIndex(
-                name: "IX_UserMemberShip_GroupId",
-                table: "UserMemberShip",
-                column: "GroupId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "AccessControls");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "Actions");
 
-            _ = migrationBuilder.DropTable(
-                name: "UserMemberShip");
+            migrationBuilder.DropTable(
+                name: "GroupUser");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "Roles");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "Groups");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "Users");
         }
     }

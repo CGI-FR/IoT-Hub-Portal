@@ -64,29 +64,6 @@ namespace IoTHub.Portal.Infrastructure
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
 
-            _ = modelBuilder.Entity<UserMemberShip>()
-                .HasKey(m => new { m.UserId, m.GroupId });
-
-            _ = modelBuilder.Entity<UserMemberShip>()
-                .HasOne(m => m.User)
-                .WithMany(u => u.Groups)
-                .HasForeignKey(m => m.UserId);
-
-            _ = modelBuilder.Entity<UserMemberShip>()
-                .HasOne(m => m.Group)
-                .WithMany(g => g.Members)
-                .HasForeignKey(m => m.GroupId);
-
-            _ = modelBuilder.Entity<Group>()
-                .HasMany(a => a.AccessControls);
-
-
-            _ = modelBuilder.Entity<User>()
-               .HasMany(a => a.AccessControls);
-
-            _ = modelBuilder.Entity<Role>()
-                .HasMany(a => a.Actions);
-
             _ = modelBuilder.Entity<Role>()
                 .HasIndex(r => r.Name)
                 .IsUnique();
@@ -94,20 +71,26 @@ namespace IoTHub.Portal.Infrastructure
             _ = modelBuilder.Entity<AccessControl>()
                 .HasOne(ac => ac.Role)
                 .WithMany()
-                .HasForeignKey(ac => ac.RoleName)
+                .HasForeignKey(ac => ac.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             _ = modelBuilder.Entity<AccessControl>()
                 .HasOne(ac => ac.User)
                 .WithMany(u => u.AccessControls)
                 .HasForeignKey(ac => ac.UserId)
-                .IsRequired(false);
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
 
             _ = modelBuilder.Entity<AccessControl>()
                 .HasOne(ac => ac.Group)
                 .WithMany(g => g.AccessControls)
                 .HasForeignKey(ac => ac.GroupId)
-                .IsRequired(false);
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            _ = modelBuilder.Entity<AccessControl>()
+                .HasIndex(ac => new { ac.RoleId, ac.Scope, ac.UserId, ac.GroupId })
+                .IsUnique();
         }
     }
 }

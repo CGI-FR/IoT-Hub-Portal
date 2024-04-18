@@ -22,6 +22,21 @@ namespace IoTHub.Portal.Postgres.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("GroupUser", b =>
+                {
+                    b.Property<string>("GroupsId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MembersId")
+                        .HasColumnType("text");
+
+                    b.HasKey("GroupsId", "MembersId");
+
+                    b.HasIndex("MembersId");
+
+                    b.ToTable("GroupUser");
+                });
+
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
                 {
                     b.Property<string>("Id")
@@ -30,7 +45,7 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.Property<string>("GroupId")
                         .HasColumnType("text");
 
-                    b.Property<string>("RoleName")
+                    b.Property<string>("RoleId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -45,9 +60,10 @@ namespace IoTHub.Portal.Postgres.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("RoleName");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("RoleId", "Scope", "UserId", "GroupId")
+                        .IsUnique();
 
                     b.ToTable("AccessControls");
                 });
@@ -388,8 +404,10 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -467,7 +485,6 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -487,12 +504,14 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("FamilyName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("GivenName")
@@ -500,27 +519,11 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.UserMemberShip", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GroupId")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "GroupId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("UserMemberShip");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -633,21 +636,38 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.ToTable("LorawanDevices", (string)null);
                 });
 
+            modelBuilder.Entity("GroupUser", b =>
+                {
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IoTHub.Portal.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("MembersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Group", "Group")
                         .WithMany("AccessControls")
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleName")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.User", "User")
                         .WithMany("AccessControls")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Group");
 
@@ -722,25 +742,6 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .HasForeignKey("LorawanDeviceId");
                 });
 
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.UserMemberShip", b =>
-                {
-                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", "Group")
-                        .WithMany("Members")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IoTHub.Portal.Domain.Entities.User", "User")
-                        .WithMany("Groups")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LorawanDevice", b =>
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Device", null)
@@ -777,8 +778,6 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Group", b =>
                 {
                     b.Navigation("AccessControls");
-
-                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
@@ -789,8 +788,6 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.User", b =>
                 {
                     b.Navigation("AccessControls");
-
-                    b.Navigation("Groups");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LorawanDevice", b =>

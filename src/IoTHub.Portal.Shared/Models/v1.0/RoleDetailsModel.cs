@@ -3,11 +3,10 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    using System;
     using System.Collections.Generic;
     public class RoleDetailsModel
     {
-        public string? Id { get; set; } = Guid.NewGuid().ToString();
+        public string? Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public ICollection<string> Actions { get; set; } = new List<string>();

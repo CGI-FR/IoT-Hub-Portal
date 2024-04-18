@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
+    using System.Collections.ObjectModel;
     using System.Threading.Tasks;
 
     public class UserService : IUserManagementService
@@ -20,16 +21,20 @@ namespace IoTHub.Portal.Server.Services
         private readonly IUserRepository userRepository;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IAccessControlRepository acRepository;
+        private readonly IRoleRepository roleRepository;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public UserService(IUserRepository userRepository, IMapper mapper, IUnitOfWork unitOfWork, IAccessControlRepository acRepository, IRoleRepository roleRepository)
         {
             this.userRepository = userRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.acRepository = acRepository;
+            this.roleRepository = roleRepository;
         }
         public async Task<UserDetailsModel> GetUserDetailsAsync(string userId)
         {
-            var user = await userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByIdAsync(userId, u => u.AccessControls.ThenInclude(ac => ac.Role));
             if (user == null) return null;
             return mapper.Map<UserDetailsModel>(user);
         }
@@ -38,8 +43,31 @@ namespace IoTHub.Portal.Server.Services
         {
             var userEntity = this.mapper.Map<User>(userCreateModel);
             await userRepository.InsertAsync(userEntity);
+            var acEntities = new Collection<AccessControl>();
+            foreach (var ac in userCreateModel.AccessControls)
+            {
+                var role = await this.roleRepository.GetByIdAsync(ac.Role.Id);
+                if (role is null)
+                {
+                    throw new ResourceNotFoundException("$The Role {ac.Role.Name} does'nt exist !");
+                }
+                var acEntity = new AccessControl
+                {
+                    Scope = ac.Scope,
+                    RoleId = ac.Role.Id,
+                };
+                acEntities.Add(acEntity);
+            }
+            foreach (var ac in acEntities)
+            {
+                userEntity.AccessControls.Add(ac);
+            }
+
             await unitOfWork.SaveAsync();
-            return userCreateModel;
+
+            var createdEntity = await this.userRepository.GetByIdAsync(userEntity.Id);
+            var createdModel = this.mapper.Map<UserDetailsModel>(createdEntity);
+            return createdModel;
         }
 
         public async Task<PaginatedResult<UserModel>> GetUserPage(
