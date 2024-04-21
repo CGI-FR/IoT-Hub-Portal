@@ -62,7 +62,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 
             IDialogReference dialogReference = null;
 
-            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<DeleteConcentratorPage>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<DeleteConcentratorPage>(string.Empty, parameters));
             cut.WaitForAssertion(() => cut.Find("#delete-concentrator"));
 
             // Act
@@ -93,7 +93,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
                 }
             };
 
-            await cut.InvokeAsync(() => this.dialogService?.Show<DeleteConcentratorPage>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => this.dialogService?.Show<DeleteConcentratorPage>(string.Empty, parameters));
             cut.WaitForAssertion(() => cut.Find("#delete-concentrator"));
 
             // Act
@@ -120,7 +120,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 
             IDialogReference dialogReference = null;
 
-            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<DeleteConcentratorPage>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<DeleteConcentratorPage>(string.Empty, parameters));
             cut.WaitForAssertion(() => cut.Find("#cancel-delete-concentrator"));
 
             // Act

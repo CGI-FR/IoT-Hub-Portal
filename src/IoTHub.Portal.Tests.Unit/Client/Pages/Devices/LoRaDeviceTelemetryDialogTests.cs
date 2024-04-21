@@ -55,7 +55,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<LoRaDeviceTelemetryDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<LoRaDeviceTelemetryDialog>(string.Empty, parameters));
             _ = cut.WaitForElement("canvas");
 
             // Assert
@@ -84,7 +84,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = service?.Show<LoRaDeviceTelemetryDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<LoRaDeviceTelemetryDialog>(string.Empty, parameters));
             _ = cut.WaitForElement("canvas");
             var deleteBtn = cut.Find("#cancel-telemetry-dialog");
             deleteBtn.Click();

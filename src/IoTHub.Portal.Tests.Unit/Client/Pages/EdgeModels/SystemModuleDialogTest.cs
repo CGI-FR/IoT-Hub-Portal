@@ -54,7 +54,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = service?.Show<SystemModuleDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<SystemModuleDialog>(string.Empty, parameters));
 
             cut.Find("#SubmitButton").Click();
             var result = await dialogReference.Result;

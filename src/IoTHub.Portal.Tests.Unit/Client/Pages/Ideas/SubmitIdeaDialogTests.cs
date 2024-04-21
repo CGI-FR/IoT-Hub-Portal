@@ -42,7 +42,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
             var dialogService = Services.GetService<IDialogService>() as DialogService;
 
             // Act
-            await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
+            _ = await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("#idea-form").Should().NotBeNull());
@@ -63,7 +63,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = dialogService?.Show<SubmitIdeaDialog>(string.Empty));
+            _ = await cut.InvokeAsync(() => dialogReference = dialogService?.Show<SubmitIdeaDialog>(string.Empty));
             cut.Find("#idea-cancel").Click();
             var result = await dialogReference.Result;
 
@@ -80,7 +80,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
             var dialogService = Services.GetService<IDialogService>() as DialogService;
 
             // Act
-            await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
+            _ = await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
             var submitButton = cut.FindComponents<MudButton>().First(component => component.Instance.FieldId.Equals("idea-submit", StringComparison.Ordinal));
 
             // Assert
@@ -96,7 +96,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
             var cut = RenderComponent<MudDialogProvider>();
             var dialogService = Services.GetService<IDialogService>() as DialogService;
 
-            await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
+            _ = await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
 
             var titleField = cut.FindComponents<MudTextField<string>>()
                 .First(component => component.Instance.FieldId.Equals("idea-title", StringComparison.Ordinal));
@@ -130,7 +130,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
             var cut = RenderComponent<MudDialogProvider>();
             var dialogService = Services.GetService<IDialogService>() as DialogService;
 
-            await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
+            _ = await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
 
             var titleField = cut.FindComponents<MudTextField<string>>()
                 .First(component => component.Instance.FieldId.Equals("idea-title", StringComparison.Ordinal));
@@ -163,7 +163,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
             var cut = RenderComponent<MudDialogProvider>();
             var dialogService = Services.GetService<IDialogService>() as DialogService;
 
-            await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
+            _ = await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
 
             var titleField = cut.FindComponents<MudTextField<string>>()
                 .First(component => component.Instance.FieldId.Equals("idea-title", StringComparison.Ordinal));
@@ -197,7 +197,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
             var cut = RenderComponent<MudDialogProvider>();
             var dialogService = Services.GetService<IDialogService>() as DialogService;
 
-            await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
+            _ = await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
 
             var titleField = cut.FindComponents<MudTextField<string>>()
                 .First(component => component.Instance.FieldId.Equals("idea-title", StringComparison.Ordinal));

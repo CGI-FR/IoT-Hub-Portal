@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDeviceDeleteConfirmationDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDeviceDeleteConfirmationDialog>(string.Empty, parameters));
             cut.Find("#delete").Click();
             var result = await dialogReference.GetReturnValueAsync<bool>();
 
@@ -85,7 +85,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             };
 
             // Act
-            await cut.InvokeAsync(() => this.dialogService?.Show<EdgeDeviceDeleteConfirmationDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => this.dialogService?.Show<EdgeDeviceDeleteConfirmationDialog>(string.Empty, parameters));
             cut.Find("#delete").Click();
 
             // Assert
@@ -111,7 +111,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDeviceDeleteConfirmationDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDeviceDeleteConfirmationDialog>(string.Empty, parameters));
             cut.Find("#cancel").Click();
             var result = await dialogReference.Result;
 

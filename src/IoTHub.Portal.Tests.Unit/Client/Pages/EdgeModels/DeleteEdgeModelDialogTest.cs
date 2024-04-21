@@ -64,7 +64,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = service?.Show<DeleteEdgeModelDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<DeleteEdgeModelDialog>(string.Empty, parameters));
 
             var deleteBtn = cut.Find("#deleteButton");
             deleteBtn.Click();
@@ -103,7 +103,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = service?.Show<DeleteEdgeModelDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<DeleteEdgeModelDialog>(string.Empty, parameters));
 
             var deleteBtn = cut.Find("#deleteButton");
             deleteBtn.Click();
@@ -135,7 +135,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = service?.Show<DeleteEdgeModelDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<DeleteEdgeModelDialog>(string.Empty, parameters));
 
             var deleteBtn = cut.Find("#cancelButton");
             deleteBtn.Click();

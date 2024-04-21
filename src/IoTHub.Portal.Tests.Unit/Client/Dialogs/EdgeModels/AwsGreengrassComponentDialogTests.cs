@@ -40,7 +40,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
             };
 
             IDialogReference dialogReference = null;
-            await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassComponentDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassComponentDialog>(string.Empty, parameters));
 
             // Act
             cut.Find("#greengrass-component-cancel").Click();
@@ -76,7 +76,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
             };
 
             IDialogReference dialogReference = null;
-            await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassComponentDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassComponentDialog>(string.Empty, parameters));
 
             // Act
             cut.WaitForElement("#greengrass-component-recipe-json").Change(inputJsonRecipe);
@@ -128,7 +128,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
             };
 
             IDialogReference dialogReference = null;
-            await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassComponentDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassComponentDialog>(string.Empty, parameters));
 
             // Act
             cut.WaitForElement("#greengrass-component-recipe-json").Change(newJsonRecipe);
