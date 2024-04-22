@@ -6,7 +6,7 @@
 <EditLayer layers=@Layers initLayers=InitLayers mode="New" />
 
 @code {
-    public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
+    public HashSet<LayerHash> Layers { get; } = new HashSet<LayerHash> { };
     public List<LayerDto> InitLayers = new List<LayerDto>();
 
     protected override async Task OnInitializedAsync()
