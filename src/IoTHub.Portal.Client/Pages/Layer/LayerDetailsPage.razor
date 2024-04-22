@@ -8,8 +8,8 @@
 <EditLayer layers=@Layers initLayers=InitLayers mode="Edit" />
 
 @code {
-    public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
-    public HashSet<LayerHash> fullLayers { get; set; } = new HashSet<LayerHash> { };
+    public HashSet<LayerHash> Layers { get; } = new HashSet<LayerHash> { };
+    public HashSet<LayerHash> fullLayers { get; } = new HashSet<LayerHash> { };
     public List<LayerDto> InitLayers = new List<LayerDto>();
 
     [Parameter]
@@ -31,8 +31,6 @@
 
     private void ReloadSubLayers(List<LayerDto> layers)
     {
-        if (layers.Count() == 0) return;
-
         LayerDto firstLayer = layers[0];
         bool isAdd = false;
 
@@ -44,6 +42,7 @@
         else isAdd = addSubLayer(fullLayers, firstLayer);
 
         layers.RemoveAt(0);
+        //If the Father is not found, put element at the end to try again to find a father
         if (!isAdd) layers.Add(firstLayer);
 
         if (layers.Count() != 0) ReloadSubLayers(layers);
