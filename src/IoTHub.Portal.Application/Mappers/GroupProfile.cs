@@ -38,13 +38,13 @@ namespace IoTHub.Portal.Application.Mappers
             _ = CreateMap<GroupDetailsModel, Group>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.AccessControls, opt => opt.MapFrom(src => src.AccessControls.Select(ac => new AccessControl
-                {
-                    Id = ac.Id,
-                    Scope = ac.Scope,
-                    Role = new Role { Name = ac.Role.Name }
-                })));
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
+            /*.ForMember(dest => dest.AccessControls, opt => opt.MapFrom(src => src.AccessControls.Select(ac => new AccessControl
+            {
+                Id = ac.Id,
+                Scope = ac.Scope,
+                Role = new Role { Name = ac.Role.Name }
+            })));*/
 
         }
     }

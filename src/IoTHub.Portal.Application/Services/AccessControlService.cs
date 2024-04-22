@@ -1,20 +1,18 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Infrastructure.Services.RBAC
+namespace IoTHub.Portal.Application.Services
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Repositories;
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Security;
+    using IoTHub.Portal.Crosscutting;
 
     internal class AccessControlService : IAccessControlManagementService
     {

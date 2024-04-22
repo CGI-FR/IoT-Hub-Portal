@@ -29,6 +29,7 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<AccessControl> AccessControls { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Action> Actions { get; set; }
+        public DbSet<Principal> Principals { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
@@ -73,24 +74,6 @@ namespace IoTHub.Portal.Infrastructure
                 .WithMany()
                 .HasForeignKey(ac => ac.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            _ = modelBuilder.Entity<AccessControl>()
-                .HasOne(ac => ac.User)
-                .WithMany(u => u.AccessControls)
-                .HasForeignKey(ac => ac.UserId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            _ = modelBuilder.Entity<AccessControl>()
-                .HasOne(ac => ac.Group)
-                .WithMany(g => g.AccessControls)
-                .HasForeignKey(ac => ac.GroupId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            _ = modelBuilder.Entity<AccessControl>()
-                .HasIndex(ac => new { ac.RoleId, ac.Scope, ac.UserId, ac.GroupId })
-                .IsUnique();
         }
     }
 }

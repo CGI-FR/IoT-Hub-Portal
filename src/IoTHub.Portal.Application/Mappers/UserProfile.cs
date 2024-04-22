@@ -21,18 +21,18 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Email, opts => opts.MapFrom(src => src.Email))
                 .ForMember(dest => dest.GivenName, opts => opts.MapFrom(src => src.GivenName))
                 .ForMember(dest => dest.FamilyName, opts => opts.MapFrom(src => src.FamilyName))
-                .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar))
-                .ForMember(dest => dest.AccessControls, opts => opts.MapFrom(src =>
-                    src.AccessControls.Select(ac => new AccessControlModel
-                    {
-                        Id = ac.Id,
-                        Scope = ac.Scope,
-                        Role = ac.Role != null ? new RoleModel
-                        {
-                            Id = ac.Role.Id,
-                            Name = ac.Role.Name
-                        } : null
-                    }).ToList()));
+                .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar));
+            //.ForMember(dest => dest.AccessControls, opts => opts.MapFrom(src =>
+            /*src.AccessControls.Select(ac => new AccessControlModel
+            {
+                Id = ac.Id,
+                Scope = ac.Scope,
+                Role = ac.Role != null ? new RoleModel
+                {
+                    Id = ac.Role.Id,
+                    Name = ac.Role.Name
+                } : null
+            }).ToList()));*/
 
             _ = CreateMap<UserDetailsModel, User>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -40,8 +40,8 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar))
                 .ForMember(dest => dest.GivenName, opt => opt.MapFrom(src => src.GivenName))
-                .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName))
-                .ForMember(dest => dest.AccessControls, opt => opt.Ignore());
+                .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName));
+            //.ForMember(dest => dest.AccessControls, opt => opt.Ignore());
         }
     }
 }

@@ -42,7 +42,6 @@ namespace IoTHub.Portal.Server
     using Quartz.Impl.AdoJobStore.Common;
     using Services;
     using Shared.Models.v1._0;
-    using IoTHub.Portal.Infrastructure.Services.RBAC;
 
     public class Startup
     {

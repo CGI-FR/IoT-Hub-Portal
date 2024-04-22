@@ -16,7 +16,8 @@ namespace IoTHub.Portal.Domain.Entities
         public string? Avatar { get; set; } = default!;
         public string? Description { get; set; } = default!;
         public virtual ICollection<User> Members { get; set; } = new Collection<User>();
-        public virtual ICollection<AccessControl> AccessControls { get; set; } = new Collection<AccessControl>();
+        public string PrincipalId { get; set; }
+        public virtual Principal Principal { get; set; }
 
     }
 }

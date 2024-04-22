@@ -11,10 +11,10 @@ namespace IoTHub.Portal.Infrastructure.Services
     using AutoMapper;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Crosscutting;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Repositories;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;

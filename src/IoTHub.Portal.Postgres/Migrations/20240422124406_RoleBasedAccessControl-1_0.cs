@@ -7,24 +7,22 @@
 namespace IoTHub.Portal.Postgres.Migrations
 {
     using Microsoft.EntityFrameworkCore.Migrations;
+
     /// <inheritdoc />
-    public partial class RoleBasedAccessControl : Migration
+    public partial class RoleBasedAccessControl1_0 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             _ = migrationBuilder.CreateTable(
-                name: "Groups",
+                name: "Principals",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Avatar = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_Groups", x => x.Id);
+                    _ = table.PrimaryKey("PK_Principals", x => x.Id);
                 });
 
             _ = migrationBuilder.CreateTable(
@@ -41,6 +39,27 @@ namespace IoTHub.Portal.Postgres.Migrations
                 });
 
             _ = migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Avatar = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    PrincipalId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    _ = table.PrimaryKey("PK_Groups", x => x.Id);
+                    _ = table.ForeignKey(
+                        name: "FK_Groups_Principals_PrincipalId",
+                        column: x => x.PrincipalId,
+                        principalTable: "Principals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            _ = migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -49,11 +68,44 @@ namespace IoTHub.Portal.Postgres.Migrations
                     GivenName = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     FamilyName = table.Column<string>(type: "text", nullable: true),
-                    Avatar = table.Column<string>(type: "text", nullable: true)
+                    Avatar = table.Column<string>(type: "text", nullable: true),
+                    PrincipalId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     _ = table.PrimaryKey("PK_Users", x => x.Id);
+                    _ = table.ForeignKey(
+                        name: "FK_Users_Principals_PrincipalId",
+                        column: x => x.PrincipalId,
+                        principalTable: "Principals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            _ = migrationBuilder.CreateTable(
+                name: "AccessControls",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Scope = table.Column<string>(type: "text", nullable: false),
+                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    PrincipalId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    _ = table.PrimaryKey("PK_AccessControls", x => x.Id);
+                    _ = table.ForeignKey(
+                        name: "FK_AccessControls_Principals_PrincipalId",
+                        column: x => x.PrincipalId,
+                        principalTable: "Principals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    _ = table.ForeignKey(
+                        name: "FK_AccessControls_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             _ = migrationBuilder.CreateTable(
@@ -72,39 +124,6 @@ namespace IoTHub.Portal.Postgres.Migrations
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id");
-                });
-
-            _ = migrationBuilder.CreateTable(
-                name: "AccessControls",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Scope = table.Column<string>(type: "text", nullable: false),
-                    RoleId = table.Column<string>(type: "text", nullable: false),
-                    GroupId = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    _ = table.PrimaryKey("PK_AccessControls", x => x.Id);
-                    _ = table.ForeignKey(
-                        name: "FK_AccessControls_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    _ = table.ForeignKey(
-                        name: "FK_AccessControls_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    _ = table.ForeignKey(
-                        name: "FK_AccessControls_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             _ = migrationBuilder.CreateTable(
@@ -132,25 +151,25 @@ namespace IoTHub.Portal.Postgres.Migrations
                 });
 
             _ = migrationBuilder.CreateIndex(
-                name: "IX_AccessControls_GroupId",
+                name: "IX_AccessControls_PrincipalId",
                 table: "AccessControls",
-                column: "GroupId");
+                column: "PrincipalId");
 
             _ = migrationBuilder.CreateIndex(
-                name: "IX_AccessControls_RoleId_Scope_UserId_GroupId",
+                name: "IX_AccessControls_RoleId",
                 table: "AccessControls",
-                columns: new[] { "RoleId", "Scope", "UserId", "GroupId" },
-                unique: true);
-
-            _ = migrationBuilder.CreateIndex(
-                name: "IX_AccessControls_UserId",
-                table: "AccessControls",
-                column: "UserId");
+                column: "RoleId");
 
             _ = migrationBuilder.CreateIndex(
                 name: "IX_Actions_RoleId",
                 table: "Actions",
                 column: "RoleId");
+
+            _ = migrationBuilder.CreateIndex(
+                name: "IX_Groups_PrincipalId",
+                table: "Groups",
+                column: "PrincipalId",
+                unique: true);
 
             _ = migrationBuilder.CreateIndex(
                 name: "IX_GroupUser_MembersId",
@@ -161,6 +180,12 @@ namespace IoTHub.Portal.Postgres.Migrations
                 name: "IX_Roles_Name",
                 table: "Roles",
                 column: "Name",
+                unique: true);
+
+            _ = migrationBuilder.CreateIndex(
+                name: "IX_Users_PrincipalId",
+                table: "Users",
+                column: "PrincipalId",
                 unique: true);
         }
 
@@ -184,6 +209,9 @@ namespace IoTHub.Portal.Postgres.Migrations
 
             _ = migrationBuilder.DropTable(
                 name: "Users");
+
+            _ = migrationBuilder.DropTable(
+                name: "Principals");
         }
     }
 }

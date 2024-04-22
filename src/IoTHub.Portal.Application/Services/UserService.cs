@@ -1,15 +1,14 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Services
+namespace IoTHub.Portal.Application.Services
 {
     using AutoMapper;
-    using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Crosscutting;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Repositories;
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
@@ -34,7 +33,7 @@ namespace IoTHub.Portal.Server.Services
         }
         public async Task<UserDetailsModel> GetUserDetailsAsync(string userId)
         {
-            var user = await userRepository.GetByIdAsync(userId, u => u.AccessControls.ThenInclude(ac => ac.Role));
+            var user = await userRepository.GetByIdAsync(userId);
             if (user == null) return null;
             return mapper.Map<UserDetailsModel>(user);
         }
@@ -57,10 +56,6 @@ namespace IoTHub.Portal.Server.Services
                     RoleId = ac.Role.Id,
                 };
                 acEntities.Add(acEntity);
-            }
-            foreach (var ac in acEntities)
-            {
-                userEntity.AccessControls.Add(ac);
             }
 
             await unitOfWork.SaveAsync();
