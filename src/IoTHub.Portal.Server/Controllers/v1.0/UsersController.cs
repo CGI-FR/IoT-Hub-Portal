@@ -83,7 +83,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
         public async Task<IActionResult> CreateUser([FromBody] UserDetailsModel userCreateModel)
         {
             return Ok(await this.userManagementService.CreateUserAsync(userCreateModel));
-
         }
 
         [HttpPut(Name = "PUT Edit User")]
