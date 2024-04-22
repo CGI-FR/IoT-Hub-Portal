@@ -39,6 +39,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         [TestCase("Devices", "Devices")]
         [TestCase("IoT Edge", "IoTEdge")]
         [TestCase("LoRaWAN", "LoRaWAN")]
+        [TestCase("Site Management", "Site Management")]
         [TestCase("Settings", "Settings")]
         public async Task CollapseButtonNavGroupShouldSaveNewState(string title, string property)
         {
@@ -60,6 +61,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         [TestCase("Devices", "Devices")]
         [TestCase("IoT Edge", "IoTEdge")]
         [TestCase("LoRaWAN", "LoRaWAN")]
+        [TestCase("Site Management", "Site Management")]
         [TestCase("Settings", "Settings")]
         public async Task ExpandButtonNavGroupShouldSaveState(string title, string property)
         {
@@ -91,6 +93,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         [TestCase("Devices", "Devices")]
         [TestCase("IoT Edge", "IoTEdge")]
         [TestCase("LoRaWAN", "LoRaWAN")]
+        [TestCase("Site Management", "Site Management")]
         [TestCase("Settings", "Settings")]
         public async Task CollapseButtonNavGroupShouldSaveState(string title, string property)
         {
@@ -121,6 +124,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         [TestCase("Devices", "Devices")]
         [TestCase("IoT Edge", "IoTEdge")]
         [TestCase("LoRaWAN", "LoRaWAN")]
+        [TestCase("Site Management", "Site Management")]
         [TestCase("Settings", "Settings")]
         public async Task WhenFalseCollapseNavGroupShouldBeCollapsed(string title, string property)
         {
@@ -147,6 +151,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
         [TestCase("Devices", "Devices")]
         [TestCase("IoT Edge", "IoTEdge")]
         [TestCase("LoRaWAN", "LoRaWAN")]
+        [TestCase("Site Management", "Site Management")]
         [TestCase("Settings", "Settings")]
         public async Task WhenTrueCollapseNavGroupShouldBeExpanded(string title, string property)
         {
@@ -179,7 +184,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             // Assert
             var navGroups = cut.FindComponents<MudNavGroup>();
 
-            _ = navGroups.Count.Should().Be(4);
+            _ = navGroups.Count.Should().Be(5);
             _ = navGroups.Should().OnlyContain(navGroup => navGroup.Instance.Expanded);
 
             var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>(LocalStorageKey.CollapsibleNavMenu);

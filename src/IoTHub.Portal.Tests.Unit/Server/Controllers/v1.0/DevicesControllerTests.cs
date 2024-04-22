@@ -100,7 +100,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             _ = this.mockDeviceService.Setup(service => service.GetDevices(It.IsAny<string>(), It.IsAny<bool?>(),
                     It.IsAny<bool?>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(),
-                    It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<List<string>>()))
+                    It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(),
+                    It.IsAny<List<string>>(), It.IsAny<string>()))
                 .ReturnsAsync(expectedPaginatedDevices);
 
             var locationUrl = "http://location/devices";
