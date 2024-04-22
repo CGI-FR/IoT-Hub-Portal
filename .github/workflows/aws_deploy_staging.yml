@@ -14,7 +14,7 @@ jobs:
     outputs:
       aws_public_registry: ${{ steps.login-ecr-public.outputs.registry }}
     steps:
-      - uses: actions/checkout@v4.1.2
+      - uses: actions/checkout@v4.1.3
 
       - id: docker-tag
         uses: yuya-takeyama/docker-tag-from-github-ref-action@v1
@@ -82,7 +82,7 @@ jobs:
     environment:
       name: AWS Staging
     steps:
-      - uses: actions/checkout@v4.1.2
+      - uses: actions/checkout@v4.1.3
   
       - name: Configure AWS credentials
         id: aws-credentials
