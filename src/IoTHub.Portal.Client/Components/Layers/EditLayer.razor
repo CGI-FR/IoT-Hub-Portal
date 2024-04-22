@@ -18,7 +18,7 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">
     @mode Layer
-    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="() => Save(layers, true)" id="saveButton">Save</MudButton>
+    <MudButton id="editLayerSaveLayer" Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="() => Save(layers, true)">Save</MudButton>
 </MudText>
 <MudGrid>
     <MudItem xs="12">
@@ -26,11 +26,11 @@
             <ItemTemplate Context="item">
                 <MudTreeViewItem Items="@item.Children" @bind-Expanded="@item.IsExpanded">
                     <BodyContent>
-                        <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%"  @onmouseover="() => printDetails = item.LayerData.Id">
+                        <div id="editLayerElement" style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%"  @onmouseover="() => printDetails = item.LayerData.Id">
                             <div style="width: 75%">
                                 @if (editItem == item.LayerData.Id)
                                 {
-                                    <MudTextField @bind-Value="@item.LayerData.Name" For="@(() => item.LayerData.Name)" @onkeypress="@(e => HandleKeyPress(e))" />
+                                    <MudTextField @bind-Value="@item.LayerData.Name" For="@(() => item.LayerData.Name)" />
                                 }
                                 else
                                 {
@@ -41,11 +41,11 @@
                             <div style="justify-self: end;">
                                 @if (printDetails == item.LayerData.Id)
                                 {
-                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Inherit" @onclick="() => editItem = item.LayerData.Id" />
-                                    <MudIconButton Icon="@(item.LayerData.Father != "Init" ? Icons.Material.Filled.Delete : @Icons.Material.Outlined.Delete)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => DeleteLayer(item, layers)" />
-                                    <MudIconButton Icon="@(item.Level != LAYER_NAMES.Count() ? Icons.Material.Filled.AddBox : @Icons.Material.Outlined.AddBox)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => AddLayer(item)" />
+                                    <MudIconButton id="editLayerEditLayer" Icon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Inherit" @onclick="() => editItem = item.LayerData.Id" />
+                                    <MudIconButton id="editLayerDeleteLayer" Icon="@(item.LayerData.Father != "Init" ? Icons.Material.Filled.Delete : @Icons.Material.Outlined.Delete)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => DeleteLayer(item, layers)" />
+                                    <MudIconButton id="editLayerAddLayer" Icon="@(item.Level != LAYER_NAMES.Count() ? Icons.Material.Filled.AddBox : @Icons.Material.Outlined.AddBox)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => AddLayer(item)" />
                                 }
-                                <MudIconButton Icon="@Icons.Material.TwoTone.Memory" Size="Size.Medium" Color="Color.Inherit" @onclick="() => OpenDevices(item.LayerData)" />
+                                <MudIconButton id="editLayerDevice" Icon="@Icons.Material.TwoTone.Memory" Size="Size.Medium" Color="Color.Inherit" @onclick="() => OpenDevices(item.LayerData)" />
                             </div>
                         </div>
                     </BodyContent>
@@ -67,28 +67,20 @@
     public HashSet<LayerHash> layers { get; set; } = new HashSet<LayerHash> { };
     [Parameter]
     public List<LayerDto> initLayers { get; set; } = new List<LayerDto>();
-    public List<LayerDto> deleteLayers { get; set; } = new List<LayerDto>();
+    public List<LayerDto> deleteLayers { get; } = new List<LayerDto>();
 
     public string printDetails { get; set; } = "Init";
     public string editItem { get; set; } = "";
 
     public void AddLayer(LayerHash layer)
     {
-        try
+        if (layer.Level + 1 <= LAYER_NAMES.Count())
         {
-            if (layer.Level + 1 <= LAYER_NAMES.Count())
-            {
-                LayerDto newLayer = new LayerDto();
-                newLayer.Name = "New Layer";
-                newLayer.Father = layer.LayerData.Id;
-                layer.Children.Add(new LayerHash(newLayer, layer.Level + 1, false));
-                layer.IsExpanded = true;
-            }
-
-        }
-        catch (ProblemDetailsException exception)
-        {
-            Error?.ProcessProblemDetails(exception);
+            LayerDto newLayer = new LayerDto();
+            newLayer.Name = "New Layer";
+            newLayer.Father = layer.LayerData.Id;
+            layer.Children.Add(new LayerHash(newLayer, layer.Level + 1, false));
+            layer.IsExpanded = true;
         }
     }
 
@@ -100,6 +92,7 @@
             {
                 RemoveChild(delLayer);
                 layer.Children.Remove(delLayer);
+                StateHasChanged();
             }
             else
             {
@@ -161,14 +154,6 @@
         DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true, CloseButton = true };
 
         var result = await DialogService.Show<LinkDeviceLayerDialog>("Select your " + layer.Name + " devices", parameter, options).Result;
-    }
-
-    void HandleKeyPress(KeyboardEventArgs e)
-    {
-        if (e.Key == "Enter" || e.Key == "Escape")
-        {
-            editItem = "";
-        }
     }
 }
 
