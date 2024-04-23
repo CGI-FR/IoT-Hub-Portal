@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Domain.Entities
         public string? Description { get; set; } = default!;
         public virtual ICollection<User> Members { get; set; } = new Collection<User>();
         public string PrincipalId { get; set; }
-        public virtual Principal Principal { get; set; }
+        public virtual Principal Principal { get; set; } = new Principal();
 
     }
 }

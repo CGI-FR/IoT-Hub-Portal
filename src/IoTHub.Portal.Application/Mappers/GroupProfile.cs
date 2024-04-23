@@ -17,7 +17,11 @@ namespace IoTHub.Portal.Application.Mappers
 
             _ = CreateMap<Group, GroupDetailsModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name));
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
+                .ForMember(dest => dest.PrincipalId, opts => opts.MapFrom(src => src.PrincipalId));
+
             /*.ForMember(dest => dest.Users, opts => opts.MapFrom(src =>
                                 src.Members.Select(u => new UserModel
                                 {
@@ -37,6 +41,8 @@ namespace IoTHub.Portal.Application.Mappers
 
             _ = CreateMap<GroupDetailsModel, Group>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.PrincipalId, opt => opt.Ignore())
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
             /*.ForMember(dest => dest.AccessControls, opt => opt.MapFrom(src => src.AccessControls.Select(ac => new AccessControl

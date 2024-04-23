@@ -19,11 +19,13 @@ namespace IoTHub.Portal.Application.Services
         private readonly IGroupRepository groupRepository;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
-        public GroupService(IGroupRepository groupRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        private readonly IPrincipalRepository principalRepository;
+        public GroupService(IGroupRepository groupRepository, IMapper mapper, IUnitOfWork unitOfWork, IPrincipalRepository principalRepository)
         {
             this.groupRepository = groupRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.principalRepository = principalRepository;
         }
         public async Task<GroupDetailsModel> GetGroupDetailsAsync(string groupId)
         {
@@ -77,11 +79,12 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<bool> DeleteGroup(string groupId)
         {
-            var user = await groupRepository.GetByIdAsync(groupId);
-            if (user is null)
+            var group = await groupRepository.GetByIdAsync(groupId);
+            if (group is null)
             {
                 throw new ResourceNotFoundException("$The User with the id {userId} that you want to delete does'nt exist !");
             }
+            principalRepository.Delete(group.PrincipalId);
             groupRepository.Delete(groupId);
             await unitOfWork.SaveAsync();
             return true;

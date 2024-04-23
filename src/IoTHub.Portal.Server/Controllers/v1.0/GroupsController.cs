@@ -29,7 +29,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
 
         }
 
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserModel>))]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GroupModel>))]
         public async Task<PaginationResult<GroupModel>> Get(
             string searchKeyword = null,
             int pageSize = 10,
