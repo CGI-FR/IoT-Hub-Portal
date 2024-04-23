@@ -23,7 +23,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4.1.2
+      - uses: actions/checkout@v4.1.3
 
       - id: docker-tag
         uses: yuya-takeyama/docker-tag-from-github-ref-action@v1
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.1.2
+      - uses: actions/checkout@v4.1.3
 
       - name: Get semver
         id: version
@@ -101,12 +101,12 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
       
-      - uses: actions/checkout@v4.1.2
+      - uses: actions/checkout@v4.1.3
         with:
           path: IoT-Hub-Portal
           submodules: recursive
 
-      - uses: actions/checkout@v4.1.2
+      - uses: actions/checkout@v4.1.3
         with:
          ref: arm/main
          path: arm-templates
