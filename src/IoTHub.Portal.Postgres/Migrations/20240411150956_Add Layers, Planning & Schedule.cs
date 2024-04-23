@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Postgres.Migrations
                 name: "LayerId",
                 table: "Devices",
                 type: "text",
-                nullable: false,
+                nullable: true,
                 defaultValue: "");
 
             _ = migrationBuilder.CreateTable(
