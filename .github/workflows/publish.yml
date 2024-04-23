@@ -43,7 +43,6 @@ jobs:
           # list of Docker images to use as base name for tags
           images: |
             ${{ env.registry_name }}/${{ github.repository_owner }}/${{ env.image_name }}
-            ${{ steps.login-ecr.outputs.registry }}/lucas-mrq/${{ env.image_name }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
