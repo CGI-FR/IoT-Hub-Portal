@@ -109,6 +109,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddScoped<IActionRepository, ActionRepository>()
                             .AddScoped<IGroupRepository, GroupRepository>()
                             .AddScoped<IUserRepository, UserRepository>()
+                            .AddScoped<IPrincipalRepository, PrincipalRepository>()
                             .AddScoped<IAccessControlRepository, AccessControlRepository>();
         }
 

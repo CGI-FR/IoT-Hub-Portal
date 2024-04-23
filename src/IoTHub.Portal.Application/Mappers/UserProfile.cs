@@ -21,7 +21,9 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Email, opts => opts.MapFrom(src => src.Email))
                 .ForMember(dest => dest.GivenName, opts => opts.MapFrom(src => src.GivenName))
                 .ForMember(dest => dest.FamilyName, opts => opts.MapFrom(src => src.FamilyName))
-                .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar));
+                .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar))
+                .ForMember(dest => dest.PrincipalId, opts => opts.MapFrom(src => src.PrincipalId));
+
             //.ForMember(dest => dest.AccessControls, opts => opts.MapFrom(src =>
             /*src.AccessControls.Select(ac => new AccessControlModel
             {
@@ -35,6 +37,7 @@ namespace IoTHub.Portal.Application.Mappers
             }).ToList()));*/
 
             _ = CreateMap<UserDetailsModel, User>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))

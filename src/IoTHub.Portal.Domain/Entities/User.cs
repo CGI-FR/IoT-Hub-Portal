@@ -20,6 +20,6 @@ namespace IoTHub.Portal.Domain.Entities
         public string? Avatar { get; set; } = default!;
         public virtual ICollection<Group> Groups { get; set; } = new Collection<Group>();
         public string PrincipalId { get; set; }
-        public virtual Principal Principal { get; set; }
+        public virtual Principal Principal { get; set; } = new Principal();
     }
 }

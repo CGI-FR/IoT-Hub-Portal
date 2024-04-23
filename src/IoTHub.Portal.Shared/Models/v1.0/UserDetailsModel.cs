@@ -12,6 +12,7 @@ namespace IoTHub.Portal.Shared.Models.v10
         public string Name { get; set; }
         public string FamilyName { get; set; }
         public string Avatar { get; set; }
+        public string PrincipalId { get; set; }
         public ICollection<AccessControlModel> AccessControls { get; set; } = new List<AccessControlModel>();
     }
 }
