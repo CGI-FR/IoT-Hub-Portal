@@ -106,7 +106,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// </summary>
         /// <param name="id">AccessControl id that we want to delete</param>
         /// <returns></returns>
-        [HttpDelete("{roleName}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteAccessControl(string id)

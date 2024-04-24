@@ -103,12 +103,13 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<bool> DeleteAccessControl(string id)
         {
-            var accessControl = await accessControlRepository.GetByIdAsync(id);
-            if (accessControl is null)
+            var acEntity = await this.accessControlRepository.GetByIdAsync(id);
+            if (acEntity is null)
             {
-                throw new ResourceNotFoundException("$The AccessControl with the id { Id } that you want to delete doesn't exist");
+                throw new ResourceNotFoundException($"The AccessControl with the id {id} doesn't exist");
             }
             accessControlRepository.Delete(id);
+            await this.unitOfWork.SaveAsync();
             return true;
         }
 
