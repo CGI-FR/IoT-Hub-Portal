@@ -62,6 +62,6 @@ namespace IoTHub.Portal.Shared.Models
         /// <summary>
         /// The LayerId of the device.
         /// </summary>
-        public string LayerId { get; set; }
+        public string? LayerId { get; set; }
     }
 }

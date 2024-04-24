@@ -65,6 +65,6 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The LayerId of the device.
         /// </summary>
-        public string LayerId { get; set; }
+        public string? LayerId { get; set; }
     }
 }

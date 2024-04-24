@@ -148,7 +148,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The LayerId of the device.
         /// </summary>
-        public string LayerId { get; set; } = default!;
+        public string? LayerId { get; set; } = default!;
 
         /// <summary>
         /// A value indicating whether the downlinks are enabled (True if not provided)

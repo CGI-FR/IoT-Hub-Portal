@@ -19,6 +19,6 @@ namespace IoTHub.Portal.Shared.Models.v10.Filters
 
         public List<string> Labels { get; set; } = new();
 
-        public string LayerId { get; set; } = default!;
+        public string? LayerId { get; set; } = default!;
     }
 }
