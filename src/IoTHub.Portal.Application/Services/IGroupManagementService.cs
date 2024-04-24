@@ -17,5 +17,8 @@ namespace IoTHub.Portal.Application.Services
         Task<GroupDetailsModel> GetGroupDetailsAsync(string groupId);
         Task<GroupDetailsModel> CreateGroupAsync(GroupDetailsModel groupCreateModel);
         Task<bool> DeleteGroup(string userId);
+        Task<GroupDetailsModel?> UpdateGroup(GroupDetailsModel group);
+        Task<bool> AddUserToGroup(string groupId, string userId);
+        Task<bool> RemoveUserFromGroup(string groupId, string userId);
     }
 }

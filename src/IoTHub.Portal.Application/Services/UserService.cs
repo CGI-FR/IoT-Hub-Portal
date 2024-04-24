@@ -86,7 +86,21 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<UserDetailsModel?> UpdateUser(UserDetailsModel user)
         {
-            throw new NotImplementedException();
+            var userEntity = await this.userRepository.GetByIdAsync(user.Id);
+            if (userEntity != null)
+            {
+                userEntity.Email = user.Email;
+                userEntity.GivenName = user.GivenName;
+                userEntity.Name = user.Name;
+                userEntity.FamilyName = user.FamilyName;
+                userEntity.Avatar = user.Avatar;
+            }
+            this.userRepository.Update(userEntity);
+            await this.unitOfWork.SaveAsync();
+            var createdUser = await this.userRepository.GetByIdAsync(user.Id);
+            var toModel = this.mapper.Map<UserDetailsModel>(createdUser);
+            return toModel;
+
         }
 
         public async Task<bool> DeleteUser(string userId)

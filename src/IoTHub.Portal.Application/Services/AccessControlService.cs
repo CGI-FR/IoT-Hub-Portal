@@ -20,13 +20,15 @@ namespace IoTHub.Portal.Application.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly IRoleRepository roleRepository;
+        private readonly IPrincipalRepository principalRepository;
 
-        public AccessControlService(IAccessControlRepository accessControlRepository, IUnitOfWork unitOfWork, IMapper mapper, IRoleRepository roleRepository)
+        public AccessControlService(IAccessControlRepository accessControlRepository, IUnitOfWork unitOfWork, IMapper mapper, IRoleRepository roleRepository, IPrincipalRepository principalRepository)
         {
             this.accessControlRepository = accessControlRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             this.roleRepository = roleRepository;
+            this.principalRepository = principalRepository;
         }
 
         public async Task<AccessControlModel> GetAccessControlAsync(string Id)
@@ -77,12 +79,29 @@ namespace IoTHub.Portal.Application.Services
             return new PaginatedResult<AccessControlModel>(paginatedAcDto.Data, paginatedAcDto.TotalCount);
         }
 
-        Task<AccessControlModel> IAccessControlManagementService.CreateAccessControl(AccessControlModel role)
+        public async Task<AccessControlModel> CreateAccessControl(AccessControlModel accessControl)
         {
-            throw new NotImplementedException();
+            var principal = await this.principalRepository.GetByIdAsync(accessControl.PrincipalId);
+            if (principal == null)
+            {
+                throw new ResourceNotFoundException($"The principal with the id {accessControl.PrincipalId} does'nt exist !");
+            }
+            var role = await this.roleRepository.GetByIdAsync(accessControl.Role.Id);
+            if (role == null)
+            {
+                throw new ResourceNotFoundException($"The role {accessControl.Role.Name} with the id {accessControl.Role.Id} does'nt exist !");
+            }
+            var acEntity = this.mapper.Map<AccessControl>(accessControl);
+            await this.accessControlRepository.InsertAsync(acEntity);
+            await this.unitOfWork.SaveAsync();
+
+            var createdAc = await this.accessControlRepository.GetByIdAsync(acEntity.Id, ac => ac.Role);
+            var createdModel = this.mapper.Map<AccessControlModel>(createdAc);
+            return createdModel;
+
         }
 
-        async Task<bool> IAccessControlManagementService.DeleteAccessControl(string id)
+        public async Task<bool> DeleteAccessControl(string id)
         {
             var accessControl = await accessControlRepository.GetByIdAsync(id);
             if (accessControl is null)
@@ -93,9 +112,33 @@ namespace IoTHub.Portal.Application.Services
             return true;
         }
 
-        Task<AccessControlModel?> IAccessControlManagementService.UpdateAccessControl(string id, AccessControlModel accessControl)
+        public async Task<AccessControlModel?> UpdateAccessControl(AccessControlModel accessControl)
         {
-            throw new NotImplementedException();
+            var acEntity = await this.accessControlRepository.GetByIdAsync(accessControl.Id, ac => ac.Role);
+            if (acEntity is null)
+            {
+                throw new ResourceNotFoundException($"The AccessControl with the id {accessControl.Id} doesn't exist");
+            }
+            var principal = await this.principalRepository.GetByIdAsync(accessControl.PrincipalId);
+            if (principal is null)
+            {
+                throw new ResourceNotFoundException($"The principal with the id {accessControl.PrincipalId} not found !");
+            }
+            var role = await this.roleRepository.GetByIdAsync(accessControl.Role.Id);
+            if (role is null)
+            {
+                throw new ResourceNotFoundException($"Specified role with the id {accessControl.Role.Id} not found");
+            }
+            acEntity.PrincipalId = accessControl.PrincipalId;
+            acEntity.RoleId = accessControl.Role.Id;
+            acEntity.Scope = accessControl.Scope;
+            accessControlRepository.Update(acEntity);
+            await this.unitOfWork.SaveAsync();
+
+            var createdAc = await this.accessControlRepository.GetByIdAsync(acEntity.Id, ac => ac.Role);
+            return this.mapper.Map<AccessControlModel>(createdAc);
+
+
         }
     }
 }

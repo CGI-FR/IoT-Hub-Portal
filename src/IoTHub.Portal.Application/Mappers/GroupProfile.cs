@@ -51,7 +51,6 @@ namespace IoTHub.Portal.Application.Mappers
                 Scope = ac.Scope,
                 Role = new Role { Name = ac.Role.Name }
             })));*/
-
         }
     }
 }

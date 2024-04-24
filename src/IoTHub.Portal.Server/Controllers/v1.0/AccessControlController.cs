@@ -92,12 +92,12 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="accessControl">AccessControl model that we want to update in db</param>
         /// <param name="Id">Current role name (before any changes)</param>
         /// <returns>HTTP Put response, updated role</returns>
-        [HttpPut("{roleName}", Name = "PUT Edit AccessControl")]
+        [HttpPut(Name = "PUT Edit AccessControl")]
         //[Authorize(Policy = Policies.EditAccessControl)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> EditAccessControlAsync(string id, AccessControlModel roleDetails)
+        public async Task<IActionResult> EditAccessControlAsync(AccessControlModel roleDetails)
         {
-            return Ok(await this.service.UpdateAccessControl(id, roleDetails));
+            return Ok(await this.service.UpdateAccessControl(roleDetails));
         }
 
 

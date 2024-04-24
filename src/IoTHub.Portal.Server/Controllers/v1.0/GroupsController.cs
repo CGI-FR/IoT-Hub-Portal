@@ -83,6 +83,15 @@ namespace IoTHub.Portal.Server.Controllers.V10
             return Ok(await this.groupManagementService.CreateGroupAsync(groupCreateModel));
         }
 
+
+        [HttpPut(Name = "PUT Edit a Group")]
+        //[Authorize(Policy = Policies.EditRole)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> EditUserAsync(GroupDetailsModel group)
+        {
+            return Ok(await this.groupManagementService.UpdateGroup(group));
+        }
+
         /// <summary>
         /// Delete a group by id
         /// </summary>
@@ -94,6 +103,27 @@ namespace IoTHub.Portal.Server.Controllers.V10
         public async Task<IActionResult> DeleteUser(string id)
         {
             return Ok(await groupManagementService.DeleteGroup(id));
+        }
+
+        // Ajouter un utilisateur à un groupe
+        [HttpPost("{groupId}/users/{userId}")]
+        public async Task<IActionResult> AddUserToGroup(string groupId, string userId)
+        {
+            var result = await groupManagementService.AddUserToGroup(groupId, userId);
+            if (result)
+                return Ok(result);
+            else
+                return NotFound();
+        }
+
+        [HttpDelete("{groupId}/users/{userId}")]
+        public async Task<IActionResult> RemoveUserFromGroup(string groupId, string userId)
+        {
+            var result = await groupManagementService.RemoveUserFromGroup(groupId, userId);
+            if (result)
+                return Ok(result);
+            else
+                return NotFound();
         }
     }
 }

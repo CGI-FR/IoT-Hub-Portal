@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Application.Mappers
         {
             _ = CreateMap<AccessControl, AccessControlModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.PrincipalId, opts => opts.MapFrom(src => src.PrincipalId))
                 .ForMember(dest => dest.Scope, opts => opts.MapFrom(src => src.Scope))
                 .ForMember(dest => dest.Role, opts => opts.MapFrom(src => src.Role != null
                     ? new RoleModel
@@ -23,9 +24,11 @@ namespace IoTHub.Portal.Application.Mappers
                     : null));
 
             _ = CreateMap<AccessControlModel, AccessControl>()
-                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.PrincipalId, opts => opts.MapFrom(src => src.PrincipalId))
                 .ForMember(dest => dest.Scope, opts => opts.MapFrom(src => src.Scope))
-                .ForMember(dest => dest.Role, opts => opts.MapFrom(src => src.Role.Name));
+                .ForMember(dest => dest.RoleId, opts => opts.MapFrom(src => src.Role.Id))
+                .ForMember(dest => dest.Role, opts => opts.Ignore());
         }
     }
 }

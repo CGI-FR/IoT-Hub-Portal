@@ -8,6 +8,7 @@ namespace IoTHub.Portal.Shared.Models.v10
     {
 
         public string Id { get; set; }
+        public string PrincipalId { get; set; }
         public string Scope { get; set; } = default!;
         public RoleModel Role { get; set; } = default!;
     }
