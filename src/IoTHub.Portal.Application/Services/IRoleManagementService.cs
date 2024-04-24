@@ -14,9 +14,9 @@ namespace IoTHub.Portal.Application.Services
             int pageNumber = 0,
             string[] orderBy = null
         );
-        Task<RoleDetailsModel> GetRoleDetailsAsync(string roleName);
+        Task<RoleDetailsModel> GetRoleDetailsAsync(string id);
         Task<RoleDetailsModel> CreateRole(RoleDetailsModel role);
-        Task<RoleDetailsModel?> UpdateRole(string roleName, RoleDetailsModel role);
+        Task<RoleDetailsModel?> UpdateRole(string id, RoleDetailsModel role);
         Task<bool> DeleteRole(string id);
     }
 }

@@ -43,17 +43,16 @@ namespace IoTHub.Portal.Server.Controllers.V10
         ///  Get all roles
         /// </summary>
         /// <param name="searchName">Role name</param>
-        /// <param name="pageSize"></param>
-        /// <param name="pageNumber"></param>
-        /// <param name="orderBy"></param>
-        /// <param name="RoleId"></param>
+        /// <param name="pageSize">Number of role per page</param>
+        /// <param name="pageNumber">page number</param>
+        /// <param name="orderBy">Critera order</param>
         [HttpGet(Name = "GetRoles")]
         //[Authorize(Policy = "GetRoles")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<RoleModel>))]
         public async Task<PaginationResult<RoleModel>> Get(
-            string searchKeyword = null,
-            int pageSize = 10,
-            int pageNumber = 0,
+            [FromQuery] string searchKeyword = null,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int pageNumber = 0,
             [FromQuery] string[] orderBy = null
         )
         {
@@ -83,14 +82,14 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Get role details
         /// </summary>
-        /// <param name="roleName">Role name</param>
+        /// <param name="id">Role id</param>
         /// <returns>HTTP Get response</returns>
-        [HttpGet("{roleName}", Name = "GetRole")]
+        [HttpGet("{id}", Name = "GetRole")]
         //[Authorize(Policy = Policies....)
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleDetailsModel))]
-        public async Task<IActionResult> GetRoleDetails(string roleName)
+        public async Task<IActionResult> GetRoleDetails(string id)
         {
-            var role = await roleManagementService.GetRoleDetailsAsync(roleName);
+            var role = await roleManagementService.GetRoleDetailsAsync(id);
             if (role == null)
             {
                 return NotFound();
@@ -116,14 +115,14 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Edit an existing role and the associated actions, delete the actions that are not in the new list
         /// </summary>
         /// <param name="roleDetails">Role details</param>
-        /// <param name="roleName">Current role name (before any changes)</param>
+        /// <param name="id">Role id</param>
         /// <returns>HTTP Put response, updated role</returns>
-        [HttpPut("{roleName}", Name = "PUT Edit Role")]
+        [HttpPut("{id}", Name = "PUT Edit Role")]
         //[Authorize(Policy = Policies.EditRole)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> EditRoleAsync(string roleName, RoleDetailsModel roleDetails)
+        public async Task<IActionResult> EditRoleAsync(string id, RoleDetailsModel roleDetails)
         {
-            return Ok(await this.roleManagementService.UpdateRole(roleName, roleDetails));
+            return Ok(await this.roleManagementService.UpdateRole(id, roleDetails));
         }
 
 
@@ -132,7 +131,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">Role id that we want to delete</param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "DELETE Role")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteRole(string id)

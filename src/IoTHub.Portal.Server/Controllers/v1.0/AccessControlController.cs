@@ -34,14 +34,16 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
             string searchKeyword = null,
             int pageSize = 10,
             int pageNumber = 0,
-            [FromQuery] string[] orderBy = null
+            [FromQuery] string[] orderBy = null,
+            [FromQuery] string? principalId = null
             )
         {
             var paginedResult = await service.GetAccessControlPage(
                 searchKeyword,
                 pageSize,
                 pageNumber,
-                orderBy
+                orderBy,
+                principalId
             );
             var nextPage = string.Empty;
             if (paginedResult.HasNextPage)
@@ -113,6 +115,5 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         {
             return Ok(await service.DeleteAccessControl(id));
         }
-
     }
 }

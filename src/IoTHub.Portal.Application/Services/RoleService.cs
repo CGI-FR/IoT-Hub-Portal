@@ -95,19 +95,25 @@ namespace IoTHub.Portal.Application.Services
 
         }
 
-        async Task<RoleDetailsModel> IRoleManagementService.GetRoleDetailsAsync(string roleName)
+        public async Task<RoleDetailsModel> GetRoleDetailsAsync(string id)
         {
-            var roleEntity = await this.roleRepository.GetByNameAsync(roleName, r => r.Actions);
+            var roleEntity = await this.roleRepository.GetByIdAsync(id, r => r.Actions);
             if (roleEntity is null)
             {
-                throw new ResourceNotFoundException($"The role with name {roleName} doesn't exist");
+                throw new ResourceNotFoundException($"The role with name {id} doesn't exist");
             }
             var roleModel = this.mapper.Map<RoleDetailsModel>(roleEntity);
             return roleModel;
         }
 
-        async Task<RoleDetailsModel> IRoleManagementService.CreateRole(RoleDetailsModel role)
+        public async Task<RoleDetailsModel> CreateRole(RoleDetailsModel role)
         {
+            var roleWithName = await this.roleRepository.GetByNameAsync(role.Name);
+            if (roleWithName is not null)
+            {
+                throw new ResourceAlreadyExistsException($"The role with the name {role.Name} already exist, a role name should be unique !");
+            }
+
             var roleEntity = this.mapper.Map<Role>(role);
             await this.roleRepository.InsertAsync(roleEntity);
             await this.unitOfWork.SaveAsync();
@@ -119,17 +125,37 @@ namespace IoTHub.Portal.Application.Services
             return createdRoleDto;
         }
 
-        async Task<RoleDetailsModel?> IRoleManagementService.UpdateRole(string roleName, RoleDetailsModel role)
+        public async Task<RoleDetailsModel?> UpdateRole(string id, RoleDetailsModel role)
         {
-            var roleEntity = await this.roleRepository.GetByNameAsync(roleName, r => r.Actions);
+            var roleEntity = await this.roleRepository.GetByIdAsync(id, r => r.Actions);
             if (roleEntity is null)
             {
-                throw new ResourceNotFoundException($"The role with name {roleName} doesn't exist");
+                throw new ResourceNotFoundException($"The role with id {id} doesn't exist");
             }
-
+            var roleWithName = await this.roleRepository.GetByNameAsync(role.Name);
+            if (roleWithName is not null)
+            {
+                throw new ResourceAlreadyExistsException($"The role with the name {role.Name} already exist, a role name should be unique !");
+            }
             roleEntity.Name = role.Name;
             roleEntity.Description = role.Description;
-            roleEntity.Actions = UpdateRoleActions(roleEntity.Actions, role.Actions.Select(a => new Action { Name = a }).ToList());
+
+            var actionsToRemove = roleEntity.Actions.Where(a => !role.Actions.Any(na => na == a.Name)).ToList();
+            foreach (var action in actionsToRemove)
+            {
+                _ = roleEntity.Actions.Remove(action);
+                this.actionRepository.Delete(action.Id);
+            }
+
+            foreach (var actionName in role.Actions)
+            {
+                var action = roleEntity.Actions.FirstOrDefault(a => a.Name == actionName);
+                if (action == null)
+                {
+                    roleEntity.Actions.Add(new Action { Name = actionName });
+                }
+            }
+
             this.roleRepository.Update(roleEntity);
             await this.unitOfWork.SaveAsync();
 
@@ -137,20 +163,6 @@ namespace IoTHub.Portal.Application.Services
             var updatedRoleDto = this.mapper.Map<RoleDetailsModel>(updatedRole);
 
             return updatedRoleDto;
-        }
-
-        private static ICollection<Action> UpdateRoleActions(ICollection<Action> existingActions, ICollection<Action> newActions)
-        {
-            var updatedActions = new HashSet<Action>(existingActions);
-            foreach (var action in newActions)
-            {
-                if (!updatedActions.Any(a => a.Name == action.Name))
-                {
-                    _ = updatedActions.Add(action);
-                }
-            }
-            _ = updatedActions.RemoveWhere(a => !newActions.Any(na => na.Name == a.Name));
-            return updatedActions;
         }
     }
 }

@@ -46,7 +46,8 @@ namespace IoTHub.Portal.Application.Services
             string? searchKeyword = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null
+            string[] orderBy = null,
+            string? principalId = null
             )
         {
             var acFilter = new AccessControlFilter
@@ -60,6 +61,11 @@ namespace IoTHub.Portal.Application.Services
             if (!string.IsNullOrWhiteSpace(acFilter.Keyword))
             {
                 acPredicate = acPredicate.And(ac => ac.Scope.ToLower().Contains(acFilter.Keyword.ToLower()) || ac.Role.Name.ToLower().Contains(acFilter.Keyword.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(principalId))
+            {
+                acPredicate = acPredicate.And(ac => ac.PrincipalId == principalId);
             }
 
             var paginatedAc = await this.accessControlRepository.GetPaginatedListWithDetailsAsync(

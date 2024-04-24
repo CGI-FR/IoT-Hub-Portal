@@ -12,7 +12,8 @@ namespace IoTHub.Portal.Application.Services
             string? searchKeyword = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null
+            string[] orderBy = null,
+            string? principalId = null
             );
         Task<AccessControlModel> GetAccessControlAsync(string Id);
 
