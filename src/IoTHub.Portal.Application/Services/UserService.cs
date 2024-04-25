@@ -97,7 +97,7 @@ namespace IoTHub.Portal.Application.Services
             }
             this.userRepository.Update(userEntity);
             await this.unitOfWork.SaveAsync();
-            var createdUser = await this.userRepository.GetByIdAsync(user.Id);
+            var createdUser = await this.userRepository.GetByIdAsync(id);
             var toModel = this.mapper.Map<UserDetailsModel>(createdUser);
             return toModel;
 

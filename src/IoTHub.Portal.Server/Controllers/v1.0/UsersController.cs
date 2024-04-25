@@ -33,10 +33,10 @@ namespace IoTHub.Portal.Server.Controllers.V10
         //[Authorize(Policy = "GetAllUsers")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserModel>))]
         public async Task<PaginationResult<UserModel>> Get(
-            string searchName = null,
-            string searchEmail = null,
-            int pageSize = 10,
-            int pageNumber = 0,
+            [FromQuery] string searchName = null,
+            [FromQuery] string searchEmail = null,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int pageNumber = 0,
             [FromQuery] string[] orderBy = null
             )
         {
@@ -143,7 +143,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            logger.LogInformation("Attempting to delete user with ID {UserId}", id);
             try
             {
                 var result = await userManagementService.DeleteUser(id);
@@ -153,7 +152,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                     return NotFound("User not found.");
                 }
                 logger.LogInformation("User with ID {UserId} deleted successfully", id);
-                return Ok();
+                return Ok(result);
             }
             catch (Exception ex)
             {

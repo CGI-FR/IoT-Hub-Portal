@@ -11,6 +11,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using System;
 
     [Authorize]
     [ApiVersion("1.0")]
@@ -38,40 +39,60 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
             [FromQuery] string? principalId = null
             )
         {
-            var paginedResult = await service.GetAccessControlPage(
+            try
+            {
+                var paginedResult = await service.GetAccessControlPage(
                 searchKeyword,
                 pageSize,
                 pageNumber,
                 orderBy,
                 principalId
-            );
-            var nextPage = string.Empty;
-            if (paginedResult.HasNextPage)
-            {
-                nextPage = Url.RouteUrl(new UrlRouteContext
+                );
+                logger.LogInformation("AccessControls fetched successfully. Total AccessControl fetched : {Count}", paginedResult.TotalCount);
+                var nextPage = string.Empty;
+                if (paginedResult.HasNextPage)
                 {
-                    RouteName = "Get Pagined Access Control",
-                    Values = new { searchKeyword, pageSize, pageNumber = pageNumber + 1, orderBy }
-                });
+                    nextPage = Url.RouteUrl(new UrlRouteContext
+                    {
+                        RouteName = "Get Pagined Access Control",
+                        Values = new { searchKeyword, pageSize, pageNumber = pageNumber + 1, orderBy }
+                    });
+                }
+                return new PaginationResult<AccessControlModel>
+                {
+                    Items = paginedResult.Data,
+                    TotalItems = paginedResult.TotalCount,
+                    NextPage = nextPage
+                };
             }
-            return new PaginationResult<AccessControlModel>
+            catch (Exception ex)
             {
-                Items = paginedResult.Data,
-                TotalItems = paginedResult.TotalCount,
-                NextPage = nextPage
-            };
+                logger.LogError(ex, "Error fetching accessControls.");
+                throw;
+            }
         }
 
         [HttpGet("{id}", Name = "Get AccessControl By Id")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccessControlModel))]
         public async Task<IActionResult> GetACById(string id)
         {
-            var ac = await service.GetAccessControlAsync(id);
-            if (ac is null)
+            try
             {
-                return NotFound();
+                var ac = await service.GetAccessControlAsync(id);
+                if (ac is null)
+                {
+                    logger.LogWarning("AccessControl with ID {AcId} not found", id);
+                    return NotFound();
+                }
+                logger.LogInformation("Details retrieved for accessControl with ID {AcId}", id);
+                return Ok(ac);
             }
-            return Ok(ac);
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to get details for accessControl with ID {AcId}", id);
+                throw;
+            }
+
         }
 
         /// <summary>
@@ -85,7 +106,17 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateAccessControlAsync(AccessControlModel accessControl)
         {
-            return Ok(await this.service.CreateAccessControl(accessControl));
+            try
+            {
+                var result = await this.service.CreateAccessControl(accessControl);
+                logger.LogInformation("AccessControl created successfully with ID {AcId}", result.Id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to create accessControl. : ", ex);
+                return BadRequest(ex);
+            }
         }
 
         /// <summary>
@@ -94,12 +125,22 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="accessControl">AccessControl model that we want to update in db</param>
         /// <param name="Id">Current role name (before any changes)</param>
         /// <returns>HTTP Put response, updated role</returns>
-        [HttpPut(Name = "PUT Edit AccessControl")]
+        [HttpPut("{id}", Name = "PUT Edit AccessControl")]
         //[Authorize(Policy = Policies.EditAccessControl)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EditAccessControlAsync(string id, AccessControlModel accessControl)
         {
-            return Ok(await this.service.UpdateAccessControl(id, accessControl));
+            try
+            {
+                var result = await this.service.UpdateAccessControl(id, accessControl);
+                logger.LogInformation("AccessControl with ID {AcId} updated successfully", id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to update AccessControl with ID {AcId}", id);
+                throw;
+            }
         }
 
 
@@ -113,7 +154,22 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteAccessControl(string id)
         {
-            return Ok(await service.DeleteAccessControl(id));
+            try
+            {
+                var result = await service.DeleteAccessControl(id);
+                if (!result)
+                {
+                    logger.LogWarning("AccessControl with ID {AcId} not found", id);
+                    return NotFound("AccessControl not found.");
+                }
+                logger.LogInformation("AccessControl with ID {AcId} deleted successfully", id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to delete AccessControl with ID {AcId}", id);
+                throw;
+            }
         }
     }
 }

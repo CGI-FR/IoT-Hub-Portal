@@ -64,8 +64,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 pageSize,
                 pageNumber,
                 orderBy
-            );
-                logger.LogInformation("Roles fetched successfully.");
+                );
+                logger.LogInformation("Roles fetched successfully. Total Role fetched : {Count}", paginedResult.TotalCount);
                 var nextPage = string.Empty;
                 if (paginedResult.HasNextPage)
                 {
@@ -84,8 +84,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error fetching roles.");
-                throw; // Rethrowing the exception (preserves the stack trace)
+                logger.LogError("Error fetching roles.");
+                throw ex; // Rethrowing the exception (preserves the stack trace)
             }
         }
 
@@ -101,7 +101,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                logger.LogInformation("Details retrieved for role with ID {RoleId}", id);
                 var role = await roleManagementService.GetRoleDetailsAsync(id);
                 if (role == null)
                 {
@@ -180,16 +179,13 @@ namespace IoTHub.Portal.Server.Controllers.V10
             try
             {
                 var result = await roleManagementService.DeleteRole(id);
-                if (result)
-                {
-                    logger.LogInformation("Role with ID {RoleId} deleted successfully", id);
-                    return Ok();
-                }
-                else
+                if (!result)
                 {
                     logger.LogWarning("Role with ID {RoleId} not found", id);
                     return NotFound("Role not found.");
                 }
+                logger.LogInformation("Role with ID {RoleId} deleted successfully", id);
+                return Ok(result);
             }
             catch (Exception ex)
             {

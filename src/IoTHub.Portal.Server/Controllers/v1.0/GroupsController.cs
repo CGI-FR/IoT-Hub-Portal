@@ -11,6 +11,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.Logging;
+    using System;
 
     [Authorize]
     [ApiController]
@@ -38,28 +39,36 @@ namespace IoTHub.Portal.Server.Controllers.V10
             [FromQuery] string[] orderBy = null
             )
         {
-            var paginedResult = await groupManagementService.GetGroupPage(
+            try
+            {
+                var paginedResult = await groupManagementService.GetGroupPage(
                 searchKeyword,
                 pageSize,
                 pageNumber,
                 orderBy
                 );
-            var nextPage = string.Empty;
-            if (paginedResult.HasNextPage)
-            {
-                nextPage = Url.RouteUrl(new UrlRouteContext
+                logger.LogInformation("Groups fetched successfully. Total groups fetched: {Count}", paginedResult.TotalCount);
+                var nextPage = string.Empty;
+                if (paginedResult.HasNextPage)
                 {
-                    RouteName = "Get Groups",
-                    Values = new { searchKeyword, pageSize, pageNumber = pageNumber + 1, orderBy }
-                });
+                    nextPage = Url.RouteUrl(new UrlRouteContext
+                    {
+                        RouteName = "Get Groups",
+                        Values = new { searchKeyword, pageSize, pageNumber = pageNumber + 1, orderBy }
+                    });
+                }
+                return new PaginationResult<GroupModel>
+                {
+                    Items = paginedResult.Data,
+                    TotalItems = paginedResult.TotalCount,
+                    NextPage = nextPage
+                };
             }
-            return new PaginationResult<GroupModel>
+            catch (Exception ex)
             {
-                Items = paginedResult.Data,
-                TotalItems = paginedResult.TotalCount,
-                NextPage = nextPage
-            };
-
+                logger.LogError(ex, "Error fetching groups.");
+                throw;
+            }
         }
 
         [HttpGet("{id}")]
@@ -67,12 +76,22 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetGroupDetails(string id)
         {
-            var groupDetails = await groupManagementService.GetGroupDetailsAsync(id);
-            if (groupDetails == null)
+            try
             {
-                return NotFound();
+                var groupDetails = await groupManagementService.GetGroupDetailsAsync(id);
+                if (groupDetails == null)
+                {
+                    logger.LogWarning("Group with ID {GroupId} not found", id);
+                    return NotFound();
+                }
+                logger.LogInformation("Details retrieved for group with ID {GroupId}", id);
+                return Ok(groupDetails);
             }
-            return Ok(groupDetails);
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to get details for group with ID {GroupId}", id);
+                throw;
+            }
         }
 
         [HttpPost(Name = "POST Create a Group")]
@@ -80,7 +99,17 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateGroup([FromBody] GroupDetailsModel group)
         {
-            return Ok(await this.groupManagementService.CreateGroupAsync(group));
+            try
+            {
+                var result = await this.groupManagementService.CreateGroupAsync(group);
+                logger.LogInformation("Group created successfully with ID {GroupId}", result.Id);
+                return CreatedAtAction(nameof(GetGroupDetails), new { id = result.Id }, result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to create group.");
+                throw;
+            }
         }
 
 
@@ -89,7 +118,17 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EditGroupAsync(string id, GroupDetailsModel group)
         {
-            return Ok(await this.groupManagementService.UpdateGroup(id, group));
+            try
+            {
+                var result = await this.groupManagementService.UpdateGroup(id, group);
+                logger.LogInformation("Group with ID {GroupId} updated successfully", id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to update group with ID {GroupId}", id);
+                throw;
+            }
         }
 
         /// <summary>
@@ -102,7 +141,22 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteGroup(string id)
         {
-            return Ok(await groupManagementService.DeleteGroup(id));
+            try
+            {
+                var result =await groupManagementService.DeleteGroup(id);
+                if (!result)
+                {
+                    logger.LogWarning("Group with ID {GroupId} not found", id);
+                    return NotFound("Group not found.");
+                }
+                logger.LogInformation("Group with ID {GroupId} deleted successfully", id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to delete group with ID {GroupId}", id);
+                throw;
+            }
         }
 
         // Ajouter un utilisateur à un groupe
