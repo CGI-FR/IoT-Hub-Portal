@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
             {
                 nextPage = Url.RouteUrl(new UrlRouteContext
                 {
-                    RouteName = "Get Users",
+                    RouteName = "Get Groups",
                     Values = new { searchKeyword, pageSize, pageNumber = pageNumber + 1, orderBy }
                 });
             }
@@ -62,12 +62,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
 
         }
 
-        [HttpGet("{groupId}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDetailsModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetGroupDetails(string groupId)
+        public async Task<IActionResult> GetGroupDetails(string id)
         {
-            var groupDetails = await groupManagementService.GetGroupDetailsAsync(groupId);
+            var groupDetails = await groupManagementService.GetGroupDetailsAsync(id);
             if (groupDetails == null)
             {
                 return NotFound();
@@ -78,18 +78,18 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [HttpPost(Name = "POST Create a Group")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GroupDetailsModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateGroup([FromBody] GroupDetailsModel groupCreateModel)
+        public async Task<IActionResult> CreateGroup([FromBody] GroupDetailsModel group)
         {
-            return Ok(await this.groupManagementService.CreateGroupAsync(groupCreateModel));
+            return Ok(await this.groupManagementService.CreateGroupAsync(group));
         }
 
 
-        [HttpPut(Name = "PUT Edit a Group")]
-        //[Authorize(Policy = Policies.EditRole)]
+        [HttpPut("{id}", Name = "PUT Edit a Group")]
+        //[Authorize(Policy = Policies.EditGroup)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> EditUserAsync(GroupDetailsModel group)
+        public async Task<IActionResult> EditGroupAsync(string id, GroupDetailsModel group)
         {
-            return Ok(await this.groupManagementService.UpdateGroup(group));
+            return Ok(await this.groupManagementService.UpdateGroup(id, group));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteGroup(string id)
         {
             return Ok(await groupManagementService.DeleteGroup(id));
         }

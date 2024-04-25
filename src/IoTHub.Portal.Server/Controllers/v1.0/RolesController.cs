@@ -10,6 +10,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.Extensions.Logging;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using System;
 
     [Authorize]
     [ApiVersion("1.0")]
@@ -56,27 +57,36 @@ namespace IoTHub.Portal.Server.Controllers.V10
             [FromQuery] string[] orderBy = null
         )
         {
-            var paginedResult = await roleManagementService.GetRolePage(
+            try
+            {
+                var paginedResult = await roleManagementService.GetRolePage(
                 searchKeyword,
                 pageSize,
                 pageNumber,
                 orderBy
             );
-            var nextPage = string.Empty;
-            if (paginedResult.HasNextPage)
-            {
-                nextPage = Url.RouteUrl(new UrlRouteContext
+                logger.LogInformation("Roles fetched successfully.");
+                var nextPage = string.Empty;
+                if (paginedResult.HasNextPage)
                 {
-                    RouteName = "GetRoles",
-                    Values = new { searchKeyword, pageSize, pageNumber = pageNumber + 1, orderBy },
-                });
+                    nextPage = Url.RouteUrl(new UrlRouteContext
+                    {
+                        RouteName = "GetRoles",
+                        Values = new { searchKeyword, pageSize, pageNumber = pageNumber + 1, orderBy },
+                    });
+                }
+                return new PaginationResult<RoleModel>
+                {
+                    Items = paginedResult.Data,
+                    TotalItems = paginedResult.TotalCount,
+                    NextPage = nextPage,
+                };
             }
-            return new PaginationResult<RoleModel>
+            catch (Exception ex)
             {
-                Items = paginedResult.Data,
-                TotalItems = paginedResult.TotalCount,
-                NextPage = nextPage,
-            };
+                logger.LogError(ex, "Error fetching roles.");
+                throw; // Rethrowing the exception (preserves the stack trace)
+            }
         }
 
         /// <summary>
@@ -89,12 +99,23 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleDetailsModel))]
         public async Task<IActionResult> GetRoleDetails(string id)
         {
-            var role = await roleManagementService.GetRoleDetailsAsync(id);
-            if (role == null)
+            try
             {
-                return NotFound();
+                logger.LogInformation("Details retrieved for role with ID {RoleId}", id);
+                var role = await roleManagementService.GetRoleDetailsAsync(id);
+                if (role == null)
+                {
+                    logger.LogWarning("Role with ID {RoleId} not found", id);
+                    return NotFound();
+                }
+                logger.LogInformation("Details retrieved for role with ID {RoleId}", id);
+                return Ok(role);
             }
-            return Ok(role);
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to get details for role with ID {RoleId}", id);
+                throw;
+            }
         }
 
         /// <summary>
@@ -108,7 +129,17 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateRoleAsync(RoleDetailsModel role)
         {
-            return Ok(await this.roleManagementService.CreateRole(role));
+            try
+            {
+                var result = await this.roleManagementService.CreateRole(role);
+                logger.LogInformation("Role created successfully with ID {RoleId}", result.Id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to create role. : ", ex);
+                return BadRequest(ex);
+            }
         }
 
         /// <summary>
@@ -122,7 +153,17 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EditRoleAsync(string id, RoleDetailsModel roleDetails)
         {
-            return Ok(await this.roleManagementService.UpdateRole(id, roleDetails));
+            try
+            {
+                var result = await this.roleManagementService.UpdateRole(id, roleDetails);
+                logger.LogInformation("Role with ID {RoleId} updated successfully", id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to update role with ID {RoleId}", id);
+                throw;
+            }
         }
 
 
@@ -136,7 +177,25 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteRole(string id)
         {
-            return Ok(await roleManagementService.DeleteRole(id));
+            try
+            {
+                var result = await roleManagementService.DeleteRole(id);
+                if (result)
+                {
+                    logger.LogInformation("Role with ID {RoleId} deleted successfully", id);
+                    return Ok();
+                }
+                else
+                {
+                    logger.LogWarning("Role with ID {RoleId} not found", id);
+                    return NotFound("Role not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to delete role with ID {RoleId}", id);
+                throw;
+            }
         }
     }
 }

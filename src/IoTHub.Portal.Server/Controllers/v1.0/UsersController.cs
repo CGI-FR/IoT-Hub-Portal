@@ -64,12 +64,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
 
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDetailsModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetUserDetails(string userId)
+        public async Task<IActionResult> GetUserDetails(string id)
         {
-            var userDetails = await userManagementService.GetUserDetailsAsync(userId);
+            var userDetails = await userManagementService.GetUserDetailsAsync(id);
             if (userDetails == null)
             {
                 return NotFound();
@@ -80,17 +80,17 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [HttpPost(Name = "POST Create an User")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserDetailsModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateUser([FromBody] UserDetailsModel userCreateModel)
+        public async Task<IActionResult> CreateUser([FromBody] UserDetailsModel user)
         {
-            return Ok(await this.userManagementService.CreateUserAsync(userCreateModel));
+            return Ok(await this.userManagementService.CreateUserAsync(user));
         }
 
-        [HttpPut(Name = "PUT Edit User")]
-        //[Authorize(Policy = Policies.EditRole)]
+        [HttpPut("{id}", Name = "PUT Edit User")]
+        //[Authorize(Policy = Policies.EditUser)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> EditUserAsync(UserDetailsModel userDetails)
+        public async Task<IActionResult> EditUserAsync(string id, UserDetailsModel user)
         {
-            return Ok(await this.userManagementService.UpdateUser(userDetails));
+            return Ok(await this.userManagementService.UpdateUser(id, user));
         }
 
 

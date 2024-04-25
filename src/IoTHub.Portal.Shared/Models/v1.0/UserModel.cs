@@ -9,5 +9,6 @@ namespace IoTHub.Portal.Shared.Models.v10
         public string Id { get; set; }
         public string Email { get; set; }
         public string GivenName { get; set; }
+        public string PrincipalId { get; set; }
     }
 }

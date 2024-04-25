@@ -28,16 +28,16 @@ namespace IoTHub.Portal.Application.Services
             this.unitOfWork = unitOfWork;
             this.principalRepository = principalRepository;
         }
-        public async Task<UserDetailsModel> GetUserDetailsAsync(string userId)
+        public async Task<UserDetailsModel> GetUserDetailsAsync(string id)
         {
-            var user = await userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByIdAsync(id);
             if (user == null) return null;
             return mapper.Map<UserDetailsModel>(user);
         }
 
-        public async Task<UserDetailsModel> CreateUserAsync(UserDetailsModel userCreateModel)
+        public async Task<UserDetailsModel> CreateUserAsync(UserDetailsModel user)
         {
-            var userEntity = this.mapper.Map<User>(userCreateModel);
+            var userEntity = this.mapper.Map<User>(user);
             await userRepository.InsertAsync(userEntity);
 
             await unitOfWork.SaveAsync();
@@ -84,9 +84,9 @@ namespace IoTHub.Portal.Application.Services
             return new PaginatedResult<UserModel>(paginatedUserDto.Data, paginatedUserDto.TotalCount);
         }
 
-        public async Task<UserDetailsModel?> UpdateUser(UserDetailsModel user)
+        public async Task<UserDetailsModel?> UpdateUser(string id, UserDetailsModel user)
         {
-            var userEntity = await this.userRepository.GetByIdAsync(user.Id);
+            var userEntity = await this.userRepository.GetByIdAsync(id);
             if (userEntity != null)
             {
                 userEntity.Email = user.Email;
@@ -103,16 +103,16 @@ namespace IoTHub.Portal.Application.Services
 
         }
 
-        public async Task<bool> DeleteUser(string userId)
+        public async Task<bool> DeleteUser(string id)
         {
-            var user = await userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByIdAsync(id);
             if (user is null)
             {
-                throw new ResourceNotFoundException("$The User with the id {userId} that you want to delete does'nt exist !");
+                throw new ResourceNotFoundException($"The User with the id {id} that you want to delete does'nt exist !");
             }
 
             principalRepository.Delete(user.PrincipalId);
-            userRepository.Delete(userId);
+            userRepository.Delete(id);
             await unitOfWork.SaveAsync();
             return true;
         }

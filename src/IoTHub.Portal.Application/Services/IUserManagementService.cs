@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Application.Services
         );
         Task<UserDetailsModel> GetUserDetailsAsync(string userId);
         Task<UserDetailsModel> CreateUserAsync(UserDetailsModel userCreateModel);
-        Task<UserDetailsModel?> UpdateUser(UserDetailsModel user);
+        Task<UserDetailsModel?> UpdateUser(string id, UserDetailsModel user);
         Task<bool> DeleteUser(string userId);
 
     }

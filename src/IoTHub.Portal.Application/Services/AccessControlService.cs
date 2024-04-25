@@ -119,12 +119,12 @@ namespace IoTHub.Portal.Application.Services
             return true;
         }
 
-        public async Task<AccessControlModel?> UpdateAccessControl(AccessControlModel accessControl)
+        public async Task<AccessControlModel?> UpdateAccessControl(string id, AccessControlModel accessControl)
         {
-            var acEntity = await this.accessControlRepository.GetByIdAsync(accessControl.Id, ac => ac.Role);
+            var acEntity = await this.accessControlRepository.GetByIdAsync(id, ac => ac.Role);
             if (acEntity is null)
             {
-                throw new ResourceNotFoundException($"The AccessControl with the id {accessControl.Id} doesn't exist");
+                throw new ResourceNotFoundException($"The AccessControl with the id {id} doesn't exist");
             }
             var principal = await this.principalRepository.GetByIdAsync(accessControl.PrincipalId);
             if (principal is null)
@@ -142,10 +142,8 @@ namespace IoTHub.Portal.Application.Services
             accessControlRepository.Update(acEntity);
             await this.unitOfWork.SaveAsync();
 
-            var createdAc = await this.accessControlRepository.GetByIdAsync(acEntity.Id, ac => ac.Role);
+            var createdAc = await this.accessControlRepository.GetByIdAsync(id, ac => ac.Role);
             return this.mapper.Map<AccessControlModel>(createdAc);
-
-
         }
     }
 }

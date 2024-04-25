@@ -29,12 +29,12 @@ namespace IoTHub.Portal.Application.Services
             this.principalRepository = principalRepository;
             this.userRepository = userRepository;
         }
-        public async Task<GroupDetailsModel> GetGroupDetailsAsync(string groupId)
+        public async Task<GroupDetailsModel> GetGroupDetailsAsync(string id)
         {
-            var groupEntity = await groupRepository.GetByIdAsync(groupId, g => g.Members);
+            var groupEntity = await groupRepository.GetByIdAsync(id, g => g.Members);
             if (groupEntity is null)
             {
-                throw new ResourceNotFoundException($"The group with the id {groupId} doesn't exist");
+                throw new ResourceNotFoundException($"The group with the id {id} doesn't exist");
             }
             var groupModel = mapper.Map<GroupDetailsModel>(groupEntity);
             return groupModel;
@@ -72,33 +72,42 @@ namespace IoTHub.Portal.Application.Services
             return new PaginatedResult<GroupModel>(paginatedGroupDto.Data, paginatedGroupDto.TotalCount);
         }
 
-        public async Task<GroupDetailsModel> CreateGroupAsync(GroupDetailsModel groupCreateModel)
+        public async Task<GroupDetailsModel> CreateGroupAsync(GroupDetailsModel group)
         {
-            var userEntity = this.mapper.Map<Group>(groupCreateModel);
-            await groupRepository.InsertAsync(userEntity);
+            var groupEntity = this.mapper.Map<Group>(group);
+            await groupRepository.InsertAsync(groupEntity);
             await unitOfWork.SaveAsync();
 
-            var createdGroupEntity = await this.groupRepository.GetByIdAsync(userEntity.Id);
-            var mappedGroup = this.mapper.Map<GroupDetailsModel>(createdGroupEntity);
-            return mappedGroup;
+            var createdGroup = await this.groupRepository.GetByIdAsync(groupEntity.Id);
+            return this.mapper.Map<GroupDetailsModel>(createdGroup);
         }
 
-        public async Task<bool> DeleteGroup(string groupId)
+        public async Task<bool> DeleteGroup(string id)
         {
-            var group = await groupRepository.GetByIdAsync(groupId);
+            var group = await groupRepository.GetByIdAsync(id);
             if (group is null)
             {
-                throw new ResourceNotFoundException("$The User with the id {userId} that you want to delete does'nt exist !");
+                throw new ResourceNotFoundException($"The Group with the id {id} that you want to delete does'nt exist !");
             }
             principalRepository.Delete(group.PrincipalId);
-            groupRepository.Delete(groupId);
+            groupRepository.Delete(id);
             await unitOfWork.SaveAsync();
             return true;
         }
 
-        public Task<GroupDetailsModel?> UpdateGroup(GroupDetailsModel group)
+        public async Task<GroupDetailsModel?> UpdateGroup(string id, GroupDetailsModel group)
         {
-            throw new NotImplementedException();
+            var groupEntity = await this.groupRepository.GetByIdAsync(id);
+            if (groupEntity != null)
+            {
+                groupEntity.Name = group.Name;
+                groupEntity.Avatar = group.Avatar;
+                groupEntity.Description = group.Description;
+            }
+            this.groupRepository.Update(groupEntity);
+            await this.unitOfWork.SaveAsync();
+            var updatedGroup = await this.groupRepository.GetByIdAsync(id);
+            return this.mapper.Map<GroupDetailsModel>(updatedGroup);
         }
 
         public async Task<bool> AddUserToGroup(string groupId, string userId)
@@ -106,12 +115,12 @@ namespace IoTHub.Portal.Application.Services
             var userEntity = await this.userRepository.GetByIdAsync(userId);
             if (userEntity is null)
             {
-                throw new ResourceNotFoundException("$The User with the id {userId} does'nt exist !");
+                throw new ResourceNotFoundException($"The User with the id {userId} does'nt exist !");
             }
             var groupEntity = await this.groupRepository.GetByIdAsync(groupId, g => g.Members);
             if (groupEntity is null)
             {
-                throw new ResourceNotFoundException("$The group with the id {groupId} does'nt exist !");
+                throw new ResourceNotFoundException($"The group with the id {groupId} does'nt exist !");
             }
             var existingMember = groupEntity.Members.FirstOrDefault(u => u.Id == userId);
             if (existingMember is null)
@@ -131,12 +140,12 @@ namespace IoTHub.Portal.Application.Services
             var groupEntity = await this.groupRepository.GetByIdAsync(groupId, g => g.Members);
             if (groupEntity is null)
             {
-                throw new ResourceNotFoundException("$The group with the id {groupId} does'nt exist !");
+                throw new ResourceNotFoundException($"The group with the id {groupId} does'nt exist !");
             }
             var userEntity = groupEntity.Members.FirstOrDefault(userEntity => userEntity.Id == userId);
             if (userEntity is null)
             {
-                throw new ResourceNotFoundException("$The User with the id {userId} is not a member of the group !");
+                throw new ResourceNotFoundException($"The User with the id {userId} is not a member of the group !");
             }
             _ = groupEntity.Members.Remove(userEntity);
             await unitOfWork.SaveAsync();

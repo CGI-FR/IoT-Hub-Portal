@@ -64,9 +64,9 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
 
         [HttpGet("{id}", Name = "Get AccessControl By Id")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccessControlModel))]
-        public async Task<IActionResult> GetACById(string Id)
+        public async Task<IActionResult> GetACById(string id)
         {
-            var ac = await service.GetAccessControlAsync(Id);
+            var ac = await service.GetAccessControlAsync(id);
             if (ac is null)
             {
                 return NotFound();
@@ -97,9 +97,9 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         [HttpPut(Name = "PUT Edit AccessControl")]
         //[Authorize(Policy = Policies.EditAccessControl)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> EditAccessControlAsync(AccessControlModel roleDetails)
+        public async Task<IActionResult> EditAccessControlAsync(string id, AccessControlModel accessControl)
         {
-            return Ok(await this.service.UpdateAccessControl(roleDetails));
+            return Ok(await this.service.UpdateAccessControl(id, accessControl));
         }
 
 

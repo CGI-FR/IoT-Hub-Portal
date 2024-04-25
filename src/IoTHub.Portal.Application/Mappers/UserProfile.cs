@@ -13,7 +13,9 @@ namespace IoTHub.Portal.Application.Mappers
         {
             _ = CreateMap<User, UserModel>()
                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-               .ForMember(dest => dest.GivenName, opts => opts.MapFrom(src => src.GivenName));
+               .ForMember(dest => dest.GivenName, opts => opts.MapFrom(src => src.GivenName))
+               .ForMember(dest => dest.Email, opts => opts.MapFrom(src => src.Email))
+               .ForMember(dest => dest.PrincipalId, opts => opts.MapFrom(src => src.PrincipalId));
 
             _ = CreateMap<User, UserDetailsModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
@@ -24,18 +26,6 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar))
                 .ForMember(dest => dest.PrincipalId, opts => opts.MapFrom(src => src.PrincipalId));
 
-            //.ForMember(dest => dest.AccessControls, opts => opts.MapFrom(src =>
-            /*src.AccessControls.Select(ac => new AccessControlModel
-            {
-                Id = ac.Id,
-                Scope = ac.Scope,
-                Role = ac.Role != null ? new RoleModel
-                {
-                    Id = ac.Role.Id,
-                    Name = ac.Role.Name
-                } : null
-            }).ToList()));*/
-
             _ = CreateMap<UserDetailsModel, User>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -44,7 +34,6 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar))
                 .ForMember(dest => dest.GivenName, opt => opt.MapFrom(src => src.GivenName))
                 .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName));
-            //.ForMember(dest => dest.AccessControls, opt => opt.Ignore());
         }
     }
 }
