@@ -169,7 +169,7 @@ namespace IoTHub.Portal.Server.Services
                 PaginatedResult<DeviceListItem> devices = await this.deviceService.GetDevices();
                 foreach (var device in devices.Data)
                 {
-                    if (device.LayerId.Contains('-')) await AddNewDevice(device);
+                    if (device.LayerId != null && device.LayerId.Contains('-')) await AddNewDevice(device);
                 }
             }
             catch (ProblemDetailsException exception)
