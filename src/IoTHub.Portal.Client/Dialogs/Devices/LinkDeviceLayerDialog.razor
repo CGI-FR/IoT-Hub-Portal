@@ -46,11 +46,11 @@
                         </MudTd>
                         <MudTd DataLabel="Delete" Style="text-align: center">
                             <MudTooltip Text="Delete device">
-                                @if (context.LayerId == Layer.Id || DeviceList.Contains(context.DeviceID) )
+                                @if ((context.LayerId != null && context.LayerId == Layer.Id) || DeviceList.Contains(context.DeviceID))
                                 {
                                     <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.CheckBox" Size="Size.Medium" @onclick="() => UpdateChecked(context)"></MudIconButton>
                                 }
-                                else if (context.LayerId.Contains('-'))
+                                else if (context.LayerId != null && context.LayerId.Contains('-'))
                                 {
                                     <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.IndeterminateCheckBox" Size="Size.Medium" @onclick="() => UpdateChecked(context)"></MudIconButton>
                                 }
@@ -139,7 +139,7 @@
 
     public void UpdateChecked(DeviceListItem device)
     {
-        if (device.LayerId == Layer.Id)
+        if (device.LayerId != null && device.LayerId == Layer.Id)
         {
             if (DeviceRemoveList.Contains(device.DeviceID)) DeviceRemoveList.Remove(device.DeviceID);
             else DeviceRemoveList.Add(device.DeviceID);
