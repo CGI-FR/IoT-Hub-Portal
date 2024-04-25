@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4.1.3
+    - uses: actions/checkout@v4.1.4
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -52,7 +52,7 @@ jobs:
     needs: [ build ]
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4.1.3
+      - uses: actions/checkout@v4.1.4
         with: 
           ref: 'docs/main'
 
