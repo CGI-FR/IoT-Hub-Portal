@@ -3,9 +3,12 @@
 
 namespace IoTHub.Portal.Domain.Repositories
 {
+    using System.Linq.Expressions;
     using IoTHub.Portal.Domain.Entities;
 
     public interface IUserRepository : IRepository<User>
     {
+        Task<User?> GetByNameAsync(string userName, params Expression<Func<User, object>>[] includeProperties);
     }
+
 }

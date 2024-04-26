@@ -37,6 +37,11 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<UserDetailsModel> CreateUserAsync(UserDetailsModel user)
         {
+            var existingName = await this.userRepository.GetByNameAsync(user.Name);
+            if (existingName is not null)
+            {
+                throw new ResourceAlreadyExistsException($"The User tis the name {user.Name} already exist !");
+            }
             var userEntity = this.mapper.Map<User>(user);
             await userRepository.InsertAsync(userEntity);
 
@@ -87,14 +92,19 @@ namespace IoTHub.Portal.Application.Services
         public async Task<UserDetailsModel?> UpdateUser(string id, UserDetailsModel user)
         {
             var userEntity = await this.userRepository.GetByIdAsync(id);
-            if (userEntity != null)
+            if (userEntity == null) throw new ResourceNotFoundException($"The User with the id {id} does'nt exist !");
+            var existingName = await this.userRepository.GetByNameAsync(user.Name);
+            if (existingName is not null)
             {
-                userEntity.Email = user.Email;
-                userEntity.GivenName = user.GivenName;
-                userEntity.Name = user.Name;
-                userEntity.FamilyName = user.FamilyName;
-                userEntity.Avatar = user.Avatar;
+                throw new ResourceAlreadyExistsException($"The User tis the name {user.Name} already exist !");
             }
+
+            userEntity.Email = user.Email;
+            userEntity.GivenName = user.GivenName;
+            userEntity.Name = user.Name;
+            userEntity.FamilyName = user.FamilyName;
+            userEntity.Avatar = user.Avatar;
+
             this.userRepository.Update(userEntity);
             await this.unitOfWork.SaveAsync();
             var createdUser = await this.userRepository.GetByIdAsync(id);
