@@ -21,13 +21,16 @@ namespace IoTHub.Portal.Application.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IPrincipalRepository principalRepository;
         private readonly IUserRepository userRepository;
-        public GroupService(IGroupRepository groupRepository, IMapper mapper, IUnitOfWork unitOfWork, IPrincipalRepository principalRepository, IUserRepository userRepository)
+        private readonly IAccessControlRepository accessControlRepository;
+        public GroupService(IGroupRepository groupRepository, IMapper mapper, IUnitOfWork unitOfWork,
+            IPrincipalRepository principalRepository, IUserRepository userRepository, IAccessControlRepository accessControlRepository)
         {
             this.groupRepository = groupRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.principalRepository = principalRepository;
             this.userRepository = userRepository;
+            this.accessControlRepository = accessControlRepository;
         }
         public async Task<GroupDetailsModel> GetGroupDetailsAsync(string id)
         {

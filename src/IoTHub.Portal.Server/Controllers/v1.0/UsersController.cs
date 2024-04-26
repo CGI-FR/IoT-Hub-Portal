@@ -21,12 +21,15 @@ namespace IoTHub.Portal.Server.Controllers.V10
     public class UsersController : ControllerBase
     {
         private readonly IUserManagementService userManagementService;
+        private readonly IAccessControlManagementService accessControlService;
+
         private readonly ILogger<UsersController> logger;
 
-        public UsersController(IUserManagementService userManagementService, ILogger<UsersController> logger)
+        public UsersController(IUserManagementService userManagementService, ILogger<UsersController> logger, IAccessControlManagementService accessControlService)
         {
             this.userManagementService = userManagementService;
             this.logger = logger;
+            this.accessControlService = accessControlService;
         }
 
         [HttpGet(Name = "Get Users")]
@@ -85,6 +88,14 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 {
                     logger.LogWarning("User with ID {UserId} not found", id);
                     return NotFound();
+                }
+                var accessControls = await accessControlService.GetAccessControlPage(null,100, 0,null, userDetails.PrincipalId);
+                if (accessControls.Data is not null)
+                {
+                    foreach (var ac in accessControls.Data)
+                    {
+                        userDetails.AccessControls.Add(ac);
+                    }
                 }
                 logger.LogInformation("Details retrieved for user with ID {UserId}", id);
                 return Ok(userDetails);

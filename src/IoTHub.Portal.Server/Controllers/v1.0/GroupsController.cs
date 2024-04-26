@@ -21,13 +21,14 @@ namespace IoTHub.Portal.Server.Controllers.V10
     public class GroupsController : ControllerBase
     {
         private readonly IGroupManagementService groupManagementService;
+        private readonly IAccessControlManagementService accessControlService;
         private readonly ILogger<GroupsController> logger;
 
-        public GroupsController(IGroupManagementService groupManagementService, ILogger<GroupsController> logger)
+        public GroupsController(IGroupManagementService groupManagementService, ILogger<GroupsController> logger, IAccessControlManagementService accessControlService)
         {
             this.groupManagementService = groupManagementService;
             this.logger = logger;
-
+            this.accessControlService = accessControlService;
         }
 
         [HttpGet]
@@ -83,6 +84,14 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 {
                     logger.LogWarning("Group with ID {GroupId} not found", id);
                     return NotFound();
+                }
+                var accessControls = await accessControlService.GetAccessControlPage(null,100, 0,null, groupDetails.PrincipalId);
+                if (accessControls.Data is not null)
+                {
+                    foreach (var ac in accessControls.Data)
+                    {
+                        groupDetails.AccessControls.Add(ac);
+                    }
                 }
                 logger.LogInformation("Details retrieved for group with ID {GroupId}", id);
                 return Ok(groupDetails);
@@ -141,6 +150,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteGroup(string id)
         {
+            return Ok(await groupManagementService.DeleteGroup(id));
             try
             {
                 var result =await groupManagementService.DeleteGroup(id);
@@ -160,7 +170,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         // Ajouter un utilisateur à un groupe
-        [HttpPost("{groupId}/users/{userId}")]
+        [HttpPost("{groupId}/members/{userId}")]
         public async Task<IActionResult> AddUserToGroup(string groupId, string userId)
         {
             var result = await groupManagementService.AddUserToGroup(groupId, userId);
@@ -170,7 +180,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 return NotFound();
         }
 
-        [HttpDelete("{groupId}/users/{userId}")]
+        [HttpDelete("{groupId}/members/{userId}")]
         public async Task<IActionResult> RemoveUserFromGroup(string groupId, string userId)
         {
             var result = await groupManagementService.RemoveUserFromGroup(groupId, userId);

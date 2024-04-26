@@ -13,7 +13,8 @@ namespace IoTHub.Portal.Application.Mappers
         {
             _ = CreateMap<Group, GroupModel>()
                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-               .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name));
+               .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+               .ForMember(dest => dest.PrincipalId, opts => opts.MapFrom(src => src.PrincipalId));
 
             _ = CreateMap<Group, GroupDetailsModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
@@ -21,20 +22,6 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar))
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
                 .ForMember(dest => dest.PrincipalId, opts => opts.MapFrom(src => src.PrincipalId));
-
-            /*.ForMember(dest => dest.Users, opts => opts.MapFrom(src =>
-                                src.Members.Select(u => new UserModel
-                                {
-                                    Id = u.User.Id,
-                                    GivenName = u.User.GivenName
-                                })))
-            .ForMember(dest => dest.AccessControls, opts => opts.MapFrom(src =>
-                                src.AccessControls.Select(ac => new AccessControlModel
-                                {
-                                    Id = ac.Id,
-                                    Scope = ac.Scope,
-                                    Role = new RoleModel { Name = ac.Role.Name }
-                                })));*/
 
             _ = CreateMap<GroupModel, Group>()
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name));
@@ -45,12 +32,6 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
-            /*.ForMember(dest => dest.AccessControls, opt => opt.MapFrom(src => src.AccessControls.Select(ac => new AccessControl
-            {
-                Id = ac.Id,
-                Scope = ac.Scope,
-                Role = new Role { Name = ac.Role.Name }
-            })));*/
         }
     }
 }

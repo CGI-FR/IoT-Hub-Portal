@@ -30,8 +30,8 @@ namespace IoTHub.Portal.Application.Services
         }
         public async Task<UserDetailsModel> GetUserDetailsAsync(string id)
         {
-            var user = await userRepository.GetByIdAsync(id);
-            if (user == null) return null;
+            var user = await userRepository.GetByIdAsync(id, u => u.Groups);
+            if (user == null) throw new ResourceNotFoundException($"The user with the id {id} doesn't exist");
             return mapper.Map<UserDetailsModel>(user);
         }
 
