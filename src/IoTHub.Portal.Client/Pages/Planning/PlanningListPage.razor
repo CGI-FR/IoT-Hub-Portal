@@ -34,6 +34,7 @@
                     <col style="width: 50%;" />
                     <col style="width: 25%;" />
                     <col style="width: 25%;" />
+                    <col style="width: 10%;" />
                 </ColGroup>
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Plannings</MudText>
@@ -42,7 +43,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@GetPlannings" Class="ma-2"></MudIconButton>
                     </MudTooltip>
                     <MudTooltip Text="Add new Planning">
-                        <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@AddPlanning" Size="Size.Medium" id="addPlanningButton" />
+                        <MudFab id="planningListAddLayer" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@AddPlanning" Size="Size.Medium" />
                     </MudTooltip>
                 </ToolBarContent>
                 <HeaderContent>
@@ -50,6 +51,7 @@
                     <MudTh>Start</MudTh>
                     <MudTh>End</MudTh>
                     <MudTh>Frequency</MudTh>
+                    <MudTh>Detail</MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Name">
@@ -67,6 +69,9 @@
                     </MudTd>
                     <MudTd DataLabel="Frequency" Style="word-break: break-all; ">
                         @context.Frequency
+                    </MudTd>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <MudIconButton id="planningListDetailDetail" Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                     </MudTd>
                 </RowTemplate>
                 <PagerContent>
@@ -91,13 +96,12 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    private PlanningDto Planning { get; set; } = new PlanningDto();
+    public PlanningDto Planning { get; set; } = new PlanningDto();
 
-    private List<PlanningDto> Plannings = new List<PlanningDto>();
+    public List<PlanningDto> Plannings = new List<PlanningDto>();
 
-    private bool isProcessing { get; set; } = false;
-    private bool IsLoading { get; set; } = true;
-    private readonly int[] pageSizeOptions = { 10, 5, 3 };
+    public bool IsLoading { get; set; } = true;
+    public readonly int[] pageSizeOptions = { 10, 5, 3 };
 
     protected override async Task OnInitializedAsync()
     {

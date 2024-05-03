@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,12 +11,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
     using Bunit.TestDoubles;
     using FluentAssertions;
     using IoTHub.Portal.Client.Components.Layers;
-    using IoTHub.Portal.Client.Exceptions;
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Client.Shared;
     using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
