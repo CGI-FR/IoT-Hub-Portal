@@ -40,15 +40,16 @@
                         <col style="width: 10%;" />
                     }
                     <col style="width: 10%;" />
+                    <col style="width: 10%;" />
                 </ColGroup>
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Layers</MudText>
                     <MudSpacer />
                     <MudTooltip Text="Refresh list">
-                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@GetLayers" Class="ma-2"></MudIconButton>
+                        <MudIconButton id="layerListDetailRefresh" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@GetLayers" Class="ma-2"></MudIconButton>
                     </MudTooltip>
                     <MudTooltip Text="Add new Layer">
-                        <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@AddLayer" Size="Size.Medium" id="addLayerButton" />
+                        <MudFab id="layerListAddLayer" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@AddLayer" Size="Size.Medium"/>
                     </MudTooltip>
                 </ToolBarContent>
                 <HeaderContent>
@@ -57,6 +58,7 @@
                     {
                         <MudTh>@layerName</MudTh>
                     }
+                    <MudTh>Detail</MudTh>
                     <MudTh>Planning</MudTh>
                 </HeaderContent>
                 <RowTemplate>
@@ -71,6 +73,9 @@
                     {
                         <MudTh>@layer.Count()</MudTh>
                     }
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <MudIconButton id="layerListDetailDetail" Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                    </MudTd>
                     <MudTd DataLabel="Planning" Style="word-break: break-all; ">
                         @(plannings.FirstOrDefault(item => item.Id == context.Planning)!= null ? plannings.FirstOrDefault(item => item.Id == context.Planning).Name : "None")
                     </MudTd>
@@ -95,16 +100,12 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    [Parameter]
-    public CreateEditMode context { get; set; }
+    public List<List<List<LayerDto>>> Layers = new List<List<List<LayerDto>>>();
+    public List<LayerDto> MainLayers = new List<LayerDto>();
+    public List<PlanningDto> plannings = new List<PlanningDto>();
 
-    private List<List<List<LayerDto>>> Layers = new List<List<List<LayerDto>>>();
-    private List<LayerDto> MainLayers = new List<LayerDto>();
-    private List<PlanningDto> plannings = new List<PlanningDto>();
-
-    private bool isProcessing { get; set; } = false;
-    private bool IsLoading { get; set; } = true;
-    private readonly int[] pageSizeOptions = { 10, 5, 3 };
+    public bool IsLoading { get; set; } = true;
+    public readonly int[] pageSizeOptions = { 10, 5, 3 };
 
     protected override async Task OnInitializedAsync()
     {
@@ -116,6 +117,7 @@
     {
         try
         {
+            Layers.Clear();
             IsLoading = true;
             List<LayerDto> listLayers = await LayerClientService.GetLayers();
             ReloadSubLayers(listLayers);

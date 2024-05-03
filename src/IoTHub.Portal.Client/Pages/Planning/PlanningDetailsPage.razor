@@ -13,9 +13,9 @@
 <EditPlanning planning=@Planning scheduleList=@ScheduleList initScheduleList=@(new List<ScheduleDto>(ScheduleList)) mode="Edit" SelectedModel="@DeviceModel.Name" />
 
 @code {
-    public List<ScheduleDto> ScheduleList { get; set; } = new List<ScheduleDto> { };
+    public List<ScheduleDto> ScheduleList { get; } = new List<ScheduleDto> { };
     public PlanningDto Planning { get; set; } = new PlanningDto();
-    public DeviceModelDto DeviceModel { get; set; } = new DeviceModelDto();
+    public DeviceModelDto DeviceModel { get; } = new DeviceModelDto();
 
     [Parameter]
     public string PlanningId { get; set; } = default!;
