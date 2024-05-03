@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Postgres.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.8")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -519,11 +519,13 @@ namespace IoTHub.Portal.Postgres.Migrations
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Device", null)
                         .WithMany("Tags")
-                        .HasForeignKey("DeviceId");
+                        .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.EdgeDevice", null)
                         .WithMany("Tags")
-                        .HasForeignKey("EdgeDeviceId");
+                        .HasForeignKey("EdgeDeviceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.EdgeDevice", b =>

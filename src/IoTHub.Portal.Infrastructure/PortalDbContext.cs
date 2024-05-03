@@ -25,10 +25,8 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<Label> Labels { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-                : base(options)
+            : base(options)
         {
         }
 
@@ -58,6 +56,16 @@ namespace IoTHub.Portal.Infrastructure
                 .HasOne(x => x.DeviceModel)
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
+
+            _ = modelBuilder.Entity<EdgeDevice>()
+                .HasMany(c => c.Tags)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            _ = modelBuilder.Entity<Device>()
+                .HasMany(c => c.Tags)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
