@@ -54,13 +54,8 @@
 
     public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
 
-    private List<List<List<LayerDto>>> Layers = new List<List<List<LayerDto>>>();
-    private List<LayerDto> MainLayers = new List<LayerDto>();
-    private List<PlanningDto> plannings = new List<PlanningDto>();
-
-    private bool isProcessing { get; set; } = false;
-    private bool IsLoading { get; set; } = true;
-    private readonly int[] pageSizeOptions = { 10, 5, 3 };
+    public bool IsLoading { get; set; } = true;
+    public readonly int[] pageSizeOptions = { 10, 5, 3 };
 
     protected override async Task OnInitializedAsync()
     {
