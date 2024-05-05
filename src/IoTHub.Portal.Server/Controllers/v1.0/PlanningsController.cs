@@ -38,16 +38,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             ArgumentNullException.ThrowIfNull(planning, nameof(planning));
 
-            if (!ModelState.IsValid)
-            {
-                var validation = new ValidationProblemDetails(ModelState)
-                {
-                    Status = StatusCodes.Status422UnprocessableEntity
-                };
-
-                throw new ProblemDetailsException(validation);
-            }
-
             _ = await this.planningService.CreatePlanning(planning);
 
             return Ok(planning);
