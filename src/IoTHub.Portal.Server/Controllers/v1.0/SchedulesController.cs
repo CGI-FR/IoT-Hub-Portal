@@ -9,7 +9,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Hellang.Middleware.ProblemDetails;
     using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using System.Collections.Generic;
