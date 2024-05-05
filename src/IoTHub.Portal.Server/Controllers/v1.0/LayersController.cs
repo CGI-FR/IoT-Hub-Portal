@@ -38,16 +38,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             ArgumentNullException.ThrowIfNull(level, nameof(level));
 
-            if (!ModelState.IsValid)
-            {
-                var validation = new ValidationProblemDetails(ModelState)
-                {
-                    Status = StatusCodes.Status422UnprocessableEntity
-                };
-
-                throw new ProblemDetailsException(validation);
-            }
-
             _ = await this.levelService.CreateLayer(level);
 
             return Ok(level);
