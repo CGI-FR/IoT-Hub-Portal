@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -106,9 +107,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         [Test]
         public void EditLayerOnClickDeleteChildLayer()
         {
-            var expectedLayerDto = Fixture.Create<LayerDto>();
-            expectedLayerDto.Name = "Main Layer";
-            expectedLayerDto.Father = "Init";
+            var expectedLayerDto = new LayerDto()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Main Layer",
+                Father = "Init"
+            };
 
             var expectedChildrenLayerDto1 = Fixture.Create<LayerDto>();
             expectedChildrenLayerDto1.Father = expectedLayerDto.Id;
@@ -145,9 +149,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         {
             var expectedRename = Fixture.Create<string>();
 
-            var expectedLayerDto = Fixture.Create<LayerDto>();
-            expectedLayerDto.Name = "Main Layer";
-            expectedLayerDto.Father = "Init";
+            var expectedLayerDto = new LayerDto()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Main Layer",
+                Father = "Init"
+            };
             HashSet<LayerHash> Layers = new HashSet<LayerHash> { new LayerHash(expectedLayerDto, 1, true) };
 
             List<LayerDto> InitLayers = new List<LayerDto>();
@@ -177,9 +184,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         {
             var expectedLayerId = Fixture.Create<string>();
 
-            var expectedLayerDto = Fixture.Create<LayerDto>();
-            expectedLayerDto.Name = "Main Layer";
-            expectedLayerDto.Father = "Init";
+            var expectedLayerDto = new LayerDto()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Main Layer",
+                Father = "Init"
+            };
             HashSet<LayerHash> Layers = new HashSet<LayerHash> { new LayerHash(expectedLayerDto, 1, true) };
 
             _ = this.mockLayerClientService.Setup(service => service.CreateLayer(It.IsAny<LayerDto>()))
@@ -210,9 +220,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         {
             var expectedLayerId = Fixture.Create<string>();
 
-            var expectedLayerDto = Fixture.Create<LayerDto>();
-            expectedLayerDto.Name = "Main Layer";
-            expectedLayerDto.Father = "Init";
+            var expectedLayerDto = new LayerDto()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Main Layer",
+                Father = "Init"
+            };
             HashSet<LayerHash> Layers = new HashSet<LayerHash> { new LayerHash(expectedLayerDto, 1, true) };
 
             var expectedLayerDtoChild1 = Fixture.Create<LayerDto>();

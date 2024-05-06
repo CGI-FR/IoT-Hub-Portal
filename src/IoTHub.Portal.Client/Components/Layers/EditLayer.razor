@@ -67,6 +67,7 @@
     public HashSet<LayerHash> layers { get; set; } = new HashSet<LayerHash> { };
     [Parameter]
     public List<LayerDto> initLayers { get; set; } = new List<LayerDto>();
+
     public List<LayerDto> deleteLayers { get; } = new List<LayerDto>();
 
     public string printDetails { get; set; } = "Init";
@@ -137,7 +138,6 @@
 
                 await SaveLayer(layer.Children);
             }
-
         }
         catch (ProblemDetailsException exception)
         {
