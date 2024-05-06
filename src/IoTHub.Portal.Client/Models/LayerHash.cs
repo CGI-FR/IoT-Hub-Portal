@@ -14,8 +14,8 @@ namespace IoTHub.Portal.Client.Models
 
         public LayerHash(LayerDto layerData, int level = 0, bool isExpanded = true)
         {
-            Level = level;
             LayerData = layerData;
+            Level = level;
             IsExpanded = isExpanded;
         }
     }

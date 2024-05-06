@@ -20,6 +20,41 @@ namespace IoTHub.Portal.Server.Services
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using System.Linq;
+
+    public class PlanningCommand
+    {
+        public string planningId { get; set; } = default!;
+        public Collection<string> listDeviceId { get; } = new Collection<string>();
+        public Dictionary<string, List<PayloadCommand>> commands { get; } = new Dictionary<string, List<PayloadCommand>>();
+
+        public PlanningCommand(string listDeviceId, string planningId)
+        {
+            this.planningId = planningId;
+            this.listDeviceId.Add(listDeviceId);
+
+            List<string> days = new List<string> {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+            foreach (var day in days)
+            {
+                commands.Add(day, new List<PayloadCommand>());
+            }
+        }
+    }
+
+    public class PayloadCommand
+    {
+        public string payloadId { get; set; } = default!;
+        public TimeSpan start { get; set; } = default!;
+        public TimeSpan end { get; set; } = default!;
+
+        public PayloadCommand(TimeSpan start, TimeSpan end, string payloadId)
+        {
+            this.payloadId = payloadId;
+            this.start = start;
+            this.end = end;
+        }
+    }
 
     public class SendPlanningCommandService : ISendPlanningCommandService, IHostedService, IDisposable
     {
@@ -115,11 +150,6 @@ namespace IoTHub.Portal.Server.Services
                     await UpdateDatabase();
                     this.isUpdating = false;
                 }
-                else
-                {
-                    await UpdateDatabase();
-                }
-
                 await SendCommand();
             }
             catch (ProblemDetailsException exception)
@@ -169,7 +199,7 @@ namespace IoTHub.Portal.Server.Services
                 PaginatedResult<DeviceListItem> devices = await this.deviceService.GetDevices();
                 foreach (var device in devices.Data)
                 {
-                    if (device.LayerId != null && device.LayerId.Contains('-')) await AddNewDevice(device);
+                    if (device.LayerId != null) await AddNewDevice(device);
                 }
             }
             catch (ProblemDetailsException exception)
@@ -180,51 +210,46 @@ namespace IoTHub.Portal.Server.Services
 
         public async Task AddNewDevice(DeviceListItem device)
         {
-            if (device == null) return;
-
             Layer layer = await layerService.GetLayer(device.LayerId);
 
-            foreach (PlanningCommand planning in this.planningCommands)
+            // If the layer linked to a device already has a planning, add the device to the planning list
+            foreach (PlanningCommand planning in this.planningCommands.Where(planning => planning.planningId == layer.Planning))
             {
-                if (planning.planningId == layer.Planning)
-                {
-                    planning.listDeviceId.Add(device.DeviceID);
-                    return;
-                }
+                planning.listDeviceId.Add(device.DeviceID);
+                return;
             }
 
+            // Else create the planning
             PlanningCommand newPlanning = new PlanningCommand(device.DeviceID, layer.Planning);
-
             await AddCommand(newPlanning);
-
             this.planningCommands.Add(newPlanning);
         }
 
         public async Task AddCommand(PlanningCommand planning)
         {
-            if (planning == null) return;
-
             Planning planningData = await planningService.GetPlanning(planning.planningId);
+
+            // Connect off days command to the planning
             addPlanningSchedule(planningData, planning);
 
             IEnumerable<ScheduleDto> schedules = await scheduleService.GetSchedules();
 
             foreach (ScheduleDto schedule in schedules)
             {
+                // Add schedules to the planning
                 if (schedule.PlanningId == planning.planningId) addSchedule(schedule, planning);
             }
 
         }
 
+        // Include Planning Commands used for off days in the command dictionary.
+        // "Sa" represents Saturday and serves as a dictionary key.
+        // planning.commands[Sa] contains a list of PayloadCommand Values.
         public void addPlanningSchedule(Planning planningData, PlanningCommand planning)
         {
-            if (planning == null || planningData == null) return;
-
             foreach (string key in planning.commands.Keys)
             {
-                string firstChar = key[..2];
-
-                if (planningData.Day.Contains(firstChar))
+                if (planningData.Day.Contains(key[..2]))
                 {
                     PayloadCommand newPayload = new PayloadCommand(getTimeSpan("0:00"), getTimeSpan("24:00"), planningData.CommandId);
                     planning.commands[key].Add(newPayload);
@@ -234,8 +259,7 @@ namespace IoTHub.Portal.Server.Services
 
         public void addSchedule(ScheduleDto schedule, PlanningCommand planning)
         {
-            if (planning == null || schedule == null) return;
-
+            // Convert a string into TimeSpan format
             TimeSpan start = getTimeSpan(schedule.Start);
             TimeSpan end = getTimeSpan(schedule.End);
 
@@ -246,6 +270,7 @@ namespace IoTHub.Portal.Server.Services
                     PayloadCommand newPayload = new PayloadCommand(start, end, schedule.CommandId);
                     planning.commands[key].Add(newPayload);
                 }
+                // The if condition is utilized to skip day off schedules.
                 else if (planning.commands[key][0].start != getTimeSpan("00:00") || planning.commands[key][0].end != getTimeSpan("24:00"))
                 {
                     PayloadCommand newPayload = new PayloadCommand(start, end, schedule.CommandId);
@@ -273,6 +298,7 @@ namespace IoTHub.Portal.Server.Services
             DayOfWeek currentDay = currentTime.DayOfWeek;
             TimeSpan currentHour = currentTime.TimeOfDay ;
 
+            // Search for the appropriate command at the correct time from each plan.
             foreach (var planning in this.planningCommands)
             {
                 foreach (var schedule in planning.commands[currentDay.ToString()])
@@ -287,7 +313,6 @@ namespace IoTHub.Portal.Server.Services
 
         public async Task SendDevicesCommand(Collection<string> devices, string command)
         {
-            if (devices == null) return;
             foreach (var device in devices) await loRaWANCommandService.ExecuteLoRaWANCommand(device, command);
         }
 
@@ -310,40 +335,6 @@ namespace IoTHub.Portal.Server.Services
             this.timer = null;
 
             this.cancellationTokenSource?.Dispose();
-        }
-    }
-
-    public class PlanningCommand
-    {
-        public string planningId { get; set; } = default!;
-        public Collection<string> listDeviceId { get; } = new Collection<string>();
-        public Dictionary<string, List<PayloadCommand>> commands { get; } = new Dictionary<string, List<PayloadCommand>>();
-
-        public PlanningCommand(string listDeviceId, string planningId)
-        {
-            this.planningId = planningId;
-            this.listDeviceId.Add(listDeviceId);
-
-            List<string> days = new List<string> {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-
-            foreach (var day in days)
-            {
-                commands.Add(day, new List<PayloadCommand>());
-            }
-        }
-    }
-
-    public class PayloadCommand
-    {
-        public string payloadId { get; set; } = default!;
-        public TimeSpan start { get; set; } = default!;
-        public TimeSpan end { get; set; } = default!;
-
-        public PayloadCommand(TimeSpan start, TimeSpan end, string payloadId)
-        {
-            this.payloadId = payloadId;
-            this.start = start;
-            this.end = end;
         }
     }
 }

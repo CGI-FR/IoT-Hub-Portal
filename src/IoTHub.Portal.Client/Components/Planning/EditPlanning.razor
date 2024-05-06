@@ -224,6 +224,8 @@
     public IEnumerable<string> AvailableMonth { get; set; } = new List<string>() { "January", "February", "March", "April", "Mai", "June", "July", "August", "September", "October", "Novembre", "December" };
     public IEnumerable<string> AvailableDay { get; set; } = new List<string>() { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
 
+    public string defaultDeviceModel { get; set; } = "Choose a Device Model";
+
     public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
     Dictionary<string, List<DeviceModelCommandDto>> CommandDictionary = new Dictionary<string, List<DeviceModelCommandDto>>();
 
@@ -237,38 +239,15 @@
         {
             isProcessing = true;
 
-            if (planning.CommandId == null) SelectedModel = "Choose a Device Model";
+            if (planning.CommandId == null) SelectedModel = defaultDeviceModel;
+            CommandDictionary.Add(defaultDeviceModel, new List<DeviceModelCommandDto>());
 
-            CommandDictionary.Add("Choose a Device Model", new List<DeviceModelCommandDto>());
-
+            //Get all layers that will be link to a planning
             List<LayerDto> listLayers = await LayerClientService.GetLayers();
-            ReloadSubLayers(listLayers);
+            OrderLayers(listLayers);
 
-            var filter = new DeviceModelFilter
-                {
-                    SearchText = "",
-                    PageNumber = 0,
-                    PageSize = 100,
-                    OrderBy = new string[]
-                                {
-                    string.Empty
-                                }
-                };
-            DeviceModels = (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
-            foreach(var deviceModel in DeviceModels)
-            {
-                IList<DeviceModelCommandDto> commandList = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(deviceModel.ModelId);
-                CommandDictionary.Add(deviceModel.Name, new List<DeviceModelCommandDto>(commandList));
-
-                foreach(var command in commandList)
-                {
-                    if (command.Id == planning.CommandId)
-                    {
-                        SelectedModel = deviceModel.Name;
-                    }
-                }
-            }
-            CommandDictionary = CommandDictionary.Where(commands => commands.Value.Any() || commands.Key == "Choose a Device Model").ToDictionary(commands => commands.Key, commands => commands.Value);
+            //Get all Device Models & Commands
+            await LoadCommands();
         }
         catch (ProblemDetailsException exception)
         {
@@ -316,9 +295,11 @@
     {
         try
         {
-            planning.DayExceptions = "None";
+            // Save or update Planning
             if (mode == "New") await PlanningClientService.CreatePlanning(planning);
             else await PlanningClientService.UpdatePlanning(planning);
+
+            // Save or update all Schedule
             foreach (ScheduleDto schedule in scheduleList)
             {
                 schedule.PlanningId = planning.Id;
@@ -330,6 +311,32 @@
                 else
                 {
                     await ScheduleClientService.CreateSchedule(schedule);
+                }
+            }
+
+            // Remove deleted schedules
+            foreach (ScheduleDto schedule in initScheduleList.Where(schedule => !scheduleList.Contains(schedule)))
+            {
+                await ScheduleClientService.DeleteSchedule(schedule.Id);
+            }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    public async Task SaveLayers(HashSet<LayerHash> saveLayers)
+    {
+        try
+        {
+            foreach (LayerHash layer in saveLayers)
+            {
+                await LayerClientService.UpdateLayer(layer.LayerData);
+
+                if (layer.Children.Count() != 0)
+                {
+                    await SaveLayers(layer.Children);
                 }
             }
         }
@@ -353,7 +360,7 @@
         }
     }
 
-    private void ReloadSubLayers(List<LayerDto> layers)
+    private void OrderLayers(List<LayerDto> layers)
     {
         if (layers.Count() == 0) return;
 
@@ -365,32 +372,57 @@
             Layers.Add(new LayerHash(firstLayer, 0, false));
             isAdd = true;
         }
+        // Look for the layer's father within Layer
         else isAdd = addSubLayer(Layers, firstLayer);
 
+        // If the layer hasn't been added, place it at the end of the list to wait for its father to be added to "Layers"
         layers.RemoveAt(0);
         if (!isAdd) layers.Add(firstLayer);
 
-        if (layers.Count() != 0) ReloadSubLayers(layers);
+        OrderLayers(layers);
     }
 
-    private bool addSubLayer(HashSet<LayerHash> childLayers, LayerDto layer)
+    private bool addSubLayer(HashSet<LayerHash> fatherLayer, LayerDto layer)
     {
-        foreach (LayerHash subLayer in childLayers)
+        foreach (LayerHash father in fatherLayer)
         {
-            if (subLayer.LayerData.Id == layer.Father)
+            if (father.LayerData.Id == layer.Father)
             {
-                subLayer.Children.Add(new LayerHash(layer, 0, false));
+                father.Children.Add(new LayerHash(layer, father.Level + 1, false));
+
+                // If father has been found, return true
                 return true;
             }
             else
             {
-                bool isAdd = addSubLayer(subLayer.Children, layer);
+                // Look for the layer's father within Layer
+                bool isAdd = addSubLayer(father.Children, layer);
+
+                // If father has been found, return true
                 if (isAdd) return true;
             }
         }
         return false;
     }
 
+    private async Task LoadCommands()
+    {
+        DeviceModels = (await DeviceModelsClientService.GetDeviceModels(new DeviceModelFilter())).Items.ToList<IDeviceModel>();
+
+        foreach(var deviceModel in DeviceModels)
+        {
+            // Load all commands for a particular Device Model
+            IList<DeviceModelCommandDto> commandList = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(deviceModel.ModelId);
+            CommandDictionary.Add(deviceModel.Name, new List<DeviceModelCommandDto>(commandList));
+
+            // Verify if the command is stored in Planning to link this planning to a specific device model
+            var isDeviceSelected = commandList.FirstOrDefault(command => command.Id == planning.CommandId);
+            if (isDeviceSelected != null) SelectedModel = deviceModel.Name;
+        }
+
+        //Delete device model without commands
+        CommandDictionary = CommandDictionary.Where(commands => commands.Value.Any() || commands.Key == "Choose a Device Model").ToDictionary(commands => commands.Key, commands => commands.Value);        
+    
     public async Task SaveLayers(HashSet<LayerHash> saveLayers)
     {
         try
