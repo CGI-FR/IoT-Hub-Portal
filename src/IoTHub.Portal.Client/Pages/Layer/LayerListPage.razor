@@ -35,10 +35,7 @@
             <MudTable T="LayerDto" Items="@MainLayers" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
                 <ColGroup>
                     <col style="width: 50%;" />
-                    @for(int index = 1; index < LAYER_NAMES.Count(); index ++)
-                    {
-                        <col style="width: 10%;" />
-                    }
+                    <col style="width: 10%;" />
                     <col style="width: 10%;" />
                     <col style="width: 10%;" />
                 </ColGroup>
@@ -54,12 +51,9 @@
                 </ToolBarContent>
                 <HeaderContent>
                     <MudTh><MudTableSortLabel SortBy="new Func<LayerDto, object>(x => x.Name)" id="NameLabel">Name</MudTableSortLabel></MudTh>
-                    @foreach (string layerName in LAYER_NAMES.GetRange(1, LAYER_NAMES.Count() - 1))
-                    {
-                        <MudTh>@layerName</MudTh>
-                    }
-                    <MudTh>Detail</MudTh>
+                    <MudTh>SubLayers</MudTh>
                     <MudTh>Planning</MudTh>
+                    <MudTh>Detail</MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Name">
@@ -69,15 +63,12 @@
                             </MudText>
                         </MudItem>
                     </MudTd>
-                    @foreach (List<LayerDto> layer in Layers.Where(mainLayers => mainLayers[0][0].Id == context.Id).ToList()[0].GetRange(1, LAYER_NAMES.Count() - 1))
-                    {
-                        <MudTh>@layer.Count()</MudTh>
-                    }
-                    <MudTd DataLabel="Details" Style="text-align: center">
-                        <MudIconButton id="layerListDetailDetail" Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
-                    </MudTd>
+                    <MudTh>@SubLayers[@context.Name]</MudTh>
                     <MudTd DataLabel="Planning" Style="word-break: break-all; ">
                         @(plannings.FirstOrDefault(item => item.Id == context.Planning)!= null ? plannings.FirstOrDefault(item => item.Id == context.Planning).Name : "None")
+                    </MudTd>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <MudIconButton id="layerListDetailDetail" Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                     </MudTd>
                 </RowTemplate>
                 <PagerContent>
@@ -95,13 +86,13 @@
 </MudGrid>
 
 @code {
-    public List<string> LAYER_NAMES = new List<string>() { "Main Layer", "Sub-Layer 1", "Sub-Layer 2" };
-
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    public List<List<List<LayerDto>>> Layers = new List<List<List<LayerDto>>>();
+    public HashSet<LayerHash> Layers { get; } = new HashSet<LayerHash> { };
+
     public List<LayerDto> MainLayers = new List<LayerDto>();
+    public Dictionary<string, int> SubLayers = new Dictionary<string, int>();
     public List<PlanningDto> plannings = new List<PlanningDto>();
 
     public bool IsLoading { get; set; } = true;
@@ -117,10 +108,17 @@
     {
         try
         {
-            Layers.Clear();
             IsLoading = true;
+            SubLayers.Clear();
             List<LayerDto> listLayers = await LayerClientService.GetLayers();
-            ReloadSubLayers(listLayers);
+            OrderLayers(listLayers);
+
+            for (var i = 0; i < Layers.Count; i++)
+            {
+                MainLayers.Add(Layers.ElementAt(i).LayerData);
+                CountLayer(Layers.ElementAt(i).LayerData.Name, Layers.ElementAt(i).Children);
+            }
+
         }
         catch (ProblemDetailsException exception)
         {
@@ -132,7 +130,7 @@
         }
     }
 
-    private void ReloadSubLayers(List<LayerDto> layers)
+    private void OrderLayers(List<LayerDto> layers)
     {
         if (layers.Count() == 0) return;
 
@@ -141,45 +139,48 @@
 
         if (firstLayer.Father == "Init")
         {
-            Layers.Add(new List<List<LayerDto>>() { new List<LayerDto>() { firstLayer } });
-            MainLayers.Add(firstLayer);
-            for (int index = 1; index < LAYER_NAMES.Count(); index++) Layers[Layers.Count() - 1].Add(new List<LayerDto>());
+            Layers.Add(new LayerHash(firstLayer, 0, true));
             isAdd = true;
         }
-        else foreach(List<List<LayerDto>> mainLayers in Layers)
-            {
-                if (mainLayers[0][0].Id == firstLayer.Father)
-                {
-                    mainLayers[1].Add(firstLayer);
-                    isAdd = true;
-                }
-                else isAdd = addSubLayer(1, mainLayers, firstLayer);
+        // Look for the layer's father within Layer
+        else isAdd = addSubLayer(Layers, firstLayer);
 
-                if (isAdd) break;
-            }
-
+        // If the layer hasn't been added, place it at the end of the list to wait for its father to be added to "Layers"
         layers.RemoveAt(0);
         if (!isAdd) layers.Add(firstLayer);
 
-        if (layers.Count() != 0) ReloadSubLayers(layers);
+        OrderLayers(layers);
     }
 
-    private bool addSubLayer(int index, List<List<LayerDto>> mainLayers, LayerDto layer)
+    private bool addSubLayer(HashSet<LayerHash> fatherLayer, LayerDto layer)
     {
-        foreach (LayerDto subLayer in mainLayers[index])
+        foreach (LayerHash father in fatherLayer)
         {
-            if (subLayer.Id == layer.Father)
+            if (father.LayerData.Id == layer.Father)
             {
-                mainLayers[index + 1].Add(layer);
+                father.Children.Add(new LayerHash(layer, father.Level + 1, true));
+
+                // If father has been found, return true
                 return true;
             }
-            else if (index + 1 < LAYER_NAMES.Count())
+            else
             {
-                bool isAdd = addSubLayer(index + 1, mainLayers, layer);
+                // Look for the layer's father within Layer
+                bool isAdd = addSubLayer(father.Children, layer);
+
+                // If father has been found, return true
                 if (isAdd) return true;
             }
         }
         return false;
+    }
+
+    private void CountLayer(string mainLayerName, HashSet<LayerHash> layerList)
+    {
+        if (!SubLayers.ContainsKey(mainLayerName)) SubLayers.Add(mainLayerName, 0);
+
+        SubLayers[mainLayerName] += 1;
+        foreach (var layer in layerList) CountLayer(mainLayerName, layer.Children);
     }
 
     private void GoToDetails(LayerDto item)
