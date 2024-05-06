@@ -158,11 +158,6 @@ namespace IoTHub.Portal.Server.Services
                     UpdateDatabase();
                     this.isUpdating = false;
                 }
-                else
-                {
-                    await UpdateDatabase();
-                }
-
                 await SendCommand();
             }
             catch (ProblemDetailsException exception)
