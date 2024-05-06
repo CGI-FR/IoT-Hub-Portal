@@ -35,7 +35,6 @@
                                 else
                                 {
                                     <MudText>@item.LayerData.Name</MudText>
-
                                 }
                             </div>
                             <div style="justify-self: end;">
@@ -43,7 +42,7 @@
                                 {
                                     <MudIconButton id="editLayerEditLayer" Icon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Inherit" @onclick="() => editItem = item.LayerData.Id" />
                                     <MudIconButton id="editLayerDeleteLayer" Icon="@(item.LayerData.Father != "Init" ? Icons.Material.Filled.Delete : @Icons.Material.Outlined.Delete)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => DeleteLayer(item, layers)" />
-                                    <MudIconButton id="editLayerAddLayer" Icon="@(item.Level != LAYER_NAMES.Count() ? Icons.Material.Filled.AddBox : @Icons.Material.Outlined.AddBox)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => AddLayer(item)" />
+                                    <MudIconButton id="editLayerAddLayer" Icon="@Icons.Material.Filled.AddBox" Size="Size.Medium" Color="Color.Inherit" @onclick="() => AddLayer(item)" />
                                 }
                                 <MudIconButton id="editLayerDevice" Icon="@Icons.Material.TwoTone.Memory" Size="Size.Medium" Color="Color.Inherit" @onclick="() => OpenDevices(item.LayerData)" />
                             </div>
@@ -56,8 +55,6 @@
 </MudGrid>
 
 @code {
-    public List<string> LAYER_NAMES = new List<string>() { "Main Layer", "Sub-Layer 1", "Sub-Layer 2" };
-
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
@@ -75,14 +72,11 @@
 
     public void AddLayer(LayerHash layer)
     {
-        if (layer.Level + 1 <= LAYER_NAMES.Count())
-        {
-            LayerDto newLayer = new LayerDto();
-            newLayer.Name = "New Layer";
-            newLayer.Father = layer.LayerData.Id;
-            layer.Children.Add(new LayerHash(newLayer, layer.Level + 1, false));
-            layer.IsExpanded = true;
-        }
+        LayerDto newLayer = new LayerDto();
+        newLayer.Name = "New Layer";
+        newLayer.Father = layer.LayerData.Id;
+        layer.Children.Add(new LayerHash(newLayer, layer.Level + 1, false));
+        layer.IsExpanded = true;
     }
 
     public void DeleteLayer(LayerHash delLayer, HashSet<LayerHash> fatherLayers)
