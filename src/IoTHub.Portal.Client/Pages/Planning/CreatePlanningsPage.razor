@@ -12,8 +12,6 @@
     protected override async Task OnInitializedAsync()
     {
         Planning.Day = "SaSu";
-        ScheduleDto firstSchedule = new ScheduleDto();
-        firstSchedule.Start = "00:00";
-        ScheduleList.Add(firstSchedule);
+        ScheduleList.Add(new ScheduleDto { Start = "00:00" });
     }
 }

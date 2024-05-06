@@ -73,9 +73,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             // Assert
             Assert.AreEqual(cut.Instance.MainLayers.Count, 1);
             Assert.AreEqual(cut.Instance.Layers.Count, 1);
-            Assert.AreEqual(cut.Instance.Layers[0][0][0], expectedLayerDto);
-            Assert.AreEqual(cut.Instance.Layers[0][1][0], expectedLayerDtoChild1);
-            Assert.AreEqual(cut.Instance.Layers[0][1][1], expectedLayerDtoChild2);
+            Assert.AreEqual(cut.Instance.Layers.ElementAt(0).LayerData, expectedLayerDto);
+            Assert.AreEqual(cut.Instance.Layers.ElementAt(0).Children.ElementAt(0).LayerData, expectedLayerDtoChild1);
+            Assert.AreEqual(cut.Instance.Layers.ElementAt(0).Children.ElementAt(1).LayerData, expectedLayerDtoChild2);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -225,11 +225,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             // Assert
             Assert.AreEqual(cut.Instance.MainLayers.Count, 2);
             Assert.AreEqual(cut.Instance.Layers.Count, 2);
-            Assert.AreEqual(cut.Instance.Layers[0][0][0], expectedLayerDto);
-            Assert.AreEqual(cut.Instance.Layers[1][0][0], expectedLayerDto2);
-            Assert.AreEqual(cut.Instance.Layers[0][1][0], expectedLayerDtoChild1);
-            Assert.AreEqual(cut.Instance.Layers[1][1][0], expectedLayerDtoChild2);
-            Assert.AreEqual(cut.Instance.Layers[0][2][0], expectedLayerDtoChild1_0);
+            Assert.AreEqual(cut.Instance.Layers.ElementAt(0).LayerData, expectedLayerDto);
+            Assert.AreEqual(cut.Instance.Layers.ElementAt(1).LayerData, expectedLayerDto2);
+            Assert.AreEqual(cut.Instance.Layers.ElementAt(0).Children.ElementAt(0).LayerData, expectedLayerDtoChild1);
+            Assert.AreEqual(cut.Instance.Layers.ElementAt(1).Children.ElementAt(0).LayerData, expectedLayerDtoChild2);
+            Assert.AreEqual(cut.Instance.Layers.ElementAt(0).Children.ElementAt(0).Children.ElementAt(0).LayerData, expectedLayerDtoChild1_0);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
