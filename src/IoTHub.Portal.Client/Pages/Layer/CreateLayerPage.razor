@@ -11,9 +11,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        LayerDto newLayer = new LayerDto();
-        newLayer.Name = "Main Layer";
-        newLayer.Father = "Init";
+        LayerDto newLayer = new LayerDto
+        {
+            Name = "Main Layer",
+            Father = "Init"
+        };
+
         Layers.Add(new LayerHash(newLayer, 1, true));
     }
 }
