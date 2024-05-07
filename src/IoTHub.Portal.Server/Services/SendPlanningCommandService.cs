@@ -150,7 +150,6 @@ namespace IoTHub.Portal.Server.Services
 
             try
             {
-                this.planningCommands.Clear();
                 if (this.isUpdating)
                 {
                     this.planningCommands.Clear();

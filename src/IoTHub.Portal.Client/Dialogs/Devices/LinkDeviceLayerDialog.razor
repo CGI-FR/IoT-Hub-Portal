@@ -123,7 +123,7 @@
     {
         try
         {
-            string uri = $"api/devices?pageNumber=0&pageSize=1000";
+            string uri = $"api/devices?pageNumber=0&pageSize=10000";
 
             if (!IsLoading) uri = uri + "&modelId=" + SelectedModel.ModelId;
 
@@ -156,19 +156,23 @@
         try
         {
             List<DeviceDetails> devices = new List<DeviceDetails>();
-            foreach(string device in DeviceRemoveList)
+            foreach(string deviceRemove in DeviceRemoveList)
             {
-                DeviceDetails updatedDevice = await DeviceClientService.GetDevice(device);
+                //Delete GetDevice ToDo
+                /*DeviceListItem updatedDevice = Devices.First(device => device.DeviceID == deviceRemove);
+                updatedDevice.LayerId = null;
+                await DeviceClientService.UpdateDevice(updatedDevice as DeviceDetails);*/
+                DeviceDetails updatedDevice = await DeviceClientService.GetDevice(deviceRemove);
                 updatedDevice.LayerId = null;
                 await DeviceClientService.UpdateDevice(updatedDevice);
             }
             foreach (string device in DeviceList)
             {
+                //Delete GetDevice
                 DeviceDetails updatedDevice = await DeviceClientService.GetDevice(device);
                 updatedDevice.LayerId = Layer.Id;
                 await DeviceClientService.UpdateDevice(updatedDevice);
             }
-
         }
         catch (ProblemDetailsException exception)
         {
