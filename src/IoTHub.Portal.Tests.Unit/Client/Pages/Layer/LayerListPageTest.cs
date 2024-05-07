@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
+namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 {
     using System;
     using System.Collections.Generic;
@@ -17,6 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
+    using MudBlazor;
     using NUnit.Framework;
 
     internal class LayerListPageTest : BlazorUnitTest
