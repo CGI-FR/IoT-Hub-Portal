@@ -1,87 +1,57 @@
 ﻿@page "/layer"
 
-@using System.Web
-@using System.IO
-@using System.Text.RegularExpressions
-@using System.Net.Http.Headers
-
-@using Microsoft.AspNetCore.WebUtilities
-
-@using IoTHub.Portal
+@using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule
 @using IoTHub.Portal.Models
 @using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Models.v10.LoRaWAN
-@using IoTHub.Portal.Shared.Models
-@using IoTHub.Portal.Shared.Constants;
-@using IoTHub.Portal.Shared.Models.v10;
-@using IoTHub.Portal.Shared.Models.v10.Filters
-@using IoTHub.Portal.Client.Enums
+@using IoTHub.Portal.Shared.Models.v10
 @using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Client.Pages.Devices
+@using System.Net.Http.Headers
+@using IoTHub.Portal.Shared.Constants
+@using IoTHub.Portal.Client.Models
 @using IoTHub.Portal.Client.Dialogs.Devices
-@using IoTHub.Portal.Client.Dialogs.Building
 
 @attribute [Authorize]
-
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
 @inject PortalSettings Portal
-@inject ILayerClientService LayerClientService
-@inject IPlanningClientService PlanningClientService
-@inject IDialogService DialogService
 
+@inject ILayerClientService LayerClientService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">
+    Layer
+</MudText>
 <MudGrid>
     <MudItem xs="12">
-        <MudItem xs="12">
-            <MudTable T="LayerDto" Items="@MainLayers" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
-                <ColGroup>
-                    <col style="width: 50%;" />
-                    <col style="width: 10%;" />
-                    <col style="width: 10%;" />
-                    <col style="width: 10%;" />
-                </ColGroup>
-                <ToolBarContent>
-                    <MudText Typo="Typo.h6">Layers</MudText>
-                    <MudSpacer />
-                    <MudTooltip Text="Refresh list">
-                        <MudIconButton id="layerListDetailRefresh" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@GetLayers" Class="ma-2"></MudIconButton>
-                    </MudTooltip>
-                    <MudTooltip Text="Add new Layer">
-                        <MudFab id="layerListAddLayer" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@AddLayer" Size="Size.Medium"/>
-                    </MudTooltip>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh><MudTableSortLabel SortBy="new Func<LayerDto, object>(x => x.Name)" id="NameLabel">Name</MudTableSortLabel></MudTh>
-                    <MudTh>SubLayers</MudTh>
-                    <MudTh>Planning</MudTh>
-                    <MudTh>Detail</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Name">
-                        <MudItem>
-                            <MudText Typo="Typo.body1" Inline="true">
-                                @context.Name
-                            </MudText>
-                        </MudItem>
-                    </MudTd>
-                    <MudTh>@SubLayers[@context.Name]</MudTh>
-                    <MudTd DataLabel="Planning" Style="word-break: break-all; ">
-                        @(plannings.FirstOrDefault(item => item.Id == context.Planning)!= null ? plannings.FirstOrDefault(item => item.Id == context.Planning).Name : "None")
-                    </MudTd>
-                    <MudTd DataLabel="Details" Style="text-align: center">
-                        <MudIconButton id="layerListDetailDetail" Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
-                    </MudTd>
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
-                </PagerContent>
-                <NoRecordsContent>
-                    <MudText>No matching records found</MudText>
-                </NoRecordsContent>
-                <LoadingContent>
-                    <MudText>Loading...</MudText>
-                </LoadingContent>
-            </MudTable>
-        </MudItem>
+        <MudTreeView Items="@Layers" Hover="true" Width="100%" ExpandOnClick="true">
+            <ItemTemplate Context="item">
+                <MudTreeViewItem Items="@item.Children" @bind-Expanded="@item.IsExpanded">
+                    <BodyContent>
+                        <div id="editLayerElement" style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%" @onmouseover="() => printDetails = item.LayerData.Id">
+                            <div style="width: 75%">
+                                @if (editItem != null && editItem.Id == item.LayerData.Id)
+                                {
+                                    <MudTextField @bind-Value="@item.LayerData.Name" For="@(() => item.LayerData.Name)" />
+                                }
+                                else
+                                {
+                                    <MudText>@item.LayerData.Name</MudText>
+                                }
+                            </div>
+                            <div style="justify-self: end;">
+                                @if (printDetails == item.LayerData.Id)
+                                {
+                                    <MudIconButton id="editLayerEditLayer" Icon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Inherit" @onclick="() => EditLayer(item.LayerData)" />
+                                    <MudIconButton id="editLayerDeleteLayer" Icon="@(item.LayerData.Father != "Init" ? Icons.Material.Filled.Delete : @Icons.Material.Outlined.Delete)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => DeleteLayer(item, Layers)" />
+                                    <MudIconButton id="editLayerAddLayer" Icon="@Icons.Material.Filled.AddBox" Size="Size.Medium" Color="Color.Inherit" @onclick="() => AddLayer(item)" />
+                                }
+                                <MudIconButton id="editLayerDevice" Icon="@Icons.Material.TwoTone.Memory" Size="Size.Medium" Color="Color.Inherit" @onclick="() => OpenDevices(item.LayerData)" />
+                            </div>
+                        </div>
+                    </BodyContent>
+                </MudTreeViewItem>
+            </ItemTemplate>
+        </MudTreeView>
     </MudItem>
 </MudGrid>
 
@@ -89,45 +59,15 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    public HashSet<LayerHash> Layers { get; } = new HashSet<LayerHash> { };
+    public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
 
-    public List<LayerDto> MainLayers = new List<LayerDto>();
-    public Dictionary<string, int> SubLayers = new Dictionary<string, int>();
-    public List<PlanningDto> plannings = new List<PlanningDto>();
-
-    public bool IsLoading { get; set; } = true;
-    public readonly int[] pageSizeOptions = { 10, 5, 3 };
+    public string printDetails { get; set; } = "Init";
+    public LayerDto? editItem { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        await GetLayers();
-        plannings = await PlanningClientService.GetPlannings();
-    }
-
-    private async Task GetLayers()
-    {
-        try
-        {
-            IsLoading = true;
-            SubLayers.Clear();
-            List<LayerDto> listLayers = await LayerClientService.GetLayers();
-            OrderLayers(listLayers);
-
-            for (var i = 0; i < Layers.Count; i++)
-            {
-                MainLayers.Add(Layers.ElementAt(i).LayerData);
-                CountLayer(Layers.ElementAt(i).LayerData.Name, Layers.ElementAt(i).Children);
-            }
-
-        }
-        catch (ProblemDetailsException exception)
-        {
-            Error?.ProcessProblemDetails(exception);
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        List<LayerDto> listLayers = await LayerClientService.GetLayers();
+        OrderLayers(listLayers);
     }
 
     private void OrderLayers(List<LayerDto> layers)
@@ -139,7 +79,7 @@
 
         if (firstLayer.Father == "Init")
         {
-            Layers.Add(new LayerHash(firstLayer, 0, true));
+            Layers.Add(new LayerHash(firstLayer, 0, false));
             isAdd = true;
         }
         // Look for the layer's father within Layer
@@ -158,7 +98,7 @@
         {
             if (father.LayerData.Id == layer.Father)
             {
-                father.Children.Add(new LayerHash(layer, father.Level + 1, true));
+                father.Children.Add(new LayerHash(layer, father.Level + 1, false));
 
                 // If father has been found, return true
                 return true;
@@ -175,21 +115,77 @@
         return false;
     }
 
-    private void CountLayer(string mainLayerName, HashSet<LayerHash> layerList)
+    public async Task AddLayer(LayerHash layer)
     {
-        if (!SubLayers.ContainsKey(mainLayerName)) SubLayers.Add(mainLayerName, 0);
+        try
+        {
+            LayerDto newLayer = new LayerDto
+                {
+                    Name = "New Layer",
+                    Father = layer.LayerData.Id,
+                    Planning = "None"
+                };
+            newLayer.Id = await LayerClientService.CreateLayer(newLayer);
 
-        SubLayers[mainLayerName] += 1;
-        foreach (var layer in layerList) CountLayer(mainLayerName, layer.Children);
+            layer.Children.Add(new LayerHash(newLayer, layer.Level + 1, false));
+            layer.IsExpanded = true;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 
-    private void GoToDetails(LayerDto item)
+    public async Task EditLayer(LayerDto layer)
     {
-        navigationManager.NavigateTo($"/layer/{item.Id}");
+        try
+        {
+            if (editItem != null) await LayerClientService.UpdateLayer(editItem);
+            editItem = layer;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 
-    private void AddLayer()
+    public async Task DeleteLayer(LayerHash delLayer, HashSet<LayerHash> fatherLayers)
     {
-        navigationManager.NavigateTo($"/layer/new");
+        foreach (LayerHash layer in fatherLayers)
+        {
+            if (layer.Children.Contains(delLayer))
+            {
+                await RemoveChild(delLayer);
+                layer.Children.Remove(delLayer);
+                StateHasChanged();
+            }
+            else
+            {
+                await DeleteLayer(delLayer, layer.Children);
+            }
+        }
+    }
+
+    public async Task RemoveChild(LayerHash delLayer)
+    {
+        if (delLayer.Children.Count() != 0)
+            foreach (LayerHash layer in delLayer.Children) await RemoveChild(layer);
+        try
+        {
+            await LayerClientService.DeleteLayer(delLayer.LayerData.Id);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    public async void OpenDevices(LayerDto layer)
+    {
+        var parameter = new DialogParameters { { "Layer", layer } };
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true, CloseButton = true };
+
+        var result = await DialogService.Show<LinkDeviceLayerDialog>("Select your " + layer.Name + " devices", parameter, options).Result;
     }
 }

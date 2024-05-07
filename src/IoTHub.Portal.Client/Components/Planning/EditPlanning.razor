@@ -9,6 +9,7 @@
 @using IoTHub.Portal.Shared.Models
 @using IoTHub.Portal.Shared.Models.v10.Filters
 @using IoTHub.Portal.Models.v10.LoRaWAN
+@using IoTHub.Portal.Client.Helpers
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -96,7 +97,7 @@
                             Days:
                             @foreach (string day in AvailableDay)
                             {
-                                <MudButton Size="Size.Medium" id="addScheduleButton" OnClick="() => ChangeOffDay(day)" Color="@((planning.Day.Contains(day)) ? Color.Error : Color.Success)">@day</MudButton>
+                                <MudButton id="editPlanningChangeOnDayLayers" Style="@((planning.DayOff.Contains(day)) ? "text-decoration: line-through;" : "text-decoration: underline;")" Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff.Contains(day)) ? Color.Error : Color.Success)">@day</MudButton>
                             }
                         </div>
                     </MudItem>
@@ -147,7 +148,7 @@
                             Days:
                             @foreach (string day in AvailableDay)
                             {
-                                <MudButton Size="Size.Medium" id="addScheduleButton" OnClick="() => ChangeOffDay(day)" Color="@((planning.Day.Contains(day)) ? Color.Success : Color.Error)">@day</MudButton>
+                                <MudButton id="editPlanningChangeOffDayLayers" Style="@((planning.DayOff.Contains(day)) ? "text-decoration: underline;" : "text-decoration: line-through;")" Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff.Contains(day)) ? Color.Success : Color.Error)">@day</MudButton>
                             }
                         </div>
                     </MudItem>
@@ -244,6 +245,7 @@
 
             //Get all layers that will be link to a planning
             List<LayerDto> listLayers = await LayerClientService.GetLayers();
+            //Layers = LayerHelper.GetHashsetLayer(listLayers);
             OrderLayers(listLayers);
 
             //Get all Device Models & Commands
@@ -270,18 +272,17 @@
 
         if (scheduleList.Count == 0 || (last?.Start is not null && last?.End is not null && last?.CommandId is not null))
         {
-            ScheduleDto newSchedule = new ScheduleDto();
+            ScheduleDto newSchedule = new ScheduleDto { Start = last.End };
             scheduleList.Add(newSchedule);
         }
     }
 
     private void ChangeOffDay(string day)
     {
-        string days = planning.Day;
-        if (days.Contains(day)) days.Replace(day, "");
+        string days = planning.DayOff;
+        if (days.Contains(day)) days  = days.Replace(day, "");
         else days += day;
-        planning.Day = days;
-        StateHasChanged();
+        planning.DayOff = days;
     }
 
     public async void Save()
@@ -413,6 +414,8 @@
         {
             // Load all commands for a particular Device Model
             IList<DeviceModelCommandDto> commandList = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(deviceModel.ModelId);
+
+            if (commandList.Count == 0) continue;
             CommandDictionary.Add(deviceModel.Name, new List<DeviceModelCommandDto>(commandList));
 
             // Verify if the command is stored in Planning to link this planning to a specific device model

@@ -67,7 +67,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             Assert.AreEqual(expectedPlanningDto.Start, result.Start);
             Assert.AreEqual(expectedPlanningDto.End, result.End);
             Assert.AreEqual(expectedPlanningDto.Frequency, result.Frequency);
-            Assert.AreEqual(expectedPlanningDto.Day, result.Day);
+            Assert.AreEqual(expectedPlanningDto.DayOff, result.DayOff);
             Assert.AreEqual(expectedPlanningDto.CommandId, result.CommandId);
             Assert.AreEqual(expectedPlanningDto.DayExceptions, result.DayExceptions);
 
@@ -145,7 +145,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             Assert.AreEqual(expectedPlanningDto.Start, result.Start);
             Assert.AreEqual(expectedPlanningDto.End, result.End);
             Assert.AreEqual(expectedPlanningDto.Frequency, result.Frequency);
-            Assert.AreEqual(expectedPlanningDto.Day, result.Day);
+            Assert.AreEqual(expectedPlanningDto.DayOff, result.DayOff);
             Assert.AreEqual(expectedPlanningDto.CommandId, result.CommandId);
             Assert.AreEqual(expectedPlanningDto.DayExceptions, result.DayExceptions);
 

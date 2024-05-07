@@ -4,9 +4,6 @@
 namespace IoTHub.Portal.Shared.Models.v10
 {
     using System;
-
-    //using System.ComponentModel.DataAnnotations;
-
     public class PlanningDto
     {
         /// <summary>
@@ -17,36 +14,36 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// The planning friendly name.
         /// </summary>
-        public string Name { get; set; } = default!;
+        public string Name { get; set; }
 
         /// <summary>
         /// Where planning start.
         /// </summary>
-        public string Start { get; set; } = default!;
+        public string Start { get; set; }
 
         /// <summary>
         /// Where planning end.
         /// </summary>
-        public string End { get; set; } = default!;
+        public string End { get; set; }
 
         /// <summary>
         /// How much it repeat.
         /// </summary>
-        public bool Frequency { get; set; } = default!;
+        public bool Frequency { get; set; }
 
         /// <summary>
         /// When planning is used
         /// </summary>
-        public string Day { get; set; } = "";
+        public string DayOff { get; set; }
 
         /// <summary>
         /// Day off command.
         /// </summary>
-        public string CommandId { get; set; } = default!;
+        public string CommandId { get; set; }
 
         /// <summary>
         /// Day off exceptions.
         /// </summary>
-        public string DayExceptions { get; set; } = default!;
+        public string DayExceptions { get; set; }
     }
 }
