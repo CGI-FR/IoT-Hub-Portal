@@ -17,21 +17,19 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// The schedule friendly name.
         /// </summary>
-        public string Start { get; set; } = default!;
-
+        public string Start { get; set; }
         /// <summary>
         /// Where schedule is.
         /// </summary>
-        public string End { get; set; } = default!;
+        public string End { get; set; }
+        /// <summary>
+        /// The planning associat with the schedule.
+        /// </summary>
+        public string CommandId { get; set; }
 
         /// <summary>
         /// The planning associat with the schedule.
         /// </summary>
-        public string CommandId { get; set; } = default!;
-
-        /// <summary>
-        /// The planning associat with the schedule.
-        /// </summary>
-        public string PlanningId { get; set; } = default!;
+        public string PlanningId { get; set; }
     }
 }

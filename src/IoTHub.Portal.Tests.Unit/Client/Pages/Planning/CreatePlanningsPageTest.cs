@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
             var cut = RenderComponent<CreatePlanningsPage>();
 
             // Assert
-            Assert.AreEqual(cut.Instance.Planning.Day, "SaSu");
+            Assert.AreEqual(cut.Instance.Planning.DayOff, "SaSu");
             Assert.AreEqual(cut.Instance.ScheduleList[0].Start, "00:00");
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }

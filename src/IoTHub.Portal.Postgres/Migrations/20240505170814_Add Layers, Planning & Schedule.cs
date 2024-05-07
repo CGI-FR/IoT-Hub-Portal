@@ -41,7 +41,7 @@ namespace IoTHub.Portal.Postgres.Migrations
                     Start = table.Column<string>(type: "text", nullable: false),
                     End = table.Column<string>(type: "text", nullable: false),
                     Frequency = table.Column<bool>(type: "boolean", nullable: false),
-                    Day = table.Column<string>(type: "text", nullable: false),
+                    DayOff = table.Column<string>(type: "text", nullable: false),
                     CommandId = table.Column<string>(type: "text", nullable: false),
                     DayExceptions = table.Column<string>(type: "text", nullable: false)
                 },

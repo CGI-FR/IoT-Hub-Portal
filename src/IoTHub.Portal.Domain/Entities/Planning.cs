@@ -30,7 +30,7 @@ namespace IoTHub.Portal.Domain.Entities
         /// <summary>
         /// When planning is used
         /// </summary>
-        public string Day { get; set; } = default!;
+        public string DayOff { get; set; } = default!;
 
         /// <summary>
         /// Day off command.

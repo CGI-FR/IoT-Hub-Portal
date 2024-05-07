@@ -17,21 +17,21 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// The level friendly name.
         /// </summary>
-        public string Name { get; set; } = default!;
+        public string Name { get; set; }
 
         /// <summary>
         /// Where level is.
         /// </summary>
-        public string Father { get; set; } = default!;
+        public string Father { get; set; }
 
         /// <summary>
         /// The planning associat with the level.
         /// </summary>
-        public string Planning { get; set; } = default!;
+        public string Planning { get; set; }
 
         /// <summary>
         /// The planning has a subLayer.
         /// </summary>
-        public bool hasSub { get; set; } = default!;
+        public bool hasSub { get; set; }
     }
 }
