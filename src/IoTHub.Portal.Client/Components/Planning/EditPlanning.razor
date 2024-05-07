@@ -372,9 +372,6 @@
             var isDeviceSelected = commandList.FirstOrDefault(command => command.Id == planning.CommandId);
             if (isDeviceSelected != null) SelectedModel = deviceModel.Name;
         }
-
-        //Delete device model without commands
-        CommandDictionary = CommandDictionary.Where(commands => commands.Value.Any() || commands.Key == "Choose a Device Model").ToDictionary(commands => commands.Key, commands => commands.Value);        
     }
 
     private bool areDataValid()

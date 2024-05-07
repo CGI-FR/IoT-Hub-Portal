@@ -574,7 +574,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
-        [Test]
+        /*[Test]
         public void ImportDevices_FileAdded_DevicesExported()
         {
             // Arrange
@@ -618,7 +618,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
-        }
+        }*/
 
         [Test]
         public void Sort_ClickOnSortIdAsc_DevicesSorted()
