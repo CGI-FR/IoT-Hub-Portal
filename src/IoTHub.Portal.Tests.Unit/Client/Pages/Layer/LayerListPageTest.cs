@@ -18,6 +18,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
+    using MudBlazor;
     using NUnit.Framework;
 
     internal class LayerListPageTest : BlazorUnitTest
