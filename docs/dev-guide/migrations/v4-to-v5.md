@@ -27,3 +27,4 @@ You have to add also `Azure__` prefix in all setting to the portal web app.
 | `Azure__IoTDP__LoRaEnrollmentGroup` | Application setting  | The name of the IotDPS LoRa Enrollment group |
 | `Azure__IoTDPS__DefaultEnrollmentGroup` | Application setting  | The name of the default IotDPS Enrollment group |
 | `Azure__IoTDPS__ConnectionString` | Connection string  | The IotDPS Connection String |
+| `Azure__StorageAccount__ConnectionString` | Connection string  | The Storage Account Connection String |
