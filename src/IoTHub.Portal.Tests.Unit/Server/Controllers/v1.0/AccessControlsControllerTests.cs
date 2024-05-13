@@ -18,14 +18,15 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using Microsoft.AspNetCore.Mvc.Routing;
     using System.Linq;
     using System;
+    using IoTHub.Portal.Server.Controllers.v1._0;
 
     [TestFixture]
-    public class RolesControllerTests
+    public class AccessControlssControllerTests
     {
         private MockRepository mockRepository;
 
-        private Mock<ILogger<RolesController>> mockLogger;
-        private Mock<IRoleManagementService> mockRoleService;
+        private Mock<ILogger<AccessControlController>> mockLogger;
+        private Mock<IAccessControlManagementService> mockAccessControlService;
         private Mock<IUrlHelper> mockUrlHelper;
         private IDataProtectionProvider mockDataProtectionProvider;
 
@@ -34,31 +35,31 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLogger = this.mockRepository.Create<ILogger<RolesController>>();
-            this.mockRoleService = this.mockRepository.Create<IRoleManagementService>();
+            this.mockLogger = this.mockRepository.Create<ILogger<AccessControlController>>();
+            this.mockAccessControlService = this.mockRepository.Create<IAccessControlManagementService>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
             this.mockDataProtectionProvider = new EphemeralDataProtectionProvider();
         }
 
-        private RolesController CreateRolesController()
+        private AccessControlController CreateAccessControlsController()
         {
-            return new RolesController(
-                this.mockRoleService.Object,
-                this.mockLogger.Object)
+            return new AccessControlController(
+                this.mockLogger.Object,
+                this.mockAccessControlService.Object)
             {
                 Url = this.mockUrlHelper.Object
             };
         }
 
         [Test]
-        public async Task GetAllRolesReturnOkResult()
+        public async Task GetAllAccessControlsReturnOkResult()
         {
             // Arrange
-            var roleController = CreateRolesController();
+            var accessControlController = CreateAccessControlsController();
 
-            var paginedRoles = new PaginatedResult<RoleModel>()
+            var paginedAccessControls = new PaginatedResult<AccessControlModel>()
             {
-                Data = Enumerable.Range(0, 10).Select(x => new RoleModel()
+                Data = Enumerable.Range(0, 10).Select(x => new AccessControlModel()
                 {
                     Id = FormattableString.Invariant($"{x}"),
                 }).ToList(),
@@ -67,16 +68,17 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 CurrentPage = 0
             };
 
-            _ = this.mockRoleService
-                .Setup(x => x.GetRolePage(
+            _ = this.mockAccessControlService
+                .Setup(x => x.GetAccessControlPage(
                     It.IsAny<string>(),
                     It.IsAny<int>(),
                     It.IsAny<int>(),
-                    It.IsAny<string[]>()
+                    It.IsAny<string[]>(),
+                    It.IsAny<string>()
                 ))
-                .ReturnsAsync(paginedRoles);
+                .ReturnsAsync(paginedAccessControls);
 
-            var locationUrl = "http://location/roles";
+            var locationUrl = "http://location/accessControls";
 
             _ = this.mockUrlHelper
                 .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
@@ -92,23 +94,23 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             ));
 
             // Act
-            var result = await roleController.Get();
+            var result = await accessControlController.Get();
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(paginedRoles.Data.Count, result.Items.Count());
+            Assert.AreEqual(paginedAccessControls.Data.Count, result.Items.Count());
 
             this.mockRepository.VerifyAll();
         }
 
 
         [Test]
-        public async Task GetByIdShouldReturnTheCorrespondantRole()
+        public async Task GetByIdShouldReturnTheCorrespondantAccessControl()
         {
             // Arrange
-            var rolesController = CreateRolesController();
+            var accessControlsController = CreateAccessControlsController();
 
-            var roleId = Guid.NewGuid().ToString();
+            var accessControlId = Guid.NewGuid().ToString();
 
             _ = this.mockLogger.Setup(x => x.Log(
                  LogLevel.Information,
@@ -117,43 +119,44 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                  It.IsAny<Exception>(),
                  (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
              ));
-            _ = this.mockRoleService
-                .Setup(x => x.GetRolePage(
+            _ = this.mockAccessControlService
+                .Setup(x => x.GetAccessControlPage(
                     It.IsAny<string>(),
                     It.IsAny<int>(),
                     It.IsAny<int>(),
-                    It.IsAny<string[]>()
+                    It.IsAny<string[]>(),
+                    It.IsAny<string>()
                 ))
-                .ReturnsAsync(new PaginatedResult<RoleModel>()
+                .ReturnsAsync(new PaginatedResult<AccessControlModel>()
                 {
-                    Data = new List<RoleModel>() { new RoleModel() { Id = roleId } },
+                    Data = new List<AccessControlModel>() { new AccessControlModel() { Id = accessControlId } },
                     TotalCount = 1,
                     PageSize = 10,
                     CurrentPage = 0
                 });
 
             // Act
-            var result = await rolesController.Get(roleId);
+            var result = await accessControlsController.Get(accessControlId);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<PaginationResult<RoleModel>>(result);
+            Assert.IsAssignableFrom<PaginationResult<AccessControlModel>>(result);
 
-            var role = result.Items.First();
+            var accessControl = result.Items.First();
 
-            Assert.IsNotNull(role);
-            Assert.AreEqual(roleId, role.Id);
+            Assert.IsNotNull(accessControl);
+            Assert.AreEqual(accessControlId, accessControl.Id);
 
             this.mockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task CreateRoleShouldReturnOk()
+        public async Task CreateAccessControlShouldReturnOk()
         {
             // Arrange
-            var rolesController = CreateRolesController();
+            var accessControlsController = CreateAccessControlsController();
 
-            var role = new RoleDetailsModel()
+            var accessControl = new AccessControlModel()
             {
                 Id = Guid.NewGuid().ToString()
             };
@@ -166,44 +169,44 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
             ));
 
-            _ = this.mockRoleService
-                .Setup(x => x.CreateRole(It.Is<RoleDetailsModel>(c => c.Id.Equals(role.Id, StringComparison.Ordinal))))
-                .ReturnsAsync(role);
+            _ = this.mockAccessControlService
+                .Setup(x => x.CreateAccessControl(It.Is<AccessControlModel>(c => c.Id.Equals(accessControl.Id, StringComparison.Ordinal))))
+                .ReturnsAsync(accessControl);
 
             // Act
-            var result = await rolesController.CreateRoleAsync(role);
+            var result = await accessControlsController.CreateAccessControlAsync(accessControl);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<OkObjectResult>(result);
+            Assert.IsAssignableFrom<OkObjectResult>(result); // Change this line
 
-            var okObjectResult = result as ObjectResult;
+            var okObjectResult = result as OkObjectResult;
 
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
 
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<RoleDetailsModel>(okObjectResult.Value);
+            Assert.IsAssignableFrom<AccessControlModel>(okObjectResult.Value);
 
-            var roleObj = okObjectResult.Value as RoleDetailsModel;
-            Assert.IsNotNull(roleObj);
-            Assert.AreEqual(role.Id, roleObj.Id);
+            var accessControlObj = okObjectResult.Value as AccessControlModel;
+            Assert.IsNotNull(accessControlObj);
+            Assert.AreEqual(accessControl.Id, accessControlObj.Id);
 
             this.mockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task UpdateRoleShouldReturnOkResult()
+        public async Task UpdateAccessControlShouldReturnOkResult()
         {
             // Arrange
-            var rolesController = CreateRolesController();
+            var accessControlsController = CreateAccessControlsController();
 
 
-            var roleId = Guid.NewGuid().ToString();
+            var accessControlId = Guid.NewGuid().ToString();
 
-            var role = new RoleDetailsModel()
+            var accessControl = new AccessControlModel()
             {
-                Id = roleId //test
+                Id = accessControlId //test
             };
 
             _ = this.mockLogger.Setup(x => x.Log(
@@ -214,12 +217,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
             ));
 
-            _ = this.mockRoleService
-                .Setup(x => x.UpdateRole(roleId, It.Is<RoleDetailsModel>(c => c.Id.Equals(role.Id, StringComparison.Ordinal))))
-                .ReturnsAsync(role);
+            _ = this.mockAccessControlService
+                .Setup(x => x.UpdateAccessControl(accessControlId, It.Is<AccessControlModel>(c => c.Id.Equals(accessControl.Id, StringComparison.Ordinal))))
+                .ReturnsAsync(accessControl);
 
             // Act
-            var result = await rolesController.EditRoleAsync(roleId, role);
+            var result = await accessControlsController.EditAccessControlAsync(accessControlId, accessControl);
 
             // Assert
             Assert.IsNotNull(result);
@@ -228,10 +231,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
         }
 
         /*[Test]
-        public async Task DeleteRoleShouldReturnExpectedBehavior()
+        public async Task DeleteAccessControlShouldReturnExpectedBehavior()
         {
             // Arrange
-            var rolesController = CreateRolesController();
+            var accessControlsController = CreateAccessControlsController();
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockLogger.Setup(x => x.Log(
@@ -242,7 +245,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
             ));
 
-            _ = this.mockRoleService.Setup(c => c.DeleteRole(It.Is<string>(x => x == deviceId)))
+            _ = this.mockAccessControlService.Setup(c => c.DeleteAccessControl(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(true);
 
             _ = this.mockLogger.Setup(c => c.Log(
@@ -253,7 +256,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             // Act
-            var result = await rolesController.DeleteRole(deviceId);
+            var result = await accessControlsController.DeleteAccessControl(deviceId);
 
             // Assert
             Assert.IsNotNull(result);
