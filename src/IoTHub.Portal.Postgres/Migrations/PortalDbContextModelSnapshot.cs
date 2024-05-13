@@ -415,6 +415,9 @@ namespace IoTHub.Portal.Postgres.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.HasIndex("PrincipalId")
                         .IsUnique();
 
@@ -538,6 +541,12 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("GivenName")
+                        .IsUnique();
 
                     b.HasIndex("PrincipalId")
                         .IsUnique();

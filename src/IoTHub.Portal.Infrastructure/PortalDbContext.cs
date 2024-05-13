@@ -74,6 +74,15 @@ namespace IoTHub.Portal.Infrastructure
                 .WithMany()
                 .HasForeignKey(ac => ac.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
+            _ = modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+            _ = modelBuilder.Entity<User>()
+                .HasIndex(u => u.GivenName)
+                .IsUnique();
+            _ = modelBuilder.Entity<Group>()
+                .HasIndex(g => g.Name)
+                .IsUnique();
         }
     }
 }
