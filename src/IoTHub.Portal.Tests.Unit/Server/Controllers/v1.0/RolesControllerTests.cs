@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
+namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Server.Controllers.V10;
@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System;
 
     [TestFixture]
-    public class RolessControllerTest
+    public class RolessControllerTests
     {
         private MockRepository mockRepository;
 
@@ -198,11 +198,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var rolesController = CreateRolesController();
 
+
             var roleId = Guid.NewGuid().ToString();
 
             var role = new RoleDetailsModel()
             {
-                Id = roleId
+                Id = roleId //test
             };
 
             _ = this.mockLogger.Setup(x => x.Log(
@@ -226,5 +227,39 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockRepository.VerifyAll();
         }
 
+        /*[Test]
+        public async Task DeleteRoleShouldReturnExpectedBehavior()
+        {
+            // Arrange
+            var rolesController = CreateRolesController();
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Information,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            _ = this.mockRoleService.Setup(c => c.DeleteRole(It.Is<string>(x => x == deviceId)))
+                .ReturnsAsync(true);
+
+            _ = this.mockLogger.Setup(c => c.Log(
+                It.Is<LogLevel>(x => x == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            // Act
+            var result = await rolesController.DeleteRole(deviceId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkObjectResult>(result);
+
+            this.mockRepository.VerifyAll();
+        }*/
     }
 }
