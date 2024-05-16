@@ -6,10 +6,12 @@
 @inject ISnackbar Snackbar
 @inject IEdgeDeviceClientService EdgeDeviceClientService
 @inject IDeviceClientService DeviceClientService
+@inject ILayerClientService LayerClientService
 @inject IDeviceModelsClientService DeviceModelsClientService
 
 <MudDialog MaxWidth="800px" MaxHeight="600px">
     <DialogContent>
+        <MudTextField @bind-Value="@Layer.Name" For="@(() => Layer.Name)" />
         <MudGrid>
             <MudItem xs="12" xd="12">
                 @if (!IsLoading)
@@ -155,21 +157,17 @@
     {
         try
         {
+            await LayerClientService.UpdateLayer(Layer);
             List<DeviceDetails> devices = new List<DeviceDetails>();
-            foreach(string deviceRemove in DeviceRemoveList)
+            foreach (string deviceRemove in DeviceRemoveList)
             {
-                //Delete GetDevice ToDo
-                /*DeviceListItem updatedDevice = Devices.First(device => device.DeviceID == deviceRemove);
-                updatedDevice.LayerId = null;
-                await DeviceClientService.UpdateDevice(updatedDevice as DeviceDetails);*/
-                DeviceDetails updatedDevice = await DeviceClientService.GetDevice(deviceRemove);
+                DeviceDetails updatedDevice = FindDevice(deviceRemove);
                 updatedDevice.LayerId = null;
                 await DeviceClientService.UpdateDevice(updatedDevice);
             }
             foreach (string device in DeviceList)
             {
-                //Delete GetDevice
-                DeviceDetails updatedDevice = await DeviceClientService.GetDevice(device);
+                DeviceDetails updatedDevice = FindDevice(device);
                 updatedDevice.LayerId = Layer.Id;
                 await DeviceClientService.UpdateDevice(updatedDevice);
             }
@@ -180,7 +178,34 @@
         }
         finally
         {
-            Cancel();
+            MudDialog.Close(DialogResult.Ok(Layer.Name));
         }
+    }
+
+    private DeviceDetails FindDevice(string deviceID)
+    {
+        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceID);
+
+        var deviceDetails = new DeviceDetails();
+
+        if (device == null) return deviceDetails;
+
+        deviceDetails.DeviceID = device.DeviceID;
+        deviceDetails.DeviceName = device.DeviceName;
+        deviceDetails.ImageUrl = device.ImageUrl;
+        deviceDetails.IsConnected = device.IsConnected;
+        deviceDetails.IsEnabled = device.IsEnabled;
+        deviceDetails.StatusUpdatedTime = device.StatusUpdatedTime;
+        deviceDetails.Labels = device.Labels.ToList();
+        deviceDetails.LayerId = device.LayerId;
+
+        var model = DeviceModels.FirstOrDefault(deviceModel => deviceModel.ModelId == device.DeviceModelId);
+        if (model != null)
+        {
+            deviceDetails.ModelId = model.ModelId;
+            deviceDetails.ModelName = model.Name;
+        }
+       
+        return deviceDetails;
     }
 }
