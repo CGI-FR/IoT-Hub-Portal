@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Domain.Entities
 {
     using IoTHub.Portal.Domain.Base;
+    using IoTHub.Portal.Shared.Constants;
 
     public class Planning : EntityBase
     {
@@ -30,17 +31,11 @@ namespace IoTHub.Portal.Domain.Entities
         /// <summary>
         /// When planning is used
         /// </summary>
-        public string DayOff { get; set; } = default!;
+        public DaysEnumFlag.DaysOfWeek DayOff { get; set; } = default!;
 
         /// <summary>
         /// Day off command.
         /// </summary>
         public string CommandId { get; set; } = default!;
-
-        /// <summary>
-        /// Day off exceptions.
-        /// </summary>
-        public string DayExceptions { get; set; } = default!;
-
     }
 }

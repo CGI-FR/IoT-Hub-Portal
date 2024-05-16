@@ -14,6 +14,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
     using IoTHub.Portal.Shared.Models.v10;
     using System.Collections.Generic;
     using IoTHub.Portal.Shared.Models.v10.Filters;
+    using IoTHub.Portal.Shared.Constants;
 
     [TestFixture]
     internal class CreatePlanningsPageTest : BlazorUnitTest
@@ -57,7 +58,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
             var cut = RenderComponent<CreatePlanningsPage>();
 
             // Assert
-            Assert.AreEqual(cut.Instance.Planning.DayOff, "SaSu");
+            Assert.AreEqual(cut.Instance.Planning.DayOff, DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday);
             Assert.AreEqual(cut.Instance.ScheduleList[0].Start, "00:00");
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }

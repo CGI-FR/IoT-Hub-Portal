@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// Where level is.
         /// </summary>
-        public string Father { get; set; }
+        public string? Father { get; set; }
 
         /// <summary>
         /// The planning associat with the level.

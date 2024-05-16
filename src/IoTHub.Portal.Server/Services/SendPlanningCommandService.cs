@@ -12,7 +12,6 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Models.v10;
     using System.Collections.Generic;
     using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Shared.Models.v10;
     using System.Collections.ObjectModel;
     using System;
@@ -21,21 +20,21 @@ namespace IoTHub.Portal.Server.Services
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using System.Linq;
+    using IoTHub.Portal.Shared.Constants;
 
     public class PlanningCommand
     {
         public string planningId { get; set; } = default!;
         public Collection<string> listDeviceId { get; } = new Collection<string>();
-        public Dictionary<string, List<PayloadCommand>> commands { get; } = new Dictionary<string, List<PayloadCommand>>();
+        public Dictionary<DaysEnumFlag.DaysOfWeek, List<PayloadCommand>> commands { get; } = new Dictionary<DaysEnumFlag.DaysOfWeek, List<PayloadCommand>>();
+
 
         public PlanningCommand(string listDeviceId, string planningId)
         {
             this.planningId = planningId;
             this.listDeviceId.Add(listDeviceId);
 
-            List<string> days = new List<string> {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-
-            foreach (var day in days)
+            foreach (DaysEnumFlag.DaysOfWeek day in Enum.GetValues(typeof(DaysEnumFlag.DaysOfWeek)))
             {
                 commands.Add(day, new List<PayloadCommand>());
             }
@@ -259,9 +258,9 @@ namespace IoTHub.Portal.Server.Services
         // planning.commands[Sa] contains a list of PayloadCommand Values.
         public void addPlanningSchedule(PlanningDto planningData, PlanningCommand planning)
         {
-            foreach (string key in planning.commands.Keys)
+            foreach (DaysEnumFlag.DaysOfWeek key in planning.commands.Keys)
             {
-                if (planningData.DayOff.Contains(key[..2]))
+                if ((planningData.DayOff & key) == planningData.DayOff)
                 {
                     PayloadCommand newPayload = new PayloadCommand(getTimeSpan("0:00"), getTimeSpan("24:00"), planningData.CommandId);
                     planning.commands[key].Add(newPayload);
@@ -275,7 +274,7 @@ namespace IoTHub.Portal.Server.Services
             TimeSpan start = getTimeSpan(schedule.Start);
             TimeSpan end = getTimeSpan(schedule.End);
 
-            foreach (string key in planning.commands.Keys)
+            foreach (DaysEnumFlag.DaysOfWeek key in planning.commands.Keys)
             {
                 if (planning.commands[key].Count == 0)
                 {
@@ -313,7 +312,7 @@ namespace IoTHub.Portal.Server.Services
             // Search for the appropriate command at the correct time from each plan.
             foreach (var planning in this.planningCommands)
             {
-                foreach (var schedule in planning.commands[currentDay.ToString()])
+                foreach (var schedule in planning.commands[DayConverter.Convert(currentDay)])
                 {
                     if (schedule.start < currentHour && schedule.end > currentHour)
                     {

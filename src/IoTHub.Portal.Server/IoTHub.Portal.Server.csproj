@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ProjectExtensions>
-    <VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json" properties_4launchsettings_1json__JsonSchema="" /></VisualStudio>
+    <VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio>
   </ProjectExtensions>
 
   <ItemGroup>

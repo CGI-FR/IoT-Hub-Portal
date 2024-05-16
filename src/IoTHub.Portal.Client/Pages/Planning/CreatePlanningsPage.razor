@@ -2,6 +2,7 @@
 
 @using IoTHub.Portal.Shared.Models.v10
 @using IoTHub.Portal.Client.Components.Planning
+@using IoTHub.Portal.Shared.Constants
 
 <EditPlanning planning=@Planning scheduleList=@ScheduleList mode="New" />
 
@@ -11,7 +12,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Planning.DayOff = "SaSu";
+        Planning.DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday;
         ScheduleList.Add(new ScheduleDto { Start = "00:00" });
     }
 }

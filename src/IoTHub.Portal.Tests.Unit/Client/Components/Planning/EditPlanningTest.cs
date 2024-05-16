@@ -18,6 +18,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
     using NUnit.Framework;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using IoTHub.Portal.Client.Components.Planning;
+    using System.Linq;
+    using IoTHub.Portal.Models.v10.LoRaWAN;
+    using IoTHub.Portal.Client.Exceptions;
+    using MudBlazor;
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using IoTHub.Portal.Shared.Constants;
 
     internal class EditPlanningTest : BlazorUnitTest
     {
@@ -53,7 +60,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         {
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu",
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
             ScheduleDto firstSchedule = new ScheduleDto
@@ -82,7 +89,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
                 ComponentParameter.CreateParameter("scheduleList", ScheduleList )
             );
 
-            Assert.AreEqual(cut.Instance.planning.DayOff, "SaSu");
+            Assert.AreEqual(cut.Instance.planning.DayOff, DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday);
             Assert.AreEqual(cut.Instance.scheduleList[0].Start, "00:00");
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
@@ -95,7 +102,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu",
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
             ScheduleDto firstSchedule = new ScheduleDto
@@ -142,7 +149,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu",
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
             ScheduleDto firstSchedule = new ScheduleDto
@@ -193,7 +200,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu",
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
             ScheduleDto firstSchedule = new ScheduleDto
@@ -244,7 +251,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         {
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu"
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday
             };
             ScheduleDto firstSchedule = new ScheduleDto
             {
@@ -280,7 +287,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu",
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
             ScheduleDto firstSchedule = new ScheduleDto
@@ -315,7 +322,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             var editPlanningChangeOnDayLayers = cut.FindAll("#editPlanningChangeOnDayLayers")[0];
             editPlanningChangeOnDayLayers.Click();
 
-            Assert.AreEqual(cut.Instance.planning.DayOff, "SaSuMo");
+            Assert.AreEqual(cut.Instance.planning.DayOff, DaysEnumFlag.DaysOfWeek.Monday | DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -327,7 +334,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu",
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
             ScheduleDto firstSchedule = new ScheduleDto
@@ -362,7 +369,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             var editPlanningChangeOffDayLayers = cut.FindAll("#editPlanningChangeOffDayLayers")[5];
             editPlanningChangeOffDayLayers.Click();
 
-            Assert.AreEqual(cut.Instance.planning.DayOff, "Su");
+            Assert.AreEqual(cut.Instance.planning.DayOff, DaysEnumFlag.DaysOfWeek.Sunday);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -376,7 +383,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu",
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
             ScheduleDto firstSchedule = new ScheduleDto
@@ -431,7 +438,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu",
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
             ScheduleDto firstSchedule = new ScheduleDto
@@ -502,7 +509,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             PlanningDto Planning = new PlanningDto
             {
-                DayOff = "SaSu",
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
             ScheduleDto firstSchedule = new ScheduleDto
