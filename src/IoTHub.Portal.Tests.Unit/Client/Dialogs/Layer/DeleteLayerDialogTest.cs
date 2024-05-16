@@ -1,19 +1,12 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using MudBlazor;
-
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 {
-    using System.Collections.Generic;
-    using AutoFixture;
     using Bunit;
-    using IoTHub.Portal.Application.Services;
     using FluentAssertions;
-    using IoTHub.Portal.Client.Components.Layers;
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;

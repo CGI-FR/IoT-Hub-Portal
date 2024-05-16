@@ -95,9 +95,12 @@
                         </MudTable>
                         <div>
                             Days:
-                            @foreach (string day in AvailableDay)
+                            @foreach (DaysEnumFlag.DaysOfWeek day in Enum.GetValues(typeof(DaysEnumFlag.DaysOfWeek)))
                             {
-                                <MudButton id="editPlanningChangeOnDayLayers" Style="@((planning.DayOff.Contains(day)) ? "text-decoration: line-through;" : "text-decoration: underline;")" Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff.Contains(day)) ? Color.Error : Color.Success)">@day</MudButton>
+                                if (day != DaysEnumFlag.DaysOfWeek.None)
+                                {
+                                    <MudButton id="editPlanningChangeOnDayLayers" Style=@((planning.DayOff & day) != day ? "text-decoration: underline;" : "text-decoration: line-through;") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) != day ? Color.Success : Color.Error)">@day</MudButton>
+                                }
                             }
                         </div>
                     </MudItem>
@@ -146,9 +149,12 @@
                         </MudTable>
                         <div>
                             Days:
-                            @foreach (string day in AvailableDay)
+                            @foreach (DaysEnumFlag.DaysOfWeek day in Enum.GetValues(typeof(DaysEnumFlag.DaysOfWeek)))
                             {
-                                <MudButton id="editPlanningChangeOffDayLayers" Style="@((planning.DayOff.Contains(day)) ? "text-decoration: underline;" : "text-decoration: line-through;")" Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff.Contains(day)) ? Color.Success : Color.Error)">@day</MudButton>
+                                if (day != DaysEnumFlag.DaysOfWeek.None)
+                                {
+                                    <MudButton id="editPlanningChangeOffDayLayers" Style=@((planning.DayOff & day) == day ? "text-decoration: underline;" : "text-decoration: line-through;") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) == day ? Color.Success : Color.Error)">@day</MudButton>
+                                }
                             }
                         </div>
                     </MudItem>
@@ -162,20 +168,10 @@
                 <TitleContent><MudText Typo="Typo.h6">Date of application of this planning</MudText></TitleContent>
                 <ChildContent>
                     <MudTd DataLabel="From" Style="word-break: break-all;">
-                        <MudSelect @bind-Value="@planning.Start" Label="From" Margin="Margin.Dense" Variant="Variant.Outlined">
-                            @foreach (string month in AvailableMonth)
-                            {
-                                <MudSelectItem Value="@(month)">@month</MudSelectItem>
-                            }
-                        </MudSelect>
+                        <MudTextField @bind-Value="@planning.Start" T="string" Format="yyyy-MM-dd" Label="Start" InputType="InputType.Date" />
                     </MudTd>
-                    <MudTd DataLabel="To" Style="word-break: break-all;">
-                        <MudSelect @bind-Value="@planning.End" Label="From" Margin="Margin.Dense" Variant="Variant.Outlined">
-                            @foreach (string month in AvailableMonth)
-                            {
-                                <MudSelectItem Value="@(month)">@month</MudSelectItem>
-                            }
-                        </MudSelect>
+                    <MudTd DataLabel="From" Style="word-break: break-all;">
+                        <MudTextField @bind-Value="@planning.End" T="string" Format="yyyy-MM-dd" Label="End" InputType="InputType.Date" />
                     </MudTd>
                 </ChildContent>
             </MudExpansionPanel>
@@ -223,7 +219,6 @@
     public List<ScheduleDto> scheduleOffList { get; set; } = new List<ScheduleDto> { new ScheduleDto() };
 
     public IEnumerable<string> AvailableMonth { get; set; } = new List<string>() { "January", "February", "March", "April", "Mai", "June", "July", "August", "September", "October", "Novembre", "December" };
-    public IEnumerable<string> AvailableDay { get; set; } = new List<string>() { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
 
     public string defaultDeviceModel { get; set; } = "Choose a Device Model";
 
@@ -245,8 +240,7 @@
 
             //Get all layers that will be link to a planning
             List<LayerDto> listLayers = await LayerClientService.GetLayers();
-            //Layers = LayerHelper.GetHashsetLayer(listLayers);
-            OrderLayers(listLayers);
+            Layers = LayerHelper.GetHashsetLayer(listLayers);
 
             //Get all Device Models & Commands
             await LoadCommands();
@@ -277,12 +271,16 @@
         }
     }
 
-    private void ChangeOffDay(string day)
+    private void ChangeOffDay(DaysEnumFlag.DaysOfWeek day)
     {
-        string days = planning.DayOff;
-        if (days.Contains(day)) days  = days.Replace(day, "");
-        else days += day;
-        planning.DayOff = days;
+        if ((planning.DayOff & day) == day)
+        {
+            planning.DayOff &= ~day;
+        }
+        else
+        {
+            planning.DayOff |= day;
+        }
     }
 
     public async void Save()
@@ -359,51 +357,6 @@
                 CheckedChanged(child);
             }
         }
-    }
-
-    private void OrderLayers(List<LayerDto> layers)
-    {
-        if (layers.Count() == 0) return;
-
-        LayerDto firstLayer = layers[0];
-        bool isAdd = false;
-
-        if (firstLayer.Father == "Init")
-        {
-            Layers.Add(new LayerHash(firstLayer, 0, false));
-            isAdd = true;
-        }
-        // Look for the layer's father within Layer
-        else isAdd = addSubLayer(Layers, firstLayer);
-
-        // If the layer hasn't been added, place it at the end of the list to wait for its father to be added to "Layers"
-        layers.RemoveAt(0);
-        if (!isAdd) layers.Add(firstLayer);
-
-        OrderLayers(layers);
-    }
-
-    private bool addSubLayer(HashSet<LayerHash> fatherLayer, LayerDto layer)
-    {
-        foreach (LayerHash father in fatherLayer)
-        {
-            if (father.LayerData.Id == layer.Father)
-            {
-                father.Children.Add(new LayerHash(layer, father.Level + 1, false));
-
-                // If father has been found, return true
-                return true;
-            }
-            else
-            {
-                // Look for the layer's father within Layer
-                bool isAdd = addSubLayer(father.Children, layer);
-
-                // If father has been found, return true
-                if (isAdd) return true;
-            }
-        }
-        return false;
     }
 
     private async Task LoadCommands()

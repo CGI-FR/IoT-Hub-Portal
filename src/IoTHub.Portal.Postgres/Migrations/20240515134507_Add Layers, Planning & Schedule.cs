@@ -1,6 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+#nullable disable
+
 namespace IoTHub.Portal.Postgres.Migrations
 {
     using Microsoft.EntityFrameworkCore.Migrations;
@@ -23,7 +25,7 @@ namespace IoTHub.Portal.Postgres.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Father = table.Column<string>(type: "text", nullable: false),
+                    Father = table.Column<string>(type: "text", nullable: true),
                     Planning = table.Column<string>(type: "text", nullable: false),
                     hasSub = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -41,9 +43,8 @@ namespace IoTHub.Portal.Postgres.Migrations
                     Start = table.Column<string>(type: "text", nullable: false),
                     End = table.Column<string>(type: "text", nullable: false),
                     Frequency = table.Column<bool>(type: "boolean", nullable: false),
-                    DayOff = table.Column<string>(type: "text", nullable: false),
-                    CommandId = table.Column<string>(type: "text", nullable: false),
-                    DayExceptions = table.Column<string>(type: "text", nullable: false)
+                    DayOff = table.Column<int>(type: "integer", nullable: false),
+                    CommandId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

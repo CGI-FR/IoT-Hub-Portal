@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Domain.Entities
         /// <summary>
         /// Where level is.
         /// </summary>
-        public string Father { get; set; } = default!;
+        public string? Father { get; set; } = default!;
 
         /// <summary>
         /// The planning associat with the level.

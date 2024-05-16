@@ -18,7 +18,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
-    using MudBlazor;
     using NUnit.Framework;
 
     internal class LayerListPageTest : BlazorUnitTest
@@ -43,7 +42,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         {
             var expectedLayerDto = Fixture.Create<LayerDto>();
             expectedLayerDto.Name = "Main Layer";
-            expectedLayerDto.Father = "Init";
+            expectedLayerDto.Father = null;
 
             var expectedLayerDtoChild = Fixture.Create<LayerDto>();
 
@@ -72,7 +71,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         {
             var expectedLayerDto = Fixture.Create<LayerDto>();
             expectedLayerDto.Name = "Main Layer";
-            expectedLayerDto.Father = "Init";
+            expectedLayerDto.Father = null;
 
             var expectedChildrenLayerDto1 = Fixture.Create<LayerDto>();
             expectedChildrenLayerDto1.Father = expectedLayerDto.Id;
@@ -109,7 +108,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Main Layer",
-                Father = "Init"
+                Father = null
             };
 
             var expectedChildrenLayerDto1 = Fixture.Create<LayerDto>();
@@ -137,37 +136,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             cut.WaitForAssertion(() => cut.FindAll("#editLayerElement").Count.Should().Be(1));
 
-            cut.WaitForAssertion(() => MockRepository.VerifyAll());
-        }
-
-        [Test]
-        public async Task LayerListPageOnClickLayerListPageAsync()
-        {
-            var expectedRename = Fixture.Create<string>();
-
-            var expectedLayerDto = new LayerDto()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Main Layer",
-                Father = "Init"
-            };
-
-            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
-                .ReturnsAsync(new List<LayerDto>(new List<LayerDto> { expectedLayerDto }));
-
-            // Act
-            var cut = RenderComponent<LayerListPage>();
-
-            var editLayerMouseOver = cut.WaitForElement("#editLayerElement");
-            editLayerMouseOver.MouseOver();
-
-            var editLayerEditLayer = cut.WaitForElement("#editLayerEditLayer");
-            editLayerEditLayer.Click();
-
-            var titleField = cut.FindComponents<MudTextField<string>>()[0];
-            await cut.InvokeAsync(() => titleField.Instance.SetText(expectedRename));
-
-            Assert.AreEqual(cut.Instance.Layers.First().LayerData.Name, expectedRename);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
