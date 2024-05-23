@@ -7,12 +7,11 @@ namespace IoTHub.Portal.Client.Helpers
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Shared.Models.v10;
 
-    public class LayerHelper
+    public static class LayerHelper
     {
-
         public static HashSet<LayerHash> GetHashsetLayer(List<LayerDto> listLayers)
         {
-            HashSet<LayerHash> Layers = new HashSet<LayerHash> { };
+            var Layers = new HashSet<LayerHash> { };
             if (listLayers is null) throw new ArgumentNullException(nameof(listLayers));
 
             foreach (var layer in listLayers)
@@ -25,7 +24,6 @@ namespace IoTHub.Portal.Client.Helpers
                     break;
                 }
             }
-
             return Layers;
         }
 
