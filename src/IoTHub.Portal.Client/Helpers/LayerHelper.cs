@@ -24,7 +24,6 @@ namespace IoTHub.Portal.Client.Helpers
                     break;
                 }
             }
-
             return Layers;
         }
 
