@@ -1,5 +1,4 @@
-﻿@using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule
-@using IoTHub.Portal.Models
+﻿@using IoTHub.Portal.Models
 @using IoTHub.Portal.Models.v10
 @using IoTHub.Portal.Shared.Models.v10
 @using IoTHub.Portal.Client.Validators
@@ -39,7 +38,7 @@
                             <MudTextField @bind-Value="@planning.Name" For="@(() => planning.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
                         </MudItem>
                         <MudTd DataLabel="Command" Style="text-align: center;">
-                            <MudSelect @bind-Value="@SelectedModel" Label="Device Model" Margin="Margin.Dense" Variant="Variant.Outlined">
+                            <MudSelect @bind-Value="@SelectedModel" Label=" Device Model" Margin="Margin.Dense" Variant="Variant.Outlined" Disabled="@((mode == "New") ? false : true)">
                                 @foreach (string model in CommandDictionary.Keys.ToList())
                                 {
                                     <MudSelectItem Value="@(model)">@model</MudSelectItem>
@@ -99,7 +98,7 @@
                             {
                                 if (day != DaysEnumFlag.DaysOfWeek.None)
                                 {
-                                    <MudButton id="editPlanningChangeOnDayLayers" Style=@((planning.DayOff & day) != day ? "text-decoration: underline;" : "text-decoration: line-through;") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) != day ? Color.Success : Color.Error)">@day</MudButton>
+                                    <MudButton id="editPlanningChangeOnDayLayers" Style=@((planning.DayOff & day) != day ? "" : "text-decoration: line-through;") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) != day ? Color.Success : Color.Error)">@day</MudButton>
                                 }
                             }
                         </div>
@@ -153,7 +152,7 @@
                             {
                                 if (day != DaysEnumFlag.DaysOfWeek.None)
                                 {
-                                    <MudButton id="editPlanningChangeOffDayLayers" Style=@((planning.DayOff & day) == day ? "text-decoration: underline;" : "text-decoration: line-through;") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) == day ? Color.Success : Color.Error)">@day</MudButton>
+                                    <MudButton id="editPlanningChangeOffDayLayers" Style=@((planning.DayOff & day) == day ? "text-decoration: underline;" : "") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) == day ? Color.Success : Color.Error)">@day</MudButton>
                                 }
                             }
                         </div>
@@ -285,6 +284,7 @@
 
     public async void Save()
     {
+        if (!areDataValid()) return;
         await SavePlanning();
         await SaveLayers(Layers);
         NavigationManager.NavigateTo($"/planning");
@@ -332,11 +332,7 @@
             foreach (LayerHash layer in saveLayers)
             {
                 await LayerClientService.UpdateLayer(layer.LayerData);
-
-                if (layer.Children.Count() != 0)
-                {
-                    await SaveLayers(layer.Children);
-                }
+                await SaveLayers(layer.Children);
             }
         }
         catch (ProblemDetailsException exception)
@@ -350,12 +346,9 @@
         if (item.LayerData.Planning == planning.Id) item.LayerData.Planning = "None";
         else item.LayerData.Planning = planning.Id;
 
-        if (item.Children.Count() != 0)
+        foreach (LayerHash child in item.Children)
         {
-            foreach (LayerHash child in item.Children)
-            {
-                CheckedChanged(child);
-            }
+            CheckedChanged(child);
         }
     }
 
@@ -363,7 +356,7 @@
     {
         DeviceModels = (await DeviceModelsClientService.GetDeviceModels(new DeviceModelFilter())).Items.ToList<IDeviceModel>();
 
-        foreach(var deviceModel in DeviceModels)
+        foreach (var deviceModel in DeviceModels)
         {
             // Load all commands for a particular Device Model
             IList<DeviceModelCommandDto> commandList = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(deviceModel.ModelId);
@@ -398,4 +391,53 @@
             Error?.ProcessProblemDetails(exception);
         }
     }
+
+    private bool areDataValid()
+    {
+        var errorMessage = "";
+        if (string.IsNullOrEmpty(planning.Name)) errorMessage += " - Name is empty";
+        if (string.IsNullOrEmpty(planning.CommandId)) errorMessage += " - Day off command is empty";
+        if (string.IsNullOrEmpty(planning.Start) || string.IsNullOrEmpty(planning.End)) errorMessage += " - Date of application are empty";
+
+        var commandMissing = 0;
+        var scheduleStartEnd = new List<List<string>>();
+        foreach (var schedule in scheduleList)
+        {
+            if (string.IsNullOrEmpty(schedule.CommandId)) commandMissing += 1;
+            scheduleStartEnd.Add(new List<string> { schedule.Start, schedule.End });
+        }
+
+        if (commandMissing != 0) errorMessage += commandMissing.ToString() + " - Buisiness day command missing";
+
+        errorMessage += CheckSceduleTimeline(scheduleStartEnd);
+
+        if (string.IsNullOrEmpty(errorMessage)) return true;
+
+        Snackbar.Add($"Some data are missing{errorMessage}", Severity.Error, null);
+        return false;
+    }
+
+    private string CheckSceduleTimeline(List<List<string>> listSchedule)
+    {
+        var connections = new Dictionary<string, string>();
+
+        foreach (var pair in listSchedule)
+        {
+            if (string.IsNullOrEmpty(pair[0]) | string.IsNullOrEmpty(pair[1])) return " - Business Day is not fully completed";
+            connections[pair[0]] = pair[1];
+        }
+
+        var start = listSchedule[0][0];
+        var end = listSchedule[0][1];
+        while (connections.ContainsKey(end))
+        {
+            connections[start] = connections[end];
+            connections.Remove(end);
+            end = connections[start];
+        }
+
+        if (connections.Count != 1) return " - Business Day is not fully completed";
+        return "";
+    }
+
 }
