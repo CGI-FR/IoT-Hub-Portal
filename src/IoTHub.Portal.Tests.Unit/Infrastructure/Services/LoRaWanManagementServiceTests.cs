@@ -7,7 +7,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Json;
-    using System.Text;
     using System.Threading.Tasks;
     using AutoFixture;
     using IoTHub.Portal.Application.Services;
@@ -66,9 +65,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            string regex = "[0-9A-F]{8,15}";
+            var regex = "[0-9A-F]{8,15}";
 
-            Xeger xeger = new Xeger(regex, new Random(0)); // Note zero in Random constructor
+            var xeger = new Xeger(regex, new Random(0)); // Note zero in Random constructor
 
             var command = new DeviceModelCommandDto
             {
