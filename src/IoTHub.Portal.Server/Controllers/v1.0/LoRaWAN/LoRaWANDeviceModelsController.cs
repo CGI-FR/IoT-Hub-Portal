@@ -123,8 +123,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="deviceModelDto">The device model.</param>
         /// <returns>The action result.</returns>
-        [HttpPut("{id}", Name = "PUT Update the LoRaWAN device model")]
-        [Authorize(Policy = Policies.UpdateLorawanDeviceModel)]
+        [HttpPut(Name = "PUT Update the LoRaWAN device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

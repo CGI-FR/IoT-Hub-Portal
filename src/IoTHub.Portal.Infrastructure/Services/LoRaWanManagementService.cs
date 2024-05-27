@@ -38,9 +38,17 @@ namespace IoTHub.Portal.Infrastructure.Services
             ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
             ArgumentNullException.ThrowIfNull(commandDto, nameof(commandDto));
 
+            // Convert the hex frame to a byte array
+            var hexFrame = Enumerable.Range(0, commandDto.Frame.Length / 2)
+                                .Select(x => Convert.ToByte(commandDto.Frame.Substring(x * 2, 2), 16))
+                                .ToArray();
+
+            // Convert the byte array to a base64 string
+            var rawPayload = Convert.ToBase64String(hexFrame);
+
             var body = new LoRaCloudToDeviceMessage
             {
-                RawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(commandDto.Frame)),
+                RawPayload = rawPayload,
                 Fport = commandDto.Port,
                 Confirmed = commandDto.Confirmed
             };

@@ -53,7 +53,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<ConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<ConnectionStringDialog>(string.Empty, parameters));
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
@@ -82,7 +82,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = service?.Show<ConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<ConnectionStringDialog>(string.Empty, parameters));
 
             var result = await dialogReference.Result;
 

@@ -31,10 +31,8 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<Action> Actions { get; set; }
         public DbSet<Principal> Principals { get; set; }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-                : base(options)
+            : base(options)
         {
         }
 
@@ -74,6 +72,7 @@ namespace IoTHub.Portal.Infrastructure
                 .WithMany()
                 .HasForeignKey(ac => ac.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             _ = modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
@@ -83,6 +82,17 @@ namespace IoTHub.Portal.Infrastructure
             _ = modelBuilder.Entity<Group>()
                 .HasIndex(g => g.Name)
                 .IsUnique();
+
+
+            _ = modelBuilder.Entity<EdgeDevice>()
+                .HasMany(c => c.Tags)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            _ = modelBuilder.Entity<Device>()
+                .HasMany(c => c.Tags)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

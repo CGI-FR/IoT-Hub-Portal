@@ -51,7 +51,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(10));
 
             // Assert
@@ -77,7 +77,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
             };
 
             IDialogReference dialogReference = null;
-            await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(10));
 
             // Act
@@ -110,7 +110,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
             };
 
             IDialogReference dialogReference = null;
-            await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(10));
 
             // Act
@@ -143,7 +143,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
             };
 
             IDialogReference dialogReference = null;
-            await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(10));
 
             // Act

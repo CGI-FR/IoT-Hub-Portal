@@ -17,14 +17,14 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
     
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.1.6
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: ~/.nuget/packages
         # Look to see if there is a cache hit for the corresponding requirements file
@@ -49,7 +49,7 @@ jobs:
       working-directory: src/IoTHub.Portal.Tests.Unit/
 
     # Upload test results as artifact
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
         name: test-results
@@ -62,16 +62,16 @@ jobs:
     needs: unit-test
     steps:
 
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.1.6
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: test-results
         path: |
           src/IoTHub.Portal.Tests.Unit/TestResults
 
     - name: Upload to Codecov test reports
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: src/IoTHub.Portal.Tests.Unit/TestResults
@@ -85,7 +85,7 @@ jobs:
 
   #  steps:
     
-  #  - uses: actions/checkout@v4.1.1
+  #  - uses: actions/checkout@v4.1.6
     
   #  - name: Setup .NET
   #    uses: actions/setup-dotnet@v4

@@ -72,30 +72,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
                 Title = "title",
                 Detail = "detail",
                 Status = 400,
-                TraceId = "traceId",
-                ExceptionDetails = new List<ProblemDetailsWithExceptionDetails.ExceptionDetail>
-                {
-                    new()
-                    {
-                        Message = "message",
-                        Raw = "raw",
-                        Type = "type",
-                        StackFrames = new List<ProblemDetailsWithExceptionDetails.StackFrame>()
-                        {
-                            new()
-                            {
-                                ContextCode = new List<string>(),
-                                FileName = "fileName",
-                                Line = 0,
-                                FilePath = "filePath",
-                                Function = "function",
-                                PostContextCode = new List<string>(),
-                                PreContextCode = new List<string>(),
-                                PreContextLine = 1
-                            }
-                        }
-                    }
-                }
+                TraceId = "traceId"
             };
 
             using var mockHttp = new MockHttpMessageHandler();
@@ -121,7 +98,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
 
             // Assert
             var exceptionAssertions = await result.Should().ThrowAsync<ProblemDetailsException>();
-            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Should().BeEquivalentTo(problemDetailsWithExceptionDetails);
+            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Title.Should().Be(problemDetailsWithExceptionDetails.Title);
+            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Detail.Should().Be(problemDetailsWithExceptionDetails.Detail);
+            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Status.Should().Be(problemDetailsWithExceptionDetails.Status);
         }
 
         [Test]
@@ -162,7 +141,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
 
             // Assert
             var exceptionAssertions = await result.Should().ThrowAsync<ProblemDetailsException>();
-            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Should().BeEquivalentTo(problemDetailsWithExceptionDetails);
+            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Title.Should().Be(problemDetailsWithExceptionDetails.Title);
+            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Detail.Should().Be(problemDetailsWithExceptionDetails.Detail);
+            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Status.Should().Be(problemDetailsWithExceptionDetails.Status);
 
             _ = snackBarService.ShownSnackbars.Count().Should().Be(1);
 

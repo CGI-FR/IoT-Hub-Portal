@@ -165,8 +165,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Updates the device.
         /// </summary>
         /// <param name="edgeDevice">The IoT Edge device.</param>
-        [HttpPut("{deviceId}", Name = "PUT Update IoT Edge")]
-        [Authorize(Policy = Policies.UpdateEdgeDevice)]
+
+        [HttpPut(Name = "PUT Update IoT Edge")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateDeviceAsync(IoTEdgeDevice edgeDevice)
         {

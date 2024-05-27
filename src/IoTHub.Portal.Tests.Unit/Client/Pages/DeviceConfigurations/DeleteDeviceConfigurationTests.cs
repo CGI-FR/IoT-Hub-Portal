@@ -66,7 +66,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             IDialogReference dialogReference = null;
 
-            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<DeleteDeviceConfiguration>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<DeleteDeviceConfiguration>(string.Empty, parameters));
             cut.WaitForAssertion(() => cut.Find("#delete-device-configuration"));
 
             // Act
@@ -101,7 +101,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 }
             };
 
-            await cut.InvokeAsync(() => this.dialogService?.Show<DeleteDeviceConfiguration>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => this.dialogService?.Show<DeleteDeviceConfiguration>(string.Empty, parameters));
             cut.WaitForAssertion(() => cut.Find("#delete-device-configuration"));
 
             // Act

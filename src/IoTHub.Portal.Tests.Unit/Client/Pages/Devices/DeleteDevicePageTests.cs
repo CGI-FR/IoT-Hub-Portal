@@ -55,7 +55,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<DeleteDevicePage>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<DeleteDevicePage>(string.Empty, parameters));
             cut.WaitForElement("#delete-device").Click();
 
             // Assert
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<DeleteDevicePage>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<DeleteDevicePage>(string.Empty, parameters));
             cut.WaitForElement("#delete-device").Click();
 
             // Assert

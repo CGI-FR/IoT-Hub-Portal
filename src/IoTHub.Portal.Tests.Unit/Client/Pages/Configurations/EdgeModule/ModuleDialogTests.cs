@@ -50,7 +50,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
             cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").OuterHtml.Should().Contain(moduleName));
@@ -94,7 +94,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
 
@@ -138,7 +138,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
             cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").OuterHtml.Should().Contain(moduleName));
@@ -179,7 +179,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
 
