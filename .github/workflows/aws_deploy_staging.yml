@@ -14,7 +14,7 @@ jobs:
     outputs:
       aws_public_registry: ${{ steps.login-ecr-public.outputs.registry }}
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
 
       - id: docker-tag
         uses: yuya-takeyama/docker-tag-from-github-ref-action@v1
@@ -63,7 +63,7 @@ jobs:
 
       - name: Build and push
         # You may pin to the exact commit or the version.
-        uses: docker/build-push-action@v5.1.0
+        uses: docker/build-push-action@v5.3.0
         with:
           # Build's context is the set of files located in the specified PATH or URL
           context: src/
@@ -82,7 +82,7 @@ jobs:
     environment:
       name: AWS Staging
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
   
       - name: Configure AWS credentials
         id: aws-credentials

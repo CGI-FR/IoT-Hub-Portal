@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<ProblemDetailsDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<ProblemDetailsDialog>(string.Empty, parameters));
 
             // Assert
             var mudListItems = cut.FindComponents<MudListItem>();

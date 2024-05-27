@@ -68,7 +68,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<ModuleLogsDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<ModuleLogsDialog>(string.Empty, parameters));
 
             // Assert
             _ = cut.FindAll("tr").Count.Should().Be(4);
@@ -103,7 +103,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             };
 
             // Act
-            await cut.InvokeAsync(() => service?.Show<ModuleLogsDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<ModuleLogsDialog>(string.Empty, parameters));
 
             // Assert
             _ = cut.FindAll("tr").Count.Should().Be(2);
@@ -145,7 +145,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = service?.Show<ModuleLogsDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<ModuleLogsDialog>(string.Empty, parameters));
             cut.Find("#close").Click();
             var result = await dialogReference.Result;
 

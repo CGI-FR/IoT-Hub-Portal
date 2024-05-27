@@ -61,7 +61,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             // Act
-            await cut.InvokeAsync(() => this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
 
             // Assert
             cut.WaitForState(() => cut.HasComponent<MudProgressCircular>());
@@ -88,7 +88,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             // Act
-            await cut.InvokeAsync(() => this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
             cut.WaitForState(() => !cut.HasComponent<MudProgressCircular>());
 
             // Assert
@@ -120,7 +120,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             IDialogReference dialogReference = null;
 
-            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
 
             // Assert
             _ = dialogReference.Should().NotBeNull();
@@ -166,7 +166,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             // Act
-            await cut.InvokeAsync(() => this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
             cut.WaitForState(() => !cut.HasComponent<MudProgressCircular>());
 
             // Assert
@@ -213,7 +213,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             IDialogReference dialogReference = null;
 
-            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ImportReportDialog>(string.Empty, parameters));
 
             _ = dialogReference.Result.Should().NotBeNull()
                 .And.BeOfType<Task<DialogResult>>()

@@ -2,7 +2,7 @@
 
 ARG BUILD_VERSION=1.0.0-dev
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
 ENV ASPNETCORE_URLS=http://+:80;https://+:443
@@ -17,7 +17,7 @@ RUN rm packages-microsoft-prod.deb
 RUN  apt-get update; \
 	  apt-get install -y apt-transport-https && \
 	  apt-get update && \
-	  apt-get install -y dotnet-sdk-7.0
+	  apt-get install -y dotnet-sdk-8.0
 
 FROM build AS builder
 WORKDIR /src
