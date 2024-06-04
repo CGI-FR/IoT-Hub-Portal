@@ -399,7 +399,8 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("Avatar")
+                    b.Property<string>("Color")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
@@ -497,6 +498,10 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Description")

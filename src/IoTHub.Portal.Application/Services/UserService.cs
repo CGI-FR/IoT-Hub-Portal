@@ -96,7 +96,7 @@ namespace IoTHub.Portal.Application.Services
             var existingName = await this.userRepository.GetByNameAsync(user.Name);
             if (existingName is not null)
             {
-                throw new ResourceAlreadyExistsException($"The User tis the name {user.Name} already exist !");
+                throw new ResourceAlreadyExistsException($"The User with the name {user.Name} already exist !");
             }
 
             userEntity.Email = user.Email;
@@ -118,7 +118,7 @@ namespace IoTHub.Portal.Application.Services
             var user = await userRepository.GetByIdAsync(id);
             if (user is null)
             {
-                throw new ResourceNotFoundException($"The User with the id {id} that you want to delete does'nt exist !");
+                throw new ResourceNotFoundException($"The User with the id {id} that you want to delete doesn't exist !");
             }
 
             principalRepository.Delete(user.PrincipalId);

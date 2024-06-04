@@ -32,6 +32,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GroupModel>))]
         public async Task<PaginationResult<GroupModel>> Get(
             string searchKeyword = null,
@@ -73,6 +74,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDetailsModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetGroupDetails(string id)
@@ -104,6 +106,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpPost(Name = "POST Create a Group")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GroupDetailsModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateGroup([FromBody] GroupDetailsModel group)
@@ -123,7 +126,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
 
 
         [HttpPut("{id}", Name = "PUT Edit a Group")]
-        //[Authorize(Policy = Policies.EditGroup)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EditGroupAsync(string id, GroupDetailsModel group)
         {
@@ -146,11 +149,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="id">Group id that we want to delete</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteGroup(string id)
         {
-            return Ok(await groupManagementService.DeleteGroup(id));
             try
             {
                 var result =await groupManagementService.DeleteGroup(id);
@@ -171,6 +174,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
 
         // Ajouter un utilisateur à un groupe
         [HttpPost("{groupId}/members/{userId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> AddUserToGroup(string groupId, string userId)
         {
             var result = await groupManagementService.AddUserToGroup(groupId, userId);
@@ -181,6 +185,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpDelete("{groupId}/members/{userId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> RemoveUserFromGroup(string groupId, string userId)
         {
             var result = await groupManagementService.RemoveUserFromGroup(groupId, userId);

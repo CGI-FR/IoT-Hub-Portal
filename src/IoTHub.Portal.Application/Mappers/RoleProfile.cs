@@ -13,11 +13,13 @@ namespace IoTHub.Portal.Application.Mappers
         {
             _ = CreateMap<Role, RoleModel>()
                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-               .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name));
+               .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+               .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color));
 
             _ = CreateMap<Role, RoleDetailsModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color))
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Actions, opts => opts.MapFrom(src =>
                     src.Actions.Select(a => a.Name)));
@@ -25,6 +27,7 @@ namespace IoTHub.Portal.Application.Mappers
             _ = CreateMap<RoleDetailsModel, Role>()
                  .ForMember(dest => dest.Id, opt => opt.Ignore())
                  .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                 .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color))
                  .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
                  .ForMember(dest => dest.Actions, opts => opts.MapFrom(src =>
                      src.Actions.Select(a => new Action { Name = a })));

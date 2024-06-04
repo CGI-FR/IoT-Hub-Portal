@@ -80,7 +80,7 @@ namespace IoTHub.Portal.Application.Services
             var existingName = await this.groupRepository.GetByNameAsync(group.Name);
             if (existingName is not null)
             {
-                throw new ResourceAlreadyExistsException($"The Group tis the name {group.Name} already exist !");
+                throw new ResourceAlreadyExistsException($"The Group with the name {group.Name} already exist !");
             }
             var groupEntity = this.mapper.Map<Group>(group);
             await groupRepository.InsertAsync(groupEntity);
@@ -95,7 +95,7 @@ namespace IoTHub.Portal.Application.Services
             var group = await groupRepository.GetByIdAsync(id);
             if (group is null)
             {
-                throw new ResourceNotFoundException($"The Group with the id {id} that you want to delete does'nt exist !");
+                throw new ResourceNotFoundException($"The Group with the id {id} that you want to delete doesn't exist !");
             }
             principalRepository.Delete(group.PrincipalId);
             groupRepository.Delete(id);
@@ -113,7 +113,7 @@ namespace IoTHub.Portal.Application.Services
                 throw new ResourceAlreadyExistsException($"The Group tis the name {group.Name} already exist !");
             }
             groupEntity.Name = group.Name;
-            groupEntity.Avatar = group.Avatar;
+            groupEntity.Color = group.Color;
             groupEntity.Description = group.Description;
             this.groupRepository.Update(groupEntity);
             await this.unitOfWork.SaveAsync();

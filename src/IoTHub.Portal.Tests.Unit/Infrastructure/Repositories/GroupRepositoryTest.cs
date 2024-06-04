@@ -35,6 +35,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = "Group 1",
+                    Color = "#0000000",
                     Members = new List<User>(),
                     Principal = new Principal()
                 },
@@ -42,6 +43,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = "Group 2",
+                    Color = "#0000000",
                     Members = new List<User>(),
                     Principal = new Principal()
                 }
@@ -67,6 +69,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Test Group",
+                Color = "#0000000",
                 Members = new List<User>(),
                 Principal = new Principal()
             };

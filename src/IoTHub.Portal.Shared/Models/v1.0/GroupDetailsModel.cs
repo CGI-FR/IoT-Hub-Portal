@@ -9,7 +9,7 @@ namespace IoTHub.Portal.Shared.Models.v10
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Avatar { get; set; }
+        public string Color { get; set; }
         public string Description { get; set; }
         public string PrincipalId { get; set; }
         public ICollection<UserModel> Members { get; set; } = new List<UserModel>();

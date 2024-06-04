@@ -230,30 +230,23 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             this.mockRepository.VerifyAll();
         }
 
-        /*[Test]
+        [Test]
         public async Task DeleteGroupShouldReturnExpectedBehavior()
         {
             // Arrange
             var groupsController = CreateGroupsController();
             var deviceId = Guid.NewGuid().ToString();
 
+            _ = this.mockGroupService.Setup(c => c.DeleteGroup(It.Is<string>(x => x == deviceId)))
+                .ReturnsAsync(true);
+
             _ = this.mockLogger.Setup(x => x.Log(
-                LogLevel.Information,
+                It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
                 (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
             ));
-
-            _ = this.mockGroupService.Setup(c => c.DeleteGroup(It.Is<string>(x => x == deviceId)))
-                .ReturnsAsync(true);
-
-            _ = this.mockLogger.Setup(c => c.Log(
-                It.Is<LogLevel>(x => x == LogLevel.Information),
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             // Act
             var result = await groupsController.DeleteGroup(deviceId);
@@ -263,6 +256,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             Assert.IsAssignableFrom<OkObjectResult>(result);
 
             this.mockRepository.VerifyAll();
-        }*/
+        }
     }
 }

@@ -8,7 +8,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -43,7 +42,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="modelId"></param>
         /// <param name="labels"></param>
         [HttpGet(Name = "GET Device list")]
-        [Authorize(Policy = Policies.GetAllDevices)]
+        [AllowAnonymous]
         public Task<PaginationResult<DeviceListItem>> SearchItems(
             string searchText = null,
             bool? searchStatus = null,
@@ -62,7 +61,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpGet("{deviceID}", Name = "GET Device details")]
-        [Authorize(Policy = Policies.GetDeviceDetails)]
+        [AllowAnonymous]
         public override Task<DeviceDetails> GetItem(string deviceID)
         {
             return base.GetItem(deviceID);
@@ -73,7 +72,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPost(Name = "POST Create device")]
-        [Authorize(Policy = Policies.CreateDevice)]
+        [AllowAnonymous]
         public override Task<IActionResult> CreateDeviceAsync(DeviceDetails device)
         {
             return base.CreateDeviceAsync(device);
@@ -84,7 +83,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPut(Name = "PUT Update device")]
-        [Authorize(Policy = Policies.UpdateDevice)]
+        [AllowAnonymous]
         public override Task<IActionResult> UpdateDeviceAsync(DeviceDetails device)
         {
             return base.UpdateDeviceAsync(device);
@@ -95,7 +94,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpDelete("{deviceID}", Name = "DELETE Remove device")]
-        [Authorize(Policy = Policies.DeleteDevice)]
+        [AllowAnonymous]
         public override Task<IActionResult> Delete(string deviceID)
         {
             return base.Delete(deviceID);
@@ -106,7 +105,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpGet("{deviceID}/credentials", Name = "GET Device Credentials")]
-        [Authorize(Policy = Policies.GetDeviceCredentials)]
+        [AllowAnonymous]
         public override Task<ActionResult<DeviceCredentials>> GetCredentials(string deviceID)
         {
             return base.GetCredentials(deviceID);
@@ -117,7 +116,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpGet("{deviceID}/properties", Name = "GET Device Properties")]
-        [Authorize(Policy = Policies.GetDeviceProperties)]
+        [AllowAnonymous]
         public async Task<IEnumerable<DevicePropertyValue>> GetProperties(string deviceID)
         {
             return await this.devicePropertyService.GetProperties(deviceID);
@@ -129,7 +128,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceID">The device identifier.</param>
         /// <param name="values">The properties values.</param>
         [HttpPost("{deviceID}/properties", Name = "POST Device Properties")]
-        [Authorize(Policy = Policies.CreateDeviceProperties)]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<DevicePropertyValue>>> SetProperties(string deviceID, IEnumerable<DevicePropertyValue> values)
         {
             await this.devicePropertyService.SetProperties(deviceID, values);
@@ -138,7 +137,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpGet("available-labels", Name = "GET Available Labels on Devices")]
-        [Authorize(Policy = Policies.GetAllAvailableDeviceLabels)]
+        [AllowAnonymous]
         public override Task<IEnumerable<LabelDto>> GetAvailableLabels()
         {
             return base.GetAvailableLabels();

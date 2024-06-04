@@ -33,7 +33,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpGet(Name = "Get Users")]
-        //[Authorize(Policy = "GetAllUsers")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserModel>))]
         public async Task<PaginationResult<UserModel>> Get(
             [FromQuery] string searchName = null,
@@ -77,6 +77,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDetailsModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserDetails(string id)
@@ -108,6 +109,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpPost(Name = "POST Create an User")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserDetailsModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateUser([FromBody] UserDetailsModel user)
@@ -126,7 +128,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpPut("{id}", Name = "PUT Edit User")]
-        //[Authorize(Policy = Policies.EditUser)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EditUserAsync(string id, UserDetailsModel user)
         {
@@ -150,6 +152,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="id">User id that we want to delete</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser(string id)

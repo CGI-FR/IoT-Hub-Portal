@@ -12,6 +12,7 @@ namespace IoTHub.Portal.Domain.Entities
     {
         [Required]
         public string Name { get; set; } = default!;
+        public string Color { get; set; } = default!;
         public string? Description { get; set; } = default!;
         public virtual ICollection<Action> Actions { get; set; } = new Collection<Action>();
     }

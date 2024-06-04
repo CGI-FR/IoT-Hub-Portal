@@ -8,6 +8,7 @@ namespace IoTHub.Portal.Shared.Models.v10
     {
         public string? Id { get; set; }
         public string Name { get; set; }
+        public string Color { get; set; }
         public string Description { get; set; }
         public ICollection<string> Actions { get; set; } = new List<string>();
     }

@@ -37,6 +37,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
                     Role = new Role()
                     {
                         Name = "Role 1",
+                        Color = "#0000000",
                         Description = "This is a test role",
                         Actions = new List<Action>()
                     },
@@ -49,6 +50,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
                     Role = new Role()
                     {
                         Name = "Role 2",
+                        Color = "#0000000",
                         Description = "This is a test role",
                         Actions = new List<Action>()
                     },
@@ -78,6 +80,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
                 Role = new Role()
                 {
                     Name = "Role 1",
+                    Color = "#0000000",
                     Description = "This is a test role",
                     Actions = new List<Action>()
                 },

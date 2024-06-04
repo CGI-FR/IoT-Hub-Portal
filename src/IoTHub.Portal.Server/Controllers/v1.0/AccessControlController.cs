@@ -30,6 +30,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpGet(Name = "Get Pagined Access Control")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<AccessControlModel>))]
         public async Task<PaginationResult<AccessControlModel>> Get(
             string searchKeyword = null,
@@ -73,6 +74,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpGet("{id}", Name = "Get AccessControl By Id")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccessControlModel))]
         public async Task<IActionResult> GetACById(string id)
         {
@@ -101,7 +103,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="accessControl">AccessControl model that we want to create in db</param>
         /// <returns>HTTP Post response</returns>
         [HttpPost(Name = "POST Create a AccessControl")]
-        //[Authorize(Policy = Policies.CreateAccessControl)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateAccessControlAsync(AccessControlModel accessControl)
@@ -114,7 +116,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
             }
             catch (Exception ex)
             {
-                logger.LogError("Failed to create accessControl. : ", ex);
+                logger.LogError($"Failed to create accessControl. : {ex}");
                 return BadRequest(ex);
             }
         }
@@ -126,7 +128,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="Id">Current role name (before any changes)</param>
         /// <returns>HTTP Put response, updated role</returns>
         [HttpPut("{id}", Name = "PUT Edit AccessControl")]
-        //[Authorize(Policy = Policies.EditAccessControl)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EditAccessControlAsync(string id, AccessControlModel accessControl)
         {
@@ -150,6 +152,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="id">AccessControl id that we want to delete</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteAccessControl(string id)

@@ -15,7 +15,6 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.Logging;
-    using IoTHub.Portal.Shared.Security;
 
     [Authorize]
     [ApiController]
@@ -52,7 +51,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Gets all device concentrators.
         /// </summary>
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
-        [Authorize(Policy = Policies.GetAllConcentrators)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginationResult<ConcentratorDto>>> GetAllDeviceConcentrator([FromQuery] ConcentratorFilter concentratorFilter)
         {
@@ -87,7 +86,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         [HttpGet("{deviceId}", Name = "GET LoRaWAN Concentrator")]
-        [Authorize(Policy = Policies.GetConcentrator)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ConcentratorDto>> GetDeviceConcentrator(string deviceId)
         {
@@ -99,7 +98,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPost(Name = "POST Create LoRaWAN concentrator")]
-        [Authorize(Policy = Policies.CreateConcentrator)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateDeviceAsync(ConcentratorDto device)
@@ -126,7 +125,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPut(Name = "PUT Update LoRaWAN concentrator")]
-        [Authorize(Policy = Policies.UpdateConcentrator)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateDeviceAsync(ConcentratorDto device)
@@ -153,7 +152,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         [HttpDelete("{deviceId}", Name = "DELETE Remove LoRaWAN concentrator")]
-        [Authorize(Policy = Policies.DeleteConcentrator)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string deviceId)
         {
