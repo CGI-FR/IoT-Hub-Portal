@@ -123,7 +123,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
             catch (Exception ex)
             {
                 logger.LogError(ex, "Failed to create user.");
-                throw;
+                return BadRequest();
             }
         }
 

@@ -82,7 +82,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
                 .Returns(locationUrl);
 
-            // Add this line to setup LogInformation method
             _ = this.mockLogger.Setup(x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
@@ -101,6 +100,38 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task Get_ShouldReturnInternalServerErrorOnException()
+        {
+            // Arrange
+            var accessControlController = CreateRolesController();
+
+            _ = this.mockRoleService
+                .Setup(x => x.GetRolePage(
+                    It.IsAny<string>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string[]>()
+                ))
+                .ThrowsAsync(new Exception("Test exception"));
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var ex = Assert.ThrowsAsync<Exception>(async () => await accessControlController.Get());
+
+            // Assert
+            Assert.IsNotNull(ex);
+            Assert.AreEqual("Test exception", ex.Message);
+
+            this.mockRepository.VerifyAll();
+        }
 
         [Test]
         public async Task GetByIdShouldReturnTheCorrespondantRole()
@@ -143,6 +174,35 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             Assert.IsNotNull(role);
             Assert.AreEqual(roleId, role.Id);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetRoleDetailsShouldReturnNotFoundForNonExistingGroup()
+        {
+            // Arrange
+            var rolesController = CreateRolesController();
+            var roleId = Guid.NewGuid().ToString();
+
+            _ = this.mockRoleService
+                .Setup(x => x.GetRoleDetailsAsync(It.IsAny<string>()))
+                .ReturnsAsync((RoleDetailsModel)null);
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var result = await rolesController.GetRoleDetails(roleId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<NotFoundResult>(result);
 
             this.mockRepository.VerifyAll();
         }
@@ -193,6 +253,39 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
         }
 
         [Test]
+        public async Task CreateRoleShouldReturnBadRequestWhenCreationFails()
+        {
+            // Arrange
+            var rolesController = CreateRolesController();
+            var role = new RoleDetailsModel()
+            {
+                Id = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockRoleService
+                .Setup(x => x.CreateRole(It.IsAny<RoleDetailsModel>()))
+                .Throws(new Exception());
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var result = await rolesController.CreateRoleAsync(role);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<BadRequestObjectResult>(result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+
+        [Test]
         public async Task UpdateRoleShouldReturnOkResult()
         {
             // Arrange
@@ -203,7 +296,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             var role = new RoleDetailsModel()
             {
-                Id = roleId //test
+                Id = roleId
             };
 
             _ = this.mockLogger.Setup(x => x.Log(
@@ -227,7 +320,37 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             this.mockRepository.VerifyAll();
         }
 
-        /*[Test]
+        [Test]
+        public async Task EditRoleAsync_ShouldReturnInternalServerErrorOnException()
+        {
+            // Arrange
+            var rolesController = CreateRolesController();
+            var roleId = Guid.NewGuid().ToString();
+            var role = new RoleDetailsModel() { Id = roleId };
+
+            _ = this.mockRoleService
+                .Setup(x => x.UpdateRole(roleId, It.IsAny<RoleDetailsModel>()))
+                .ThrowsAsync(new Exception("Test exception"));
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var ex = Assert.ThrowsAsync<Exception>(async () => await rolesController.EditRoleAsync(roleId, role));
+
+            // Assert
+            Assert.IsNotNull(ex);
+            Assert.AreEqual("Test exception", ex.Message);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task DeleteRoleShouldReturnExpectedBehavior()
         {
             // Arrange
@@ -245,13 +368,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             _ = this.mockRoleService.Setup(c => c.DeleteRole(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(true);
 
-            _ = this.mockLogger.Setup(c => c.Log(
-                It.Is<LogLevel>(x => x == LogLevel.Information),
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-
             // Act
             var result = await rolesController.DeleteRole(deviceId);
 
@@ -260,6 +376,34 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             Assert.IsAssignableFrom<OkObjectResult>(result);
 
             this.mockRepository.VerifyAll();
-        }*/
+        }
+
+        [Test]
+        public async Task DeleteRole_ShouldReturnInternalServerErrorOnException()
+        {
+            // Arrange
+            var rolesController = CreateRolesController();
+            var roleId = Guid.NewGuid().ToString();
+
+            _ = this.mockRoleService.Setup(c => c.DeleteRole(It.Is<string>(x => x == roleId)))
+                .ThrowsAsync(new Exception("Test exception"));
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var ex = Assert.ThrowsAsync<Exception>(async () => await rolesController.DeleteRole(roleId));
+
+            // Assert
+            Assert.IsNotNull(ex);
+            Assert.AreEqual("Test exception", ex.Message);
+
+            this.mockRepository.VerifyAll();
+        }
     }
 }

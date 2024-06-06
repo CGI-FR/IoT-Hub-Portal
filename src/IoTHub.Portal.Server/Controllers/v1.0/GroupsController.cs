@@ -120,7 +120,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
             catch (Exception ex)
             {
                 logger.LogError(ex, "Failed to create group.");
-                throw;
+                return BadRequest();
             }
         }
 

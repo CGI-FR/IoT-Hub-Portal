@@ -84,7 +84,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
                 .Returns(locationUrl);
 
-            // Add this line to setup LogInformation method
             _ = this.mockLogger.Setup(x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
@@ -103,6 +102,39 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task Get_ShouldReturnInternalServerErrorOnException()
+        {
+            // Arrange
+            var accessControlController = CreateAccessControlsController();
+
+            _ = this.mockAccessControlService
+                .Setup(x => x.GetAccessControlPage(
+                    It.IsAny<string>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<string>()
+                ))
+                .ThrowsAsync(new Exception("Test exception"));
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var ex = Assert.ThrowsAsync<Exception>(async () => await accessControlController.Get());
+
+            // Assert
+            Assert.IsNotNull(ex);
+            Assert.AreEqual("Test exception", ex.Message);
+
+            this.mockRepository.VerifyAll();
+        }
 
         [Test]
         public async Task GetByIdShouldReturnTheCorrespondantAccessControl()
@@ -150,6 +182,36 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             this.mockRepository.VerifyAll();
         }
 
+
+        [Test]
+        public async Task GetAccessControlDetailsShouldReturnNotFoundForNonExistingGroup()
+        {
+            // Arrange
+            var accessControlController = CreateAccessControlsController();
+            var accessControlId = Guid.NewGuid().ToString();
+
+            _ = this.mockAccessControlService
+                .Setup(x => x.GetAccessControlAsync(It.IsAny<string>()))
+                .ReturnsAsync((AccessControlModel)null);
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var result = await accessControlController.GetACById(accessControlId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<NotFoundResult>(result);
+
+            this.mockRepository.VerifyAll();
+        }
+
         [Test]
         public async Task CreateAccessControlShouldReturnOk()
         {
@@ -178,7 +240,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<OkObjectResult>(result); // Change this line
+            Assert.IsAssignableFrom<OkObjectResult>(result);
 
             var okObjectResult = result as OkObjectResult;
 
@@ -196,6 +258,38 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
         }
 
         [Test]
+        public async Task CreateAccessControlShouldReturnBadRequestWhenCreationFails()
+        {
+            // Arrange
+            var accessControlController = CreateAccessControlsController();
+            var accessControl = new AccessControlModel()
+            {
+                Id = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockAccessControlService
+                .Setup(x => x.CreateAccessControl(It.IsAny<AccessControlModel>()))
+                .Throws(new Exception());
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var result = await accessControlController.CreateAccessControlAsync(accessControl);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<BadRequestObjectResult>(result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task UpdateAccessControlShouldReturnOkResult()
         {
             // Arrange
@@ -206,7 +300,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             var accessControl = new AccessControlModel()
             {
-                Id = accessControlId //test
+                Id = accessControlId
             };
 
             _ = this.mockLogger.Setup(x => x.Log(
@@ -230,7 +324,37 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             this.mockRepository.VerifyAll();
         }
 
-        /*[Test]
+        [Test]
+        public async Task EditAccessControlAsync_ShouldReturnInternalServerErrorOnException()
+        {
+            // Arrange
+            var acController = CreateAccessControlsController();
+            var acId = Guid.NewGuid().ToString();
+            var ac = new AccessControlModel() { Id = acId };
+
+            _ = this.mockAccessControlService
+                .Setup(x => x.UpdateAccessControl(acId, It.IsAny<AccessControlModel>()))
+                .ThrowsAsync(new Exception("Test exception"));
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var ex = Assert.ThrowsAsync<Exception>(async () => await acController.EditAccessControlAsync(acId, ac));
+
+            // Assert
+            Assert.IsNotNull(ex);
+            Assert.AreEqual("Test exception", ex.Message);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task DeleteAccessControlShouldReturnExpectedBehavior()
         {
             // Arrange
@@ -248,13 +372,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             _ = this.mockAccessControlService.Setup(c => c.DeleteAccessControl(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(true);
 
-            _ = this.mockLogger.Setup(c => c.Log(
-                It.Is<LogLevel>(x => x == LogLevel.Information),
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-
             // Act
             var result = await accessControlsController.DeleteAccessControl(deviceId);
 
@@ -263,6 +380,34 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             Assert.IsAssignableFrom<OkObjectResult>(result);
 
             this.mockRepository.VerifyAll();
-        }*/
+        }
+
+        [Test]
+        public async Task DeleteAccessControl_ShouldReturnInternalServerErrorOnException()
+        {
+            // Arrange
+            var acController = CreateAccessControlsController();
+            var acId = Guid.NewGuid().ToString();
+
+            _ = this.mockAccessControlService.Setup(c => c.DeleteAccessControl(It.Is<string>(x => x == acId)))
+                .ThrowsAsync(new Exception("Test exception"));
+
+            _ = this.mockLogger.Setup(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+            ));
+
+            // Act
+            var ex = Assert.ThrowsAsync<Exception>(async () => await acController.DeleteAccessControl(acId));
+
+            // Assert
+            Assert.IsNotNull(ex);
+            Assert.AreEqual("Test exception", ex.Message);
+
+            this.mockRepository.VerifyAll();
+        }
     }
 }
