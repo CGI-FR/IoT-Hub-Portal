@@ -8,7 +8,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     using IoTHub.Portal.Application.Services;
     using Microsoft.Extensions.Logging;
     using Quartz;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
 
     [DisallowConcurrentExecution]
     public class DeviceMetricLoaderJob : IJob

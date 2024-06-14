@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Server.Services
     using Domain.Repositories;
     using Microsoft.Azure.Devices;
     using Models.v10.LoRaWAN;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
     using IoTHub.Portal.Crosscutting;
 
     public class LoRaWANConcentratorService : ILoRaWANConcentratorService

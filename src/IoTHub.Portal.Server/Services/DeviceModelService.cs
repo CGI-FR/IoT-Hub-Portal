@@ -16,7 +16,7 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Infrastructure.Mappers;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using Domain;
     using Domain.Entities;

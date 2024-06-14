@@ -21,7 +21,6 @@ namespace IoTHub.Portal.Infrastructure.Services
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using Models.v10;
-    using Shared.Models.v1._0;
     using Shared.Models.v10.Filters;
     using Device = Domain.Entities.Device;
     using IoTHub.Portal.Crosscutting;

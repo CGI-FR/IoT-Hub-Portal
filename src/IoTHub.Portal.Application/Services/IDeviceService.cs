@@ -9,7 +9,7 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Shared.Models.v10;
     using Models.v10;
     using Shared.Models;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
 
     public interface IDeviceService<TDto>
         where TDto : IDeviceDetails
