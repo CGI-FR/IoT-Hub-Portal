@@ -41,7 +41,7 @@ namespace IoTHub.Portal.Server
     using Quartz;
     using Quartz.Impl.AdoJobStore.Common;
     using Services;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
 
     public class Startup
     {
@@ -311,6 +311,13 @@ namespace IoTHub.Portal.Server
                 .PersistKeysToDbContext<PortalDbContext>();
         }
 
+        private static void ConfigureServicesRBAC(IServiceCollection services)
+        {
+            _ = services.AddTransient<IRoleManagementService, RoleService>();
+            _ = services.AddTransient<IGroupManagementService, GroupService>();
+            _ = services.AddTransient<IUserManagementService, UserService>();
+            _ = services.AddTransient<IAccessControlManagementService, AccessControlService>();
+        }
         private static void ConfigureServicesAzure(IServiceCollection services)
         {
             _ = services.AddTransient<IExportManager, ExportManager>();
@@ -372,6 +379,8 @@ namespace IoTHub.Portal.Server
                     opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
                     opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
                 });
+            ConfigureServicesRBAC(services);
+
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using Models.v10.LoRaWAN;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using System.Linq;
     using IoTHub.Portal.Shared.Models.v10;
 

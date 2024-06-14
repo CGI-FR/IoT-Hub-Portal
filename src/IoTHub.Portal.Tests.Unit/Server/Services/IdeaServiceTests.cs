@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Server.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;

@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
+namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
 {
     using System;
     using System.Collections.Generic;
@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using Models.v10;
     using Moq;
     using NUnit.Framework;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
 
     [TestFixture]
     public class LoRaWANDevicesControllerTests

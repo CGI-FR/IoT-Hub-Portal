@@ -4,7 +4,7 @@
 namespace IoTHub.Portal.Application.Services
 {
     using System.Threading.Tasks;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
 
     public interface IIdeaService
     {

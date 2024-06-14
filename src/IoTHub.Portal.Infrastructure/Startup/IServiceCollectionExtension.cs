@@ -11,8 +11,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using IoTHub.Portal.Infrastructure.Repositories;
     using IoTHub.Portal.Infrastructure.Services;
     using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Constants;
     using EntityFramework.Exceptions.PostgreSQL;
     using Microsoft.EntityFrameworkCore;
@@ -106,7 +104,13 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>()
                             .AddScoped<IConcentratorRepository, ConcentratorRepository>()
                             .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
-                            .AddScoped<ILabelRepository, LabelRepository>();
+                            .AddScoped<ILabelRepository, LabelRepository>()
+                            .AddScoped<IRoleRepository, RoleRepository>()
+                            .AddScoped<IActionRepository, ActionRepository>()
+                            .AddScoped<IGroupRepository, GroupRepository>()
+                            .AddScoped<IUserRepository, UserRepository>()
+                            .AddScoped<IPrincipalRepository, PrincipalRepository>()
+                            .AddScoped<IAccessControlRepository, AccessControlRepository>();
         }
 
         private static IServiceCollection ConfigureServices(this IServiceCollection services)

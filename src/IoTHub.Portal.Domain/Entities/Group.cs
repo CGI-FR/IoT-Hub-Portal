@@ -7,13 +7,17 @@ namespace IoTHub.Portal.Domain.Entities
     using IoTHub.Portal.Domain.Base;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.ComponentModel.DataAnnotations;
 
     public class Group : EntityBase
     {
+        [Required]
         public string Name { get; set; } = default!;
-        public string Avatar { get; set; } = default!;
-        public virtual ICollection<UserMemberShip> Members { get; set; } = new Collection<UserMemberShip>();
-        public virtual ICollection<AccessControl> AccessControls { get; set; } = new Collection<AccessControl>();
+        public string Color { get; set; } = default!;
+        public string? Description { get; set; } = default!;
+        public virtual ICollection<User> Members { get; set; } = new Collection<User>();
+        public string PrincipalId { get; set; }
+        public virtual Principal Principal { get; set; } = new Principal();
 
     }
 }

@@ -8,7 +8,7 @@ namespace IoTHub.Portal.Application.Mappers
     using IoTHub.Portal.Domain.Entities;
     using Microsoft.Azure.Devices.Shared;
     using Models.v10.LoRaWAN;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
 
     public class ConcentratorProfile : Profile
     {

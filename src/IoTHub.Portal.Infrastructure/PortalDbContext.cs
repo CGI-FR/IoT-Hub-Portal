@@ -29,6 +29,7 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<AccessControl> AccessControls { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Action> Actions { get; set; }
+        public DbSet<Principal> Principals { get; set; }
 
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
             : base(options)
@@ -62,30 +63,28 @@ namespace IoTHub.Portal.Infrastructure
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
 
-            _ = modelBuilder.Entity<UserMemberShip>()
-                .HasKey(m => new { m.UserId, m.GroupId });
-
-            _ = modelBuilder.Entity<UserMemberShip>()
-                .HasOne(m => m.User)
-                .WithMany(u => u.Groups)
-                .HasForeignKey(m => m.UserId);
-
-            _ = modelBuilder.Entity<UserMemberShip>()
-                .HasOne(m => m.Group)
-                .WithMany(g => g.Members)
-                .HasForeignKey(m => m.GroupId);
-
-            _ = modelBuilder.Entity<Group>()
-                .HasMany(a => a.AccessControls);
-
-            _ = modelBuilder.Entity<User>()
-               .HasMany(a => a.AccessControls);
-
             _ = modelBuilder.Entity<Role>()
-                .HasMany(a => a.Actions);
+                .HasIndex(r => r.Name)
+                .IsUnique();
 
             _ = modelBuilder.Entity<AccessControl>()
-                .HasOne(r => r.Role);
+                .HasOne(ac => ac.Role)
+                .WithMany()
+                .HasForeignKey(ac => ac.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            _ = modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            _ = modelBuilder.Entity<User>()
+                .HasIndex(u => u.GivenName)
+                .IsUnique();
+
+            _ = modelBuilder.Entity<Group>()
+                .HasIndex(g => g.Name)
+                .IsUnique();
+
 
             _ = modelBuilder.Entity<EdgeDevice>()
                 .HasMany(c => c.Tags)

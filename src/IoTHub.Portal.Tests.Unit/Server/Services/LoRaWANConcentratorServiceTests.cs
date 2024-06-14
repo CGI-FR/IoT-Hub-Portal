@@ -18,7 +18,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using IoTHub.Portal.Infrastructure.Repositories;
     using IoTHub.Portal.Models.v10.LoRaWAN;
     using IoTHub.Portal.Server.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using EntityFramework.Exceptions.Common;

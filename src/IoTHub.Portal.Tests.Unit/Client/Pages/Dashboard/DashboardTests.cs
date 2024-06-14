@@ -8,7 +8,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
     using System.Linq;
     using IoTHub.Portal.Client.Pages.Dashboard;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;

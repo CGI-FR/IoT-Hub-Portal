@@ -13,7 +13,6 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using IoTHub.Portal.Shared.Security;
 
     [Authorize]
     [ApiController]
@@ -40,7 +39,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET LoRaWAN device model list")]
-        [Authorize(Policy = Policies.GetAllLorawanDeviceModels)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public override async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems([FromQuery] DeviceModelFilter deviceModelFilter)
         {
@@ -55,7 +54,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="id">The devic emodel identifier.</param>
         /// <returns>The device model details.</returns>
         [HttpGet("{id}", Name = "GET LoRaWAN device model")]
-        [Authorize(Policy = Policies.GetLorawanDeviceModel)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override Task<ActionResult<LoRaDeviceModelDto>> GetItem(string id)
@@ -68,7 +67,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="id">The device model identifier</param>
         [HttpGet("{id}/avatar", Name = "GET LoRaWAN device model avatar URL")]
-        [Authorize(Policy = Policies.GetLorawanDeviceModelAvatar)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override Task<ActionResult<string>> GetAvatar(string id)
@@ -83,7 +82,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
         [HttpPost("{id}/avatar", Name = "POST Update the LoRaWAN device model avatar")]
-        [Authorize(Policy = Policies.UpdateLorawanDeviceModelAvatar)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override Task<ActionResult<string>> ChangeAvatar(string id, IFormFile file)
@@ -96,7 +95,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="id">The model identifier.</param>
         [HttpDelete("{id}/avatar", Name = "DELETE Remove the LoRaWAN device model avatar")]
-        [Authorize(Policy = Policies.DeleteLorawanDeviceModelAvatar)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override Task<IActionResult> DeleteAvatar(string id)
@@ -110,7 +109,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="deviceModelDto">The device model.</param>
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Create a new LoRaWAN device model")]
-        [Authorize(Policy = Policies.CreateLorawanDeviceModel)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public override Task<IActionResult> Post(LoRaDeviceModelDto deviceModelDto)
@@ -124,6 +123,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="deviceModelDto">The device model.</param>
         /// <returns>The action result.</returns>
         [HttpPut(Name = "PUT Update the LoRaWAN device model")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -138,7 +138,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="id">The device model identifier.</param>
         /// <returns>The action result.</returns>
         [HttpDelete("{id}", Name = "DELETE Remove the LoRaWAN device model")]
-        [Authorize(Policy = Policies.DeleteLorawanDeviceModel)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

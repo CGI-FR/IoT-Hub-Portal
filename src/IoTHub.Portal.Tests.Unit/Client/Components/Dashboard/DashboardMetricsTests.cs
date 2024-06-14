@@ -8,7 +8,7 @@ namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
     using IoTHub.Portal.Client.Exceptions;
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using Bunit;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;

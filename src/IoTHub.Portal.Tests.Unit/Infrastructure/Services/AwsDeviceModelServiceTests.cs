@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using Moq;
     using AutoFixture;
     using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using System.Threading.Tasks;
     using System;

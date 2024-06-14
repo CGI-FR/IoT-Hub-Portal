@@ -9,7 +9,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
     using System.Linq.Dynamic.Core;
 
     public class GenericRepository<T> : IRepository<T> where T : EntityBase

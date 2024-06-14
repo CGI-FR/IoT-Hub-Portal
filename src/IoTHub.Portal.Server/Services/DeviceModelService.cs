@@ -14,10 +14,9 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Application.Providers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Infrastructure.Mappers;
-    using IoTHub.Portal.Infrastructure.Repositories;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using Domain;
     using Domain.Entities;
@@ -26,6 +25,7 @@ namespace IoTHub.Portal.Server.Services
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.EntityFrameworkCore;
+    using IoTHub.Portal.Crosscutting;
 
     public class DeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel

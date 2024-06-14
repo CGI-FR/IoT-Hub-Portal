@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using FluentAssertions;
     using Microsoft.EntityFrameworkCore;
     using NUnit.Framework;
+    using IoTHub.Portal.Crosscutting;
 
     [TestFixture]
     public class GenericRepositoryTests : RepositoryTestBase

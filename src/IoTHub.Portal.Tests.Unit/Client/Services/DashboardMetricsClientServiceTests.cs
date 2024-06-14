@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using Portal.Client.Exceptions;
     using Portal.Client.Models;
     using RichardSzalay.MockHttp;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
     using static System.Net.Mime.MediaTypeNames;
 
     [TestFixture]

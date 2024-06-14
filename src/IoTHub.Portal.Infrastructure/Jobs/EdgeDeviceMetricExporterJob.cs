@@ -8,7 +8,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     using Microsoft.Extensions.Logging;
     using Prometheus;
     using Quartz;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
 
     [DisallowConcurrentExecution]
     public class EdgeDeviceMetricExporterJob : IJob

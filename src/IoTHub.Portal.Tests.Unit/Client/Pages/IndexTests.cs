@@ -4,7 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Client.Pages
 {
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;

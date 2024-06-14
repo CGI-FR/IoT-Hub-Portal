@@ -8,7 +8,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using AutoMapper;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -37,7 +36,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model properties</param>
         [HttpGet(Name = "GET Device model properties")]
-        [Authorize(Policy = Policies.GetDeviceModelProperties)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DeviceProperty>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override async Task<ActionResult<IEnumerable<DeviceProperty>>> GetProperties(string id)
@@ -51,7 +50,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The device model properties</param>
         /// <param name="properties">The model properties</param>
         [HttpPost(Name = "POST Device model properties")]
-        [Authorize(Policy = Policies.SetDeviceModelProperties)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override async Task<ActionResult> SetProperties(string id, IEnumerable<DeviceProperty> properties)

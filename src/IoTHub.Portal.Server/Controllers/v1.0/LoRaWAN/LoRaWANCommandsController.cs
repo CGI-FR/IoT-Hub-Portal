@@ -8,7 +8,6 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Models.v10.LoRaWAN;
     using IoTHub.Portal.Server.Filters;
-    using IoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -42,7 +41,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="commands">The commands.</param>
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Set device model commands")]
-        [Authorize(Policy = Policies.UpdateLorawanDeviceModelCommands)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Post(string id, DeviceModelCommandDto[] commands)
         {
@@ -60,7 +59,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="id">The model identifier.</param>
         /// <returns>The action result.</returns>
         [HttpGet(Name = "GET Device model commands")]
-        [Authorize(Policy = Policies.GetLorawanDeviceModelCommands)]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DeviceModelCommandDto[]>> Get(string id)
         {
