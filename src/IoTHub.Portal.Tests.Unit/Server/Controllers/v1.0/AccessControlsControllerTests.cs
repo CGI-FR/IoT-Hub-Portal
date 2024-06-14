@@ -14,11 +14,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Mvc;
     using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Mvc.Routing;
     using System.Linq;
     using System;
-    using IoTHub.Portal.Server.Controllers.v1._0;
+    using IoTHub.Portal.Server.Controllers.v10;
 
     [TestFixture]
     public class AccessControlssControllerTests

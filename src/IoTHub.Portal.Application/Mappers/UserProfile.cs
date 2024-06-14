@@ -34,6 +34,12 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Avatar))
                 .ForMember(dest => dest.GivenName, opt => opt.MapFrom(src => src.GivenName))
                 .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName));
+
+            _ = CreateMap<UserModel, User>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.GivenName, opt => opt.MapFrom(src => src.GivenName))
+                .ForMember(dest => dest.PrincipalId, opt => opt.MapFrom(src => src.PrincipalId));
         }
     }
 }
