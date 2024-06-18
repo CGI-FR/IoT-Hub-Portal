@@ -86,9 +86,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
                 },
                 Principal = new Principal(),
                 Scope = "example/test"
-
-
             };
+
             _ = DbContext.Add(expectedAccessControl);
 
             _ = await DbContext.SaveChangesAsync();
