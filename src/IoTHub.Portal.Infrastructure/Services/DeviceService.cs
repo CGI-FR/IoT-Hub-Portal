@@ -27,7 +27,6 @@ namespace IoTHub.Portal.Infrastructure.Services
         private readonly IDeviceRepository deviceRepository;
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
         private readonly ILabelRepository labelRepository;
-        private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public DeviceService(IMapper mapper,
             IUnitOfWork unitOfWork,
@@ -47,7 +46,6 @@ namespace IoTHub.Portal.Infrastructure.Services
             this.deviceRepository = deviceRepository;
             this.deviceTagValueRepository = deviceTagValueRepository;
             this.labelRepository = labelRepository;
-            this.deviceModelImageManager = deviceModelImageManager;
         }
 
 
