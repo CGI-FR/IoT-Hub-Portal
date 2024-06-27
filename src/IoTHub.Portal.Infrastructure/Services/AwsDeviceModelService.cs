@@ -62,7 +62,8 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 Data = paginatedDeviceModels.Data.Select(x => this.mapper.Map<DeviceModelDto>(x, opts =>
                 {
-                    opts.AfterMap((src, dest) => dest.ImageUrl = this.deviceModelImageManager.ComputeImageUri(x.Id));
+                    //opts.AfterMap((src, dest) => dest.ImageUrl = this.deviceModelImageManager.ComputeImageUri(x.Id));
+                    // TODO Add recovery of the image in Base64
                 })).ToList(),
                 TotalCount = paginatedDeviceModels.TotalCount,
                 CurrentPage = paginatedDeviceModels.CurrentPage,

@@ -5,7 +5,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
 {
     using System.Net;
     using Azure.Storage.Blobs;
-    using Azure.Storage.Blobs.Models;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Providers;
@@ -130,7 +129,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
                                 var serviceClient = new BlobServiceClient(configuration.AzureStorageAccountConnectionString);
                                 var container = serviceClient.GetBlobContainerClient(opts.ImageContainerName);
 
-                                _ = container.SetAccessPolicy(PublicAccessType.Blob);
                                 _ = container.CreateIfNotExists();
 
                                 opts.BaseUri = container.Uri;

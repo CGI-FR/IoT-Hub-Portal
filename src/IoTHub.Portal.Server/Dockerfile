@@ -10,26 +10,22 @@ ENV ASPNETCORE_URLS=http://+:80;https://+:443
 EXPOSE 80
 EXPOSE 443
 
-FROM node:14-bullseye AS build
-RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-RUN dpkg -i packages-microsoft-prod.deb
-RUN rm packages-microsoft-prod.deb
-RUN  apt-get update; \
-	  apt-get install -y apt-transport-https && \
-	  apt-get update && \
-	  apt-get install -y dotnet-sdk-8.0
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-FROM build AS builder
 WORKDIR /src
-COPY ["IoTHub.Portal/Server/IoTHub.Portal.Server.csproj", "IoTHub.Portal/Server/"]
-COPY ["IoTHub.Portal/Shared/IoTHub.Portal.Shared.csproj", "IoTHub.Portal/Shared/"]
-COPY ["IoTHub.Portal/Client/IoTHub.Portal.Client.csproj", "IoTHub.Portal/Client/"]
-RUN dotnet restore "IoTHub.Portal/Server/IoTHub.Portal.Server.csproj"
-COPY . .
-WORKDIR "/src/IoTHub.Portal/Server"
-RUN dotnet build "IoTHub.Portal.Server.csproj" -c Release -o /app/build -p:Version=${BUILD_VERSION}
+COPY ["IoTHub.Portal.Server/IoTHub.Portal.Server.csproj", "IoTHub.Portal.Server/"]
+#COPY ["IoTHub.Portal.Shared/IoTHub.Portal.Shared.csproj", "IoTHub.Portal.Shared/"]
+#COPY ["IoTHub.Portal.Client/IoTHub.Portal.Client.csproj", "IoTHub.Portal.Client/"]
 
-FROM builder AS publish
+RUN dotnet restore "IoTHub.Portal.Server/IoTHub.Portal.Server.csproj"
+
+COPY . .
+
+WORKDIR "/src/IoTHub.Portal.Server"
+RUN dotnet build "IoTHub.Portal.Server.csproj" -c Release -o /app/build
+RUN dotnet dev-certs https --trust
+
+FROM build AS publish
 RUN dotnet publish "IoTHub.Portal.Server.csproj" -c Release -o /app/publish
 
 FROM base AS final
@@ -38,4 +34,5 @@ HEALTHCHECK CMD curl --fail http://localhost/healthz || exit
 
 WORKDIR /app
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "IoTHub.Portal.Server.dll"]

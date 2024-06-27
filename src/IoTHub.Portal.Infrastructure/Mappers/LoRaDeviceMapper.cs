@@ -6,7 +6,6 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     using System;
     using System.Collections.Generic;
     using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Models.v10.LoRaWAN;
@@ -15,16 +14,13 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
     public class LoRaDeviceTwinMapper : IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>
     {
-        private readonly IDeviceModelImageManager deviceModelImageManager;
-
-        public LoRaDeviceTwinMapper(IDeviceModelImageManager deviceModelImageManager)
+        public LoRaDeviceTwinMapper()
         {
-            this.deviceModelImageManager = deviceModelImageManager;
         }
 
         public LoRaDeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<string> tags)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             var modelId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.ModelId));
 
@@ -43,7 +39,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 ModelId = modelId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
                 AlreadyLoggedInOnce = DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId!),
+                // ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId!), // TODO Add recovery of the image in Base64
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
@@ -86,13 +82,13 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public DeviceListItem CreateDeviceListItem(Twin twin)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             return new DeviceListItem
             {
                 DeviceID = twin.DeviceId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!),
+                //ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!), // TODO Add recovery of the image in Base64
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
@@ -102,7 +98,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public void UpdateTwin(Twin twin, LoRaDeviceDetails item)
         {
-            ArgumentNullException.ThrowIfNull(item, nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 
             // Update the twin properties
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);

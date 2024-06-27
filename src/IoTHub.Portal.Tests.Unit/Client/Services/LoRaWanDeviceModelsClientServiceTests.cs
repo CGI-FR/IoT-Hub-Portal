@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
@@ -166,7 +165,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             var deviceModel = new LoRaDeviceModelDto
             {
                 ModelId = Fixture.Create<string>(),
-                ImageUrl = Fixture.Create<Uri>()
+                //ImageUrl = Fixture.Create<Uri>() // TODO Add generation of an image in Base64 format
             };
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/models/{deviceModel.ModelId}/avatar")
