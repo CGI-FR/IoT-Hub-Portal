@@ -86,11 +86,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var expectedDeviceModels = Fixture.CreateMany<DeviceModel>(3).ToList();
-            var expectedImageUri = Fixture.Create<Uri>();
+            //var expectedImageUri = Fixture.Create<Uri>(); // TODO Add generation of an image in Base64 format
             var expectedDeviceModelsDto = expectedDeviceModels.Select(model =>
             {
                 var deviceModelDto = Mapper.Map<DeviceModelDto>(model);
-                deviceModelDto.ImageUrl = expectedImageUri;
+                //deviceModelDto.ImageUrl = expectedImageUri;
                 return deviceModelDto;
             }).ToList();
 
@@ -114,8 +114,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                     TotalCount = 10
                 });
 
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(expectedImageUri);
+            //_ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+            //    .Returns(expectedImageUri);
+            // Get image from base64 format
 
             // Act
             var result = await this.deviceModelService.GetDeviceModels(filter);

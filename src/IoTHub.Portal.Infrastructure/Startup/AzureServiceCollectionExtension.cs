@@ -129,7 +129,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
                                 var serviceClient = new BlobServiceClient(configuration.AzureStorageAccountConnectionString);
                                 var container = serviceClient.GetBlobContainerClient(opts.ImageContainerName);
 
-                                //_ = container.SetAccessPolicy(PublicAccessType.Blob);
                                 _ = container.CreateIfNotExists();
 
                                 opts.BaseUri = container.Uri;

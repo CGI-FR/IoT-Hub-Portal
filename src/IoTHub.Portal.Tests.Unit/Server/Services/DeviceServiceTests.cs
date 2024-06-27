@@ -204,15 +204,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var expectedDevice = Fixture.Create<Device>();
 
-            var expectedImageUri = Fixture.Create<Uri>();
+            //var expectedImageUri = Fixture.Create<Uri>(); // TODO Add generation of an image in Base64 format
             var expectedDeviceDto = Mapper.Map<DeviceDetails>(expectedDevice);
-            expectedDeviceDto.ImageUrl = expectedImageUri;
+            //expectedDeviceDto.ImageUrl = expectedImageUri;
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(expectedDevice);
 
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(expectedImageUri);
+            //_ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+            //    .Returns(expectedImageUri);
+            // Get image from base64 format
 
             _ = this.mockDeviceTagService.Setup(service => service.GetAllTagsNames())
                 .Returns(expectedDevice.Tags.Select(tag => tag.Name));

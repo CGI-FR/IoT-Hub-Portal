@@ -114,7 +114,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
-                ImageUrl = new Uri("http://fake.local"),
+                //ImageUrl = new Uri("http://fake.local"), // TODO Add generation of an image in Base64 format
                 SensorDecoder = Guid.NewGuid().ToString(),
                 IsBuiltin = isBuiltin
             };

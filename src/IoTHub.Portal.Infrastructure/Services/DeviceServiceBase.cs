@@ -141,7 +141,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
             devices.ForEach(device =>
             {
-                device.ImageUrl = this.deviceModelImageManager.ComputeImageUri(device.DeviceModelId);
+                //device.ImageUrl = this.deviceModelImageManager.ComputeImageUri(device.DeviceModelId); // Todo get image as Base64
             });
 
             return new PaginatedResult<DeviceListItem>(devices, resultCount);

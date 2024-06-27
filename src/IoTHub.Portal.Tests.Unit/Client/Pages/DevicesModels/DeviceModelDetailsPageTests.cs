@@ -380,7 +380,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Name = this.mockModelId,
                 Description = Guid.NewGuid().ToString(),
                 IsBuiltin = false,
-                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}"),
+                ImageUrl = "", // TODO Add generation of an image in Base64 format
                 SupportLoRaFeatures = false
             };
 
@@ -407,7 +407,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Name = this.mockModelId,
                 Description = Guid.NewGuid().ToString(),
                 IsBuiltin = false,
-                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}")
+                //ImageUrl = new Uri($"http://fake.local/{this.mockModelId}") // TODO Add generation of an image in Base64 format
             };
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
@@ -433,7 +433,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Name = this.mockModelId,
                 Description = Guid.NewGuid().ToString(),
                 IsBuiltin = false,
-                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}")
+                //ImageUrl = new Uri($"http://fake.local/{this.mockModelId}") // TODO Add generation of an image in Base64 format
             };
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
