@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using IoTHub.Portal.Shared.Models.v10;
@@ -18,7 +17,7 @@ namespace IoTHub.Portal.Shared.Models
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; }
+        public string ImageUrl { get; set; }
 
         /// <summary>
         /// The device model name.

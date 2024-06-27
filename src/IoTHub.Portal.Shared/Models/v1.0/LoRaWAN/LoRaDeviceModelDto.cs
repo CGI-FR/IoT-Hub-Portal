@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; } = default!;
+        public string ImageUrl { get; set; } = default!;
 
         /// <summary>
         /// The device model name.
@@ -74,7 +74,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <param name="from">The device model taht the LoRa Device model should herit.</param>
         public LoRaDeviceModelDto(IDeviceModel from)
         {
-            ArgumentNullException.ThrowIfNull(from, nameof(from));
+            ArgumentNullException.ThrowIfNull(from);
 
             ModelId = from.ModelId;
             Name = from.Name;

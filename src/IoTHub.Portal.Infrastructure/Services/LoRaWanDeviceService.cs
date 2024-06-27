@@ -36,7 +36,6 @@ namespace IoTHub.Portal.Infrastructure.Services
         private readonly ILoRaDeviceTelemetryRepository deviceTelemetryRepository;
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
         private readonly ILabelRepository labelRepository;
-        private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public LoRaWanDeviceService(
             ILogger<LoRaWanDeviceService> logger,
@@ -60,7 +59,6 @@ namespace IoTHub.Portal.Infrastructure.Services
             this.deviceTelemetryRepository = deviceTelemetryRepository;
             this.deviceTagValueRepository = deviceTagValueRepository;
             this.labelRepository = labelRepository;
-            this.deviceModelImageManager = deviceModelImageManager;
         }
 
         public override async Task<LoRaDeviceDetails> GetDevice(string deviceId)
@@ -73,8 +71,6 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
 
             var deviceDto = this.mapper.Map<LoRaDeviceDetails>(deviceEntity);
-
-            deviceDto.ImageUrl = this.deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
 
             deviceDto.Tags = FilterDeviceTags(deviceDto);
 
