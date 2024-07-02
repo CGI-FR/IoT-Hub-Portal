@@ -10,8 +10,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using NUnit.Framework;
-    using System.Collections.Generic;
-    using System;
+    using AutoFixture;
 
     public class GroupRepositoryTest : BackendUnitTest
     {
@@ -21,37 +20,20 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
         {
             base.Setup();
 
+            Fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => Fixture.Behaviors.Remove(b));
+            Fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
             this.groupRepository = new GroupRepository(DbContext);
         }
 
         [Test]
         public async Task GetAllShouldReturnExpectedGroups()
         {
-
             // Arrange
-            var expectedGroups = new List<Group>
-            {
-                new Group
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Group 1",
-                    Color = "#0000000",
-                    Members = new List<User>(),
-                    Principal = new Principal()
-                },
-                new Group
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Group 2",
-                    Color = "#0000000",
-                    Members = new List<User>(),
-                    Principal = new Principal()
-                }
-            };
-
+            var expectedGroups = Fixture.CreateMany<Group>(2).ToList();
 
             await DbContext.AddRangeAsync(expectedGroups);
-
             _ = await DbContext.SaveChangesAsync();
 
             //Act
@@ -65,17 +47,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
         public async Task GetByIdAsync_ExistingGroup_ReturnsExpectedGroup()
         {
             // Arrange
-            var expectedGroup = new Group
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Test Group",
-                Color = "#0000000",
-                Members = new List<User>(),
-                Principal = new Principal()
-            };
+            var expectedGroup = Fixture.Create<Group>(); // Utilisez AutoFixture ici
 
             _ = DbContext.Add(expectedGroup);
-
             _ = await DbContext.SaveChangesAsync();
 
             //Act
