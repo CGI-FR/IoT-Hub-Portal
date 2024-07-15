@@ -76,6 +76,10 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<GroupDetailsModel> CreateGroupAsync(GroupDetailsModel group)
         {
+            if (group is null)
+            {
+                throw new ArgumentNullException(nameof(group));
+            }
             var existingName = await this.groupRepository.GetByNameAsync(group.Name);
             if (existingName is not null)
             {
@@ -104,6 +108,10 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<GroupDetailsModel?> UpdateGroup(string id, GroupDetailsModel group)
         {
+            if (group is null)
+            {
+                throw new ArgumentNullException(nameof(group));
+            }
             var groupEntity = await this.groupRepository.GetByIdAsync(id);
             if (groupEntity is null) throw new ResourceNotFoundException($"The group with id {id} does'nt exist");
             var existingName = await this.groupRepository.GetByNameAsync(group.Name);

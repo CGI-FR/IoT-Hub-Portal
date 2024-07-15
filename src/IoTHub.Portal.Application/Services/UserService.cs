@@ -10,7 +10,6 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using System.Threading.Tasks;
 
@@ -37,6 +36,10 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<UserDetailsModel> CreateUserAsync(UserDetailsModel user)
         {
+            if (user is null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
             var existingName = await this.userRepository.GetByNameAsync(user.Name);
             if (existingName is not null)
             {
@@ -91,6 +94,10 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<UserDetailsModel?> UpdateUser(string id, UserDetailsModel user)
         {
+            if (user is null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
             var userEntity = await this.userRepository.GetByIdAsync(id);
             if (userEntity == null) throw new ResourceNotFoundException($"The User with the id {id} does'nt exist !");
             var existingName = await this.userRepository.GetByNameAsync(user.Name);

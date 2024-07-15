@@ -47,7 +47,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
         public async Task GetByIdAsync_ExistingGroup_ReturnsExpectedGroup()
         {
             // Arrange
-            var expectedGroup = Fixture.Create<Group>(); // Utilisez AutoFixture ici
+            var expectedGroup = Fixture.Create<Group>();
 
             _ = DbContext.Add(expectedGroup);
             _ = await DbContext.SaveChangesAsync();

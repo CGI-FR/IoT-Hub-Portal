@@ -187,8 +187,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task DeleteAccessControlShouldDeleteIt()
         {
             // Arrange
-            var accessControlId = "Id779748ac-8c28-42ae-a71c-03a01bd4a9a9";
-            var accessControl = new AccessControl { Id = accessControlId };
+            var accessControl = Fixture.Create<AccessControl>();
+            var accessControlId = accessControl.Id;
 
             _ = mockAccessControlRepository.Setup(x => x.GetByIdAsync(accessControlId))
                 .ReturnsAsync(accessControl);
@@ -199,6 +199,56 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             // Assert
             mockAccessControlRepository.Verify(x => x.Delete(accessControlId), Times.Once);
             mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void GetAccessControlDetailsAsync_InvalidId_ThrowsArgumentException(string invalidId)
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.accessControlService.GetAccessControlAsync(invalidId));
+        }
+
+        [Test]
+        public void CreateAccessControl_NulAccessControl_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.accessControlService.CreateAccessControl(null));
+        }
+
+        [Test]
+        public void UpdateAccessControWithANullAccessControl_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var validId = Guid.NewGuid().ToString();
+
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.accessControlService.UpdateAccessControl(validId, null));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void UpdateAccessControl_InvalidId_ThrowsArgumentException(string invalidId)
+        {
+            // Arrange
+            var accessControlModel = Fixture.Create<AccessControlModel>();
+
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.accessControlService.UpdateAccessControl(invalidId, accessControlModel));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void DeleteAccessControl_InvalidId_ThrowsArgumentException(string invalidId)
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.accessControlService.DeleteAccessControl(invalidId));
         }
     }
 }

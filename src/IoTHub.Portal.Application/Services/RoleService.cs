@@ -13,7 +13,6 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using Action = Domain.Entities.Action;
     using IoTHub.Portal.Domain.Exceptions;
@@ -41,7 +40,7 @@ namespace IoTHub.Portal.Application.Services
             var role = await this.roleRepository.GetByIdAsync(id, r => r.Actions);
             if (role == null)
             {
-                return false;
+                throw new ResourceNotFoundException($"The role with name {id} doesn't exist");
             }
             foreach (var action in role.Actions)
             {
@@ -108,6 +107,11 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<RoleDetailsModel> CreateRole(RoleDetailsModel role)
         {
+            if (role is null)
+            {
+                throw new ArgumentNullException(nameof(role));
+            }
+
             var roleWithName = await this.roleRepository.GetByNameAsync(role.Name);
             if (roleWithName is not null)
             {
@@ -127,6 +131,11 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<RoleDetailsModel?> UpdateRole(string id, RoleDetailsModel role)
         {
+            if (role is null)
+            {
+                throw new ArgumentNullException(nameof(role));
+            }
+
             var roleEntity = await this.roleRepository.GetByIdAsync(id, r => r.Actions);
             if (roleEntity is null)
             {

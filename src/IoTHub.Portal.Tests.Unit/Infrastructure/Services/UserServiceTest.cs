@@ -126,6 +126,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void GetUserDetailsAsyncInvalidIdThrowsResourceNotFoundException(string invalidId)
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.userService.GetUserDetailsAsync(invalidId));
+        }
+
+        [Test]
         public async Task CreateUserShouldCreate()
         {
             // Arrange
@@ -163,6 +173,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        public void CreateUserWithNullUserThrowsArgumentNullException()
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.userService.CreateUserAsync(null));
+        }
+
+        [Test]
         public async Task UpdateUserShouldUpdateUser()
         {
             // Arrange
@@ -184,6 +201,30 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        public void UpdateUserWithNullUserThrowsArgumentNullException()
+        {
+            // Arrange
+            var validId = Guid.NewGuid().ToString();
+
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.userService.UpdateUser(validId, null));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+
+        [TestCase(" ")]
+        public void UpdateUserWithInvalidIdThrowsResourceNotFoundException(string invalidId)
+        {
+            // Arrange
+            var userModel = Fixture.Create<UserDetailsModel>();
+
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.userService.UpdateUser(invalidId, userModel));
+        }
+
+        [Test]
         public async Task DeleteUserShouldDeleteUser()
         {
             // Arrange
@@ -201,6 +242,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             // Assert
             Assert.IsTrue(result);
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void DeleteUserWithInvalidIdThrowsResourceNotFoundException(string invalidId)
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.userService.DeleteUser(invalidId));
         }
     }
 }

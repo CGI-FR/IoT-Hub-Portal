@@ -130,6 +130,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void GetGroupDetailsAsyncInvalidIdThrowsResourceNotFoundException(string invalidId)
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.groupService.GetGroupDetailsAsync(invalidId));
+        }
+
+        [Test]
         public async Task CreateGroupShouldCreate()
         {
             // Arrange
@@ -167,6 +177,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        public void CreateGroupWithNullGroupThrowsArgumentNullException()
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.groupService.CreateGroupAsync(null));
+        }
+
+        [Test]
         public async Task UpdateGroupShouldUpdateGroup()
         {
             // Arrange
@@ -188,6 +205,30 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        public void UpdateGroupWithNullGroupThrowsArgumentNullException()
+        {
+            // Arrange
+            var validId = Guid.NewGuid().ToString();
+
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.groupService.UpdateGroup(validId, null));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+
+        [TestCase(" ")]
+        public void UpdateGroupWithInvalidIdThrowsResourceNotFoundException(string invalidId)
+        {
+            // Arrange
+            var groupModel = Fixture.Create<GroupDetailsModel>();
+
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.groupService.UpdateGroup(invalidId, groupModel));
+        }
+
+        [Test]
         public async Task DeleteGroupShouldDeleteGroup()
         {
             // Arrange
@@ -205,6 +246,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             // Assert
             Assert.IsTrue(result);
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void DeleteGroupWithInvalidIdThrowsResourceNotFoundException(string invalidId)
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.groupService.DeleteGroup(invalidId));
         }
     }
 }

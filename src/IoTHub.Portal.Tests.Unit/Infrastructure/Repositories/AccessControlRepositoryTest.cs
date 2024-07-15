@@ -47,7 +47,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
         public async Task GetByIdAsync_ExistingAccessControl_ReturnsExpectedAccessControl()
         {
             // Arrange
-            var expectedAccessControl = Fixture.Create<AccessControl>(); // Utilisez AutoFixture ici
+            var expectedAccessControl = Fixture.Create<AccessControl>();
 
             _ = DbContext.Add(expectedAccessControl);
             _ = await DbContext.SaveChangesAsync();

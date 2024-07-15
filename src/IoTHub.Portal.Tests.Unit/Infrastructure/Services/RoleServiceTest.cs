@@ -133,6 +133,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void GetRoleDetailsAsync_InvalidId_ThrowsArgumentException(string invalidId)
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.roleService.GetRoleDetailsAsync(invalidId));
+        }
+
+        [Test]
         public async Task CreateRoleShouldCreate()
         {
             // Arrange
@@ -170,6 +180,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        public void CreateRole_NullRole_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.roleService.CreateRole(null));
+        }
+
+        [Test]
         public async Task UpdateRoleShouldUpdateRole()
         {
             // Arrange
@@ -191,6 +208,29 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
+        public void UpdateRole_NullRole_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var validId = Guid.NewGuid().ToString();
+
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.roleService.UpdateRole(validId, null));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void UpdateRole_InvalidId_ThrowsArgumentException(string invalidId)
+        {
+            // Arrange
+            var roleModel = Fixture.Create<RoleDetailsModel>();
+
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.roleService.UpdateRole(invalidId, roleModel));
+        }
+
+        [Test]
         public async Task DeleteRoleShouldDeleteRole()
         {
             // Arrange
@@ -208,6 +248,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             // Assert
             Assert.IsTrue(result);
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void DeleteRole_InvalidId_ThrowsArgumentException(string invalidId)
+        {
+            // Act & Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.roleService.DeleteRole(invalidId));
         }
     }
 }

@@ -47,7 +47,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
         public async Task GetByIdAsync_ExistingUser_ReturnsExpectedUser()
         {
             // Arrange
-            var expectedUser = Fixture.Create<User>(); // Utilisez AutoFixture ici
+            var expectedUser = Fixture.Create<User>();
 
             _ = DbContext.Add(expectedUser);
             _ = await DbContext.SaveChangesAsync();
