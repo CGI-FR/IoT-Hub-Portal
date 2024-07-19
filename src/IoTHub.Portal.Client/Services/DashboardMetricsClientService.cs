@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Client.Services
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
-    using Portal.Shared.Models.v1._0;
+    using Portal.Shared.Models.v10;
 
     public class DashboardMetricsClientService : IDashboardMetricsClientService
     {

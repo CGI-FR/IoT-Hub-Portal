@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Client.Validators;
     using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using Bunit;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;

@@ -9,6 +9,8 @@ namespace IoTHub.Portal.Domain.Entities
     {
         public string Scope { get; set; } = default!;
         public string RoleId { get; set; } = default!;
-        public Role Role { get; set; } = new Role();
+        public virtual Role Role { get; set; }
+        public string PrincipalId { get; set; }
+        public virtual Principal Principal { get; set; }
     }
 }

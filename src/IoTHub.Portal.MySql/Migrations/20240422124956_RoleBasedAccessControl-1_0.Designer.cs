@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IoTHub.Portal.MySql.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    [Migration("20240108103650_RoleBasedAccessControl")]
-    partial class RoleBasedAccessControl
+    [Migration("20240422124956_RoleBasedAccessControl-1_0")]
+    partial class RoleBasedAccessControl1_0
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,12 +22,28 @@ namespace IoTHub.Portal.MySql.Migrations
                 .HasAnnotation("ProductVersion", "7.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("GroupUser", b =>
+                {
+                    b.Property<string>("GroupsId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("MembersId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("GroupsId", "MembersId");
+
+                    b.HasIndex("MembersId");
+
+                    b.ToTable("GroupUser");
+                });
+
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("GroupId")
+                    b.Property<string>("PrincipalId")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("RoleId")
@@ -38,16 +54,11 @@ namespace IoTHub.Portal.MySql.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("PrincipalId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("AccessControls");
                 });
@@ -389,14 +400,23 @@ namespace IoTHub.Portal.MySql.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Avatar")
-                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("PrincipalId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PrincipalId")
+                        .IsUnique();
 
                     b.ToTable("Groups");
                 });
@@ -461,16 +481,32 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.ToTable("LoRaDeviceTelemetry");
                 });
 
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Principal", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Principals");
+                });
+
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Roles");
                 });
@@ -480,39 +516,33 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Forename")
+                    b.Property<string>("FamilyName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GivenName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<string>("PrincipalId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PrincipalId")
+                        .IsUnique();
+
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.UserMemberShip", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("GroupId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("UserId", "GroupId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("UserMemberShip");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -623,21 +653,36 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.ToTable("LorawanDevices", (string)null);
                 });
 
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
+            modelBuilder.Entity("GroupUser", b =>
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Group", null)
-                        .WithMany("AccessControls")
-                        .HasForeignKey("GroupId");
-
-                    b.HasOne("IoTHub.Portal.Domain.Entities.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("GroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IoTHub.Portal.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("MembersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
+                {
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Principal", "Principal")
                         .WithMany("AccessControls")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("PrincipalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Principal");
 
                     b.Navigation("Role");
                 });
@@ -682,6 +727,17 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.Navigation("DeviceModel");
                 });
 
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Group", b =>
+                {
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Principal", "Principal")
+                        .WithOne("Group")
+                        .HasForeignKey("IoTHub.Portal.Domain.Entities.Group", "PrincipalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Principal");
+                });
+
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Label", b =>
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Device", null)
@@ -708,23 +764,15 @@ namespace IoTHub.Portal.MySql.Migrations
                         .HasForeignKey("LorawanDeviceId");
                 });
 
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.UserMemberShip", b =>
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.User", b =>
                 {
-                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", "Group")
-                        .WithMany("Members")
-                        .HasForeignKey("GroupId")
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Principal", "Principal")
+                        .WithOne("User")
+                        .HasForeignKey("IoTHub.Portal.Domain.Entities.User", "PrincipalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IoTHub.Portal.Domain.Entities.User", "User")
-                        .WithMany("Groups")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
+                    b.Navigation("Principal");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LorawanDevice", b =>
@@ -760,23 +808,18 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.Navigation("Labels");
                 });
 
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Group", b =>
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Principal", b =>
                 {
                     b.Navigation("AccessControls");
 
-                    b.Navigation("Members");
+                    b.Navigation("Group");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Role", b =>
                 {
                     b.Navigation("Actions");
-                });
-
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.User", b =>
-                {
-                    b.Navigation("AccessControls");
-
-                    b.Navigation("Groups");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LorawanDevice", b =>

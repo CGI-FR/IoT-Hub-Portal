@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Application.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10;
 
     public interface IEdgeDevicesService

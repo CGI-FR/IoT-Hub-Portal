@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Domain.Exceptions;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
     using UAParser;
 
     public class IdeaService : IIdeaService

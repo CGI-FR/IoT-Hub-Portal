@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using NUnit.Framework;
     using Portal.Client.Services;
     using RichardSzalay.MockHttp;
-    using Shared.Models.v1._0;
+    using Shared.Models.v10;
 
     [TestFixture]
     public class IdeaClientServiceTests : BlazorUnitTest

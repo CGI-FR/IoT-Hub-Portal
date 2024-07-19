@@ -1,13 +1,13 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
+namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
 {
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
+    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;

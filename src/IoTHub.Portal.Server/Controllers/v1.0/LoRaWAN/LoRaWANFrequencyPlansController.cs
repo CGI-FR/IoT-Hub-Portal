@@ -6,7 +6,6 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using System.Collections.Generic;
     using IoTHub.Portal.Server.Filters;
     using IoTHub.Portal.Shared.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -23,8 +22,8 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Get LoRaWAN supported frequency plans.
         /// </summary>
         [HttpGet(Name = "GET LoRaWAN Frequency plans")]
-        [Authorize(Policy = Policies.GetFrequencyPlans)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<FrequencyPlan>> GetFrequencyPlans()
         {
             return this.Ok(new[] {

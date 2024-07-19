@@ -3,7 +3,7 @@
 
 #nullable enable
 
-namespace IoTHub.Portal.Shared.Models.v1._0
+namespace IoTHub.Portal.Shared.Models.v10
 {
     using System;
     using System.Collections.Generic;
