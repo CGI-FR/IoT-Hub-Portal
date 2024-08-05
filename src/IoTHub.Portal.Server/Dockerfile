@@ -14,8 +14,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /src
 COPY ["IoTHub.Portal.Server/IoTHub.Portal.Server.csproj", "IoTHub.Portal.Server/"]
-#COPY ["IoTHub.Portal.Shared/IoTHub.Portal.Shared.csproj", "IoTHub.Portal.Shared/"]
-#COPY ["IoTHub.Portal.Client/IoTHub.Portal.Client.csproj", "IoTHub.Portal.Client/"]
 
 RUN dotnet restore "IoTHub.Portal.Server/IoTHub.Portal.Server.csproj"
 

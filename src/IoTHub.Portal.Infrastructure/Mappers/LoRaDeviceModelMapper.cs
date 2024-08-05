@@ -6,16 +6,11 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     using System;
     using System.Collections.Generic;
     using Azure.Data.Tables;
-    using IoTHub.Portal.Application.Managers;
     using Models.v10;
     using Models.v10.LoRaWAN;
 
     public class LoRaDeviceModelMapper : IDeviceModelMapper<DeviceModelDto, LoRaDeviceModelDto>
     {
-        public LoRaDeviceModelMapper(IDeviceModelImageManager deviceModelImageManager)
-        {
-        }
-
         public DeviceModelDto CreateDeviceModelListItem(TableEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
@@ -25,7 +20,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(LoRaDeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
                 SupportLoRaFeatures = bool.Parse(entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)]?.ToString() ?? "false"),
-                ImageUrl = entity[nameof(DeviceModelDto.ImageUrl)]?.ToString(),
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
                 Name = entity[nameof(LoRaDeviceModelDto.Name)]?.ToString(),
                 Description = entity[nameof(LoRaDeviceModelDto.Description)]?.ToString(),
             };
@@ -39,7 +34,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(LoRaDeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
-                ImageUrl = entity[nameof(DeviceModelDto.ImageUrl)]?.ToString(),
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
                 Name = entity[nameof(LoRaDeviceModelDto.Name)]?.ToString(),
                 Description = entity[nameof(LoRaDeviceModelDto.Description)]?.ToString(),
                 SensorDecoder = entity[nameof(LoRaDeviceModelDto.SensorDecoder)]?.ToString(),

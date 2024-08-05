@@ -200,19 +200,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         }
 
         [Test]
-        public async Task GetAvatarUrlShouldReturnAvatarUrl()
+        public async Task GetAvatarShouldReturnAvatar()
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/avatar")
-                .RespondJson(deviceModel.ImageUrl.ToString());
+                .RespondJson(deviceModel.Image.ToString());
 
             // Act
-            var result = await this.deviceModelsClientService.GetAvatarUrl(deviceModel.ModelId);
+            var result = await this.deviceModelsClientService.GetAvatar(deviceModel.ModelId);
 
             // Assert
-            _ = result.Should().Contain(deviceModel.ImageUrl.ToString());
+            _ = result.Should().Contain(deviceModel.Image.ToString());
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

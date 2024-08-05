@@ -30,7 +30,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public string ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         /// A value indicating whether the device is currently connected.

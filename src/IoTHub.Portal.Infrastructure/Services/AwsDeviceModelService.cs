@@ -19,7 +19,6 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Shared.Models;
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Http;
 
     internal class AwsDeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
@@ -151,12 +150,12 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public Task<string> GetDeviceModelAvatar(string deviceModelId)
         {
-            return Task.Run(() => this.deviceModelImageManager.ComputeImageUri(deviceModelId).ToString());
+            return Task.Run(() => this.deviceModelImageManager.GetDeviceModelImageAsync(deviceModelId));
         }
 
-        public Task<string> UpdateDeviceModelAvatar(string deviceModelId, IFormFile file)
+        public Task<string> UpdateDeviceModelAvatar(string deviceModelId, string file)
         {
-            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, file?.OpenReadStream()));
+            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, file));
         }
 
         public Task DeleteDeviceModelAvatar(string deviceModelId)

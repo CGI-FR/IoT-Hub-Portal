@@ -72,7 +72,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
                 Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, tagName), result.Tags[tagName]);
             }
 
-            Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
+            Assert.AreEqual(expectedModelImageUri, result.Image);
 
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString(), result.AppEUI);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString(), result.AppKey);
@@ -114,7 +114,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.IsEmpty(result.Tags);
 
-            Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
+            Assert.AreEqual(expectedModelImageUri, result.Image);
 
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString(), result.AppEUI);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString(), result.AppKey);
@@ -147,7 +147,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
-            Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
+            Assert.AreEqual(expectedModelImageUri, result.Image);
 
             this.mockRepository.VerifyAll();
         }
@@ -176,7 +176,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
-            Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
+            Assert.AreEqual(expectedModelImageUri, result.Image);
 
             this.mockRepository.VerifyAll();
         }

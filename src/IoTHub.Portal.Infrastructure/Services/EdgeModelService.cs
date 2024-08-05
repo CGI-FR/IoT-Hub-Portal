@@ -19,7 +19,6 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Shared.Constants;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Http;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class EdgeModelService : IEdgeModelService
@@ -87,7 +86,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 .Select(model =>
                 {
                     var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);
-                    edgeDeviceModelListItem.ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeDeviceModelListItem.ModelId);
+                    //edgeDeviceModelListItem.Image = this.deviceModelImageManager.ComputeImageUri(edgeDeviceModelListItem.ModelId); // TODO Get encoded image instead
                     return edgeDeviceModelListItem;
                 })
                 .ToList();
@@ -194,7 +193,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var result = new IoTEdgeModel
             {
                 ModelId = edgeModelEntity.Id,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
+                //ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id), // TODO Get encoded image instead
                 Name = edgeModelEntity.Name,
                 Description = edgeModelEntity.Description,
                 EdgeModules = modules,
@@ -225,7 +224,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var result = new IoTEdgeModel
             {
                 ModelId = edgeModelEntity.Id,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
+                // ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id), // TODO Get encoded image instead
                 Name = edgeModelEntity.Name,
                 Description = edgeModelEntity.Description,
                 EdgeModules = modules,
@@ -288,14 +287,14 @@ namespace IoTHub.Portal.Infrastructure.Services
 
             if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
             {
-                var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
+                var edgeConfig = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
 
-                if (config != null)
+                if (edgeConfig != null)
                 {
-                    await this.configService.DeleteConfiguration(config.Id);
+                    await this.configService.DeleteConfiguration(edgeConfig.Id);
                 }
 
-                var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
+                var existingCommands = (await this.commandRepository.GetAllAsync()).Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
                 foreach (var command in existingCommands)
                 {
                     this.commandRepository.Delete(command.Id);
@@ -323,7 +322,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <returns></returns>
         public Task<string> GetEdgeModelAvatar(string edgeModelId)
         {
-            return Task.Run(() => this.deviceModelImageManager.ComputeImageUri(edgeModelId).ToString());
+            return Task.Run(() => this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelId));
         }
 
         /// <summary>
@@ -332,9 +331,9 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <param name="edgeModelId">The edge model indentifier</param>
         /// <param name="file">The image.</param>
         /// <returns></returns>
-        public Task<string> UpdateEdgeModelAvatar(string edgeModelId, IFormFile file)
+        public Task<string> UpdateEdgeModelAvatar(string edgeModelId, string file)
         {
-            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(edgeModelId, file?.OpenReadStream()));
+            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(edgeModelId, file));
         }
 
         /// <summary>

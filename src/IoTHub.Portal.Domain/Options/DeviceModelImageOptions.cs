@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Domain.Options
     {
         public Uri BaseUri { get; set; } = default!;
 
-        public string ImageContainerName { get; } = "device-images";
+        public string ImageContainerName { get; } = "device-images-2";
 
         public string DefaultImageName { get; } = "default-template-icon.png";
     }

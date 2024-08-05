@@ -96,7 +96,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var authMethodJson = /*lang=json,strict*/ "{\"scope\":\"module\",\"type\":\"sas\",\"issuer\":\"iothub\"}";
 
-            var eventAuthMethod = JsonSerializer.Deserialize<ConnectionAuthMethod>(authMethodJson.ToString(), options);
+            var eventAuthMethod = JsonSerializer.Deserialize<ConnectionAuthMethod>(authMethodJson, options);
 
             Assert.AreEqual(authMethodJson, JsonSerializer.Serialize(eventAuthMethod, options));
         }

@@ -23,12 +23,12 @@
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
                         <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@imageDataUrl"/>
+                            <MudImage Src="@imageData"/>
                         </MudAvatar>
                     </div>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    @if (imageDataUrl != null)
+                    @if (imageData != null)
                     {
                         <MudButton OnClick="DeleteAvatar" Color="Color.Error">Delete Picture</MudButton>
                     }
@@ -230,8 +230,7 @@
         };
 
     // Used to manage the picture
-    private MultipartFormDataContent? content = default!;
-    private string? imageDataUrl = default!;
+    private string? imageData = default!;
 
     private bool CheckLoRaValidation()
     {
@@ -255,27 +254,17 @@
 
     private void DeleteAvatar()
     {
-        content = null;
-        imageDataUrl = null;
+        imageData = null;
     }
 
     private async Task UploadFiles(InputFileChangeEventArgs e)
     {
-        content = new MultipartFormDataContent();
-
+        Console.WriteLine(e.File.Name);
         var resizedImageFile = await e.File.RequestImageFileAsync(e.File.ContentType, 200, 200);
-
-        var fileContent = new StreamContent(resizedImageFile.OpenReadStream());
-        fileContent.Headers.ContentType = new MediaTypeHeaderValue(e.File.ContentType);
-
-        content.Add(content: fileContent,
-                      name: "\"file\"",
-                      fileName: e.File.Name);
-
         var buffer = new byte[resizedImageFile.Size];
         await resizedImageFile.OpenReadStream().ReadAsync(buffer);
 
-        imageDataUrl = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        imageData = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
     }
 
     private async Task Save()
@@ -337,15 +326,17 @@
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }
 
-            if (content is not null)
+            if (imageData is not null)
             {
+                var imageContent = new StringContent(imageData);
+
                 if (IsLoRa)
                 {
-                    await LoRaWanDeviceModelsClientService.ChangeAvatar(Model.ModelId, content);
+                    await LoRaWanDeviceModelsClientService.ChangeAvatar(Model.ModelId, imageContent);
                 }
                 else
                 {
-                    await DeviceModelsClientService.ChangeAvatar(Model.ModelId, content);
+                    await DeviceModelsClientService.ChangeAvatar(Model.ModelId, imageContent);
                 }
             }
 

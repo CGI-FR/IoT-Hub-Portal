@@ -21,9 +21,9 @@ namespace IoTHub.Portal.Client.Services
 
         Task DeleteIoTEdgeModel(string modelId);
 
-        Task<string> GetAvatarUrl(string modelId);
+        Task<string> GetAvatar(string modelId);
 
-        Task ChangeAvatar(string id, MultipartFormDataContent content);
+        Task ChangeAvatar(string id, StringContent content);
 
         Task DeleteAvatar(string id);
 

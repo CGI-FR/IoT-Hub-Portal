@@ -159,7 +159,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         }
 
         [Test]
-        public async Task GetAvatarUrlShouldReturnAvatarUrl()
+        public async Task GetAvatarShouldReturnAvatar()
         {
             // Arrange
             var deviceModel = new LoRaDeviceModelDto
@@ -169,13 +169,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             };
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/models/{deviceModel.ModelId}/avatar")
-                .RespondJson(deviceModel.ImageUrl.ToString());
+                .RespondJson(deviceModel.Image.ToString());
 
             // Act
-            var result = await this.loRaWanDeviceModelsClientService.GetAvatarUrl(deviceModel.ModelId);
+            var result = await this.loRaWanDeviceModelsClientService.GetAvatar(deviceModel.ModelId);
 
             // Assert
-            _ = result.Should().Contain(deviceModel.ImageUrl.ToString());
+            _ = result.Should().Contain(deviceModel.Image.ToString());
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

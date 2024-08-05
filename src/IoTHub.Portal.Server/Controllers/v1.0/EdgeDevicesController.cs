@@ -16,7 +16,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.AspNetCore.Routing;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;

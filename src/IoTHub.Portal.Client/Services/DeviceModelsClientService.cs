@@ -70,12 +70,12 @@ namespace IoTHub.Portal.Client.Services
             return this.http.PostAsJsonAsync($"api/models/{deviceModelId}/properties", deviceProperties);
         }
 
-        public Task<string> GetAvatarUrl(string deviceModelId)
+        public Task<string> GetAvatar(string deviceModelId)
         {
             return this.http.GetStringAsync($"api/models/{deviceModelId}/avatar");
         }
 
-        public async Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar)
+        public async Task ChangeAvatar(string deviceModelId, StringContent avatar)
         {
             var result = await this.http.PostAsync($"api/models/{deviceModelId}/avatar", avatar);
 

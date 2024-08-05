@@ -35,7 +35,12 @@ namespace IoTHub.Portal.Infrastructure.Managers
         }
 
 
-        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
+        public Task<string> GetDeviceModelImageAsync(string deviceModelId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file)
         {
 
             this.logger.LogInformation($"Uploading Image to AWS S3 storage");
@@ -47,7 +52,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = deviceModelId,
-                    InputStream = stream,
+                    ContentBody = file,
                     ContentType = "image/*",
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
                 };
@@ -66,6 +71,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
                     _ = await this.s3Client.PutACLAsync(putAclRequest);
 
+                    // TODO Return encoded image instead
                     return ComputeImageUri(deviceModelId).ToString();
                 }
                 catch (AmazonS3Exception e)
@@ -144,6 +150,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                     };
                     _ = await this.s3Client.PutACLAsync(putAclRequest);
 
+                    // TODO Return encoded image instead
                     return ComputeImageUri(deviceModelId).ToString();
                 }
                 catch (AmazonS3Exception e)

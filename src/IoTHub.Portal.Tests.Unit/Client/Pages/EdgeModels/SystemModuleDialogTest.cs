@@ -3,17 +3,16 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
     using AutoFixture;
-    using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
+    using IoTHub.Portal.Shared.Models.v10;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     [TestFixture]
     public class SystemModuleDialogTest : BlazorUnitTest
@@ -29,7 +28,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var module = new EdgeModelSystemModule("edgeAgent")
             {
-                ImageUri = Fixture.Create<string>(),
+                Image = Fixture.Create<string>(),
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                 {
                     new IoTEdgeModuleEnvironmentVariable()

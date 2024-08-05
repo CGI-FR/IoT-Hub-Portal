@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public string ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         /// The device model name.
@@ -80,7 +80,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
             Name = from.Name;
             Description = from.Description;
             IsBuiltin = from.IsBuiltin;
-            ImageUrl = from.ImageUrl;
+            Image = from.Image;
             UseOTAA = true;
         }
 
