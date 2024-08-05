@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Shared.Models
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public string ImageUrl { get; set; }
+        public string Image { get; set; }
 
         /// <summary>
         /// The device model name.

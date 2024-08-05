@@ -9,7 +9,8 @@
       "serviceActions": {
         "IoTHub.Portal.Server": "StartDebugging",
         "database": "StartWithoutDebugging"
-      }
+      },
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
     }
   }
 }

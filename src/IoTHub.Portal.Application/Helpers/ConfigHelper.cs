@@ -148,7 +148,7 @@ namespace IoTHub.Portal.Application.Helpers
             var edgeModule = new IoTEdgeModule
             {
                 ModuleName = module.Name,
-                ImageURI = module.Value["settings"]?["image"]?.Value<string>(),
+                Image = module.Value["settings"]?["image"]?.Value<string>(),
                 ContainerCreateOptions = module.Value["settings"]?["createOptions"]?.Value<string>(),
                 Status = module.Value["status"]?.Value<string>(),
             };
@@ -227,9 +227,9 @@ namespace IoTHub.Portal.Application.Helpers
         {
             var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
 
-            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri))
+            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").Image))
             {
-                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri;
+                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").Image;
             }
 
             if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ContainerCreateOptions))
@@ -237,9 +237,9 @@ namespace IoTHub.Portal.Application.Helpers
                 edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.CreateOptions = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ContainerCreateOptions;
             }
 
-            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ImageUri))
+            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").Image))
             {
-                edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ImageUri;
+                edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").Image;
             }
 
             var edgeHubPropertiesDesired = GenerateRoutesContent(edgeModel.EdgeRoutes);
@@ -269,7 +269,7 @@ namespace IoTHub.Portal.Application.Helpers
                     Status = "running",
                     Settings = new ModuleSettings()
                     {
-                        Image = module.ImageURI,
+                        Image = module.Image,
                         CreateOptions = module.ContainerCreateOptions
                     },
                     RestartPolicy = "always",

@@ -200,9 +200,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var expectedEdgeDevice = Fixture.Create<EdgeDevice>();
 
-            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedImage = Fixture.Create<string>();
             var expectedEdgeDeviceDto = Mapper.Map<IoTEdgeDevice>(expectedEdgeDevice);
-            expectedEdgeDeviceDto.ImageUrl = expectedImageUri;
+            expectedEdgeDeviceDto.EncodedImage = expectedImage;
 
             _ = this.mockEdgeDeviceRepository
                 .Setup(x => x.GetByIdAsync(It.Is<string>(c => c.Equals(expectedEdgeDevice.Id, StringComparison.Ordinal)), d => d.Tags, d => d.Labels))
@@ -217,7 +217,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new ConfigItem());
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(expectedImageUri);
+                .Returns(expectedImage);
 
             _ = this.mockDeviceTagService.Setup(service => service.GetAllTagsNames())
                 .Returns(expectedEdgeDevice.Tags.Select(tag => tag.Name));

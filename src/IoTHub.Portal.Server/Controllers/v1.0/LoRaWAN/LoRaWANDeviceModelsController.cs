@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [HttpPost("{id}/avatar", Name = "POST Update the LoRaWAN device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<ActionResult<string>> ChangeAvatar(string id, IFormFile file)
+        public override Task<ActionResult<string>> ChangeAvatar(string id, string file)
         {
             return base.ChangeAvatar(id, file);
         }

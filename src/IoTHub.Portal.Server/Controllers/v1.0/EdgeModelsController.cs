@@ -91,7 +91,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         [HttpPost("{edgeModelId}/avatar", Name = "POST Update the edge device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, IFormFile file)
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, string file)
         {
             return Ok(await this.edgeModelService.UpdateEdgeModelAvatar(edgeModelId, file));
         }

@@ -25,8 +25,8 @@ namespace IoTHub.Portal.Client.Services
 
         Task SetDeviceModelModelProperties(string deviceModelId, IList<DeviceProperty> deviceProperties);
 
-        Task<string> GetAvatarUrl(string deviceModelId);
+        Task<string> GetAvatar(string deviceModelId);
 
-        Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar);
+        Task ChangeAvatar(string deviceModelId, StringContent avatar);
     }
 }

@@ -209,7 +209,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         }
 
         [Test]
-        public async Task GetAllDeploymentComponentsShouldRetreiveImageUriAndEnvironmentVariables()
+        public async Task GetAllDeploymentComponentsShouldRetreiveImageAndEnvironmentVariables()
         {
             //Act
             var edge = Fixture.Create<IoTEdgeModel>();
@@ -315,7 +315,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                 Id = c.Arn,
                 ModuleName = c.ComponentName,
                 Version = c.LatestVersion.ComponentVersion,
-                ImageURI = "example.com"
+                Image = "example.com"
             }).ToList();
 
             _ = this.mockGreengrasClient.Setup(s3 => s3.ListComponentsAsync(It.Is<ListComponentsRequest>(a => a.Scope == ComponentVisibilityScope.PUBLIC), It.IsAny<CancellationToken>()))

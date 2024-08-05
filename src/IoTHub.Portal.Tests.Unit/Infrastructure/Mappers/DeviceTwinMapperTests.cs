@@ -73,7 +73,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
                 Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.Tags[tagName]);
             }
 
-            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl.ToString());
+            Assert.AreEqual("http://fake.local/000-000-001", result.Image.ToString());
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
 
             this.mockRepository.VerifyAll();
@@ -112,7 +112,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.IsEmpty(result.Tags);
 
-            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl.ToString());
+            Assert.AreEqual("http://fake.local/000-000-001", result.Image.ToString());
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
 
             this.mockRepository.VerifyAll();
@@ -141,7 +141,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
-            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl.ToString());
+            Assert.AreEqual("http://fake.local/000-000-001", result.Image.ToString());
             Assert.IsFalse(result.IsConnected);
             Assert.IsFalse(result.IsEnabled);
 
@@ -183,7 +183,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.IsEmpty(result.Tags);
 
-            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
+            Assert.AreEqual("http://fake.local/000-000-001", result.Image);
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
 
             this.mockRepository.VerifyAll();

@@ -14,15 +14,17 @@ namespace IoTHub.Portal.Infrastructure.Managers
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Options;
+    using Microsoft.AspNetCore.StaticFiles;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using StackExchange.Redis;
 
     public class DeviceModelImageManager : IDeviceModelImageManager
     {
         private readonly BlobServiceClient blobService;
         private readonly ILogger<DeviceModelImageManager> logger;
         private readonly ConfigHandler configHandler;
-
+        private readonly IDatabase redisDb;
         private readonly IOptions<DeviceModelImageOptions> deviceModelImageOptions;
 
         public DeviceModelImageManager(
@@ -35,48 +37,67 @@ namespace IoTHub.Portal.Infrastructure.Managers
             this.blobService = blobService;
             this.configHandler = configHandler;
 
+            // Todo Add Redis connection string to configuration
+            var redisConnection = ConnectionMultiplexer.Connect("");
+            redisDb = redisConnection.GetDatabase();
+
             this.deviceModelImageOptions = BaseImageOption;
         }
 
-        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
+        public async Task<string> GetDeviceModelImageAsync(string deviceModelId)
         {
             var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
+            var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
+            using var reader = new StreamReader((await blobClient.DownloadAsync()).Value.Content);
+
+            return await reader.ReadToEndAsync();
+        }
+
+        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file)
+        {
+            var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
-            _ = await blobClient.UploadAsync(stream, true);
-
+            _ = await blobClient.UploadAsync(file, true);
             _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
 
-            return blobClient.Uri.ToString();
+            return file;
         }
 
         public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
             var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
-
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
             var currentAssembly = Assembly.GetExecutingAssembly();
+            var defaultFilePath =
+                $"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}";
 
-            var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}");
+            var defaultFile = File.Open(defaultFilePath, FileMode.Open);
 
-            _ = await blobClient.UploadAsync(defaultImageStream, true);
+            _ = await blobClient.UploadAsync(defaultFile, true);
 
             _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
 
-            return blobClient.Uri.ToString();
+            //var imageBase64 = ComputeImageBase64(new FormFile(defaultfile, 0 , defaultfile.Length, string.Empty, defaultfile.Name));
+
+            //_ = redisDb.StringSet(deviceModelId, imageBase64);
+
+            var buffer = new byte[defaultFile.Length];
+            _ = await defaultFile.ReadAsync(buffer);
+            _ = new FileExtensionContentTypeProvider().TryGetContentType(defaultFilePath, out var contentType);
+
+            return $"data:{contentType};base64,{Convert.ToBase64String(buffer)}";
         }
 
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
         {
             var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
-
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
             this.logger.LogInformation($"Deleting from Blob storage :\n\t {blobClient.Uri}\n");
@@ -84,6 +105,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
             try
             {
                 _ = await blobClient.DeleteIfExistsAsync();
+                _ = redisDb.KeyDeleteAsync(deviceModelId);
             }
             catch (RequestFailedException e)
             {
@@ -91,15 +113,9 @@ namespace IoTHub.Portal.Infrastructure.Managers
             }
         }
 
-        public Uri ComputeImageUri(string deviceModelId)
-        {
-            return new Uri(this.deviceModelImageOptions.Value.BaseUri, $"{this.deviceModelImageOptions.Value.BaseUri}/{deviceModelId}");
-        }
-
         public async Task InitializeDefaultImageBlob()
         {
             var container = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
-
             var blobClient = container.GetBlobClient(this.deviceModelImageOptions.Value.DefaultImageName);
 
             var currentAssembly = Assembly.GetExecutingAssembly();
@@ -108,6 +124,10 @@ namespace IoTHub.Portal.Infrastructure.Managers
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}");
 
             _ = await blobClient.UploadAsync(defaultImageStream, overwrite: true);
+
+            //using var file = File.Open($"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}", FileMode.Open);
+
+            //_ = redisDb.StringSet(file.Name, ComputeImageBase64(new FormFile(file, 0, file.Length, string.Empty, file.Name)));
         }
 
         public async Task SyncImagesCacheControl()

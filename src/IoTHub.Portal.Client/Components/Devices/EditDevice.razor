@@ -43,7 +43,7 @@
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
                         <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@Device.ImageUrl?.ToString()" />
+                            <MudImage Src="@Device.Image?.ToString()" />
                         </MudAvatar>
                     </div>
                 </MudCardContent>
@@ -756,7 +756,7 @@
                 {
                     DeviceID = Device.DeviceID,
                     ModelId = model?.ModelId,
-                    ImageUrl = model?.ImageUrl,
+                    Image = model?.Image,
                     DeviceName = Device.DeviceName,
                     IsEnabled = Device.IsEnabled,
                     Tags = Device.Tags
@@ -775,7 +775,7 @@
                     {
                         DeviceID = this.Device.DeviceID,
                         ModelId = model.ModelId,
-                        ImageUrl = model.ImageUrl,
+                        Image = model.Image,
                         DeviceName = this.Device.DeviceName,
                         IsEnabled = this.Device.IsEnabled,
                         Tags = this.Device.Tags,

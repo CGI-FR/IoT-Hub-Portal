@@ -5,7 +5,6 @@ namespace IoTHub.Portal.Server.Services
 {
     using System;
     using System.Linq;
-    using System.Linq.Dynamic.Core;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -23,9 +22,7 @@ namespace IoTHub.Portal.Server.Services
     using Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
-    using Microsoft.EntityFrameworkCore;
 
     public class DeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
@@ -79,11 +76,7 @@ namespace IoTHub.Portal.Server.Services
 
             var paginateDeviceModelsDto = new PaginatedResult<DeviceModelDto>
             {
-                Data = paginatedDeviceModels.Data.Select(x => this.mapper.Map<DeviceModelDto>(x, opts =>
-                {
-                    // TODO Get image base64 data
-                    //opts.AfterMap((src, dest) => dest.ImageUrl = x.Id this.deviceModelImageManager.ComputeImageUri(x.Id));
-                })).ToList(),
+                Data = paginatedDeviceModels.Data.Select(x => this.mapper.Map<DeviceModelDto>(x, opts => { })).ToList(),
                 TotalCount = paginatedDeviceModels.TotalCount,
                 CurrentPage = paginatedDeviceModels.CurrentPage,
                 PageSize = deviceModelFilter.PageSize
@@ -185,12 +178,14 @@ namespace IoTHub.Portal.Server.Services
 
         public Task<string> GetDeviceModelAvatar(string deviceModelId)
         {
-            return Task.Run(() => this.deviceModelImageManager.ComputeImageUri(deviceModelId).ToString());
+            // TODO Get encoded image instead
+            // return Task.Run(() => this.deviceModelImageManager.ComputeImageUri(deviceModelId).ToString());
+            return Task.Run(() => string.Empty);
         }
 
-        public Task<string> UpdateDeviceModelAvatar(string deviceModelId, IFormFile file)
+        public Task<string> UpdateDeviceModelAvatar(string deviceModelId, string file)
         {
-            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, file?.OpenReadStream()));
+            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, file));
         }
 
         public Task DeleteDeviceModelAvatar(string deviceModelId)

@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(DeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
                 SupportLoRaFeatures = bool.Parse(entity[nameof(DeviceModelDto.SupportLoRaFeatures)]?.ToString() ?? "false"),
-                ImageUrl = entity[nameof(DeviceModelDto.ImageUrl)]?.ToString(),
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
                 Name = entity[nameof(DeviceModelDto.Name)]?.ToString(),
                 Description = entity[nameof(DeviceModelDto.Description)]?.ToString(),
             };
@@ -37,7 +37,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(DeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
-                ImageUrl = entity[nameof(DeviceModelDto.ImageUrl)]?.ToString(),
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
                 Name = entity[nameof(DeviceModelDto.Name)]?.ToString(),
                 Description = entity[nameof(DeviceModelDto.Description)]?.ToString()
             };

@@ -3,16 +3,15 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.Json;
     using AutoMapper;
     using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Models.v10;
-    using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json.Linq;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.Json;
 
     public class EdgeDeviceProfile : Profile
     {
@@ -62,7 +61,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.DeviceId, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.NbDevices, opts => opts.MapFrom(src => src.NbDevices))
-                .ForMember(dest => dest.ImageUrl, opts => opts.MapFrom((src, _, _, context) => context.Items["imageUrl"]))
+                .ForMember(dest => dest.Image, opts => opts.MapFrom((src, _, _, context) => context.Items["image"]))
                 .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.ConnectionState))
                 .ForMember(dest => dest.Labels, opts => opts.MapFrom(src => src.Labels.Union(src.DeviceModel.Labels)));
         }

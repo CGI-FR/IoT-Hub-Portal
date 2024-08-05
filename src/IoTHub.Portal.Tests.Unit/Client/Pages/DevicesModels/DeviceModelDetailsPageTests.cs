@@ -3,26 +3,25 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.DeviceModels;
-    using IoTHub.Portal.Client.Services;
-    using Models;
-    using Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions;
+    using IoTHub.Portal.Client.Exceptions;
+    using IoTHub.Portal.Client.Models;
+    using IoTHub.Portal.Client.Services;
+    using IoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Extensions.DependencyInjection;
+    using Models;
+    using Models.v10;
     using Moq;
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using UnitTests.Bases;
     using UnitTests.Mocks;
 
     [TestFixture]
@@ -182,7 +181,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .ReturnsAsync(new List<DeviceProperty>());
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetAvatarUrl(this.mockModelId))
+                    service.GetAvatar(this.mockModelId))
                 .ReturnsAsync(string.Empty);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -241,7 +240,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetAvatarUrl(this.mockModelId))
+                    service.GetAvatar(this.mockModelId))
                 .ReturnsAsync(string.Empty);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -380,7 +379,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Name = this.mockModelId,
                 Description = Guid.NewGuid().ToString(),
                 IsBuiltin = false,
-                ImageUrl = "", // TODO Add generation of an image in Base64 format
+                Image = "", // TODO Add generation of an image in Base64 format
                 SupportLoRaFeatures = false
             };
 
@@ -393,8 +392,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .ReturnsAsync(properties ?? Array.Empty<DeviceProperty>());
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetAvatarUrl(this.mockModelId))
-                .ReturnsAsync(deviceModel.ImageUrl.ToString());
+                    service.GetAvatar(this.mockModelId))
+                .ReturnsAsync(deviceModel.Image.ToString());
 
             return deviceModel;
         }
@@ -419,8 +418,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .ReturnsAsync(commands ?? Array.Empty<DeviceModelCommandDto>());
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
-                    service.GetAvatarUrl(this.mockModelId))
-                .ReturnsAsync(deviceModel.ImageUrl.ToString());
+                    service.GetAvatar(this.mockModelId))
+                .ReturnsAsync(deviceModel.Image.ToString());
 
             return deviceModel;
         }

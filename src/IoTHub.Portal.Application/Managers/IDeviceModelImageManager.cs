@@ -3,17 +3,15 @@
 
 namespace IoTHub.Portal.Application.Managers
 {
-    using System;
-    using System.IO;
     using System.Threading.Tasks;
 
     public interface IDeviceModelImageManager
     {
-        Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream);
+        Task<string> GetDeviceModelImageAsync(string deviceModelId);
+
+        Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file);
 
         Task DeleteDeviceModelImageAsync(string deviceModelId);
-
-        Uri ComputeImageUri(string deviceModelId);
 
         Task InitializeDefaultImageBlob();
 

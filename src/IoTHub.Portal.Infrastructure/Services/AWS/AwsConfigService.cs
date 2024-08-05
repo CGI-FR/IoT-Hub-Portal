@@ -382,8 +382,8 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                         ModuleName = compoenent.Key,
                         Version = compoenent.Value.ComponentVersion,
                         ContainerCreateOptions = jsonRecipe,
-                        // ImageURI is required, but not used for Greengrass components
-                        ImageURI = "example.com"
+                        // Image is required, but not used for Greengrass components
+                        Image = "example.com"
                     };
 
                     moduleList.Add(iotEdgeModule);
@@ -439,8 +439,8 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 Id = c.Arn,
                 ModuleName = c.ComponentName,
                 Version = c.LatestVersion.ComponentVersion,
-                // ImageURI is required, but not used for Greengrass components
-                ImageURI = "example.com"
+                // Image is required, but not used for Greengrass components
+                Image = "example.com"
             });
         }
     }
