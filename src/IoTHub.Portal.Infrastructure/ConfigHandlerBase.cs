@@ -17,6 +17,7 @@ namespace IoTHub.Portal.Infrastructure
         internal const string UseSecurityHeadersKey = "UseSecurityHeaders";
         internal const string PostgreSQLConnectionStringKey = "PostgreSQL:ConnectionString";
         internal const string MySQLConnectionStringKey = "MySQL:ConnectionString";
+        internal const string SqLiteConnectionStringKey = "SQLite:ConnectionString";
         internal const string DbProviderKey = "DbProvider";
 
         internal const string OIDCScopeKey = "OIDC:Scope";

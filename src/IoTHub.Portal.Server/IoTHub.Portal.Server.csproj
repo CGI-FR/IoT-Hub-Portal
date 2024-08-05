@@ -3,12 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <UserSecretsId>IoTHub.Portal.Server-DDED92B6-DADB-4B27-88BD-450D1F21395C</UserSecretsId>
-    <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
+    <!--<WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>-->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);</NoWarn>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ProjectExtensions>
@@ -26,10 +27,10 @@
     <ProjectReference Include="..\IoTHub.Portal.Application\IoTHub.Portal.Application.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Infrastructure\IoTHub.Portal.Infrastructure.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Domain\IoTHub.Portal.Domain.csproj" />
-    <ProjectReference Include="..\IoTHub.Portal.Client\IoTHub.Portal.Client.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.MySql\IoTHub.Portal.MySql.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Postgres\IoTHub.Portal.Postgres.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Shared\IoTHub.Portal.Shared.csproj" />
+    <ProjectReference Include="..\IoTHub.Portal.SQLite\IoTHub.Portal.SQLite.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,7 +46,9 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.7" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
     <PackageReference Include="Microsoft.Azure.Devices" Version="1.39.1" />
@@ -56,11 +59,16 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Graph" Version="5.56.0" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.6.15" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
@@ -72,7 +80,20 @@
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.10.0" />
     <PackageReference Include="Quartz.Serialization.Json" Version="3.10.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
     <PackageReference Include="UAParser" Version="3.1.47" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.Production.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   
 </Project>

@@ -77,6 +77,7 @@ namespace IoTHub.Portal.Infrastructure
         public override string IdeasAuthenticationToken => this.config.GetValue(IdeasAuthenticationTokenKey, string.Empty)!;
 
         public override string PostgreSQLConnectionString => this.config[PostgreSQLConnectionStringKey]!;
+        public override string SQLiteConnectionString => this.config[SqLiteConnectionStringKey]!;
 
         public override string MySQLConnectionString => this.config[MySQLConnectionStringKey]!;
 

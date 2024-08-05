@@ -40,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IoTHub.Portal.Client\IoTHub.Portal.Client.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Server\IoTHub.Portal.Server.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Shared\IoTHub.Portal.Shared.csproj" />
   </ItemGroup>

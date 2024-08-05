@@ -8,6 +8,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
     using IoTHub.Portal.Shared.Constants;
     using IoTHub.Portal.Infrastructure;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
     using Moq;
@@ -18,7 +19,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
     {
         private MockRepository mockRepository;
         private Mock<IConfiguration> mockConfiguration;
-        private Mock<IHostEnvironment> mockHostEnvironment;
+        private Mock<IWebHostEnvironment> mockHostEnvironment;
 
         [SetUp]
         public void SetUp()
@@ -26,7 +27,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
-            this.mockHostEnvironment = this.mockRepository.Create<IHostEnvironment>();
+            this.mockHostEnvironment = this.mockRepository.Create<IWebHostEnvironment>();
         }
 
         [Test]

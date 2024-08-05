@@ -8,12 +8,14 @@ namespace IoTHub.Portal.Infrastructure
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Shared.Constants;
     using IoTHub.Portal.Shared.Constants;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
 
+
     public static class ConfigHandlerFactory
     {
-        public static ConfigHandler Create(IHostEnvironment env, IConfiguration config)
+        public static ConfigHandler Create(IWebHostEnvironment env, IConfiguration config)
         {
             ArgumentNullException.ThrowIfNull(env, nameof(env));
             ArgumentNullException.ThrowIfNull(config, nameof(config));

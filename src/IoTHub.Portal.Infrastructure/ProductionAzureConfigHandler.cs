@@ -39,6 +39,7 @@ namespace IoTHub.Portal.Infrastructure
         public override string AzureStorageAccountConnectionString => this.config.GetConnectionString(AzureStorageAccountConnectionStringKey)!;
 
         public override string PostgreSQLConnectionString => this.config.GetConnectionString(PostgreSQLConnectionStringKey)!;
+        public override string SQLiteConnectionString => this.config.GetConnectionString(SqLiteConnectionStringKey)!;
 
         public override string MySQLConnectionString => this.config.GetConnectionString(MySQLConnectionStringKey)!;
 

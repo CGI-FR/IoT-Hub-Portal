@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Shared.Models.v10
 
     public class EdgeModelSystemModule
     {
-        public string Name { get; internal set; }
+        public string Name { get; set; }
 
         public string ImageUri { get; set; } = default!;
 

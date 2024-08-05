@@ -5,7 +5,6 @@ namespace IoTHub.Portal.Server.Services
 {
     using System;
     using System.Linq;
-    using System.Linq.Dynamic.Core;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -25,7 +24,6 @@ namespace IoTHub.Portal.Server.Services
     using Domain.Repositories;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
-    using Microsoft.EntityFrameworkCore;
 
     public class DeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel

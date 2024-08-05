@@ -88,6 +88,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit tests", "Unit tests", "{8FCE3526-ACF2-41A5-8FB5-C77733E387CE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoTHub.Portal.SQLite", "IoTHub.Portal.SQLite\IoTHub.Portal.SQLite.csproj", "{FB2B4707-B2C2-41A1-9430-1147A85F8D53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,10 @@ Global
 		{9C5F753D-B9A3-4E7F-BFF3-37EB8BEBAB80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C5F753D-B9A3-4E7F-BFF3-37EB8BEBAB80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C5F753D-B9A3-4E7F-BFF3-37EB8BEBAB80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB2B4707-B2C2-41A1-9430-1147A85F8D53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB2B4707-B2C2-41A1-9430-1147A85F8D53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB2B4707-B2C2-41A1-9430-1147A85F8D53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB2B4707-B2C2-41A1-9430-1147A85F8D53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -164,6 +170,7 @@ Global
 		{AD6BE5D2-0FFB-4629-8DE1-67D9B4D39577} = {3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}
 		{EB8B706B-11C0-4D53-B5DA-603A4C1668F9} = {3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}
 		{42453683-0D1E-45B0-8B9B-2B4F5BE2D211} = {2CEFBA09-E7DB-409B-97F5-BBA272E6CFC3}
+		{FB2B4707-B2C2-41A1-9430-1147A85F8D53} = {42453683-0D1E-45B0-8B9B-2B4F5BE2D211}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E03F3EEB-7B2B-4849-A581-4150BF29EC2B}

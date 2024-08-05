@@ -71,6 +71,8 @@ namespace IoTHub.Portal.Domain
 
         public abstract string PostgreSQLConnectionString { get; }
 
+        public abstract string SQLiteConnectionString { get; }
+
         public abstract string MySQLConnectionString { get; }
 
         public abstract string DbProvider { get; }

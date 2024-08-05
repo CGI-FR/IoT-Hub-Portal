@@ -9,5 +9,7 @@ namespace IoTHub.Portal.Domain.Shared.Constants
         public const string PostgreSQL = "PostgreSQL";
 
         public const string MySQL = "MySQL";
+
+        public const string SqLite = "SQLite";
     }
 }

@@ -11,15 +11,13 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using IoTHub.Portal.Infrastructure.Repositories;
     using IoTHub.Portal.Infrastructure.Services;
     using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Constants;
     using EntityFramework.Exceptions.PostgreSQL;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Quartz;
 
-    public static class IServiceCollectionExtension
+    public static class ServiceCollectionExtension
     {
         public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -67,6 +65,18 @@ namespace IoTHub.Portal.Infrastructure.Startup
                         _ = opts.UseExceptionProcessor();
                     });
                     _ = dbContextOptions.UseMySql(configuration.MySQLConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySQLConnectionString), x => x.MigrationsAssembly("IoTHub.Portal.MySql"));
+                    break;
+                case DbProviders.SqLite:
+                    if (string.IsNullOrEmpty(configuration.SQLiteConnectionString))
+                    {
+                        return services;
+                    }
+                    _ = services.AddDbContext<PortalDbContext>(opts =>
+                    {
+                        _ = opts.UseSqlite(configuration.SQLiteConnectionString, x => x.MigrationsAssembly("IoTHub.Portal.SQLite"));
+                        _ = opts.UseExceptionProcessor();
+                    });
+                    _ = dbContextOptions.UseSqlite(configuration.SQLiteConnectionString, x => x.MigrationsAssembly("IoTHub.Portal.SQLite"));
                     break;
                 default:
                     return services;

@@ -26,7 +26,7 @@ _ = builder.Services.AddTransient<ProblemDetailsHandler>();
 
 _ = builder.Services.AddHttpClient("api", (sp, client) =>
 {
-    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+    client.BaseAddress = new Uri("https://localhost:8001/");
     client.DefaultRequestHeaders.Add("X-Version", "1.0");
     _ = client.EnableIntercept(sp);
 }).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()
@@ -34,7 +34,7 @@ _ = builder.Services.AddHttpClient("api", (sp, client) =>
 
 _ = builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
 
-using var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+using var httpClient = new HttpClient() { BaseAddress = new Uri("https://localhost:8001/") };
 var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("api/settings/oidc");
 
 if (settings != null)
