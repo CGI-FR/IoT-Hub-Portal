@@ -43,8 +43,6 @@ services:
     build:
       context: .
       dockerfile: IoTHub.Portal.Server/Dockerfile
-    ports:
-      - 8001:80
     depends_on:
       database:
         condition: service_healthy
