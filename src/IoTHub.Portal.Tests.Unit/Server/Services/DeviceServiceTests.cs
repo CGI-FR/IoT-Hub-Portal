@@ -142,7 +142,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                         Color = "green"
                     }
                 },
-                DeviceModel = Fixture.Create<DeviceModel>()
+                DeviceModel = Fixture.Create<DeviceModel>(),
+                LayerId = Fixture.Create<string>()
             };
 
             var device2 = new Device
@@ -167,7 +168,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                         Color = "green"
                     }
                 },
-                DeviceModel = Fixture.Create<DeviceModel>()
+                DeviceModel = Fixture.Create<DeviceModel>(),
+                LayerId = Fixture.Create<string>()
             };
 
             var expectedTotalDevicesCount = 1;

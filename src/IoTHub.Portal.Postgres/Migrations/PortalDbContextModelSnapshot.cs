@@ -71,6 +71,9 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("LayerId")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -372,6 +375,30 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.ToTable("Labels");
                 });
 
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Layer", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Father")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Planning")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("hasSub")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Layers");
+                });
+
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LoRaDeviceTelemetry", b =>
                 {
                     b.Property<string>("Id")
@@ -392,6 +419,64 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.HasIndex("LorawanDeviceId");
 
                     b.ToTable("LoRaDeviceTelemetry");
+                });
+
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Planning", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CommandId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("DayOff")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("End")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Frequency")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Start")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Plannings");
+                });
+
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Schedule", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CommandId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("End")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PlanningId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Start")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>

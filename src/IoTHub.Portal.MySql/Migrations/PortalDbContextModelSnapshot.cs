@@ -3,6 +3,7 @@ using System;
 using IoTHub.Portal.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -16,8 +17,10 @@ namespace IoTHub.Portal.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Concentrator", b =>
                 {
@@ -67,6 +70,9 @@ namespace IoTHub.Portal.MySql.Migrations
 
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LayerId")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -369,6 +375,30 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.ToTable("Labels");
                 });
 
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Layer", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Father")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Planning")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("hasSub")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Layers");
+                });
+
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LoRaDeviceTelemetry", b =>
                 {
                     b.Property<string>("Id")
@@ -391,11 +421,71 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.ToTable("LoRaDeviceTelemetry");
                 });
 
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Planning", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("CommandId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("DayOff")
+                        .HasColumnType("int");
+
+                    b.Property<string>("End")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Frequency")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Start")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Plannings");
+                });
+
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Schedule", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("CommandId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("End")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PlanningId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Start")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Schedules");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("FriendlyName")
                         .HasColumnType("longtext");

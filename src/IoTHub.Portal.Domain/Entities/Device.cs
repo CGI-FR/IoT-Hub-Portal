@@ -52,5 +52,10 @@ namespace IoTHub.Portal.Domain.Entities
         /// List of custom device tags and their values.
         /// </summary>
         public ICollection<DeviceTagValue> Tags { get; set; } = new Collection<DeviceTagValue>();
+
+        /// <summary>
+        /// The LayerId of the device.
+        /// </summary>
+        public string? LayerId { get; set; }
     }
 }

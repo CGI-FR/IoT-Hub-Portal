@@ -11,8 +11,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using IoTHub.Portal.Infrastructure.Repositories;
     using IoTHub.Portal.Infrastructure.Services;
     using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Constants;
     using EntityFramework.Exceptions.PostgreSQL;
     using Microsoft.EntityFrameworkCore;
@@ -105,6 +103,9 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddScoped<IDeviceTagValueRepository, DeviceTagValueRepository>()
                             .AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>()
                             .AddScoped<IConcentratorRepository, ConcentratorRepository>()
+                            .AddScoped<ILayerRepository, LayerRepository>()
+                            .AddScoped<IScheduleRepository, ScheduleRepository>()
+                            .AddScoped<IPlanningRepository, PlanningRepository>()
                             .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
                             .AddScoped<ILabelRepository, LabelRepository>();
         }
@@ -115,6 +116,9 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IEdgeEnrollementHelper, EdgeEnrollementHelper>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>()
                 .AddTransient<IDeviceTagService, DeviceTagService>()
+                .AddTransient<ILayerService, LayerService>()
+                .AddTransient<IScheduleService, ScheduleService>()
+                .AddTransient<IPlanningService, PlanningService>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
         }
     }
