@@ -45,7 +45,7 @@ namespace IoTHub.Portal.MySql.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Layers", x => x.Id);
+                    _ = table.PrimaryKey("PK_Layers", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -68,7 +68,7 @@ namespace IoTHub.Portal.MySql.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Plannings", x => x.Id);
+                    _ = table.PrimaryKey("PK_Plannings", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -89,7 +89,7 @@ namespace IoTHub.Portal.MySql.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Schedules", x => x.Id);
+                    _ = table.PrimaryKey("PK_Schedules", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
         }
