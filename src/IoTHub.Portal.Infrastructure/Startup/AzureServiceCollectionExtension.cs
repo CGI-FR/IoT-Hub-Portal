@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
 {
     using System.Net;
     using Azure.Storage.Blobs;
-    using Azure.Storage.Blobs.Models;
+    //using Azure.Storage.Blobs.Models;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Providers;
