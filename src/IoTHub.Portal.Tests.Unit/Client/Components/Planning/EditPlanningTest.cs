@@ -61,17 +61,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00"
             };
 
-            List<ScheduleDto> ScheduleList = new List<ScheduleDto>
+            var ScheduleList = new List<ScheduleDto>
             {
                 firstSchedule
             };
@@ -106,17 +106,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00"
             };
 
-            List<ScheduleDto> ScheduleList = new List<ScheduleDto>
+            var ScheduleList = new List<ScheduleDto>
             {
                 firstSchedule
             };
@@ -153,18 +153,18 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00",
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
 
-            List<ScheduleDto> ScheduleList = new List<ScheduleDto>
+            var ScheduleList = new List<ScheduleDto>
             {
                 firstSchedule
             };
@@ -204,18 +204,18 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00",
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
 
-            List<ScheduleDto> ScheduleList = new List<ScheduleDto>
+            var ScheduleList = new List<ScheduleDto>
             {
                 firstSchedule
             };
@@ -255,16 +255,16 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
         [Test]
         public void EditPlanningInit_ProblemDetailsException()
         {
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00",
             };
 
-            List<ScheduleDto> ScheduleList = new List<ScheduleDto>
+            var ScheduleList = new List<ScheduleDto>
             {
                 firstSchedule
             };
@@ -291,17 +291,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00"
             };
 
-            List<ScheduleDto> ScheduleList = new List<ScheduleDto>
+            var ScheduleList = new List<ScheduleDto>
             {
                 firstSchedule
             };
@@ -338,17 +338,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00"
             };
 
-            List<ScheduleDto> ScheduleList = new List<ScheduleDto>
+            var ScheduleList = new List<ScheduleDto>
             {
                 firstSchedule
             };
@@ -387,17 +387,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00"
             };
 
-            List<ScheduleDto> ScheduleList = new List<ScheduleDto>
+            var ScheduleList = new List<ScheduleDto>
             {
                 firstSchedule
             };
@@ -442,18 +442,18 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00",
                 End = "23:59",
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto secondSchedule = new ScheduleDto
+            var secondSchedule = new ScheduleDto
             {
                 Start = "00:00",
                 End = "23:59",
@@ -513,17 +513,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            PlanningDto Planning = new PlanningDto
+            var Planning = new PlanningDto
             {
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
-            ScheduleDto firstSchedule = new ScheduleDto
+            var firstSchedule = new ScheduleDto
             {
                 Start = "00:00"
             };
 
-            List<ScheduleDto> ScheduleList = new List<ScheduleDto>
+            var ScheduleList = new List<ScheduleDto>
             {
                 firstSchedule
             };
