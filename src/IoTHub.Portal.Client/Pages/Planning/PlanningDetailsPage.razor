@@ -1,0 +1,30 @@
+﻿@page "/planning/{PlanningId}"
+
+@using IoTHub.Portal.Shared.Models.v10
+@using IoTHub.Portal.Client.Components.Planning
+@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Models.v10.LoRaWAN
+
+@inject IPlanningClientService PlanningClientService
+@inject IScheduleClientService ScheduleClientService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
+
+<EditPlanning planning=@Planning scheduleList=@ScheduleList initScheduleList=@(new List<ScheduleDto>(ScheduleList)) mode="Edit" SelectedModel="@DeviceModel.Name" />
+
+@code {
+    public List<ScheduleDto> ScheduleList { get; } = new List<ScheduleDto> { };
+    public PlanningDto Planning { get; set; } = new PlanningDto();
+    public DeviceModelDto DeviceModel { get; } = new DeviceModelDto();
+
+    [Parameter]
+    public string PlanningId { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Planning = await PlanningClientService.GetPlanning(PlanningId);
+
+        List<ScheduleDto> newSchedule = await ScheduleClientService.GetSchedules();
+        ScheduleList.AddRange(newSchedule.Where(obj => obj.PlanningId == PlanningId));
+    }
+}

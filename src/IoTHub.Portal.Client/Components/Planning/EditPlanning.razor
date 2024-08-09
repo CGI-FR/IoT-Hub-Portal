@@ -1,0 +1,421 @@
+﻿@using IoTHub.Portal.Models
+@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Shared.Models.v10
+@using IoTHub.Portal.Client.Validators
+@using System.Net.Http.Headers
+@using IoTHub.Portal.Shared.Constants
+@using IoTHub.Portal.Client.Models
+@using IoTHub.Portal.Shared.Models
+@using IoTHub.Portal.Shared.Models.v10.Filters
+@using IoTHub.Portal.Models.v10.LoRaWAN
+@using IoTHub.Portal.Client.Helpers
+
+@attribute [Authorize]
+@inject NavigationManager NavigationManager
+@inject PortalSettings Portal
+
+@inject IPlanningClientService PlanningClientService
+@inject IScheduleClientService ScheduleClientService
+@inject ILayerClientService LayerClientService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">
+    @mode Planning
+    <MudButton id="editPlanningSaveLayers" Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" Disabled="isProcessing">Save</MudButton>
+</MudText>
+@if (!isProcessing)
+{
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                <ChildContent>
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@planning.Name" For="@(() => planning.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
+                        </MudItem>
+                        <MudTd DataLabel="Command" Style="text-align: center;">
+                            <MudSelect @bind-Value="@SelectedModel" Label=" Device Model" Margin="Margin.Dense" Variant="Variant.Outlined" Disabled="@((mode == "New") ? false : true)">
+                                @foreach (string model in CommandDictionary.Keys.ToList())
+                                {
+                                    <MudSelectItem Value="@(model)">@model</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudTd>
+                    </MudGrid>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="Business Day" IsInitiallyExpanded="true">
+                <TitleContent><MudText Typo="Typo.h6">Business Day</MudText></TitleContent>
+                <ChildContent>
+                    <MudItem xs="12">
+                        <MudTable Items="@scheduleList" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                            <ColGroup>
+                                <col style="width: 5%;" />
+                                <col style="width: 5%;" />
+                                <col style="width: 10%;" />
+                                <col style="width: 5%;" />
+                            </ColGroup>
+                            <HeaderContent>
+                                <MudTh Style="text-align: center">From</MudTh>
+                                <MudTh Style="text-align: center">To</MudTh>
+                                <MudTh Style="text-align: center">Command</MudTh>
+                                <MudTh Style="text-align: center">Delete</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="ContextSchedule">
+                                <MudTd DataLabel="Start" Style="word-break: break-all;">
+                                    <MudTextField @bind-Value="@ContextSchedule.Start" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start )" Variant="Variant.Outlined" Required="true" Disabled="@(scheduleList.IndexOf(ContextSchedule)==0)"></MudTextField>
+                                </MudTd>
+                                <MudTd DataLabel="End" Style="word-break: break-all;">
+                                    <MudTextField @bind-Value="@ContextSchedule.End" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                </MudTd>
+                                <MudTd DataLabel="Command" Style="text-align: center;">
+                                    <MudSelect @bind-Value="@ContextSchedule.CommandId" Label="Command" Margin="Margin.Dense" Variant="Variant.Outlined">
+                                        @foreach (var command in CommandDictionary[SelectedModel])
+                                        {
+                                            <MudSelectItem Value="@(@command.Id)">@command.Name</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudTd>
+                                <MudTd DataLabel="Delete" Style="text-align: center">
+                                    <MudIconButton id="editPlanningDeleteLayers" Color="Color.Default" Class="deleteRouteButton" OnClick="( () => DeleteSchedule(ContextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                </MudTd>
+                            </RowTemplate>
+                            <FooterContent>
+                                <MudButton id="editPlanningAddLayers" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddSchedule" Color="Color.Success">Add slot</MudButton>
+                            </FooterContent>
+                        </MudTable>
+                        <div>
+                            Days:
+                            @foreach (DaysEnumFlag.DaysOfWeek day in Enum.GetValues(typeof(DaysEnumFlag.DaysOfWeek)))
+                            {
+                                if (day != DaysEnumFlag.DaysOfWeek.None)
+                                {
+                                    <MudButton id="editPlanningChangeOnDayLayers" Style=@((planning.DayOff & day) != day ? "" : "text-decoration: line-through;") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) != day ? Color.Success : Color.Error)">@day</MudButton>
+                                }
+                            }
+                        </div>
+                    </MudItem>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="Off Day" IsInitiallyExpanded="true">
+                <TitleContent><MudText Typo="Typo.h6">Off Day</MudText></TitleContent>
+                <ChildContent>
+                    <MudItem xs="12">
+                        <MudTable Items="@scheduleOffList" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                            <ColGroup>
+                                <col style="width: 5%;" />
+                                <col style="width: 5%;" />
+                                <col style="width: 10%;" />
+                                <col style="width: 5%;" />
+                            </ColGroup>
+                            <HeaderContent>
+                                <MudTh Style="text-align: center">From</MudTh>
+                                <MudTh Style="text-align: center">To</MudTh>
+                                <MudTh Style="text-align: center">Command</MudTh>
+                                <MudTh Style="text-align: center">Delete</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="ContextSchedule">
+                                <MudTd DataLabel="Start" Style="word-break: break-all;">
+                                    <MudTextField Margin="Margin.Dense" Label="From 00:00" For="@(() => ContextSchedule.Start )" Variant="Variant.Outlined" Disabled="true"></MudTextField>
+                                </MudTd>
+                                <MudTd DataLabel="End" Style="word-break: break-all;">
+                                    <MudTextField Margin="Margin.Dense" Label="To 24:00" For="@(() => ContextSchedule.End )" Variant="Variant.Outlined" Disabled="true" />
+                                </MudTd>
+                                <MudTd DataLabel="Command" Style="text-align: center;">
+                                    <MudSelect @bind-Value="@planning.CommandId" Label="Command" Margin="Margin.Dense" Variant="Variant.Outlined">
+                                        @foreach (var command in CommandDictionary[SelectedModel])
+                                        {
+                                            <MudSelectItem Value="@(@command.Id)">@command.Name</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudTd>
+                                <MudTd DataLabel="Delete" Style="text-align: center">
+                                    <MudIconButton Color="Color.Default" Class="deleteRouteButton" Icon="@Icons.Material.Outlined.Delete" Size="Size.Medium"></MudIconButton>
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                        <div>
+                            Days:
+                            @foreach (DaysEnumFlag.DaysOfWeek day in Enum.GetValues(typeof(DaysEnumFlag.DaysOfWeek)))
+                            {
+                                if (day != DaysEnumFlag.DaysOfWeek.None)
+                                {
+                                    <MudButton id="editPlanningChangeOffDayLayers" Style=@((planning.DayOff & day) == day ? "text-decoration: underline;" : "") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) == day ? Color.Success : Color.Error)">@day</MudButton>
+                                }
+                            }
+                        </div>
+                    </MudItem>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="Date of application of this planning" IsInitiallyExpanded="true">
+                <TitleContent><MudText Typo="Typo.h6">Date of application of this planning</MudText></TitleContent>
+                <ChildContent>
+                    <MudTd DataLabel="From" Style="word-break: break-all;">
+                        <MudTextField @bind-Value="@planning.Start" T="string" Format="yyyy-MM-dd" Label="Start" InputType="InputType.Date" />
+                    </MudTd>
+                    <MudTd DataLabel="From" Style="word-break: break-all;">
+                        <MudTextField @bind-Value="@planning.End" T="string" Format="yyyy-MM-dd" Label="End" InputType="InputType.Date" />
+                    </MudTd>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="Select your application areas" IsInitiallyExpanded="true">
+                <TitleContent><MudText Typo="Typo.h6">Select your application areas</MudText></TitleContent>
+                <ChildContent>
+                    <MudPaper Class="overflow-y-auto" Elevation="0">
+                        <MudTreeView Items="@Layers">
+                            <ItemTemplate>
+                                <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.Children">
+                                    <Content>
+                                        <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@(context.Children.Count() != 0)" />
+                                        <MudCheckBox T="bool?" Checked="@(context.LayerData.Planning == planning.Id)" CheckedChanged="@((e) => CheckedChanged(context))"></MudCheckBox>
+                                        <MudText>@context.LayerData.Name</MudText>
+                                    </Content>
+                                </MudTreeViewItem>
+                            </ItemTemplate>
+                        </MudTreeView>
+                    </MudPaper>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [Parameter]
+    public string mode { get; set; } = default!;
+    [Parameter]
+    public List<ScheduleDto> scheduleList { get; set; } = new List<ScheduleDto> { };
+    [Parameter]
+    public List<ScheduleDto> initScheduleList { get; set; } = new List<ScheduleDto> { };
+    [Parameter]
+    public PlanningDto planning { get; set; } = new PlanningDto();
+    [Parameter]
+    public string SelectedModel { get; set; } = "";
+
+    public List<ScheduleDto> scheduleOffList { get; set; } = new List<ScheduleDto> { new ScheduleDto() };
+
+    public IEnumerable<string> AvailableMonth { get; set; } = new List<string>() { "January", "February", "March", "April", "Mai", "June", "July", "August", "September", "October", "Novembre", "December" };
+
+    public string defaultDeviceModel { get; set; } = "Choose a Device Model";
+
+    public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
+    Dictionary<string, List<DeviceModelCommandDto>> CommandDictionary = new Dictionary<string, List<DeviceModelCommandDto>>();
+
+    private bool isProcessing;
+
+    public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isProcessing = true;
+
+            if (planning.CommandId == null) SelectedModel = defaultDeviceModel;
+            CommandDictionary.Add(defaultDeviceModel, new List<DeviceModelCommandDto>());
+
+            //Get all layers that will be link to a planning
+            List<LayerDto> listLayers = await LayerClientService.GetLayers();
+            Layers = LayerHelper.GetHashsetLayer(listLayers);
+
+            //Get all Device Models & Commands
+            await LoadCommands();
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private void DeleteSchedule(ScheduleDto schedule)
+    {
+        if (scheduleList.Count > 1) scheduleList.Remove(schedule);
+    }
+
+    private void AddSchedule()
+    {
+        var last = scheduleList.LastOrDefault();
+
+        if (last?.Start is not null && last?.End is not null && last?.CommandId is not null)
+        {
+            ScheduleDto newSchedule = new ScheduleDto { Start = last.End };
+            scheduleList.Add(newSchedule);
+        }
+    }
+
+    private void ChangeOffDay(DaysEnumFlag.DaysOfWeek day)
+    {
+        if ((planning.DayOff & day) == day)
+        {
+            planning.DayOff &= ~day;
+        }
+        else
+        {
+            planning.DayOff |= day;
+        }
+    }
+
+    public async void Save()
+    {
+        if (!areDataValid()) return;
+        await SavePlanning();
+        await SaveLayers(Layers);
+        NavigationManager.NavigateTo($"/planning");
+    }
+
+    public async Task SavePlanning()
+    {
+        try
+        {
+            // Save or update Planning
+            if (mode == "New") await PlanningClientService.CreatePlanning(planning);
+            else await PlanningClientService.UpdatePlanning(planning);
+
+            // Save or update all Schedule
+            foreach (ScheduleDto schedule in scheduleList)
+            {
+                schedule.PlanningId = planning.Id;
+
+                if (initScheduleList.Contains(schedule))
+                {
+                    await ScheduleClientService.UpdateSchedule(schedule);
+                }
+                else
+                {
+                    await ScheduleClientService.CreateSchedule(schedule);
+                }
+            }
+
+            // Remove deleted schedules
+            foreach (ScheduleDto schedule in initScheduleList.Where(schedule => !scheduleList.Contains(schedule)))
+            {
+                await ScheduleClientService.DeleteSchedule(schedule.Id);
+            }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    public async Task SaveLayers(HashSet<LayerHash> saveLayers)
+    {
+        try
+        {
+            foreach (LayerHash layer in saveLayers)
+            {
+                await LayerClientService.UpdateLayer(layer.LayerData);
+                await SaveLayers(layer.Children);
+            }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    protected void CheckedChanged(LayerHash item)
+    {
+        if (item.LayerData.Planning == planning.Id) item.LayerData.Planning = "None";
+        else item.LayerData.Planning = planning.Id;
+
+        foreach (LayerHash child in item.Children)
+        {
+            CheckedChanged(child);
+        }
+    }
+
+    private async Task LoadCommands()
+    {
+        DeviceModels = (await DeviceModelsClientService.GetDeviceModels(new DeviceModelFilter())).Items.ToList<IDeviceModel>();
+
+        foreach (var deviceModel in DeviceModels)
+        {
+            // Load all commands for a particular Device Model
+            IList<DeviceModelCommandDto> commandList = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(deviceModel.ModelId);
+
+            if (commandList.Count == 0) continue;
+            CommandDictionary.Add(deviceModel.Name, new List<DeviceModelCommandDto>(commandList));
+
+            // Verify if the command is stored in Planning to link this planning to a specific device model
+            var isDeviceSelected = commandList.FirstOrDefault(command => command.Id == planning.CommandId);
+            if (isDeviceSelected != null) SelectedModel = deviceModel.Name;
+        }
+    }
+
+    private bool areDataValid()
+    {
+        var errorMessage = "";
+        if (string.IsNullOrEmpty(planning.Name)) errorMessage += " - Name is empty";
+        if (string.IsNullOrEmpty(planning.CommandId)) errorMessage += " - Day off command is empty";
+        if (string.IsNullOrEmpty(planning.Start) || string.IsNullOrEmpty(planning.End)) errorMessage += " - Date of application are empty";
+
+        var commandMissing = 0;
+        var scheduleStartEnd = new List<List<string>>();
+        foreach (var schedule in scheduleList)
+        {
+            if (string.IsNullOrEmpty(schedule.CommandId)) commandMissing += 1;
+            scheduleStartEnd.Add(new List<string> { schedule.Start, schedule.End });
+        }
+
+        if (commandMissing != 0) errorMessage += commandMissing.ToString() + " - Buisiness day command missing";
+
+        errorMessage += CheckSceduleTimeline(scheduleStartEnd);
+
+        if (string.IsNullOrEmpty(errorMessage)) return true;
+
+        Snackbar.Add($"Some data are missing{errorMessage}", Severity.Error, null);
+        return false;
+    }
+
+    private string CheckSceduleTimeline(List<List<string>> listSchedule)
+    {
+        var connections = new Dictionary<string, string>();
+
+        foreach (var pair in listSchedule)
+        {
+            if (string.IsNullOrEmpty(pair[0]) | string.IsNullOrEmpty(pair[1])) return " - Business Day is not fully completed";
+            connections[pair[0]] = pair[1];
+        }
+
+        var start = listSchedule[0][0];
+        var end = listSchedule[0][1];
+        while (connections.ContainsKey(end))
+        {
+            connections[start] = connections[end];
+            connections.Remove(end);
+            end = connections[start];
+        }
+
+        if (connections.Count != 1) return " - Business Day is not fully completed";
+        return "";
+    }
+
+}
