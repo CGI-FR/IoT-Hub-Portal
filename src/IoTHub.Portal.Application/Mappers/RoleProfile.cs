@@ -14,12 +14,14 @@ namespace IoTHub.Portal.Application.Mappers
             _ = CreateMap<Role, RoleModel>()
                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
-               .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color));
+               .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color))
+               .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
 
             _ = CreateMap<RoleModel, Role>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color));
+                .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
 
             _ = CreateMap<Role, RoleDetailsModel>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))

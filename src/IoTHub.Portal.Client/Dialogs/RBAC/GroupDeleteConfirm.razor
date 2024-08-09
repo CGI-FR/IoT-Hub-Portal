@@ -1,0 +1,46 @@
+﻿@inject ISnackbar Snackbar
+@inject IGroupsClientService GroupClientService
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs=12>
+                <MudText>
+                    Delete @groupId ?
+                </MudText>
+            </MudItem>
+            <MudItem xs=12>
+                <MudText><i>Warning : this cannot  be undone.</i></MudText>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="delete" Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string groupId { get; set; } = default!;
+
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task DeleteDevice()
+    {
+        try
+        {
+            await GroupClientService.DeleteGroup(groupId);
+
+            Snackbar.Add($"Group with id : {groupId} has been successfully deleted!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+}

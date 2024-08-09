@@ -72,6 +72,13 @@
                          ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Settings", b))">
                 <MudNavLink Href="/settings/device-tag">Device Tags</MudNavLink>
             </MudNavGroup>
+            <MudNavGroup Title="RBAC" Icon="@Icons.Material.Outlined.Settings"
+                         Expanded="@LayoutService.GetNavGroupExpanded("RBAC")"
+                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("RBAC", b))">
+                <MudNavLink Href="/groups">Groups</MudNavLink>
+                <MudNavLink Href="/roles">Roles</MudNavLink>
+                <MudNavLink Href="/users">Users</MudNavLink>
+            </MudNavGroup>
         </MudNavMenu>
     </Authorized>
 </AuthorizeView>

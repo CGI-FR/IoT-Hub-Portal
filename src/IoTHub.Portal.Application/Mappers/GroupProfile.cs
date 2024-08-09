@@ -15,6 +15,7 @@ namespace IoTHub.Portal.Application.Mappers
                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
                .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color))
+               .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
                .ForMember(dest => dest.PrincipalId, opts => opts.MapFrom(src => src.PrincipalId));
 
             _ = CreateMap<Group, GroupDetailsModel>()
@@ -26,7 +27,9 @@ namespace IoTHub.Portal.Application.Mappers
 
             _ = CreateMap<GroupModel, Group>()
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color));
+                .ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
+
 
             _ = CreateMap<GroupDetailsModel, Group>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

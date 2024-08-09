@@ -1,0 +1,46 @@
+﻿@inject ISnackbar Snackbar
+@inject IRoleClientService RoleClientService
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs=12>
+                <MudText>
+                    Delete @roleId ?
+                </MudText>
+            </MudItem>
+            <MudItem xs=12>
+                <MudText><i>Warning : this cannot  be undone.</i></MudText>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="delete" Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string roleId { get; set; } = default!;
+
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task DeleteDevice()
+    {
+        try
+        {
+            await RoleClientService.DeleteRole(roleId);
+
+            Snackbar.Add($"Role with id : {roleId} has been successfully deleted!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+}

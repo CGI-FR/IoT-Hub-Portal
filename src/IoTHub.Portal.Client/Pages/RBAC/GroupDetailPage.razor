@@ -1,0 +1,121 @@
+﻿@page "/groups/{groupId}"
+
+@using IoTHub.Portal.Client.Services
+@using IoTHub.Portal.Shared.Models.v10
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+
+@attribute [Authorize]
+@inject IGroupsClientService GroupsClientService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject ILogger<GroupDetailPage> Logger
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Edit Group :</MudText>
+<MudForm Model="@Group" @ref="form">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
+                <MudTabPanel Text="General">
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Détails</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            <MudItem xs="12" md="6">
+                                                <MudAvatar Style="@($"background-color: {Group.Color}; color: white;")" Size="Size.Large" Class="mr-2">
+                                                    @if (!string.IsNullOrEmpty(Group.Name))
+                                                    {
+                                                        @Group.Name[0].ToString().ToUpper()
+                                                    }
+                                                </MudAvatar>
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField T="string" Label="Name" @bind-Value="Group.Name" Required="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField T="string" Label="Description" @bind-Value="Group.Description" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudColorPicker Label="Color" @bind-Text="Group.Color" Style="@($"color: {Group.Color};")" Placeholder="Select Color" />
+                                            </MudItem>
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                    </MudExpansionPanels>
+                </MudTabPanel>
+                <MudTabPanel Text="Members">
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Détails" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Members</MudText></TitleContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                    </MudExpansionPanels>
+                </MudTabPanel>
+                <MudTabPanel Text="AccessControls">
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Détails" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Access Controls</MudText></TitleContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                    </MudExpansionPanels>
+                </MudTabPanel>
+            </MudTabs>
+        </MudItem>
+        <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                <MudButton id="SaveButton" OnClick="Save" Disabled="isProcessing">@saveButtonText</MudButton>
+            </MudButtonGroup>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+    [Parameter] public string groupId { get; set; }
+    private GroupDetailsModel Group = new GroupDetailsModel();
+    private MudForm form;
+    private bool isProcessing = false;
+    private string saveButtonText = "Save";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Group = await GroupsClientService.GetGroup(groupId);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading group details");
+            Snackbar.Add($"Error loading group details: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task Save()
+    {
+        isProcessing = true;
+        try
+        {
+            await GroupsClientService.UpdateGroup(groupId, Group);
+            Snackbar.Add($"Group {Group.Name} has been successfully updated!", Severity.Success);
+            NavigationManager.NavigateTo("/groups");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error while updating the group: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+}

@@ -9,5 +9,14 @@ namespace IoTHub.Portal.Client.Services
     public interface IGroupsClientService
     {
         Task<PaginationResult<GroupModel>> GetGroups(string continuationUri);
+
+        Task DeleteGroup(string grpId);
+
+        Task<GroupDetailsModel> GetGroup(string groupId);
+
+        Task CreateGroup(GroupDetailsModel group);
+
+        Task UpdateGroup(string groupId, GroupDetailsModel group);
+
     }
 }
