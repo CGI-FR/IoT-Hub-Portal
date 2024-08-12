@@ -21,6 +21,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using Newtonsoft.Json;
     using System.Text;
     using System.Net.Mime;
+    using IoTHub.Portal.Domain.Options;
 
     [TestFixture]
     public class DeviceModelsClientServiceTests : BlazorUnitTest
@@ -222,7 +223,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModelDto>();
-            using var content = new MultipartFormDataContent();
+            using var content = new StringContent(DeviceModelImageOptions.DefaultImage);
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/models/{deviceModel.ModelId}/avatar")
                 .With(m =>

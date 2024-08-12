@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Portal.Client.Dialogs.EdgeModels.EdgeModule;
     using UnitTests.Bases;
 
     [TestFixture]

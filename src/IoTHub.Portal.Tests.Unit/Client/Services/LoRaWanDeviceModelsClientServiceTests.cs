@@ -17,6 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using Models.v10.LoRaWAN;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using IoTHub.Portal.Domain.Options;
 
     [TestFixture]
     public class LoRaWanDeviceModelsClientServiceTests : BlazorUnitTest
@@ -189,7 +190,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 ModelId = Fixture.Create<string>()
             };
 
-            using var content = new MultipartFormDataContent();
+            using var content = new StringContent(DeviceModelImageOptions.DefaultImage);
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/lorawan/models/{deviceModel.ModelId}/avatar")
                 .With(m =>

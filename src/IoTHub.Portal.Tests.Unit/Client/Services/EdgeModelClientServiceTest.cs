@@ -16,6 +16,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using Microsoft.Extensions.DependencyInjection;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using IoTHub.Portal.Domain.Options;
 
     [TestFixture]
     public class EdgeModelClientServiceTest : BlazorUnitTest
@@ -166,7 +167,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceModel = Fixture.Create<IoTEdgeModel>();
-            using var content = new MultipartFormDataContent();
+            using var content = new StringContent(DeviceModelImageOptions.DefaultImage);
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/models/{deviceModel.ModelId}/avatar")
                 .With(m =>

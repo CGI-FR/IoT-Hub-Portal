@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10.Filters;
 
-    internal class AwsDeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
+    public class AwsDeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
         where TModel : class, IDeviceModel
     {

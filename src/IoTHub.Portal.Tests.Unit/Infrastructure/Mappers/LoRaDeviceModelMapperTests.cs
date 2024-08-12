@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using System;
-    using Azure.Data.Tables;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using FluentAssertions;
-    using Models.v10.LoRaWAN;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class LoRaDeviceModelMapperTests
     {
@@ -29,8 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
         private LoRaDeviceModelMapper CreateLoRaDeviceModelMapper()
         {
-            return new LoRaDeviceModelMapper(
-                this.mockDeviceModelImageManager.Object);
+            return new LoRaDeviceModelMapper();
         }
 
         [TestCase(false, false)]
@@ -42,10 +32,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             // Arrange
             var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
             var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var expectedModelImageUri = new Uri($"https://fake.local/{entity.RowKey}");
+            var modelImageUri = DeviceModelImageOptions.DefaultImage;
 
-            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
-                .Returns(expectedModelImageUri);
+            _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == entity.RowKey)).Result)
+                .Returns(modelImageUri);
 
             entity[nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin;
             entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora;
@@ -75,10 +65,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             // Arrange
             var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
             var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var expectedModelImageUri = new Uri($"https://fake.local/{entity.RowKey}");
+            var modelImageUri = DeviceModelImageOptions.DefaultImage;
 
-            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
-                .Returns(expectedModelImageUri);
+            _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == entity.RowKey)).Result)
+                .Returns(modelImageUri);
 
             entity[nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin;
             entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora;
@@ -114,7 +104,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
-                //ImageUrl = new Uri("http://fake.local"), // TODO Add generation of an image in Base64 format
+                Image = DeviceModelImageOptions.DefaultImage,
                 SensorDecoder = Guid.NewGuid().ToString(),
                 IsBuiltin = isBuiltin
             };

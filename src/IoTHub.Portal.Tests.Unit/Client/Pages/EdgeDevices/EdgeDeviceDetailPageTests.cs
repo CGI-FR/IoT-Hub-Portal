@@ -20,6 +20,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Portal.Client.Dialogs.EdgeDevices;
+    using Portal.Client.Pages.EdgeDevices;
     using UnitTests.Bases;
     using UnitTests.Mocks;
 

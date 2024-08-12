@@ -96,7 +96,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(3600);
 
             // Act
-            var result = await this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+            var result = await this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, DeviceModelImageOptions.DefaultImage);
 
             // Assert
             _ = result.Should().Be(expectedImage.ToString());
@@ -156,14 +156,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             var deviceModelId = Fixture.Create<string>();
-            //var image = Fixture.Create<string>();
-
-            var mockOptions = new DeviceModelImageOptions()
-            {
-                //BaseUri = image
-            };
-
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
+            var image = Fixture.Create<string>();
 
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
@@ -231,27 +224,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             // Assert
             MockRepository.VerifyAll();
         }
-
-        //[Test]
-        //public void ComputeImageUriShouldReturnTheRightUri()
-        //{
-        //    // Arrange
-        //    var deviceModelId = Fixture.Create<string>();
-        //    var imageUri = Fixture.Create<Uri>();
-
-        //    var mockOptions = new DeviceModelImageOptions()
-        //    {
-        //        BaseUri = imageUri
-        //    };
-
-        //    _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
-
-        //    // Act
-        //    var result = this.deviceModelImageManager.ComputeImageUri(deviceModelId);
-
-        //    // Assert
-        //    Assert.AreEqual($"{imageUri}/{deviceModelId}", result.ToString());
-        //}
 
         [Test]
         public async Task InitializeDefaultImageBlob()

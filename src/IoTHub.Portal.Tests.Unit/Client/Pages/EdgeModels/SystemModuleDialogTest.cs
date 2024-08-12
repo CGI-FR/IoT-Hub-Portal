@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
     using NUnit.Framework;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Portal.Client.Dialogs.EdgeModels.EdgeModule;
 
     [TestFixture]
     public class SystemModuleDialogTest : BlazorUnitTest

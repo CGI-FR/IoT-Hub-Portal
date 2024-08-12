@@ -844,7 +844,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
 
             //Act
-            var result = await this.externalDeviceService.GetAllThing();
+            _ = await this.externalDeviceService.GetAllThing();
 
             //Assert
             MockRepository.VerifyAll();

@@ -129,7 +129,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = deviceModelId,
-                    InputStream = this.imageOptions.Value.DefaultImageStream,
+                    InputStream = DeviceModelImageOptions.DefaultImageStream,
                     ContentType = "image/*", // image content type
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
                 };
@@ -173,7 +173,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = this.imageOptions.Value.DefaultImageName,
-                    InputStream = this.imageOptions.Value.DefaultImageStream,
+                    InputStream = DeviceModelImageOptions.DefaultImageStream,
                     ContentType = "image/*", // image content type
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 

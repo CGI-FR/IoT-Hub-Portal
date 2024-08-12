@@ -3,17 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Crosscutting.Extensions;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using Microsoft.Azure.Devices.Shared;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class DeviceTwinMapperTests
     {
@@ -31,8 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
         private DeviceTwinMapper CreateDeviceTwinMapper()
         {
-            return new DeviceTwinMapper(
-                this.mockDeviceModelImageManager.Object);
+            return new DeviceTwinMapper();
         }
 
         [Test]
@@ -53,8 +41,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns(new Uri("http://fake.local/000-000-001"))
+            this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage)
                 .Verifiable();
 
             // Act
@@ -95,8 +83,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns(new Uri("http://fake.local/000-000-001"))
+            this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage)
                 .Verifiable();
 
             // Act
@@ -124,8 +112,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             // Arrange
             var deviceTwinMapper = CreateDeviceTwinMapper();
 
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns(new Uri("http://fake.local/000-000-001"))
+            this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage)
                 .Verifiable();
 
             var twin = new Twin
@@ -166,8 +154,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns(new Uri("http://fake.local/000-000-001"))
+            this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage)
                 .Verifiable();
 
             // Act

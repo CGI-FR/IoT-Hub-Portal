@@ -21,6 +21,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Portal.Client.Pages.EdgeDevices;
 
     [TestFixture]
     public class CreateEdgeDevicePageTest : BlazorUnitTest

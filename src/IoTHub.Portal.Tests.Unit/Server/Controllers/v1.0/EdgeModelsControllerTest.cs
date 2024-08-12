@@ -7,6 +7,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
+    using IoTHub.Portal.Domain.Options;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Server.Controllers.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
@@ -213,14 +214,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var edgeModelController = CreateController();
 
             var expectedUrl = Guid.NewGuid().ToString();
-            var mockFile = this.mockRepository.Create<IFormFile>();
 
             _ = this.mockEdgeModelService
-                .Setup(x => x.UpdateEdgeModelAvatar(It.IsAny<string>(), It.IsAny<IFormFile>()))
+                .Setup(x => x.UpdateEdgeModelAvatar(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(expectedUrl);
 
             // Act
-            var response = await edgeModelController.ChangeAvatar(Guid.NewGuid().ToString(), mockFile.Object);
+            var response = await edgeModelController.ChangeAvatar(Guid.NewGuid().ToString());
 
             // Assert
             Assert.IsNotNull(response);

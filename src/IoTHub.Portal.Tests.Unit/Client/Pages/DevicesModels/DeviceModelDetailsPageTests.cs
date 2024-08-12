@@ -21,6 +21,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Portal.Client.Pages.DeviceModels;
     using UnitTests.Bases;
     using UnitTests.Mocks;
 

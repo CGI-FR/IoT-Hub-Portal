@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using System;
-    using Azure.Data.Tables;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using FluentAssertions;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class DeviceModelMapperTests
     {
@@ -29,7 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
         private DeviceModelMapper CreateDeviceModelMapper()
         {
-            return new DeviceModelMapper(this.mockDeviceModelImageManager.Object);
+            return new DeviceModelMapper();
         }
 
         [Test]
@@ -46,8 +37,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             entity["AppEUI"] = "AppEUI";
             entity["SensorDecoderURL"] = "SensorDecoderURL";
 
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns(new Uri("http://fake.local/000-000-001"))
+            this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage)
                 .Verifiable();
 
             // Act
@@ -75,8 +66,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             entity["AppEUI"] = "AppEUI";
             entity["SensorDecoderURL"] = "SensorDecoderURL";
 
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns(new Uri("http://fake.local/000-000-001"))
+            this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage)
                 .Verifiable();
 
             // Act

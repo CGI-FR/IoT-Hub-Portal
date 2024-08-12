@@ -74,13 +74,12 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
-            var currentAssembly = Assembly.GetExecutingAssembly();
             //var defaultFilePath =
             //    $"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}";
 
             //var defaultFile = File.Open(defaultFilePath, FileMode.Open);
 
-            _ = await blobClient.UploadAsync(this.deviceModelImageOptions.Value.DefaultImageStream, true);
+            _ = await blobClient.UploadAsync(DeviceModelImageOptions.DefaultImageStream, true);
 
             _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
 
@@ -88,7 +87,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             //_ = redisDb.StringSet(deviceModelId, imageBase64);
 
-            return this.deviceModelImageOptions.Value.DefaultImage;
+            return DeviceModelImageOptions.DefaultImage;
         }
 
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
@@ -114,7 +113,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
             var container = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
             var blobClient = container.GetBlobClient(this.deviceModelImageOptions.Value.DefaultImageName);
 
-            _ = await blobClient.UploadAsync(this.deviceModelImageOptions.Value.DefaultImageStream, overwrite: true);
+            _ = await blobClient.UploadAsync(DeviceModelImageOptions.DefaultImageStream, overwrite: true);
 
             //using var file = File.Open($"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}", FileMode.Open);
 

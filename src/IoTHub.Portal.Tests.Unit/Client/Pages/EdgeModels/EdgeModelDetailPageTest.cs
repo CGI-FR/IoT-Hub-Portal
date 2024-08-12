@@ -19,6 +19,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Portal.Client.Dialogs.EdgeModels;
+    using Portal.Client.Dialogs.EdgeModels.EdgeModule;
+    using Portal.Client.Pages.EdgeModels;
 
     [TestFixture]
     public class EdgeModelDetailPageTest : BlazorUnitTest

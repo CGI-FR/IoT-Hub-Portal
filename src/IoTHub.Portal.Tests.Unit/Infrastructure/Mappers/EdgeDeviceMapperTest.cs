@@ -6,6 +6,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
     using System;
     using System.Collections.Generic;
     using IoTHub.Portal.Application.Managers;
+    using IoTHub.Portal.Domain.Options;
     using IoTHub.Portal.Infrastructure.Mappers;
     using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Shared;
@@ -46,8 +47,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             deviceTwin.Tags["modelId"] = modelId;
 
             _ = this.mockDeviceModelImageManager
-                .Setup(x => x.ComputeImageUri(It.Is<string>(c => c.Equals(modelId, StringComparison.Ordinal))))
-                .Returns(new Uri($"http://fake.local/{modelId}"));
+                .Setup(x => x.GetDeviceModelImageAsync(It.Is<string>(c => c.Equals(modelId, StringComparison.Ordinal))).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage);
 
             // Act
             var result = edgeDeviceMapper.CreateEdgeDeviceListItem(deviceTwin);
@@ -96,8 +97,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             var lastDeployment = new ConfigItem();
 
             _ = this.mockDeviceModelImageManager
-                .Setup(x => x.ComputeImageUri(It.Is<string>(c => c.Equals(modelId, StringComparison.Ordinal))))
-                .Returns(new Uri($"http://fake.local/{modelId}"));
+                .Setup(x => x.GetDeviceModelImageAsync(It.Is<string>(c => c.Equals(modelId, StringComparison.Ordinal))).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage);
 
             // Act
             var result = edgeDeviceMapper.CreateEdgeDevice(deviceTwin, deviceTwinWithModules, 5, lastDeployment, tags);

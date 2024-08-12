@@ -14,6 +14,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Portal.Client.Dialogs.EdgeModels;
 
     [TestFixture]
     public class AwsGreengrassComponentDialogTests : BlazorUnitTest
