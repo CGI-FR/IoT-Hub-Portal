@@ -1,6 +1,5 @@
 ﻿@page "/edge/devices/new"
 
-@using IoTHub.Portal
 @using IoTHub.Portal.Models.v10
 @using IoTHub.Portal.Shared.Constants
 
@@ -29,7 +28,7 @@
                     <MudCardContent>
                         <div class="d-flex justify-center mb-4">
                             <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                                <MudImage Src="@edgeModel?.Image?.ToString()" id="@(nameof(IoTEdgeDevice.EncodedImage))" />
+                                <MudImage Src="@edgeModel?.Image?.ToString()" id="@(nameof(IoTEdgeDevice.Image))" />
                             </MudAvatar>
                         </div>
                     </MudCardContent>
@@ -345,7 +344,7 @@
                     DeviceId = this.EdgeDevice.DeviceId,
                     DeviceName = this.EdgeDevice.DeviceName,
                     ModelId = edgeModel?.ModelId!,
-                    EncodedImage = edgeModel?.Image!,
+                    Image = edgeModel?.Image!,
                     Tags = this.EdgeDevice.Tags,
                     IsEnabled = this.EdgeDevice.IsEnabled
                 };

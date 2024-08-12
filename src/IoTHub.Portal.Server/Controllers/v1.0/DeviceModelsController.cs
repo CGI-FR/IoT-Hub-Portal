@@ -10,6 +10,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using IoTHub.Portal.Shared.Models.v10.Filters;
+    using System.IO;
 
     [Authorize]
     [ApiController]
@@ -67,14 +68,15 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Changes the avatar.
         /// </summary>
         /// <param name="id">The model identifier.</param>
-        /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
         [HttpPost("{id}/avatar", Name = "POST Update the device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<ActionResult<string>> ChangeAvatar(string id, string file)
+        public override async Task<ActionResult<string>> ChangeAvatar(string id, string avatar)
         {
-            return base.ChangeAvatar(id, file);
+            using var reader = new StreamReader(Request.Body);
+            var bodyText = await reader.ReadToEndAsync();
+            return await base.ChangeAvatar(id, bodyText);
         }
 
         /// <summary>

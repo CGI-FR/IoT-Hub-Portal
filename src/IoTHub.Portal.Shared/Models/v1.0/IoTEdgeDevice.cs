@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public string EncodedImage { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge connection state.

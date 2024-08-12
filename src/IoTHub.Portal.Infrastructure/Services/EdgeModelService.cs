@@ -86,7 +86,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 .Select(model =>
                 {
                     var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);
-                    //edgeDeviceModelListItem.Image = this.deviceModelImageManager.ComputeImageUri(edgeDeviceModelListItem.ModelId); // TODO Get encoded image instead
+                    edgeDeviceModelListItem.Image = this.deviceModelImageManager.GetDeviceModelImageAsync(edgeDeviceModelListItem.ModelId).Result;
                     return edgeDeviceModelListItem;
                 })
                 .ToList();
@@ -144,7 +144,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     Name = cmd.Name,
                 })).ToArray();
 
-            var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == deviceModelObject.ModelId).ToList();
+            var existingCommands = (await this.commandRepository.GetAllAsync()).Where(x => x.EdgeDeviceModelId == deviceModelObject.ModelId).ToList();
 
             foreach (var command in existingCommands)
             {

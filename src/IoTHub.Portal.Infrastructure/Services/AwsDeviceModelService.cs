@@ -153,9 +153,9 @@ namespace IoTHub.Portal.Infrastructure.Services
             return Task.Run(() => this.deviceModelImageManager.GetDeviceModelImageAsync(deviceModelId));
         }
 
-        public Task<string> UpdateDeviceModelAvatar(string deviceModelId, string file)
+        public Task<string> UpdateDeviceModelAvatar(string deviceModelId, string avatar)
         {
-            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, file));
+            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, avatar));
         }
 
         public Task DeleteDeviceModelAvatar(string deviceModelId)

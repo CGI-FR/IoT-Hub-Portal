@@ -90,11 +90,10 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Changes the avatar.
         /// </summary>
         /// <param name="id">The model identifier.</param>
-        /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
-        public virtual async Task<ActionResult<string>> ChangeAvatar(string id, string file)
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string id, string avatar)
         {
-            return Ok(await this.deviceModelService.UpdateDeviceModelAvatar(id, file));
+            return Ok(await this.deviceModelService.UpdateDeviceModelAvatar(id, avatar));
         }
 
         /// <summary>

@@ -93,6 +93,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 Data = paginatedEdgeDevices.Data.Select(x => this.mapper.Map<IoTEdgeListItem>(x, opts =>
                 {
+                    opts.Items["image"] = this.deviceModelImageManager.GetDeviceModelImageAsync(x.DeviceModelId).Result;
                 })).ToList(),
                 TotalCount = paginatedEdgeDevices.TotalCount,
                 CurrentPage = paginatedEdgeDevices.CurrentPage,
@@ -117,7 +118,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
 
             var deviceDto = this.mapper.Map<IoTEdgeDevice>(deviceEntity);
-            // deviceDto.Image = this.deviceModelImageManager.ComputeImageUri(deviceDto.ModelId); // TODO Get encoded image instead
+            deviceDto.Image = await this.deviceModelImageManager.GetDeviceModelImageAsync(deviceDto.ModelId);
             deviceDto.Tags = FilterDeviceTags(deviceDto);
 
             return deviceDto;

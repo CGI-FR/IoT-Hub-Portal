@@ -104,7 +104,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 .ReturnsAsync(expectedAvatar);
 
             // Act
-            var response = await this.deviceModelsController.ChangeAvatar(deviceModel.ModelId, MockRepository.Create<IFormFile>().Object);
+            var response = await this.deviceModelsController.ChangeAvatar(deviceModel.ModelId);
 
             // Assert
             _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(expectedAvatar);

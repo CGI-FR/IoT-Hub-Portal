@@ -26,7 +26,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<string> GetDeviceModelAvatar(string deviceModelId);
 
-        Task<string> UpdateDeviceModelAvatar(string deviceModelId, string file);
+        Task<string> UpdateDeviceModelAvatar(string deviceModelId, string avatar);
 
         Task DeleteDeviceModelAvatar(string deviceModelId);
     }

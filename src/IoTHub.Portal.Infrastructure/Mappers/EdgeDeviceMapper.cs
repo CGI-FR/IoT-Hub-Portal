@@ -66,7 +66,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules),
                 LastDeployment = lastConfiguration,
                 Tags = customTags,
-                // ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!) // TODO Get encoded image instead
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!).Result,
             };
         }
     }

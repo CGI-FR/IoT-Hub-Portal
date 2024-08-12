@@ -202,7 +202,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var expectedImage = Fixture.Create<string>();
             var expectedEdgeDeviceDto = Mapper.Map<IoTEdgeDevice>(expectedEdgeDevice);
-            expectedEdgeDeviceDto.EncodedImage = expectedImage;
+            expectedEdgeDeviceDto.Image = expectedImage;
 
             _ = this.mockEdgeDeviceRepository
                 .Setup(x => x.GetByIdAsync(It.Is<string>(c => c.Equals(expectedEdgeDevice.Id, StringComparison.Ordinal)), d => d.Tags, d => d.Labels))

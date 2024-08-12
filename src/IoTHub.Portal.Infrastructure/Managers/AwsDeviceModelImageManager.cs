@@ -4,7 +4,9 @@
 namespace IoTHub.Portal.Infrastructure.Managers
 {
     using System;
+    using System.Drawing;
     using System.Reflection;
+    using System.Text;
     using System.Threading.Tasks;
     using Amazon.S3;
     using Amazon.S3.Model;
@@ -120,10 +122,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             this.logger.LogInformation($"Uploading Default Image to AWS S3 storage");
 
-            var currentAssembly = Assembly.GetExecutingAssembly();
-            var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
-
             try
             {
                 //Portal must be able to upload images to Amazon S3
@@ -131,10 +129,9 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = deviceModelId,
-                    InputStream = defaultImageStream,
+                    InputStream = this.imageOptions.Value.DefaultImageStream,
                     ContentType = "image/*", // image content type
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
-
                 };
 
                 _ = await this.s3Client.PutObjectAsync(putObjectRequest);
@@ -170,18 +167,13 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             this.logger.LogInformation($"Initializing default Image to AWS S3 storage");
 
-            var currentAssembly = Assembly.GetExecutingAssembly();
-
-            var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
-
             try
             {
                 var putObjectRequest = new PutObjectRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = this.imageOptions.Value.DefaultImageName,
-                    InputStream = defaultImageStream,
+                    InputStream = this.imageOptions.Value.DefaultImageStream,
                     ContentType = "image/*", // image content type
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 
