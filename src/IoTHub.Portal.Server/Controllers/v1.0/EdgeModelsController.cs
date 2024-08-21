@@ -1,10 +1,9 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.v10
+namespace IoTHub.Portal.Server.Controllers.v1._0
 {
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
@@ -87,15 +86,14 @@ namespace IoTHub.Portal.Server.Controllers.v10
         /// Changes the avatar.
         /// </summary>
         /// <param name="edgeModelId">The model identifier.</param>
+        /// <param name="avatar"></param>
         /// <returns>The avatar.</returns>
-        [HttpPost("{edgeModelId}/avatar", Name = "POST Update the edge device model avatar")]
+        [HttpPost("{edgeModelId}/{avatar}", Name = "POST Update the edge device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId)
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, string avatar)
         {
-            using var reader = new StreamReader(Request.Body);
-            var bodyText = await reader.ReadToEndAsync();
-            return Ok(await this.edgeModelService.UpdateEdgeModelAvatar(edgeModelId, bodyText));
+            return Ok(await this.edgeModelService.UpdateEdgeModelAvatar(edgeModelId, avatar));
         }
 
         /// <summary>

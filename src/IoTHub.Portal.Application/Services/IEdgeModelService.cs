@@ -21,7 +21,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<string> GetEdgeModelAvatar(string edgeModelId);
 
-        Task<string> UpdateEdgeModelAvatar(string edgeModelId, string file);
+        Task<string> UpdateEdgeModelAvatar(string edgeModelId, string avatar);
 
         Task DeleteEdgeModelAvatar(string edgeModelId);
 

@@ -1,5 +1,5 @@
 // Copyright (c) CGI France. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed under the MIT license. See LICENSE avatar in the project root for full license information.
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
@@ -188,12 +188,12 @@ namespace IoTHub.Portal.Infrastructure.Services
             var routes = await this.configService.GetConfigRouteList(edgeModelEntity.Id);
             var commands =  this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelEntity.Id).ToList();
 
-            //TODO : User a mapper
+            //TODO : Use a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
             var result = new IoTEdgeModel
             {
                 ModelId = edgeModelEntity.Id,
-                //ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id), // TODO Get encoded image instead
+                Image = await this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelEntity.Id),
                 Name = edgeModelEntity.Name,
                 Description = edgeModelEntity.Description,
                 EdgeModules = modules,
@@ -219,12 +219,12 @@ namespace IoTHub.Portal.Infrastructure.Services
         private async Task<IoTEdgeModel> GetAwsEdgeModel(EdgeDeviceModel edgeModelEntity)
         {
             var modules = await this.configService.GetConfigModuleList(edgeModelEntity.ExternalIdentifier!);
-            //TODO : User a mapper
+            //TODO : Use a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
             var result = new IoTEdgeModel
             {
                 ModelId = edgeModelEntity.Id,
-                // ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id), // TODO Get encoded image instead
+                Image = await this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelEntity.Id),
                 Name = edgeModelEntity.Name,
                 Description = edgeModelEntity.Description,
                 EdgeModules = modules,
@@ -329,11 +329,11 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// Update the edge model avatar.
         /// </summary>
         /// <param name="edgeModelId">The edge model indentifier</param>
-        /// <param name="file">The image.</param>
+        /// <param name="avatar">The image.</param>
         /// <returns></returns>
-        public Task<string> UpdateEdgeModelAvatar(string edgeModelId, string file)
+        public Task<string> UpdateEdgeModelAvatar(string edgeModelId, string avatar)
         {
-            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(edgeModelId, file));
+            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(edgeModelId, avatar));
         }
 
         /// <summary>

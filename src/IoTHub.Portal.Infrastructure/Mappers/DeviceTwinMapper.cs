@@ -6,6 +6,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     using System;
     using System.Collections.Generic;
     using IoTHub.Portal.Application.Helpers;
+    using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
@@ -13,9 +14,11 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
     public class DeviceTwinMapper : IDeviceTwinMapper<DeviceListItem, DeviceDetails>
     {
+        private readonly IDeviceModelImageManager deviceModelImageManager;
 
-        public DeviceTwinMapper()
+        public DeviceTwinMapper(IDeviceModelImageManager deviceModelImageManager)
         {
+            this.deviceModelImageManager = deviceModelImageManager;
         }
 
         public DeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<string> tags)
@@ -38,7 +41,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 DeviceID = twin.DeviceId,
                 ModelId = modelId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceName)),
-                //ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId!), // TODO Add recovery of the image in Base64
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(modelId!).Result,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue
@@ -63,7 +66,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
-                //ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!), // TODO Add recovery of the image in Base64
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!).Result,
                 SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false")
             };
         }

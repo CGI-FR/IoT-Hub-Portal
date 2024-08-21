@@ -27,7 +27,9 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.DeviceName)),
                 Status = deviceTwin?.Status.ToString(),
                 NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin!),
-                // Image = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!) // TODO Get encoded image instead
+                Image = this.deviceModelImageManager
+                    .GetDeviceModelImageAsync(
+                        DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!).Result
             };
         }
 

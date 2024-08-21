@@ -3,9 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Managers
 {
-    using System;
     using System.IO;
-    using System.Reflection;
     using System.Threading.Tasks;
     using Azure;
     using Azure.Storage.Blobs;
@@ -14,7 +12,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Options;
-    using Microsoft.AspNetCore.StaticFiles;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using StackExchange.Redis;
@@ -74,16 +71,9 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
-            //var defaultFilePath =
-            //    $"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}";
-
-            //var defaultFile = File.Open(defaultFilePath, FileMode.Open);
-
             _ = await blobClient.UploadAsync(DeviceModelImageOptions.DefaultImageStream, true);
 
             _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
-
-            //var imageBase64 = ComputeImageBase64(new FormFile(defaultfile, 0 , defaultfile.Length, string.Empty, defaultfile.Name));
 
             //_ = redisDb.StringSet(deviceModelId, imageBase64);
 
