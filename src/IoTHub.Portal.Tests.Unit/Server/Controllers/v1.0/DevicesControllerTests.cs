@@ -9,7 +9,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Server.Controllers.V10;
     using IoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
@@ -23,6 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using Models.v10;
     using Moq;
     using NUnit.Framework;
+    using Portal.Server.Controllers.v1._0;
     using Shared.Models.v1._0;
 
     [TestFixture]

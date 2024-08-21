@@ -207,13 +207,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             var deviceModel = Fixture.Create<DeviceModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/avatar")
-                .RespondJson(deviceModel.Image.ToString());
+                .RespondJson(deviceModel.Image);
 
             // Act
             var result = await this.deviceModelsClientService.GetAvatar(deviceModel.ModelId);
 
             // Assert
-            _ = result.Should().Contain(deviceModel.Image.ToString());
+            _ = result.Should().Contain(deviceModel.Image);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

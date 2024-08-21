@@ -408,7 +408,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             _ = this.mockEdgeModelService
                 .Setup(x => x.GetAvatar(It.Is<string>(c => c.Equals(this.mockEdgeModleId, StringComparison.Ordinal))))
-                .ReturnsAsync(edgeModel.Image.ToString());
+                .ReturnsAsync(edgeModel.Image);
 
             return edgeModel;
         }

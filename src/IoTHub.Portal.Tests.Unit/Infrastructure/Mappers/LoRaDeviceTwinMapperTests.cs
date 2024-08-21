@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
         private LoRaDeviceTwinMapper CreateLoRaDeviceTwinMapper()
         {
-            return new LoRaDeviceTwinMapper();
+            return new LoRaDeviceTwinMapper(this.mockDeviceModelImageManager.Object);
         }
 
         [Test]

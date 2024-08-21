@@ -9,10 +9,7 @@ global using System.Linq;
 global using System.Linq.Expressions;
 global using System.Net;
 global using System.Net.Http;
-global using System.Net.Http.Headers;
-global using System.Net.Http.Json;
 global using System.Reflection;
-global using System.Text.Json;
 global using System.Threading;
 global using System.Threading.Tasks;
 
@@ -31,8 +28,6 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Moq;
 global using NUnit.Framework;
 
-global using IoTHub.Portal.Server.Controllers.V10.LoRaWAN;
-global using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
 global using IoTHub.Portal.Application.Helpers;
 global using IoTHub.Portal.Application.Managers;
 global using IoTHub.Portal.Application.Services;
@@ -54,4 +49,4 @@ global using IoTHub.Portal.Models.v10.LoRaWAN;
 global using IoTHub.Portal.Shared.Models.v10;
 global using IoTHub.Portal.Shared.Models.v1._0;
 global using IoTHub.Portal.Shared.Models.v10.Filters;
-
+global using IoTHub.Portal.Tests.Unit.UnitTests.Bases;

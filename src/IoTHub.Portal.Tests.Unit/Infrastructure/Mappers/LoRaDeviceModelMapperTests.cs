@@ -31,16 +31,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
         {
             // Arrange
             var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
-            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var modelImageUri = DeviceModelImageOptions.DefaultImage;
-
-            _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == entity.RowKey)).Result)
-                .Returns(modelImageUri);
-
-            entity[nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin;
-            entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora;
-            entity[nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE";
-            entity[nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION";
+            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString())
+            {
+                [nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin,
+                [nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora,
+                [nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE",
+                [nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION"
+            };
 
             // Act
             var result = loRaDeviceModelMapper.CreateDeviceModelListItem(entity);
@@ -64,17 +61,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
         {
             // Arrange
             var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
-            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var modelImageUri = DeviceModelImageOptions.DefaultImage;
-
-            _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == entity.RowKey)).Result)
-                .Returns(modelImageUri);
-
-            entity[nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin;
-            entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora;
-            entity[nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE";
-            entity[nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION";
-            entity[nameof(LoRaDeviceModelDto.SensorDecoder)] = "FAKE SENSORDECODERURL";
+            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString())
+            {
+                [nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin,
+                [nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora,
+                [nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE",
+                [nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION",
+                [nameof(LoRaDeviceModelDto.SensorDecoder)] = "FAKE SENSORDECODERURL"
+            };
 
             // Act
             var result = loRaDeviceModelMapper.CreateDeviceModel(

@@ -107,16 +107,15 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var expectedDevice = Fixture.Create<LorawanDevice>();
 
-            //var expectedImageUri = Fixture.Create<Uri>(); // TODO Add generation of an image in Base64 format
+            var expectedImage = DeviceModelImageOptions.DefaultImage; //TODO: Replace with the generation of a random image in Base64 format
             var expectedDeviceDto = Mapper.Map<LoRaDeviceDetails>(expectedDevice);
-            //expectedDeviceDto.ImageUrl = expectedImageUri;
+            expectedDeviceDto.Image = expectedImage;
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(expectedDevice);
 
-            //_ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-            //    .Returns(expectedImageUri);
-            // Get image from base64 format
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
+                .Returns(expectedImage);
 
             _ = this.mockDeviceTagService.Setup(service => service.GetAllTagsNames())
                 .Returns(expectedDevice.Tags.Select(tag => tag.Name));
@@ -669,7 +668,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 Id = telemeryMessage.DeviceEUI,
                 Telemetry = new List<LoRaDeviceTelemetry>()
                 {
-                    new LoRaDeviceTelemetry
+                    new()
                     {
                         Id= sequenceNumber.ToString(CultureInfo.InvariantCulture),
                         EnqueuedTime = enqueuedAt.DateTime,

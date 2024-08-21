@@ -380,7 +380,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Name = this.mockModelId,
                 Description = Guid.NewGuid().ToString(),
                 IsBuiltin = false,
-                Image = "", // TODO Add generation of an image in Base64 format
+                Image = DeviceModelImageOptions.DefaultImage,   // TODO: Replace with the generation of a random image in Base64 format
                 SupportLoRaFeatures = false
             };
 
@@ -394,7 +394,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetAvatar(this.mockModelId))
-                .ReturnsAsync(deviceModel.Image.ToString());
+                .ReturnsAsync(deviceModel.Image);
 
             return deviceModel;
         }
@@ -407,7 +407,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Name = this.mockModelId,
                 Description = Guid.NewGuid().ToString(),
                 IsBuiltin = false,
-                //ImageUrl = new Uri($"http://fake.local/{this.mockModelId}") // TODO Add generation of an image in Base64 format
+                Image = DeviceModelImageOptions.DefaultImage    // TODO: Replace with the generation of a random image in Base64 format
             };
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
@@ -420,7 +420,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
                     service.GetAvatar(this.mockModelId))
-                .ReturnsAsync(deviceModel.Image.ToString());
+                .ReturnsAsync(deviceModel.Image);
 
             return deviceModel;
         }
@@ -433,7 +433,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Name = this.mockModelId,
                 Description = Guid.NewGuid().ToString(),
                 IsBuiltin = false,
-                //ImageUrl = new Uri($"http://fake.local/{this.mockModelId}") // TODO Add generation of an image in Base64 format
+                Image = DeviceModelImageOptions.DefaultImage // TODO: Replace with the generation of a random image in Base64 format
             };
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>

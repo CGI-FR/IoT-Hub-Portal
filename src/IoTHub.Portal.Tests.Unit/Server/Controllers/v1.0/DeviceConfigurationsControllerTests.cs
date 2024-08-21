@@ -9,10 +9,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Server.Controllers.v10;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
+    using Portal.Server.Controllers.v1._0;
 
     [TestFixture]
     public class DeviceConfigurationsControllerTests

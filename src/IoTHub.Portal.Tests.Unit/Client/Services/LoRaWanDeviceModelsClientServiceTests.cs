@@ -166,17 +166,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             var deviceModel = new LoRaDeviceModelDto
             {
                 ModelId = Fixture.Create<string>(),
-                //ImageUrl = Fixture.Create<Uri>() // TODO Add generation of an image in Base64 format
+                Image = DeviceModelImageOptions.DefaultImage //TODO: Replace with the generation of a random image in Base64 format
             };
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/models/{deviceModel.ModelId}/avatar")
-                .RespondJson(deviceModel.Image.ToString());
+                .RespondText(deviceModel.Image);
 
             // Act
             var result = await this.loRaWanDeviceModelsClientService.GetAvatar(deviceModel.ModelId);
 
             // Assert
-            _ = result.Should().Contain(deviceModel.Image.ToString());
+            _ = result.Should().Be(deviceModel.Image);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

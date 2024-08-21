@@ -151,13 +151,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             var edgeModel = Fixture.Create<IoTEdgeModel>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/models/{edgeModel.ModelId}/avatar")
-                .RespondJson(edgeModel.Image.ToString());
+                .RespondJson(edgeModel.Image);
 
             // Act
             var result = await this.edgeModelClientService.GetAvatar(edgeModel.ModelId);
 
             // Assert
-            _ = result.Should().Contain(edgeModel.Image.ToString());
+            _ = result.Should().Contain(edgeModel.Image);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

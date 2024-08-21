@@ -232,8 +232,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
                 return command;
             }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
+
+            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDeviceModelCommand, bool>>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedCommands);
+
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
                  .Returns(Task.CompletedTask);
@@ -343,12 +346,15 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             {
                 command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
                 return command;
-            }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
+            }).ToList();
+
+            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDeviceModelCommand, bool>>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedCommands);
+
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
-                 .Returns(Task.CompletedTask);
+                .Returns(Task.CompletedTask);
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
                 .Returns(Task.FromResult(Fixture.Create<string>()));
@@ -453,8 +459,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
                 return command;
             }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
+
+            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDeviceModelCommand, bool>>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedCommands);
+
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
 
             var configurations = new List<Configuration>()
@@ -556,7 +565,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var result = await this.edgeDeviceModelService.GetEdgeModelAvatar(Guid.NewGuid().ToString());
 
             // Assert
-            _ = result.Should().Be(expectedImageUri.ToString());
+            _ = result.Should().Be(expectedImageUri);
             MockRepository.VerifyAll();
         }
 
@@ -564,22 +573,18 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateEdgeDeviceModelAvatarShouldUpdateEdgeDeviceModelAvatar()
         {
             // Arrange
-            var imageUri = DeviceModelImageOptions.DefaultImage;
-
-            var mockFormFile = MockRepository.Create<IFormFile>();
+            var image= DeviceModelImageOptions.DefaultImage;
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
                     manager.ChangeDeviceModelImageAsync(It.IsAny<string>(), DeviceModelImageOptions.DefaultImage))
-                .ReturnsAsync(imageUri);
-
-            _ = mockFormFile.Setup(file => file.OpenReadStream())
-                .Returns(Stream.Null);
+                .ReturnsAsync(image);
 
             // Act
-            var result = await this.edgeDeviceModelService.UpdateEdgeModelAvatar(Guid.NewGuid().ToString(), DeviceModelImageOptions.DefaultImage);
+            var result = await this.edgeDeviceModelService.UpdateEdgeModelAvatar(Guid.NewGuid().ToString(),
+                DeviceModelImageOptions.DefaultImage);
 
             // Assert
-            _ = result.Should().Be(imageUri.ToString());
+            _ = result.Should().Be(image);
             MockRepository.VerifyAll();
         }
 
