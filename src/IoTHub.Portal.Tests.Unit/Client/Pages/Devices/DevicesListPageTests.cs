@@ -206,7 +206,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()
@@ -243,7 +243,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()
@@ -339,7 +339,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
                 .ReturnsAsync(Array.Empty<LabelDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto> { new DeviceModelDto
@@ -545,7 +545,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText, StringComparison.Ordinal))))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText, StringComparison.Ordinal))))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = deviceModels.Where(x => expectedDeviceModel.Name.Equals(x.Name, StringComparison.Ordinal))

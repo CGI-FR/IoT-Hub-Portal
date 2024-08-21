@@ -201,7 +201,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 .Respond(HttpStatusCode.Created);
 
             // Act
-            await this.loRaWanDeviceModelsClientService.ChangeAvatar(deviceModel.ModelId, content);
+            await this.loRaWanDeviceModelsClientService.ChangeAvatarAsync(deviceModel.ModelId, content);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();

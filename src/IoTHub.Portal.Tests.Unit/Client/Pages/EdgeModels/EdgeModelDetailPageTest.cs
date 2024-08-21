@@ -68,14 +68,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         {
             // Arrange
 
-            var edgeModel =  SetupLoadEdgeModel();
+            var edgeModel = SetupLoadEdgeModel();
 
             _ = this.mockEdgeModelService
                 .Setup(x => x.UpdateIoTEdgeModel(It.Is<IoTEdgeModel>(c => c.ModelId.Equals(edgeModel.ModelId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add($"Edge model successfully updated.", Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
+                .Setup(c => c.Add("Edge model successfully updated.", Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
 
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
@@ -382,7 +382,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
-        public IoTEdgeModel SetupLoadEdgeModel()
+        private IoTEdgeModel SetupLoadEdgeModel()
         {
             var edgeModel =  new IoTEdgeModel()
             {
@@ -391,15 +391,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 Description = "description",
                 EdgeModules = new List<IoTEdgeModule>()
                 {
-                    new IoTEdgeModule()
+                    new()
                     {
                         ModuleName = "module_Test",
                         Image = "image_test",
                         Version = "1.0.1"
                     }
                 },
-                Image = string.Empty,
-
+                Image = DeviceModelImageOptions.DefaultImage
             };
 
             _ = this.mockEdgeModelService
@@ -409,6 +408,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             _ = this.mockEdgeModelService
                 .Setup(x => x.GetAvatar(It.Is<string>(c => c.Equals(this.mockEdgeModleId, StringComparison.Ordinal))))
                 .ReturnsAsync(edgeModel.Image);
+
+            _ = this.mockEdgeModelService.Setup(service =>
+                service.ChangeAvatar(It.IsAny<string>(), It.IsAny<StringContent>())).Returns(Task.CompletedTask);
+
 
             return edgeModel;
         }

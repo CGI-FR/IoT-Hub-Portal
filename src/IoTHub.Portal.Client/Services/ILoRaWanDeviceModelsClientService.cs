@@ -22,6 +22,6 @@ namespace IoTHub.Portal.Client.Services
 
         Task<string> GetAvatar(string deviceModelId);
 
-        Task ChangeAvatar(string deviceModelId, StringContent avatar);
+        Task ChangeAvatarAsync(string deviceModelId, StringContent avatar);
     }
 }

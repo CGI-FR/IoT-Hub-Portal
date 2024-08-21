@@ -26,7 +26,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using UnitTests.Mocks;
 
     [TestFixture]
-    public class DeviceModelDetaislPageTests : BlazorUnitTest
+    public class DeviceModelDetailsPageTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
@@ -178,7 +178,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(this.mockModelId))
+                    service.GetDeviceModelModelPropertiesAsync(this.mockModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -234,7 +234,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(this.mockModelId))
+                    service.GetDeviceModelModelPropertiesAsync(this.mockModelId))
                 .ReturnsAsync(new[]
                 {
                     new DeviceProperty()
@@ -389,12 +389,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .ReturnsAsync(deviceModel);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(this.mockModelId))
+                    service.GetDeviceModelModelPropertiesAsync(this.mockModelId))
                 .ReturnsAsync(properties ?? Array.Empty<DeviceProperty>());
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetAvatar(this.mockModelId))
                 .ReturnsAsync(deviceModel.Image);
+
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.ChangeAvatarAsync(this.mockModelId, new StringContent(deviceModel.Image)));
 
             return deviceModel;
         }

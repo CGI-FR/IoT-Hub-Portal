@@ -126,7 +126,7 @@
                     break;
             }
 
-            var result = await DeviceModelsClientService.GetDeviceModels(new DeviceModelFilter
+            var result = await DeviceModelsClientService.GetDeviceModelsAsync(new DeviceModelFilter
                 {
                     SearchText = this.deviceModelSearchInfo.SearchText!,
                     PageNumber = state.Page,

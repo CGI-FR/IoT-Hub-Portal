@@ -43,7 +43,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public async Task<string> GetDeviceModelImageAsync(string deviceModelId)
         {
-            var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
+            var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
             using var reader = new StreamReader((await blobClient.DownloadAsync()).Value.Content);
@@ -53,10 +53,10 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file)
         {
-            var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
+            var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
-            this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+            this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Name}\n");
 
             _ = await blobClient.UploadAsync(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(file)), true);
             _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
@@ -66,10 +66,10 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
-            var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
+            var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
-            this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+            this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Name}\n");
 
             _ = await blobClient.UploadAsync(DeviceModelImageOptions.DefaultImageStream, true);
 
@@ -82,10 +82,10 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
         {
-            var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
+            var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
-            this.logger.LogInformation($"Deleting from Blob storage :\n\t {blobClient.Uri}\n");
+            this.logger.LogInformation($"Deleting from Blob storage :\n\t {blobClient.Name}\n");
 
             try
             {
@@ -100,8 +100,8 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public async Task InitializeDefaultImageBlob()
         {
-            var container = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
-            var blobClient = container.GetBlobClient(this.deviceModelImageOptions.Value.DefaultImageName);
+            var container = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
+            var blobClient = container.GetBlobClient(DeviceModelImageOptions.DefaultImageName);
 
             _ = await blobClient.UploadAsync(DeviceModelImageOptions.DefaultImageStream, overwrite: true);
 
@@ -112,7 +112,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public async Task SyncImagesCacheControl()
         {
-            var container = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
+            var container = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
 
             await foreach (var blob in container.GetBlobsAsync())
             {

@@ -48,7 +48,7 @@ namespace IoTHub.Portal.Client.Services
             return this.http.GetStringAsync($"api/lorawan/models/{deviceModelId}/avatar");
         }
 
-        public async Task ChangeAvatar(string deviceModelId, StringContent avatar)
+        public async Task ChangeAvatarAsync(string deviceModelId, StringContent avatar)
         {
             var result = await this.http.PostAsync($"api/lorawan/models/{deviceModelId}/avatar", avatar);
 

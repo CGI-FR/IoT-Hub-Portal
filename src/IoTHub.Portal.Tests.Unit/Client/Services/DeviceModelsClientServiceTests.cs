@@ -61,7 +61,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             };
 
             // Act
-            var result = await this.deviceModelsClientService.GetDeviceModels(filter);
+            var result = await this.deviceModelsClientService.GetDeviceModelsAsync(filter);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModels);
@@ -107,7 +107,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                     MediaTypeNames.Application.Json));
 
             // Act
-            var result = await this.deviceModelsClientService.CreateDeviceModel(expectedDeviceModel);
+            var result = await this.deviceModelsClientService.CreateDeviceModelAsync(expectedDeviceModel);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModel);
@@ -167,7 +167,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 .RespondJson(expectedDeviceModelProperties);
 
             // Act
-            var result = await this.deviceModelsClientService.GetDeviceModelModelProperties(deviceModel.ModelId);
+            var result = await this.deviceModelsClientService.GetDeviceModelModelPropertiesAsync(deviceModel.ModelId);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModelProperties);
@@ -234,7 +234,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 .Respond(HttpStatusCode.Created);
 
             // Act
-            await this.deviceModelsClientService.ChangeAvatar(deviceModel.ModelId, content);
+            await this.deviceModelsClientService.ChangeAvatarAsync(deviceModel.ModelId, content);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();

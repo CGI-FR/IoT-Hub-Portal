@@ -11,22 +11,22 @@ namespace IoTHub.Portal.Client.Services
 
     public interface IDeviceModelsClientService
     {
-        Task<PaginationResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter? deviceModelFilter = null);
+        Task<PaginationResult<DeviceModelDto>> GetDeviceModelsAsync(DeviceModelFilter? deviceModelFilter = null);
 
         Task<DeviceModelDto> GetDeviceModel(string deviceModelId);
 
-        Task<DeviceModelDto> CreateDeviceModel(DeviceModelDto deviceModel);
+        Task<DeviceModelDto> CreateDeviceModelAsync(DeviceModelDto deviceModel);
 
         Task UpdateDeviceModel(DeviceModelDto deviceModel);
 
         Task DeleteDeviceModel(string deviceModelId);
 
-        Task<IList<DeviceProperty>> GetDeviceModelModelProperties(string deviceModelId);
+        Task<IList<DeviceProperty>> GetDeviceModelModelPropertiesAsync(string deviceModelId);
 
         Task SetDeviceModelModelProperties(string deviceModelId, IList<DeviceProperty> deviceProperties);
 
         Task<string> GetAvatar(string deviceModelId);
 
-        Task ChangeAvatar(string deviceModelId, StringContent avatar);
+        Task ChangeAvatarAsync(string deviceModelId, StringContent avatar);
     }
 }

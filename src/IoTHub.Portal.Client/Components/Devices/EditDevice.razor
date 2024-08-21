@@ -716,7 +716,7 @@
                     string.Empty
                             }
             };
-        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
+        return (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
     }
 
     private void SetSaveButtonText(DeviceSaveAction saveAction)
@@ -789,7 +789,7 @@
             }
             else
             {
-                var properties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
+                var properties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
 
                 Properties.AddRange(properties.Select(x => new DevicePropertyValue
                     {

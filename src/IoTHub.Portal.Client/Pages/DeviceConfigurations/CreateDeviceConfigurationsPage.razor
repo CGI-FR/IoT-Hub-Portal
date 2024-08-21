@@ -251,7 +251,7 @@
                 OrderBy = new string[0]
             };
 
-            var models = await DeviceModelsClientService.GetDeviceModels(filter);
+            var models = await DeviceModelsClientService.GetDeviceModelsAsync(filter);
 
             AvailableModels = models.Items.Where(c => !c.SupportLoRaFeatures).ToArray();
 
@@ -300,7 +300,7 @@
         try
         {
             Configuration.ModelId = model.ModelId;
-            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
+            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
         }
         catch (ProblemDetailsException exception)
         {

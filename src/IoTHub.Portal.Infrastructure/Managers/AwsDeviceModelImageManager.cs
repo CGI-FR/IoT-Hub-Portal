@@ -172,7 +172,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 var putObjectRequest = new PutObjectRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
-                    Key = this.imageOptions.Value.DefaultImageName,
+                    Key = DeviceModelImageOptions.DefaultImageName,
                     InputStream = DeviceModelImageOptions.DefaultImageStream,
                     ContentType = "image/*", // image content type
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
@@ -187,7 +187,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                     var putAclRequest = new PutACLRequest
                     {
                         BucketName = this.configHandler.AWSBucketName,
-                        Key = this.imageOptions.Value.DefaultImageName,
+                        Key = DeviceModelImageOptions.DefaultImageName,
                         CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
                     };
 

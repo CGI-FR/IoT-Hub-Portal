@@ -321,7 +321,7 @@
             }
             else
             {
-                Model = await DeviceModelsClientService.CreateDeviceModel((Model as DeviceModelDto)!);
+                Model = await DeviceModelsClientService.CreateDeviceModelAsync((Model as DeviceModelDto)!);
 
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }
@@ -332,11 +332,11 @@
 
                 if (IsLoRa)
                 {
-                    await LoRaWanDeviceModelsClientService.ChangeAvatar(Model.ModelId, imageContent);
+                    await LoRaWanDeviceModelsClientService.ChangeAvatarAsync(Model.ModelId, imageContent);
                 }
                 else
                 {
-                    await DeviceModelsClientService.ChangeAvatar(Model.ModelId, imageContent);
+                    await DeviceModelsClientService.ChangeAvatarAsync(Model.ModelId, imageContent);
                 }
             }
 

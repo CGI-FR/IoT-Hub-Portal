@@ -423,7 +423,7 @@
                 string.Empty
             }
         };
-        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList();
+        return (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList();
     }
 
     private async Task ExportDeviceList()

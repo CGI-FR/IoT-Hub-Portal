@@ -258,7 +258,7 @@
             else
             {
                 Model = await DeviceModelsClientService.GetDeviceModel(ModelID);
-                Properties.AddRange(await DeviceModelsClientService.GetDeviceModelModelProperties(ModelID));
+                Properties.AddRange(await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(ModelID));
                 imageData = await DeviceModelsClientService.GetAvatar(ModelID);
             }
         }
@@ -350,11 +350,11 @@
                 var imageContent = new StringContent(imageData);
                 if (IsLoRa)
                 {
-                    await LoRaWanDeviceModelsClientService.ChangeAvatar(Model.ModelId, imageContent);
+                    await LoRaWanDeviceModelsClientService.ChangeAvatarAsync(Model.ModelId, imageContent);
                 }
                 else
                 {
-                    await DeviceModelsClientService.ChangeAvatar(Model.ModelId, imageContent);
+                    await DeviceModelsClientService.ChangeAvatarAsync(Model.ModelId, imageContent);
                 }
             }
 
