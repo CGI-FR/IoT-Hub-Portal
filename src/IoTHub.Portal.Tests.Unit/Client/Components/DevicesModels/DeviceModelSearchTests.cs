@@ -3,18 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.DevicesModels
 {
-    using AutoFixture;
-    using IoTHub.Portal.Client.Models;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Bunit;
-    using NUnit.Framework;
-    using IoTHub.Portal.Client.Components.DeviceModels;
-    using FluentAssertions;
-    using System.Linq;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Extensions.DependencyInjection;
-
     [TestFixture]
     public class DeviceModelSearchTests : BlazorUnitTest
     {

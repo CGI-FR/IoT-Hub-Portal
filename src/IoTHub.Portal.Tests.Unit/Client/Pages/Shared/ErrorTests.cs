@@ -3,17 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Shared;
-    using UnitTests.Bases;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using MudBlazor;
-    using NUnit.Framework;
-
     [TestFixture]
     public class ErrorTests : BlazorUnitTest
     {

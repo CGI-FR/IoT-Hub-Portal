@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Validators
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Client.Validators;
-    using IoTHub.Portal.Models.v10;
-    using NUnit.Framework;
-
     [TestFixture]
     internal class IoTEdgeRouteValidatorTests
     {

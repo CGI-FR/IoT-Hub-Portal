@@ -3,10 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Extensions
 {
-    using FluentAssertions;
-    using Hellang.Middleware.ProblemDetails;
-    using NUnit.Framework;
-    using Portal.Server.Extensions;
+    using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
     public class ProblemDetailsOptionsExtensionsTests
     {

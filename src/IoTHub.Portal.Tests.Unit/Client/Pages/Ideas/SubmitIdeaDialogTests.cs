@@ -3,23 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Ideas
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Dialogs.Ideas;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-
     [TestFixture]
     public class SubmitIdeaDialogTests : BlazorUnitTest
     {

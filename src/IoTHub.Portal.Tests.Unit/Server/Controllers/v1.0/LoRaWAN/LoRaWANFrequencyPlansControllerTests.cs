@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Server.Controllers.V10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v10.LoRaWAN;
-    using UnitTests.Bases;
-    using Microsoft.AspNetCore.Mvc;
-    using NUnit.Framework;
-
     [TestFixture]
     public class LoRaWANFrequencyPlansControllerTests : BackendUnitTest
     {

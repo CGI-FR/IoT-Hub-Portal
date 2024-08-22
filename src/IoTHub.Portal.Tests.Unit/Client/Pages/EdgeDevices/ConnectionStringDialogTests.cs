@@ -3,25 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
-    using System;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.EdgeDevices;
-    using IoTHub.Portal.Client.Dialogs.EdgeDevices;
-    using IoTHub.Portal.Client.Services;
-    using Models.v10;
-    using UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-    using IoTHub.Portal.Shared.Constants;
-    using IoTHub.Portal.Shared.Models.v10;
-    using AutoFixture;
-
     [TestFixture]
     public class ConnectionStringDialogTests : BlazorUnitTest
     {
@@ -60,7 +41,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             };
 
             // Act
-            _ = await cut.InvokeAsync(() => this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => this.dialogService?.Show<EdgeDevicesConnectionStringDialog>(string.Empty, parameters));
             _ = cut.WaitForElement("div.mud-paper");
 
             // Assert
@@ -89,7 +70,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             IDialogReference dialogReference = null;
 
             // Act
-            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDevicesConnectionStringDialog>(string.Empty, parameters));
             var result = await dialogReference.Result;
 
             // Assert
@@ -118,7 +99,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             IDialogReference dialogReference = null;
 
             // Act
-            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDevicesConnectionStringDialog>(string.Empty, parameters));
             cut.WaitForElement("#ok").Click();
 
             var result = await dialogReference.Result;

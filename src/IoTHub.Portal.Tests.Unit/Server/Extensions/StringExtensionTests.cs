@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Extensions
 {
-    using IoTHub.Portal.Crosscutting.Extensions;
-    using NUnit.Framework;
-
     [TestFixture]
     public class StringExtensionTests
     {

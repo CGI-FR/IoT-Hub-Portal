@@ -3,24 +3,9 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeModels
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Components.EdgeModels;
-    using Bunit;
-    using FluentAssertions;
-    using Moq;
-    using NUnit.Framework;
-    using UnitTests.Bases;
-
     [TestFixture]
     public class EdgeModelSearchTests : BlazorUnitTest
     {
-        public override void Setup()
-        {
-            base.Setup();
-        }
-
         [Test]
         public void SearchEdgeModels_ClickOnSearch_SearchIsFired()
         {

@@ -3,23 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Client.Shared;
-    using Models.v10;
-    using UnitTests.Bases;
-    using Blazored.LocalStorage;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using MudBlazor;
-    using NUnit.Framework;
-    using Portal.Client.Constants;
-
     [TestFixture]
     public class NavMenuTests : BlazorUnitTest
     {

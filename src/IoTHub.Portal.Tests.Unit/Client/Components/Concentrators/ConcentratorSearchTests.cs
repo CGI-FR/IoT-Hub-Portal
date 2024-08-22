@@ -3,16 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Concentrators
 {
-    using AutoFixture;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Bunit;
-    using NUnit.Framework;
-    using IoTHub.Portal.Client.Components.Concentrators;
-    using FluentAssertions;
-    using System.Linq;
-    using IoTHub.Portal.Client.Models;
-
     [TestFixture]
     public class ConcentratorSearchTests : BlazorUnitTest
     {

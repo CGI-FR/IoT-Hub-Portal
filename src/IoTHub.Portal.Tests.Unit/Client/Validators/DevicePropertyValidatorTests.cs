@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Validators
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Client.Validators;
-    using Models;
-    using Models.v10;
-    using NUnit.Framework;
-
     internal class DevicePropertyValidatorTests
     {
         [Test]

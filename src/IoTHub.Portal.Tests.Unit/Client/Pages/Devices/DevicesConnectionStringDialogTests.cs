@@ -3,23 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
-    using System;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Dialogs.Devices;
-    using IoTHub.Portal.Client.Services;
-    using UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-    using Portal.Shared.Models.v10;
-
     [TestFixture]
-    public class ConnectionStringDialogTests : BlazorUnitTest
+    public class DevicesConnectionStringDialogTests : BlazorUnitTest
     {
         private Mock<IDeviceClientService> mockDeviceClientService;
 
@@ -53,7 +38,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             // Act
-            _ = await cut.InvokeAsync(() => service?.Show<ConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => service?.Show<DevicesConnectionStringDialog>(string.Empty, parameters));
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
@@ -82,7 +67,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             IDialogReference dialogReference = null;
 
             // Act
-            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<ConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = service?.Show<DevicesConnectionStringDialog>(string.Empty, parameters));
 
             var result = await dialogReference.Result;
 

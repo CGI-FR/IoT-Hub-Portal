@@ -3,26 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 {
-    using System;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.DeviceModels;
-    using IoTHub.Portal.Client.Services;
-    using Models.v10;
-    using UnitTests.Bases;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using System.Collections.Generic;
-    using System.Linq;
-
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest
     {

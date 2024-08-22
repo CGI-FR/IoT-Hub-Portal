@@ -3,28 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.DeviceModels;
-    using IoTHub.Portal.Client.Services;
-    using Models;
-    using Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using UnitTests.Bases;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using MudBlazor.Services;
-    using NUnit.Framework;
-    using UnitTests.Mocks;
-
     [TestFixture]
     public class DeviceModelDetaislPageTests : BlazorUnitTest
     {

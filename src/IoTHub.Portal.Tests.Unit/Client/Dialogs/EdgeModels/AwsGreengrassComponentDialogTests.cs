@@ -3,27 +3,9 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Dialogs.EdgeModels;
-    using IoTHub.Portal.Client.Enums;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-
     [TestFixture]
     public class AwsGreengrassComponentDialogTests : BlazorUnitTest
     {
-        public override void Setup()
-        {
-            base.Setup();
-        }
-
         [Test]
         public async Task AwsGreengrassComponentDialog_ClickOnCancel_DialogCanceled()
         {

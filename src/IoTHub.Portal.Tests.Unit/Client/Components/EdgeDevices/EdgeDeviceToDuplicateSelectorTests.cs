@@ -3,22 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
 {
-    using System.Collections.Generic;
-    using AngleSharp.Dom;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Components.EdgeDevices;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Services;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-    using UnitTests.Bases;
-
     [TestFixture]
     public class EdgeDeviceToDuplicateSelectorTests : BlazorUnitTest
     {

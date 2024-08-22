@@ -3,18 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-
     [TestFixture]
     public class SystemModuleDialogTest : BlazorUnitTest
     {
