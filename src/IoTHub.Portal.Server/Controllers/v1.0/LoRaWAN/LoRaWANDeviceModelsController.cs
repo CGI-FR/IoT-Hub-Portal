@@ -1,18 +1,19 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
+namespace IoTHub.Portal.Server.Controllers.v1._0.LoRaWAN
 {
     using System.Linq;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Filters;
+    using IoTHub.Portal.Server.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Shared;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.Filters;
+    using Shared.Models.v1._0.LoRaWAN;
 
     [Authorize]
     [ApiController]

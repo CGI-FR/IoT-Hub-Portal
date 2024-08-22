@@ -6,14 +6,14 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System;
     using System.Globalization;
     using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Server.Controllers.V10;
     using IoTHub.Portal.Server.Identity;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using Models.v10;
     using Moq;
     using NUnit.Framework;
+    using Portal.Server.Controllers.v1._0;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class SettingsControllerTest

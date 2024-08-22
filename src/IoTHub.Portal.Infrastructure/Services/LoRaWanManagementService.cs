@@ -10,7 +10,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using System.Text.Json;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
+    using Shared.Models.v1._0.LoRaWAN;
 
     internal class LoRaWanManagementService : ILoRaWanManagementService
     {

@@ -7,14 +7,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule;
-    using Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
     using MudBlazor;
     using NUnit.Framework;
     using Microsoft.Extensions.DependencyInjection;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class ModuleDialogTests : BlazorUnitTest

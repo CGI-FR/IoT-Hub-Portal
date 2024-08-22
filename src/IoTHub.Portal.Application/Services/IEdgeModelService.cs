@@ -5,9 +5,9 @@ namespace IoTHub.Portal.Application.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.Filters;
 
     public interface IEdgeModelService
     {

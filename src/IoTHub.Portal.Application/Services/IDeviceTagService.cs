@@ -3,9 +3,9 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using IoTHub.Portal.Models.v10;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Shared.Models.v1._0;
 
     public interface IDeviceTagService
     {

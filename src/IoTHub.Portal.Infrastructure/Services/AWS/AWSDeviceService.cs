@@ -5,7 +5,6 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
-    using Models.v10;
     using AutoMapper;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Domain;
@@ -17,6 +16,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
     using IoTHub.Portal.Domain.Exceptions;
     using Amazon.IoT;
     using Amazon.IotData;
+    using Shared.Models.v1._0;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class AWSDeviceService : DeviceService

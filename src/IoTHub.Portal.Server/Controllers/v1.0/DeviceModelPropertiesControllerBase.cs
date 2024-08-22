@@ -1,19 +1,19 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.V10
+namespace IoTHub.Portal.Server.Controllers.v1._0
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Hellang.Middleware.ProblemDetails;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models.v10;
-    using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Shared.Models.v1._0;
 
     public abstract class DeviceModelPropertiesControllerBase : ControllerBase
     {

@@ -16,9 +16,8 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.Extensions.Logging;
+    using Shared.Models.v1._0;
     using Configuration = Microsoft.Azure.Devices.Configuration;
 
     public class AwsConfigService : IConfigService

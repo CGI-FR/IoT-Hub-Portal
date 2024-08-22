@@ -3,7 +3,7 @@
 
 #nullable enable
 
-namespace IoTHub.Portal.Shared.Models.v10.IoTEdgeModule
+namespace IoTHub.Portal.Shared.Models.v1._0.IoTEdgeModule
 {
     using System.Collections.Generic;
     using Newtonsoft.Json;

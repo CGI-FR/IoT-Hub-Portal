@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Server.Managers
+namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
     using System;
     using System.IO;
@@ -12,17 +12,17 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
     using Azure;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
+    using FluentAssertions;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Options;
     using IoTHub.Portal.Infrastructure.Managers;
-    using FluentAssertions;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
     using Moq;
     using NUnit.Framework;
-    using UnitTests.Bases;
 
     [TestFixture]
     public class DeviceModelImageManagerTest : BackendUnitTest

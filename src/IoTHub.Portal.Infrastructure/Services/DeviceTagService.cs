@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Infrastructure.Services
     using Domain.Exceptions;
     using Domain.Repositories;
     using Microsoft.EntityFrameworkCore;
-    using Models.v10;
+    using Shared.Models.v1._0;
 
     public class DeviceTagService : IDeviceTagService
     {

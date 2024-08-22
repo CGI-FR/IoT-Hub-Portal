@@ -9,9 +9,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Infrastructure.Mappers;
     using Microsoft.Azure.Devices.Shared;
-    using Models.v10.LoRaWAN;
     using Moq;
     using NUnit.Framework;
+    using Shared.Models.v1._0.LoRaWAN;
 
     [TestFixture]
     public class LoRaDeviceTwinMapperTests

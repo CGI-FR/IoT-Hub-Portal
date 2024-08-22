@@ -5,10 +5,10 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 {
     using Azure.Data.Tables;
     using IoTHub.Portal.Infrastructure.Managers;
-    using IoTHub.Portal.Models.v10;
     using System;
     using System.Collections.Generic;
     using IoTHub.Portal.Application.Managers;
+    using Shared.Models.v1._0;
 
     public class DeviceModelMapper : IDeviceModelMapper<DeviceModelDto, DeviceModelDto>
     {

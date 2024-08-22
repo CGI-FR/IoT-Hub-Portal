@@ -9,7 +9,7 @@ namespace IoTHub.Portal.Client.Services
     using System.Text;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
-    using Portal.Models.v10;
+    using Portal.Shared.Models.v1._0;
 
     public class DeviceTagSettingsClientService : IDeviceTagSettingsClientService
     {

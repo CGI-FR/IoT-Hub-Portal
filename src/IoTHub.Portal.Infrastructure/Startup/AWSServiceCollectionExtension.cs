@@ -17,9 +17,9 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using IoTHub.Portal.Infrastructure.Managers;
     using IoTHub.Portal.Infrastructure.Services;
     using IoTHub.Portal.Infrastructure.Services.AWS;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Extensions.DependencyInjection;
     using Quartz;
+    using Shared.Models.v1._0;
 
     public static class AWSServiceCollectionExtension
     {

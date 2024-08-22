@@ -6,12 +6,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
     using System;
     using System.Collections.Generic;
     using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule;
-    using Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
     using NUnit.Framework;
+    using Portal.Shared.Models.v1._0;
 
     public class ModuleDialogTab2Tests : BlazorUnitTest
     {

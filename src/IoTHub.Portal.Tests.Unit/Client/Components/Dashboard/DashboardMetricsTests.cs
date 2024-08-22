@@ -1,21 +1,20 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
+namespace IoTHub.Portal.Tests.Unit.Client.Components.Dashboard
 {
     using System.Globalization;
+    using Bunit;
+    using FluentAssertions;
     using IoTHub.Portal.Client.Components.Dashboard;
     using IoTHub.Portal.Client.Exceptions;
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using Bunit;
-    using FluentAssertions;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
-    using UnitTests.Bases;
-    using IoTHub.Portal.Models.v10;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class DashboardMetricsTests : BlazorUnitTest

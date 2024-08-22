@@ -3,7 +3,7 @@
 
 #nullable enable
 
-namespace IoTHub.Portal.Models.v10.LoRaWAN
+namespace IoTHub.Portal.Shared.Models.v1._0.LoRaWAN
 {
     using System.ComponentModel.DataAnnotations;
 

@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Server.Services
     using Domain.Exceptions;
     using Domain.Repositories;
     using Microsoft.Extensions.Logging;
-    using Models.v10.LoRaWAN;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public class LoRaWANCommandService : ILoRaWANCommandService
     {

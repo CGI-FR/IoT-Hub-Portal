@@ -4,7 +4,7 @@
 namespace IoTHub.Portal.Application.Services
 {
     using System.Threading.Tasks;
-    using Models.v10.LoRaWAN;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public interface ILoRaWANCommandService
     {

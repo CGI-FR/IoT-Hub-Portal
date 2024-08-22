@@ -11,9 +11,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Pages.DeviceModels;
     using IoTHub.Portal.Client.Services;
-    using Models;
-    using Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
@@ -23,6 +20,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
+    using Portal.Shared.Models;
+    using Portal.Shared.Models.v1._0;
+    using Portal.Shared.Models.v1._0.LoRaWAN;
     using UnitTests.Mocks;
 
     [TestFixture]

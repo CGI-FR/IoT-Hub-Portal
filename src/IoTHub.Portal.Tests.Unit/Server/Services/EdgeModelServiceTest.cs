@@ -17,9 +17,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
@@ -29,6 +26,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using NUnit.Framework;
     using IoTHub.Portal.Infrastructure.Services;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.Filters;
 
     [TestFixture]
     public class EdgeModelServiceTest : BackendUnitTest

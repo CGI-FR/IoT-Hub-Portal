@@ -6,12 +6,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using System;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Server.Controllers.V10.LoRaWAN;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
+    using Portal.Server.Controllers.v1._0.LoRaWAN;
+    using Shared.Models.v1._0.LoRaWAN;
 
     [TestFixture]
     public class LoRaWANCommandsControllerTests

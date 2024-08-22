@@ -6,8 +6,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
     using System;
     using IoTHub.Portal.Client.Validators;
     using IoTHub.Portal.Shared.Constants;
-    using Models.v10;
     using NUnit.Framework;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     internal class DeviceDetailsValidatorTests

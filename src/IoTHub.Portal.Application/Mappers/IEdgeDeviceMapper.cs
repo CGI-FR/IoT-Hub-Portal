@@ -4,8 +4,8 @@
 namespace IoTHub.Portal.Application.Mappers
 {
     using System.Collections.Generic;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Shared;
+    using Shared.Models.v1._0;
 
     public interface IEdgeDeviceMapper
     {

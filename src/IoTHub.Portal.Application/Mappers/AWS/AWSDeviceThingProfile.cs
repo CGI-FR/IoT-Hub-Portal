@@ -9,8 +9,8 @@ namespace IoTHub.Portal.Application.Mappers.AWS
     using Amazon.IotData.Model;
     using AutoMapper;
     using IoTHub.Portal.Domain.Entities;
-    using Models.v10;
     using Newtonsoft.Json;
+    using Shared.Models.v1._0;
 
     public class AWSDeviceThingProfile : Profile
     {

@@ -7,13 +7,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.IO;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Server.Controllers.V10;
-    using IoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
+    using Portal.Server.Controllers.v1._0;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class AdminControllerTests

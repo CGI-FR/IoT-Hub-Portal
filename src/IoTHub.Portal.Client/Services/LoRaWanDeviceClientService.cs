@@ -8,8 +8,7 @@ namespace IoTHub.Portal.Client.Services
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Portal.Models.v10.LoRaWAN;
+    using Portal.Shared.Models.v1._0.LoRaWAN;
 
     public class LoRaWanDeviceClientService : ILoRaWanDeviceClientService
     {

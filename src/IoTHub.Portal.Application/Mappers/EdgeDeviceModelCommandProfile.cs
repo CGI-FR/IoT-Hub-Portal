@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Application.Mappers
 {
     using AutoMapper;
     using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v10;
+    using Shared.Models.v1._0;
 
     public class EdgeDeviceModelCommandProfile : Profile
     {

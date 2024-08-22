@@ -8,14 +8,14 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
     using Microsoft.Azure.Devices;
-    using Models.v10.LoRaWAN;
     using Shared.Models.v1._0;
+    using Shared.Models.v1._0.Filters;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public class LoRaWANConcentratorService : ILoRaWANConcentratorService
     {

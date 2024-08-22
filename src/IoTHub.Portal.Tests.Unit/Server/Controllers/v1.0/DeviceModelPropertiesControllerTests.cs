@@ -10,14 +10,14 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Server.Controllers.V10;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Models.v10;
     using Moq;
     using NUnit.Framework;
+    using Portal.Server.Controllers.v1._0;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class DeviceModelPropertiesControllerTests

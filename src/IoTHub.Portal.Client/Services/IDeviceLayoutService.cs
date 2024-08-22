@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Client.Services
     using System;
     using System.Collections.Generic;
     using IoTHub.Portal.Shared.Models;
-    using Portal.Models.v10;
+    using Portal.Shared.Models.v1._0;
 
     public interface IDeviceLayoutService
     {

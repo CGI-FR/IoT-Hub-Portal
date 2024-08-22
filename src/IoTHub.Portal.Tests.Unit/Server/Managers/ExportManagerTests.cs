@@ -14,8 +14,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using IoTHub.Portal.Server.Managers;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
@@ -23,6 +21,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
     using Microsoft.Extensions.Options;
     using Moq;
     using NUnit.Framework;
+    using Shared.Models;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.LoRaWAN;
 
     [TestFixture]
     public class ExportManagerTests : BackendUnitTest
@@ -241,12 +242,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                     new DeviceModelProperty()
                     {
                         Name = "Property1",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                     new DeviceModelProperty()
                     {
                         Name = "Property2",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                 });
 
@@ -301,12 +302,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                     new DeviceModelProperty()
                     {
                         Name = "Property1",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                     new DeviceModelProperty()
                     {
                         Name = "Property2",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                 });
 
@@ -410,12 +411,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                     new DeviceModelProperty()
                     {
                         Name = "Property1",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                     new DeviceModelProperty()
                     {
                         Name = "Property2",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                 });
 

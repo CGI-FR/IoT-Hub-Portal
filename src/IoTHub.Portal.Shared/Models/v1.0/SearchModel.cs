@@ -3,7 +3,7 @@
 
 #nullable enable
 
-namespace IoTHub.Portal.Models.v10
+namespace IoTHub.Portal.Shared.Models.v1._0
 {
     using System.ComponentModel.DataAnnotations;
 

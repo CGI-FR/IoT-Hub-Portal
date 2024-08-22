@@ -7,8 +7,8 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Shared;
+    using Shared.Models.v1._0;
 
     public class EdgeDeviceMapper : IEdgeDeviceMapper
     {

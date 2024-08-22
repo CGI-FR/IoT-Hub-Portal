@@ -12,8 +12,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.DevicesModels
     using IoTHub.Portal.Client.Components.DeviceModels;
     using FluentAssertions;
     using System.Linq;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Extensions.DependencyInjection;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class DeviceModelSearchTests : BlazorUnitTest

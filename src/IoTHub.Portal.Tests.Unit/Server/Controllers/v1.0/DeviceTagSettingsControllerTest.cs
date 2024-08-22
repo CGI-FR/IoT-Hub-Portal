@@ -8,12 +8,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Linq;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Server.Controllers.V10;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Models.v10;
     using Moq;
     using NUnit.Framework;
+    using Portal.Server.Controllers.v1._0;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class DeviceTagSettingsControllerTest

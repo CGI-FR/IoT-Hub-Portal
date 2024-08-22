@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Application.Services
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public interface ILoRaWanManagementService
     {

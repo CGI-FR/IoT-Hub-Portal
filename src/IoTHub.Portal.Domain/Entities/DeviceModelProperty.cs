@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Domain.Entities
 {
     using System.ComponentModel.DataAnnotations;
     using IoTHub.Portal.Domain.Base;
-    using IoTHub.Portal.Models;
+    using Portal.Shared.Models;
 
     public class DeviceModelProperty : EntityBase
     {

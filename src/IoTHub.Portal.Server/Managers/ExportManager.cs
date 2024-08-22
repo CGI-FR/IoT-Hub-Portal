@@ -16,13 +16,12 @@ namespace IoTHub.Portal.Server.Managers
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v10;
     using CsvHelper;
     using CsvHelper.Configuration;
     using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public class ExportManager : IExportManager
     {

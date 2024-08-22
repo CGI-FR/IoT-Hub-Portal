@@ -7,8 +7,8 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     using System.Collections.Generic;
     using Azure.Data.Tables;
     using IoTHub.Portal.Application.Managers;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public class LoRaDeviceModelMapper : IDeviceModelMapper<DeviceModelDto, LoRaDeviceModelDto>
     {

@@ -16,12 +16,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
-    using Microsoft.Azure.Devices;
-    using Models;
-    using Models.v10;
     using Moq;
     using NUnit.Framework;
+    using Shared.Models;
+    using Shared.Models.v1._0;
     using Configuration = Microsoft.Azure.Devices.Configuration;
+    using ConfigurationMetrics = Microsoft.Azure.Devices.ConfigurationMetrics;
 
     [TestFixture]
     public class DeviceConfigurationsServiceTest : BackendUnitTest

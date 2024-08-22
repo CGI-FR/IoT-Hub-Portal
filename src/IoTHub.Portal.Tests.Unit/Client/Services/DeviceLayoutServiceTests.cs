@@ -9,10 +9,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
     using NUnit.Framework;
     using Portal.Client.Services;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.LoRaWAN;
 
     [TestFixture]
     public class DeviceLayoutServiceTests : BlazorUnitTest

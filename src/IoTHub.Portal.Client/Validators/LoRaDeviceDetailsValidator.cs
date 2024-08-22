@@ -6,9 +6,9 @@ namespace IoTHub.Portal.Client.Validators
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using System;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using FluentValidation;
     using System.Linq;
+    using Portal.Shared.Models.v1._0.LoRaWAN;
 
     public class LoRaDeviceDetailsValidator : AbstractValidator<LoRaDeviceDetails>
     {

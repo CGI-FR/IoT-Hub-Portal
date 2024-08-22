@@ -15,7 +15,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Shared.Models.v10;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
@@ -23,12 +22,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
     using Moq;
     using NUnit.Framework;
     using Portal.Domain;
     using Portal.Domain.Entities;
     using Portal.Domain.Repositories;
+    using Shared.Models.v1._0;
     using UnitTests.Bases;
     using Device = Portal.Domain.Entities.Device;
 

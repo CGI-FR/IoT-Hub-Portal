@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Infrastructure.Services
+namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
     using System;
     using System.Threading.Tasks;
@@ -15,8 +15,8 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Helpers;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Extensions.Logging;
+    using Shared.Models.v1._0;
 
     public class AWSEdgeDevicesService : EdgeDevicesServiceBase, IEdgeDevicesService
     {
@@ -210,7 +210,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public async Task<string> GetEdgeDeviceEnrollementScript(string deviceId, string templateName)
         {
-            var template = edgeEnrollementHelper.GetEdgeEnrollementTemplate($"{configHandler.CloudProvider}.{templateName}");
+            var template = this.edgeEnrollementHelper.GetEdgeEnrollementTemplate($"{this.configHandler.CloudProvider}.{templateName}");
 
             var device = await this.GetEdgeDevice(deviceId);
 

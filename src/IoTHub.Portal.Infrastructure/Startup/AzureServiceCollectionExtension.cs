@@ -6,6 +6,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using System.Net;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
+    using Extenstions;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Providers;
@@ -13,7 +14,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using IoTHub.Portal.Application.Wrappers;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Infrastructure.Extensions;
     using IoTHub.Portal.Infrastructure.Jobs;
     using IoTHub.Portal.Infrastructure.Managers;
     using IoTHub.Portal.Infrastructure.Mappers;
@@ -21,8 +21,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using IoTHub.Portal.Infrastructure.Services;
     using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using IoTHub.Portal.Infrastructure.Wrappers;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +28,8 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using Polly;
     using Polly.Extensions.Http;
     using Quartz;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public static class AzureServiceCollectionExtension
     {

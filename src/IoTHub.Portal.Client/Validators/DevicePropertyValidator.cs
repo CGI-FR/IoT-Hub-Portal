@@ -3,11 +3,11 @@
 
 namespace IoTHub.Portal.Client.Validators
 {
-    using IoTHub.Portal.Models.v10;
     using FluentValidation;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Portal.Shared.Models.v1._0;
 
     public class DevicePropertyValidator : AbstractValidator<IEnumerable<DeviceProperty>>
     {

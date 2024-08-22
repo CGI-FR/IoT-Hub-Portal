@@ -11,9 +11,9 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
-    using Models.v10;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Shared.Models.v1._0;
 
     public class DevicePropertyService : IDevicePropertyService
     {

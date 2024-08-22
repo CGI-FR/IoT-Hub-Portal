@@ -1,28 +1,27 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
+namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
 {
     using System;
     using System.Collections.Generic;
     using AngleSharp.Dom;
     using AutoFixture;
+    using Bunit;
+    using FluentAssertions;
     using IoTHub.Portal.Client.Components.Devices.LoRaWAN;
     using IoTHub.Portal.Client.Exceptions;
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Client.Validators;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using Bunit;
-    using FluentAssertions;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Mocks;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
-    using UnitTests.Bases;
-    using UnitTests.Mocks;
+    using Shared.Models.v1._0.LoRaWAN;
 
     [TestFixture]
     public class CreateLoraDeviceTests : BlazorUnitTest

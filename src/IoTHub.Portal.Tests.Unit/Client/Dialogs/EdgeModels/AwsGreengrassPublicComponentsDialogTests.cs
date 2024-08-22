@@ -9,7 +9,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
     using AutoFixture;
     using IoTHub.Portal.Client.Dialogs.EdgeModels;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
@@ -17,6 +16,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class AwsGreengrassPublicComponentsDialogTests : BlazorUnitTest

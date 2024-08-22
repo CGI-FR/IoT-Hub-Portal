@@ -21,18 +21,17 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure;
     using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Shared.Models.v10;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
     using Moq;
     using NUnit.Framework;
     using Portal.Domain.Entities;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.LoRaWAN;
     using UnitTests.Bases;
 
     [TestFixture]

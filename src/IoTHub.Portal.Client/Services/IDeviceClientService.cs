@@ -6,8 +6,8 @@ namespace IoTHub.Portal.Client.Services
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Portal.Models.v10;
+    using Portal.Shared;
+    using Portal.Shared.Models.v1._0;
 
     public interface IDeviceClientService
     {

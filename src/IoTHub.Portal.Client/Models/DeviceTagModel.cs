@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Client.Models
 {
-    using Portal.Models.v10;
+    using Portal.Shared.Models.v1._0;
 
     public class DeviceTagModel : DeviceTagDto
     {

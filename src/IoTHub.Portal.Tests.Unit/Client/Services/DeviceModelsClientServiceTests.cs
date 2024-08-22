@@ -14,13 +14,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using UnitTests.Helpers;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using Newtonsoft.Json;
     using System.Text;
     using System.Net.Mime;
+    using Shared;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.Filters;
 
     [TestFixture]
     public class DeviceModelsClientServiceTests : BlazorUnitTest

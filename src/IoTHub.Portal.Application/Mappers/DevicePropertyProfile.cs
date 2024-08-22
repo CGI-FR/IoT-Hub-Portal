@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Application.Mappers
 {
     using AutoMapper;
     using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Models.v10;
+    using Shared.Models.v1._0;
 
     public class DevicePropertyProfile : Profile
     {

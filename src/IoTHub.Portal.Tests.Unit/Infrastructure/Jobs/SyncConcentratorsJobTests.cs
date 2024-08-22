@@ -19,6 +19,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
     using NUnit.Framework;
     using Portal.Domain.Entities;
     using Quartz;
+    using Shared;
     using UnitTests.Bases;
 
     public class SyncConcentratorsTests : BackendUnitTest

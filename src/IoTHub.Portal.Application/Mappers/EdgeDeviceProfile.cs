@@ -9,10 +9,10 @@ namespace IoTHub.Portal.Application.Mappers
     using AutoMapper;
     using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json.Linq;
+    using Shared.Models.v1._0;
 
     public class EdgeDeviceProfile : Profile
     {

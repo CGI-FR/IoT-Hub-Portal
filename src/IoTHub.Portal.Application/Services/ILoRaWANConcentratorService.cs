@@ -4,9 +4,9 @@
 namespace IoTHub.Portal.Application.Services
 {
     using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
+    using Shared.Models.v1._0.Filters;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public interface ILoRaWANConcentratorService
     {

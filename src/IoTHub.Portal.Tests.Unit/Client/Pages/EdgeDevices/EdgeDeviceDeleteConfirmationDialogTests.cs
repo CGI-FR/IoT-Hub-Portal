@@ -9,7 +9,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Dialogs.EdgeDevices;
     using IoTHub.Portal.Client.Services;
-    using Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
@@ -17,6 +16,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class EdgeDeviceDeleteConfirmationDialogTests : BlazorUnitTest

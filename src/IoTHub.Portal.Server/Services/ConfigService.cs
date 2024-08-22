@@ -14,11 +14,10 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Crosscutting.Extensions;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Extensions;
     using Newtonsoft.Json.Linq;
+    using Shared.Models.v1._0;
 
     public class ConfigService : IConfigService
     {

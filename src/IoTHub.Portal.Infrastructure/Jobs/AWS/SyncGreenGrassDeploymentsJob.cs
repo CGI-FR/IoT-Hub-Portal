@@ -11,10 +11,10 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
     using Microsoft.Extensions.Logging;
     using Quartz;
     using Amazon.GreengrassV2;
-    using IoTHub.Portal.Models.v10;
     using Amazon.GreengrassV2.Model;
     using IoTHub.Portal.Domain.Entities;
     using System.Text.RegularExpressions;
+    using Shared.Models.v1._0;
 
     [DisallowConcurrentExecution]
     public class SyncGreenGrassDeploymentsJob : IJob

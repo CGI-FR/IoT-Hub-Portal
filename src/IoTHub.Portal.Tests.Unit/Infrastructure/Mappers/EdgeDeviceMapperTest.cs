@@ -7,11 +7,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
     using System.Collections.Generic;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Infrastructure.Mappers;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Shared;
     using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class EdgeDeviceMapperTest

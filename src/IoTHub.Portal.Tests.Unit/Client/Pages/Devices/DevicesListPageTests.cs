@@ -13,19 +13,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using IoTHub.Portal.Client.Pages.Devices;
     using IoTHub.Portal.Client.Dialogs.Devices;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v10;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
     using UnitTests.Bases;
     using AutoFixture;
     using Microsoft.AspNetCore.Components.Forms;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
+    using Portal.Shared;
+    using Portal.Shared.Models.v1._0;
+    using Portal.Shared.Models.v1._0.Filters;
 
     [TestFixture]
     public class DevicesListPageTests : BlazorUnitTest

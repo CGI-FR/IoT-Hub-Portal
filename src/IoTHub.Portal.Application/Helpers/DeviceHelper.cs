@@ -9,11 +9,11 @@ namespace IoTHub.Portal.Application.Helpers
     using System.Text;
     using IoTHub.Portal.Crosscutting.Extensions;
     using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Shared.Models.v1._0;
 
     public static class DeviceHelper
     {

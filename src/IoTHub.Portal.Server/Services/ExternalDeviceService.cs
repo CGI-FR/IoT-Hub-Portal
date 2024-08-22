@@ -22,11 +22,11 @@ namespace IoTHub.Portal.Server.Services
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
-    using Models.v10;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Shared;
     using Shared.Constants;
-    using Shared.Models.v10;
+    using Shared.Models.v1._0;
 
     public class ExternalDeviceService : IExternalDeviceService
     {

@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Application.Providers
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
-    using Shared.Models.v10;
+    using Shared.Models.v1._0;
 
     public interface IDeviceRegistryProvider
     {

@@ -10,7 +10,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using FluentAssertions;
     using IoTHub.Portal.Client.Pages.Devices;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using IoTHub.Portal.Tests.Unit.UnitTests.Mocks;
     using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class DeviceDetailPageTests : BlazorUnitTest

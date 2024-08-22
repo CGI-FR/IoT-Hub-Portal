@@ -12,9 +12,8 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
+    using Shared.Models;
+    using Shared.Models.v1._0;
 
     public class DeviceConfigurationsService : IDeviceConfigurationsService
     {

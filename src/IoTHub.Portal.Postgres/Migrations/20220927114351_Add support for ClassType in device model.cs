@@ -5,8 +5,8 @@
 
 namespace IoTHub.Portal.Postgres.Migrations
 {
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.EntityFrameworkCore.Migrations;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public partial class AddsupportforClassTypeindevicemodel : Migration
     {

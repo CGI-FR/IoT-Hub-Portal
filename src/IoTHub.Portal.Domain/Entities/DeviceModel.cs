@@ -3,8 +3,8 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using Models.v10.LoRaWAN;
     using Base;
+    using Portal.Shared.Models.v1._0.LoRaWAN;
 
     public class DeviceModel : EntityBase
     {

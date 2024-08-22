@@ -13,10 +13,10 @@ namespace IoTHub.Portal.Server.Services
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Helpers;
     using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json;
+    using Shared.Models.v1._0;
 
     public class AzureEdgeDevicesService : EdgeDevicesServiceBase, IEdgeDevicesService
     {

@@ -12,7 +12,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages
     using Moq;
     using NUnit.Framework;
     using Index = Portal.Client.Pages.Index;
-    using IoTHub.Portal.Models.v10;
 
     [TestFixture]
     public class IndexTests : BlazorUnitTest

@@ -14,7 +14,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Client.Validators;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using IoTHub.Portal.Shared.Models.v1._0;
     using Bunit;
     using FluentAssertions;
@@ -23,6 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
+    using Shared.Models.v1._0.LoRaWAN;
     using UnitTests.Bases;
     using UnitTests.Mocks;
 

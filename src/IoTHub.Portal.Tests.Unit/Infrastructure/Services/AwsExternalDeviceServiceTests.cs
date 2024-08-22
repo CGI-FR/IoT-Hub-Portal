@@ -19,7 +19,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Shared;
     using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
@@ -32,6 +31,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using ListTagsForResourceResponse = Amazon.IoT.Model.ListTagsForResourceResponse;
     using IoTHub.Portal.Domain.Entities;
     using System.Net;
+    using Shared.Models.v1._0;
     using Tag = Amazon.IoT.Model.Tag;
     using Device = Portal.Domain.Entities.Device;
 

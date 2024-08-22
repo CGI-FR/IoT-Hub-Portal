@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
     using Moq;
     using NUnit.Framework;
     using Quartz;
+    using Shared.Models.v1._0.LoRaWAN;
     using UnitTests.Bases;
 
     public class SyncGatewayIDJobTests : BackendUnitTest

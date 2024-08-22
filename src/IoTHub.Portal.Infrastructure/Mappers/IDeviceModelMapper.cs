@@ -6,6 +6,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     using Azure.Data.Tables;
     using IoTHub.Portal.Shared.Models;
     using System.Collections.Generic;
+    using Shared.Models.v1._0;
 
     public interface IDeviceModelMapper<TListItem, TModel>
         where TListItem : class, IDeviceModel

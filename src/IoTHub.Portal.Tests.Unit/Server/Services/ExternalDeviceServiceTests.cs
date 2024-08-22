@@ -22,12 +22,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
-    using Models.v10;
     using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
-    using Shared.Models.v10;
     using IoTHub.Portal.Domain.Entities;
+    using Shared.Models.v1._0;
     using Device = Microsoft.Azure.Devices.Device;
 
     [TestFixture]

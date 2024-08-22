@@ -13,12 +13,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using IoTHub.Portal.Infrastructure.Services;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10.LoRaWAN;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
     using UnitTests.Bases;
     using System.Linq;
     using Fare;
+    using Shared.Models.v1._0.LoRaWAN;
 
     [TestFixture]
     public class LoRaWanManagementServiceTests : BackendUnitTest

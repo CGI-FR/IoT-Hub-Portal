@@ -6,8 +6,6 @@ namespace IoTHub.Portal.Application.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Azure.Messaging.EventHubs;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Models.v10;
     using Shared.Models;
     using Shared.Models.v1._0;
 

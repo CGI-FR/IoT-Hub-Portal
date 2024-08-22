@@ -19,12 +19,12 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Models;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
-    using Shared.Models.v10;
+    using Shared;
+    using Shared.Models.v1._0;
     using Device = Microsoft.Azure.Devices.Device;
     using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
     using ResourceAlreadyExistsException = Amazon.IoT.Model.ResourceAlreadyExistsException;

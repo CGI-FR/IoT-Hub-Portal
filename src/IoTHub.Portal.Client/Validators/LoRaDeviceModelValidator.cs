@@ -5,6 +5,7 @@ namespace IoTHub.Portal.Client.Validators
 {
     using IoTHub.Portal.Shared.Models;
     using FluentValidation;
+    using Portal.Shared.Models.v1._0;
 
     public class LoRaDeviceModelValidator : AbstractValidator<IDeviceModel>
     {

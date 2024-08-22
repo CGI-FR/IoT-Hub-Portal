@@ -9,7 +9,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
     using System.Threading.Tasks;
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Client.Shared;
-    using Models.v10;
     using UnitTests.Bases;
     using Blazored.LocalStorage;
     using Bunit;
@@ -19,6 +18,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
     using MudBlazor;
     using NUnit.Framework;
     using Portal.Client.Constants;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class NavMenuTests : BlazorUnitTest

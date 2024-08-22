@@ -16,10 +16,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using IoTHub.Portal.Server.Services;
     using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
@@ -29,6 +27,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
+    using Shared.Models.v1._0.Filters;
+    using Shared.Models.v1._0.LoRaWAN;
     using Device = Microsoft.Azure.Devices.Device;
 
     [TestFixture]

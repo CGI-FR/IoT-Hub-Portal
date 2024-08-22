@@ -12,13 +12,12 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v10;
     using Domain;
     using Domain.Exceptions;
     using Domain.Repositories;
     using Infrastructure;
     using Microsoft.Extensions.Logging;
-    using Models.v10;
+    using Shared.Models.v1._0;
 
     public class DeviceService : DeviceServiceBase<DeviceDetails>
     {

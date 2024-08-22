@@ -21,6 +21,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
     using Moq;
     using NUnit.Framework;
     using Quartz;
+    using Shared;
 
     public class SyncEdgeDeviceJobTest : BackendUnitTest
     {

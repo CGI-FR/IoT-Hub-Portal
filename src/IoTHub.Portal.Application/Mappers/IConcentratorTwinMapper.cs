@@ -3,8 +3,8 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices.Shared;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public interface IConcentratorTwinMapper
     {

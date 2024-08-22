@@ -15,7 +15,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
-    using IoTHub.Portal.Models.v10;
 
     [TestFixture]
     public class DashboardTests : BlazorUnitTest

@@ -22,6 +22,7 @@ namespace IoTHub.Portal.Server
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Identity;
     using Infrastructure;
+    using Infrastructure.Services.AWS;
     using Managers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -42,6 +43,7 @@ namespace IoTHub.Portal.Server
     using Quartz.Impl.AdoJobStore.Common;
     using Services;
     using Shared.Models.v1._0;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public class Startup
     {

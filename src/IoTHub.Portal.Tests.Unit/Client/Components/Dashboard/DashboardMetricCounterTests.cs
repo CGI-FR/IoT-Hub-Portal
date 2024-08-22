@@ -1,15 +1,15 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Components.Dashboard
+namespace IoTHub.Portal.Tests.Unit.Client.Components.Dashboard
 {
     using System.Globalization;
-    using IoTHub.Portal.Client.Components.Dashboard;
     using Bunit;
     using FluentAssertions;
+    using IoTHub.Portal.Client.Components.Dashboard;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using MudBlazor;
     using NUnit.Framework;
-    using UnitTests.Bases;
 
     [TestFixture]
     public class DashboardMetricCounterTests : BlazorUnitTest

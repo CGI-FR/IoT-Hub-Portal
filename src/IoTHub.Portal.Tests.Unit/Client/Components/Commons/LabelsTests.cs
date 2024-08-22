@@ -6,11 +6,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Commons
     using System.Linq;
     using AutoFixture;
     using IoTHub.Portal.Client.Components.Commons;
-    using IoTHub.Portal.Shared.Models.v10;
     using Bunit;
     using FluentAssertions;
     using MudBlazor;
     using NUnit.Framework;
+    using Shared.Models.v1._0;
     using UnitTests.Bases;
 
     [TestFixture]

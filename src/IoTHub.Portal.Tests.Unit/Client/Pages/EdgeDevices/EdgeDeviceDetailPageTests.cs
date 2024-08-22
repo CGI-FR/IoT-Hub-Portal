@@ -11,7 +11,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using IoTHub.Portal.Client.Pages.EdgeDevices;
     using IoTHub.Portal.Client.Dialogs.EdgeDevices;
     using IoTHub.Portal.Client.Services;
-    using Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
@@ -24,6 +23,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using UnitTests.Mocks;
     using AutoFixture;
     using IoTHub.Portal.Shared.Constants;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class EdgeDeviceDetailPageTests : BlazorUnitTest
@@ -638,9 +638,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                         {
                             ModuleName = "moduleTest",
                             ImageURI = Guid.NewGuid().ToString(),
-                            Commands = new List<Portal.Shared.Models.v10.IoTEdgeModuleCommand>()
+                            Commands = new List<IoTEdgeModuleCommand>()
                             {
-                                new Portal.Shared.Models.v10.IoTEdgeModuleCommand(){ Name = "commandTest"}
+                                new IoTEdgeModuleCommand(){ Name = "commandTest"}
                             }
                         }
                     }

@@ -16,7 +16,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using Portal.Shared.Models.v10;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class ConnectionStringDialogTests : BlazorUnitTest

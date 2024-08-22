@@ -10,7 +10,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Pages.DeviceModels;
     using IoTHub.Portal.Client.Services;
-    using Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
@@ -19,9 +18,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using System.Collections.Generic;
     using System.Linq;
+    using Portal.Shared;
+    using Portal.Shared.Models.v1._0;
+    using Portal.Shared.Models.v1._0.Filters;
 
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest

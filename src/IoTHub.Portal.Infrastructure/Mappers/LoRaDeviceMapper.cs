@@ -8,10 +8,10 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public class LoRaDeviceTwinMapper : IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>
     {

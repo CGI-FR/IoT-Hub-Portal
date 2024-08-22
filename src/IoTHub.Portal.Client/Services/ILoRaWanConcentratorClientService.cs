@@ -5,8 +5,8 @@ namespace IoTHub.Portal.Client.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using IoTHub.Portal.Shared.Models.v10.LoRaWAN;
-    using Portal.Models.v10.LoRaWAN;
+    using Portal.Shared;
+    using Portal.Shared.Models.v1._0.LoRaWAN;
 
     public interface ILoRaWanConcentratorClientService
     {

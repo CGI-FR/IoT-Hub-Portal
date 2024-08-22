@@ -7,7 +7,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using NUnit.Framework;
@@ -16,7 +15,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using AutoFixture;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using System.Threading.Tasks;
     using System;
     using System.Linq;
@@ -24,11 +22,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using System.Threading;
     using FluentAssertions;
     using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Domain.Exceptions;
     using Microsoft.AspNetCore.Http;
     using System.IO;
     using IoTHub.Portal.Domain.Repositories;
+    using Shared.Models.v1._0.Filters;
 
     [TestFixture]
     public class AwsDeviceModelServiceTests : BackendUnitTest

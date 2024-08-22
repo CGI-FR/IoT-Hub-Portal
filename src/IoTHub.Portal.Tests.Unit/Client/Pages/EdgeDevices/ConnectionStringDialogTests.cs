@@ -10,7 +10,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using IoTHub.Portal.Client.Pages.EdgeDevices;
     using IoTHub.Portal.Client.Dialogs.EdgeDevices;
     using IoTHub.Portal.Client.Services;
-    using Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
@@ -19,8 +18,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using MudBlazor;
     using NUnit.Framework;
     using IoTHub.Portal.Shared.Constants;
-    using IoTHub.Portal.Shared.Models.v10;
     using AutoFixture;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class ConnectionStringDialogTests : BlazorUnitTest

@@ -16,11 +16,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using FluentAssertions;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
     using Moq;
     using NUnit.Framework;
     using Portal.Domain.Entities;
     using Portal.Domain.Repositories;
+    using Shared.Models.v1._0;
     using UnitTests.Bases;
 
     [TestFixture]

@@ -9,10 +9,10 @@ namespace IoTHub.Portal.Infrastructure.Jobs
     using Azure.Messaging.EventHubs.Processor;
     using Azure.Storage.Blobs;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using Domain;
     using Microsoft.Extensions.Logging;
     using Quartz;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public class SyncLoRaDeviceTelemetryJob : IJob
     {

@@ -11,8 +11,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
     using IoTHub.Portal.Client.Pages.EdgeModels;
     using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
@@ -21,6 +19,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class CreateEdgeModelsPageTest : BlazorUnitTest

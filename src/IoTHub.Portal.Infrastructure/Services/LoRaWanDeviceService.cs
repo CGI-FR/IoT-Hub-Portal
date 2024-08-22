@@ -15,7 +15,6 @@ namespace IoTHub.Portal.Infrastructure.Services
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Application.Mappers;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models.v10;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
@@ -23,8 +22,8 @@ namespace IoTHub.Portal.Infrastructure.Services
     using Infrastructure;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
+    using Shared.Models.v1._0;
+    using Shared.Models.v1._0.LoRaWAN;
     using static IoTHub.Portal.Infrastructure.ConnectionAuthMethod;
 
     public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>

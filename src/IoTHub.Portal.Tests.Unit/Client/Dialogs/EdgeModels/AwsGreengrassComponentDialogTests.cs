@@ -8,13 +8,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
     using System.Threading.Tasks;
     using IoTHub.Portal.Client.Dialogs.EdgeModels;
     using IoTHub.Portal.Client.Enums;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class AwsGreengrassComponentDialogTests : BlazorUnitTest

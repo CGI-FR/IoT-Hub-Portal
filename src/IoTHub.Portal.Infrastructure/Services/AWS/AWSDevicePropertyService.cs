@@ -7,7 +7,6 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models.v10;
     using Newtonsoft.Json;
     using Amazon.IotData.Model;
     using System.Text;
@@ -19,6 +18,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
     using IoTHub.Portal.Application.Helpers;
     using Amazon.IoT;
     using Amazon.IotData;
+    using Shared.Models.v1._0;
 
     public class AWSDevicePropertyService : IDevicePropertyService
     {

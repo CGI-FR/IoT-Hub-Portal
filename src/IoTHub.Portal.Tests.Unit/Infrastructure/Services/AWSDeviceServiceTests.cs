@@ -19,7 +19,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Services.AWS;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
@@ -32,6 +31,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
     using System.Threading;
     using IoTHub.Portal.Domain.Exceptions;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class AWSDeviceServiceTests : BackendUnitTest

@@ -7,11 +7,9 @@ namespace IoTHub.Portal.Application.Helpers
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
+    using Shared.Models.v1._0;
 
     public static class ConfigHelper
     {

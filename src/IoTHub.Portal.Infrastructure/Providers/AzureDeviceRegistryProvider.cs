@@ -10,10 +10,9 @@ namespace IoTHub.Portal.Infrastructure.Providers
     using IoTHub.Portal.Application.Providers;
     using IoTHub.Portal.Application.Wrappers;
     using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
-    using Shared.Models.v10;
+    using Shared.Models.v1._0;
 
     internal class AzureDeviceRegistryProvider : IDeviceRegistryProvider
     {

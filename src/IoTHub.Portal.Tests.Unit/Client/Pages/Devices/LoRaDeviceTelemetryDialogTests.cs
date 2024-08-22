@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using AutoFixture;
     using System.Linq;
     using FluentAssertions;
-    using IoTHub.Portal.Shared.Models.v10;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class LoRaDeviceTelemetryDialogTests : BlazorUnitTest

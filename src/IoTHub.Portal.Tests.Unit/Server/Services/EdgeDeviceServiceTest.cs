@@ -17,10 +17,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Helpers;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Server.Services;
     using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;

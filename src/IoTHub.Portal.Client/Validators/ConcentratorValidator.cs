@@ -3,8 +3,8 @@
 
 namespace IoTHub.Portal.Client.Validators
 {
-    using IoTHub.Portal.Models.v10.LoRaWAN;
     using FluentValidation;
+    using Portal.Shared.Models.v1._0.LoRaWAN;
 
     public class ConcentratorValidator : AbstractValidator<ConcentratorDto>
     {

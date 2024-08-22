@@ -11,7 +11,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Pages.DeviceConfigurations;
     using IoTHub.Portal.Client.Services;
-    using Models.v10;
     using UnitTests.Bases;
     using UnitTests.Helpers;
     using Bunit;
@@ -20,8 +19,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Portal.Shared;
+    using Portal.Shared.Models.v1._0;
+    using Portal.Shared.Models.v1._0.Filters;
     using RichardSzalay.MockHttp;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
 
     [TestFixture]
     public class CreateDeviceConfigurationsPageTests : BlazorUnitTest

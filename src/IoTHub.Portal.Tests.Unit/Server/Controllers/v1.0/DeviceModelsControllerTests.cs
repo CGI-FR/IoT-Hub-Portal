@@ -7,16 +7,15 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Threading.Tasks;
     using AutoFixture;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Server.Controllers.V10;
     using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
     using Moq;
     using NUnit.Framework;
+    using Portal.Server.Controllers.v1._0;
+    using Shared.Models.v1._0.Filters;
     using UnitTests.Bases;
 
     [TestFixture]

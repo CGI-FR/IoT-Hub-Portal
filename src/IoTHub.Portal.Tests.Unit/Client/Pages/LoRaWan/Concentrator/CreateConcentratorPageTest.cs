@@ -9,9 +9,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
     using IoTHub.Portal.Client.Services;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v10.LoRaWAN;
     using UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
@@ -21,6 +18,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
+    using Portal.Shared.Models.v1._0;
+    using Portal.Shared.Models.v1._0.LoRaWAN;
     using UnitTests.Mocks;
 
     [TestFixture]

@@ -12,7 +12,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Settings
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Pages.Settings;
     using IoTHub.Portal.Client.Services;
-    using Models.v10;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
@@ -20,6 +19,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Settings
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class DeviceTagsPageTests : BlazorUnitTest

@@ -11,7 +11,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using System.Threading.Tasks;
     using IoTHub.Portal.Client.Pages.Devices;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using FluentAssertions;

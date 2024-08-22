@@ -13,10 +13,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
     using Bunit;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Shared;
+    using Shared.Models.v1._0;
     using UnitTests.Bases;
 
     [TestFixture]

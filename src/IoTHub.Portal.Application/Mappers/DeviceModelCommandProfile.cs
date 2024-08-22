@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Application.Mappers
 {
     using AutoMapper;
     using IoTHub.Portal.Domain.Entities;
-    using Models.v10.LoRaWAN;
+    using Shared.Models.v1._0.LoRaWAN;
 
     public class DeviceModelCommandProfile : Profile
     {

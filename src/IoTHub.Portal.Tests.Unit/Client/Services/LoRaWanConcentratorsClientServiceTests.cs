@@ -9,14 +9,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using System.Threading.Tasks;
     using AutoFixture;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v10.LoRaWAN;
     using UnitTests.Bases;
     using UnitTests.Helpers;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
-    using Models.v10.LoRaWAN;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using Shared;
+    using Shared.Models.v1._0.LoRaWAN;
 
     [TestFixture]
     public class LoRaWanConcentratorsClientServiceTests : BlazorUnitTest

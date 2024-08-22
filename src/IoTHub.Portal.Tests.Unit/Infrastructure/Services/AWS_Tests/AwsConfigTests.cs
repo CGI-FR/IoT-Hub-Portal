@@ -23,12 +23,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Services.AWS;
-    using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest
