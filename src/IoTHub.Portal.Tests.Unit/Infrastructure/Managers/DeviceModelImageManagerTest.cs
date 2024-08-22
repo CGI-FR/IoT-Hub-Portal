@@ -175,8 +175,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 BaseUri = Fixture.Create<Uri>()
             };
 
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
-
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
                 .Returns(this.mockBlobContainerClient.Object);
@@ -225,8 +223,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             {
                 BaseUri = Fixture.Create<Uri>()
             };
-
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
 
             // Act
             await this.deviceModelImageManager.InitializeDefaultImageBlob();

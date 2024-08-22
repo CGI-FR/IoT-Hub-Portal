@@ -32,7 +32,7 @@
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
                         <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@imageData" id="@(nameof(IoTEdgeModel.Image))" />
+                            <MudImage Src="@imageData" id="model-image" />
                         </MudAvatar>
                     </div>
                 </MudCardContent>
@@ -101,7 +101,7 @@
                                                             <MudTextField id=@nameof(EdgeModelSystemModule.Name) @bind-Value="@sysModule.Name" Margin="Margin.Dense" Label="Module name" For="@(() => sysModule.Name )" Variant="Variant.Outlined" Disabled />
                                                         </MudTd>
                                                         <MudTd DataLabel="System module Image URI" Style="word-break: break-all;">
-                                                            <MudTextField id=@nameof(EdgeModelSystemModule.Image) @bind-Value="@sysModule.Image" Margin="Margin.Dense" Label="Image" For="@(() => sysModule.Image)" Variant="Variant.Outlined" />
+                                                            <MudTextField id=@($"{nameof(EdgeModelSystemModule.Name)}-image") @bind-Value="@sysModule.Image" Margin="Margin.Dense" Label="Image" For="@(() => sysModule.Image)" Variant="Variant.Outlined" />
                                                         </MudTd>
                                                         <MudTd DataLabel="See detail" Style="text-align: center;">
                                                             <MudButton Variant="Variant.Filled" id="@("editSystModuleButton_"+sysModule.Name)" OnClick="@(async () => await ShowSystemModuleDetail(sysModule))">Detail</MudButton>

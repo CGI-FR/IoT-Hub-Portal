@@ -78,6 +78,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(list => list.Count.Equals(expectedProperties.Length))))
                 .Returns(Task.CompletedTask);
 
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.ChangeAvatarAsync(It.IsAny<string>(), It.IsAny<StringContent>()))
+                .Returns(Task.CompletedTask);
+
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
             // Act
@@ -193,6 +197,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(1))))
                 .Returns(Task.CompletedTask);
 
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.ChangeAvatarAsync(It.IsAny<string>(), It.IsAny<StringContent>()))
+                .Returns(Task.CompletedTask);
+
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns(value: null);
 
             // Act
@@ -250,6 +258,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(0))))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.ChangeAvatarAsync(It.IsAny<string>(), It.IsAny<StringContent>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -395,9 +407,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetAvatar(this.mockModelId))
                 .ReturnsAsync(deviceModel.Image);
-
-            _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.ChangeAvatarAsync(this.mockModelId, new StringContent(deviceModel.Image)));
 
             return deviceModel;
         }
