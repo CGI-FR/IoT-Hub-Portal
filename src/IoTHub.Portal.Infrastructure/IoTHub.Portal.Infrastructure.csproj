@@ -106,7 +106,7 @@
     <PackageReference Include="AWSSDK.GreengrassV2" Version="3.7.301.23" />
     <PackageReference Include="AWSSDK.IoT" Version="3.7.400.3" />
     <PackageReference Include="AWSSDK.IotData" Version="3.7.300.112" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.400.3" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.402.1" />
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.400.10" />
     <PackageReference Include="Azure.Data.Tables" Version="12.9.0" />
     <PackageReference Include="Azure.Messaging.EventHubs" Version="5.11.3" />
