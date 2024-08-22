@@ -3,35 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Net;
-    using System.Security.Cryptography.Xml;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using Azure;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Server.Controllers.V10;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using FluentAssertions;
-    using FluentAssertions.Extensions;
-    using Microsoft.AspNetCore.DataProtection;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.AspNetCore.WebUtilities;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Graph.DeviceManagement.DeviceConfigurations.Item.GetOmaSettingPlainTextValueWithSecretReferenceValueId;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class EdgeDevicesControllerTests : BackendUnitTest
     {

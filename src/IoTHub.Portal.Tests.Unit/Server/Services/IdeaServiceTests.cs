@@ -3,26 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System.Net;
-    using System.Net.Http;
-    using System.Reflection;
-    using System.Text;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Server.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using RichardSzalay.MockHttp;
-    using UAParser;
-    using UnitTests.Bases;
-    using UnitTests.Helpers;
-
     [TestFixture]
     public class IdeaServiceTests : BackendUnitTest
     {

@@ -3,31 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.Json.Nodes;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using Azure;
-    using IoTHub.Portal.Application.Providers;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Server.Services;
-    using IoTHub.Portal.Shared.Constants;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
-    using Models.v10;
-    using Moq;
-    using Newtonsoft.Json;
-    using NUnit.Framework;
-    using Shared.Models.v10;
-    using IoTHub.Portal.Domain.Entities;
     using Device = Microsoft.Azure.Devices.Device;
 
     [TestFixture]

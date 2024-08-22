@@ -3,25 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using Azure;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Server.Services;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using FluentAssertions;
-    using Microsoft.AspNetCore.Mvc.ViewFeatures;
-    using Microsoft.Azure.Devices;
-    using Models;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
-    using Configuration = Microsoft.Azure.Devices.Configuration;
+    using ConfigurationMetrics = Microsoft.Azure.Devices.ConfigurationMetrics;
 
     [TestFixture]
     public class DeviceConfigurationsServiceTest : BackendUnitTest

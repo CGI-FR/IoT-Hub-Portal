@@ -3,19 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 {
-    using System.Linq;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Components.Devices;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using UnitTests.Bases;
+    using LoRaDeviceTelemetry = IoTHub.Portal.Client.Components.Devices.LoRaDeviceTelemetry;
 
     [TestFixture]
     public class LoRaDeviceTelemetryTests : BlazorUnitTest

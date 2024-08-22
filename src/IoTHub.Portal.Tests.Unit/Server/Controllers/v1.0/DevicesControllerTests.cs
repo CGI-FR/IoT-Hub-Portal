@@ -3,27 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Server.Controllers.V10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using FluentAssertions;
-    using Hellang.Middleware.ProblemDetails;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Controllers;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.AspNetCore.Routing;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Primitives;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
-    using Shared.Models.v1._0;
+    using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
 
     [TestFixture]
     public class DevicesControllerTests
@@ -32,10 +12,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
         private Mock<IUrlHelper> mockUrlHelper;
         private Mock<ILogger<DevicesController>> mockLogger;
-        private Mock<IExternalDeviceService> mockExternalDeviceService;
         private Mock<IDevicePropertyService> mockDevicePropertyService;
-        private Mock<IDeviceTagService> mockDeviceTagService;
-        private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
 
         private Mock<IDeviceService<DeviceDetails>> mockDeviceService;
 
@@ -45,10 +22,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockLogger = this.mockRepository.Create<ILogger<DevicesController>>();
-            this.mockExternalDeviceService = this.mockRepository.Create<IExternalDeviceService>();
+            _ = this.mockRepository.Create<IExternalDeviceService>();
             this.mockDevicePropertyService = this.mockRepository.Create<IDevicePropertyService>();
-            this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
-            this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
+            _ = this.mockRepository.Create<IDeviceTagService>();
+            _ = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService<DeviceDetails>>();
         }
@@ -248,7 +225,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var devicesController = CreateDevicesController();
-            const string deviceId = "aaa";
             var deviceDetails = new DeviceDetails
             {
                 DeviceName = "aaa"

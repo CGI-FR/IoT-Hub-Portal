@@ -3,20 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
-    using System;
-    using IoTHub.Portal.Client.Dialogs.Ideas;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Client.Shared;
-    using Models.v10;
-    using UnitTests.Bases;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-
     [TestFixture]
     public class AppbarTests : BlazorUnitTest
     {
