@@ -10,9 +10,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
     using IoTHub.Portal.Crosscutting.Extensions;
     using IoTHub.Portal.Infrastructure.Mappers;
     using Microsoft.Azure.Devices.Shared;
-    using Models.v10;
     using Moq;
     using NUnit.Framework;
+    using Shared.Models.v1._0;
 
     [TestFixture]
     public class DeviceTwinMapperTests
