@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Helpers
         [Test]
         public void GetHashsetLayerShouldReturnLayerHash()
         {
-            LayerDto expectedLayerDto = Fixture.Create<LayerDto>();
+            var expectedLayerDto = Fixture.Create<LayerDto>();
             expectedLayerDto.Name = "Main Layer";
             expectedLayerDto.Father = null;
 
@@ -36,14 +36,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Helpers
             var expectedChildrenLayerDto21 = Fixture.Create<LayerDto>();
             expectedChildrenLayerDto21.Father = expectedChildrenLayerDto2.Id;
 
-            HashSet<LayerHash> expectedHash = new HashSet<LayerHash>
+            var expectedHash = new HashSet<LayerHash>
             {
                 new LayerHash(expectedLayerDto)
             };
 
-            expectedHash.First().Children.Add(new LayerHash(expectedChildrenLayerDto1, 1, false));
-            expectedHash.First().Children.Add(new LayerHash(expectedChildrenLayerDto2, 1, false));
-            expectedHash.First().Children.Last().Children.Add(new LayerHash(expectedChildrenLayerDto21, 2, false));
+            _ = expectedHash.First().Children.Add(new LayerHash(expectedChildrenLayerDto1, 1, false));
+            _ = expectedHash.First().Children.Add(new LayerHash(expectedChildrenLayerDto2, 1, false));
+            _ = expectedHash.First().Children.Last().Children.Add(new LayerHash(expectedChildrenLayerDto21, 2, false));
 
             // Act
             var result = LayerHelper.GetHashsetLayer(new List<LayerDto> {expectedLayerDto, expectedChildrenLayerDto1, expectedChildrenLayerDto2, expectedChildrenLayerDto21 });
