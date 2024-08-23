@@ -7,7 +7,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
     using Bunit;
     using System.Collections.Generic;
     using Bunit.TestDoubles;
-    using IoTHub.Portal.Client.Components.Layers;
     using IoTHub.Portal.Client.Models;
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Models.v10;

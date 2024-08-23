@@ -187,7 +187,7 @@
                                 <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.Children">
                                     <Content>
                                         <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@(context.Children.Count() != 0)" />
-                                        <MudCheckBox T="bool?" Checked="@(context.LayerData.Planning == planning.Id)" CheckedChanged="@((e) => CheckedChanged(context))"></MudCheckBox>
+                                        <MudCheckBox T="bool?" Checked="@(context.LayerData.Planning == planning.Id)" CheckedChanged="@(() => CheckedChanged(context))"></MudCheckBox>
                                         <MudText>@context.LayerData.Name</MudText>
                                     </Content>
                                 </MudTreeViewItem>
@@ -373,25 +373,6 @@
 
         //Delete device model without commands
         CommandDictionary = CommandDictionary.Where(commands => commands.Value.Any() || commands.Key == "Choose a Device Model").ToDictionary(commands => commands.Key, commands => commands.Value);        
-    
-    public async Task SaveLayers(HashSet<LayerHash> saveLayers)
-    {
-        try
-        {
-            foreach (LayerHash layer in saveLayers)
-            {
-                await LayerClientService.UpdateLayer(layer.LayerData);
-
-                if (layer.Children.Count() != 0)
-                {
-                    await SaveLayers(layer.Children);
-                }
-            }
-        }
-        catch (ProblemDetailsException exception)
-        {
-            Error?.ProcessProblemDetails(exception);
-        }
     }
 
     private bool areDataValid()
