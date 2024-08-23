@@ -19,14 +19,6 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
-@inject ILayerClientService LayerClientService
-@inject IDialogService DialogService
-@inject ISnackbar Snackbar
-
-@inject ILayerClientService LayerClientService
-@inject IDialogService DialogService
-@inject ISnackbar Snackbar
-
 <MudGrid>
     <MudItem xs="12">
         <MudExpansionPanel Text="Layer" IsInitiallyExpanded="true">
@@ -60,10 +52,11 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
+    public HashSet<LayerHash> Layers { get; set; } = new();
 
-    public bool IsLoading { get; set; } = true;
-    public readonly int[] pageSizeOptions = { 10, 5, 3 };
+    private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
+
+    public string? printDetails { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
