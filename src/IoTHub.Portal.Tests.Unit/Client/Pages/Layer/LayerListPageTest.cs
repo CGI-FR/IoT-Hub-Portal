@@ -1,11 +1,10 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
+namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
     using Bunit;
@@ -23,6 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
     internal class LayerListPageTest : BlazorUnitTest
     {
         private Mock<ILayerClientService> mockLayerClientService;
+        private Mock<IDeviceClientService> mockDeviceClientService;
         private FakeNavigationManager mockNavigationManager;
 
         public override void Setup()
@@ -30,8 +30,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             base.Setup();
 
             this.mockLayerClientService = MockRepository.Create<ILayerClientService>();
+            this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
 
             _ = Services.AddSingleton(this.mockLayerClientService.Object);
+            _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
@@ -51,6 +53,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             _ = this.mockLayerClientService.Setup(service => service.CreateLayer(It.IsAny<LayerDto>()))
                 .ReturnsAsync(expectedLayerDtoChild.Id);
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(It.IsAny<string>()))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>());
 
             // Act
             var cut = RenderComponent<LayerListPage>();
@@ -84,6 +89,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             _ = this.mockLayerClientService.Setup(service => service.DeleteLayer(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(It.IsAny<string>()))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>());
 
             // Act
             var cut = RenderComponent<LayerListPage>();
@@ -122,6 +130,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 
             _ = this.mockLayerClientService.Setup(service => service.DeleteLayer(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(It.IsAny<string>()))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>());
 
             // Act
             var cut = RenderComponent<LayerListPage>();
