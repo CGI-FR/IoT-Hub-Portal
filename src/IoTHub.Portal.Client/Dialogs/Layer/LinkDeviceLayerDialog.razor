@@ -193,7 +193,6 @@
         {
             InitLayer.Name = LayerName;
             await LayerClientService.UpdateLayer(InitLayer);
-            List<DeviceDetails> devices = new List<DeviceDetails>();
             foreach (string deviceRemove in DeviceRemoveList)
             {
                 DeviceDetails updatedDevice = FindDevice(deviceRemove);
