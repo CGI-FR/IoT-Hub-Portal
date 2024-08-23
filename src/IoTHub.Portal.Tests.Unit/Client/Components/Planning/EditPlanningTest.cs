@@ -92,7 +92,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
                 ComponentParameter.CreateParameter("scheduleList", ScheduleList )
             );
 
-            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.Planning.DayOff);
+            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.planning.DayOff);
             Assert.AreEqual("00:00", cut.Instance.scheduleList[0].Start);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
@@ -325,7 +325,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             var editPlanningChangeOnDayLayers = cut.FindAll("#editPlanningChangeOnDayLayers")[0];
             editPlanningChangeOnDayLayers.Click();
 
-            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Monday | DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.Planning.DayOff);
+            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Monday | DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.planning.DayOff);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -372,7 +372,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             var editPlanningChangeOffDayLayers = cut.FindAll("#editPlanningChangeOffDayLayers")[5];
             editPlanningChangeOffDayLayers.Click();
 
-            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.Planning.DayOff);
+            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.planning.DayOff);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
