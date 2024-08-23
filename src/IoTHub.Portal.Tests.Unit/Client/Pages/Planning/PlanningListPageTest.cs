@@ -39,7 +39,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
         [Test]
         public void OnInitializedAsync_ListPlanningPage()
         {
-            int expectedPlanningsNumber = 10;
+            var expectedPlanningsNumber = 10;
             var expectedPlannings = Fixture.CreateMany<PlanningDto>(expectedPlanningsNumber).ToList();
 
             _ = this.mockPlanningClientService.Setup(service => service.GetPlannings())
@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
         [Test]
         public void OnInitializedAsync_ListNewPlanningPage()
         {
-            int expectedPlanningsNumber = 10;
+            var expectedPlanningsNumber = 10;
             var expectedPlannings = Fixture.CreateMany<PlanningDto>(expectedPlanningsNumber).ToList();
 
             _ = this.mockPlanningClientService.Setup(service => service.GetPlannings())
@@ -90,7 +90,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
         [Test]
         public void OnInitializedAsync_ListDetailPlanningPage()
         {
-            int expectedPlanningsNumber = 10;
+            var expectedPlanningsNumber = 10;
             var expectedPlannings = Fixture.CreateMany<PlanningDto>(expectedPlanningsNumber).ToList();
 
             _ = this.mockPlanningClientService.Setup(service => service.GetPlannings())
