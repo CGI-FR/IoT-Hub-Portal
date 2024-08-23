@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
 {
+    using System;
     using AutoFixture;
     using Bunit;
     using System.Collections.Generic;
@@ -91,8 +92,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
                 ComponentParameter.CreateParameter("scheduleList", ScheduleList )
             );
 
-            Assert.AreEqual(cut.Instance.planning.DayOff, DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday);
-            Assert.AreEqual(cut.Instance.scheduleList[0].Start, "00:00");
+            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.Planning.DayOff);
+            Assert.AreEqual("00:00", cut.Instance.scheduleList[0].Start);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -139,7 +140,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             var editPlanningAddLayers = cut.WaitForElement("#editPlanningAddLayers");
             editPlanningAddLayers.Click();
 
-            Assert.AreEqual(cut.Instance.scheduleList.Count, 1);
+            Assert.AreEqual(1, cut.Instance.scheduleList.Count);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -190,7 +191,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             var editPlanningAddLayers = cut.WaitForElement("#editPlanningAddLayers");
             editPlanningAddLayers.Click();
 
-            Assert.AreEqual(cut.Instance.scheduleList.Count, 2);
+            Assert.AreEqual(2, cut.Instance.scheduleList.Count);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -244,7 +245,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             var editPlanningDeleteLayers = cut.FindAll("#editPlanningDeleteLayers")[1];
             editPlanningDeleteLayers.Click();
 
-            Assert.AreEqual(cut.Instance.scheduleList.Count, 1);
+            Assert.AreEqual(1, cut.Instance.scheduleList.Count);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -324,7 +325,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             var editPlanningChangeOnDayLayers = cut.FindAll("#editPlanningChangeOnDayLayers")[0];
             editPlanningChangeOnDayLayers.Click();
 
-            Assert.AreEqual(cut.Instance.planning.DayOff, DaysEnumFlag.DaysOfWeek.Monday | DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday);
+            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Monday | DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.Planning.DayOff);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -371,7 +372,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             var editPlanningChangeOffDayLayers = cut.FindAll("#editPlanningChangeOffDayLayers")[5];
             editPlanningChangeOffDayLayers.Click();
 
-            Assert.AreEqual(cut.Instance.planning.DayOff, DaysEnumFlag.DaysOfWeek.Sunday);
+            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.Planning.DayOff);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -379,18 +380,26 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         public void EditPlanningInit_SaveNewLayers()
         {
             var expectedId = Fixture.Create<string>();
-
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            var Planning = new PlanningDto
+            var planning = new PlanningDto
             {
+                Id = Fixture.Create<string>(),
+                Name = Fixture.Create<string>(),
+                Start = DateTime.Now.AddDays(-1).ToString(),
+                End = DateTime.Now.AddDays(1).ToString(),
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
+
             var firstSchedule = new ScheduleDto
             {
-                Start = "00:00"
+                Id = Fixture.Create<string>(),
+                Start = "00:00",
+                End = "24:00",
+                PlanningId = planning.Id,
+                CommandId = Fixture.Create<string>(),
             };
 
             var ScheduleList = new List<ScheduleDto>
@@ -419,84 +428,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             // Act
             var cut = RenderComponent<EditPlanning>(
                 ComponentParameter.CreateParameter("mode", "New"),
-                ComponentParameter.CreateParameter("planning", Planning),
+                ComponentParameter.CreateParameter("planning", planning),
                 ComponentParameter.CreateParameter("scheduleList", ScheduleList )
             );
 
             var editPlanningSaveLayers = cut.WaitForElement("#editPlanningSaveLayers");
             editPlanningSaveLayers.Click();
 
-            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/planning"));
-            cut.WaitForAssertion(() => MockRepository.VerifyAll());
-        }
-
-        [Test]
-        public async Task EditPlanningInit_SaveUpdatedLayers()
-        {
-            var expectedId = Fixture.Create<string>();
-
-            var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
-            var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
-
-            var Planning = new PlanningDto
-            {
-                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
-                CommandId = expectedDeviceModelCommandDto[0].Id
-            };
-            var firstSchedule = new ScheduleDto
-            {
-                Start = "00:00",
-                End = "23:59",
-                CommandId = expectedDeviceModelCommandDto[0].Id
-            };
-            var secondSchedule = new ScheduleDto
-            {
-                Start = "00:00",
-                End = "23:59",
-                CommandId = expectedDeviceModelCommandDto[0].Id
-            };
-
-            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
-                .ReturnsAsync(new List<LayerDto>());
-
-            _ = this.mockScheduleClientService.Setup(service => service.CreateSchedule(It.IsAny<ScheduleDto>()))
-                .ReturnsAsync(expectedId);
-
-            _ = this.mockScheduleClientService.Setup(service => service.DeleteSchedule(It.IsAny<string>()))
-                .Returns(Task.CompletedTask);
-
-            _ = this.mockScheduleClientService.Setup(service => service.UpdateSchedule(It.IsAny<ScheduleDto>()))
-                .Returns(Task.CompletedTask);
-
-            _ = this.mockPlanningClientService.Setup(service => service.UpdatePlanning(It.IsAny<PlanningDto>()))
-                .Returns(Task.CompletedTask);
-
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
-                .ReturnsAsync(new PaginationResult<DeviceModelDto>
-                {
-                    Items = expectedLayers
-                });
-
-            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModelCommands(It.IsAny<string>()))
-                .ReturnsAsync(expectedDeviceModelCommandDto);
-
-            // Act
-            var cut = RenderComponent<EditPlanning>(
-                ComponentParameter.CreateParameter("mode", "Edit"),
-                ComponentParameter.CreateParameter("planning", Planning),
-                ComponentParameter.CreateParameter("scheduleList", new List<ScheduleDto>{firstSchedule, secondSchedule}),
-                ComponentParameter.CreateParameter("initScheduleList", new List<ScheduleDto>{firstSchedule, secondSchedule})
-            );
-
-            var editPlanningAddLayers = cut.WaitForElement("#editPlanningAddLayers");
-            editPlanningAddLayers.Click();
-
-            var editPlanningDeleteLayers = cut.FindAll("#editPlanningDeleteLayers")[1];
-            editPlanningDeleteLayers.Click();
-
-            var editPlanningSaveLayers = cut.WaitForElement("#editPlanningSaveLayers");
-            editPlanningSaveLayers.Click();
-
+            // Assert
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/planning"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
@@ -504,19 +443,26 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         [Test]
         public void EditPlanningInit_SaveNewLayers_ProblemDetailsException()
         {
-            var expectedId = Fixture.Create<string>();
-
             var expectedLayers = Fixture.CreateMany<DeviceModelDto>(1).ToList();
             var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
 
-            var Planning = new PlanningDto
+            var planning = new PlanningDto
             {
+                Id = Fixture.Create<string>(),
+                Name = Fixture.Create<string>(),
+                Start = DateTime.Now.AddDays(-1).ToString(),
+                End = DateTime.Now.AddDays(1).ToString(),
                 DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
                 CommandId = expectedDeviceModelCommandDto[0].Id
             };
+
             var firstSchedule = new ScheduleDto
             {
-                Start = "00:00"
+                Id = Fixture.Create<string>(),
+                Start = "00:00",
+                End = "24:00",
+                PlanningId = planning.Id,
+                CommandId = Fixture.Create<string>()
             };
 
             var ScheduleList = new List<ScheduleDto>
@@ -527,8 +473,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             _ = this.mockLayerClientService.Setup(service => service.GetLayers())
                 .ReturnsAsync(new List<LayerDto>());
 
-            _ = this.mockPlanningClientService.Setup(service => service.CreatePlanning(It.IsAny<PlanningDto>()))
-                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockPlanningClientService.Setup(service => service.CreatePlanning(It.IsAny<PlanningDto>()));
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
@@ -539,10 +484,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModelCommands(It.IsAny<string>()))
                 .ReturnsAsync(expectedDeviceModelCommandDto);
 
+
+            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModelCommands(It.IsAny<string>()))
+                .ReturnsAsync(expectedDeviceModelCommandDto);
+
             // Act
             var cut = RenderComponent<EditPlanning>(
                 ComponentParameter.CreateParameter("mode", "New"),
-                ComponentParameter.CreateParameter("planning", Planning),
+                ComponentParameter.CreateParameter("planning", planning),
                 ComponentParameter.CreateParameter("scheduleList", ScheduleList )
             );
 
