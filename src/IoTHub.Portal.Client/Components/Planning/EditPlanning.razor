@@ -406,7 +406,7 @@
 
         foreach (var pair in listSchedule)
         {
-            if (string.IsNullOrEmpty(pair[0]) | string.IsNullOrEmpty(pair[1])) return " - Business Day is not fully completed";
+            if (string.IsNullOrEmpty(pair[0]) || string.IsNullOrEmpty(pair[1])) return " - Business Day is not fully completed";
             connections[pair[0]] = pair[1];
         }
 
