@@ -13,7 +13,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
     using Domain.Exceptions;
     using Domain.Options;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
     public class DeviceModelImageManager : IDeviceModelImageManager
     {
@@ -24,8 +23,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
         public DeviceModelImageManager(
             ILogger<DeviceModelImageManager> logger,
             BlobServiceClient blobService,
-            ConfigHandler configHandler,
-            IOptions<DeviceModelImageOptions> BaseImageOption)
+            ConfigHandler configHandler)
         {
             this.logger = logger;
             this.blobService = blobService;
