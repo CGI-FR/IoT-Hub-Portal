@@ -1,15 +1,15 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
+namespace IoTHub.Portal.Server.Controllers.v1._0.LoRaWAN
 {
     using System.Linq;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Models.v10.LoRaWAN;
+    using IoTHub.Portal.Server.Filters;
     using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -76,14 +76,13 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Changes the avatar.
         /// </summary>
         /// <param name="id">The model identifier.</param>
-        /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
         [HttpPost("{id}/avatar", Name = "POST Update the LoRaWAN device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<ActionResult<string>> ChangeAvatar(string id, IFormFile file)
+        public override Task<ActionResult<string>> ChangeAvatar(string id, string avatar)
         {
-            return base.ChangeAvatar(id, file);
+            return base.ChangeAvatar(id, avatar);
         }
 
         /// <summary>

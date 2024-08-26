@@ -109,7 +109,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 });
 
             _ = this.mockDeviceModelsClientService
-                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
             _ = this.mockDeviceClientService
@@ -155,7 +155,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 });
 
             _ = this.mockDeviceModelsClientService
-                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
             var cut = RenderComponent<EditDevice>();
@@ -221,7 +221,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 });
 
             _ = this.mockDeviceModelsClientService
-                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
             // Act
@@ -270,7 +270,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 });
 
             _ = this.mockDeviceModelsClientService
-                    .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                    .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<EditDevice>();
@@ -318,7 +318,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 });
 
             _ = this.mockDeviceModelsClientService
-                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
             _ = this.mockDeviceClientService
@@ -396,7 +396,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 });
 
             _ = this.mockDeviceModelsClientService
-                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
             _ = this.mockDeviceClientService
@@ -464,7 +464,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 });
 
             _ = this.mockDeviceModelsClientService
-                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
             _ = this.mockDeviceClientService
@@ -534,7 +534,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 });
 
             _ = this.mockDeviceModelsClientService
-                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
             _ = this.mockDeviceClientService
@@ -577,7 +577,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             var deviceModels = Fixture.CreateMany<DeviceModelDto>(2).ToList();
             var expectedDeviceModel = deviceModels.First();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText, StringComparison.Ordinal))))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText, StringComparison.Ordinal))))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = deviceModels.Where(x => expectedDeviceModel.Name.Equals(x.Name, StringComparison.Ordinal))
@@ -671,7 +671,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
                 });
 
             _ = this.mockDeviceModelsClientService
-                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>
                 {
                     new()

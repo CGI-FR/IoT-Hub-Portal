@@ -3,17 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Server.Controllers.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Moq;
-    using NUnit.Framework;
+    using Portal.Server.Controllers.v1._0;
 
     [TestFixture]
     public class EdgeModelsControllerTest
@@ -211,16 +201,15 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var edgeModelController = CreateController();
-
+            var expectedAvatar = DeviceModelImageOptions.DefaultImage;
             var expectedUrl = Guid.NewGuid().ToString();
-            var mockFile = this.mockRepository.Create<IFormFile>();
 
             _ = this.mockEdgeModelService
-                .Setup(x => x.UpdateEdgeModelAvatar(It.IsAny<string>(), It.IsAny<IFormFile>()))
-                .ReturnsAsync(expectedUrl);
+                .Setup(x => x.UpdateEdgeModelAvatar(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(expectedAvatar);
 
             // Act
-            var response = await edgeModelController.ChangeAvatar(Guid.NewGuid().ToString(), mockFile.Object);
+            var response = await edgeModelController.ChangeAvatar(Guid.NewGuid().ToString(), expectedAvatar);
 
             // Assert
             Assert.IsNotNull(response);
@@ -231,7 +220,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 Assert.AreEqual(200, okResponse.StatusCode);
 
                 Assert.IsNotNull(okResponse.Value);
-                Assert.AreEqual(expectedUrl, okResponse.Value.ToString());
+                Assert.AreEqual(expectedAvatar, okResponse.Value.ToString());
             }
 
             this.mockRepository.VerifyAll();

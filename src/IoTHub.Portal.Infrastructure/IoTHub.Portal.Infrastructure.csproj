@@ -117,6 +117,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
     <PackageReference Include="Microsoft.Azure.Devices" Version="1.39.1" />
     <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Service" Version="1.18.4" />
     <PackageReference Include="Microsoft.Azure.Devices.Shared" Version="1.30.4" />
@@ -149,5 +150,10 @@
     <ProjectReference Include="..\IoTHub.Portal.Application\IoTHub.Portal.Application.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Crosscutting\IoTHub.Portal.Crosscutting.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Domain\IoTHub.Portal.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.StaticFiles">
+      <HintPath>..\..\..\..\..\..\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\8.0.7\ref\net8.0\Microsoft.AspNetCore.StaticFiles.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

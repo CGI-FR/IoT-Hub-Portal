@@ -21,6 +21,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using Newtonsoft.Json;
     using System.Text;
     using System.Net.Mime;
+    using IoTHub.Portal.Domain.Options;
 
     [TestFixture]
     public class DeviceModelsClientServiceTests : BlazorUnitTest
@@ -60,7 +61,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             };
 
             // Act
-            var result = await this.deviceModelsClientService.GetDeviceModels(filter);
+            var result = await this.deviceModelsClientService.GetDeviceModelsAsync(filter);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModels);
@@ -106,7 +107,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                     MediaTypeNames.Application.Json));
 
             // Act
-            var result = await this.deviceModelsClientService.CreateDeviceModel(expectedDeviceModel);
+            var result = await this.deviceModelsClientService.CreateDeviceModelAsync(expectedDeviceModel);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModel);
@@ -166,7 +167,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 .RespondJson(expectedDeviceModelProperties);
 
             // Act
-            var result = await this.deviceModelsClientService.GetDeviceModelModelProperties(deviceModel.ModelId);
+            var result = await this.deviceModelsClientService.GetDeviceModelModelPropertiesAsync(deviceModel.ModelId);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModelProperties);
@@ -200,19 +201,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         }
 
         [Test]
-        public async Task GetAvatarUrlShouldReturnAvatarUrl()
+        public async Task GetAvatarShouldReturnAvatar()
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/avatar")
-                .RespondJson(deviceModel.ImageUrl.ToString());
+                .RespondJson(deviceModel.Image);
 
             // Act
-            var result = await this.deviceModelsClientService.GetAvatarUrl(deviceModel.ModelId);
+            var result = await this.deviceModelsClientService.GetAvatar(deviceModel.ModelId);
 
             // Assert
-            _ = result.Should().Contain(deviceModel.ImageUrl.ToString());
+            _ = result.Should().Contain(deviceModel.Image);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
@@ -222,7 +223,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModelDto>();
-            using var content = new MultipartFormDataContent();
+            using var content = new StringContent(DeviceModelImageOptions.DefaultImage);
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/models/{deviceModel.ModelId}/avatar")
                 .With(m =>
@@ -233,7 +234,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 .Respond(HttpStatusCode.Created);
 
             // Act
-            await this.deviceModelsClientService.ChangeAvatar(deviceModel.ModelId, content);
+            await this.deviceModelsClientService.ChangeAvatarAsync(deviceModel.ModelId, content);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();

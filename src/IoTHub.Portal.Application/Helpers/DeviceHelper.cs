@@ -194,7 +194,7 @@ namespace IoTHub.Portal.Application.Helpers
                 if (propertyObject!.TryGetValue("settings", out var moduleSettings))
                 {
                     var setting = moduleSettings.ToObject<Dictionary<string, string>>();
-                    module.ImageURI = setting?["image"];
+                    module.Image = setting?["image"];
                 }
 
                 if (propertyObject.TryGetValue("status", out var status))

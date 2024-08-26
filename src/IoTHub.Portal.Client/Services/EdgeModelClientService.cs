@@ -53,12 +53,12 @@ namespace IoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"{this.apiUrlBase}/{modelId}");
         }
 
-        public async Task<string> GetAvatarUrl(string modelId)
+        public async Task<string> GetAvatar(string modelId)
         {
             return await this.http.GetStringAsync($"{this.apiUrlBase}/{modelId}/avatar");
         }
 
-        public Task ChangeAvatar(string id, MultipartFormDataContent content)
+        public Task ChangeAvatar(string id, StringContent content)
         {
             return this.http.PostAsync($"{this.apiUrlBase}/{id}/avatar", content);
         }

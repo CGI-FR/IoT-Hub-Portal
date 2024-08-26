@@ -3,27 +3,27 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.EdgeDevices;
-    using IoTHub.Portal.Client.Dialogs.EdgeDevices;
-    using IoTHub.Portal.Client.Services;
-    using Models.v10;
-    using UnitTests.Bases;
+    using AutoFixture;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions;
+    using IoTHub.Portal.Client.Exceptions;
+    using IoTHub.Portal.Client.Models;
+    using IoTHub.Portal.Client.Services;
+    using IoTHub.Portal.Shared.Constants;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
     using Moq;
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Portal.Client.Dialogs.EdgeDevices;
+    using Portal.Client.Pages.EdgeDevices;
+    using UnitTests.Bases;
     using UnitTests.Mocks;
-    using AutoFixture;
-    using IoTHub.Portal.Shared.Constants;
 
     [TestFixture]
     public class EdgeDeviceDetailPageTests : BlazorUnitTest
@@ -619,7 +619,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     new IoTEdgeModule()
                     {
                         ModuleName = "moduleTest",
-                        ImageURI = Guid.NewGuid().ToString()
+                        Image = Guid.NewGuid().ToString()
                     }
                 }
             };
@@ -637,7 +637,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                         new IoTEdgeModule()
                         {
                             ModuleName = "moduleTest",
-                            ImageURI = Guid.NewGuid().ToString(),
+                            Image = Guid.NewGuid().ToString(),
                             Commands = new List<Portal.Shared.Models.v10.IoTEdgeModuleCommand>()
                             {
                                 new Portal.Shared.Models.v10.IoTEdgeModuleCommand(){ Name = "commandTest"}

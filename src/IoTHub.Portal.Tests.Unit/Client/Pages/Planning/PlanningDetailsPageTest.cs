@@ -6,11 +6,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
     using Bunit;
     using IoTHub.Portal.Client.Pages.Planning;
     using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
-    using IoTHub.Portal.Models.v10;
+    using Models.v10;
     using IoTHub.Portal.Shared.Models.v10;
     using System.Collections.Generic;
     using IoTHub.Portal.Shared.Models.v10.Filters;
@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
             _ = this.mockLayerClientService.Setup(service => service.GetLayers())
                 .ReturnsAsync(new List<LayerDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()

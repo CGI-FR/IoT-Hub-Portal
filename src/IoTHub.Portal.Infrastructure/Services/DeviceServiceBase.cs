@@ -135,13 +135,14 @@ namespace IoTHub.Portal.Infrastructure.Services
                             Color = x.Color,
                             Name = x.Name,
                         }),
+                    Image = this.deviceModelImageManager.GetDeviceModelImageAsync(device.DeviceModelId).Result,
                     LayerId = device.LayerId
                 })
                 .ToListAsync();
 
             devices.ForEach(device =>
             {
-                device.ImageUrl = this.deviceModelImageManager.ComputeImageUri(device.DeviceModelId);
+                device.Image = this.deviceModelImageManager.GetDeviceModelImageAsync(device.DeviceModelId).Result;
             });
 
             return new PaginatedResult<DeviceListItem>(devices, resultCount);

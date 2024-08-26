@@ -43,7 +43,7 @@
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
                         <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@Device.ImageUrl?.ToString()" />
+                            <MudImage Src="@Device.Image?.ToString()" />
                         </MudAvatar>
                     </div>
                 </MudCardContent>
@@ -716,7 +716,7 @@
                     string.Empty
                             }
             };
-        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
+        return (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
     }
 
     private void SetSaveButtonText(DeviceSaveAction saveAction)
@@ -744,7 +744,7 @@
         }
     }
 
-    internal async Task ChangeModel(IDeviceModel model)
+    public async Task ChangeModel(IDeviceModel model)
     {
         try
         {
@@ -756,7 +756,7 @@
                 {
                     DeviceID = Device.DeviceID,
                     ModelId = model?.ModelId,
-                    ImageUrl = model?.ImageUrl,
+                    Image = model?.Image,
                     DeviceName = Device.DeviceName,
                     IsEnabled = Device.IsEnabled,
                     Tags = Device.Tags
@@ -775,7 +775,7 @@
                     {
                         DeviceID = this.Device.DeviceID,
                         ModelId = model.ModelId,
-                        ImageUrl = model.ImageUrl,
+                        Image = model.Image,
                         DeviceName = this.Device.DeviceName,
                         IsEnabled = this.Device.IsEnabled,
                         Tags = this.Device.Tags,
@@ -789,7 +789,7 @@
             }
             else
             {
-                var properties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
+                var properties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
 
                 Properties.AddRange(properties.Select(x => new DevicePropertyValue
                     {

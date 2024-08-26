@@ -7,17 +7,17 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Threading.Tasks;
     using AutoFixture;
     using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Server.Controllers.V10;
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
     using Moq;
     using NUnit.Framework;
     using UnitTests.Bases;
+    using IoTHub.Portal.Domain.Options;
+    using Portal.Server.Controllers.v1._0;
 
     [TestFixture]
     public class DeviceModelsControllerTests : BackendUnitTest
@@ -98,13 +98,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModelDto>();
-            var expectedAvatar = Fixture.Create<string>();
+            var expectedAvatar = DeviceModelImageOptions.DefaultImage;
 
-            _ = this.mockDeviceModelService.Setup(service => service.UpdateDeviceModelAvatar(deviceModel.ModelId, It.IsAny<IFormFile>()))
+            _ = this.mockDeviceModelService.Setup(service => service.UpdateDeviceModelAvatar(deviceModel.ModelId, It.IsAny<string>()))
                 .ReturnsAsync(expectedAvatar);
 
             // Act
-            var response = await this.deviceModelsController.ChangeAvatar(deviceModel.ModelId, MockRepository.Create<IFormFile>().Object);
+            var response = await this.deviceModelsController.ChangeAvatar(deviceModel.ModelId, DeviceModelImageOptions.DefaultImage);
 
             // Assert
             _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(expectedAvatar);

@@ -110,7 +110,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd Style="text-align: center">
-                    <img height="25" src="@context.ImageUrl" />
+                    <img height="25" src="@context.Image" />
                 </MudTd>
                 <MudTd DataLabel="Device">
                     <MudItem>
@@ -300,7 +300,7 @@
                     .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    internal async Task ChangeModel(IoTEdgeModelListItem edgeModel)
+    public async Task ChangeModel(IoTEdgeModelListItem edgeModel)
     {
 
         this._edgeModel = edgeModel;

@@ -7,11 +7,11 @@ namespace IoTHub.Portal.Infrastructure
     using IoTHub.Portal.Domain.Shared.Constants;
     using Microsoft.Extensions.Configuration;
 
-    internal class DevelopmentConfigHandler : ConfigHandlerBase
+    public class DevelopmentConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;
 
-        internal DevelopmentConfigHandler(IConfiguration config)
+        public DevelopmentConfigHandler(IConfiguration config)
         {
             this.config = config;
         }

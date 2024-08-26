@@ -21,7 +21,7 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public async Task<PaginationResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter? deviceModelFilter = null)
+        public async Task<PaginationResult<DeviceModelDto>> GetDeviceModelsAsync(DeviceModelFilter? deviceModelFilter = null)
         {
             var query = new Dictionary<string, string>
             {
@@ -43,7 +43,7 @@ namespace IoTHub.Portal.Client.Services
             return this.http.GetFromJsonAsync<DeviceModelDto>($"api/models/{deviceModelId}")!;
         }
 
-        public async Task<DeviceModelDto> CreateDeviceModel(DeviceModelDto deviceModel)
+        public async Task<DeviceModelDto> CreateDeviceModelAsync(DeviceModelDto deviceModel)
         {
             var response = await this.http.PostAsJsonAsync("api/models", deviceModel);
 
@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"api/models/{deviceModelId}");
         }
 
-        public async Task<IList<DeviceProperty>> GetDeviceModelModelProperties(string deviceModelId)
+        public async Task<IList<DeviceProperty>> GetDeviceModelModelPropertiesAsync(string deviceModelId)
         {
             return await this.http.GetFromJsonAsync<List<DeviceProperty>>($"api/models/{deviceModelId}/properties") ?? new List<DeviceProperty>();
         }
@@ -70,12 +70,12 @@ namespace IoTHub.Portal.Client.Services
             return this.http.PostAsJsonAsync($"api/models/{deviceModelId}/properties", deviceProperties);
         }
 
-        public Task<string> GetAvatarUrl(string deviceModelId)
+        public Task<string> GetAvatar(string deviceModelId)
         {
             return this.http.GetStringAsync($"api/models/{deviceModelId}/avatar");
         }
 
-        public async Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar)
+        public async Task ChangeAvatarAsync(string deviceModelId, StringContent avatar)
         {
             var result = await this.http.PostAsync($"api/models/{deviceModelId}/avatar", avatar);
 

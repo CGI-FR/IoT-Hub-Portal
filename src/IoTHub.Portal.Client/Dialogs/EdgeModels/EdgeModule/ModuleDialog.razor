@@ -18,11 +18,11 @@
                                   Required="true"/>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="@currentImageUri"
-                                  id=@nameof(IoTEdgeModule.ImageURI)
+                    <MudTextField @bind-Value="@currentImage"
+                                  id=@nameof(IoTEdgeModule.Image)
                                   Label="Image URI"
                                   Variant="Variant.Outlined"
-                                  For="@(() => Module.ImageURI)"
+                                  For="@(() => Module.Image)"
                                   Required="true"/>
                 </MudItem>
 
@@ -89,7 +89,7 @@
     public IoTEdgeModule Module { get; set; } = default!;
 
     private string currentModuleName = default!;
-    private string currentImageUri = default!;
+    private string currentImage = default!;
     private string currentContainerCreateOptions = default!;
     private string currentNumVersion = "1.0.0";
 
@@ -105,7 +105,7 @@
         IsLoading = true;
 
         currentModuleName = Module.ModuleName;
-        currentImageUri = Module.ImageURI;
+        currentImage = Module.Image;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
         currentNumVersion = Module.Version;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
@@ -118,7 +118,7 @@
     public void Submit()
     {
         Module.ModuleName = currentModuleName;
-        Module.ImageURI = currentImageUri;
+        Module.Image = currentImage;
         Module.ContainerCreateOptions = currentContainerCreateOptions;
 
         if (Portal.CloudProvider.Equals(CloudProviders.Azure)) { Module.Version = " "; }

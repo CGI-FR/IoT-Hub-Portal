@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Infrastructure.Providers
     using Microsoft.Azure.Devices.Shared;
     using Shared.Models.v10;
 
-    internal class AzureDeviceRegistryProvider : IDeviceRegistryProvider
+    public class AzureDeviceRegistryProvider : IDeviceRegistryProvider
     {
         private readonly IProvisioningServiceClient dps;
         private readonly ConfigHandler config;

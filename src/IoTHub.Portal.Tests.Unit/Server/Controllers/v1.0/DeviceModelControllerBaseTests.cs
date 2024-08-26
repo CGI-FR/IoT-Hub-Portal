@@ -15,10 +15,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using Moq;
     using Microsoft.Extensions.DependencyInjection;
     using System.Linq;
-    using IoTHub.Portal.Server.Controllers.V10;
     using FluentAssertions;
     using System.Collections.Generic;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Portal.Server.Controllers.v1._0;
 
     [TestFixture]
     public class DeviceModelControllerBaseTests : BackendUnitTest

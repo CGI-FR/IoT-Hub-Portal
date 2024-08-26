@@ -27,7 +27,9 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.DeviceName)),
                 Status = deviceTwin?.Status.ToString(),
                 NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin!),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!)
+                Image = this.deviceModelImageManager
+                    .GetDeviceModelImageAsync(
+                        DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!).Result
             };
         }
 
@@ -66,7 +68,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules),
                 LastDeployment = lastConfiguration,
                 Tags = customTags,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!)
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!).Result,
             };
         }
     }

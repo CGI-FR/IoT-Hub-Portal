@@ -247,7 +247,7 @@
             Metrics = await DeviceConfigurationsClientService.GetDeviceConfigurationMetrics(ConfigId);
             DeviceModel = await DeviceModelsClientService.GetDeviceModel(Configuration.ModelId);
 
-            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelProperties(DeviceModel.ModelId);
+            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(DeviceModel.ModelId);
             AvailableTags = await DeviceTagSettingsClientService.GetDeviceTags();
         }
         catch (ProblemDetailsException exception)

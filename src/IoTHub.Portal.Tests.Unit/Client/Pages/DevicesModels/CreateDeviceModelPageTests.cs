@@ -63,7 +63,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
+                    service.CreateDeviceModelAsync(It.Is<DeviceModelDto>(model =>
                         deviceModel.Name.Equals(model.Name, StringComparison.Ordinal) && deviceModel.Description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures)))
                 .ReturnsAsync(deviceModel);
 
@@ -97,7 +97,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
+                    service.CreateDeviceModelAsync(It.Is<DeviceModelDto>(model =>
                         modelName.Equals(model.Name, StringComparison.Ordinal) && description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures)))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -131,7 +131,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
+                    service.CreateDeviceModelAsync(It.IsAny<DeviceModelDto>()))
                 .ReturnsAsync(deviceModel);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -180,7 +180,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
+                    service.CreateDeviceModelAsync(It.IsAny<DeviceModelDto>()))
                 .ReturnsAsync(deviceModel);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>

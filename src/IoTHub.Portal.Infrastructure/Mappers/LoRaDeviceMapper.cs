@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public LoRaDeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<string> tags)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             var modelId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.ModelId));
 
@@ -32,9 +32,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             if (tags != null)
             {
                 foreach (var tag in tags)
-                {
                     customTags.Add(tag, DeviceHelper.RetrieveTagValue(twin, tag)!);
-                }
             }
 
             var result = new LoRaDeviceDetails
@@ -43,37 +41,99 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 ModelId = modelId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
                 AlreadyLoggedInOnce = DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId!),
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(modelId!).Result,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 GatewayID = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.GatewayID)),
-                SensorDecoder = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.SensorDecoder)),
-                UseOTAA = !string.IsNullOrEmpty(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEUI))),
+                SensorDecoder =
+                    DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.SensorDecoder)),
+                UseOTAA = !string.IsNullOrEmpty(
+                    DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEUI))),
                 AppEUI = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEUI)),
                 AppKey = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppKey)),
                 DevAddr = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.DevAddr)),
                 AppSKey = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppSKey)),
                 NwkSKey = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.NwkSKey)),
-                Deduplication = Enum.TryParse<DeduplicationMode>(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Deduplication)), out var deduplication) ? deduplication : DeduplicationMode.None,
-                ClassType = Enum.TryParse<ClassType>(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.ClassType)), out var classType) ? classType : ClassType.A,
-                PreferredWindow = int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.PreferredWindow)), out var preferedWindow) ? preferedWindow : default,
-                Supports32BitFCnt = bool.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Supports32BitFCnt)), out var boolResult) ? boolResult : null,
-                ABPRelaxMode = bool.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.ABPRelaxMode)), out boolResult) ? boolResult : null,
-                KeepAliveTimeout = int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.KeepAliveTimeout)), out var keepAliveTimeout) ? keepAliveTimeout : null,
-                Downlink = bool.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Downlink)), out boolResult) ? boolResult : null,
-                FCntDownStart = int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.FCntDownStart)), out var fcntDownStart) ? fcntDownStart : null,
-                FCntResetCounter = int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.FCntResetCounter)), out var fcntResetCounter) ? fcntResetCounter : null,
-                FCntUpStart = int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.FCntUpStart)), out var fcntUpStart) ? fcntUpStart : null,
-                RX1DROffset = int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RX1DROffset)), out var rx1DataOffset) ? rx1DataOffset : null,
-                RX2DataRate = int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RX2DataRate)), out var rx2DataRate) ? rx2DataRate : null,
-                RXDelay = int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RXDelay)), out var rxDelay) ? rxDelay : null,
+                Deduplication =
+                    Enum.TryParse<DeduplicationMode>(
+                        DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Deduplication)),
+                        out var deduplication)
+                        ? deduplication
+                        : DeduplicationMode.None,
+                ClassType = Enum.TryParse<ClassType>(
+                    DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.ClassType)),
+                    out var classType)
+                    ? classType
+                    : ClassType.A,
+                PreferredWindow =
+                    int.TryParse(
+                        DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.PreferredWindow)),
+                        out var preferedWindow)
+                        ? preferedWindow
+                        : default,
+                Supports32BitFCnt =
+                    bool.TryParse(
+                        DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Supports32BitFCnt)),
+                        out var boolResult)
+                        ? boolResult
+                        : null,
+                ABPRelaxMode =
+                    bool.TryParse(
+                        DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.ABPRelaxMode)),
+                        out boolResult)
+                        ? boolResult
+                        : null,
+                KeepAliveTimeout =
+                    int.TryParse(
+                        DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.KeepAliveTimeout)),
+                        out var keepAliveTimeout)
+                        ? keepAliveTimeout
+                        : null,
+                Downlink = bool.TryParse(
+                    DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Downlink)), out boolResult)
+                    ? boolResult
+                    : null,
+                FCntDownStart =
+                    int.TryParse(
+                        DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.FCntDownStart)),
+                        out var fcntDownStart)
+                        ? fcntDownStart
+                        : null,
+                FCntResetCounter =
+                    int.TryParse(
+                        DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.FCntResetCounter)),
+                        out var fcntResetCounter)
+                        ? fcntResetCounter
+                        : null,
+                FCntUpStart =
+                    int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.FCntUpStart)),
+                        out var fcntUpStart)
+                        ? fcntUpStart
+                        : null,
+                RX1DROffset =
+                    int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RX1DROffset)),
+                        out var rx1DataOffset)
+                        ? rx1DataOffset
+                        : null,
+                RX2DataRate =
+                    int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RX2DataRate)),
+                        out var rx2DataRate)
+                        ? rx2DataRate
+                        : null,
+                RXDelay = int.TryParse(
+                    DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RXDelay)), out var rxDelay)
+                    ? rxDelay
+                    : null,
                 DataRate = DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.DataRate)),
                 TxPower = DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.TxPower)),
                 NbRep = DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.NbRep)),
-                ReportedRX1DROffset = DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRX1DROffset)),
-                ReportedRX2DataRate = DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRX2DataRate)),
-                ReportedRXDelay = DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRXDelay))
+                ReportedRX1DROffset =
+                    DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRX1DROffset)),
+                ReportedRX2DataRate =
+                    DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRX2DataRate)),
+                ReportedRXDelay =
+                    DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRXDelay))
             };
 
             foreach (var item in customTags)
@@ -86,23 +146,27 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public DeviceListItem CreateDeviceListItem(Twin twin)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             return new DeviceListItem
             {
                 DeviceID = twin.DeviceId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!),
+                Image = this.deviceModelImageManager
+                    .GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!)
+                    .Result,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
-                SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false")
+                SupportLoRaFeatures =
+                    bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ??
+                               "false")
             };
         }
 
         public void UpdateTwin(Twin twin, LoRaDeviceDetails item)
         {
-            ArgumentNullException.ThrowIfNull(item, nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 
             // Update the twin properties
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
@@ -124,9 +188,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             if (item.Tags != null)
             {
                 foreach (var customTag in item.Tags)
-                {
                     DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
-                }
             }
         }
     }

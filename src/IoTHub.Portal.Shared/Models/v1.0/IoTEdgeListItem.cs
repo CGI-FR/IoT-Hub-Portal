@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using IoTHub.Portal.Shared.Models.v10;
@@ -37,7 +36,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         /// Gets the edge device labels.

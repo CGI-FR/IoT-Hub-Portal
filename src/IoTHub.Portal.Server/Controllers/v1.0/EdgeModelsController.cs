@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.v10
+namespace IoTHub.Portal.Server.Controllers.v1._0
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -86,14 +86,14 @@ namespace IoTHub.Portal.Server.Controllers.v10
         /// Changes the avatar.
         /// </summary>
         /// <param name="edgeModelId">The model identifier.</param>
-        /// <param name="file">The file.</param>
+        /// <param name="avatar"></param>
         /// <returns>The avatar.</returns>
-        [HttpPost("{edgeModelId}/avatar", Name = "POST Update the edge device model avatar")]
+        [HttpPost("{edgeModelId}/{avatar}", Name = "POST Update the edge device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, IFormFile file)
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, string avatar)
         {
-            return Ok(await this.edgeModelService.UpdateEdgeModelAvatar(edgeModelId, file));
+            return Ok(await this.edgeModelService.UpdateEdgeModelAvatar(edgeModelId, avatar));
         }
 
         /// <summary>

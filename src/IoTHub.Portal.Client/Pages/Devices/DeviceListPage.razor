@@ -181,7 +181,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd Style="text-align: center">
-                    <img height="25" src="@context.ImageUrl" />
+                    <img height="25" src="@context.Image" />
                 </MudTd>
                 <MudTd DataLabel="Device">
                     <MudItem>
@@ -423,7 +423,7 @@
                 string.Empty
             }
         };
-        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList();
+        return (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList();
     }
 
     private async Task ExportDeviceList()

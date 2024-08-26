@@ -8,7 +8,6 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Shared.Models;
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Http;
 
     public interface IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
@@ -26,7 +25,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<string> GetDeviceModelAvatar(string deviceModelId);
 
-        Task<string> UpdateDeviceModelAvatar(string deviceModelId, IFormFile file);
+        Task<string> UpdateDeviceModelAvatar(string deviceModelId, string avatar);
 
         Task DeleteDeviceModelAvatar(string deviceModelId);
     }

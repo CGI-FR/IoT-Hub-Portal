@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public DeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<string> tags)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             var modelId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
             var customTags = new Dictionary<string, string>();
@@ -41,7 +41,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 DeviceID = twin.DeviceId,
                 ModelId = modelId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceName)),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId!),
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(modelId!).Result,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue
@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public DeviceListItem CreateDeviceListItem(Twin twin)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             return new DeviceListItem
             {
@@ -66,15 +66,15 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!),
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!).Result,
                 SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false")
             };
         }
 
         public void UpdateTwin(Twin twin, DeviceDetails item)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
-            ArgumentNullException.ThrowIfNull(item, nameof(item));
+            ArgumentNullException.ThrowIfNull(twin);
+            ArgumentNullException.ThrowIfNull(item);
 
             // Update the twin properties
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);

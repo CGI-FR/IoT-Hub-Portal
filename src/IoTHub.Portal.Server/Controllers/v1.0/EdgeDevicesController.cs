@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.V10
+namespace IoTHub.Portal.Server.Controllers.v1._0
 {
     using System;
     using System.Collections.Generic;
@@ -16,7 +16,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.AspNetCore.Routing;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
@@ -48,7 +47,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         private readonly ITimeLimitedDataProtector protector;
 
-        internal const string EdgeEnrollementKeyProtectorName = "EdgeEnrollementKeyProtector";
+        public const string EdgeEnrollementKeyProtectorName = "EdgeEnrollementKeyProtector";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDevicesController"/> class.
@@ -220,7 +219,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 { "templateName", templateName}
             };
 
-            var protectedParameters = protector.Protect(JsonConvert.SerializeObject(enrollementParameters), DateTimeOffset.UtcNow.AddMinutes(15));
+            var protectedParameters = this.protector.Protect(JsonConvert.SerializeObject(enrollementParameters), DateTimeOffset.UtcNow.AddMinutes(15));
 
             return Ok(Url.ActionLink(nameof(GetEnrollementScript),
                 protocol: "https",
@@ -237,7 +236,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                var parameters = JsonConvert.DeserializeObject<Dictionary<string, string>>(protector.Unprotect(code));
+                var parameters = JsonConvert.DeserializeObject<Dictionary<string, string>>(this.protector.Unprotect(code));
 
                 return Ok(await this.edgeDevicesService
                                 .GetEdgeDeviceEnrollementScript(parameters["deviceId"], parameters["templateName"]));

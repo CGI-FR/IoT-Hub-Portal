@@ -1,6 +1,5 @@
 ﻿@page "/edge/devices/new"
 
-@using IoTHub.Portal
 @using IoTHub.Portal.Models.v10
 @using IoTHub.Portal.Shared.Constants
 
@@ -29,7 +28,7 @@
                     <MudCardContent>
                         <div class="d-flex justify-center mb-4">
                             <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                                <MudImage Src="@edgeModel?.ImageUrl?.ToString()" id="@(nameof(IoTEdgeDevice.ImageUrl))" />
+                                <MudImage Src="@edgeModel?.Image?.ToString()" id="@(nameof(IoTEdgeDevice.Image))" />
                             </MudAvatar>
                         </div>
                     </MudCardContent>
@@ -334,7 +333,7 @@
                         });
     }
 
-    internal async Task ChangeModel(IoTEdgeModel edgeModel)
+    public async Task ChangeModel(IoTEdgeModel edgeModel)
     {
         try
         {
@@ -345,7 +344,7 @@
                     DeviceId = this.EdgeDevice.DeviceId,
                     DeviceName = this.EdgeDevice.DeviceName,
                     ModelId = edgeModel?.ModelId!,
-                    ImageUrl = edgeModel?.ImageUrl!,
+                    Image = edgeModel?.Image!,
                     Tags = this.EdgeDevice.Tags,
                     IsEnabled = this.EdgeDevice.IsEnabled
                 };

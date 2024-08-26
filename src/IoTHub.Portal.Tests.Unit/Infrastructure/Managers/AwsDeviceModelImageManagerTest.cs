@@ -65,7 +65,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
         {
             // Arrange
             var deviceModelId = Fixture.Create<string>();
-            using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
             var bucketName = Fixture.Create<string>();
             var region = "eu-west-1";
             var mockOptions = new DeviceModelImageOptions()
@@ -97,7 +96,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 
 
             // Act
-            var result = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+            var result = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, DeviceModelImageOptions.DefaultImage);
 
             // Assert
             Assert.NotNull(result);
@@ -128,7 +127,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
             {
                 // Act
-                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, DeviceModelImageOptions.DefaultImage);
 
             }, "Unable to upload the image in S3 Bucket due to an error in Amazon S3 API.");
             this.s3ClientMock.VerifyAll();
@@ -160,7 +159,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
             {
                 // Act
-                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, DeviceModelImageOptions.DefaultImage);
 
             }, "Unable to set the image access to public and read-only due to an error in Amazon S3 API.");
             this.s3ClientMock.VerifyAll();
@@ -401,14 +400,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 
             // Assert
             _ = act.Should().ThrowAsync<NotImplementedException>();
-        }
-
-        /*===========================*** Tests for ComputeImageUri() **===========================*/
-
-
-        [Test]
-        public void ComputeImageUriShouldThrowsANotImplmentedException()
-        {
         }
     }
 }

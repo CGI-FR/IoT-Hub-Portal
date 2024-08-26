@@ -3,16 +3,16 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    internal class ConnectionAuthMethod
+    public class ConnectionAuthMethod
     {
-        internal enum ConnectionAuthScope
+        public enum ConnectionAuthScope
         {
             Hub,
             Device,
             Module
         }
 
-        internal enum ConnectionAuthType
+        public enum ConnectionAuthType
         {
             Symkey,
             Sas,

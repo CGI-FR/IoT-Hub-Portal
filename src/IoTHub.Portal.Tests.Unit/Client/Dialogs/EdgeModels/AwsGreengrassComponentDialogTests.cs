@@ -6,7 +6,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Dialogs.EdgeModels;
     using IoTHub.Portal.Client.Enums;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
@@ -15,6 +14,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using Portal.Client.Dialogs.EdgeModels;
 
     [TestFixture]
     public class AwsGreengrassComponentDialogTests : BlazorUnitTest
@@ -90,7 +90,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
             _ = edgeModules.First().ModuleName.Should().Be("com.example.DDboxAdvantech");
             _ = edgeModules.First().Version.Should().Be("1.0.0");
             _ = edgeModules.First().ContainerCreateOptions.Should().Be(inputJsonRecipe);
-            _ = edgeModules.First().ImageURI.Should().Be("example.com");
+            _ = edgeModules.First().Image.Should().Be("example.com");
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -141,7 +141,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
             _ = edgeModule.ModuleName.Should().Be("com.example.DDboxAdvantech");
             _ = edgeModule.Version.Should().Be("2.0.0");
             _ = edgeModule.ContainerCreateOptions.Should().Be(newJsonRecipe);
-            _ = edgeModule.ImageURI.Should().Be("example.com");
+            _ = edgeModule.Image.Should().Be("example.com");
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

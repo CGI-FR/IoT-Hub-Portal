@@ -3,20 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Providers
 {
-    using System;
-    using System.Net;
-    using System.Net.Http;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Wrappers;
-    using IoTHub.Portal.Infrastructure;
-    using IoTHub.Portal.Infrastructure.Providers;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Configuration;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class AzureDeviceRegistryProviderTests
     {
@@ -36,7 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Providers
             this.mockConfigHandler = this.mockRepository.Create<DevelopmentConfigHandler>(this.mockConfiguration.Object);
         }
 
-        private AzureDeviceRegistryProvider CreateManager()
+        public AzureDeviceRegistryProvider CreateManager()
         {
             return new AzureDeviceRegistryProvider(
                 this.mockProvisioningServiceClient.Object,

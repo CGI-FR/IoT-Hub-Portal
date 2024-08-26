@@ -13,11 +13,11 @@
                                   Required="true" Disabled/>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="@currentImageUri"
-                                  id=@nameof(EdgeModelSystemModule.ImageUri)
+                    <MudTextField @bind-Value="@currentImage"
+                                  id=@nameof(EdgeModelSystemModule.Image)
                                   Label="Image URI"
                                   Variant="Variant.Outlined"
-                                  For="@(()=> Module.ImageUri)"
+                                  For="@(()=> Module.Image)"
                                   Required="true" />
                 </MudItem>
                 <MudItem xs="12">
@@ -54,7 +54,7 @@
     public EdgeModelSystemModule Module { get; set; } = default!;
 
     private string currentModuleName = default!;
-    private string currentImageUri = default!;
+    private string currentImage = default!;
     private string currentContainerCreateOptions = default!;
 
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
@@ -66,7 +66,7 @@
         IsLoading = true;
 
         currentModuleName = Module.Name;
-        currentImageUri = Module.ImageUri;
+        currentImage = Module.Image;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         await Task.Delay(0);
@@ -76,7 +76,7 @@
     public void Submit()
     {
         Module.Name = currentModuleName;
-        Module.ImageUri = currentImageUri;
+        Module.Image = currentImage;
         Module.ContainerCreateOptions = currentContainerCreateOptions;
         Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
         MudDialog.Close(DialogResult.Ok(true));

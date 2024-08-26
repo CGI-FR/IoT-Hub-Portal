@@ -5,60 +5,60 @@ namespace IoTHub.Portal.Infrastructure
 {
     using IoTHub.Portal.Domain;
 
-    internal abstract class ConfigHandlerBase : ConfigHandler
+    public abstract class ConfigHandlerBase : ConfigHandler
     {
-        internal const string PortalNameKey = "PortalName";
-        internal const string AzureIoTHubConnectionStringKey = "Azure:IoTHub:ConnectionString";
-        internal const string AzureIoTHubEventHubEndpointKey = "Azure:IoTHub:EventHub:Endpoint";
-        internal const string AzureIoTHubEventHubConsumerGroupKey = "Azure:IoTHub:EventHub:ConsumerGroup";
-        internal const string AzureDPSConnectionStringKey = "Azure:IoTDPS:ConnectionString";
-        internal const string AzureDPSServiceEndpointKey = "Azure:IoTDPS:ServiceEndpoint";
-        internal const string AzureDPSIDScopeKey = "Azure:IoTDPS:IDScope";
-        internal const string UseSecurityHeadersKey = "UseSecurityHeaders";
-        internal const string PostgreSQLConnectionStringKey = "PostgreSQL:ConnectionString";
-        internal const string MySQLConnectionStringKey = "MySQL:ConnectionString";
-        internal const string DbProviderKey = "DbProvider";
+        public const string PortalNameKey = "PortalName";
+        public const string AzureIoTHubConnectionStringKey = "Azure:IoTHub:ConnectionString";
+        public const string AzureIoTHubEventHubEndpointKey = "Azure:IoTHub:EventHub:Endpoint";
+        public const string AzureIoTHubEventHubConsumerGroupKey = "Azure:IoTHub:EventHub:ConsumerGroup";
+        public const string AzureDPSConnectionStringKey = "Azure:IoTDPS:ConnectionString";
+        public const string AzureDPSServiceEndpointKey = "Azure:IoTDPS:ServiceEndpoint";
+        public const string AzureDPSIDScopeKey = "Azure:IoTDPS:IDScope";
+        public const string UseSecurityHeadersKey = "UseSecurityHeaders";
+        public const string PostgreSQLConnectionStringKey = "PostgreSQL:ConnectionString";
+        public const string MySQLConnectionStringKey = "MySQL:ConnectionString";
+        public const string DbProviderKey = "DbProvider";
 
-        internal const string OIDCScopeKey = "OIDC:Scope";
-        internal const string OIDCAuthorityKey = "OIDC:Authority";
-        internal const string OIDCMetadataUrlKey = "OIDC:MetadataUrl";
-        internal const string OIDCClientIdKey = "OIDC:ClientId";
-        internal const string OIDCApiClientIdKey = "OIDC:ApiClientId";
-        internal const string OIDCValidateIssuerKey = "OIDC:ValidateIssuer";
-        internal const string OIDCValidateAudienceKey = "OIDC:ValidateAudience";
-        internal const string OIDCValidateLifetimeKey = "OIDC:ValidateLifetime";
-        internal const string OIDCValidateIssuerSigningKeyKey = "OIDC:ValidateIssuerSigningKey";
-        internal const string OIDCValidateActorKey = "OIDC:ValidateActor";
-        internal const string OIDCValidateTokenReplayKey = "OIDC:ValidateTokenReplay";
+        public const string OIDCScopeKey = "OIDC:Scope";
+        public const string OIDCAuthorityKey = "OIDC:Authority";
+        public const string OIDCMetadataUrlKey = "OIDC:MetadataUrl";
+        public const string OIDCClientIdKey = "OIDC:ClientId";
+        public const string OIDCApiClientIdKey = "OIDC:ApiClientId";
+        public const string OIDCValidateIssuerKey = "OIDC:ValidateIssuer";
+        public const string OIDCValidateAudienceKey = "OIDC:ValidateAudience";
+        public const string OIDCValidateLifetimeKey = "OIDC:ValidateLifetime";
+        public const string OIDCValidateIssuerSigningKeyKey = "OIDC:ValidateIssuerSigningKey";
+        public const string OIDCValidateActorKey = "OIDC:ValidateActor";
+        public const string OIDCValidateTokenReplayKey = "OIDC:ValidateTokenReplay";
 
-        internal const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
+        public const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
-        internal const string AzureStorageAccountConnectionStringKey = "Azure:StorageAccount:ConnectionString";
-        internal const string StorageAccountDeviceModelImageMaxAgeKey = "StorageAccount:DeviceModel:Image:MaxAgeInSeconds";
+        public const string AzureStorageAccountConnectionStringKey = "Azure:StorageAccount:ConnectionString";
+        public const string StorageAccountDeviceModelImageMaxAgeKey = "StorageAccount:DeviceModel:Image:MaxAgeInSeconds";
 
-        internal const string AzureLoRaKeyManagementUrlKey = "Azure:LoRaKeyManagement:Url";
-        internal const string AzureLoRaKeyManagementCodeKey = "Azure:LoRaKeyManagement:Code";
-        internal const string AzureLoRaKeyManagementApiVersionKey = "Azure:LoRaKeyManagement:ApiVersion";
+        public const string AzureLoRaKeyManagementUrlKey = "Azure:LoRaKeyManagement:Url";
+        public const string AzureLoRaKeyManagementCodeKey = "Azure:LoRaKeyManagement:Code";
+        public const string AzureLoRaKeyManagementApiVersionKey = "Azure:LoRaKeyManagement:ApiVersion";
 
-        internal const string MetricExporterRefreshIntervalKey = "Metrics:ExporterRefreshIntervalInSeconds";
-        internal const string MetricLoaderRefreshIntervalKey = "Metrics:LoaderRefreshIntervalInMinutes";
+        public const string MetricExporterRefreshIntervalKey = "Metrics:ExporterRefreshIntervalInSeconds";
+        public const string MetricLoaderRefreshIntervalKey = "Metrics:LoaderRefreshIntervalInMinutes";
 
-        internal const string SyncDatabaseJobRefreshIntervalKey = "Job:SyncDatabaseJobRefreshIntervalInMinutes";
+        public const string SyncDatabaseJobRefreshIntervalKey = "Job:SyncDatabaseJobRefreshIntervalInMinutes";
 
-        internal const string IdeasEnabledKey = "Ideas:Enabled";
-        internal const string IdeasUrlKey = "Ideas:Url";
-        internal const string IdeasAuthenticationHeaderKey = "Ideas:Authentication:Header";
-        internal const string IdeasAuthenticationTokenKey = "Ideas:Authentication:Token";
+        public const string IdeasEnabledKey = "Ideas:Enabled";
+        public const string IdeasUrlKey = "Ideas:Url";
+        public const string IdeasAuthenticationHeaderKey = "Ideas:Authentication:Header";
+        public const string IdeasAuthenticationTokenKey = "Ideas:Authentication:Token";
 
-        internal const string CloudProviderKey = "CloudProvider";
+        public const string CloudProviderKey = "CloudProvider";
 
-        internal const string AWSAccessKey = "AWS:Access";
-        internal const string AWSAccessSecretKey = "AWS:AccessSecret";
-        internal const string AWSRegionKey = "AWS:Region";
-        internal const string AWSS3StorageConnectionStringKey = "AWS:S3Storage:ConnectionString";
-        internal const string AWSBucketNameKey = "AWS:BucketName";
-        internal const string AWSAccountIdKey = "AWS:AccountId";
-        internal const string AWSGreengrassRequiredRolesKey = "AWS:GreengrassRequiredRoles";
-        internal const string AWSGreengrassCoreTokenExchangeRoleAliasNameKey = "AWS:GreengrassCoreTokenExchangeRoleAliasName";
+        public const string AWSAccessKey = "AWS:Access";
+        public const string AWSAccessSecretKey = "AWS:AccessSecret";
+        public const string AWSRegionKey = "AWS:Region";
+        public const string AWSS3StorageConnectionStringKey = "AWS:S3Storage:ConnectionString";
+        public const string AWSBucketNameKey = "AWS:BucketName";
+        public const string AWSAccountIdKey = "AWS:AccountId";
+        public const string AWSGreengrassRequiredRolesKey = "AWS:GreengrassRequiredRoles";
+        public const string AWSGreengrassCoreTokenExchangeRoleAliasNameKey = "AWS:GreengrassCoreTokenExchangeRoleAliasName";
     }
 }

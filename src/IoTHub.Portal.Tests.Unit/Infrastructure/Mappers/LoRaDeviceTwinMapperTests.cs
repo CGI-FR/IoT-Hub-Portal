@@ -3,16 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using Microsoft.Azure.Devices.Shared;
-    using Models.v10.LoRaWAN;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class LoRaDeviceTwinMapperTests
     {
@@ -30,8 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
         private LoRaDeviceTwinMapper CreateLoRaDeviceTwinMapper()
         {
-            return new LoRaDeviceTwinMapper(
-                this.mockDeviceModelImageManager.Object);
+            return new LoRaDeviceTwinMapper(this.mockDeviceModelImageManager.Object);
         }
 
         [Test]
@@ -53,10 +42,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
-            var expectedModelImageUri = new Uri($"https://fake.local/{modelId}");
+            const string modelImage = DeviceModelImageOptions.DefaultImage;
 
-            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == modelId)))
-                .Returns(expectedModelImageUri);
+            _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == modelId)).Result)
+                .Returns(modelImage);
 
             // Act
             var result = loRaDeviceTwinMapper.CreateDeviceDetails(twin, tagsNames);
@@ -72,7 +61,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
                 Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, tagName), result.Tags[tagName]);
             }
 
-            Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
+            Assert.AreEqual(modelImage, result.Image);
 
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString(), result.AppEUI);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString(), result.AppKey);
@@ -92,19 +81,17 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
 
-            List<string> tagsNames = null;
-
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
-            var expectedModelImageUri = new Uri($"https://fake.local/{modelId}");
+            const string modelImage = DeviceModelImageOptions.DefaultImage;
 
-            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == modelId)))
-                .Returns(expectedModelImageUri);
+            _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == modelId)).Result)
+                .Returns(modelImage);
 
             // Act
-            var result = loRaDeviceTwinMapper.CreateDeviceDetails(twin, tagsNames);
+            var result = loRaDeviceTwinMapper.CreateDeviceDetails(twin, new List<string>());
 
             // Assert
             Assert.IsNotNull(result);
@@ -114,7 +101,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.IsEmpty(result.Tags);
 
-            Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
+            Assert.AreEqual(modelImage, result.Image);
 
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString(), result.AppEUI);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString(), result.AppKey);
@@ -134,39 +121,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
 
-            var expectedModelImageUri = new Uri($"https://fake.local/{modelId}");
+            const string modelImage = DeviceModelImageOptions.DefaultImage;
 
-            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == modelId)))
-                .Returns(expectedModelImageUri);
-
-            // Act
-            var result = loRaDeviceTwinMapper.CreateDeviceListItem(twin);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(twin.DeviceId, result.DeviceID);
-            Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
-
-            Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void CreateDeviceListItemWithTagsExpectedBehavior()
-        {
-            // Arrange
-            var loRaDeviceTwinMapper = CreateLoRaDeviceTwinMapper();
-            var twin = new Twin(Guid.NewGuid().ToString());
-            var modelId = Guid.NewGuid().ToString();
-
-            DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
-            DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
-
-            var expectedModelImageUri = new Uri($"https://fake.local/{modelId}");
-
-            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == modelId)))
-                .Returns(expectedModelImageUri);
+            _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == modelId)).Result)
+                .Returns(modelImage);
 
             // Act
             var result = loRaDeviceTwinMapper.CreateDeviceListItem(twin);
@@ -176,7 +134,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
-            Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
+            Assert.AreEqual(modelImage, result.Image);
 
             this.mockRepository.VerifyAll();
         }
@@ -233,7 +191,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
         }
 
         [Test]
-        public void UpdateTwinUseOTAAIsFalseExpectedBehavior()
+        public void UpdateTwinUseOtaaIsFalseExpectedBehavior()
         {
             // Arrange
             var loRaDeviceTwinMapper = CreateLoRaDeviceTwinMapper();

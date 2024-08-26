@@ -4,31 +4,26 @@
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
     using Azure.Data.Tables;
-    using IoTHub.Portal.Infrastructure.Managers;
     using IoTHub.Portal.Models.v10;
     using System;
     using System.Collections.Generic;
-    using IoTHub.Portal.Application.Managers;
 
     public class DeviceModelMapper : IDeviceModelMapper<DeviceModelDto, DeviceModelDto>
     {
-        private readonly IDeviceModelImageManager deviceModelImageManager;
-
-        public DeviceModelMapper(IDeviceModelImageManager deviceModelImageManager)
+        public DeviceModelMapper()
         {
-            this.deviceModelImageManager = deviceModelImageManager;
         }
 
         public DeviceModelDto CreateDeviceModelListItem(TableEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
             return new DeviceModelDto
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(DeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
                 SupportLoRaFeatures = bool.Parse(entity[nameof(DeviceModelDto.SupportLoRaFeatures)]?.ToString() ?? "false"),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
                 Name = entity[nameof(DeviceModelDto.Name)]?.ToString(),
                 Description = entity[nameof(DeviceModelDto.Description)]?.ToString(),
             };
@@ -36,13 +31,13 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public DeviceModelDto CreateDeviceModel(TableEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
             return new DeviceModelDto
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(DeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
                 Name = entity[nameof(DeviceModelDto.Name)]?.ToString(),
                 Description = entity[nameof(DeviceModelDto.Description)]?.ToString()
             };

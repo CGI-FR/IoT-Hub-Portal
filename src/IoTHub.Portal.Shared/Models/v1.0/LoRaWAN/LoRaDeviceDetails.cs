@@ -36,7 +36,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.

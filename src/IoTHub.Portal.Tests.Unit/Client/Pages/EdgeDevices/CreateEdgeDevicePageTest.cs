@@ -3,25 +3,25 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using AutoFixture;
+    using Bunit;
+    using Bunit.TestDoubles;
+    using FluentAssertions;
     using IoTHub.Portal.Client.Exceptions;
     using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.EdgeDevices;
     using IoTHub.Portal.Client.Services;
     using IoTHub.Portal.Models.v10;
     using IoTHub.Portal.Shared.Constants;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Portal.Client.Pages.EdgeDevices;
 
     [TestFixture]
     public class CreateEdgeDevicePageTest : BlazorUnitTest
@@ -177,7 +177,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                ImageUrl = Fixture.Create<Uri>(),
+                Image = Fixture.Create<string>(),
             };
 
             var expectedEdgeDevice = new IoTEdgeDevice
@@ -249,7 +249,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                ImageUrl = Fixture.Create<Uri>(),
+                Image = Fixture.Create<string>(),
             };
 
             var expectedEdgeDevice = new IoTEdgeDevice
@@ -324,7 +324,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
-                ImageUrl = Fixture.Create<Uri>()
+                Image = Fixture.Create<string>()
             };
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
@@ -341,12 +341,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var cut = RenderComponent<CreateEdgeDevicePage>();
 
-            var ModelImageElement = cut.WaitForElement($"#{nameof(IoTEdgeDevice.ImageUrl)}");
+            var ModelImageElement = cut.WaitForElement($"#{nameof(IoTEdgeDevice.Image)}");
 
             await cut.Instance.ChangeModel(edgeModel);
 
             // Assert
-            Assert.AreEqual(edgeModel.ImageUrl, ModelImageElement.Attributes["src"].Value);
+            Assert.AreEqual(edgeModel.Image, ModelImageElement.Attributes["src"].Value);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
