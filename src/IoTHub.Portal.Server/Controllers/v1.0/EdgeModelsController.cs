@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Server.Controllers.v1._0
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain.Exceptions;
@@ -88,11 +89,14 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="edgeModelId">The model identifier.</param>
         /// <param name="avatar"></param>
         /// <returns>The avatar.</returns>
-        [HttpPost("{edgeModelId}/{avatar}", Name = "POST Update the edge device model avatar")]
+        [HttpPost("{edgeModelId}/avatar", Name = "POST Update the edge device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, string avatar)
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId)
         {
+            using var reader = new StreamReader(Request.Body);
+            var avatar = await reader.ReadToEndAsync();
+
             return Ok(await this.edgeModelService.UpdateEdgeModelAvatar(edgeModelId, avatar));
         }
 

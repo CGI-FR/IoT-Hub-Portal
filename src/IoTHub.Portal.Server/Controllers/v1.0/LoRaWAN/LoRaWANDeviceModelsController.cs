@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Server.Controllers.v1._0.LoRaWAN
 {
     using System.Linq;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Models.v10;
@@ -80,9 +81,9 @@ namespace IoTHub.Portal.Server.Controllers.v1._0.LoRaWAN
         [HttpPost("{id}/avatar", Name = "POST Update the LoRaWAN device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<ActionResult<string>> ChangeAvatar(string id, string avatar)
+        public override Task<ActionResult<string>> ChangeAvatar(string id)
         {
-            return base.ChangeAvatar(id, avatar);
+            return base.ChangeAvatar(id);
         }
 
         /// <summary>

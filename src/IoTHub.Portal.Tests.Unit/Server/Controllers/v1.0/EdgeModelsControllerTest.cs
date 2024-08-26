@@ -203,14 +203,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var edgeModelController = CreateController();
             var expectedAvatar = DeviceModelImageOptions.DefaultImage;
-            var expectedUrl = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeModelService
                 .Setup(x => x.UpdateEdgeModelAvatar(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(expectedAvatar);
 
             // Act
-            var response = await edgeModelController.ChangeAvatar(Guid.NewGuid().ToString(), expectedAvatar);
+            var response = await edgeModelController.ChangeAvatar(Guid.NewGuid().ToString());
 
             // Assert
             Assert.IsNotNull(response);

@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Server.Controllers.v1._0
 {
+    using System.IO;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Models.v10;
@@ -67,13 +68,14 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// Changes the avatar.
         /// </summary>
         /// <param name="id">The model identifier.</param>
+        /// <param name="avatar">Avatar as a base64 string</param>
         /// <returns>The avatar.</returns>
         [HttpPost("{id}/avatar", Name = "POST Update the device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override async Task<ActionResult<string>> ChangeAvatar(string id, string avatar)
+        public override async Task<ActionResult<string>> ChangeAvatar(string id)
         {
-            return await base.ChangeAvatar(id, avatar);
+            return await base.ChangeAvatar(id);
         }
 
         /// <summary>
@@ -106,7 +108,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// </summary>
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
-        [HttpPut(Name = "PUT Update the device model")]
+        [HttpPut("{id}", Name = "PUT Update the device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

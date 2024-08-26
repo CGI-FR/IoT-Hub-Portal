@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Server.Controllers.v1._0
 {
+    using System.IO;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Models.v10;
@@ -90,9 +91,12 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// Changes the avatar.
         /// </summary>
         /// <param name="id">The model identifier.</param>
+        /// <param name="avatar">Avatar as a base64 string</param>
         /// <returns>The avatar.</returns>
-        public virtual async Task<ActionResult<string>> ChangeAvatar(string id, string avatar)
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string id)
         {
+            using var reader = new StreamReader(Request.Body);
+            var avatar = await reader.ReadToEndAsync();
             return Ok(await this.deviceModelService.UpdateDeviceModelAvatar(id, avatar));
         }
 

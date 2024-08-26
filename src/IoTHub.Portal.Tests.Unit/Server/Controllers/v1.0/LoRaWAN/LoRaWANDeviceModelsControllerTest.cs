@@ -98,7 +98,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
                 .ReturnsAsync(expectedAvatar);
 
             // Act
-            var response = await this.deviceModelsController.ChangeAvatar(deviceModel.ModelId, DeviceModelImageOptions.DefaultImage);
+            var response = await this.deviceModelsController.ChangeAvatar(deviceModel.ModelId);
 
             // Assert
             _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(expectedAvatar);
