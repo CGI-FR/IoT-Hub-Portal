@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
+    using Shared.Constants;
+
     public class EdgeModelServiceTest : BackendUnitTest
     {
         private Mock<IUnitOfWork> mockUnitOfWork;

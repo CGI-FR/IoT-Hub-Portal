@@ -1,15 +1,14 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Domain.Options
+namespace IoTHub.Portal.Shared.Constants
 {
+    using System.IO;
     using System.Text;
 
-    public class DeviceModelImageOptions
+    public static class DeviceModelImageOptions
     {
-        public Uri BaseUri { get; set; } = default!;
-
-        public const string ImageContainerName = "device-images-2";
+        public const string ImageContainerName = "device-images";
 
         public const string DefaultImageName = "default-template-icon";
 

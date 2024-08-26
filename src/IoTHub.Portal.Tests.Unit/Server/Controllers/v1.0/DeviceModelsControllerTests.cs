@@ -18,6 +18,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using UnitTests.Bases;
     using IoTHub.Portal.Domain.Options;
     using Portal.Server.Controllers.v1._0;
+    using Shared.Constants;
 
     [TestFixture]
     public class DeviceModelsControllerTests : BackendUnitTest

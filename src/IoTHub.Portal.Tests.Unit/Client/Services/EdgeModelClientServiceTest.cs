@@ -17,6 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
     using IoTHub.Portal.Domain.Options;
+    using Shared.Constants;
 
     [TestFixture]
     public class EdgeModelClientServiceTest : BlazorUnitTest

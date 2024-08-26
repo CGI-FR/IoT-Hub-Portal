@@ -16,19 +16,18 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
     using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
     using IoTHub.Portal.Infrastructure.Managers;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
     using Moq;
     using NUnit.Framework;
+    using Shared.Constants;
 
     [TestFixture]
     public class AwsDeviceModelImageManagerTest : BackendUnitTest
     {
         private Mock<ConfigHandler> mockConfigHandler;
-        private Mock<IOptions<DeviceModelImageOptions>> mockDeviceModelImageOptions;
         private Mock<IAmazonS3> s3ClientMock;
         private Mock<PutObjectResponse> putObjectResponse;
         private Mock<PutObjectRequest> putObjectRequest;
@@ -41,7 +40,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
         {
             base.Setup();
 
-            this.mockDeviceModelImageOptions = MockRepository.Create<IOptions<DeviceModelImageOptions>>();
             this.mockConfigHandler = MockRepository.Create<ConfigHandler>();
 
             this.s3ClientMock = MockRepository.Create<IAmazonS3>();
@@ -67,13 +65,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var deviceModelId = Fixture.Create<string>();
             var bucketName = Fixture.Create<string>();
             var region = "eu-west-1";
-            var mockOptions = new DeviceModelImageOptions()
-            {
-                BaseUri = Fixture.Create<Uri>()
-            };
-
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
-
 
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
             _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);

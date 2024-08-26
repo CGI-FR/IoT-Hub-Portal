@@ -29,6 +29,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
     using Polly;
     using Polly.Extensions.Http;
     using Quartz;
+    using Shared.Constants;
 
     public static class AzureServiceCollectionExtension
     {
@@ -124,14 +125,12 @@ namespace IoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureImageBlobStorage(this IServiceCollection services, ConfigHandler configuration)
         {
             return services.AddTransient(_ => new BlobServiceClient(configuration.AzureStorageAccountConnectionString))
-                            .Configure<DeviceModelImageOptions>((opts) =>
+                            .Configure<BlobClientOptions>(opts =>
                             {
                                 var serviceClient = new BlobServiceClient(configuration.AzureStorageAccountConnectionString);
                                 var container = serviceClient.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
 
                                 _ = container.CreateIfNotExists();
-
-                                opts.BaseUri = container.Uri;
                             });
         }
 

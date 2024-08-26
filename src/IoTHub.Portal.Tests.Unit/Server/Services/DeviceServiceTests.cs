@@ -32,6 +32,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using UnitTests.Bases;
     using Device = Portal.Domain.Entities.Device;
     using IoTHub.Portal.Domain.Options;
+    using Shared.Constants;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest

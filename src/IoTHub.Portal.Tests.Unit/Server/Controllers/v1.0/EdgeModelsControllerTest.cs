@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
     using Portal.Server.Controllers.v1._0;
+    using Shared.Constants;
 
     [TestFixture]
     public class EdgeModelsControllerTest

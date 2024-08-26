@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
+    using Shared.Constants;
 
     [TestFixture]
     public class DeviceModelImageManagerTest : BackendUnitTest
@@ -11,7 +12,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
         private Mock<BlobContainerClient> mockBlobContainerClient;
         private Mock<BlobClient> mockBlobClient;
         private Mock<ConfigHandler> mockConfigHandler;
-        private Mock<IOptions<DeviceModelImageOptions>> mockDeviceModelImageOptions;
 
         private IDeviceModelImageManager deviceModelImageManager;
 
@@ -23,10 +23,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             this.mockBlobContainerClient = MockRepository.Create<BlobContainerClient>();
             this.mockBlobClient = MockRepository.Create<BlobClient>();
             this.mockConfigHandler = MockRepository.Create<ConfigHandler>();
-            this.mockDeviceModelImageOptions = MockRepository.Create<IOptions<DeviceModelImageOptions>>();
 
             _ = ServiceCollection.AddSingleton(this.mockBlobServiceClient.Object);
-            _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageOptions.Object);
             _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
             _ = ServiceCollection.AddSingleton<IDeviceModelImageManager, DeviceModelImageManager>();
 
@@ -42,11 +40,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var deviceModelId = Fixture.Create<string>();
             var expectedImage = DeviceModelImageOptions.DefaultImage;
             using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
-
-            var mockOptions = new DeviceModelImageOptions()
-            {
-                BaseUri = Fixture.Create<Uri>()
-            };
 
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
@@ -90,11 +83,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var blobDownloadResult = BlobsModelFactory.BlobDownloadResult(BinaryData.FromString(expectedImage));
 
             using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(expectedImage));
-
-            var mockOptions = new DeviceModelImageOptions()
-            {
-                BaseUri = Fixture.Create<Uri>()
-            };
 
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
@@ -170,11 +158,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var blobsPage = Page<BlobItem>.FromValues(new[] { blob }, default, new Mock<Response>().Object);
             var blobsPageable = AsyncPageable<BlobItem>.FromPages(new[] { blobsPage });
 
-            var mockOptions = new DeviceModelImageOptions()
-            {
-                BaseUri = Fixture.Create<Uri>()
-            };
-
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
                 .Returns(this.mockBlobContainerClient.Object);
@@ -218,11 +201,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 .ReturnsAsync(Response.FromValue(
                     BlobsModelFactory.BlobContentInfo(ETag.All, DateTimeOffset.Now, Array.Empty<byte>(), string.Empty,
                         1L), Mock.Of<Response>()));
-
-            var mockOptions = new DeviceModelImageOptions()
-            {
-                BaseUri = Fixture.Create<Uri>()
-            };
 
             // Act
             await this.deviceModelImageManager.InitializeDefaultImageBlob();

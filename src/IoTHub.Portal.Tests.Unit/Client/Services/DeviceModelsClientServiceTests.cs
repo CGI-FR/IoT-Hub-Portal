@@ -22,6 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
     using System.Text;
     using System.Net.Mime;
     using IoTHub.Portal.Domain.Options;
+    using Shared.Constants;
 
     [TestFixture]
     public class DeviceModelsClientServiceTests : BlazorUnitTest

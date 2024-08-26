@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
     using Domain.Exceptions;
     using Domain.Options;
     using Microsoft.Extensions.Logging;
+    using Shared.Constants;
 
     public class DeviceModelImageManager : IDeviceModelImageManager
     {

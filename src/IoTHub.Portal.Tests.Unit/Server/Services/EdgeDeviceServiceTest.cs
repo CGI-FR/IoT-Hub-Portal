@@ -30,6 +30,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using NUnit.Framework;
     using Portal.Domain.Options;
+    using Shared.Constants;
 
     [TestFixture]
     public class EdgeDeviceServiceTest : BackendUnitTest

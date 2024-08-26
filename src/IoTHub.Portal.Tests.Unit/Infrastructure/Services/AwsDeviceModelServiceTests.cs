@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
+    using Shared.Constants;
+
     [TestFixture]
     public class AwsDeviceModelServiceTests : BackendUnitTest
     {

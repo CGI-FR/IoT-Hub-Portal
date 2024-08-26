@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
+    using Shared.Constants;
+
     [TestFixture]
     public class LoRaDeviceModelMapperTests
     {

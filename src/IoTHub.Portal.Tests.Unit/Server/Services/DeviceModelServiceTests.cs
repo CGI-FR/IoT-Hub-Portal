@@ -33,6 +33,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Portal.Domain.Repositories;
     using UnitTests.Bases;
     using IoTHub.Portal.Domain.Options;
+    using Shared.Constants;
 
     [TestFixture]
     public class DeviceModelServiceTests : BackendUnitTest

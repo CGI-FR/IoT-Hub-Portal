@@ -4,35 +4,28 @@
 namespace IoTHub.Portal.Infrastructure.Managers
 {
     using System;
-    using System.Drawing;
-    using System.Reflection;
-    using System.Text;
     using System.Threading.Tasks;
     using Amazon.S3;
     using Amazon.S3.Model;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
+    using Domain;
+    using Domain.Exceptions;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
+    using Shared.Constants;
 
     public class AwsDeviceModelImageManager : IDeviceModelImageManager
     {
         private readonly ILogger<AwsDeviceModelImageManager> logger;
         private readonly ConfigHandler configHandler;
-        private readonly IOptions<DeviceModelImageOptions> imageOptions;
         private readonly IAmazonS3 s3Client;
 
         public AwsDeviceModelImageManager(
             ILogger<AwsDeviceModelImageManager> logger,
             ConfigHandler configHandler,
-            IOptions<DeviceModelImageOptions> options,
             IAmazonS3 s3Client)
         {
             this.logger = logger;
             this.configHandler = configHandler;
-            this.imageOptions = options;
             this.s3Client = s3Client;
         }
 

@@ -33,6 +33,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using NUnit.Framework;
     using Portal.Domain.Entities;
+    using Shared.Constants;
     using UnitTests.Bases;
 
     [TestFixture]

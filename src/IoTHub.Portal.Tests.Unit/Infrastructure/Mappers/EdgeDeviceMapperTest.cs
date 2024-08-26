@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
     using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
+    using Shared.Constants;
 
     [TestFixture]
     public class EdgeDeviceMapperTest
