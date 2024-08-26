@@ -272,7 +272,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             _ = this.mockLayerClientService.Setup(service => service.GetLayers())
                 .ReturnsAsync(new List<LayerDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -309,7 +309,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             _ = this.mockLayerClientService.Setup(service => service.GetLayers())
                 .ReturnsAsync(new List<LayerDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = expectedLayers
@@ -356,7 +356,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             _ = this.mockLayerClientService.Setup(service => service.GetLayers())
                 .ReturnsAsync(new List<LayerDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = expectedLayers

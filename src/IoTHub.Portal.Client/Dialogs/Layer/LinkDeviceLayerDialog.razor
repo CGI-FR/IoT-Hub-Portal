@@ -44,7 +44,7 @@
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd Style="text-align: center">
-                            <img height="25" src="@context.ImageUrl" />
+                            <img height="25" src="@context.Image" />
                         </MudTd>
                         <MudTd DataLabel="Device">
                             <MudItem>
@@ -132,7 +132,7 @@
                                             }
             };
 
-        DeviceModels = (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
+        DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
 
         if (DeviceModels.Count() != 0) SelectedModel = DeviceModels.First();
 
@@ -227,7 +227,7 @@
         deviceDetails.DeviceID = device.DeviceID;
         deviceDetails.DeviceName = device.DeviceName;
         deviceDetails.ModelId = device.DeviceModelId;
-        deviceDetails.ImageUrl = device.ImageUrl;
+        deviceDetails.Image = device.Image;
         deviceDetails.IsConnected = device.IsConnected;
         deviceDetails.IsEnabled = device.IsEnabled;
         deviceDetails.StatusUpdatedTime = device.StatusUpdatedTime;

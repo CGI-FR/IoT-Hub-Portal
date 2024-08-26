@@ -354,7 +354,7 @@
 
     private async Task LoadCommands()
     {
-        DeviceModels = (await DeviceModelsClientService.GetDeviceModels(new DeviceModelFilter())).Items.ToList<IDeviceModel>();
+        DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync(new DeviceModelFilter())).Items.ToList<IDeviceModel>();
 
         foreach (var deviceModel in DeviceModels)
         {

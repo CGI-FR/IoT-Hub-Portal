@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
             _ = this.mockLayerClientService.Setup(service => service.GetLayers())
                 .ReturnsAsync(new List<LayerDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()
