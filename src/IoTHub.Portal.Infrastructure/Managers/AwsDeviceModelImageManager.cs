@@ -120,7 +120,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
         public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
 
-            this.logger.LogInformation($"Uploading Default Image to AWS S3 storage");
+            this.logger.LogInformation("Uploading Default Image to AWS S3 storage");
 
             try
             {

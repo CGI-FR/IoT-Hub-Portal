@@ -162,21 +162,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 EdgeModules = expectedModules
             };
 
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
-            {
-                command.EdgeDeviceModelId = expectedEdgeDeviceModel.ModelId;
-                command.ModuleName = expectedModules[0].ModuleName;
-                return command;
-            }) .ToList();
-
-            expectedCommands.Add(new EdgeDeviceModelCommand
-            {
-                EdgeDeviceModelId = expectedEdgeDeviceModel.ModelId,
-                Id = Guid.NewGuid().ToString(),
-                Name = Guid.NewGuid().ToString(),
-                ModuleName = Guid.NewGuid().ToString()
-            });
-
             var expectedEdgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(expectedEdgeDeviceModel);
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
@@ -368,7 +353,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
 
         [Test]
-        public async Task UpdateEdgeModelForAWSShouldUpdateEdgeModel()
+        public async Task UpdateEdgeModelForAwsShouldUpdateEdgeModel()
         {
             // Arrange
             _ = this.mockConfigHandler.Setup(handler => handler.CloudProvider).Returns("AWS");
@@ -565,7 +550,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var result = await this.edgeDeviceModelService.GetEdgeModelAvatar(Guid.NewGuid().ToString());
 
             // Assert
-            _ = result.Should().Be(expectedImageUri);
+            _ = result.Should().Be(expectedImage);
             MockRepository.VerifyAll();
         }
 
@@ -604,7 +589,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task GetPublicEdgeModules_GetPublicEdgeModules_EdgeModulesReturned()
+        public async Task GetPublicEdgeModulesGetPublicEdgeModulesEdgeModulesReturned()
         {
             // Arrange
             var edgeModules = Fixture.CreateMany<IoTEdgeModule>(10).ToList();

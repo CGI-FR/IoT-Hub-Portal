@@ -401,13 +401,5 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             // Assert
             _ = act.Should().ThrowAsync<NotImplementedException>();
         }
-
-        /*===========================*** Tests for ComputeImageUri() **===========================*/
-
-
-        [Test]
-        public void ComputeImageUriShouldThrowsANotImplmentedException()
-        {
-        }
     }
 }
