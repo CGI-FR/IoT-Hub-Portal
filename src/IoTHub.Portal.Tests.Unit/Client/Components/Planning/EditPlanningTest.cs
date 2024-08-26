@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
+namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -30,7 +30,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
         private Mock<ILoRaWanDeviceModelsClientService> mockLoRaWanDeviceModelsClientService;
 
-        private FakeNavigationManager mockNavigationManager;
         public override void Setup()
         {
             base.Setup();
@@ -47,8 +46,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Layer
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
-
-            this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }
 
         // TODO: To fix

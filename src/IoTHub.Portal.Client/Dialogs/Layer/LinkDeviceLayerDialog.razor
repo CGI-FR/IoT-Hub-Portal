@@ -29,7 +29,7 @@
                         <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Search" id="saveButton">Search</MudButton>
                     </div>
                 }
-                <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" RowStyle="cursor: pointer;">
+                <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="_table" Loading="@IsLoading" RowStyle="cursor: pointer;">
                     <ColGroup>
                         <col style="width: 10%;" />
                         <col style="width: 70%;" />
@@ -77,7 +77,7 @@
                         <MudText>Loading...</MudText>
                     </LoadingContent>
                     <PagerContent>
-                        <MudTablePager PageSizeOptions="new int[] { 5, 10 }" />
+                        <MudTablePager PageSizeOptions="new[] { 5, 10 }" />
                     </PagerContent>
                 </MudTable>
             </MudItem>
@@ -101,16 +101,16 @@
     public string LayerName { get; set; } = default!;
 
     private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
-    private MudTable<DeviceListItem>? table;
+    private MudTable<DeviceListItem>? _table;
 
-    private string? searchID = "";
+    private readonly string? _searchId = "";
 
     public IDeviceModel SelectedModel = new DeviceModelDto();
     public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
-    public bool modelIdLoad;
+    public bool ModelIdLoad;
 
-    public List<string> DeviceList { get; set; } = new List<string>();
-    public List<string> DeviceRemoveList { get; set; } = new List<string>();
+    public List<string> DeviceList { get; init; } = new();
+    public List<string> DeviceRemoveList { get; init; } = new();
 
     private bool IsLoading { get; set; } = true;
 
@@ -124,10 +124,10 @@
                 SearchText = "",
                 PageNumber = 0,
                 PageSize = 100,
-                OrderBy = new string[]
-                                            {
+                OrderBy = new[]
+                {
                     string.Empty
-                                            }
+                }
             };
 
         DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
@@ -139,16 +139,16 @@
 
     private void Search()
     {
-        modelIdLoad = true;
-        table?.ReloadServerData();
+        ModelIdLoad = true;
+        _table?.ReloadServerData();
     }
 
     private async Task<TableData<DeviceListItem>> LoadItems(TableState state)
     {
         try
         {
-            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}";
-            if (modelIdLoad) uri += $"&modelId={SelectedModel.ModelId}";
+            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(_searchId)}";
+            if (ModelIdLoad) uri += $"&modelId={SelectedModel.ModelId}";
 
             var result = await DeviceClientService.GetDevices(uri);
             Devices = result.Items;
@@ -161,7 +161,7 @@
         }
         catch (ProblemDetailsException exception)
         {
-            Error?.ProcessProblemDetails(exception);
+            Error.ProcessProblemDetails(exception);
 
             return new TableData<DeviceListItem>();
         }
@@ -206,7 +206,7 @@
         }
         catch (ProblemDetailsException exception)
         {
-            Error?.ProcessProblemDetails(exception);
+            Error.ProcessProblemDetails(exception);
         }
         finally
         {
@@ -214,9 +214,9 @@
         }
     }
 
-    private DeviceDetails FindDevice(string deviceID)
+    private DeviceDetails FindDevice(string deviceId)
     {
-        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceID);
+        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceId);
 
         var deviceDetails = new DeviceDetails();
 

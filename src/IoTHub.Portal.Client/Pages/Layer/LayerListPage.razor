@@ -20,10 +20,10 @@
                     <ItemTemplate Context="item">
                         <MudTreeViewItem Items="@item.Children" @bind-Expanded="@item.IsExpanded">
                             <BodyContent>
-                                <div id="editLayerElement" style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%" @onmouseover="() => printDetails = item.LayerData.Id">
+                                <div id="editLayerElement" style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%" @onmouseover="() => PrintDetails = item.LayerData.Id">
                                     <MudText>@item.LayerData.Name</MudText>
                                     <div style="justify-self: end;">
-                                        @if (printDetails == item.LayerData.Id)
+                                        @if (PrintDetails == item.LayerData.Id)
                                         {
                                             <MudIconButton id="editLayerDeleteLayer" Icon="@(item.LayerData.Father != null ? Icons.Material.Filled.Delete : @Icons.Material.Outlined.Delete)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => DeleteLayer(item, Layers)" />
                                             <MudIconButton id="editLayerAddLayer" Icon="@Icons.Material.Filled.AddBox" Size="Size.Medium" Color="Color.Inherit" @onclick="() => AddLayer(item)" />
@@ -48,7 +48,7 @@
 
     private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
 
-    public string? printDetails { get; set; }
+    public string? PrintDetails { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,7 +56,7 @@
         var result = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
         Devices = result.Items;
 
-        if (listLayers.Count() == 0)
+        if (listLayers.Count == 0)
         {
             try
             {
@@ -71,7 +71,7 @@
             }
             catch (ProblemDetailsException exception)
             {
-                Error?.ProcessProblemDetails(exception);
+                Error.ProcessProblemDetails(exception);
             }
         }
         Layers = LayerHelper.GetHashsetLayer(listLayers);
@@ -94,7 +94,7 @@
         }
         catch (ProblemDetailsException exception)
         {
-            Error?.ProcessProblemDetails(exception);
+            Error.ProcessProblemDetails(exception);
         }
     }
 
@@ -126,7 +126,7 @@
         }
         catch (ProblemDetailsException exception)
         {
-            Error?.ProcessProblemDetails(exception);
+            Error.ProcessProblemDetails(exception);
         }
     }
 
@@ -140,9 +140,9 @@
         }
     }
 
-    private DeviceDetails FindDevice(string deviceID)
+    private DeviceDetails FindDevice(string deviceId)
     {
-        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceID);
+        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceId);
 
         var deviceDetails = new DeviceDetails();
 
@@ -167,7 +167,7 @@
 
         DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true, CloseButton = true };
 
-        var result = await DialogService.Show<LinkDeviceLayerDialog>("Select your " + layer.Name + " devices", parameter, options).Result;
+        _ = await DialogService.Show<LinkDeviceLayerDialog>("Select your " + layer.Name + " devices", parameter, options).Result;
 
         var newDeviceList = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
         Devices = newDeviceList.Items;

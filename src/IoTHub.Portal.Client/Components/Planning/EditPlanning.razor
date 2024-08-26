@@ -187,7 +187,7 @@
                                 <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.Children">
                                     <Content>
                                         <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@(context.Children.Count() != 0)" />
-                                        <MudCheckBox T="bool?" Checked="@(context.LayerData.Planning == planning.Id)" CheckedChanged="@(() => CheckedChanged(context))"></MudCheckBox>
+                                        <MudCheckBox T="bool?" Checked="@(context.LayerData.Planning == planning.Id)" ValueChanged="@(() => CheckedChanged(context))"></MudCheckBox>
                                         <MudText>@context.LayerData.Name</MudText>
                                     </Content>
                                 </MudTreeViewItem>
