@@ -38,7 +38,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
         public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file)
         {
 
-            this.logger.LogInformation($"Uploading Image to AWS S3 storage");
+            this.logger.LogInformation("Uploading Image to AWS S3 storage");
 
             try
             {
@@ -91,7 +91,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
         {
 
-            this.logger.LogInformation($"Deleting image from AWS S3 storage");
+            this.logger.LogInformation("Deleting image from AWS S3 storage");
 
             try
             {
@@ -158,7 +158,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
         public async Task InitializeDefaultImageBlob()
         {
 
-            this.logger.LogInformation($"Initializing default Image to AWS S3 storage");
+            this.logger.LogInformation("Initializing default Image to AWS S3 storage");
 
             try
             {

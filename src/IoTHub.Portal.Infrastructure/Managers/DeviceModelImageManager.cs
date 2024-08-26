@@ -35,10 +35,16 @@ namespace IoTHub.Portal.Infrastructure.Managers
         {
             var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
-
-            using var reader = new StreamReader((await blobClient.DownloadAsync()).Value.Content);
-
-            return await reader.ReadToEndAsync();
+            try
+            {
+                using var reader = new StreamReader((await blobClient.DownloadAsync()).Value.Content);
+                return await reader.ReadToEndAsync();
+            }
+            catch (RequestFailedException e) when (e.ErrorCode == BlobErrorCode.BlobNotFound)
+            {
+                this.logger.LogError(e, $"Blob for device model '{deviceModelId}' not found.");
+                return DeviceModelImageOptions.DefaultImage;
+            }
         }
 
         public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file)

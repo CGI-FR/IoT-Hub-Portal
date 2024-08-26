@@ -1,13 +1,9 @@
 ﻿@page "/edge/models/{ModelID}"
 
-@using Microsoft.AspNetCore.Authorization
 @using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule
-@using System.Net.Http.Headers
 @using IoTHub.Portal.Models.v10
 @using IoTHub.Portal.Shared.Models.v10
 @using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using IoTHub.Portal.Shared.Constants
 
 
@@ -25,19 +21,19 @@
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4"> Edge Device Model</MudText>
 </MudTooltip>
 
-<MudForm Model="@EdgeModel" @ref="form" id="form">
+<MudForm Model="@EdgeModel" @ref="_form" id="form">
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
             <MudCard>
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
-                        <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@imageData" id="model-image" />
+                        <MudAvatar>
+                            <MudImage Src="@_imageData" />
                         </MudAvatar>
                     </div>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    @if (imageData != null)
+                    @if (_imageData != null && _imageData != DeviceModelImageOptions.DefaultImage)
                     {
                         <MudButton OnClick="DeleteAvatar" id="deleteAvatarButton" Color="Color.Error">Delete Picture</MudButton>
                     }
@@ -49,8 +45,8 @@
                 </MudCardActions>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel" id="deleteButton" Disabled="isProcessing">Delete model</MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel" id="deleteButton" Disabled="_isProcessing">Delete model</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="_isProcessing">Save Changes</MudButton>
             </MudItem>
         </MudItem>
 
@@ -271,116 +267,114 @@
     public Error Error { get; set; } = default!;
 
     [Parameter]
-    public string ModelID { get; set; } = default!;
+    public string ModelId { get; set; } = default!;
 
     private IoTEdgeModel EdgeModel { get; set; } = default!;
 
-    public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
-    public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
-    public IoTEdgeRouteValidator edgeRouteValidator = new IoTEdgeRouteValidator();
+    private readonly EdgeModelValidator _edgeModelValidator = new();
+    private readonly IoTEdgeModuleValidator _edgeModuleValidator = new();
+    private readonly IoTEdgeRouteValidator _edgeRouteValidator = new();
 
-    private bool isProcessing;
+    private bool _isProcessing;
 
-    private MudForm form = default!;
+    private MudForm _form = default!;
 
     private void Return() => NavigationManager.NavigateTo("/edge/models");
 
     // Used to manage the picture
-    private string? imageData = default!;
+    private string? _imageData = DeviceModelImageOptions.DefaultImage;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            isProcessing = true;
+            _isProcessing = true;
             EdgeModel = new IoTEdgeModel();
 
-            await loadModel();
-            this.imageData = await this.EdgeModelService.GetAvatar(this.ModelID);
+            await LoadModel();
+            _imageData = await EdgeModelService.GetAvatar(ModelId);
         }
         catch (ProblemDetailsException exception)
         {
-            Error?.ProcessProblemDetails(exception);
+            Error.ProcessProblemDetails(exception);
         }
         finally
         {
-            isProcessing = false;
+            _isProcessing = false;
         }
     }
 
-    private async Task loadModel()
+    private async Task LoadModel()
     {
-        this.EdgeModel = await this.EdgeModelService.GetIoTEdgeModel(this.ModelID);
+        EdgeModel = await EdgeModelService.GetIoTEdgeModel(ModelId);
     }
 
     private void DeleteAvatar()
     {
-        imageData = null;
+        _imageData = DeviceModelImageOptions.DefaultImage;
     }
 
     private async Task UploadFiles(InputFileChangeEventArgs e)
     {
-        var resizedImageFile = await e.File.RequestImageFileAsync(e.File.ContentType, 200, 200);
-        var buffer = new byte[resizedImageFile.Size];
-        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-
-        imageData = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        var file = await e.File.RequestImageFileAsync(e.File.ContentType, 200, 200);
+        _imageData = await file.ToBase64(e.File.ContentType);
     }
 
     private async Task Save()
     {
-        isProcessing = true;
+        _isProcessing = true;
 
         try
         {
             // Displays validation error message for each field
-            await form.Validate();
+            await _form.Validate();
 
-            if (!edgeModelValidator.Validate(this.EdgeModel).IsValid)
+            if (!(await _edgeModelValidator.ValidateAsync(EdgeModel)).IsValid)
             {
                 Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
-                isProcessing = false;
+                _isProcessing = false;
 
                 return;
             }
 
-            if (this.EdgeModel.EdgeModules.Any() && !edgeModuleValidator.Validate(this.EdgeModel.EdgeModules).IsValid)
+            if (EdgeModel.EdgeModules.Any() && !(await _edgeModuleValidator.ValidateAsync(EdgeModel.EdgeModules)).IsValid)
             {
                 Snackbar.Add("One or more validation errors occurred with the modules.", Severity.Error);
 
-                isProcessing = false;
+                _isProcessing = false;
 
                 return;
             }
 
-            if (this.EdgeModel.EdgeRoutes.Any() && !edgeRouteValidator.Validate(this.EdgeModel.EdgeRoutes).IsValid)
+            if (EdgeModel.EdgeRoutes.Any() && !(await _edgeRouteValidator.ValidateAsync(EdgeModel.EdgeRoutes)).IsValid)
             {
 
                 Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
 
-                isProcessing = false;
+                _isProcessing = false;
 
                 return;
             }
 
-            await this.EdgeModelService.UpdateIoTEdgeModel(this.EdgeModel);
+            await EdgeModelService.UpdateIoTEdgeModel(EdgeModel);
 
-            if (imageData is not null)
+            if (_imageData is not null)
             {
-                var imageContent = new StringContent(imageData);
-                await this.EdgeModelService.ChangeAvatar(this.EdgeModel.ModelId, imageContent);
+                var imageContent = new StringContent(_imageData);
+                await EdgeModelService.ChangeAvatar(EdgeModel.ModelId, imageContent);
             }
 
             Snackbar.Add("Edge model successfully updated.", Severity.Success);
+            NavigationManager.NavigateTo("/edge/models");
         }
         catch (ProblemDetailsException exception)
         {
-            Error?.ProcessProblemDetails(exception);
+            Error.ProcessProblemDetails(exception);
         }
         finally
         {
-            isProcessing = false;
+            _isProcessing = false;
         }
 
     }
@@ -394,38 +388,36 @@
     {
         var parameters = new DialogParameters();
 
-        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
         parameters.Add("Context", Context.Create);
         parameters.Add("EdgeModules", EdgeModel.EdgeModules);
 
-        await DialogService.Show<AwsGreengrassComponentDialog>(string.Empty, parameters, options).Result;
+        await (await DialogService.ShowAsync<AwsGreengrassComponentDialog>(string.Empty, parameters, options)).Result;
     }
 
     private async Task ShowAddEdgePublicModulesDialog()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("EdgeModules", EdgeModel.EdgeModules);
+        var parameters = new DialogParameters { { "EdgeModules", EdgeModel.EdgeModules } };
 
-        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
-        await DialogService.Show<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters, options).Result;
+        await (await DialogService.ShowAsync<AwsGreengrassPublicComponentsDialog>(string.Empty, parameters, options)).Result;
 
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task ShowEditEdgeModuleDialog(IoTEdgeModule module)
     {
-        var parameters = new DialogParameters();
-        parameters.Add("module", module);
+        var parameters = new DialogParameters { { "module", module } };
 
-        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
         if (Portal.CloudProvider.Equals(CloudProviders.Azure))
         {
             if (!string.IsNullOrWhiteSpace(module.ModuleName))
             {
-                await DialogService.Show<ModuleDialog>(module.ModuleName, parameters, options).Result;
+                await (await DialogService.ShowAsync<ModuleDialog>(module.ModuleName, parameters, options)).Result;
             }
         }
         else
@@ -433,7 +425,7 @@
             parameters.Add("Context", Context.Edit);
             parameters.Add("Module", module);
 
-            await DialogService.Show<AwsGreengrassComponentDialog>(module.ModuleName, parameters, options).Result;
+            await (await DialogService.ShowAsync<AwsGreengrassComponentDialog>(module.ModuleName, parameters, options)).Result;
         }
     }
 
@@ -444,22 +436,24 @@
 
     private async Task DeleteDeviceModel()
     {
-        isProcessing = true;
+        _isProcessing = true;
 
-        var parameters = new DialogParameters();
-        parameters.Add("deviceModelID", EdgeModel.ModelId);
-        parameters.Add("deviceModelName", EdgeModel.Name);
+        var parameters = new DialogParameters
+        {
+            { "deviceModelID", EdgeModel.ModelId },
+            { "deviceModelName", EdgeModel.Name }
+        };
 
-        var result = await this.DialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
+        var result = await (await DialogService.ShowAsync<DeleteEdgeModelDialog>("Confirm Deletion", parameters)).Result;
 
-        isProcessing = false;
+        _isProcessing = false;
 
         if (result.Canceled)
         {
             return;
         }
 
-        this.NavigationManager.NavigateTo("/edge/models");
+        NavigationManager.NavigateTo("/edge/models");
     }
 
     private void DeleteRoute(IoTEdgeRoute route)
@@ -471,7 +465,7 @@
     {
         var last = EdgeModel.EdgeRoutes.LastOrDefault();
 
-        if (EdgeModel.EdgeRoutes.Count == 0 || (last?.Name is not null && last?.Value is not null))
+        if (EdgeModel.EdgeRoutes.Count == 0 || (last?.Name is not null && last.Value is not null))
         {
             EdgeModel.EdgeRoutes.Add(new IoTEdgeRoute());
         }
@@ -479,16 +473,10 @@
 
     private async Task ShowSystemModuleDetail(EdgeModelSystemModule systemModule)
     {
-        var parameters = new DialogParameters();
-        parameters.Add("module", systemModule);
+        var parameters = new DialogParameters { { "module", systemModule } };
 
-        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
-        var result = await DialogService.Show<SystemModuleDialog>(systemModule.Name, parameters, options).Result;
-
-        if (result.Canceled)
-        {
-            return;
-        }
+        _ = await (await DialogService.ShowAsync<SystemModuleDialog>(systemModule.Name, parameters, options)).Result;
     }
 }

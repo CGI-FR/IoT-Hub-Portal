@@ -1,6 +1,4 @@
 ﻿@page "/device-models/{ModelID}"
-@using System.Net.Http.Headers
-@using IoTHub.Portal.Client.Pages.DeviceModels
 @using IoTHub.Portal.Client.Validators
 @using IoTHub.Portal.Models
 @using IoTHub.Portal.Models.v10
@@ -23,17 +21,19 @@
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Model</MudText>
 </MudTooltip>
 
-<MudForm Model="@Model" @ref="form" id="form">
+<MudForm Model="@Model" id="form">
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
             <MudCard>
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
-                        <MudAvatar Image="@imageData" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        <MudAvatar>
+                            <MudImage Src="@_imageData" />
+                        </MudAvatar>
                     </div>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    @if (imageData != null)
+                    @if (_imageData != null && _imageData != DeviceModelImageOptions.DefaultImage)
                     {
                         <MudButton OnClick="DeleteAvatar" Color="Color.Error" Disabled="Model.IsBuiltin">Delete Picture</MudButton>
                     }
@@ -45,13 +45,13 @@
                 </MudCardActions>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel" id="deleteButton" Disabled="isProcessing">Delete model</MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel" id="deleteButton" Disabled="_isProcessing">Delete model</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="_isProcessing">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
+                <MudTabPanel Text="General" Style=@(CheckGeneralValidation() ? "color: red": "")>
                     <MudExpansionPanels MultiExpansion="true" id="general">
                         <MudGrid>
                             <MudItem xs="12">
@@ -78,10 +78,10 @@
                                         <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
                                         <ChildContent>
                                             <MudItem xs="12">
-                                                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
                                             </MudItem>
                                             <MudItem xs="12">
-                                                @foreach (var item in this.Properties.OrderBy(x => x.Order))
+                                                @foreach (var item in Properties.OrderBy(x => x.Order))
                                                 {
                                                     <MudGrid id="@($"property-{item.Name}")">
                                                         <MudItem md="4" xs="12">
@@ -122,7 +122,7 @@
                                                             </MudSelect>
                                                         </MudItem>
                                                         <MudItem md="1" xs="3">
-                                                            <MudSwitch id="@nameof(item.IsWritable)" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
+                                                            <MudSwitch id="@nameof(item.IsWritable)" Value="@item.IsWritable" Color="Color.Secondary" />
                                                             <MudInputLabel>Writable</MudInputLabel>
                                                         </MudItem>
                                                         <MudItem md="1" xs="3">
@@ -152,7 +152,7 @@
                 </MudTabPanel>
                 @if (IsLoRa)
                 {
-                    <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
+                    <MudTabPanel Text="LoRaWAN" Style=@(CheckLoRaValidation() ? "color: red": "")>
                         <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModelDto)"
                                          Commands="Commands" />
                     </MudTabPanel>
@@ -166,23 +166,20 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    [Parameter]
-    public string ModelID { get; set; } = default!;
+    [Parameter] public string ModelId { get; set; } = default!;
 
-    private bool isProcessing;
-
-    private MudForm form = default!;
+    private bool _isProcessing;
 
     private void Return() => NavigationManager.NavigateTo("/device-models");
 
-    private DeviceModelValidator standardValidator = new DeviceModelValidator();
-    private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
-    private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
+    private readonly DeviceModelValidator _standardValidator = new();
+    private readonly LoRaDeviceModelValidator _loraValidator = new();
+    private readonly DevicePropertyValidator _propertiesValidator = new();
 
-    private List<DeviceModelCommandDto> Commands { get; set; } = new List<DeviceModelCommandDto>();
-    private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
+    private List<DeviceModelCommandDto> Commands { get; } = new();
+    private List<DeviceProperty> Properties { get; } = new();
 
-    private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
+    private readonly LoRaDeviceModelCommandValidator _commandValidator = new();
 
     [Parameter]
     [SupplyParameterFromQuery]
@@ -191,13 +188,13 @@
     {
         get
         {
-            return this.Model is LoRaDeviceModelDto;
+            return Model is LoRaDeviceModelDto;
         }
         set
         {
             if (value)
             {
-                this.SetLoRaDeviceModel();
+                SetLoRaDeviceModel();
                 return;
             }
 
@@ -209,26 +206,26 @@
     private void SetLoRaDeviceModel() => Model = new LoRaDeviceModelDto(Model);
 
     private void SetStandardDeviceModel() => Model = new DeviceModelDto
-        {
-            ModelId = Model.ModelId,
-            Name = Model.Name,
-            IsBuiltin = Model.IsBuiltin,
-            Description = Model.Description
-        };
+    {
+        ModelId = Model.ModelId,
+        Name = Model.Name,
+        IsBuiltin = Model.IsBuiltin,
+        Description = Model.Description
+    };
 
     private IDeviceModel Model { get; set; } = new DeviceModelDto
-        {
-            ModelId = Guid.NewGuid().ToString()
-        };
+    {
+        ModelId = Guid.NewGuid().ToString()
+    };
 
     // Used to manage the picture
-    private string? imageData = default!;
+    private string? _imageData = DeviceModelImageOptions.DefaultImage;
 
     private bool CheckLoRaValidation()
     {
-        if (IsLoRa && this.Model is LoRaDeviceModelDto loRaDeviceModel)
+        if (IsLoRa && Model is LoRaDeviceModelDto loRaDeviceModel)
         {
-            return !this.loraValidator.Validate(loRaDeviceModel).IsValid;
+            return !_loraValidator.Validate(loRaDeviceModel).IsValid;
         }
 
         return true;
@@ -236,9 +233,9 @@
 
     private bool CheckGeneralValidation()
     {
-        if (!IsLoRa && this.Model is DeviceModelDto deviceModel)
+        if (!IsLoRa && Model is DeviceModelDto deviceModel)
         {
-            return !this.standardValidator.Validate(deviceModel).IsValid;
+            return !_standardValidator.Validate(deviceModel).IsValid;
         }
 
         return CheckLoRaValidation();
@@ -248,51 +245,49 @@
     {
         try
         {
-            isProcessing = true;
+            _isProcessing = true;
 
             if (IsLoRa)
             {
-                Model = await LoRaWanDeviceModelsClientService.GetDeviceModel(ModelID);
-                Commands.AddRange(await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(ModelID));
-                imageData = await LoRaWanDeviceModelsClientService.GetAvatar(ModelID);
+                Model = await LoRaWanDeviceModelsClientService.GetDeviceModel(ModelId);
+                Commands.AddRange(await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(ModelId));
+                _imageData = await LoRaWanDeviceModelsClientService.GetAvatar(ModelId);
             }
             else
             {
-                Model = await DeviceModelsClientService.GetDeviceModel(ModelID);
-                Properties.AddRange(await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(ModelID));
-                imageData = await DeviceModelsClientService.GetAvatar(ModelID);
+                Model = await DeviceModelsClientService.GetDeviceModel(ModelId);
+                Properties.AddRange(await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(ModelId));
+                _imageData = await DeviceModelsClientService.GetAvatar(ModelId);
             }
         }
         catch (ProblemDetailsException exception)
         {
-            Error?.ProcessProblemDetails(exception);
+            Error.ProcessProblemDetails(exception);
         }
         finally
         {
-            isProcessing = false;
+            _isProcessing = false;
         }
     }
 
     private void DeleteAvatar()
     {
-        imageData = null;
+        _imageData = DeviceModelImageOptions.DefaultImage;
     }
 
     private async Task UploadFiles(InputFileChangeEventArgs e)
     {
-        var resizedImageFile = await e.File.RequestImageFileAsync(e.File.ContentType, 200, 200);
-        var buffer = new byte[resizedImageFile.Size];
-
-        imageData = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        var file = await e.File.RequestImageFileAsync(e.File.ContentType, 200, 200);
+        _imageData = await file.ToBase64(e.File.ContentType);
     }
 
     private async Task Save()
     {
-        isProcessing = true;
+        _isProcessing = true;
 
         // Used to check commands
-        bool duplicated = false;
-        bool cmdValidationError = false;
+        var duplicated = false;
+        var cmdValidationError = false;
 
         if (IsLoRa)
         {
@@ -310,23 +305,23 @@
             // Check validation error in commands
             foreach (var cmd in Commands)
             {
-                if (!CommandValidator.Validate(cmd).IsValid)
+                if (!(await _commandValidator.ValidateAsync(cmd)).IsValid)
                     cmdValidationError = true;
             }
         }
 
-        if (!IsLoRa ? !standardValidator.Validate((Model as DeviceModelDto)!).IsValid :
-            (!this.loraValidator.Validate((this.Model as LoRaDeviceModelDto)!).IsValid
+        if (!IsLoRa ? !(await _standardValidator.ValidateAsync((Model as DeviceModelDto)!)).IsValid :
+            (!(await _loraValidator.ValidateAsync((Model as LoRaDeviceModelDto)!)).IsValid
             || duplicated
             || cmdValidationError))
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
-            propertiesValidator.Validate(Properties).Errors.ForEach(x =>
+            (await _propertiesValidator.ValidateAsync(Properties)).Errors.ForEach(x =>
                 Snackbar.Add(x.ErrorMessage, Severity.Warning)
             );
 
-            isProcessing = false;
+            _isProcessing = false;
 
             return;
         }
@@ -346,9 +341,9 @@
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }
 
-            if (imageData is not null)
+            if (_imageData is not null)
             {
-                var imageContent = new StringContent(imageData);
+                var imageContent = new StringContent(_imageData);
                 if (IsLoRa)
                 {
                     await LoRaWanDeviceModelsClientService.ChangeAvatarAsync(Model.ModelId, imageContent);
@@ -366,27 +361,27 @@
         }
         catch (ProblemDetailsException exception)
         {
-            Error?.ProcessProblemDetails(exception);
+            Error.ProcessProblemDetails(exception);
         }
         finally
         {
-            isProcessing = false;
+            _isProcessing = false;
         }
 
     }
 
     private async Task DeleteDeviceModel()
     {
-        isProcessing = true;
+        _isProcessing = true;
 
         var parameters = new DialogParameters
         {
             {"deviceModelID", Model.ModelId},
             {"deviceModelName", Model.Name}
         };
-        var result = await DialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
+        var result = await (await DialogService.ShowAsync<DeleteDeviceModelPage>("Confirm Deletion", parameters)).Result;
 
-        isProcessing = false;
+        _isProcessing = false;
 
         if (result.Canceled)
         {

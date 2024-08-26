@@ -41,3 +41,13 @@
     display: block;
 }
 
+.mud-avatar.mud-avatar-medium {
+    height: 200px;
+    width: 200px;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+.mud-avatar.mud-avatar-medium > img {
+    object-fit: contain
+}
