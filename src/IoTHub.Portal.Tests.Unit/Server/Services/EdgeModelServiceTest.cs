@@ -51,11 +51,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var expectedEdgeDeviceModels = Fixture.CreateMany<EdgeDeviceModel>(3).ToList();
             var expectedIoTEdgeDeviceModelListItems = expectedEdgeDeviceModels.Select(model => Mapper.Map<IoTEdgeModelListItem>(model)).ToList();
-            var expectedImageUri = DeviceModelImageOptions.DefaultImage;
+            var expectedImage = DeviceModelImageOptions.DefaultImage;
 
             foreach (var item in expectedIoTEdgeDeviceModelListItems)
             {
-                item.Image = expectedImageUri;
+                item.Image = expectedImage;
             }
 
             var edgeModelFilter = new EdgeModelFilter
@@ -67,7 +67,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(expectedEdgeDeviceModels);
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
-                .Returns(expectedImageUri);
+                .Returns(expectedImage);
 
             // Act
             var result = await this.edgeDeviceModelService.GetEdgeModels(edgeModelFilter);
@@ -87,13 +87,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var expectedModules = Fixture.CreateMany<IoTEdgeModule>(2).ToList();
             var expectedRoutes = Fixture.CreateMany<IoTEdgeRoute>(2).ToList();
             var expectedSysModule = Fixture.CreateMany<EdgeModelSystemModule>(2).ToList();
-            var expectedImageUri = DeviceModelImageOptions.DefaultImage;
+            const string expectedImage = DeviceModelImageOptions.DefaultImage;
 
             var expectedEdgeDeviceModel = new IoTEdgeModel()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                Image = expectedImageUri,
+                Image = expectedImage,
                 Description = Guid.NewGuid().ToString(),
                 EdgeModules = expectedModules,
                 EdgeRoutes = expectedRoutes,
@@ -118,7 +118,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var expectedEdgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(expectedEdgeDeviceModel);
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
-                .Returns(expectedImageUri);
+                .Returns(expectedImage);
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), d => d.Labels))
                 .ReturnsAsync(expectedEdgeDeviceModelEntity);
@@ -151,13 +151,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var expectedModules = Fixture.CreateMany<IoTEdgeModule>(2).ToList();
 
-            var expectedImageUri = DeviceModelImageOptions.DefaultImage;
+            var expectedImage = DeviceModelImageOptions.DefaultImage;
 
             var expectedEdgeDeviceModel = new IoTEdgeModel()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                Image = expectedImageUri,
+                Image = expectedImage,
                 Description = Guid.NewGuid().ToString(),
                 EdgeModules = expectedModules
             };
@@ -180,7 +180,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var expectedEdgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(expectedEdgeDeviceModel);
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
-                .Returns(expectedImageUri);
+                .Returns(expectedImage);
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), d => d.Labels))
                 .ReturnsAsync(expectedEdgeDeviceModelEntity);
@@ -217,7 +217,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
 
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
-            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedImage = Fixture.Create<Uri>();
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync((EdgeDeviceModel)null);
@@ -246,7 +246,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
                     manager.SetDefaultImageToModel(It.IsAny<string>()))
-                .ReturnsAsync(expectedImageUri.ToString());
+                .ReturnsAsync(expectedImage.ToString());
 
             // Act
             await this.edgeDeviceModelService.CreateEdgeModel(edgeDeviceModel);
@@ -261,7 +261,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
 
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
-            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedImage = Fixture.Create<Uri>();
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync((EdgeDeviceModel)null);
@@ -277,7 +277,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
                     manager.SetDefaultImageToModel(It.IsAny<string>()))
-                .ReturnsAsync(expectedImageUri.ToString());
+                .ReturnsAsync(expectedImage.ToString());
 
             // Act
             await this.edgeDeviceModelService.CreateEdgeModel(edgeDeviceModel);
@@ -557,9 +557,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task GetEdgeDeviceModelAvatarShouldReturnEdgeDeviceModelAvatar()
         {
             // Arrange
-            var expectedImageUri = DeviceModelImageOptions.DefaultImage;
+            var expectedImage = DeviceModelImageOptions.DefaultImage;
             _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
-                .Returns(expectedImageUri);
+                .Returns(expectedImage);
 
             // Act
             var result = await this.edgeDeviceModelService.GetEdgeModelAvatar(Guid.NewGuid().ToString());

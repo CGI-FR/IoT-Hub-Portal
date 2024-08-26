@@ -42,11 +42,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         {
             // Arrange
             var expectedDeviceModels = Fixture.CreateMany<DeviceModel>(3).ToList();
-            var expectedImageUri = DeviceModelImageOptions.DefaultImage;
+            var expectedImage = DeviceModelImageOptions.DefaultImage;
             var expectedDeviceModelsDto = expectedDeviceModels.Select(model =>
             {
                 var deviceModelDto = Mapper.Map<DeviceModelDto>(model);
-                deviceModelDto.Image = expectedImageUri;
+                deviceModelDto.Image = expectedImage;
                 return deviceModelDto;
             }).ToList();
 
@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 });
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
-                .Returns(expectedImageUri);
+                .Returns(expectedImage);
 
             // Act
             var result = await this.deviceModelService.GetDeviceModels(filter);

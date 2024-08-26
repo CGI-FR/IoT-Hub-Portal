@@ -42,10 +42,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
-            var modelImageUri = DeviceModelImageOptions.DefaultImage;
+            const string modelImage = DeviceModelImageOptions.DefaultImage;
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == modelId)).Result)
-                .Returns(modelImageUri);
+                .Returns(modelImage);
 
             // Act
             var result = loRaDeviceTwinMapper.CreateDeviceDetails(twin, tagsNames);
@@ -61,7 +61,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
                 Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, tagName), result.Tags[tagName]);
             }
 
-            Assert.AreEqual(modelImageUri, result.Image);
+            Assert.AreEqual(modelImage, result.Image);
 
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString(), result.AppEUI);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString(), result.AppKey);
@@ -87,10 +87,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
-            var modelImageUri = DeviceModelImageOptions.DefaultImage;
+            const string modelImage = DeviceModelImageOptions.DefaultImage;
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == modelId)).Result)
-                .Returns(modelImageUri);
+                .Returns(modelImage);
 
             // Act
             var result = loRaDeviceTwinMapper.CreateDeviceDetails(twin, tagsNames);
@@ -103,7 +103,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.IsEmpty(result.Tags);
 
-            Assert.AreEqual(modelImageUri, result.Image);
+            Assert.AreEqual(modelImage, result.Image);
 
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString(), result.AppEUI);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString(), result.AppKey);
@@ -136,7 +136,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
-            Assert.AreEqual(modelImageUri, result.Image);
+            Assert.AreEqual(modelImage, result.Image);
 
             this.mockRepository.VerifyAll();
         }
@@ -152,10 +152,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
 
-            var modelImageUri = DeviceModelImageOptions.DefaultImage;
+            const string modelImage = DeviceModelImageOptions.DefaultImage;
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.GetDeviceModelImageAsync(It.Is<string>(x => x == modelId)).Result)
-                .Returns(modelImageUri);
+                .Returns(modelImage);
 
             // Act
             var result = loRaDeviceTwinMapper.CreateDeviceListItem(twin);
@@ -165,7 +165,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
-            Assert.AreEqual(modelImageUri, result.Image);
+            Assert.AreEqual(modelImage, result.Image);
 
             this.mockRepository.VerifyAll();
         }
