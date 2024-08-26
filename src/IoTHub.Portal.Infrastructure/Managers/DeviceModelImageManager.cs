@@ -9,20 +9,17 @@ namespace IoTHub.Portal.Infrastructure.Managers
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
+    using Domain;
+    using Domain.Exceptions;
+    using Domain.Options;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using StackExchange.Redis;
 
     public class DeviceModelImageManager : IDeviceModelImageManager
     {
         private readonly BlobServiceClient blobService;
         private readonly ILogger<DeviceModelImageManager> logger;
         private readonly ConfigHandler configHandler;
-        //private readonly IDatabase redisDb;
-        private readonly IOptions<DeviceModelImageOptions> deviceModelImageOptions;
 
         public DeviceModelImageManager(
             ILogger<DeviceModelImageManager> logger,
@@ -33,12 +30,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
             this.logger = logger;
             this.blobService = blobService;
             this.configHandler = configHandler;
-
-            // Todo Add Redis connection string to configuration
-            //var redisConnection = ConnectionMultiplexer.Connect("");
-            //redisDb = redisConnection.GetDatabase();
-
-            this.deviceModelImageOptions = BaseImageOption;
         }
 
         public async Task<string> GetDeviceModelImageAsync(string deviceModelId)
@@ -75,8 +66,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
 
-            //_ = redisDb.StringSet(deviceModelId, imageBase64);
-
             return DeviceModelImageOptions.DefaultImage;
         }
 
@@ -90,7 +79,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
             try
             {
                 _ = await blobClient.DeleteIfExistsAsync();
-                //_ = redisDb.KeyDeleteAsync(deviceModelId);
             }
             catch (RequestFailedException e)
             {
@@ -104,10 +92,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
             var blobClient = container.GetBlobClient(DeviceModelImageOptions.DefaultImageName);
 
             _ = await blobClient.UploadAsync(DeviceModelImageOptions.DefaultImageStream, overwrite: true);
-
-            //using var file = File.Open($"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}", FileMode.Open);
-
-            //_ = redisDb.StringSet(file.Name, ComputeImageBase64(new FormFile(file, 0, file.Length, string.Empty, file.Name)));
         }
 
         public async Task SyncImagesCacheControl()
