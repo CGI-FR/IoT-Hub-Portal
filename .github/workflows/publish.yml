@@ -155,7 +155,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create PR for template updates
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           base: 'arm/main'
           branch: 'arm/feature/update-templates'
