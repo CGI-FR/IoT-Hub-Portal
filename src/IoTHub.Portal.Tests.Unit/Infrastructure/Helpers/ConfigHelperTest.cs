@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
 {
+    using Configuration = Microsoft.Azure.Devices.Configuration;
+
     [TestFixture]
     public class ConfigHelperTest
     {

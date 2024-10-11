@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
+    using ConfigurationMetrics = Shared.Models.v10.ConfigurationMetrics;
+
     [TestFixture]
     public class DeviceConfigurationsClientServiceTests : BlazorUnitTest
     {

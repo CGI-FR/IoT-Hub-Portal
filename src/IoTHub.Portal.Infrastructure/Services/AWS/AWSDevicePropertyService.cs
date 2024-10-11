@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+
     public class AWSDevicePropertyService : IDevicePropertyService
     {
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;

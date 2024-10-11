@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Application.Services
 {
+    using Device = Microsoft.Azure.Devices.Device;
+
     public interface IExternalDeviceService
     {
         Task<ExternalDeviceModelDto> CreateDeviceModel(ExternalDeviceModelDto deviceModel);
@@ -11,7 +13,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<bool?> IsEdgeDeviceModel(ExternalDeviceModelDto deviceModel);
 
-        Task<AzureDevice> GetDevice(string deviceId);
+        Task<Device> GetDevice(string deviceId);
 
         Task<Twin> GetDeviceTwin(string deviceId);
 
@@ -23,7 +25,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<bool> CreateEdgeDevice(string deviceId);
 
-        Task<AzureDevice> UpdateDevice(AzureDevice device);
+        Task<Device> UpdateDevice(Device device);
 
         Task<Twin> UpdateDeviceTwin(Twin twin);
 

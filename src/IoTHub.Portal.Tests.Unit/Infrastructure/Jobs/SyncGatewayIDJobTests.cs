@@ -6,7 +6,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
     using IoTHub.Portal.Infrastructure.Jobs;
     using IoTHub.Portal.Shared.Models.v1._0;
     using Microsoft.Extensions.Logging;
-    using Quartz;
 
     public class SyncGatewayIDJobTests : BackendUnitTest
     {

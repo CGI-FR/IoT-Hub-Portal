@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Application.Services
 {
+    using Configuration = Microsoft.Azure.Devices.Configuration;
+
     public interface IConfigService
     {
         Task<IEnumerable<Configuration>> GetIoTEdgeConfigurations();

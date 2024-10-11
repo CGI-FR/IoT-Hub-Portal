@@ -3,6 +3,9 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
+    using LoRaDeviceTelemetry = Portal.Domain.Entities.LoRaDeviceTelemetry;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
+
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest
     {

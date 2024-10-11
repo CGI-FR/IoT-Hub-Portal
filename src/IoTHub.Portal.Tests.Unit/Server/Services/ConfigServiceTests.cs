@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
+    using Configuration = Microsoft.Azure.Devices.Configuration;
+
     [TestFixture]
     public class ConfigServiceTests
     {

@@ -3,17 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 {
-    using System.Linq.Expressions;
-    using Amazon.GreengrassV2;
-    using Amazon.GreengrassV2.Model;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using Amazon.IotData;
-    using Amazon.IotData.Model;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Infrastructure.Jobs.AWS;
-    using Quartz;
+    using Device = Portal.Domain.Entities.Device;
 
     public class SyncThingsJobTests : BackendUnitTest
     {

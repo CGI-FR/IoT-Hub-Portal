@@ -4,10 +4,8 @@
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
     using System.IO;
-    using System.Linq.Expressions;
     using AutoMapper;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Http;

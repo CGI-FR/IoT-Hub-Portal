@@ -5,12 +5,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 {
     using System.IO;
     using System.Text;
-    using Amazon.GreengrassV2;
-    using Amazon.GreengrassV2.Model;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
     using AutoMapper;
-    using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Services.AWS;
     using Newtonsoft.Json.Linq;
 

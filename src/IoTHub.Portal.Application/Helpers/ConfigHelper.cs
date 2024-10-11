@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Application.Helpers
 {
+    using Configuration = Microsoft.Azure.Devices.Configuration;
+
     public static class ConfigHelper
     {
         /// <summary>

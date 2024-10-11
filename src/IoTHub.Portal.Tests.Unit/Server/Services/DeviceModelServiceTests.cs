@@ -3,6 +3,9 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
+    using ResourceAlreadyExistsException = Portal.Domain.Exceptions.ResourceAlreadyExistsException;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
+
     [TestFixture]
     public class DeviceModelServiceTests : BackendUnitTest
     {

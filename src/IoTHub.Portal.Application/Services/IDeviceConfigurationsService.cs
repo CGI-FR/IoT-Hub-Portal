@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Application.Services
 {
+    using ConfigurationMetrics = Shared.Models.v10.ConfigurationMetrics;
+
     public interface IDeviceConfigurationsService
     {
         Task<IEnumerable<ConfigListItem>> GetDeviceConfigurationListAsync();

@@ -3,12 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using Amazon.IotData;
-    using Amazon.IotData.Model;
     using AutoMapper;
-    using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Services.AWS;
     using EntityFramework.Exceptions.Common;
     using Microsoft.EntityFrameworkCore;

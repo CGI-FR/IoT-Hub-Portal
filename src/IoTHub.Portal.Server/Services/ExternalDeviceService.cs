@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Server.Services
 {
+    using Device = Microsoft.Azure.Devices.Device;
+
     public class ExternalDeviceService : IExternalDeviceService
     {
         private readonly RegistryManager registryManager;
@@ -241,7 +243,7 @@ namespace IoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="deviceId">Device id.</param>
         /// <returns>Device.</returns>
-        public async Task<AzureDevice> GetDevice(string deviceId)
+        public async Task<Device> GetDevice(string deviceId)
         {
             try
             {
@@ -322,7 +324,7 @@ namespace IoTHub.Portal.Server.Services
         /// <returns>BulkRegistryOperation.</returns>
         public async Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled = DeviceStatus.Disabled)
         {
-            var device = new AzureDevice(deviceId)
+            var device = new Device(deviceId)
             {
                 Capabilities = new DeviceCapabilities { IotEdge = isEdge },
                 Status = isEnabled
@@ -359,7 +361,7 @@ namespace IoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="Device">the Device id.</param>
         /// <returns>the updated Device.</returns>
-        public async Task<AzureDevice> UpdateDevice(AzureDevice Device)
+        public async Task<Device> UpdateDevice(Device Device)
         {
             try
             {

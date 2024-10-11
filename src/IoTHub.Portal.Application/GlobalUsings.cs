@@ -35,8 +35,4 @@ global using Microsoft.Azure.Devices.Provisioning.Service;
 global using Microsoft.Azure.Devices.Shared;
 global using Microsoft.Extensions.DependencyInjection;
 global using Newtonsoft.Json.Linq;
-global using Configuration = Microsoft.Azure.Devices.Configuration;
-global using ConfigurationMetrics = IoTHub.Portal.Shared.Models.v10.ConfigurationMetrics;
-global using AzureDevice = Microsoft.Azure.Devices.Device;
-global using Device = IoTHub.Portal.Domain.Entities.Device;
 global using Stream = System.IO.Stream;

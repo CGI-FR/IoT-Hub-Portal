@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
+    using Device = Domain.Entities.Device;
+
     public class PortalDbContext : DbContext, IDataProtectionKeyContext
     {
         public DbSet<DeviceModelProperty> DeviceModelProperties { get; set; }

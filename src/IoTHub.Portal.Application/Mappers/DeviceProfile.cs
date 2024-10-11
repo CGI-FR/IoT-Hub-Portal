@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
+    using Device = Domain.Entities.Device;
+
     public class DeviceProfile : Profile
     {
         public DeviceProfile()

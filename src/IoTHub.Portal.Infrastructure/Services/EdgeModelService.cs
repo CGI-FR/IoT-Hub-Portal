@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Infrastructure.Services
 {
     using ResourceAlreadyExistsException = Domain.Exceptions.ResourceAlreadyExistsException;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class EdgeModelService : IEdgeModelService
     {

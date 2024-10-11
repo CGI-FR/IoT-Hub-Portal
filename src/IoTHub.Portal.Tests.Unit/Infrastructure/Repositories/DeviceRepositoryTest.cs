@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Infrastructure.Repositories;
+    using Device = Portal.Domain.Entities.Device;
 
     public class DeviceRepositoryTest : BackendUnitTest
     {

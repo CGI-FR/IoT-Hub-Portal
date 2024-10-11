@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Infrastructure.Repositories;
+    using LoRaDeviceTelemetry = Portal.Domain.Entities.LoRaDeviceTelemetry;
 
     public class LoRaDeviceTelemetryRepositoryTests : BackendUnitTest
     {

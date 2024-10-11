@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 {
-    using System.Linq.Expressions;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Infrastructure.Jobs.AWS;
-    using Quartz;
-
     public class SyncThingTypesJobTests : BackendUnitTest
     {
         private IJob syncThingTypesJob;

@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
+
     [TestFixture]
     public class DeviceModelPropertiesServiceTests : BackendUnitTest
     {

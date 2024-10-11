@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Infrastructure.Repositories;
-
     public class LorawanDeviceRepositoryTest : BackendUnitTest
     {
         private LorawanDeviceRepository lorawanDeviceRepository;

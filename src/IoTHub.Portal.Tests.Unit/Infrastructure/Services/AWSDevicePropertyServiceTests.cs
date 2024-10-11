@@ -5,17 +5,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
     using System.IO;
     using System.Text;
-    using Amazon.GreengrassV2;
-    using Amazon.IoT;
-    using Amazon.IotData;
-    using Amazon.IotData.Model;
     using AutoMapper;
     using Azure;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Services.AWS;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
+    using Device = Portal.Domain.Entities.Device;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]

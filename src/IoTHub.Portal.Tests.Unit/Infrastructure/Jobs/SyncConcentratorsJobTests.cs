@@ -3,11 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
-    using System.Linq.Expressions;
-    using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Jobs;
     using Microsoft.Azure.Devices.Shared;
-    using Quartz;
 
     public class SyncConcentratorsTests : BackendUnitTest
     {

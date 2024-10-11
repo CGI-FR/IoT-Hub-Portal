@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+
     internal class AwsDeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
         where TModel : class, IDeviceModel

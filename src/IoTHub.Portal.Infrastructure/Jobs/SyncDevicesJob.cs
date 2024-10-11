@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs
 {
+    using Device = Domain.Entities.Device;
+
     [DisallowConcurrentExecution]
     public class SyncDevicesJob : IJob
     {

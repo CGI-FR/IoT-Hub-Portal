@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Domain.Services
 {
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
+
     [TestFixture]
     public class LoRaWANCommandServiceTests : BackendUnitTest
     {

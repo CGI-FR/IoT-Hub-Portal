@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+
     public abstract class EdgeDevicesServiceBase
     {
         private readonly IDeviceTagService deviceTagService;

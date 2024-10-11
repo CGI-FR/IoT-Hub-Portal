@@ -3,6 +3,9 @@
 
 namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
+    using Configuration = Microsoft.Azure.Devices.Configuration;
+    using Tag = Amazon.IoT.Model.Tag;
+
     public class AwsConfigService : IConfigService
     {
         private readonly IAmazonGreengrassV2 greengrass;

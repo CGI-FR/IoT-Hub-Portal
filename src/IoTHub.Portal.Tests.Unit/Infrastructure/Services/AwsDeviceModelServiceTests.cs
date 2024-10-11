@@ -7,13 +7,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using IoTHub.Portal.Infrastructure.Services;
     using IoTHub.Portal.Shared.Models.v1._0;
     using IoTHub.Portal.Shared.Models.v10.Filters;
-    using System.Linq.Expressions;
-    using IoTHub.Portal.Domain.Shared;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Domain.Exceptions;
     using Microsoft.AspNetCore.Http;
     using System.IO;
-    using IoTHub.Portal.Domain.Repositories;
 
     [TestFixture]
     public class AwsDeviceModelServiceTests : BackendUnitTest

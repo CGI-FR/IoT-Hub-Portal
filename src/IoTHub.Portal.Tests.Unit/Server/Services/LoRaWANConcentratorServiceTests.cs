@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
     using Device = Microsoft.Azure.Devices.Device;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
     public class LoRaWANConcentratorServiceTests : BackendUnitTest

@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Application.Mappers.AWS
 {
+    using Device = Domain.Entities.Device;
+
     public class AWSDeviceThingProfile : Profile
     {
         public AWSDeviceThingProfile()

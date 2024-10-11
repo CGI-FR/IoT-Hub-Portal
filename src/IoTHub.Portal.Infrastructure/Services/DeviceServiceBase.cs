@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
+    using Device = Domain.Entities.Device;
+
     public abstract class DeviceServiceBase<TDto> : IDeviceService<TDto>
         where TDto : IDeviceDetails
     {

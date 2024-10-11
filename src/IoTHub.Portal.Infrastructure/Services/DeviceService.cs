@@ -3,6 +3,9 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
+    using Device = Domain.Entities.Device;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+
     public class DeviceService : DeviceServiceBase<DeviceDetails>
     {
         private readonly IMapper mapper;

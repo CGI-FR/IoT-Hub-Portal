@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+
     public class AWSDeviceService : DeviceService
     {
         private readonly IMapper mapper;

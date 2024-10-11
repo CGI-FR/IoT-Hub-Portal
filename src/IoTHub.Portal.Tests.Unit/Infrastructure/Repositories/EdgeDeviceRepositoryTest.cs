@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Infrastructure.Repositories;
-
     public class EdgeDeviceRepositoryTest : BackendUnitTest
     {
         private EdgeDeviceRepository edgeDeviceRepository;

@@ -3,7 +3,9 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using ResourceAlreadyExistsException = Amazon.IoT.Model.ResourceAlreadyExistsException;
+    using Device = Microsoft.Azure.Devices.Device;
+    using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
+    using Tag = Amazon.IoT.Model.Tag;
 
     public class AwsExternalDeviceService : IExternalDeviceService
     {
@@ -58,13 +60,13 @@ namespace IoTHub.Portal.Infrastructure.Services
 
                 return deviceModel;
             }
-            catch (ResourceAlreadyExistsException e)
+            catch (Amazon.IoT.Model.ResourceAlreadyExistsException e)
             {
                 throw new Domain.Exceptions.ResourceAlreadyExistsException($"Device Model already exists. Unable to create the device model {deviceModel.Name}: {e.Message}", e);
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException($"Unable to create the device model {deviceModel.Name}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to create the device model {deviceModel.Name}: {e.Message}", e);
             }
         }
 
@@ -94,7 +96,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     ThingName = deviceId
                 });
             }
-            catch (ResourceNotFoundException e)
+            catch (Amazon.IotData.Model.ResourceNotFoundException e)
             {
                 this.logger.LogWarning(e, "Unable to delete the thing because it doesn't exist");
             }
@@ -120,7 +122,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                         ThingGroupName = deviceModel.Name
                     });
                 }
-                catch (ResourceNotFoundException e)
+                catch (Amazon.IotData.Model.ResourceNotFoundException e)
                 {
                     throw new Domain.Exceptions.ResourceNotFoundException($"Thing Group not found. Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
                 }
@@ -130,7 +132,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 }
 
             }
-            catch (ResourceNotFoundException e)
+            catch (Amazon.IotData.Model.ResourceNotFoundException e)
             {
                 throw new Domain.Exceptions.ResourceNotFoundException($"Thing type not Found. Unable to deprecate the device model {deviceModel.Name}: {e.Message}", e);
             }
@@ -298,7 +300,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
         }
 
-        public Task<AzureDevice> GetDevice(string deviceId)
+        public Task<Device> GetDevice(string deviceId)
         {
             throw new NotImplementedException();
         }
@@ -354,7 +356,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                             ThingName = device.ThingName,
                         });
                     }
-                    catch (ResourceNotFoundException e)
+                    catch (Amazon.IotData.Model.ResourceNotFoundException e)
                     {
                         this.logger.LogInformation($"Cannot import device '{device.ThingName}' since it doesn't have related classic thing shadow", e);
                         continue;
@@ -466,7 +468,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
         }
 
-        public Task<AzureDevice> UpdateDevice(AzureDevice device)
+        public Task<Device> UpdateDevice(Device device)
         {
             throw new NotImplementedException();
         }
@@ -487,7 +489,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
                 _ = await this.amazonIoTClient.DescribeThingGroupAsync(dynamicThingGroup);
             }
-            catch (ResourceNotFoundException)
+            catch (Amazon.IotData.Model.ResourceNotFoundException)
             {
                 _ = await this.amazonIoTClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
                 {

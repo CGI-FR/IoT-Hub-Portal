@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.ServicesHealthCheck
 {
+    using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
+
     public static class HealthCheckResponseWriter
     {
         public static async Task WriteHealthReport(HttpContext context, HealthReport healthReport)

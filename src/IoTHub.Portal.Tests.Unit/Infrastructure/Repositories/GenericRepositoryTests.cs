@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Infrastructure.Repositories;
     using Microsoft.EntityFrameworkCore;
 
     [TestFixture]

@@ -3,6 +3,9 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
+    using JsonSerializer = System.Text.Json.JsonSerializer;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+
     public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>
     {
         private readonly ILogger<LoRaWanDeviceService> logger;
@@ -154,7 +157,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                         }
                 });
 
-                if (eventAuthMethod.Scope != ConnectionAuthScope.Device)
+                if (eventAuthMethod.Scope != ConnectionAuthMethod.ConnectionAuthScope.Device)
                 {
                     this.logger.LogTrace($"Event wasn't issued by a device. Skipping this event.");
                     return;
