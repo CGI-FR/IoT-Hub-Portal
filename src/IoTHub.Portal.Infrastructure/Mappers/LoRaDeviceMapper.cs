@@ -35,6 +35,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
+                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId)),
                 GatewayID = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.GatewayID)),
                 SensorDecoder =
                     DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.SensorDecoder)),
@@ -147,6 +148,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                     .Result,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
+                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId)),
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 SupportLoRaFeatures =
                     bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ??
@@ -163,6 +165,8 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             DeviceHelper.SetTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures), "true");
 
             DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
+
+            DeviceHelper.SetTagValue(twin, nameof(item.LayerId), item.LayerId ?? string.Empty);
 
             // Update OTAA settings
             DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI);
