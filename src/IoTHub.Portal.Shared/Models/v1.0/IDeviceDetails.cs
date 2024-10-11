@@ -28,7 +28,7 @@ namespace IoTHub.Portal.Shared.Models
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; }
+        public string Image { get; set; }
 
         /// <summary>
         ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
@@ -54,5 +54,10 @@ namespace IoTHub.Portal.Shared.Models
         /// Labels
         /// </summary>
         public List<LabelDto> Labels { get; set; }
+
+        /// <summary>
+        /// The LayerId of the device.
+        /// </summary>
+        public string? LayerId { get; set; }
     }
 }

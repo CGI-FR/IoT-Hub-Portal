@@ -30,9 +30,9 @@ namespace IoTHub.Portal.Client.Validators
                     .NotEmpty()
                     .WithMessage("Module name is required.");
 
-                    _ = c.RuleFor(x => x.ImageURI)
+                    _ = c.RuleFor(x => x.Image)
                     .NotEmpty()
-                    .WithMessage("Image uri is required.");
+                    .WithMessage("Image is required.");
                 });
         }
     }

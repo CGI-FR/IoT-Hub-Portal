@@ -1,0 +1,41 @@
+﻿@inject ISnackbar Snackbar
+@inject ILayerClientService LayerService
+
+<MudDialog>
+    <DialogContent>
+        <p>Delete @layerName ?</p>
+        <br />
+        <p><i>Warning : this cannot  be undone.</i></p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" id="cancelButton">Cancel</MudButton>
+        <MudButton Color="Color.Primary" id="deleteButton" OnClick="DeleteModel">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string layerId { get; set; } = default!;
+    [Parameter] public string layerName { get; set; } = default!;
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task DeleteModel()
+    {
+        try
+        {
+            await this.LayerService.DeleteLayer(layerId);
+
+            Snackbar.Add($"Device model {layerName} has been successfully deleted!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+}

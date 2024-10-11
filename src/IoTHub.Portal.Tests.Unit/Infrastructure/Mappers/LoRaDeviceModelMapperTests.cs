@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using Azure.Data.Tables;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using Models.v10.LoRaWAN;
-
     [TestFixture]
     public class LoRaDeviceModelMapperTests
     {
@@ -24,8 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
         private LoRaDeviceModelMapper CreateLoRaDeviceModelMapper()
         {
-            return new LoRaDeviceModelMapper(
-                this.mockDeviceModelImageManager.Object);
+            return new LoRaDeviceModelMapper();
         }
 
         [TestCase(false, false)]
@@ -36,16 +31,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
         {
             // Arrange
             var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
-            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var expectedModelImageUri = new Uri($"https://fake.local/{entity.RowKey}");
-
-            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
-                .Returns(expectedModelImageUri);
-
-            entity[nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin;
-            entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora;
-            entity[nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE";
-            entity[nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION";
+            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString())
+            {
+                [nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin,
+                [nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora,
+                [nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE",
+                [nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION"
+            };
 
             // Act
             var result = loRaDeviceModelMapper.CreateDeviceModelListItem(entity);
@@ -69,17 +61,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
         {
             // Arrange
             var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
-            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var expectedModelImageUri = new Uri($"https://fake.local/{entity.RowKey}");
-
-            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
-                .Returns(expectedModelImageUri);
-
-            entity[nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin;
-            entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora;
-            entity[nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE";
-            entity[nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION";
-            entity[nameof(LoRaDeviceModelDto.SensorDecoder)] = "FAKE SENSORDECODERURL";
+            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString())
+            {
+                [nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin,
+                [nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora,
+                [nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE",
+                [nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION",
+                [nameof(LoRaDeviceModelDto.SensorDecoder)] = "FAKE SENSORDECODERURL"
+            };
 
             // Act
             var result = loRaDeviceModelMapper.CreateDeviceModel(
@@ -109,7 +98,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
-                ImageUrl = new Uri("http://fake.local"),
+                Image = DeviceModelImageOptions.DefaultImage,
                 SensorDecoder = Guid.NewGuid().ToString(),
                 IsBuiltin = isBuiltin
             };

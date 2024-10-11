@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    internal interface IDevice
+    public interface IDevice
     {
         /// <summary>
         /// The device Identifier.
@@ -39,5 +39,10 @@ namespace IoTHub.Portal.Domain.Entities
         /// The device labels.
         /// </summary>
         public ICollection<Label> Labels { get; set; }
+
+        /// <summary>
+        /// The LayerId of the device.
+        /// </summary>
+        public string? LayerId { get; set; }
     }
 }

@@ -1,0 +1,18 @@
+﻿@page "/planning/new"
+
+@using IoTHub.Portal.Shared.Models.v10
+@using IoTHub.Portal.Client.Components.Planning
+@using IoTHub.Portal.Shared.Constants
+
+<EditPlanning planning=@Planning scheduleList=@ScheduleList mode="New" />
+
+@code {
+    public List<ScheduleDto> ScheduleList { get; set; } = new List<ScheduleDto> {};
+    public PlanningDto Planning { get; set; } = new PlanningDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Planning.DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday;
+        ScheduleList.Add(new ScheduleDto { Start = "00:00" });
+    }
+}

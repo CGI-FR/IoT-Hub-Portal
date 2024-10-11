@@ -109,7 +109,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("running", result.Status);
-            Assert.AreEqual("image_test", result.ImageURI);
+            Assert.AreEqual("image_test", result.Image);
             Assert.AreEqual(expectedContainerCreateOptions, result.ContainerCreateOptions);
             Assert.AreEqual(1, result.EnvironmentVariables.Count);
         }
@@ -159,7 +159,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                     {
                         ModuleName = expectedModuleName,
                         Status = "running",
-                        ImageURI = "image",
+                        Image = "image",
                         ContainerCreateOptions = expectedContainerCreateOptions,
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {
@@ -172,7 +172,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                 {
                     new EdgeModelSystemModule("edgeAgent")
                     {
-                        ImageUri = "image",
+                        Image = "image",
                         ContainerCreateOptions = Guid.NewGuid().ToString(),
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {
@@ -181,7 +181,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                     },
                     new EdgeModelSystemModule("edgeHub")
                     {
-                        ImageUri = "image",
+                        Image = "image",
                         ContainerCreateOptions = Guid.NewGuid().ToString(),
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {

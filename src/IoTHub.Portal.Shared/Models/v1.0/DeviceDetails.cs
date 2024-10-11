@@ -36,7 +36,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
@@ -67,5 +67,10 @@ namespace IoTHub.Portal.Models.v10
         /// Labels
         /// </summary>
         public List<LabelDto> Labels { get; set; } = new();
+
+        /// <summary>
+        /// The LayerId of the device.
+        /// </summary>
+        public string? LayerId { get; set; } = default!;
     }
 }

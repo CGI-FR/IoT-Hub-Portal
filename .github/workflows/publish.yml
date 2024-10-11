@@ -23,7 +23,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.1
 
       - id: docker-tag
         uses: yuya-takeyama/docker-tag-from-github-ref-action@v1
@@ -72,13 +72,13 @@ jobs:
 
       - name: Build and push
         # You may pin to the exact commit or the version.
-        uses: docker/build-push-action@v6.7.0
+        uses: docker/build-push-action@v6.9.0
         with:
           # Build's context is the set of files located in the specified PATH or URL
           context: src/
           # Push is a shorthand for --output=type=registry
           push: true
-          build-args: | 
+          build-args: |
             BUILD_VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
             GITHUB_RUN_NUMBER=${{ github.run_number }}
           tags: 
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.1
 
       - name: Get semver
         id: version
@@ -101,12 +101,12 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
       
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.1
         with:
           path: IoT-Hub-Portal
           submodules: recursive
 
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.1
         with:
          ref: arm/main
          path: arm-templates
@@ -155,7 +155,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create PR for template updates
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           base: 'arm/main'
           branch: 'arm/feature/update-templates'
@@ -166,5 +166,6 @@ jobs:
           labels: |
             arm-templates
             automated pr
-          body: | 
+          body: |
             Automated changes to the Azure templates.
+

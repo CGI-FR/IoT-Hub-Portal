@@ -31,7 +31,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         {
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                    service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
@@ -59,7 +59,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             };
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                    service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
@@ -95,7 +95,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             };
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                    service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
@@ -122,7 +122,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         {
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                    service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -137,7 +137,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         {
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                    service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
@@ -156,7 +156,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         {
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                    service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
@@ -192,7 +192,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             var modelId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                    service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = modelId, Name = Guid.NewGuid().ToString() } } });
 
             _ = MockHttpClient

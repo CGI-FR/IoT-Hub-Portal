@@ -16,12 +16,12 @@
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
                         <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@imageDataUrl" id="@(nameof(IoTEdgeModel.ImageUrl))" />
+                            <MudImage Src="@imageData" id="model-image" />
                         </MudAvatar>
                     </div>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    @if (imageDataUrl != null)
+                    @if (imageData != null)
                     {
                         <MudButton OnClick="DeleteAvatar" id="deleteAvatarBtn" Color="Color.Error">Delete Picture</MudButton>
                     }
@@ -85,7 +85,7 @@
                                                             <MudTextField id=@nameof(EdgeModelSystemModule.Name) @bind-Value="@sysModule.Name" Margin="Margin.Dense" Label="Module name" For="@(() => sysModule.Name )" Variant="Variant.Outlined" Disabled />
                                                         </MudTd>
                                                         <MudTd DataLabel="System module Image URI" Style="word-break: break-all;">
-                                                            <MudTextField id=@nameof(EdgeModelSystemModule.ImageUri) @bind-Value="@sysModule.ImageUri" Margin="Margin.Dense" Label="Image URI" For="@(() => sysModule.ImageUri )" Variant="Variant.Outlined" />
+                                                            <MudTextField id=@($"{nameof(EdgeModelSystemModule.Name)}-image") @bind-Value="@sysModule.Image" Margin="Margin.Dense" Label="Image" For="@(() => sysModule.Image )" Variant="Variant.Outlined" />
                                                         </MudTd>
                                                         <MudTd DataLabel="See detail" Style="text-align: center;">
                                                             <MudButton Variant="Variant.Filled" id="@("editSystModuleButton_"+sysModule.Name)" OnClick="@(async () => await ShowSystemModuleDetail(sysModule))">Detail</MudButton>
@@ -121,7 +121,7 @@
                                                             <MudTextField id="@(nameof(IoTEdgeModule.ModuleName))" @bind-Value="@moduleContext.ModuleName" Margin="Margin.Dense" Label="Module name" For="@(() => moduleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
                                                         </MudTd>
                                                         <MudTd DataLabel="module Image URI" Style="word-break: break-all;">
-                                                            <MudTextField id="@(nameof(IoTEdgeModule.ImageURI))" @bind-Value="@moduleContext.ImageURI" Margin="Margin.Dense" Label="Image URI" For="@(() => moduleContext.ImageURI )" Variant="Variant.Outlined" Required="true" />
+                                                            <MudTextField id="@(nameof(IoTEdgeModule.Image))" @bind-Value="@moduleContext.Image" Margin="Margin.Dense" Label="Image" For="@(() => moduleContext.Image )" Variant="Variant.Outlined" Required="true" />
                                                         </MudTd>
                                                         <MudTd DataLabel="See detail" Style="text-align: center;">
                                                             <MudButton Variant="Variant.Filled" id="editButton" OnClick="@(async () => await ShowAddEdgeModuleDialog(moduleContext))">Detail</MudButton>
@@ -269,32 +269,20 @@
         };
 
     // Used to manage the picture
-    private MultipartFormDataContent? content = default!;
-    private string? imageDataUrl = default!;
+    private string? imageData = default!;
 
     private void DeleteAvatar()
     {
-        content = null;
-        imageDataUrl = null;
+        imageData = null;
     }
 
     private async Task UploadFiles(InputFileChangeEventArgs e)
     {
-        content = new MultipartFormDataContent();
-
         var resizedImageFile = await e.File.RequestImageFileAsync(e.File.ContentType, 200, 200);
-
-        var fileContent = new StreamContent(resizedImageFile.OpenReadStream());
-        fileContent.Headers.ContentType = new MediaTypeHeaderValue(e.File.ContentType);
-
-        content.Add(content: fileContent,
-                      name: "\"file\"",
-                      fileName: e.File.Name);
-
         var buffer = new byte[resizedImageFile.Size];
         await resizedImageFile.OpenReadStream().ReadAsync(buffer);
 
-        imageDataUrl = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        imageData = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
     }
 
     private void AddModule()
@@ -406,9 +394,10 @@
 
             await EdgeModelService.CreateIoTEdgeModel(Model);
 
-            if (content is not null)
+            if (imageData is not null)
             {
-                await EdgeModelService.ChangeAvatar(Model.ModelId, content);
+                var imageContent = new StringContent(imageData);
+                await EdgeModelService.ChangeAvatar(Model.ModelId, imageContent);
             }
 
             this.Snackbar.Add("Device model successfully created.", Severity.Success);

@@ -82,13 +82,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModelDto>();
-            var expectedAvatar = Fixture.Create<string>();
+            var expectedAvatar = DeviceModelImageOptions.DefaultImage;
 
-            _ = this.mockDeviceModelService.Setup(service => service.UpdateDeviceModelAvatar(deviceModel.ModelId, It.IsAny<IFormFile>()))
+            _ = this.mockDeviceModelService.Setup(service => service.UpdateDeviceModelAvatar(deviceModel.ModelId, It.IsAny<string>()))
                 .ReturnsAsync(expectedAvatar);
 
             // Act
-            var response = await this.deviceModelsController.ChangeAvatar(deviceModel.ModelId, MockRepository.Create<IFormFile>().Object);
+            var response = await this.deviceModelsController.ChangeAvatar(deviceModel.ModelId, DeviceModelImageOptions.DefaultImage);
 
             // Assert
             _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(expectedAvatar);

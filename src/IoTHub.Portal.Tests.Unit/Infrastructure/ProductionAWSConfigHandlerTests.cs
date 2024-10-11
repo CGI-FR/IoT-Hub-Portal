@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using System.Reflection;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure;
-    using Microsoft.Extensions.Configuration;
-
     [TestFixture]
     public class ProductionAWSConfigHandlerTests
     {
@@ -23,7 +18,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
         }
 
-        private ProductionAWSConfigHandler CreateProductionAWSConfigHandler()
+        public ProductionAWSConfigHandler CreateProductionAWSConfigHandler()
         {
             return new ProductionAWSConfigHandler(this.mockConfiguration.Object);
         }

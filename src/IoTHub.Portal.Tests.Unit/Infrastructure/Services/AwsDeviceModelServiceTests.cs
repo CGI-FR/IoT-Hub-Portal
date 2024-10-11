@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using AutoMapper;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Domain.Exceptions;
-    using Microsoft.AspNetCore.Http;
-    using System.IO;
-
     [TestFixture]
     public class AwsDeviceModelServiceTests : BackendUnitTest
     {
@@ -51,11 +42,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         {
             // Arrange
             var expectedDeviceModels = Fixture.CreateMany<DeviceModel>(3).ToList();
-            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedImage = DeviceModelImageOptions.DefaultImage;
             var expectedDeviceModelsDto = expectedDeviceModels.Select(model =>
             {
                 var deviceModelDto = Mapper.Map<DeviceModelDto>(model);
-                deviceModelDto.ImageUrl = expectedImageUri;
+                deviceModelDto.Image = expectedImage;
                 return deviceModelDto;
             }).ToList();
 
@@ -79,8 +70,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                     TotalCount = 10
                 });
 
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(expectedImageUri);
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
+                .Returns(expectedImage);
 
             // Act
             var result = await this.deviceModelService.GetDeviceModels(filter);
@@ -244,15 +235,15 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         {
             // Arrange
             var deviceModelDto = Fixture.Create<DeviceModelDto>();
-            var expectedAvatarUrl = Fixture.Create<Uri>();
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(deviceModelDto.ModelId))
+            var expectedAvatarUrl = DeviceModelImageOptions.DefaultImage;
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(deviceModelDto.ModelId).Result)
                 .Returns(expectedAvatarUrl);
 
             // Act
             var result = await this.deviceModelService.GetDeviceModelAvatar(deviceModelDto.ModelId);
 
             // Assert
-            _ = result.Should().Be(expectedAvatarUrl.ToString());
+            _ = result.Should().Be(expectedAvatarUrl);
             MockRepository.VerifyAll();
         }
 
@@ -261,22 +252,17 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         {
             // Arrange
             var deviceModelDto = Fixture.Create<DeviceModelDto>();
-            var expectedAvatarUrl = Fixture.Create<string>();
-
-            var mockFormFile = MockRepository.Create<IFormFile>();
+            var expectedAvatar = DeviceModelImageOptions.DefaultImage;
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
-                    manager.ChangeDeviceModelImageAsync(deviceModelDto.ModelId, It.IsAny<Stream>()))
-                .ReturnsAsync(expectedAvatarUrl);
-
-            _ = mockFormFile.Setup(file => file.OpenReadStream())
-                .Returns(Stream.Null);
+                    manager.ChangeDeviceModelImageAsync(deviceModelDto.ModelId, It.IsAny<string>()))
+                .ReturnsAsync(expectedAvatar);
 
             // Act
-            var result = await this.deviceModelService.UpdateDeviceModelAvatar(deviceModelDto.ModelId, mockFormFile.Object);
+            var result = await this.deviceModelService.UpdateDeviceModelAvatar(deviceModelDto.ModelId, expectedAvatar);
 
             // Assert
-            _ = result.Should().Be(expectedAvatarUrl);
+            _ = result.Should().Be(expectedAvatar);
             MockRepository.VerifyAll();
         }
 

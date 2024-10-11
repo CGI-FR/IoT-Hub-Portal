@@ -64,8 +64,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             await DbContext.AddRangeAsync(expectedLorawanDevices);
             _ = await DbContext.SaveChangesAsync();
 
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(Fixture.Create<Uri>());
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage);
 
             // Act
             var result = await this.deviceService.GetDevices();
@@ -116,7 +116,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                         Color = "green"
                     }
                 },
-                DeviceModel = Fixture.Create<DeviceModel>()
+                DeviceModel = Fixture.Create<DeviceModel>(),
+                LayerId = Fixture.Create<string>()
             };
 
             var device2 = new Device
@@ -141,7 +142,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                         Color = "green"
                     }
                 },
-                DeviceModel = Fixture.Create<DeviceModel>()
+                DeviceModel = Fixture.Create<DeviceModel>(),
+                LayerId = Fixture.Create<string>()
             };
 
             var expectedTotalDevicesCount = 1;
@@ -155,8 +157,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockDeviceTagService.Setup(service => service.GetAllSearchableTagsNames())
                 .Returns(new List<string> { "location" });
 
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(Fixture.Create<Uri>());
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage);
 
             // Act
             var result = await this.deviceService.GetDevices(searchText: keywordFilter, searchState: false, searchStatus: true, tags: tagFilter, labels: labelFilter);
@@ -166,7 +168,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
             _ = result.PageSize.Should().Be(expectedPageSize);
             _ = result.CurrentPage.Should().Be(expectedCurrentPage);
-            _ = result.Data.First().DeviceName.Should().Be(device1.Name);
+            _ = result.Data[0].DeviceName.Should().Be(device1.Name);
             MockRepository.VerifyAll();
         }
 
@@ -176,15 +178,15 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var expectedDevice = Fixture.Create<Device>();
 
-            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedImage = DeviceModelImageOptions.DefaultImage;
             var expectedDeviceDto = Mapper.Map<DeviceDetails>(expectedDevice);
-            expectedDeviceDto.ImageUrl = expectedImageUri;
+            expectedDeviceDto.Image = expectedImage;
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(expectedDevice);
 
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(expectedImageUri);
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage);
 
             _ = this.mockDeviceTagService.Setup(service => service.GetAllTagsNames())
                 .Returns(expectedDevice.Tags.Select(tag => tag.Name));

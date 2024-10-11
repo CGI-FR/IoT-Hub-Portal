@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Models.v10
         /// the device image URI.
         /// </summary>
         [Required(ErrorMessage = "The device image uri is required.")]
-        public string ImageURI { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         public string ContainerCreateOptions { get; set; } = default!;
 

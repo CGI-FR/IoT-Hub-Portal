@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using Azure.Data.Tables;
-    using IoTHub.Portal.Infrastructure.Mappers;
-
     [TestFixture]
     public class DeviceModelMapperTests
     {
@@ -23,7 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
         private DeviceModelMapper CreateDeviceModelMapper()
         {
-            return new DeviceModelMapper(this.mockDeviceModelImageManager.Object);
+            return new DeviceModelMapper();
         }
 
         [Test]
@@ -39,10 +36,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             entity["Description"] = "aaa";
             entity["AppEUI"] = "AppEUI";
             entity["SensorDecoderURL"] = "SensorDecoderURL";
-
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns(new Uri("http://fake.local/000-000-001"))
-                .Verifiable();
+            entity["Image"] = DeviceModelImageOptions.DefaultImage;
 
             // Act
             var result = deviceModelMapper.CreateDeviceModel(entity);
@@ -52,6 +46,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             Assert.AreEqual("000-000-001", result.ModelId);
             Assert.AreEqual("DeviceModelName", result.Name);
             Assert.AreEqual("aaa", result.Description);
+            Assert.AreEqual(DeviceModelImageOptions.DefaultImage, result.Image);
             this.mockRepository.VerifyAll();
         }
 
@@ -62,16 +57,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             var deviceModelMapper = CreateDeviceModelMapper();
             var entity = new TableEntity
             {
-                RowKey = "000-000-001"
+                RowKey = "000-000-001",
+                ["Name"] = "DeviceModelName",
+                ["Description"] = "aaa",
+                ["AppEUI"] = "AppEUI",
+                ["SensorDecoderURL"] = "SensorDecoderURL",
+                ["Image"] = DeviceModelImageOptions.DefaultImage
             };
-            entity["Name"] = "DeviceModelName";
-            entity["Description"] = "aaa";
-            entity["AppEUI"] = "AppEUI";
-            entity["SensorDecoderURL"] = "SensorDecoderURL";
-
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns(new Uri("http://fake.local/000-000-001"))
-                .Verifiable();
 
             // Act
             var result = deviceModelMapper.CreateDeviceModelListItem(entity);

@@ -47,9 +47,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
 
             var deviceDto = this.mapper.Map<DeviceDetails>(deviceEntity);
-
-            deviceDto.ImageUrl = this.deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
-
+            deviceDto.Image = await this.deviceModelImageManager.GetDeviceModelImageAsync(deviceDto.ModelId);
             deviceDto.Tags = FilterDeviceTags(deviceDto);
 
             return deviceDto;

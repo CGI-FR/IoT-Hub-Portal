@@ -37,12 +37,12 @@ namespace IoTHub.Portal.Client.Services
             return await this.http.GetFromJsonAsync<List<DeviceModelCommandDto>>($"api/lorawan/models/{deviceModelId}/commands") ?? new List<DeviceModelCommandDto>();
         }
 
-        public Task<string> GetAvatarUrl(string deviceModelId)
+        public Task<string> GetAvatar(string deviceModelId)
         {
             return this.http.GetStringAsync($"api/lorawan/models/{deviceModelId}/avatar");
         }
 
-        public async Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar)
+        public async Task ChangeAvatarAsync(string deviceModelId, StringContent avatar)
         {
             var result = await this.http.PostAsync($"api/lorawan/models/{deviceModelId}/avatar", avatar);
 

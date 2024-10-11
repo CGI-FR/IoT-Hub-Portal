@@ -3,6 +3,10 @@
 
 namespace IoTHub.Portal.Models.v10
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using IoTHub.Portal.Shared.Models.v10;
+
     /// <summary>
     /// IoT Edge device.
     /// </summary>
@@ -28,7 +32,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge connection state.
