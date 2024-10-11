@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
-
     public class SyncEdgeDeviceJobTest : BackendUnitTest
     {
         private IJob syncEdgeDeviceJob;

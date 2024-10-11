@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.UnitTests.Mocks
 {
-    using Microsoft.AspNetCore.Components;
-    using MudBlazor.Interop;
-    using MudBlazor.Services;
-
     /// <summary>
     /// Mock of ResizeObserver, required to unit tests on components containing MudTabs
     /// </summary>

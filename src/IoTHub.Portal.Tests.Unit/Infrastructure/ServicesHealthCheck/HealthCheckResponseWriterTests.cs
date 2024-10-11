@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
 {
-    using System.IO;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
-
     [TestFixture]
     public class HealthCheckResponseWriterTests
     {

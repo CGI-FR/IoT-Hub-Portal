@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
 {
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
-
     [TestFixture]
     public class LoRaManagementKeyFacadeHealthCheckTest
     {

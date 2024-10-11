@@ -157,7 +157,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                ImageUrl = Fixture.Create<Uri>(),
+                Image = Fixture.Create<Uri>(),
             };
 
             var expectedEdgeDevice = new IoTEdgeDevice

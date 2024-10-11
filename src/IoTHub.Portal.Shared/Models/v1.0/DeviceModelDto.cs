@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-
     /// <summary>
     /// Device model.
     /// </summary>

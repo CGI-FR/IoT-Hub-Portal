@@ -3,22 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using IoTHub.Portal.Client.Pages.Layer;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-
     internal class LayerListPageTest : BlazorUnitTest
     {
         private Mock<ILayerClientService> mockLayerClientService;

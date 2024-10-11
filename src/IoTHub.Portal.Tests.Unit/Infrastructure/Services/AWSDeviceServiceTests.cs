@@ -3,14 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using AutoMapper;
-    using IoTHub.Portal.Infrastructure.Services.AWS;
-    using EntityFramework.Exceptions.Common;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
     using Device = Portal.Domain.Entities.Device;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
-    using IoTHub.Portal.Domain.Exceptions;
 
     [TestFixture]
     public class AWSDeviceServiceTests : BackendUnitTest

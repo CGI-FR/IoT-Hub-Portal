@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using Amazon.SecretsManager;
-    using Amazon.SecretsManager.Model;
-    using AutoMapper;
-    using IoTHub.Portal.Infrastructure.Services;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
     using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
     using ListTagsForResourceResponse = Amazon.IoT.Model.ListTagsForResourceResponse;
     using Tag = Amazon.IoT.Model.Tag;

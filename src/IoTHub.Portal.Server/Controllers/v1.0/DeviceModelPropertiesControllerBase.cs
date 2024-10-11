@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Server.Controllers.V10
 {
+    using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
+
     public abstract class DeviceModelPropertiesControllerBase : ControllerBase
     {
         /// <summary>

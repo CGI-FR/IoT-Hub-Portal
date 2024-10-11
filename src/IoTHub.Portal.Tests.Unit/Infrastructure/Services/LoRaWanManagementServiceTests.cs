@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using System.Net.Http.Json;
-    using IoTHub.Portal.Infrastructure.Services;
-    using Models.v10.LoRaWAN;
-    using Fare;
-
     [TestFixture]
     public class LoRaWanManagementServiceTests : BackendUnitTest
     {

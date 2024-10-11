@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using static System.Net.Mime.MediaTypeNames;
+    using static MediaTypeNames;
 
     [TestFixture]
     public class DashboardMetricsClientServiceTests

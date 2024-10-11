@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 {
-    using System.IO;
-    using System.Text;
-    using AutoMapper;
-    using IoTHub.Portal.Infrastructure.Services.AWS;
-    using Newtonsoft.Json.Linq;
-
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest
     {

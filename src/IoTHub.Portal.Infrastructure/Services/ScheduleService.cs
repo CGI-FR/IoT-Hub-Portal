@@ -3,16 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Domain.Entities;
-    using Domain;
-    using Domain.Repositories;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Infrastructure.Repositories;
-
     public class ScheduleService : IScheduleService
     {
         private readonly IMapper mapper;

@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using Microsoft.Azure.Devices.Shared;
-
     public class SyncConcentratorsTests : BackendUnitTest
     {
         private IJob syncConcentratorsJob;

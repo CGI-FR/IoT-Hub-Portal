@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.UnitTests.Helpers
 {
-    using Bunit;
-    using System.Net.Http.Headers;
-    using System.Text.Json;
-
     public static class MockHttpHelper
     {
         public static MockHttpMessageHandler AddMockHttpClient(this TestServiceProvider services)

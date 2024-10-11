@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using UnitTests.Helpers;
-
     [TestFixture]
     public class DeviceTagSettingsClientServiceTests : BlazorUnitTest
     {

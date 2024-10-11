@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    using System;
-    using IoTHub.Portal.Shared.Constants;
-
     public class PlanningDto
     {
         /// <summary>

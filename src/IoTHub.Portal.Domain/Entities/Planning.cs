@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using IoTHub.Portal.Domain.Base;
-    using IoTHub.Portal.Shared.Constants;
-
     public class Planning : EntityBase
     {
         /// <summary>

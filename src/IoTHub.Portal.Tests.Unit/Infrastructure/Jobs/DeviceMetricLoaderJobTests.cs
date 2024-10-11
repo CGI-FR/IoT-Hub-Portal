@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using Microsoft.Extensions.Logging;
-
     [TestFixture]
     public class DeviceMetricLoaderJobTests : IDisposable
     {

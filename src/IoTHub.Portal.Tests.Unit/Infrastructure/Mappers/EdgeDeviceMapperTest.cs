@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using Microsoft.Azure.Devices.Shared;
-    using Newtonsoft.Json;
-
     [TestFixture]
     public class EdgeDeviceMapperTest
     {

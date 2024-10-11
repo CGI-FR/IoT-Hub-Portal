@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
 {
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
-
     [TestFixture]
     public class IoTHubHealthCheckTest
     {

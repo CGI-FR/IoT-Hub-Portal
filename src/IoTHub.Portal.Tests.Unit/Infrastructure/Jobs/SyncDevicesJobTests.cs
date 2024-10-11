@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using Microsoft.Azure.Devices.Shared;
     using Device = Portal.Domain.Entities.Device;
 
     public class SyncDevicesJobTests : BackendUnitTest

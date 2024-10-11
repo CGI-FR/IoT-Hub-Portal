@@ -3,24 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using IoTHub.Portal.Shared.Models.v10;
-    using NUnit.Framework;
-    using Portal.Domain.Entities;
-    using Portal.Domain.Repositories;
-    using UnitTests.Bases;
-    using AutoFixture;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Infrastructure.Services;
-    using FluentAssertions;
-    using System.Linq;
-    using System.Threading;
-    using System;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
     public class ScheduleServiceTests : BackendUnitTest

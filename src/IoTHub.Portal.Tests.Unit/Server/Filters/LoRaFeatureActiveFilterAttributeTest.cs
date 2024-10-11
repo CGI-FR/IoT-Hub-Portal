@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Filters
 {
+    using RouteData = Microsoft.AspNetCore.Routing.RouteData;
+
     [TestFixture]
     public class LoRaFeatureActiveFilterAttributeTest
     {

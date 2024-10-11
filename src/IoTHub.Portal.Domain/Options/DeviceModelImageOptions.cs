@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Options
 {
-    using System.Text;
-
     public class DeviceModelImageOptions
     {
         public Uri BaseUri { get; set; } = default!;

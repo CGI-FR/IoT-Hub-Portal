@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
-    using Helpers;
-    using Bunit;
-    using MudBlazor.Services;
-    using System.Globalization;
-
     public abstract class BlazorUnitTest : TestContextWrapper, IDisposable
     {
         protected virtual MockRepository MockRepository { get; set; }

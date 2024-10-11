@@ -8,5 +8,6 @@ global using System.ComponentModel.DataAnnotations;
 global using System.Runtime.CompilerServices;
 global using System.Text.Json.Serialization;
 global using IoTHub.Portal.Models.v10;
+global using IoTHub.Portal.Shared.Constants;
 global using IoTHub.Portal.Shared.Models;
 global using IoTHub.Portal.Shared.Models.v10;

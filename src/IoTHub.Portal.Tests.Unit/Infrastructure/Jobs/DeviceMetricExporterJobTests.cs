@@ -3,11 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using Microsoft.Extensions.Logging;
-    using Prometheus;
+    using Metrics = Prometheus.Metrics;
 
     [TestFixture]
     public class DeviceMetricExporterJobTests : IDisposable

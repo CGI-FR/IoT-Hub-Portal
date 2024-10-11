@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
+    using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
+
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]

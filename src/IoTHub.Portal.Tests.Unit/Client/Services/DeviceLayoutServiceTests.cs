@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using Models.v10.LoRaWAN;
-
     [TestFixture]
     public class DeviceLayoutServiceTests : BlazorUnitTest
     {

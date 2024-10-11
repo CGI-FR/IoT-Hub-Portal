@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
     using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
+    using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
     [TestFixture]
     public class DevicesControllerTests

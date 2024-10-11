@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
 {
-    using System.Security.Cryptography;
-    using IoTHub.Portal.Application.Wrappers;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
-
     [TestFixture]
     public class ProvisioningServiceClientHealthCheckTest
     {

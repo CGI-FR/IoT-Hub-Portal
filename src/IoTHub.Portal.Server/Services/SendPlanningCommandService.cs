@@ -3,26 +3,7 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Linq;
-    using System.Threading;
-    using System.Globalization;
-    using System.Threading.Tasks;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Client.Shared;
-    using IoTHub.Portal.Shared.Constants;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Application.Services;
-
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.AspNetCore.Components;
-    using Microsoft.Extensions.DependencyInjection;
+    using ProblemDetailsException = Client.Exceptions.ProblemDetailsException;
 
     public class PlanningCommand
     {

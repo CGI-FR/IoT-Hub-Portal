@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
-    using AutoMapper;
-    using IoTHub.Portal.Application.Mappers;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Diagnostics;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Logging.Abstractions;
-    using Portal.Infrastructure;
-    using Portal.Server;
-
     public abstract class BackendUnitTest : IDisposable
     {
         protected virtual ServiceCollection ServiceCollection { get; set; }

@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
-    using System.IO;
-    using System.Text;
-    using Amazon.S3;
-    using Amazon.S3.Model;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Infrastructure.Managers;
-    using Microsoft.Extensions.Options;
-
     [TestFixture]
     public class AwsDeviceModelImageManagerTest : BackendUnitTest
     {

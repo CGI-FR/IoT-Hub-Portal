@@ -3,25 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using AutoFixture;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using IoTHub.Portal.Client.Components.Planning;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Services;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Constants;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using UnitTests.Bases;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-
     internal class EditPlanningTest : BlazorUnitTest
     {
         private Mock<IPlanningClientService> mockPlanningClientService;

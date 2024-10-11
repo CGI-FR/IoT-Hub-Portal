@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using Azure.Data.Tables;
-    using Models.v10.LoRaWAN;
-    using IoTHub.Portal.Infrastructure.Mappers;
-
     [TestFixture]
     public class DeviceModelCommandMapperTests
     {

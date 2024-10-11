@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using System.Text;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Crosscutting.Extensions;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Configuration;
-    using Models.v10.LoRaWAN;
-
     [TestFixture]
     public class ConcentratorTwinMapperTests : IDisposable
     {

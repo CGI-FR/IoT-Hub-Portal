@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using IoTHub.Portal.Infrastructure;
-    using Microsoft.EntityFrameworkCore;
-
     [TestFixture]
     public class UnitOfWorkTests
     {
