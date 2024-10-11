@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using Microsoft.Extensions.Configuration;
-
     internal class ProductionAzureConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;

@@ -3,17 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Crosscutting.Extensions;
-    using IoTHub.Portal.Domain.Entities;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.Azure.Devices.Shared;
-    using Newtonsoft.Json;
-    using NUnit.Framework;
-
     [TestFixture]
     public class DeviceHelperTests
     {

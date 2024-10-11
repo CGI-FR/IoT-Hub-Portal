@@ -3,14 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using System;
     using Azure.Data.Tables;
-    using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Infrastructure.Mappers;
-    using FluentAssertions;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
 
     [TestFixture]
     public class DeviceModelMapperTests

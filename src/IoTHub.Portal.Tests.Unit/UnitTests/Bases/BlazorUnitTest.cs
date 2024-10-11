@@ -3,13 +3,9 @@
 
 namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
-    using System;
     using Helpers;
     using Bunit;
-    using Moq;
     using MudBlazor.Services;
-    using NUnit.Framework;
-    using RichardSzalay.MockHttp;
     using System.Globalization;
 
     public abstract class BlazorUnitTest : TestContextWrapper, IDisposable

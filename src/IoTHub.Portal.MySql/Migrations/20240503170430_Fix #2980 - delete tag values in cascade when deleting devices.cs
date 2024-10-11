@@ -5,8 +5,6 @@
 
 namespace IoTHub.Portal.MySql.Migrations
 {
-    using Microsoft.EntityFrameworkCore.Migrations;
-
     /// <inheritdoc />
     public partial class Fix2980deletetagvaluesincascadewhendeletingdevices : Migration
     {

@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System.Collections.ObjectModel;
-    using IoTHub.Portal.Domain.Base;
-
     public class Device : EntityBase
     {
         /// <summary>

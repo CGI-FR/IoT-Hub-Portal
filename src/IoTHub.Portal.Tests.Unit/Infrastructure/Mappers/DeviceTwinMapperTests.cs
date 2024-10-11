@@ -3,16 +3,10 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using System;
-    using System.Collections.Generic;
     using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Managers;
     using IoTHub.Portal.Crosscutting.Extensions;
     using IoTHub.Portal.Infrastructure.Mappers;
     using Microsoft.Azure.Devices.Shared;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
 
     [TestFixture]
     public class DeviceTwinMapperTests

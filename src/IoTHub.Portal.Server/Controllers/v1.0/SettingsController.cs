@@ -3,17 +3,6 @@
 
 namespace IoTHub.Portal.Server.Controllers.V10
 {
-    using System;
-    using System.Globalization;
-    using System.Reflection;
-    using Identity;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Options;
-    using IoTHub.Portal.Domain;
-
     [ApiController]
     [AllowAnonymous]
     [ApiVersion("1.0")]

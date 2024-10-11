@@ -3,12 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using System;
     using System.Globalization;
-    using FluentAssertions;
     using Microsoft.Extensions.Configuration;
-    using Moq;
-    using NUnit.Framework;
     using IoTHub.Portal.Infrastructure;
     using IoTHub.Portal.Domain.Shared.Constants;
     using System.Reflection;

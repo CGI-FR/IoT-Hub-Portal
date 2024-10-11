@@ -1,5 +1,7 @@
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 {
+    using ConnectionStringDialog = Portal.Client.Dialogs.Devices.ConnectionStringDialog;
+
     [TestFixture]
     public class EditDeviceTests : BlazorUnitTest
     {
@@ -897,7 +899,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-            _ = this.mockDialogService.Setup(c => c.Show<DevicesConnectionStringDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+            _ = this.mockDialogService.Setup(c => c.Show<ConnectionStringDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
 
             var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, mockDeviceDetails.DeviceID));

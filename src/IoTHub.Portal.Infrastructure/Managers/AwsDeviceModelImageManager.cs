@@ -3,18 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Managers
 {
-    using System;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using Amazon.S3;
-    using Amazon.S3.Model;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-
     public class AwsDeviceModelImageManager : IDeviceModelImageManager
     {
         private readonly ILogger<AwsDeviceModelImageManager> logger;

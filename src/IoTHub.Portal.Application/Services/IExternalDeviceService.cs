@@ -3,16 +3,6 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Models.v10;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-    using IoTHub.Portal.Domain.Shared;
-    using Shared.Models.v10;
-    using Amazon.IoT.Model;
-    using IoTHub.Portal.Shared.Models;
-
     public interface IExternalDeviceService
     {
         Task<ExternalDeviceModelDto> CreateDeviceModel(ExternalDeviceModelDto deviceModel);
@@ -21,7 +11,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<bool?> IsEdgeDeviceModel(ExternalDeviceModelDto deviceModel);
 
-        Task<Device> GetDevice(string deviceId);
+        Task<AzureDevice> GetDevice(string deviceId);
 
         Task<Twin> GetDeviceTwin(string deviceId);
 
@@ -33,7 +23,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<bool> CreateEdgeDevice(string deviceId);
 
-        Task<Device> UpdateDevice(Device device);
+        Task<AzureDevice> UpdateDevice(AzureDevice device);
 
         Task<Twin> UpdateDeviceTwin(Twin twin);
 

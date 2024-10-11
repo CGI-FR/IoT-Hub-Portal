@@ -3,23 +3,11 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
-    using System;
-    using System.Collections.Generic;
     using System.Linq.Expressions;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Jobs;
     using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using Portal.Domain.Entities;
     using Quartz;
-    using UnitTests.Bases;
 
     public class SyncConcentratorsTests : BackendUnitTest
     {

@@ -3,16 +3,10 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
-    using Moq;
-    using NUnit.Framework;
 
     [TestFixture]
     public class StorageAccountHealthCheckTest

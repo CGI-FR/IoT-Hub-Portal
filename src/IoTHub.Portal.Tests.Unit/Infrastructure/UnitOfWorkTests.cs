@@ -3,12 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using System.Threading;
-    using System.Threading.Tasks;
     using IoTHub.Portal.Infrastructure;
     using Microsoft.EntityFrameworkCore;
-    using Moq;
-    using NUnit.Framework;
 
     [TestFixture]
     public class UnitOfWorkTests

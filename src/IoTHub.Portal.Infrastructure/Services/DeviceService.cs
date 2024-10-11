@@ -3,23 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Azure.Messaging.EventHubs;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Domain;
-    using Domain.Exceptions;
-    using Domain.Repositories;
-    using Infrastructure;
-    using Microsoft.Extensions.Logging;
-    using Models.v10;
-
     public class DeviceService : DeviceServiceBase<DeviceDetails>
     {
         private readonly IMapper mapper;

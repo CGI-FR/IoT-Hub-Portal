@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Crosscutting.Extensions
 {
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-
     public static class StringExtension
     {
         public static string ToCamelCase(this string str)

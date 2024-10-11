@@ -3,15 +3,10 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
 {
-    using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Threading.Tasks;
     using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
-    using Moq;
-    using NUnit.Framework;
 
     [TestFixture]
     public class HealthCheckResponseWriterTests

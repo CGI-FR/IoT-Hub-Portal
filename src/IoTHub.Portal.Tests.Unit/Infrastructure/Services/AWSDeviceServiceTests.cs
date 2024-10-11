@@ -3,34 +3,18 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Threading.Tasks;
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using Amazon.IotData;
     using Amazon.IotData.Model;
-    using AutoFixture;
     using AutoMapper;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Services.AWS;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using EntityFramework.Exceptions.Common;
-    using FluentAssertions;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
     using Device = Portal.Domain.Entities.Device;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
-    using System.Threading;
     using IoTHub.Portal.Domain.Exceptions;
 
     [TestFixture]

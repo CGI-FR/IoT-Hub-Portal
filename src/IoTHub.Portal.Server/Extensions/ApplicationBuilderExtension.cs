@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Server.Extensions
 {
-    using System;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Http;
-
     public static class ApplicationBuilderExtension
     {
         public static void UseIfElse(this IApplicationBuilder app,

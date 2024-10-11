@@ -3,24 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Constants;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Http;
-    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+    using ResourceAlreadyExistsException = Domain.Exceptions.ResourceAlreadyExistsException;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -288,11 +271,12 @@ namespace IoTHub.Portal.Infrastructure.Services
 
             if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
             {
-                var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
+                var configuration = this.configService.GetIoTEdgeConfigurations().Result
+                    .FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
 
-                if (config != null)
+                if (configuration != null)
                 {
-                    await this.configService.DeleteConfiguration(config.Id);
+                    await this.configService.DeleteConfiguration(configuration.Id);
                 }
 
                 var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();

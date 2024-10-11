@@ -3,33 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
-    using Amazon.GreengrassV2;
-    using Amazon.GreengrassV2.Model;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using Amazon.IotData;
-    using Amazon.IotData.Model;
-    using Amazon.SecretsManager;
-    using Amazon.SecretsManager.Model;
-    using AutoMapper;
-    using IoTHub.Portal;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
-    using Shared.Models.v10;
-    using Device = Microsoft.Azure.Devices.Device;
-    using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
     using ResourceAlreadyExistsException = Amazon.IoT.Model.ResourceAlreadyExistsException;
-    using ResourceNotFoundException = Amazon.IoT.Model.ResourceNotFoundException;
-    using Tag = Amazon.IoT.Model.Tag;
 
     public class AwsExternalDeviceService : IExternalDeviceService
     {
@@ -324,7 +298,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
         }
 
-        public Task<Device> GetDevice(string deviceId)
+        public Task<AzureDevice> GetDevice(string deviceId)
         {
             throw new NotImplementedException();
         }
@@ -492,7 +466,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
         }
 
-        public Task<Device> UpdateDevice(Device device)
+        public Task<AzureDevice> UpdateDevice(AzureDevice device)
         {
             throw new NotImplementedException();
         }

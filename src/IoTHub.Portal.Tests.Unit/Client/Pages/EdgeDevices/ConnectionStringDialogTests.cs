@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
+    using ConnectionStringDialog = Portal.Client.Dialogs.EdgeDevices.ConnectionStringDialog;
+
     [TestFixture]
     public class ConnectionStringDialogTests : BlazorUnitTest
     {
@@ -41,7 +43,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             };
 
             // Act
-            _ = await cut.InvokeAsync(() => this.dialogService?.Show<EdgeDevicesConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
             _ = cut.WaitForElement("div.mud-paper");
 
             // Assert
@@ -70,7 +72,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             IDialogReference dialogReference = null;
 
             // Act
-            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDevicesConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
             var result = await dialogReference.Result;
 
             // Assert
@@ -99,7 +101,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             IDialogReference dialogReference = null;
 
             // Act
-            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDevicesConnectionStringDialog>(string.Empty, parameters));
+            _ = await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
             cut.WaitForElement("#ok").Click();
 
             var result = await dialogReference.Result;

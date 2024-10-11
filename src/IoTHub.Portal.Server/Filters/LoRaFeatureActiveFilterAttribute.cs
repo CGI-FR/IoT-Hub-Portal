@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Server.Filters
 {
-    using System;
-    using IoTHub.Portal.Domain;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Filters;
-    using Microsoft.Extensions.DependencyInjection;
-
     public sealed class LoRaFeatureActiveFilterAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)

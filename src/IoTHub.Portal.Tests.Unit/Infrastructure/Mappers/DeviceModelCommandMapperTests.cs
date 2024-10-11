@@ -5,8 +5,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
     using Azure.Data.Tables;
     using Models.v10.LoRaWAN;
-    using Moq;
-    using NUnit.Framework;
     using IoTHub.Portal.Infrastructure.Mappers;
 
     [TestFixture]

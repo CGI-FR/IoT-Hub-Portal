@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Domain.Base;
-
     public class Concentrator : EntityBase
     {
         /// <summary>

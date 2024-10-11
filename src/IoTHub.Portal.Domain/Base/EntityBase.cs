@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Base
 {
-    using System.ComponentModel.DataAnnotations;
-
     public abstract class EntityBase
     {
         [Key]

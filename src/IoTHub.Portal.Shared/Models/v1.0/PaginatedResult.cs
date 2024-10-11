@@ -5,9 +5,6 @@
 
 namespace IoTHub.Portal.Shared.Models.v1._0
 {
-    using System;
-    using System.Collections.Generic;
-
     public class PaginatedResult<T>
     {
 

@@ -3,26 +3,14 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
-    using System;
     using System.IO;
-    using System.Net;
     using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Amazon.S3;
     using Amazon.S3.Model;
-    using AutoFixture;
-    using FluentAssertions;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Options;
     using IoTHub.Portal.Infrastructure.Managers;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
-    using Moq;
-    using NUnit.Framework;
 
     [TestFixture]
     public class AwsDeviceModelImageManagerTest : BackendUnitTest

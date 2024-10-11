@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using JsonSerializer = System.Text.Json.JsonSerializer;
-    using LoRaDeviceTelemetry = Domain.Entities.LoRaDeviceTelemetry;
-
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest
     {

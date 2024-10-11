@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-
     public interface IEdgeModelClientService
     {
         Task<List<IoTEdgeModelListItem>> GetIoTEdgeModelList(EdgeModelFilter? edgeModelFilter = null);

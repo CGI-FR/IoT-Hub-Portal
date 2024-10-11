@@ -1,9 +1,7 @@
 ﻿@page "/lorawan/concentrators/{DeviceID}"
-@using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Models.v10.LoRaWAN
-@using IoTHub.Portal.Shared.Models.v10.LoRaWAN
 
 @attribute [Authorize]
+
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager

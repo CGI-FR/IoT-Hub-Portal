@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
+    using ConnectionStringDialog = Portal.Client.Dialogs.EdgeDevices.ConnectionStringDialog;
+
     [TestFixture]
     public class EdgeDeviceDetailPageTests : BlazorUnitTest
     {
@@ -431,7 +433,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
-            _ = this.mockDialogService.Setup(c => c.Show<EdgeDevicesConnectionStringDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+            _ = this.mockDialogService.Setup(c => c.Show<ConnectionStringDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
 
             // Act

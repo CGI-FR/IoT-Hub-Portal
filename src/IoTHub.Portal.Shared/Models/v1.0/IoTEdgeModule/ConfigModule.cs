@@ -5,24 +5,22 @@
 
 namespace IoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 {
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-
     public class ConfigModule
     {
-        [JsonProperty(PropertyName = "settings")]
+        [JsonPropertyName("settings")]
         public ModuleSettings Settings { get; set; }
 
-        [JsonProperty(PropertyName = "type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; } = default!;
 
-        [JsonProperty(PropertyName = "env", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("env")]
+        //,  NullValueHandling = NullValueHandling.Ignore)]
         public IDictionary<string, EnvironmentVariable>? EnvironmentVariables { get; set; }
 
-        [JsonProperty(PropertyName = "status", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("status")]/*, NullValueHandling = NullValueHandling.Ignore)]*/
         public string? Status { get; set; }
 
-        [JsonProperty(PropertyName = "restartPolicy", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("restartPolicy")]/*, NullValueHandling = NullValueHandling.Ignore)]*/
         public string? RestartPolicy { get; set; }
 
         public ConfigModule()
@@ -33,16 +31,16 @@ namespace IoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class ModuleSettings
     {
-        [JsonProperty(PropertyName = "image")]
+        [JsonPropertyName("image")]
         public string Image { get; set; } = default!;
 
-        [JsonProperty(PropertyName = "createOptions", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("createOptions")]/*, NullValueHandling = NullValueHandling.Ignore)]*/
         public string CreateOptions { get; set; } = default!;
     }
 
     public class EnvironmentVariable
     {
-        [JsonProperty(PropertyName = "value")]
+        [JsonPropertyName("value")]
         public string EnvValue { get; set; } = default!;
     }
 }

@@ -3,29 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Dynamic.Core;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Azure.Messaging.EventHubs;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Domain.Entities;
-    using Infrastructure;
-    using Infrastructure.Repositories;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Logging;
-    using Models.v10;
-    using Shared.Models.v1._0;
-    using Shared.Models.v10.Filters;
-    using Device = Domain.Entities.Device;
-
     public abstract class DeviceServiceBase<TDto> : IDeviceService<TDto>
         where TDto : IDeviceDetails
     {

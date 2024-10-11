@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    using Domain.Entities;
-    using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore;
-    using Newtonsoft.Json;
-
     public class PortalDbContext : DbContext, IDataProtectionKeyContext
     {
         public DbSet<DeviceModelProperty> DeviceModelProperties { get; set; }

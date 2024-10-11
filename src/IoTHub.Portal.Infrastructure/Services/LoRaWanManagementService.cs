@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System.Net.Http.Headers;
-    using System.Net.Http.Json;
-    using System.Reflection;
-    using System.Text;
-    using System.Text.Json;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-
     internal class LoRaWanManagementService : ILoRaWanManagementService
     {
         private readonly HttpClient httpClient;

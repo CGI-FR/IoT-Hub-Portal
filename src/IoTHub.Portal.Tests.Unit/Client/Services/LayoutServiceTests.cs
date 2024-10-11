@@ -3,18 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Blazored.LocalStorage;
-    using FluentAssertions;
-    using Moq;
-    using NUnit.Framework;
-    using Portal.Client.Constants;
-    using Portal.Client.Services;
-
     [TestFixture]
     public class LayoutServiceTests
     {

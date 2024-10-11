@@ -5,9 +5,6 @@
 
 namespace IoTHub.Portal.MySql.Migrations
 {
-    using System;
-    using Microsoft.EntityFrameworkCore.Migrations;
-
     /// <inheritdoc />
     public partial class InitDatabase : Migration
     {

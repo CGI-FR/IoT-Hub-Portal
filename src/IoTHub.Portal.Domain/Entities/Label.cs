@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using IoTHub.Portal.Domain.Base;
-
     public class Label : EntityBase
     {
         public string Name { get; set; } = default!;

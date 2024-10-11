@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Portal.Models.v10;
-
     public interface IDeviceModelsClientService
     {
         Task<PaginationResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter? deviceModelFilter = null);

@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Application.Managers
 {
-    using System;
-    using System.IO;
-    using System.Threading.Tasks;
-
     public interface IDeviceModelImageManager
     {
         Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream);

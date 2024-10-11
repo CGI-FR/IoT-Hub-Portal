@@ -3,22 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Startup
 {
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure.Helpers;
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Constants;
-    using EntityFramework.Exceptions.PostgreSQL;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.DependencyInjection;
-    using Quartz;
-
     public static class IServiceCollectionExtension
     {
         public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)

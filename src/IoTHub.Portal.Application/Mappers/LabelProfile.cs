@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
-    using AutoMapper;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public class LabelProfile : Profile
     {
         public LabelProfile()

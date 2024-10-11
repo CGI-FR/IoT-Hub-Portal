@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using Portal.Models.v10;
-
     public class EdgeDeviceLayoutService : IEdgeDeviceLayoutService
     {
         private IoTEdgeDevice sharedDevice = default!;

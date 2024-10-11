@@ -5,8 +5,6 @@
 
 namespace IoTHub.Portal.Postgres.Migrations
 {
-    using Microsoft.EntityFrameworkCore.Migrations;
-
     public partial class AddDeviceModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models.v10.Filters
 {
-    using System.Collections.Generic;
-
     public class EdgeDeviceListFilter : PaginationFilter
     {
         public string Keyword { get; set; } = default!;

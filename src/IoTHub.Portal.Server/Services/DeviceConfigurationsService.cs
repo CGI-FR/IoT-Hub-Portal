@@ -3,18 +3,7 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Azure;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
+    using ConfigurationMetrics = Shared.Models.v10.ConfigurationMetrics;
 
     public class DeviceConfigurationsService : IDeviceConfigurationsService
     {

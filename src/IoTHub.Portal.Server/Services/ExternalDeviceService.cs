@@ -3,31 +3,6 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Application.Helpers;
-    using Application.Providers;
-    using Application.Services;
-    using Azure;
-    using Domain.Exceptions;
-    using Domain.Repositories;
-    using Domain.Shared;
-    using IoTHub.Portal.Shared.Models;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
-    using Models.v10;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using Shared.Constants;
-    using Shared.Models.v10;
-
     public class ExternalDeviceService : IExternalDeviceService
     {
         private readonly RegistryManager registryManager;
@@ -51,7 +26,7 @@ namespace IoTHub.Portal.Server.Services
         }
 
         /// <summary>
-        /// this function return a list of all edge device without modules.
+        /// this function return a list of all edge Device without modules.
         /// </summary>
         /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
@@ -138,7 +113,7 @@ namespace IoTHub.Portal.Server.Services
         }
 
         /// <summary>
-        /// this function return a list of all device exept edge device.
+        /// this function return a list of all Device exept edge Device.
         /// </summary>
         /// <param name="continuationToken"></param>
         /// <param name="filterDeviceType"></param>
@@ -262,11 +237,11 @@ namespace IoTHub.Portal.Server.Services
         }
 
         /// <summary>
-        /// this function return the device we want with the registry manager.
+        /// this function return the Device we want with the registry manager.
         /// </summary>
-        /// <param name="deviceId">device id.</param>
+        /// <param name="deviceId">Device id.</param>
         /// <returns>Device.</returns>
-        public async Task<Device> GetDevice(string deviceId)
+        public async Task<AzureDevice> GetDevice(string deviceId)
         {
             try
             {
@@ -274,16 +249,16 @@ namespace IoTHub.Portal.Server.Services
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to get device with id {deviceId}", e);
+                throw new InternalServerErrorException($"Unable to get Device with id {deviceId}", e);
             }
         }
 
         /// <summary>
         /// this function use the registry manager to find the twin
-        /// of a device.
+        /// of a Device.
         /// </summary>
-        /// <param name="deviceId">id of the device.</param>
-        /// <returns>Twin of a device.</returns>
+        /// <param name="deviceId">id of the Device.</param>
+        /// <returns>Twin of a Device.</returns>
         public async Task<Twin> GetDeviceTwin(string deviceId)
         {
             try
@@ -292,16 +267,16 @@ namespace IoTHub.Portal.Server.Services
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to get device twin with id {deviceId}", e);
+                throw new InternalServerErrorException($"Unable to get Device twin with id {deviceId}", e);
             }
         }
 
         /// <summary>
         /// this function execute a query with the registry manager to find
-        /// the twin of the device with this module.
+        /// the twin of the Device with this module.
         /// </summary>
-        /// <param name="deviceId">id of the device.</param>
-        /// <returns>Twin of the device.</returns>
+        /// <param name="deviceId">id of the Device.</param>
+        /// <returns>Twin of the Device.</returns>
         public async Task<Twin> GetDeviceTwinWithModule(string deviceId)
         {
             var devicesWithModules = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
@@ -338,16 +313,16 @@ namespace IoTHub.Portal.Server.Services
         }
 
         /// <summary>
-        /// This function create a new device with his twin.
+        /// This function create a new Device with his twin.
         /// </summary>
-        /// <param name="deviceId">the device id.</param>
+        /// <param name="deviceId">the Device id.</param>
         /// <param name="isEdge">boolean.</param>
-        /// <param name="twin">the twin of my new device.</param>
-        /// <param name="isEnabled">the status of the device(disabled by default).</param>
+        /// <param name="twin">the twin of my new Device.</param>
+        /// <param name="isEnabled">the status of the Device(disabled by default).</param>
         /// <returns>BulkRegistryOperation.</returns>
         public async Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled = DeviceStatus.Disabled)
         {
-            var device = new Device(deviceId)
+            var device = new AzureDevice(deviceId)
             {
                 Capabilities = new DeviceCapabilities { IotEdge = isEdge },
                 Status = isEnabled
@@ -359,14 +334,14 @@ namespace IoTHub.Portal.Server.Services
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to create the device twin with id {deviceId}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to create the Device twin with id {deviceId}: {e.Message}", e);
             }
         }
 
         /// <summary>
-        /// This function delete a device.
+        /// This function delete a Device.
         /// </summary>
-        /// <param name="deviceId">the device id.</param>
+        /// <param name="deviceId">the Device id.</param>
         public async Task DeleteDevice(string deviceId)
         {
             try
@@ -375,29 +350,29 @@ namespace IoTHub.Portal.Server.Services
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to delete the device with id {deviceId}", e);
+                throw new InternalServerErrorException($"Unable to delete the Device with id {deviceId}", e);
             }
         }
 
         /// <summary>
-        /// This function update a device.
+        /// This function update a Device.
         /// </summary>
-        /// <param name="device">the device id.</param>
-        /// <returns>the updated device.</returns>
-        public async Task<Device> UpdateDevice(Device device)
+        /// <param name="Device">the Device id.</param>
+        /// <returns>the updated Device.</returns>
+        public async Task<AzureDevice> UpdateDevice(AzureDevice Device)
         {
             try
             {
-                return await this.registryManager.UpdateDeviceAsync(device);
+                return await this.registryManager.UpdateDeviceAsync(Device);
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to update the device with id {device.Id}", e);
+                throw new InternalServerErrorException($"Unable to update the Device with id {Device.Id}", e);
             }
         }
 
         /// <summary>
-        /// This function update the twin of the device.
+        /// This function update the twin of the Device.
         /// </summary>
         /// <param name="twin">the new twin.</param>
         /// <returns>the updated twin.</returns>
@@ -411,15 +386,15 @@ namespace IoTHub.Portal.Server.Services
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to update the device twin with id {twin.DeviceId}", e);
+                throw new InternalServerErrorException($"Unable to update the Device twin with id {twin.DeviceId}", e);
             }
         }
 
         /// <summary>
-        /// this function execute a methode on the device.
+        /// this function execute a methode on the Device.
         /// </summary>
-        /// <param name="deviceId">the device id.</param>
-        /// <param name="method">the cloud to device method.</param>
+        /// <param name="deviceId">the Device id.</param>
+        /// <param name="method">the cloud to Device method.</param>
         /// <returns>CloudToDeviceMethodResult.</returns>
         public async Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method)
         {
@@ -429,7 +404,7 @@ namespace IoTHub.Portal.Server.Services
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to execute the cloud to device method {method.MethodName} on the device with id {deviceId}", e);
+                throw new InternalServerErrorException($"Unable to execute the cloud to Device method {method.MethodName} on the Device with id {deviceId}", e);
             }
         }
 
@@ -449,16 +424,16 @@ namespace IoTHub.Portal.Server.Services
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to execute the cloud to device method {method.MethodName} on the device with id {deviceId}", e);
+                throw new InternalServerErrorException($"Unable to execute the cloud to Device method {method.MethodName} on the Device with id {deviceId}", e);
             }
         }
 
         /// <summary>
-        /// Get edge device logs
+        /// Get edge Device logs
         /// </summary>
         /// <param name="deviceId">Device Id</param>
         /// <param name="edgeModule">Edge module</param>
-        /// <returns>Edge device logs</returns>
+        /// <returns>Edge Device logs</returns>
         public async Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
         {
             var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
@@ -493,7 +468,7 @@ namespace IoTHub.Portal.Server.Services
 
                 if (string.IsNullOrWhiteSpace(payloadResponse))
                 {
-                    this.log.LogInformation($"Payload logs' response of the device {deviceId} is empty");
+                    this.log.LogInformation($"Payload logs' response of the Device {deviceId} is empty");
                 }
                 else
                 {
@@ -504,7 +479,7 @@ namespace IoTHub.Portal.Server.Services
             }
             else
             {
-                this.log.LogError($"Unable to retrieve logs of the device {deviceId}, status code: {result.Status}");
+                this.log.LogError($"Unable to retrieve logs of the Device {deviceId}, status code: {result.Status}");
             }
 
             return logs.OrderByDescending(log => log.TimeStamp);
@@ -605,9 +580,9 @@ namespace IoTHub.Portal.Server.Services
         }
 
         /// <summary>
-        /// Gets the IoT Edge device enrollement credentials.
+        /// Gets the IoT Edge Device enrollement credentials.
         /// </summary>
-        /// <param name="edgeDeviceId">the edge device id.</param>
+        /// <param name="edgeDeviceId">the edge Device id.</param>
         /// <returns>Enrollment credentials.</returns>
         /// <exception cref="ResourceNotFoundException"></exception>
         public async Task<DeviceCredentials> GetEdgeDeviceCredentials(IoTEdgeDevice device)
@@ -656,7 +631,7 @@ namespace IoTHub.Portal.Server.Services
             var existingDevice = await this.GetDevice(deviceId);
             if (existingDevice != null)
             {
-                throw new DeviceAlreadyExistsException($"The device with ID {deviceId} already exists");
+                throw new DeviceAlreadyExistsException($"The Device with ID {deviceId} already exists");
             }
 
             // Create a new Twin from the form's fields.
@@ -680,7 +655,7 @@ namespace IoTHub.Portal.Server.Services
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Failed to parse device identifier", e);
+                throw new InternalServerErrorException($"Failed to parse Device identifier", e);
             }
         }
 

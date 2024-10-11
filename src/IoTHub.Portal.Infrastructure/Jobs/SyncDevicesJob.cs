@@ -3,19 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Entities;
-    using Domain;
-    using Domain.Repositories;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
-    using Quartz;
-
     [DisallowConcurrentExecution]
     public class SyncDevicesJob : IJob
     {

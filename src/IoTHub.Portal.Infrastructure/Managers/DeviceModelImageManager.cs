@@ -3,20 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Managers
 {
-    using System;
-    using System.IO;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using Azure;
-    using Azure.Storage.Blobs;
-    using Azure.Storage.Blobs.Models;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-
     public class DeviceModelImageManager : IDeviceModelImageManager
     {
         private readonly BlobServiceClient blobService;

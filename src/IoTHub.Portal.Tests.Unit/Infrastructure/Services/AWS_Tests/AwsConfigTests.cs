@@ -3,32 +3,16 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
 {
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Net;
     using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Amazon.GreengrassV2;
     using Amazon.GreengrassV2.Model;
     using Amazon.IoT;
     using Amazon.IoT.Model;
-    using AutoFixture;
     using AutoMapper;
-    using FluentAssertions;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Infrastructure.Services.AWS;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
     using Newtonsoft.Json.Linq;
-    using NUnit.Framework;
 
     [TestFixture]
     public class AwsConfigTests : BackendUnitTest

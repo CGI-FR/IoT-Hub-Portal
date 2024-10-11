@@ -3,34 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Startup
 {
-    using System.Net;
-    using Azure.Storage.Blobs;
-    using Azure.Storage.Blobs.Models;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Providers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Wrappers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Infrastructure.Extensions;
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using IoTHub.Portal.Infrastructure.Managers;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using IoTHub.Portal.Infrastructure.Providers;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Infrastructure.Wrappers;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
-    using Polly;
-    using Polly.Extensions.Http;
-    using Quartz;
-
     public static class AzureServiceCollectionExtension
     {
         public static IServiceCollection AddAzureInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
@@ -84,7 +56,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureDeviceRegstryDependencies(this IServiceCollection services, ConfigHandler configuration)
         {
             _ = services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
-            _ = services.AddTransient<IDeviceRegistryProvider, AzureDeviceRegistryProvider>();
+            _ = services.AddTransient<IDeviceRegistryProvider, DeviceRegistryProvider>();
 
             _ = services.AddScoped(_ => RegistryManager.CreateFromConnectionString(configuration.AzureIoTHubConnectionString));
             _ = services.AddScoped(_ => ServiceClient.CreateFromConnectionString(configuration.AzureIoTHubConnectionString));

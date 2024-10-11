@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Server.Controllers.V10
 {
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
-
     public abstract class DeviceModelsControllerBase<TListItemModel, TModel> : ControllerBase
         where TListItemModel : class, IDeviceModel
         where TModel : class, IDeviceModel

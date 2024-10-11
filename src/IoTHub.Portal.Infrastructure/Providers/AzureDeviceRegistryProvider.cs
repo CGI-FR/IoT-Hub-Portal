@@ -3,24 +3,12 @@
 
 namespace IoTHub.Portal.Infrastructure.Providers
 {
-    using System;
-    using System.Security.Cryptography;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Providers;
-    using IoTHub.Portal.Application.Wrappers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.Azure.Devices.Shared;
-    using Shared.Models.v10;
-
-    internal class AzureDeviceRegistryProvider : IDeviceRegistryProvider
+    internal class DeviceRegistryProvider : IDeviceRegistryProvider
     {
         private readonly IProvisioningServiceClient dps;
         private readonly ConfigHandler config;
 
-        public AzureDeviceRegistryProvider(IProvisioningServiceClient dps, ConfigHandler config)
+        public DeviceRegistryProvider(IProvisioningServiceClient dps, ConfigHandler config)
         {
             this.dps = dps;
             this.config = config;

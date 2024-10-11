@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
     using System.Text;
     using IoTHub.Portal.Application.Helpers;
     using IoTHub.Portal.Crosscutting.Extensions;
@@ -13,8 +10,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Models.v10.LoRaWAN;
-    using Moq;
-    using NUnit.Framework;
 
     [TestFixture]
     public class ConcentratorTwinMapperTests : IDisposable

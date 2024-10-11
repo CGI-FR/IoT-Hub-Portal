@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.UnitTests.Mocks
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
     using MudBlazor.Interop;
     using MudBlazor.Services;

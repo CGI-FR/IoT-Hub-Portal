@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Client.Validators
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Models.v10;
-    using FluentValidation;
-
     public class IoTEdgeRouteValidator : AbstractValidator<IEnumerable<IoTEdgeRoute>>
     {
         public IoTEdgeRouteValidator()

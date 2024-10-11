@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Helpers
 {
-    using System.Reflection;
-
     public class EdgeEnrollementHelper : IEdgeEnrollementHelper
     {
         public string? GetEdgeEnrollementTemplate(string templateName)

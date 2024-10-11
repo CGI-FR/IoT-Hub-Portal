@@ -3,19 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class ConfigHelperTest
     {
