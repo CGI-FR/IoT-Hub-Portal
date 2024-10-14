@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using Domain;
-    using Domain.Base;
-    using Microsoft.EntityFrameworkCore;
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-    using Shared.Models.v1._0;
-    using System.Linq.Dynamic.Core;
-
     public class GenericRepository<T> : IRepository<T> where T : EntityBase
     {
         protected readonly PortalDbContext context;

@@ -3,11 +3,7 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.Azure.Devices;
+    using Configuration = Microsoft.Azure.Devices.Configuration;
 
     public interface IConfigService
     {

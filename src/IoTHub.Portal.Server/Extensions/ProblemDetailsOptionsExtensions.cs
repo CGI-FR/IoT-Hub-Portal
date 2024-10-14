@@ -3,10 +3,7 @@
 
 namespace IoTHub.Portal.Server.Extensions
 {
-    using FluentValidation;
-    using Microsoft.Extensions.DependencyInjection;
-    using System.Linq;
-    using Hellang.Middleware.ProblemDetails;
+    using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
     public static class ProblemDetailsOptionsExtensions
     {

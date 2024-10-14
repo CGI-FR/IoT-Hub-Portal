@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E
 {
-    using IoTHub.Portal.Tests.E2E.Pages;
-    using NUnit.Framework;
-
     public class Authentication : E2ETest
     {
         [Test]

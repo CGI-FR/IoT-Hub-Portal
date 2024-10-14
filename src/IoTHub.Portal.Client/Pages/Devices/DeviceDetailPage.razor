@@ -1,22 +1,6 @@
 ﻿@page "/devices/{DeviceID}"
-@using IoTHub.Portal.Client.Pages.Devices
-@using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Models
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Models.v10.LoRaWAN
-@using IoTHub.Portal.Shared.Constants;
-@using IoTHub.Portal.Shared.Models
 
 @inject NavigationManager NavManager
-@inject ISnackbar Snackbar
-@inject PortalSettings Portal
-@inject IDialogService DialogService
-@inject IDeviceModelsClientService DeviceModelsClientService
-@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
-@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
-@inject IDeviceClientService DeviceClientService
-@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
-@inject IDeviceLayoutService DeviceLayoutService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />

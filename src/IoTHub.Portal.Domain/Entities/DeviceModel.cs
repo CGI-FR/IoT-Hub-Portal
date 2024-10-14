@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using Models.v10.LoRaWAN;
-    using Base;
-
     public class DeviceModel : EntityBase
     {
         public string Name { get; set; } = default!;

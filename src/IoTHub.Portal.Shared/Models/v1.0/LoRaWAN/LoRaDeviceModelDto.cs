@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// LoRa Device model.
     /// </summary>
@@ -52,7 +44,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// Default is true.
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool UseOTAA { get; set; }
 
         /// <summary>
@@ -60,7 +51,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// By default downstream messages are enabled.
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? Downlink { get; set; }
 
         /// <summary>

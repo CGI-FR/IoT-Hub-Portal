@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Client.Validators
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Constants;
-    using FluentValidation;
-
     public class DeviceDetailsValidator : AbstractValidator<DeviceDetails>
     {
         public DeviceDetailsValidator(string? cloudProvider = null)

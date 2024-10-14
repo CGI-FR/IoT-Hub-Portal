@@ -3,29 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using FluentAssertions;
-    using FluentAssertions.Extensions;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Microsoft.AspNetCore.DataProtection;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.AspNetCore.WebUtilities;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Extensions.Logging;
-    using Moq;
-    using NUnit.Framework;
-    using Portal.Server.Controllers.v1._0;
-
     [TestFixture]
     public class EdgeDevicesControllerTests : BackendUnitTest
     {

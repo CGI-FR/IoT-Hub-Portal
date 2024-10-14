@@ -3,22 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models.v10;
-    using Newtonsoft.Json;
-    using Amazon.IotData.Model;
-    using System.Text;
-    using IoTHub.Portal.Domain.Entities;
-    using Newtonsoft.Json.Linq;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
-    using IoTHub.Portal.Domain.Repositories;
-    using Azure;
-    using IoTHub.Portal.Application.Helpers;
-    using Amazon.IoT;
-    using Amazon.IotData;
 
     public class AWSDevicePropertyService : IDevicePropertyService
     {

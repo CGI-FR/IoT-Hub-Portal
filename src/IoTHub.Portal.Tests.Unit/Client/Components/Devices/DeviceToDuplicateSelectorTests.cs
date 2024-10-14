@@ -1,25 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Components.Devices
+namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 {
-    using System.Collections.Generic;
-    using AngleSharp.Dom;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Components.Devices;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Services;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-    using UnitTests.Bases;
-
     [TestFixture]
     public class DeviceToDuplicateSelectorTests : BlazorUnitTest
     {

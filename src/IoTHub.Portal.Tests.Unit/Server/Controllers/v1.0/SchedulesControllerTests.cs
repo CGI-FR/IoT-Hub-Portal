@@ -3,20 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Server.Controllers.V10;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using UnitTests.Bases;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Domain.Entities;
-    using System.Collections.Generic;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-
     [TestFixture]
     public class SchedulesControllerTests : BackendUnitTest
     {

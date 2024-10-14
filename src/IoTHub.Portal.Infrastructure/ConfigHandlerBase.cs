@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    using IoTHub.Portal.Domain;
-
     public abstract class ConfigHandlerBase : ConfigHandler
     {
         public const string PortalNameKey = "PortalName";

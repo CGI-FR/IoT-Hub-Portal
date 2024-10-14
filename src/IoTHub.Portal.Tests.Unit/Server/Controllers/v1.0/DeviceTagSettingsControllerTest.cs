@@ -3,18 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
-    using Portal.Server.Controllers.v1._0;
-
     [TestFixture]
     public class DeviceTagSettingsControllerTest
     {

@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Newtonsoft.Json;
-    using Portal.Models.v10;
-
     public class DeviceTagSettingsClientService : IDeviceTagSettingsClientService
     {
         private readonly HttpClient http;
@@ -22,7 +14,7 @@ namespace IoTHub.Portal.Client.Services
 
         public Task CreateOrUpdateDeviceTag(DeviceTagDto deviceTag)
         {
-            var deviceTagAsJson = JsonConvert.SerializeObject(deviceTag);
+            var deviceTagAsJson = JsonSerializer.Serialize(deviceTag);
             var content = new StringContent(deviceTagAsJson, Encoding.UTF8, "application/json");
 
             return this.http.PatchAsync("api/settings/device-tags", content);

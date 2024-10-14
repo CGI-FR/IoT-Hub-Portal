@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System.Text.Json.Serialization;
-
     public class LoRaCloudToDeviceMessage
     {
         [JsonPropertyName("rawPayload")]

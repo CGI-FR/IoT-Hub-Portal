@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Wrappers
 {
-    using System.Net.Http;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Wrappers;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-
     public class ProvisioningServiceClientWrapper : IProvisioningServiceClient
     {
         private readonly ProvisioningServiceClient provisioningServiceClient;

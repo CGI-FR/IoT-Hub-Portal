@@ -3,16 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages
 {
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
     using Index = Portal.Client.Pages.Index;
-    using IoTHub.Portal.Models.v10;
 
     [TestFixture]
     public class IndexTests : BlazorUnitTest

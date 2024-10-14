@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Application.Managers
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public interface IExportManager
     {
         Task ExportDeviceList(Stream stream);

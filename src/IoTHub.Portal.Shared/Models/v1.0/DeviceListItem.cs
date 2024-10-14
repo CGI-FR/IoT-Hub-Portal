@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Shared.Models.v10;
-
     /// <summary>
     /// Device list item.
     /// </summary>

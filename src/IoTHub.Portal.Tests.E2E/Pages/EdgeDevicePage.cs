@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E.Pages
 {
-    using NUnit.Framework;
-    using OpenQA.Selenium;
-    using OpenQA.Selenium.Interactions;
-    using OpenQA.Selenium.Support.UI;
-
     public class EdgeDevicePage
     {
 

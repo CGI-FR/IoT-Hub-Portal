@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E.Pages
 {
-    using NUnit.Framework;
-    using OpenQA.Selenium;
-    using OpenQA.Selenium.Support.UI;
-
     public class EdgeModelPage
     {
         private readonly WebDriverWait wait;

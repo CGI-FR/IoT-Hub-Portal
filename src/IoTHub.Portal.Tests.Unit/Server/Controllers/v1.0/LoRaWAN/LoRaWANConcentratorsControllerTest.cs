@@ -3,24 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using FluentAssertions;
-    using Hellang.Middleware.ProblemDetails;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
-    using Moq;
-    using NUnit.Framework;
-    using Portal.Server.Controllers.v1._0.LoRaWAN;
+    using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
 
     [TestFixture]
     public class LoRaWANConcentratorsControllerTest : BackendUnitTest

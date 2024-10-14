@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.ServicesHealthCheck
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Azure.Storage.Blobs;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
-
     public class StorageAccountHealthCheck : IHealthCheck
     {
         private readonly BlobServiceClient blobServiceClient;

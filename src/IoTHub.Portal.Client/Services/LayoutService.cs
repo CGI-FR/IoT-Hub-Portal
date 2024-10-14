@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Constants;
-    using Blazored.LocalStorage;
-
     public class LayoutService : ILayoutService
     {
         private readonly ILocalStorageService localStorageService;

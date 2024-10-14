@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System;
-    using System.ComponentModel.DataAnnotations;
-
     /// <summary>
     /// IoT Edge configuration
     /// </summary>

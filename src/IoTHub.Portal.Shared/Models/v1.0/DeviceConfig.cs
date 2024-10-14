@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using Newtonsoft.Json;
-
     public class DeviceConfig
     {
         /// <summary>
@@ -36,7 +30,6 @@ namespace IoTHub.Portal.Models.v10
         /// </summary>
         [Range(0, Int32.MaxValue)]
         [DefaultValue(100)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int Priority { get; set; } = 100;
     }
 }

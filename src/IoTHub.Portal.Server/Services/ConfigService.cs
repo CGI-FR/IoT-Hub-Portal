@@ -3,23 +3,6 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Azure;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Crosscutting.Extensions;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Extensions;
-    using Newtonsoft.Json.Linq;
-
     public class ConfigService : IConfigService
     {
         private readonly RegistryManager registryManager;

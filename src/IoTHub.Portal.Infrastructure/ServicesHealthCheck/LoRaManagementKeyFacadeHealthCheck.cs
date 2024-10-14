@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.ServicesHealthCheck
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
-
     public class LoRaManagementKeyFacadeHealthCheck : IHealthCheck
     {
         private readonly ILoRaWanManagementService loRaWanManagementService;

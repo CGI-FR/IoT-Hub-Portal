@@ -5,8 +5,6 @@
 
 namespace IoTHub.Portal.MySql.Migrations
 {
-    using Microsoft.EntityFrameworkCore.Migrations;
-
     public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

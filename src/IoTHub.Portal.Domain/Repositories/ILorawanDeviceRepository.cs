@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Repositories
 {
-    using Entities;
-
     public interface ILorawanDeviceRepository : IRepository<LorawanDevice>
     {
     }

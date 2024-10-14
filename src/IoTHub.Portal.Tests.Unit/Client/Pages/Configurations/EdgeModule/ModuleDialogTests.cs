@@ -3,19 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
 {
-    using Bunit;
-    using FluentAssertions;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using MudBlazor;
-    using NUnit.Framework;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Portal.Client.Dialogs.EdgeModels.EdgeModule;
-    using UnitTests.Bases;
-
     [TestFixture]
     public class ModuleDialogTests : BlazorUnitTest
     {

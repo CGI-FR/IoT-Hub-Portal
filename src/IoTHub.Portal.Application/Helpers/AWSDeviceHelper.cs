@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Application.Helpers
 {
-    using System;
-    using Amazon.IotData.Model;
-    using Newtonsoft.Json.Linq;
-
     public static class AWSDeviceHelper
     {
         public static JObject RetrieveDesiredProperties(GetThingShadowResponse shadow)

@@ -5,8 +5,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System.ComponentModel.DataAnnotations;
-
     /// <summary>
     /// LoRaWAN Concentrator.
     /// </summary>

@@ -3,23 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Services;
-    using Models.v10;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using NUnit.Framework;
-    using RichardSzalay.MockHttp;
-    using System.Net;
-    using UnitTests.Helpers;
-    using UnitTests.Bases;
-    using IoTHub.Portal.Shared.Models.v10;
-    using System.Linq;
-
     [TestFixture]
     public class EdgeDeviceClientServiceTests : BlazorUnitTest
     {

@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using System;
-    using System.Globalization;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure;
-    using FluentAssertions;
-    using Microsoft.Extensions.Configuration;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class DevelopmentConfigHandlerTests
     {

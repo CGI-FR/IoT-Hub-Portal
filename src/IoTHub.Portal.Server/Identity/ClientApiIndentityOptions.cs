@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Server.Identity
 {
-    using System;
-
     public sealed class ClientApiIndentityOptions
     {
         public string Authority { get; set; }

@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
-    using IoTHub.Portal.Client.Shared;
-    using Models.v10;
-    using UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using NUnit.Framework;
-
     [TestFixture]
     public class PortalFooterTests : BlazorUnitTest
     {

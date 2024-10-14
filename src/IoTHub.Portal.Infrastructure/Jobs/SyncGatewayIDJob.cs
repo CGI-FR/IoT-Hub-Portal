@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs
 {
-    using System;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using Microsoft.Extensions.Logging;
-    using Quartz;
-
     [DisallowConcurrentExecution]
     public class SyncGatewayIDJob : IJob
     {

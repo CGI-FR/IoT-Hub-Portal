@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using Microsoft.Extensions.Configuration;
-
     public class ProductionAWSConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;

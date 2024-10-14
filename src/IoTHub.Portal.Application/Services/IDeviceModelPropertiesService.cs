@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using IoTHub.Portal.Domain.Entities;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
     public interface IDeviceModelPropertiesService
     {
         Task<IEnumerable<DeviceModelProperty>> GetModelProperties(string modelId);

@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
-    using Portal.Models.v10.LoRaWAN;
-
     public class LoRaWanDeviceModelsClientService : ILoRaWanDeviceModelsClientService
     {
         private readonly HttpClient http;

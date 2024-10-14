@@ -1,13 +1,4 @@
 ﻿@page "/devices"
-@using IoTHub.Portal
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Shared.Models.v10;
-@using IoTHub.Portal.Client.Dialogs.Devices
-@using System.Web
-@using System.IO
-@using System.Text.RegularExpressions
-@using System.Net.Http.Headers
-@using IoTHub.Portal.Shared.Models.v10.Filters;
 
 @attribute [Authorize]
 
@@ -433,7 +424,7 @@
         var export = await this.DeviceClientService.ExportDeviceList();
         var fileName = export?.Headers?.ContentDisposition?.Parameters.Single(c => c.Name == "filename").Value;
 
-        using var streamRef = new DotNetStreamReference(stream: await (export?.ReadAsStreamAsync())!);
+        using var streamRef = new DotNetStreamReference(stream: await export?.ReadAsStreamAsync()!);
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 

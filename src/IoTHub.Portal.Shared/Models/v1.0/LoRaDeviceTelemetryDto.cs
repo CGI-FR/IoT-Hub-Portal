@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    using System;
-    using System.Collections.Generic;
-
     public class LoRaDeviceTelemetryDto
     {
         public string Id { get; set; } = default!;

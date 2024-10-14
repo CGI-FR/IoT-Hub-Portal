@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System.Text.Json.Serialization;
-    using Base;
-
     public class LoRaDeviceTelemetry : EntityBase
     {
         public DateTime EnqueuedTime { get; set; }

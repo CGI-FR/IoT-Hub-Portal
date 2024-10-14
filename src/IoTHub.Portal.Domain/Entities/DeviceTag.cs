@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System.ComponentModel.DataAnnotations.Schema;
-    using Base;
-
     public class DeviceTag : EntityBase
     {
         [NotMapped] public string Name => Id;

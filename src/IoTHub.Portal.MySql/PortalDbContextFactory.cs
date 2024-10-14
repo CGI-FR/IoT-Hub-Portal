@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.MySql
 {
-    using IoTHub.Portal.Infrastructure;
-    using IoTHub.Portal.Infrastructure.Helpers;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Design;
-
     public class PortalDbContextFactory : IDesignTimeDbContextFactory<PortalDbContext>
     {
         public PortalDbContext CreateDbContext(string[] args)

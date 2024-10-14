@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// Device tag.
     /// </summary>
@@ -30,7 +26,6 @@ namespace IoTHub.Portal.Models.v10
         /// Default is false.
         /// </summary>
         [DefaultValue(false)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool Required { get; set; }
 
         /// <summary>
@@ -38,7 +33,6 @@ namespace IoTHub.Portal.Models.v10
         /// Default is false.
         /// </summary>
         [DefaultValue(false)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool Searchable { get; set; }
     }
 }

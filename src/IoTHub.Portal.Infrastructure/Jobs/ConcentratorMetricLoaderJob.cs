@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs
 {
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Application.Services;
-    using Microsoft.Extensions.Logging;
-    using Quartz;
-    using Shared.Models.v1._0;
-
     [DisallowConcurrentExecution]
     public class ConcentratorMetricLoaderJob : IJob
     {

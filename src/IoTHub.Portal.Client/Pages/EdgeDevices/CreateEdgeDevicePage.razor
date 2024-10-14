@@ -1,11 +1,8 @@
 ﻿@page "/edge/devices/new"
 
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Shared.Constants
-
 @attribute [Authorize]
-@inject ISnackbar Snackbar
 @inject PortalSettings Portal
+@inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 @inject IEdgeDeviceClientService EdgeDeviceClientService
 @inject IEdgeModelClientService EdgeModelClientService

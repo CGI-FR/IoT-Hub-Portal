@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Models
 {
-    using System.Text.Json.Serialization;
-
 #pragma warning disable CA1720 // Identifier contains type name
     /// <summary>
     /// Device property type.

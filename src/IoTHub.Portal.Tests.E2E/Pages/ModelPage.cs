@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E.Pages
 {
-    using FluentAssertions;
-    using NUnit.Framework;
-    using OpenQA.Selenium;
-    using OpenQA.Selenium.Support.UI;
-
     public class ModelPage
     {
         private readonly WebDriverWait wait;

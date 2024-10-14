@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
-    using Portal.Models.v10;
-    using Portal.Shared.Models.v10;
-
     public class DeviceConfigurationsClientService : IDeviceConfigurationsClientService
     {
         private readonly HttpClient http;

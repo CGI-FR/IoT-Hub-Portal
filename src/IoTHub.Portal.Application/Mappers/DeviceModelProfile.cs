@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using Amazon.IoT.Model;
-    using AutoMapper;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Shared;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-
     public class DeviceModelProfile : Profile
     {
         public DeviceModelProfile()

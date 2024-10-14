@@ -3,23 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Amazon.GreengrassV2;
-    using Amazon.GreengrassV2.Model;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using Amazon.Runtime.Internal.Util;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.Extensions.Logging;
     using Configuration = Microsoft.Azure.Devices.Configuration;
+    using Tag = Amazon.IoT.Model.Tag;
 
     public class AwsConfigService : IConfigService
     {

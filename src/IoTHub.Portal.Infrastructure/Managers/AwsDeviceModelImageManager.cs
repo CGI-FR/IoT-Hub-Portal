@@ -3,20 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Managers
 {
-    using System;
-    using System.Drawing;
-    using System.Reflection;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Amazon.S3;
-    using Amazon.S3.Model;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-
     public class AwsDeviceModelImageManager : IDeviceModelImageManager
     {
         private readonly ILogger<AwsDeviceModelImageManager> logger;
@@ -35,7 +21,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
             this.imageOptions = options;
             this.s3Client = s3Client;
         }
-
 
         public Task<string> GetDeviceModelImageAsync(string deviceModelId)
         {
@@ -73,7 +58,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
                     _ = await this.s3Client.PutACLAsync(putAclRequest);
 
-                    // TODO Return encoded image instead
                     return ComputeImageUri(deviceModelId).ToString();
                 }
                 catch (AmazonS3Exception e)
@@ -120,7 +104,11 @@ namespace IoTHub.Portal.Infrastructure.Managers
         public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
 
-            this.logger.LogInformation("Uploading Default Image to AWS S3 storage");
+            this.logger.LogInformation($"Uploading Default Image to AWS S3 storage");
+
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            var defaultImageStream = currentAssembly
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{DeviceModelImageOptions.DefaultImageName}");
 
             try
             {
@@ -129,9 +117,10 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = deviceModelId,
-                    InputStream = DeviceModelImageOptions.DefaultImageStream,
+                    InputStream = defaultImageStream,
                     ContentType = "image/*", // image content type
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
+
                 };
 
                 _ = await this.s3Client.PutObjectAsync(putObjectRequest);
@@ -147,7 +136,6 @@ namespace IoTHub.Portal.Infrastructure.Managers
                     };
                     _ = await this.s3Client.PutACLAsync(putAclRequest);
 
-                    // TODO Return encoded image instead
                     return ComputeImageUri(deviceModelId).ToString();
                 }
                 catch (AmazonS3Exception e)
@@ -167,13 +155,18 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             this.logger.LogInformation($"Initializing default Image to AWS S3 storage");
 
+            var currentAssembly = Assembly.GetExecutingAssembly();
+
+            var defaultImageStream = currentAssembly
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{DeviceModelImageOptions.DefaultImageName}");
+
             try
             {
                 var putObjectRequest = new PutObjectRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = DeviceModelImageOptions.DefaultImageName,
-                    InputStream = DeviceModelImageOptions.DefaultImageStream,
+                    InputStream = defaultImageStream,
                     ContentType = "image/*", // image content type
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 

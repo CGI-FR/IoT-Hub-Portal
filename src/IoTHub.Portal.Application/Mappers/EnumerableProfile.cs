@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using System.Collections.Generic;
-    using AutoMapper;
-    using Azure;
-
     public class EnumerableProfile : Profile
     {
         public EnumerableProfile()

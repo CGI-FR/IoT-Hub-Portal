@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.ServicesHealthCheck
 {
-    using System;
-    using System.Security.Cryptography;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Wrappers;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
-
     public class ProvisioningServiceClientHealthCheck : IHealthCheck
     {
         private readonly IProvisioningServiceClient provisioningServiceClient;

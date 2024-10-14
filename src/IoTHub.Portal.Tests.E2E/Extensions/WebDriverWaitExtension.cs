@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E.Extensions
 {
-    using OpenQA.Selenium;
-    using OpenQA.Selenium.Support.UI;
-
     internal static class WebDriverExtension
     {
         public static bool WaitForAssertion(this IWebDriver driver, Func<IWebDriver, bool> expr, TimeSpan? timeout = null)

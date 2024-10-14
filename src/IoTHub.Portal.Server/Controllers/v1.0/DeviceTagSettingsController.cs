@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Server.Controllers.v1._0
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]

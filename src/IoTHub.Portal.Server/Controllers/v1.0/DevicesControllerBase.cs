@@ -1,21 +1,9 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.v1._0
+namespace IoTHub.Portal.Server.Controllers.V10
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Hellang.Middleware.ProblemDetails;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.Extensions.Logging;
+    using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
 
     public abstract class DevicesControllerBase<TDto> : ControllerBase
         where TDto : IDeviceDetails

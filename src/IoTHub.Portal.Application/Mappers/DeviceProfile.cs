@@ -3,17 +3,7 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.Json;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.Azure.Devices.Shared;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
+    using Device = Domain.Entities.Device;
 
     public class DeviceProfile : Profile
     {

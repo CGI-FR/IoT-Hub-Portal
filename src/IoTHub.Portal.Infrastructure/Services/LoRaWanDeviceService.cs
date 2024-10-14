@@ -3,29 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Azure.Messaging.EventHubs;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Domain;
-    using Domain.Entities;
-    using Domain.Exceptions;
-    using Domain.Repositories;
-    using Infrastructure;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Logging;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-    using static IoTHub.Portal.Infrastructure.ConnectionAuthMethod;
+    using JsonSerializer = System.Text.Json.JsonSerializer;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>
     {
@@ -177,7 +156,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                         }
                 });
 
-                if (eventAuthMethod.Scope != ConnectionAuthScope.Device)
+                if (eventAuthMethod.Scope != ConnectionAuthMethod.ConnectionAuthScope.Device)
                 {
                     this.logger.LogTrace($"Event wasn't issued by a device. Skipping this event.");
                     return;

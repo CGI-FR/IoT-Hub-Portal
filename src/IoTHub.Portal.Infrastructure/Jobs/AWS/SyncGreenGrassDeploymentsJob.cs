@@ -3,19 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs.AWS
 {
-    using Amazon.IoT;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Domain;
-    using Microsoft.Extensions.Logging;
-    using Quartz;
-    using Amazon.GreengrassV2;
-    using IoTHub.Portal.Models.v10;
-    using Amazon.GreengrassV2.Model;
-    using IoTHub.Portal.Domain.Entities;
-    using System.Text.RegularExpressions;
-
     [DisallowConcurrentExecution]
     public class SyncGreenGrassDeploymentsJob : IJob
     {

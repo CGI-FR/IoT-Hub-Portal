@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public interface ILayerClientService
     {
         Task<string> CreateLayer(LayerDto layer);

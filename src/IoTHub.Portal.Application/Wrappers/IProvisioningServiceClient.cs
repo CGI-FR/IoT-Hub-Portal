@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Application.Wrappers
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-
     public interface IProvisioningServiceClient
     {
         Task<EnrollmentGroup> CreateOrUpdateEnrollmentGroupAsync(EnrollmentGroup enrollmentGroup);

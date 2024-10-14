@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    using System;
-
-    //using System.ComponentModel.DataAnnotations;
-
     public class LayerDto
     {
         /// <summary>

@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using FluentAssertions;
-    using UnitTests.Bases;
-    using NUnit.Framework;
-
     public class DeviceModelRepositoryTests : BackendUnitTest
     {
         private DeviceModelRepository deviceModelRepository;

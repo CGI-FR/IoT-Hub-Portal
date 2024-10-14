@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Domain.Repositories;
-    using Domain.Entities;
-
     public class ScheduleRepository : GenericRepository<Schedule>, IScheduleRepository
     {
         public ScheduleRepository(PortalDbContext context) : base(context)

@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using Microsoft.JSInterop;
-    using System.Threading.Tasks;
-
     public class ClipboardService
     {
         private readonly IJSRuntime jsRuntime;

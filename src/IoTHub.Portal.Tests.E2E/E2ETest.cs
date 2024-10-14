@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E
 {
-    using System.Reflection;
-    using Microsoft.Extensions.Configuration;
-    using NUnit.Framework;
-    using OpenQA.Selenium;
-
     public class E2ETest
     {
         protected IConfiguration Configuration { get; } = new ConfigurationBuilder()

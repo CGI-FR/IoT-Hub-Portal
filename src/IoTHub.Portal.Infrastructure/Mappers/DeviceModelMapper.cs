@@ -3,17 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
-    using Azure.Data.Tables;
-    using IoTHub.Portal.Models.v10;
-    using System;
-    using System.Collections.Generic;
-
     public class DeviceModelMapper : IDeviceModelMapper<DeviceModelDto, DeviceModelDto>
     {
-        public DeviceModelMapper()
-        {
-        }
-
         public DeviceModelDto CreateDeviceModelListItem(TableEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity);

@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public interface IScheduleService
     {
         Task<ScheduleDto> CreateSchedule(ScheduleDto schedule);

@@ -3,21 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System;
-    using System.Threading.Tasks;
-    using Amazon.GreengrassV2;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Helpers;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Extensions.Logging;
-
     public class AWSEdgeDevicesService : EdgeDevicesServiceBase, IEdgeDevicesService
     {
         /// <summary>

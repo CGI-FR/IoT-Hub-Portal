@@ -3,15 +3,7 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Models.v10;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-    using IoTHub.Portal.Domain.Shared;
-    using Shared.Models.v10;
-    using Amazon.IoT.Model;
-    using IoTHub.Portal.Shared.Models;
+    using Device = Microsoft.Azure.Devices.Device;
 
     public interface IExternalDeviceService
     {

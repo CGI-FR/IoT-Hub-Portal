@@ -3,16 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Helpers
 {
-    using AutoFixture;
-    using IoTHub.Portal.Shared.Models.v10;
-    using NUnit.Framework;
-    using FluentAssertions;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using IoTHub.Portal.Client.Helpers;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Client.Models;
-    using System.Linq;
-
     internal class LayerHelperTest : BlazorUnitTest
     {
         public override void Setup()

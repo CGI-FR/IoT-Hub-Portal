@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E.Pages
 {
-    using Microsoft.Extensions.Configuration;
-    using OpenQA.Selenium;
-    using OpenQA.Selenium.Support.UI;
-
     public class LoginPage
     {
         private readonly WebDriverWait wait;

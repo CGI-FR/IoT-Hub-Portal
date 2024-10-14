@@ -3,27 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using AutoFixture;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Infrastructure.Jobs.AWS;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using Quartz;
-
     public class SyncThingTypesJobTests : BackendUnitTest
     {
         private IJob syncThingTypesJob;

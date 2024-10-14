@@ -3,12 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.ServicesHealthCheck
 {
-    using System.IO;
-    using System.Text;
-    using System.Text.Json;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
+    using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
     public static class HealthCheckResponseWriter
     {

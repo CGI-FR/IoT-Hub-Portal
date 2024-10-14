@@ -3,19 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs.AWS
 {
-    using System.Threading.Tasks;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Domain.Shared;
-    using Microsoft.Extensions.Logging;
-    using Quartz;
-
     [DisallowConcurrentExecution]
     public class SyncThingTypesJob : IJob
     {

@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public interface IPlanningClientService
     {
         Task<string> CreatePlanning(PlanningDto planning);

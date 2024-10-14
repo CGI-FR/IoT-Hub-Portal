@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public interface IDeviceDetails
     {
         /// <summary>

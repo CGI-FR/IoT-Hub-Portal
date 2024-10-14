@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using Portal.Models.v10;
-
     public interface IEdgeDeviceLayoutService
     {
         event EventHandler RefreshDeviceOccurred;

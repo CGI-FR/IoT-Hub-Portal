@@ -3,26 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 {
-    using System;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
-    using IoTHub.Portal.Client.Services;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v10.LoRaWAN;
-    using UnitTests.Bases;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using MudBlazor.Services;
-    using NUnit.Framework;
-    using UnitTests.Mocks;
-
     [TestFixture]
     public class ConcentratorDetailPageTests : BlazorUnitTest
     {

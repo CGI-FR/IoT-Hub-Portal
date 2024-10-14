@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Converters
 {
-    using IoTHub.Portal.Client.Converters;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class StringToBoolConverterTests
     {

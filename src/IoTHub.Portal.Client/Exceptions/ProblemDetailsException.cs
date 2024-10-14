@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Client.Exceptions
 {
-    using System;
-    using Models;
-
     public class ProblemDetailsException : Exception
     {
         public ProblemDetailsException(ProblemDetailsWithExceptionDetails? problemDetailsWithExceptionDetails)

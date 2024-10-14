@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Client.Constants
 {
-    using MudBlazor;
-
     public static class Theme
     {
         public static readonly MudTheme CurrentTheme = new()

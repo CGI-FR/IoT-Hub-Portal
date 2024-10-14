@@ -3,20 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
-    using System;
-    using System.Collections.Generic;
-    using Bunit;
-    using FluentAssertions;
-    using IoTHub.Portal.Client.Pages.Devices;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Mocks;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor.Services;
-    using NUnit.Framework;
-
     [TestFixture]
     public class CreateDevicePageTests : BlazorUnitTest
     {

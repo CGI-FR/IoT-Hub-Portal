@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models;
-    using Microsoft.Azure.Devices.Shared;
-    using System.Collections.Generic;
-
     public interface IDeviceTwinMapper<TListItem, TDevice>
         where TListItem : DeviceListItem
         where TDevice : IDeviceDetails

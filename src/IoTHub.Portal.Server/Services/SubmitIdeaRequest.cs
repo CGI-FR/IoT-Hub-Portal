@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    using Newtonsoft.Json;
-    using System.Text.Json.Serialization;
-
     public class SubmitIdeaRequest
     {
         [JsonPropertyName("organization")]

@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System;
-    using System.Threading.Tasks;
-
     public interface ILayoutService
     {
         bool IsDrawerOpen { get; set; }

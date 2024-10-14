@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Client.Models
 {
-    using IoTHub.Portal.Shared.Models.v10;
-
     public class LayerHash
     {
         public LayerDto LayerData { get; set; }

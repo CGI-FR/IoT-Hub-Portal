@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using FluentAssertions;
-    using NUnit.Framework;
-    using Portal.Client.Services;
-
     [TestFixture]
     public class DashboardLayoutServiceTests
     {

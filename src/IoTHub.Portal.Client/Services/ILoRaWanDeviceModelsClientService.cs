@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using Portal.Models.v10.LoRaWAN;
-
     public interface ILoRaWanDeviceModelsClientService
     {
         Task<LoRaDeviceModelDto> GetDeviceModel(string deviceModelId);

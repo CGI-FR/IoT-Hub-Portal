@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Repositories
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Domain.Entities;
-
     public interface IDeviceModelPropertiesRepository : IRepository<DeviceModelProperty>
     {
         Task<IEnumerable<DeviceModelProperty>> GetModelProperties(string modelId);

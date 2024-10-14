@@ -4,9 +4,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using Domain.Entities;
-    using Domain.Repositories;
-
     public class EdgeDeviceModelCommandRepository : GenericRepository<EdgeDeviceModelCommand>, IEdgeDeviceModelCommandRepository
     {
         public EdgeDeviceModelCommandRepository(PortalDbContext context) : base(context)

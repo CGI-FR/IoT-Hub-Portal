@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E
 {
-    using AutoFixture;
-    using IoTHub.Portal.Tests.E2E.Pages;
-    using NUnit.Framework;
-    using NUnit.Framework.Internal;
-
     public class DeviceTags : E2ETest
     {
         private LoginPage loginPage;

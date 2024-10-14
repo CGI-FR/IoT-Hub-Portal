@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Exceptions
 {
-    using System;
-    using IoTHub.Portal.Domain.Shared.Constants;
-
     public class InvalidCloudProviderException : BaseException
     {
         public InvalidCloudProviderException(string detail, Exception? innerException = null) : base(ErrorTitles.InvalidCloudProvider, detail, innerException)

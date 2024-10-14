@@ -3,19 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Services;
-    using Domain;
-    using Domain.Entities;
-    using Domain.Exceptions;
-    using Domain.Repositories;
-    using Microsoft.EntityFrameworkCore;
-    using Models.v10;
-
     public class DeviceTagService : IDeviceTagService
     {
         private readonly IMapper mapper;

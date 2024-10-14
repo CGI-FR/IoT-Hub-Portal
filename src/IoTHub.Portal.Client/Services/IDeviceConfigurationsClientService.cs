@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Portal.Models.v10;
-    using Portal.Shared.Models.v10;
-
     public interface IDeviceConfigurationsClientService
     {
         Task<IList<ConfigListItem>> GetDeviceConfigurations();

@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Client.Validators
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using FluentValidation;
-
     public class LoRaDeviceModelCommandValidator : AbstractValidator<DeviceModelCommandDto>
     {
         public LoRaDeviceModelCommandValidator()

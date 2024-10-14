@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Threading.Tasks;
-    using Models.v10.LoRaWAN;
-
     public interface ILoRaWANCommandService
     {
         Task<DeviceModelCommandDto[]> GetDeviceModelCommandsFromModel(string id);

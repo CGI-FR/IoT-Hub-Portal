@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System;
-
     public interface IDashboardLayoutService
     {
         event EventHandler RefreshDashboardOccurred;

@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
-
     [TestFixture]
     public class DeviceModelImageManagerTest : BackendUnitTest
     {

@@ -3,19 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.EdgeModels
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Enums;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-    using Portal.Client.Dialogs.EdgeModels;
-
     [TestFixture]
     public class AwsGreengrassComponentDialogTests : BlazorUnitTest
     {

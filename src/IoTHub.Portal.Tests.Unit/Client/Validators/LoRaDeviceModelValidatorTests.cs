@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Validators
 {
-    using IoTHub.Portal.Client.Validators;
-    using Models.v10.LoRaWAN;
-    using NUnit.Framework;
-
     internal class LoRaDeviceModelValidatorTests
     {
         [Test]

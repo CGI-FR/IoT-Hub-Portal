@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
-    using Microsoft.EntityFrameworkCore;
-
     public class DeviceModelPropertiesRepository : GenericRepository<DeviceModelProperty>, IDeviceModelPropertiesRepository
     {
         public DeviceModelPropertiesRepository(PortalDbContext context) : base(context)

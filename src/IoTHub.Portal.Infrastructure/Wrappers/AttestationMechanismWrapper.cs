@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Wrappers
 {
-    using IoTHub.Portal.Application.Wrappers;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-
     public class AttestationMechanismWrapper : IAttestationMechanism
     {
         private readonly AttestationMechanism mechanism;

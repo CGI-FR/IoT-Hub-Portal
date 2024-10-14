@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Domain
 {
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-    using Base;
-    using Portal.Shared.Models.v1._0;
-
     public interface IRepository<T> where T : EntityBase
     {
         IEnumerable<T> GetAll(params Expression<Func<T, object>>[] includes);

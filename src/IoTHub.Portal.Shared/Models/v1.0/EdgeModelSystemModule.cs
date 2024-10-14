@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    using System.Collections.Generic;
-
     public class EdgeModelSystemModule
     {
         public string Name { get; set; }

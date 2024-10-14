@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Constants
 {
-    using System;
-
     public static class DaysEnumFlag
     {
         [Flags]

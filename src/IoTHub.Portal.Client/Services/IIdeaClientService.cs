@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Threading.Tasks;
-    using Portal.Shared.Models.v1._0;
-
     public interface IIdeaClientService
     {
         Task<IdeaResponse> SubmitIdea(IdeaRequest ideaRequest);

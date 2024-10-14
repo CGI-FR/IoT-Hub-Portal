@@ -3,15 +3,7 @@
 
 namespace IoTHub.Portal.Client.Handlers
 {
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
-    using Exceptions;
-    using Microsoft.AspNetCore.Components;
-    using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-    using Models;
-    using MudBlazor;
+    using Severity = MudBlazor.Severity;
 
     public class ProblemDetailsHandler : DelegatingHandler
     {

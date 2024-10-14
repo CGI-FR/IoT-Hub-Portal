@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Class representing the page results.
     /// </summary>

@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System;
-    using System.Linq;
-    using IoTHub.Portal.Client.Services;
-    using Microsoft.JSInterop;
-    using Microsoft.JSInterop.Infrastructure;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class ClipboardServiceTests
     {
