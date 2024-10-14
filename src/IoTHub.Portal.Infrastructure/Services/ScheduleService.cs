@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+
     public class ScheduleService : IScheduleService
     {
         private readonly IMapper mapper;

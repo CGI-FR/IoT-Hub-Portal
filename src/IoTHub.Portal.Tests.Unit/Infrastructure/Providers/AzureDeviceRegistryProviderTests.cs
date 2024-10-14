@@ -4,7 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Providers
 {
     [TestFixture]
-    public class DeviceRegistryProviderTests
+    public class AzureDeviceRegistryProviderTests
     {
         private MockRepository mockRepository;
 
@@ -22,9 +22,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Providers
             this.mockConfigHandler = this.mockRepository.Create<DevelopmentConfigHandler>(this.mockConfiguration.Object);
         }
 
-        private DeviceRegistryProvider CreateManager()
+        public AzureDeviceRegistryProvider CreateManager()
         {
-            return new DeviceRegistryProvider(
+            return new AzureDeviceRegistryProvider(
                 this.mockProvisioningServiceClient.Object,
                 this.mockConfigHandler.Object);
         }

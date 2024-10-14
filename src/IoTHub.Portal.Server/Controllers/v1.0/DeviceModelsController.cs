@@ -59,14 +59,13 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Changes the avatar.
         /// </summary>
         /// <param name="id">The model identifier.</param>
-        /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
         [HttpPost("{id}/avatar", Name = "POST Update the device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<ActionResult<string>> ChangeAvatar(string id, IFormFile file)
+        public override async Task<ActionResult<string>> ChangeAvatar(string id, string avatar)
         {
-            return base.ChangeAvatar(id, file);
+            return await base.ChangeAvatar(id, avatar);
         }
 
         /// <summary>

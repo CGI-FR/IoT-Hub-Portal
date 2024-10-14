@@ -1,6 +1,7 @@
 ﻿@page "/edge/devices/new"
 
 @attribute [Authorize]
+@inject PortalSettings Portal
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 @inject IEdgeDeviceClientService EdgeDeviceClientService

@@ -5,23 +5,16 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 {
     public class LoRaDeviceModelMapper : IDeviceModelMapper<DeviceModelDto, LoRaDeviceModelDto>
     {
-        private readonly IDeviceModelImageManager deviceModelImageManager;
-
-        public LoRaDeviceModelMapper(IDeviceModelImageManager deviceModelImageManager)
-        {
-            this.deviceModelImageManager = deviceModelImageManager;
-        }
-
         public DeviceModelDto CreateDeviceModelListItem(TableEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
             return new DeviceModelDto
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(LoRaDeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
                 SupportLoRaFeatures = bool.Parse(entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)]?.ToString() ?? "false"),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
                 Name = entity[nameof(LoRaDeviceModelDto.Name)]?.ToString(),
                 Description = entity[nameof(LoRaDeviceModelDto.Description)]?.ToString(),
             };
@@ -29,13 +22,13 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public LoRaDeviceModelDto CreateDeviceModel(TableEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
             return new LoRaDeviceModelDto
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(LoRaDeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
                 Name = entity[nameof(LoRaDeviceModelDto.Name)]?.ToString(),
                 Description = entity[nameof(LoRaDeviceModelDto.Description)]?.ToString(),
                 SensorDecoder = entity[nameof(LoRaDeviceModelDto.SensorDecoder)]?.ToString(),

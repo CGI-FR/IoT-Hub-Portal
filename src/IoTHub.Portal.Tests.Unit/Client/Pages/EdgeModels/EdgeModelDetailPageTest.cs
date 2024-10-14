@@ -48,15 +48,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         {
             // Arrange
 
-            var edgeModel =  SetupLoadEdgeModel();
+            var edgeModel = SetupLoadEdgeModel();
 
             _ = this.mockEdgeModelService
                 .Setup(x => x.UpdateIoTEdgeModel(It.Is<IoTEdgeModel>(c => c.ModelId.Equals(edgeModel.ModelId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add($"Edge model successfully updated.", Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
+                .Setup(c => c.Add("Edge model successfully updated.", Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
+
+            _ = this.mockEdgeModelService.Setup(service =>
+                    service.ChangeAvatar(It.IsAny<string>(), It.IsAny<StringContent>()))
+                .Returns(Task.CompletedTask);
 
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
 
@@ -100,7 +104,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         {
             // Arrange
 
-            var edgeModel =  SetupLoadEdgeModel();
+            var edgeModel = SetupLoadEdgeModel();
 
             _ = this.mockSnackbarService
                 .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
@@ -303,7 +307,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#editSystModuleButton_edgeAgent").Count));
             var editEdgeAgentButton = cut.WaitForElement("#editSystModuleButton_edgeAgent");
 
-            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.ImageUri)}").Change("image/test");
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.Name)}-image").Change("image/test");
 
             editEdgeAgentButton.Click();
 
@@ -331,7 +335,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#editSystModuleButton_edgeAgent").Count));
             var editEdgeAgentButton = cut.WaitForElement("#editSystModuleButton_edgeAgent");
 
-            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.ImageUri)}").Change("image/test");
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.Name)}-image").Change("image/test");
 
             editEdgeAgentButton.Click();
 
@@ -349,37 +353,36 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Act
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
 
-            cut.WaitForAssertion(() => Assert.IsFalse(string.IsNullOrEmpty(cut.Find($"#{nameof(IoTEdgeModel.ImageUrl)}").Attributes["src"]?.Value)));
+            cut.WaitForAssertion(() => Assert.IsFalse(string.IsNullOrEmpty(cut.Find($"#model-image").Attributes["src"]?.Value)));
 
-            var avatar = cut.WaitForElement($"#{nameof(IoTEdgeModel.ImageUrl)}");
+            var avatar = cut.WaitForElement($"#{nameof(IoTEdgeModel.Image)}");
             Assert.IsNotNull(avatar);
 
             var deleteAvatarBtn = cut.WaitForElement("#deleteAvatarButton");
             deleteAvatarBtn.Click();
 
             // Assert
-            cut.WaitForAssertion(() => Assert.IsTrue(string.IsNullOrEmpty(cut.Find($"#{nameof(IoTEdgeModel.ImageUrl)}").Attributes["src"]?.Value)));
+            cut.WaitForAssertion(() => Assert.IsTrue(string.IsNullOrEmpty(cut.Find($"#{nameof(IoTEdgeModel.Image)}").Attributes["src"]?.Value)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
-        public IoTEdgeModel SetupLoadEdgeModel()
+        private IoTEdgeModel SetupLoadEdgeModel()
         {
-            var edgeModel =  new IoTEdgeModel
+            var edgeModel =  new IoTEdgeModel()
             {
                 ModelId = this.mockEdgeModleId,
                 Name = "modelTest",
                 Description = "description",
-                EdgeModules = new List<IoTEdgeModule>
+                EdgeModules = new List<IoTEdgeModule>()
                 {
-                    new IoTEdgeModule()
+                    new()
                     {
                         ModuleName = "module_Test",
-                        ImageURI = "image_test",
+                        Image = "image_test",
                         Version = "1.0.1"
                     }
                 },
-                ImageUrl = new Uri($"http://fake.local/{this.mockEdgeModleId}"),
-
+                Image = DeviceModelImageOptions.DefaultImage
             };
 
             _ = this.mockEdgeModelService
@@ -387,8 +390,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 .ReturnsAsync(edgeModel);
 
             _ = this.mockEdgeModelService
-                .Setup(x => x.GetAvatarUrl(It.Is<string>(c => c.Equals(this.mockEdgeModleId, StringComparison.Ordinal))))
-                .ReturnsAsync(edgeModel.ImageUrl.ToString());
+                .Setup(x => x.GetAvatar(It.Is<string>(c => c.Equals(this.mockEdgeModleId, StringComparison.Ordinal))))
+                .ReturnsAsync(edgeModel.Image);
 
             return edgeModel;
         }

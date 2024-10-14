@@ -30,7 +30,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         private readonly ITimeLimitedDataProtector protector;
 
-        internal const string EdgeEnrollementKeyProtectorName = "EdgeEnrollementKeyProtector";
+        public const string EdgeEnrollementKeyProtectorName = "EdgeEnrollementKeyProtector";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDevicesController"/> class.

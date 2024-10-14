@@ -3,12 +3,12 @@
 
 namespace IoTHub.Portal.Infrastructure.Providers
 {
-    internal class DeviceRegistryProvider : IDeviceRegistryProvider
+    public class AzureDeviceRegistryProvider : IDeviceRegistryProvider
     {
         private readonly IProvisioningServiceClient dps;
         private readonly ConfigHandler config;
 
-        public DeviceRegistryProvider(IProvisioningServiceClient dps, ConfigHandler config)
+        public AzureDeviceRegistryProvider(IProvisioningServiceClient dps, ConfigHandler config)
         {
             this.dps = dps;
             this.config = config;

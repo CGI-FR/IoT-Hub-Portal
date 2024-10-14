@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 .Select(model =>
                 {
                     var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);
-                    edgeDeviceModelListItem.ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeDeviceModelListItem.ModelId);
+                    edgeDeviceModelListItem.Image = this.deviceModelImageManager.GetDeviceModelImageAsync(edgeDeviceModelListItem.ModelId).Result;
                     return edgeDeviceModelListItem;
                 })
                 .ToList();
@@ -129,7 +129,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     Name = cmd.Name,
                 })).ToArray();
 
-            var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == deviceModelObject.ModelId).ToList();
+            var existingCommands = (await this.commandRepository.GetAllAsync()).Where(x => x.EdgeDeviceModelId == deviceModelObject.ModelId).ToList();
 
             foreach (var command in existingCommands)
             {
@@ -173,12 +173,12 @@ namespace IoTHub.Portal.Infrastructure.Services
             var routes = await this.configService.GetConfigRouteList(edgeModelEntity.Id);
             var commands =  this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelEntity.Id).ToList();
 
-            //TODO : User a mapper
+            //TODO : Use a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
             var result = new IoTEdgeModel
             {
                 ModelId = edgeModelEntity.Id,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
+                Image = await this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelEntity.Id),
                 Name = edgeModelEntity.Name,
                 Description = edgeModelEntity.Description,
                 EdgeModules = modules,
@@ -204,12 +204,12 @@ namespace IoTHub.Portal.Infrastructure.Services
         private async Task<IoTEdgeModel> GetAwsEdgeModel(EdgeDeviceModel edgeModelEntity)
         {
             var modules = await this.configService.GetConfigModuleList(edgeModelEntity.ExternalIdentifier!);
-            //TODO : User a mapper
+            //TODO : Use a mapper
             //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
             var result = new IoTEdgeModel
             {
                 ModelId = edgeModelEntity.Id,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
+                Image = await this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelEntity.Id),
                 Name = edgeModelEntity.Name,
                 Description = edgeModelEntity.Description,
                 EdgeModules = modules,
@@ -272,15 +272,14 @@ namespace IoTHub.Portal.Infrastructure.Services
 
             if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
             {
-                var configuration = this.configService.GetIoTEdgeConfigurations().Result
-                    .FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
+                var edgeConfig = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
 
-                if (configuration != null)
+                if (edgeConfig != null)
                 {
-                    await this.configService.DeleteConfiguration(configuration.Id);
+                    await this.configService.DeleteConfiguration(edgeConfig.Id);
                 }
 
-                var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
+                var existingCommands = (await this.commandRepository.GetAllAsync()).Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
                 foreach (var command in existingCommands)
                 {
                     this.commandRepository.Delete(command.Id);
@@ -308,18 +307,18 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <returns></returns>
         public Task<string> GetEdgeModelAvatar(string edgeModelId)
         {
-            return Task.Run(() => this.deviceModelImageManager.ComputeImageUri(edgeModelId).ToString());
+            return Task.Run(() => this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelId));
         }
 
         /// <summary>
         /// Update the edge model avatar.
         /// </summary>
         /// <param name="edgeModelId">The edge model indentifier</param>
-        /// <param name="file">The image.</param>
+        /// <param name="avatar">The image.</param>
         /// <returns></returns>
-        public Task<string> UpdateEdgeModelAvatar(string edgeModelId, IFormFile file)
+        public Task<string> UpdateEdgeModelAvatar(string edgeModelId, string avatar)
         {
-            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(edgeModelId, file?.OpenReadStream()));
+            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(edgeModelId, avatar));
         }
 
         /// <summary>

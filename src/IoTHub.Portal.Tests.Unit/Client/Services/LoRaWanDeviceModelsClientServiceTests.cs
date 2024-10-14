@@ -144,23 +144,23 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         }
 
         [Test]
-        public async Task GetAvatarUrlShouldReturnAvatarUrl()
+        public async Task GetAvatarShouldReturnAvatar()
         {
             // Arrange
             var deviceModel = new LoRaDeviceModelDto
             {
                 ModelId = Fixture.Create<string>(),
-                ImageUrl = Fixture.Create<Uri>()
+                Image = DeviceModelImageOptions.DefaultImage //TODO: Replace with the generation of a random image in Base64 format
             };
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/models/{deviceModel.ModelId}/avatar")
-                .RespondJson(deviceModel.ImageUrl.ToString());
+                .RespondText(deviceModel.Image);
 
             // Act
-            var result = await this.loRaWanDeviceModelsClientService.GetAvatarUrl(deviceModel.ModelId);
+            var result = await this.loRaWanDeviceModelsClientService.GetAvatar(deviceModel.ModelId);
 
             // Assert
-            _ = result.Should().Contain(deviceModel.ImageUrl.ToString());
+            _ = result.Should().Be(deviceModel.Image);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
@@ -174,7 +174,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 ModelId = Fixture.Create<string>()
             };
 
-            using var content = new MultipartFormDataContent();
+            using var content = new StringContent(DeviceModelImageOptions.DefaultImage);
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/lorawan/models/{deviceModel.ModelId}/avatar")
                 .With(m =>
@@ -185,7 +185,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 .Respond(HttpStatusCode.Created);
 
             // Act
-            await this.loRaWanDeviceModelsClientService.ChangeAvatar(deviceModel.ModelId, content);
+            await this.loRaWanDeviceModelsClientService.ChangeAvatarAsync(deviceModel.ModelId, content);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();

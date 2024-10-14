@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 {
     using JsonSerializer = System.Text.Json.JsonSerializer;
 
-    internal class LoRaWanManagementService : ILoRaWanManagementService
+    public class LoRaWanManagementService : ILoRaWanManagementService
     {
         private readonly HttpClient httpClient;
 

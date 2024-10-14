@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs.AWS
 {
-    
-
     public class SyncGreenGrassDeploymentsJobTests : BackendUnitTest
     {
         private IJob syncGreenGrassJob;

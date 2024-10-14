@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
+
     public class LayerService : ILayerService
     {
         private readonly IMapper mapper;

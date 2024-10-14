@@ -130,19 +130,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         }
 
         [Test]
-        public async Task GetAvatarUrlShouldReturnAvatarUrl()
+        public async Task GetAvatarShouldReturnAvatar()
         {
             // Arrange
             var edgeModel = Fixture.Create<IoTEdgeModel>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/models/{edgeModel.ModelId}/avatar")
-                .RespondJson(edgeModel.ImageUrl.ToString());
+                .RespondJson(edgeModel.Image);
 
             // Act
-            var result = await this.edgeModelClientService.GetAvatarUrl(edgeModel.ModelId);
+            var result = await this.edgeModelClientService.GetAvatar(edgeModel.ModelId);
 
             // Assert
-            _ = result.Should().Contain(edgeModel.ImageUrl.ToString());
+            _ = result.Should().Contain(edgeModel.Image);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
@@ -152,7 +152,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             var deviceModel = Fixture.Create<IoTEdgeModel>();
-            using var content = new MultipartFormDataContent();
+            using var content = new StringContent(DeviceModelImageOptions.DefaultImage);
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/models/{deviceModel.ModelId}/avatar")
                 .With(m =>

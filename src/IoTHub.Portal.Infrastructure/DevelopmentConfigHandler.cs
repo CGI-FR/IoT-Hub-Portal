@@ -3,11 +3,11 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    internal class DevelopmentConfigHandler : ConfigHandlerBase
+    public class DevelopmentConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;
 
-        internal DevelopmentConfigHandler(IConfiguration config)
+        public DevelopmentConfigHandler(IConfiguration config)
         {
             this.config = config;
         }

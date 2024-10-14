@@ -3,11 +3,11 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    internal class ProductionAzureConfigHandler : ConfigHandlerBase
+    public class ProductionAzureConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;
 
-        internal ProductionAzureConfigHandler(IConfiguration config)
+        public ProductionAzureConfigHandler(IConfiguration config)
         {
             this.config = config;
         }

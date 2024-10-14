@@ -56,7 +56,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureDeviceRegstryDependencies(this IServiceCollection services, ConfigHandler configuration)
         {
             _ = services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
-            _ = services.AddTransient<IDeviceRegistryProvider, DeviceRegistryProvider>();
+            _ = services.AddTransient<IDeviceRegistryProvider, AzureDeviceRegistryProvider>();
 
             _ = services.AddScoped(_ => RegistryManager.CreateFromConnectionString(configuration.AzureIoTHubConnectionString));
             _ = services.AddScoped(_ => ServiceClient.CreateFromConnectionString(configuration.AzureIoTHubConnectionString));
@@ -97,16 +97,15 @@ namespace IoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureImageBlobStorage(this IServiceCollection services, ConfigHandler configuration)
         {
             return services.AddTransient(_ => new BlobServiceClient(configuration.AzureStorageAccountConnectionString))
-                            .Configure<DeviceModelImageOptions>((opts) =>
-                            {
-                                var serviceClient = new BlobServiceClient(configuration.AzureStorageAccountConnectionString);
-                                var container = serviceClient.GetBlobContainerClient(opts.ImageContainerName);
+                .Configure<DeviceModelImageOptions>((opts) =>
+                {
+                    var serviceClient = new BlobServiceClient(configuration.AzureStorageAccountConnectionString);
+                    var container = serviceClient.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
 
-                                _ = container.SetAccessPolicy(PublicAccessType.Blob);
-                                _ = container.CreateIfNotExists();
+                    _ = container.CreateIfNotExists();
 
-                                opts.BaseUri = container.Uri;
-                            });
+                    opts.BaseUri = container.Uri;
+                });
         }
 
         private static IServiceCollection ConfigureMetricsJobs(this IServiceCollection services, ConfigHandler configuration)

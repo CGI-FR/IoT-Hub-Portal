@@ -599,7 +599,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     new IoTEdgeModule()
                     {
                         ModuleName = "moduleTest",
-                        ImageURI = Guid.NewGuid().ToString()
+                        Image = Guid.NewGuid().ToString()
                     }
                 }
             };
@@ -617,7 +617,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                         new IoTEdgeModule()
                         {
                             ModuleName = "moduleTest",
-                            ImageURI = Guid.NewGuid().ToString(),
+                            Image = Guid.NewGuid().ToString(),
                             Commands = new List<Portal.Shared.Models.v10.IoTEdgeModuleCommand>()
                             {
                                 new Portal.Shared.Models.v10.IoTEdgeModuleCommand(){ Name = "commandTest"}

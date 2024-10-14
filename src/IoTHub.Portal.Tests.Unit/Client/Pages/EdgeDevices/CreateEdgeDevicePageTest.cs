@@ -157,7 +157,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                Image = Fixture.Create<Uri>(),
+                Image = Fixture.Create<string>(),
             };
 
             var expectedEdgeDevice = new IoTEdgeDevice
@@ -229,7 +229,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                ImageUrl = Fixture.Create<Uri>(),
+                Image = Fixture.Create<string>(),
             };
 
             var expectedEdgeDevice = new IoTEdgeDevice
@@ -304,7 +304,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
-                ImageUrl = Fixture.Create<Uri>()
+                Image = Fixture.Create<string>()
             };
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
@@ -321,12 +321,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var cut = RenderComponent<CreateEdgeDevicePage>();
 
-            var ModelImageElement = cut.WaitForElement($"#{nameof(IoTEdgeDevice.ImageUrl)}");
+            var ModelImageElement = cut.WaitForElement($"#{nameof(IoTEdgeDevice.Image)}");
 
             await cut.Instance.ChangeModel(edgeModel);
 
             // Assert
-            Assert.AreEqual(edgeModel.ImageUrl, ModelImageElement.Attributes["src"].Value);
+            Assert.AreEqual(edgeModel.Image, ModelImageElement.Attributes["src"].Value);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 

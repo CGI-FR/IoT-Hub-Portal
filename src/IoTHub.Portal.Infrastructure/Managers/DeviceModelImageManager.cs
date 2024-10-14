@@ -24,48 +24,49 @@ namespace IoTHub.Portal.Infrastructure.Managers
             this.deviceModelImageOptions = BaseImageOption;
         }
 
-        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
+        public async Task<string> GetDeviceModelImageAsync(string deviceModelId)
         {
-            var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
-
+            var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
-            this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+            using var reader = new StreamReader((await blobClient.DownloadAsync()).Value.Content);
 
-            _ = await blobClient.UploadAsync(stream, true);
+            return await reader.ReadToEndAsync();
+        }
 
+        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file)
+        {
+            var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
+            var blobClient = blobContainer.GetBlobClient(deviceModelId);
+
+            this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Name}\n");
+
+            _ = await blobClient.UploadAsync(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(file)), true);
             _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
 
-            return blobClient.Uri.ToString();
+            return file;
         }
 
         public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
-            var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
-
+            var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
-            this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+            this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Name}\n");
 
-            var currentAssembly = Assembly.GetExecutingAssembly();
-
-            var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}");
-
-            _ = await blobClient.UploadAsync(defaultImageStream, true);
+            _ = await blobClient.UploadAsync(DeviceModelImageOptions.DefaultImageStream, true);
 
             _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
 
-            return blobClient.Uri.ToString();
+            return DeviceModelImageOptions.DefaultImage;
         }
 
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
         {
-            var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
-
+            var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
-            this.logger.LogInformation($"Deleting from Blob storage :\n\t {blobClient.Uri}\n");
+            this.logger.LogInformation($"Deleting from Blob storage :\n\t {blobClient.Name}\n");
 
             try
             {
@@ -77,28 +78,17 @@ namespace IoTHub.Portal.Infrastructure.Managers
             }
         }
 
-        public Uri ComputeImageUri(string deviceModelId)
-        {
-            return new Uri(this.deviceModelImageOptions.Value.BaseUri, $"{this.deviceModelImageOptions.Value.BaseUri}/{deviceModelId}");
-        }
-
         public async Task InitializeDefaultImageBlob()
         {
-            var container = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
+            var container = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
+            var blobClient = container.GetBlobClient(DeviceModelImageOptions.DefaultImageName);
 
-            var blobClient = container.GetBlobClient(this.deviceModelImageOptions.Value.DefaultImageName);
-
-            var currentAssembly = Assembly.GetExecutingAssembly();
-
-            using var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}");
-
-            _ = await blobClient.UploadAsync(defaultImageStream, overwrite: true);
+            _ = await blobClient.UploadAsync(DeviceModelImageOptions.DefaultImageStream, overwrite: true);
         }
 
         public async Task SyncImagesCacheControl()
         {
-            var container = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
+            var container = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
 
             await foreach (var blob in container.GetBlobsAsync())
             {
@@ -107,6 +97,5 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
             }
         }
-
     }
 }

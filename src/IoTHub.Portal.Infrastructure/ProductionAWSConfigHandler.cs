@@ -3,11 +3,11 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    internal class ProductionAWSConfigHandler : ConfigHandlerBase
+    public class ProductionAWSConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;
 
-        internal ProductionAWSConfigHandler(IConfiguration config)
+        public ProductionAWSConfigHandler(IConfiguration config)
         {
             this.config = config;
         }
