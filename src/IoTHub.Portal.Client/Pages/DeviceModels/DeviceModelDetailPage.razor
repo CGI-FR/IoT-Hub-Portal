@@ -37,7 +37,7 @@
                 </MudCardActions>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel" id="deleteButton" Disabled="isProcessing">Delete model</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel" id="deleteButton" Disabled="isProcessing || Model.IsBuiltin">Delete model</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
             </MudItem>
         </MudItem>
