@@ -170,7 +170,12 @@
         if (device.LayerId != null && device.LayerId == InitLayer.Id)
         {
             if (DeviceRemoveList.Contains(device.DeviceID)) DeviceRemoveList.Remove(device.DeviceID);
-            else DeviceRemoveList.Add(device.DeviceID);
+            else
+            {
+                DeviceList.Remove(device.DeviceID);
+                DeviceRemoveList.Add(device.DeviceID);
+                device.LayerId = null;
+            }
         }
         else
         {
