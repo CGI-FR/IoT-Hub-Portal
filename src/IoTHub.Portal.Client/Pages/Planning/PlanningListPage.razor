@@ -1,5 +1,24 @@
 ﻿@page "/planning"
 
+@using IoTHub.Portal
+@using IoTHub.Portal.Client.Dialogs.Planning
+@using IoTHub.Portal.Models.v10
+@using IoTHub.Portal.Shared.Models.v10;
+@using IoTHub.Portal.Client.Dialogs.Layer
+@using System.Web
+@using System.IO
+@using System.Text.RegularExpressions
+@using System.Net.Http.Headers
+@using IoTHub.Portal.Shared.Models.v10.Filters
+@using IoTHub.Portal.Client.Enums
+@using IoTHub.Portal.Client.Pages.Devices
+@using IoTHub.Portal.Client.Validators
+@using IoTHub.Portal.Shared.Constants;
+@using IoTHub.Portal.Shared.Models
+@using IoTHub.Portal.Models
+@using IoTHub.Portal.Models.v10.LoRaWAN
+@using Microsoft.AspNetCore.WebUtilities
+
 @attribute [Authorize]
 
 @inject NavigationManager navigationManager
@@ -33,6 +52,7 @@
                     <MudTh>End</MudTh>
                     <MudTh>Frequency</MudTh>
                     <MudTh>Detail</MudTh>
+                    <MudTh>Delete</MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Name">
@@ -54,6 +74,11 @@
                     <MudTd DataLabel="Details" Style="text-align: center">
                         <MudIconButton id="planningListDetailDetail" Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                     </MudTd>
+                    <MudTh DataLabel="Delete" Style="text-align: center">
+                        <MudTooltip Text="Delete planning">
+                            <MudIconButton id="@($"delete-planning-{@context.Id}")" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeletePlanning(context))"></MudIconButton>
+                        </MudTooltip>
+                    </MudTh>
                 </RowTemplate>
                 <PagerContent>
                     <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
@@ -114,5 +139,25 @@
     private void AddPlanning()
     {
         navigationManager.NavigateTo($"/planning/new");
+    }
+
+    /// <summary>
+    /// Prompts a pop-up windows to confirm the planning's deletion.
+    /// </summary>
+    /// <returns></returns>
+    private async Task DeletePlanning(PlanningDto item)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("planningID", item.Id);
+        parameters.Add("planningName", item.Name);
+
+        var result = await DialogService.Show<DeletePlanningDialog>("Confirm Deletion", parameters).Result;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        await GetPlannings();
     }
 }

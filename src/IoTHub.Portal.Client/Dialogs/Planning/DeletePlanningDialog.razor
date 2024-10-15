@@ -1,0 +1,51 @@
+﻿@inject ISnackbar Snackbar
+@inject IPlanningClientService PlanningClientService
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs=12>
+                <MudText>
+                    Delete @planningName ?
+                </MudText>
+            </MudItem>
+            <MudItem xs=12>
+                <MudText><i>Warning : this cannot  be undone.</i></MudText>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="delete-planning" Color="Color.Primary" OnClick="DeletePlanning">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string planningID { get; set; } = default!;
+    [Parameter] public string planningName { get; set; } = default!;
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task DeletePlanning()
+    {
+        try
+        {
+            await PlanningClientService.DeletePlanning(planningID);
+
+            Snackbar.Add($"Planning {planningName} has been successfully deleted!", Severity.Success);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            MudDialog.Close();
+        }
+    }
+}

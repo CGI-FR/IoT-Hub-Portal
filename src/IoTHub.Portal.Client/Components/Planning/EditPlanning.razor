@@ -1,4 +1,5 @@
-﻿@using IoTHub.Portal.Models
+﻿@using IoTHub.Portal.Client.Dialogs.Planning
+@using IoTHub.Portal.Models
 @using IoTHub.Portal.Models.v10
 @using IoTHub.Portal.Shared.Models.v10
 @using IoTHub.Portal.Client.Validators
@@ -25,6 +26,10 @@
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">
     @mode Planning
     <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save</MudButton>
+    @if (mode == "Edit")
+    {
+        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeletePlanning" id="deleteButton" Disabled="isProcessing">Delete planning</MudButton>
+    }
 </MudText>
 @if (!isProcessing)
 {
@@ -416,6 +421,32 @@
 
         if (connections.Count != 1) return " - Business Day is not fully completed";
         return "";
+    }
+
+    /// <summary>
+    /// Prompts a pop-up windows to confirm the planning's deletion.
+    /// </summary>
+    /// <returns></returns>
+    private async Task DeletePlanning()
+    {
+        isProcessing = true;
+
+        var parameters = new DialogParameters
+        {
+            {"planningID", planning.Id},
+            {"planningName", planning.Name}
+        };
+        var result = await DialogService.Show<DeletePlanningDialog>("Confirm Deletion", parameters).Result;
+
+        isProcessing = false;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        // Go back to the list of plannings
+        NavigationManager.NavigateTo($"/planning");
     }
 
 }
