@@ -1352,7 +1352,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
 
-            var payload = JsonConvert.SerializeObject(new
+            var payload = JsonSerializer.Serialize(new
             {
                 schemaVersion = "1.0",
                 items = new[]
@@ -1413,7 +1413,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
 
-            var payload = JsonConvert.SerializeObject(new
+            var payload = JsonSerializer.Serialize(new
             {
                 schemaVersion = "1.0",
                 items = new[]
@@ -1474,7 +1474,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
 
-            var payload = JsonConvert.SerializeObject(new
+            var payload = JsonSerializer.Serialize(new
             {
                 schemaVersion = "1.0",
                 items = new[]

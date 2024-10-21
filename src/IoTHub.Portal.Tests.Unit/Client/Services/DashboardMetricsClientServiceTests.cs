@@ -25,7 +25,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             using var mockHttp = new MockHttpMessageHandler();
 
             _ = mockHttp.When(HttpMethod.Get, "http://localhost/api/dashboard/metrics")
-                .Respond(Application.Json, JsonConvert.SerializeObject(expectedPortalMetric));
+                .Respond(Application.Json, JsonSerializer.Serialize(expectedPortalMetric));
 
             using var client = new HttpClient(mockHttp)
             {

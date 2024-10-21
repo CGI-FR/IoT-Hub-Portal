@@ -292,7 +292,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
         public void RetrieveModuleListShouldReturnModuleList()
         {
             // Arrange
-            var modulesJson = JsonConvert.SerializeObject(new
+            var modulesJson = JsonSerializer.Serialize(new
             {
                 modules = new
                 {

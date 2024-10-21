@@ -96,7 +96,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     ThingName = deviceId
                 });
             }
-            catch (Amazon.IotData.Model.ResourceNotFoundException e)
+            catch (Amazon.IoT.Model.ResourceNotFoundException e)
             {
                 this.logger.LogWarning(e, "Unable to delete the thing because it doesn't exist");
             }
@@ -122,7 +122,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                         ThingGroupName = deviceModel.Name
                     });
                 }
-                catch (Amazon.IotData.Model.ResourceNotFoundException e)
+                catch (Amazon.IoT.Model.ResourceNotFoundException e)
                 {
                     throw new Domain.Exceptions.ResourceNotFoundException($"Thing Group not found. Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
                 }
@@ -132,7 +132,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 }
 
             }
-            catch (Amazon.IotData.Model.ResourceNotFoundException e)
+            catch (Amazon.IoT.Model.ResourceNotFoundException e)
             {
                 throw new Domain.Exceptions.ResourceNotFoundException($"Thing type not Found. Unable to deprecate the device model {deviceModel.Name}: {e.Message}", e);
             }
@@ -356,7 +356,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                             ThingName = device.ThingName,
                         });
                     }
-                    catch (Amazon.IotData.Model.ResourceNotFoundException e)
+                    catch (Amazon.IoT.Model.ResourceNotFoundException e)
                     {
                         this.logger.LogInformation($"Cannot import device '{device.ThingName}' since it doesn't have related classic thing shadow", e);
                         continue;
@@ -489,7 +489,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
                 _ = await this.amazonIoTClient.DescribeThingGroupAsync(dynamicThingGroup);
             }
-            catch (Amazon.IotData.Model.ResourceNotFoundException)
+            catch (Amazon.IoT.Model.ResourceNotFoundException)
             {
                 _ = await this.amazonIoTClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
                 {

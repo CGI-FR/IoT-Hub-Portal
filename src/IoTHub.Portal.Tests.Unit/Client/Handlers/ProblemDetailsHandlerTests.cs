@@ -59,7 +59,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
 
             _ = mockHttp.When(HttpMethod.Get, "http://fake.com")
                 .Respond(System.Net.HttpStatusCode.InternalServerError, new StringContent(
-                    JsonConvert.SerializeObject(problemDetailsWithExceptionDetails),
+                    JsonSerializer.Serialize(problemDetailsWithExceptionDetails),
                     Encoding.UTF8,
                     MediaTypeNames.Application.Json));
 
@@ -100,7 +100,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
 
             _ = mockHttp.When(HttpMethod.Get, "http://fake.com")
                 .Respond(System.Net.HttpStatusCode.Unauthorized, new StringContent(
-                    JsonConvert.SerializeObject(problemDetailsWithExceptionDetails),
+                    JsonSerializer.Serialize(problemDetailsWithExceptionDetails),
                     Encoding.UTF8,
                     MediaTypeNames.Application.Json));
 

@@ -479,7 +479,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var configService = CreateConfigsServices();
 
             var configTest = new Configuration(Guid.NewGuid().ToString());
-            var listConfig = new List<Configuration>()
+            var listConfig = new List<Configuration>
             {
                 configTest
             };
@@ -501,7 +501,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                     "$edgeAgent", new Dictionary<string, object>()
                     {
                         {
-                            "properties.desired", JObject.Parse(JsonConvert.SerializeObject(edgeAgentPropertiesDesired))
+                            "properties.desired", JObject.Parse(JsonSerializer.Serialize(edgeAgentPropertiesDesired))
                         }
                     }
                 }
@@ -626,7 +626,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                     "$edgeAgent", new Dictionary<string, object>()
                     {
                         {
-                            "properties.desired", JObject.Parse(JsonConvert.SerializeObject(edgeAgentPropertiesDesired))
+                            "properties.desired", JObject.Parse(JsonSerializer.Serialize(edgeAgentPropertiesDesired))
                         }
                     }
                 }
@@ -752,7 +752,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                     "$edgeHub", new Dictionary<string, object>()
                     {
                         {
-                            "properties.desired", JObject.Parse(JsonConvert.SerializeObject(edgeHubPropertiesDesired))
+                            "properties.desired", JObject.Parse(JsonSerializer.Serialize(edgeHubPropertiesDesired))
                         }
                     }
                 }

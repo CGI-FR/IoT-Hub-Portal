@@ -82,7 +82,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                     return true;
                 })
                 .Respond(HttpStatusCode.Created, new StringContent(
-                    JsonConvert.SerializeObject(expectedDeviceModel),
+                    JsonSerializer.Serialize(expectedDeviceModel),
                     Encoding.UTF8,
                     MediaTypeNames.Application.Json));
 

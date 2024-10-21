@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             };
 
             deviceTwinWithModules.Properties.Desired["modules"] = new object[2];
-            deviceTwinWithModules.Properties.Reported = new TwinCollection(JsonConvert.SerializeObject(reportedProperties));
+            deviceTwinWithModules.Properties.Reported = new TwinCollection(JsonSerializer.Serialize(reportedProperties));
 
             var lastDeployment = new ConfigItem();
 

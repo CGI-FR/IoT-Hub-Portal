@@ -149,14 +149,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 }
             };
 
-            var ms = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(json)));
+            var ms = new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(json)));
 
             _ = this.mockAmazonIotDataClient.Setup(iotDataClient => iotDataClient.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetThingShadowResponse
                 {
                     Payload = ms,
                     HttpStatusCode = HttpStatusCode.OK
-                }); ;
+                });
 
             _ = this.mockDeviceModelPropertiesService.Setup(c => c.GetModelProperties(device.DeviceModelId))
                 .ReturnsAsync(new[]

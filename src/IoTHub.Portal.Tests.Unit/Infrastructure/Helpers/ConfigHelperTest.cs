@@ -101,7 +101,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                 }
             };
 
-            var module = new JProperty("moduleTest", JObject.Parse(JsonConvert.SerializeObject(jPropModule)));
+            var module = new JProperty("moduleTest", JObject.Parse(JsonSerializer.Serialize(jPropModule)));
 
             // Act
             var result = ConfigHelper.CreateGatewayModule(config, module);
