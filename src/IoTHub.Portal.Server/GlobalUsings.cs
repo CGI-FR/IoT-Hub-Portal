@@ -77,7 +77,6 @@ global using System.Text.Json.Nodes;
 global using IoTHub.Portal.Domain.Options;
 global using CsvHelper;
 global using CsvHelper.Configuration;
-global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.AspNetCore.Mvc.RazorPages;
 global using IoTHub.Portal.Infrastructure.Helpers;
 global using IoTHub.Portal.Crosscutting.Extensions;
