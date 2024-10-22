@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Application.Startup
 {
-    using Microsoft.Extensions.DependencyInjection;
-
     public static class IServiceCollectionExtension
     {
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services)

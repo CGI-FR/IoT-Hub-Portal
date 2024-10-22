@@ -3,32 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using System;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Amazon.GreengrassV2;
-    using Amazon.IoT;
-    using Amazon.IotData;
-    using Amazon.IotData.Model;
-    using AutoMapper;
-    using Azure;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Services.AWS;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using FluentAssertions;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using Newtonsoft.Json;
-    using NUnit.Framework;
+    using Device = Portal.Domain.Entities.Device;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
@@ -174,14 +149,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 }
             };
 
-            var ms = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(json)));
+            var ms = new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(json)));
 
             _ = this.mockAmazonIotDataClient.Setup(iotDataClient => iotDataClient.GetThingShadowAsync(It.IsAny<GetThingShadowRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetThingShadowResponse
                 {
                     Payload = ms,
                     HttpStatusCode = HttpStatusCode.OK
-                }); ;
+                });
 
             _ = this.mockDeviceModelPropertiesService.Setup(c => c.GetModelProperties(device.DeviceModelId))
                 .ReturnsAsync(new[]

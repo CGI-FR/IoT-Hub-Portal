@@ -3,27 +3,6 @@
 
 namespace IoTHub.Portal.Server.Managers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq.Expressions;
-    using System.Reflection;
-    using System.Text;
-    using System.Text.Json.Nodes;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v10;
-    using CsvHelper;
-    using CsvHelper.Configuration;
-    using Microsoft.Extensions.Options;
-    using Microsoft.IdentityModel.Tokens;
-
     public class ExportManager : IExportManager
     {
         private readonly IExternalDeviceService externalDevicesService;
@@ -248,7 +227,7 @@ namespace IoTHub.Portal.Server.Managers
 
         private static bool TryReadMandatoryFields(CsvReader reader, int lineNumber, ref string deviceId, ref string deviceName, ref string modelId, ref List<ImportResultLine> report)
         {
-            if (!reader.TryGetField<string>("Id", out deviceId) || deviceId.IsNullOrEmpty())
+            if (!reader.TryGetField<string>("Id", out deviceId) || string.IsNullOrEmpty(deviceId))
             {
                 report.Add(new ImportResultLine
                 {
@@ -262,7 +241,7 @@ namespace IoTHub.Portal.Server.Managers
                 return false;
             }
 
-            if (!reader.TryGetField<string>("Name", out deviceName) || deviceName.IsNullOrEmpty())
+            if (!reader.TryGetField<string>("Name", out deviceName) || string.IsNullOrEmpty(deviceName))
             {
                 report.Add(new ImportResultLine
                 {
@@ -276,7 +255,7 @@ namespace IoTHub.Portal.Server.Managers
                 return false;
             }
 
-            if (!reader.TryGetField<string>("ModelId", out modelId) || modelId.IsNullOrEmpty())
+            if (!reader.TryGetField<string>("ModelId", out modelId) || string.IsNullOrEmpty(modelId))
             {
                 report.Add(new ImportResultLine
                 {

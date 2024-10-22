@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Azure.Devices.Shared;
-
     public interface IEdgeDeviceMapper
     {
         IoTEdgeListItem CreateEdgeDeviceListItem(Twin deviceTwin);

@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Repositories
 {
-    using IoTHub.Portal.Domain.Entities;
-
     public interface IEdgeDeviceRepository : IRepository<EdgeDevice>
     {
     }

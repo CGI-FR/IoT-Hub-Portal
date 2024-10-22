@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Domain.Repositories;
-    using Domain.Entities;
-
     public class ConcentratorRepository : GenericRepository<Concentrator>, IConcentratorRepository
     {
         public ConcentratorRepository(PortalDbContext context) : base(context)

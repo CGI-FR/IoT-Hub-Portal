@@ -1,9 +1,7 @@
 ﻿@page "/edge/models"
 
-@using IoTHub.Portal.Shared.Models.v10.Filters;
-@using IoTHub.Portal.Models.v10
-
 @attribute [Authorize]
+
 @inject IEdgeModelClientService EdgeModelService
 @inject IDialogService dialogService
 @inject NavigationManager NavigationManager

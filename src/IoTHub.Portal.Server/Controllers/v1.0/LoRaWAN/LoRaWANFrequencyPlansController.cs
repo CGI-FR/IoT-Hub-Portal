@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Server.Controllers.v1._0.LoRaWAN
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Server.Filters;
-    using IoTHub.Portal.Shared.Models.v10.LoRaWAN;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]

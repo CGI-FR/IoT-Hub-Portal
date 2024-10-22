@@ -3,19 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
 {
-    using Bunit;
-    using IoTHub.Portal.Client.Pages.Planning;
-    using IoTHub.Portal.Client.Services;
-    using UnitTests.Bases;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using AutoFixture;
-
     [TestFixture]
     internal class PlanningDetailsPageTest : BlazorUnitTest
     {

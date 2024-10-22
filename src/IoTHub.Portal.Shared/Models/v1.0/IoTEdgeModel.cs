@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public class IoTEdgeModel : IoTEdgeModelListItem
     {
         /// <summary>

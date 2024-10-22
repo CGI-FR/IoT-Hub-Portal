@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    using Portal.Models.v10;
-
     public enum AuthenticationMode
     {
         SymmetricKey,

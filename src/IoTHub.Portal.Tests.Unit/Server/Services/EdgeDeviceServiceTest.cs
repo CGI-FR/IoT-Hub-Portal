@@ -3,33 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Helpers;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Server.Services;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using EntityFramework.Exceptions.Common;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using Portal.Domain.Options;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
     public class EdgeDeviceServiceTest : BackendUnitTest

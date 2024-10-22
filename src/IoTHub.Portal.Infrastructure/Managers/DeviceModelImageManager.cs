@@ -3,31 +3,25 @@
 
 namespace IoTHub.Portal.Infrastructure.Managers
 {
-    using System.IO;
-    using System.Threading.Tasks;
-    using Azure;
-    using Azure.Storage.Blobs;
-    using Azure.Storage.Blobs.Models;
-    using IoTHub.Portal.Application.Managers;
-    using Domain;
-    using Domain.Exceptions;
-    using Domain.Options;
-    using Microsoft.Extensions.Logging;
-
     public class DeviceModelImageManager : IDeviceModelImageManager
     {
         private readonly BlobServiceClient blobService;
         private readonly ILogger<DeviceModelImageManager> logger;
         private readonly ConfigHandler configHandler;
 
+        private readonly IOptions<DeviceModelImageOptions> deviceModelImageOptions;
+
         public DeviceModelImageManager(
             ILogger<DeviceModelImageManager> logger,
             BlobServiceClient blobService,
-            ConfigHandler configHandler)
+            ConfigHandler configHandler,
+            IOptions<DeviceModelImageOptions> BaseImageOption)
         {
             this.logger = logger;
             this.blobService = blobService;
             this.configHandler = configHandler;
+
+            this.deviceModelImageOptions = BaseImageOption;
         }
 
         public async Task<string> GetDeviceModelImageAsync(string deviceModelId)
@@ -103,6 +97,5 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
             }
         }
-
     }
 }

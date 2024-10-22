@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs
 {
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using Microsoft.Extensions.Logging;
-    using Prometheus;
-    using Quartz;
-    using Shared.Models.v1._0;
-
     [DisallowConcurrentExecution]
     public class ConcentratorMetricExporterJob : IJob
     {

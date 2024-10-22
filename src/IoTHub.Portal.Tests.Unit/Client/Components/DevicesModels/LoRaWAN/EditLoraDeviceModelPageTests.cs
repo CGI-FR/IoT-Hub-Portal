@@ -1,16 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
+namespace IoTHub.Portal.Tests.Unit.Client.Components.DevicesModels.LoRaWAN
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Client.Components.DeviceModels.LoRaWAN;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using Bunit;
-    using FluentAssertions;
-    using NUnit.Framework;
-    using UnitTests.Bases;
-
     public class EditLoraDeviceModelPageTests : BlazorUnitTest
     {
         public override void Setup()

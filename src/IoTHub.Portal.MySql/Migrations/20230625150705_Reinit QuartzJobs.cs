@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.MySql.Migrations
 {
-    using System.Reflection;
-    using Microsoft.EntityFrameworkCore.Migrations;
-
     public partial class ReinitQuartzJobs : Migration
     {
 

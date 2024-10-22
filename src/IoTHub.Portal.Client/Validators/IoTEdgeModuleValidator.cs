@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Client.Validators
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Models.v10;
-    using FluentValidation;
-
     public class IoTEdgeModuleValidator : AbstractValidator<IEnumerable<IoTEdgeModule>>
     {
         private class IoTEdgeModuleComparer : IEqualityComparer<IoTEdgeModule>

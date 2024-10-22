@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Client.Helpers
 {
-    using System;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public static class LayerHelper
     {
         public static HashSet<LayerHash> GetHashsetLayer(List<LayerDto> listLayers)

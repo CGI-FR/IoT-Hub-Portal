@@ -3,27 +3,6 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Providers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Domain;
-    using Domain.Entities;
-    using Domain.Exceptions;
-    using Domain.Repositories;
-    using Microsoft.Azure.Devices.Shared;
-
     public class DeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
         where TModel : class, IDeviceModel

@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Exceptions
 {
-    using System;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using FluentAssertions;
-    using NUnit.Framework;
-
     public class InternalServerErrorExceptionTests
     {
         [Test]

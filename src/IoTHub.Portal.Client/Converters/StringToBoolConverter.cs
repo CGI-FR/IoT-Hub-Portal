@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Client.Converters
 {
-    using MudBlazor;
-
     public class StringToBoolConverter : BoolConverter<string>
     {
         public StringToBoolConverter()

@@ -3,12 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System.Net.Http.Headers;
-    using System.Net.Http.Json;
-    using System.Reflection;
-    using System.Text.Json;
-    using Application.Services;
-    using Models.v10.LoRaWAN;
+    using JsonSerializer = System.Text.Json.JsonSerializer;
 
     public class LoRaWanManagementService : ILoRaWanManagementService
     {

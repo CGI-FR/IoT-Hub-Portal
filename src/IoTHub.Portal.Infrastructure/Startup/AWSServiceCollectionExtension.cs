@@ -3,24 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Startup
 {
-    using Amazon;
-    using Amazon.GreengrassV2;
-    using Amazon.IoT;
-    using Amazon.IotData;
-    using Amazon.S3;
-    using Amazon.SecretsManager;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using IoTHub.Portal.Infrastructure.Jobs.AWS;
-    using IoTHub.Portal.Infrastructure.Managers;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Infrastructure.Services.AWS;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Extensions.DependencyInjection;
-    using Quartz;
-
     public static class AWSServiceCollectionExtension
     {
         public static IServiceCollection AddAWSInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)

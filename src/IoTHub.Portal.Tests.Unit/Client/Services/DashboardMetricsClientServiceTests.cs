@@ -3,23 +3,11 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Services;
-    using FluentAssertions;
-    using Newtonsoft.Json;
-    using NUnit.Framework;
-    using Portal.Client.Exceptions;
-    using Portal.Client.Models;
-    using RichardSzalay.MockHttp;
-    using Shared.Models.v1._0;
-    using static System.Net.Mime.MediaTypeNames;
+    using static MediaTypeNames;
 
     [TestFixture]
     public class DashboardMetricsClientServiceTests
     {
-
         [Test]
         public async Task GetPortalMetricsMustReturnLogsWhenNoError()
         {
@@ -37,7 +25,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             using var mockHttp = new MockHttpMessageHandler();
 
             _ = mockHttp.When(HttpMethod.Get, "http://localhost/api/dashboard/metrics")
-                .Respond(Application.Json, JsonConvert.SerializeObject(expectedPortalMetric));
+                .Respond(Application.Json, JsonSerializer.Serialize(expectedPortalMetric));
 
             using var client = new HttpClient(mockHttp)
             {

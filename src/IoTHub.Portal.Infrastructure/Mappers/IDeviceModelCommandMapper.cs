@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
-    using Azure.Data.Tables;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-
     public interface IDeviceModelCommandMapper
     {
         public DeviceModelCommandDto GetDeviceModelCommand(TableEntity entity);

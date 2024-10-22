@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using AutoMapper;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Domain.Entities;
-    using Microsoft.Azure.Devices.Shared;
-    using Models.v10.LoRaWAN;
-    using Shared.Models.v1._0;
-
     public class ConcentratorProfile : Profile
     {
         public ConcentratorProfile()

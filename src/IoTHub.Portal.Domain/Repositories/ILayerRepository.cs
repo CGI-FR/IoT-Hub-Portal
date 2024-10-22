@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Repositories
 {
-    using Entities;
-
     public interface ILayerRepository : IRepository<Layer>
     {
         Task<Layer?> GetByNameAsync(string layerName);

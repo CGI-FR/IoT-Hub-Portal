@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using Newtonsoft.Json;
-
     public abstract class LoRaDeviceBase
     {
         /// <summary>
@@ -15,7 +10,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// Default is A.
         /// </summary>
         [DefaultValue(ClassType.A)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public ClassType ClassType { get; set; }
 
         /// <summary>
@@ -23,7 +17,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// The default preferred receive window is 1.
         /// </summary>
         [DefaultValue(1)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int PreferredWindow { get; set; }
 
         /// <summary>
@@ -31,7 +24,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// The default is Drop.
         /// </summary>
         [DefaultValue(DeduplicationMode.Drop)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public DeduplicationMode Deduplication { get; set; }
 
         /// <summary>
@@ -40,7 +32,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// If an invalid value is provided the network server will use default value 0.
         /// </summary>
         [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? RX1DROffset { get; set; }
 
         /// <summary>
@@ -49,7 +40,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// If an invalid value is provided the network server will use default value 0 (DR0).
         /// </summary>
         [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? RX2DataRate { get; set; }
 
         /// <summary>
@@ -62,7 +52,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// By default relaxed mode is enabled.
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? ABPRelaxMode { get; set; }
 
         /// <summary>
@@ -72,7 +61,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// </summary>
         [Range(0, 4294967295)]
         [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? FCntUpStart { get; set; }
 
         /// <summary>
@@ -81,7 +69,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// </summary>
         [Range(0, 4294967295)]
         [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? FCntDownStart { get; set; }
 
         /// <summary>
@@ -90,14 +77,12 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// </summary>
         [Range(0, 4294967295)]
         [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? FCntResetCounter { get; set; }
 
         /// <summary>
         /// Allow the usage of 32bit counters on your device.
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? Supports32BitFCnt { get; set; }
 
         /// <summary>
@@ -105,7 +90,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// The default is none, which causes the connection to not be dropped.
         /// </summary>
         [DefaultValue(null)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? KeepAliveTimeout { get; set; }
 
         /// <summary>

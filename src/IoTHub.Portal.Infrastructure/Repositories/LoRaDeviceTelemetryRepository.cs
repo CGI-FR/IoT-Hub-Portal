@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
-
     public class LoRaDeviceTelemetryRepository : GenericRepository<LoRaDeviceTelemetry>, ILoRaDeviceTelemetryRepository
     {
         public LoRaDeviceTelemetryRepository(PortalDbContext context) : base(context)

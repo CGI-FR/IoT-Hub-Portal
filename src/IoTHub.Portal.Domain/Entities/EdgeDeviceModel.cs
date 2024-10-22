@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using Base;
-
     public class EdgeDeviceModel : EntityBase
     {
         public string Name { get; set; } = default!;

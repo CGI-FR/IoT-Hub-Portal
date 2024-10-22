@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Extensions
 {
-    using Portal.Client.Extensions;
-    using Portal.Client.Models;
-    using FluentAssertions;
-    using Newtonsoft.Json;
-    using NUnit.Framework;
-
     [TestFixture]
     public class ProblemDetailsExtensionsTests
     {
@@ -28,7 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Extensions
             var result = problemDetailsWithExceptionDetails.ToJson();
 
             // Assert
-            var deserializeResult = JsonConvert.DeserializeObject<ProblemDetailsWithExceptionDetails>(result);
+            var deserializeResult = JsonSerializer.Deserialize<ProblemDetailsWithExceptionDetails>(result);
             _ = deserializeResult.Should().BeEquivalentTo(problemDetailsWithExceptionDetails);
         }
     }

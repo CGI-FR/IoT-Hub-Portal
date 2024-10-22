@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// LoRa WAN Device details.
     /// </summary>
@@ -70,7 +62,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool UseOTAA { get; set; }
 
         /// <summary>
@@ -154,14 +145,12 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// A value indicating whether the downlinks are enabled (True if not provided)
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? Downlink { get; set; }
 
         /// <summary>
         /// A value indicating whether the device supports LoRaWAN features.
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public static bool IsLoraWan => true;
 
         /// <summary>

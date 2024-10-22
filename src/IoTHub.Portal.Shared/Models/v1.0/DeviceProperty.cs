@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System.ComponentModel.DataAnnotations;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// Device property.
     /// </summary>

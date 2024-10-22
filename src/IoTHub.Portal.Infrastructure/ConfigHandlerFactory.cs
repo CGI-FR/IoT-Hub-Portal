@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    using System;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Shared.Constants;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Hosting;
-
     public static class ConfigHandlerFactory
     {
         public static ConfigHandler Create(IHostEnvironment env, IConfiguration config)

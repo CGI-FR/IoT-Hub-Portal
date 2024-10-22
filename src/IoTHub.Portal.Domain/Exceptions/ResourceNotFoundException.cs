@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Exceptions
 {
-    using System;
-    using IoTHub.Portal.Domain.Shared.Constants;
-
     public class ResourceNotFoundException : BaseException
     {
         public ResourceNotFoundException(string detail, Exception? innerException = null) : base(ErrorTitles.ResourceNotFound, detail, innerException)

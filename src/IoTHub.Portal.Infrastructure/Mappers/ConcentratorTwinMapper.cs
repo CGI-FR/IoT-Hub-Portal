@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
-    using System;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Crosscutting.Extensions;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-
     public class ConcentratorTwinMapper : IConcentratorTwinMapper
     {
         public ConcentratorDto CreateDeviceDetails(Twin twin)

@@ -3,18 +3,6 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Services;
-    using Domain;
-    using Domain.Entities;
-    using Domain.Exceptions;
-    using Domain.Repositories;
-    using Microsoft.Extensions.Logging;
-    using Models.v10.LoRaWAN;
-
     public class LoRaWANCommandService : ILoRaWANCommandService
     {
         private readonly IMapper mapper;

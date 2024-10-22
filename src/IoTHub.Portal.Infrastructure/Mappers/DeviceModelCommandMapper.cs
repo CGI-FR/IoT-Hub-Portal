@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
-    using System;
-    using System.Globalization;
-    using Azure.Data.Tables;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-
     public class DeviceModelCommandMapper : IDeviceModelCommandMapper
     {
         /// <summary>

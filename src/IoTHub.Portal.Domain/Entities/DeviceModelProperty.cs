@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Domain.Base;
-    using IoTHub.Portal.Models;
-
     public class DeviceModelProperty : EntityBase
     {
         /// <summary>

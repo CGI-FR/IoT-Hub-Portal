@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
-    using System;
-    using System.Collections.Generic;
-    using Azure.Data.Tables;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-
     public class LoRaDeviceModelMapper : IDeviceModelMapper<DeviceModelDto, LoRaDeviceModelDto>
     {
         public DeviceModelDto CreateDeviceModelListItem(TableEntity entity)

@@ -3,17 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using AutoFixture;
-    using UnitTests.Bases;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-    using NUnit.Framework;
-    using Portal.Client.Services;
-
     [TestFixture]
     public class DeviceLayoutServiceTests : BlazorUnitTest
     {

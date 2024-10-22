@@ -3,16 +3,6 @@
 
 namespace IoTHub.Portal.Server.Controllers.v1._0
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-
     [Authorize]
     [Route("api/edge/models")]
     [ApiExplorerSettings(GroupName = "IoT Edge Devices Models")]

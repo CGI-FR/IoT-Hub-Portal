@@ -5,10 +5,6 @@
 
 namespace IoTHub.Portal.MySql.Migrations
 {
-    using Microsoft.EntityFrameworkCore.Metadata;
-    using Microsoft.EntityFrameworkCore.Migrations;
-
-
     /// <inheritdoc />
     public partial class Adddataprotectionedgedeviceexternalidentifier : Migration
     {

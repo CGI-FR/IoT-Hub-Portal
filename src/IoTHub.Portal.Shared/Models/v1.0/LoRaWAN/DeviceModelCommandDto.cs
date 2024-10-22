@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System;
-    using System.ComponentModel.DataAnnotations;
-
     /// <summary>
     /// Device model command.
     /// </summary>

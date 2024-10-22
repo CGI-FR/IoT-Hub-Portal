@@ -3,17 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Azure.Devices.Shared;
-    using Moq;
-    using Newtonsoft.Json;
-    using NUnit.Framework;
-
     [TestFixture]
     public class EdgeDeviceMapperTest
     {
@@ -92,7 +81,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             };
 
             deviceTwinWithModules.Properties.Desired["modules"] = new object[2];
-            deviceTwinWithModules.Properties.Reported = new TwinCollection(JsonConvert.SerializeObject(reportedProperties));
+            deviceTwinWithModules.Properties.Reported = new TwinCollection(JsonSerializer.Serialize(reportedProperties));
 
             var lastDeployment = new ConfigItem();
 

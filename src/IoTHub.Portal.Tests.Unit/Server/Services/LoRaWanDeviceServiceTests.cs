@@ -3,37 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using AutoMapper;
-    using Azure.Messaging.EventHubs;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Shared.Models.v10;
-    using EntityFramework.Exceptions.Common;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-    using Moq;
-    using NUnit.Framework;
-    using Portal.Domain.Entities;
-    using UnitTests.Bases;
+    using LoRaDeviceTelemetry = Portal.Domain.Entities.LoRaDeviceTelemetry;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest

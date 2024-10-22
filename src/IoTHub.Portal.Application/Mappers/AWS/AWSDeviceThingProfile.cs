@@ -3,14 +3,7 @@
 
 namespace IoTHub.Portal.Application.Mappers.AWS
 {
-    using System.Text;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using Amazon.IotData.Model;
-    using AutoMapper;
-    using IoTHub.Portal.Domain.Entities;
-    using Models.v10;
-    using Newtonsoft.Json;
+    using Device = Domain.Entities.Device;
 
     public class AWSDeviceThingProfile : Profile
     {
@@ -80,7 +73,7 @@ namespace IoTHub.Portal.Application.Mappers.AWS
                 }
             };
 
-            return new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(json)));
+            return new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(json)));
         }
     }
 }

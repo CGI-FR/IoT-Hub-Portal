@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Client.Validators
 {
-    using IoTHub.Portal.Models.v10;
-    using FluentValidation;
-
     public class DeviceModelValidator : AbstractValidator<DeviceModelDto>
     {
         public DeviceModelValidator()

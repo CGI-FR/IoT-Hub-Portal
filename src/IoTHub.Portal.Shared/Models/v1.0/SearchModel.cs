@@ -5,8 +5,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System.ComponentModel.DataAnnotations;
-
     /// <summary>
     /// Device search model.
     /// </summary>

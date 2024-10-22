@@ -3,6 +3,10 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
+    using Configuration = Microsoft.Azure.Devices.Configuration;
+    using ResourceAlreadyExistsException = Portal.Domain.Exceptions.ResourceAlreadyExistsException;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
+
     public class EdgeModelServiceTest : BackendUnitTest
     {
         private Mock<IUnitOfWork> mockUnitOfWork;

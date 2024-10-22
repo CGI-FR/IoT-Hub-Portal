@@ -1,19 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.v1._0
+namespace IoTHub.Portal.Server.Controllers.V10
 {
-    using System;
-    using System.Globalization;
-    using System.Reflection;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Server.Identity;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Options;
-
     [ApiController]
     [AllowAnonymous]
     [ApiVersion("1.0")]

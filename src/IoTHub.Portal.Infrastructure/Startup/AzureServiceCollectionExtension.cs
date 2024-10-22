@@ -3,33 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Startup
 {
-    using System.Net;
-    using Azure.Storage.Blobs;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Providers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Wrappers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Infrastructure.Extensions;
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using IoTHub.Portal.Infrastructure.Managers;
-    using IoTHub.Portal.Infrastructure.Mappers;
-    using IoTHub.Portal.Infrastructure.Providers;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Infrastructure.Wrappers;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
-    using Polly;
-    using Polly.Extensions.Http;
-    using Quartz;
-
     public static class AzureServiceCollectionExtension
     {
         public static IServiceCollection AddAzureInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
@@ -124,15 +97,15 @@ namespace IoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureImageBlobStorage(this IServiceCollection services, ConfigHandler configuration)
         {
             return services.AddTransient(_ => new BlobServiceClient(configuration.AzureStorageAccountConnectionString))
-                            .Configure<DeviceModelImageOptions>((opts) =>
-                            {
-                                var serviceClient = new BlobServiceClient(configuration.AzureStorageAccountConnectionString);
-                                var container = serviceClient.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
+                .Configure<DeviceModelImageOptions>((opts) =>
+                {
+                    var serviceClient = new BlobServiceClient(configuration.AzureStorageAccountConnectionString);
+                    var container = serviceClient.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
 
-                                _ = container.CreateIfNotExists();
+                    _ = container.CreateIfNotExists();
 
-                                opts.BaseUri = container.Uri;
-                            });
+                    opts.BaseUri = container.Uri;
+                });
         }
 
         private static IServiceCollection ConfigureMetricsJobs(this IServiceCollection services, ConfigHandler configuration)

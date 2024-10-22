@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 {
-    using Portal.Server.Controllers.v1._0.LoRaWAN;
-
     [TestFixture]
     public class LoRaWANDeviceModelsControllerTest : BackendUnitTest
     {

@@ -3,22 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Constants;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
+    using ResourceAlreadyExistsException = Domain.Exceptions.ResourceAlreadyExistsException;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class EdgeModelService : IEdgeModelService

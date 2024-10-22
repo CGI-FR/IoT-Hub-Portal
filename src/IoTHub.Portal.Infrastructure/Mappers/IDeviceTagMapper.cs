@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
-    using Azure.Data.Tables;
-    using IoTHub.Portal.Models.v10;
-
     public interface IDeviceTagMapper
     {
         public DeviceTagDto GetDeviceTag(TableEntity entity);

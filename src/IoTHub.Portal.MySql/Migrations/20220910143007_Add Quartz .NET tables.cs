@@ -5,9 +5,6 @@
 
 namespace IoTHub.Portal.MySql.Migrations
 {
-    using System.Reflection;
-    using Microsoft.EntityFrameworkCore.Migrations;
-
     public partial class AddQuartzNETtables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

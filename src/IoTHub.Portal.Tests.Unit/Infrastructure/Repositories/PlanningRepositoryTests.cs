@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-
     public class PlanningRepositoryTests : BackendUnitTest
     {
         private PlanningRepository planningRepository;

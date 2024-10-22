@@ -1,25 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.v1._0
+namespace IoTHub.Portal.Server.Controllers.V10
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Security.Cryptography;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.DataProtection;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
-
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
@@ -219,7 +202,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
                 { "templateName", templateName}
             };
 
-            var protectedParameters = this.protector.Protect(JsonConvert.SerializeObject(enrollementParameters), DateTimeOffset.UtcNow.AddMinutes(15));
+            var protectedParameters = protector.Protect(JsonConvert.SerializeObject(enrollementParameters), DateTimeOffset.UtcNow.AddMinutes(15));
 
             return Ok(Url.ActionLink(nameof(GetEnrollementScript),
                 protocol: "https",
@@ -236,7 +219,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         {
             try
             {
-                var parameters = JsonConvert.DeserializeObject<Dictionary<string, string>>(this.protector.Unprotect(code));
+                var parameters = JsonConvert.DeserializeObject<Dictionary<string, string>>(protector.Unprotect(code));
 
                 return Ok(await this.edgeDevicesService
                                 .GetEdgeDeviceEnrollementScript(parameters["deviceId"], parameters["templateName"]));
