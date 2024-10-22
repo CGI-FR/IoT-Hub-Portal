@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using Moq;
     using Configuration = Microsoft.Azure.Devices.Configuration;
     using ResourceAlreadyExistsException = Portal.Domain.Exceptions.ResourceAlreadyExistsException;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
