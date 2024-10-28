@@ -18,7 +18,7 @@ namespace IoTHub.Portal.Client.Validators
 
             _ = RuleFor(x => x.DeviceName)
                 .NotEmpty()
-                .WithMessage("DeviceName is required.");
+                .WithMessage("Name is required.");
 
             _ = RuleFor(x => x.LoraRegion)
                 .NotEmpty().WithMessage("LoraRegion is required.")

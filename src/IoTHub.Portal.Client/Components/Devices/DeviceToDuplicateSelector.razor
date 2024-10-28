@@ -13,7 +13,7 @@
                  T="DeviceListItem"
                  Label="Search a device to duplicate"
                  SearchFunc="@SearchDevicesToDuplicate"
-                 ToStringFunc="@(x => x?.DeviceName)"
+                 ToStringFunc="@(x => x?.Name)"
                  DebounceInterval="300"
                  ValueChanged="OnDeviceSelected"
                  Dense=true
@@ -23,7 +23,7 @@
                  Variant="Variant.Outlined"
                  Required="true">
     <ItemTemplate>
-        @context.DeviceName
+        @context.Name
         <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
             Id: @context.DeviceID
         </MudText>

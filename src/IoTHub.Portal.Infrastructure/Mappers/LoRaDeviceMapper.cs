@@ -151,7 +151,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             return new DeviceListItem
             {
                 DeviceID = twin.DeviceId,
-                DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
+                Name = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
                 Image = this.deviceModelImageManager
                     .GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!)
                     .Result,

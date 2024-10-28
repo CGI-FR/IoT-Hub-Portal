@@ -132,7 +132,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
-            Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
+            Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.Name);
 
             Assert.AreEqual(modelImage, result.Image);
 

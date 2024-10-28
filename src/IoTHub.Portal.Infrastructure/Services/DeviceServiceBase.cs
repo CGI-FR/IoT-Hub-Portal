@@ -121,7 +121,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 .Select(device => new DeviceListItem
                 {
                     DeviceID = device.Id,
-                    DeviceName = device.Name,
+                    Name = device.Name,
                     IsEnabled = device.IsEnabled,
                     IsConnected = device.IsConnected,
                     StatusUpdatedTime = device.StatusUpdatedTime,

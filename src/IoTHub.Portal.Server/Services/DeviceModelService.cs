@@ -63,16 +63,36 @@ namespace IoTHub.Portal.Server.Services
             this.externalDeviceService = externalDeviceService;
         }
 
-        public async Task<PaginatedResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter deviceModelFilter)
+        public async Task<PaginatedResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter? deviceModelFilter)
         {
-            var deviceModelPredicate = PredicateBuilder.True<DeviceModel>();
+            var paginatedDeviceModels = new PaginatedResult<DeviceModel>();
 
-            if (!string.IsNullOrWhiteSpace(deviceModelFilter.SearchText))
+            if (deviceModelFilter == null)
             {
-                deviceModelPredicate = deviceModelPredicate.And(model => model.Name.ToLower().Contains(deviceModelFilter.SearchText.ToLower()) || model.Description.ToLower().Contains(deviceModelFilter.SearchText.ToLower()));
+                var models = await this.deviceModelRepository.GetAllAsync();
+                paginatedDeviceModels = new PaginatedResult<DeviceModel>
+                {
+                    CurrentPage = 0,
+                    Data = models.ToList(),
+                    PageSize = models.Count(),
+                    TotalCount = models.Count()
+                };
             }
+            else
+            {
+                var deviceModelPredicate = PredicateBuilder.True<DeviceModel>();
 
-            var paginatedDeviceModels = await this.deviceModelRepository.GetPaginatedListAsync(deviceModelFilter.PageNumber, deviceModelFilter.PageSize, deviceModelFilter.OrderBy, deviceModelPredicate, includes: new Expression<Func<DeviceModel, object>>[] { d => d.Labels });
+                if (!string.IsNullOrWhiteSpace(deviceModelFilter.SearchText))
+                {
+                    deviceModelPredicate = deviceModelPredicate.And(model =>
+                        model.Name.ToLower().Contains(deviceModelFilter.SearchText.ToLower()) || model.Description
+                            .ToLower().Contains(deviceModelFilter.SearchText.ToLower()));
+                }
+
+                paginatedDeviceModels = await this.deviceModelRepository.GetPaginatedListAsync(
+                    deviceModelFilter.PageNumber, deviceModelFilter.PageSize, deviceModelFilter.OrderBy,
+                    deviceModelPredicate, includes: new Expression<Func<DeviceModel, object>>[] { d => d.Labels });
+            }
 
             var paginateDeviceModelsDto = new PaginatedResult<DeviceModelDto>
             {

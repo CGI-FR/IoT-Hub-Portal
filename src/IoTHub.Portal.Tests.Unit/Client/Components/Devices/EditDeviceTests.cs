@@ -895,7 +895,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
         //    var mockDeviceDetails = new DeviceDetails
         //    {
-        //        DeviceName = Guid.NewGuid().ToString(),
+        //        Name = Guid.NewGuid().ToString(),
         //        ModelId = mockDeviceModel.ModelId,
         //        DeviceID = Guid.NewGuid().ToString(),
         //        Tags = new Dictionary<string, string>()
@@ -1025,7 +1025,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
         //    var mockDeviceDetails = new DeviceDetails
         //    {
-        //        DeviceName = Guid.NewGuid().ToString(),
+        //        Name = Guid.NewGuid().ToString(),
         //        ModelId = mockDeviceModel.ModelId,
         //        DeviceID = Guid.NewGuid().ToString(),
         //        Tags = new Dictionary<string, string>()
@@ -1056,7 +1056,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
         //    // Act
         //    var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, mockDeviceDetails.DeviceID));
 
-        //    cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change("");
+        //    cut.WaitForElement($"#{nameof(DeviceDetails.Name)}").Change("");
         //    var saveButton = cut.WaitForElement("#saveButton");
         //    saveButton.Click();
 

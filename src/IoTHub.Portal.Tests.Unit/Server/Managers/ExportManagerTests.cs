@@ -351,7 +351,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             _ = textContent.AppendLine("Id,Name,ModelId,TAG:supportLoRaFeatures,TAG:Tag1,TAG:Tag2,PROPERTY:Property1,PROPERTY:Property2,PROPERTY:AppKey,PROPERTY:AppEUI,PROPERTY:AppSKey,PROPERTY:NwkSKey,PROPERTY:DevAddr,PROPERTY:GatewayID,PROPERTY:Downlink,PROPERTY:ClassType,PROPERTY:PreferredWindow,PROPERTY:Deduplication,PROPERTY:RX1DROffset,PROPERTY:RX2DataRate,PROPERTY:RXDelay,PROPERTY:ABPRelaxMode,PROPERTY:SensorDecoder,PROPERTY:FCntUpStart,PROPERTY:FCntDownStart,PROPERTY:FCntResetCounter,PROPERTY:Supports32BitFCnt,PROPERTY:KeepAliveTimeout");
             // Missing DeviceId
             _ = textContent.AppendLine(",ImportLoRa,dc1f171b-8e51-4c6d-a1c6-942b4a0f995b,true,Tag1-Value1,Tag2-Value1,,,AppKeyValue,AppEUIValue,,,,,true,C,1,Drop,,,1,,http://sensor-decoder-url/test,,,,,1");
-            // Missing DeviceName
+            // Missing Name
             _ = textContent.AppendLine("0000000000000002,,f8b7a67a-345d-463e-ae0e-eeb0f6d24e38,false,Tag1-Value2,Tag2-Value2,Property1Value,Property1Value,,,,,,,,,,,,,,,,,,,,");
             // Missing ModelId
             _ = textContent.AppendLine("0000000000000003,ImportNonLoRa,,false,Tag1-Value3,Tag2-Value3,Property1Value,Property1Value,,,,,,,,,,,,,,,,,,,,");

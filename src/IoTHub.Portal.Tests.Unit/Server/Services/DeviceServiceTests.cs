@@ -195,7 +195,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
             _ = result.PageSize.Should().Be(expectedPageSize);
             _ = result.CurrentPage.Should().Be(expectedCurrentPage);
-            _ = result.Data[0].DeviceName.Should().Be(device1.Name);
+            _ = result.Data[0].Name.Should().Be(device1.Name);
             MockRepository.VerifyAll();
         }
 

@@ -326,12 +326,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                         new DeviceListItem()
                         {
                             DeviceID = Guid.NewGuid().ToString(),
-                            DeviceName = Guid.NewGuid().ToString(),
+                            Name = Guid.NewGuid().ToString(),
                         },
                         new DeviceListItem()
                         {
                             DeviceID = Guid.NewGuid().ToString(),
-                            DeviceName = Guid.NewGuid().ToString(),
+                            Name = Guid.NewGuid().ToString(),
                         }
                     }
                 });
@@ -363,11 +363,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             popoverProvider.WaitForAssertion(() => popoverProvider.FindAll(".mud-input-helper-text").Count.Should().Be(2));
 
-            var newModelList = await cut.Instance.Search("01");
+            await cut.Instance.Search();
 
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
-            _ = newModelList.Count().Should().Be(2);
+            _ = cut.Instance.devicesGrid.Items.Count().Should().Be(2);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 

@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Client.Services
     public class DeviceModelsClientService : IDeviceModelsClientService
     {
         private readonly HttpClient http;
-        private readonly string apiUrlBase = "api/models";
+        private const string ApiUrlBase = "api/models";
 
         public DeviceModelsClientService(HttpClient http)
         {
@@ -23,17 +23,22 @@ namespace IoTHub.Portal.Client.Services
 
         public async Task<PaginationResult<DeviceModelDto>> GetDeviceModelsAsync(DeviceModelFilter? deviceModelFilter = null)
         {
-            var query = new Dictionary<string, string>
+            var query = new Dictionary<string, string>();
+            if (deviceModelFilter != null)
             {
-                { nameof(DeviceModelFilter.SearchText), deviceModelFilter?.SearchText ?? string.Empty },
-#pragma warning disable CA1305
-                { nameof(DeviceModelFilter.PageNumber), deviceModelFilter?.PageNumber.ToString() ?? string.Empty },
-                { nameof(DeviceModelFilter.PageSize), deviceModelFilter?.PageSize.ToString() ?? string.Empty },
-#pragma warning restore CA1305
-                { nameof(DeviceModelFilter.OrderBy), string.Join("", deviceModelFilter?.OrderBy!) ?? string.Empty }
-            };
+                query = new Dictionary<string, string>
+                {
+                    { nameof(DeviceModelFilter.SearchText), deviceModelFilter?.SearchText ?? string.Empty },
+                    { nameof(DeviceModelFilter.PageNumber), deviceModelFilter?.PageNumber.ToString() ?? string.Empty },
+                    { nameof(DeviceModelFilter.PageSize), deviceModelFilter?.PageSize.ToString() ?? string.Empty },
+                    {
+                        nameof(DeviceModelFilter.OrderBy),
+                        deviceModelFilter != null ? string.Join("", deviceModelFilter?.OrderBy!) : string.Empty
+                    }
+                };
+            }
 
-            var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
+            var uri = QueryHelpers.AddQueryString(ApiUrlBase, query);
 
             return await this.http.GetFromJsonAsync<PaginationResult<DeviceModelDto>>(uri) ?? new PaginationResult<DeviceModelDto>();
         }

@@ -1,0 +1,22 @@
+﻿@* <MudStack Spacing="0">
+    <MudCheckBox T="bool" Label="Select All"
+                 Size="Size.Small"
+                 Value="@selectAll" ValueChanged="@SelectAll" />
+    <MudStack Spacing="0">
+        @foreach (var item in @Items)
+        {
+            <MudStack Row="true" AlignItems="AlignItems.Center" Wrap="Wrap.NoWrap">
+                <MudCheckBox T="bool"
+                             Size="Size.Small"
+                             Value="@(selectedItems.Contains(item))"
+                             ValueChanged="@((value) => SelectedChanged(value, item))" />
+                <img src="@(item.Image)" alt="@(item.Image) device model image" />
+                <MudText>@item.Name</MudText>
+            </MudStack>
+        }
+    </MudStack>
+    <MudStack Row="true">
+        <MudButton Color="@Color.Primary" OnClick="@(() => ApplyFilterAsync(Context))">Filter</MudButton> 
+    </MudStack>
+</MudStack>
+ *@

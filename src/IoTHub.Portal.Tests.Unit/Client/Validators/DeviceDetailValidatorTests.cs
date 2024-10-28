@@ -53,7 +53,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             Assert.AreEqual(0, standardValidation.Errors.Count);
         }
 
-        [TestCase("DeviceName", "", "ModelIdValue", "DeviceIDValue")]
+        [TestCase("Name", "", "ModelIdValue", "DeviceIDValue")]
         [TestCase("ModelId", "DeviceNameValue", "", "DeviceIDValue")]
         [TestCase("DeviceID", "DeviceNameValue", "ModelIdValue", "")]
         public void ValidateMissingFieldShouldReturnError(
@@ -80,7 +80,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             Assert.AreEqual(standardValidation.Errors[0].ErrorMessage, $"{testedValue} is required.");
         }
 
-        [TestCase("DeviceName", "", "ModelIdValue", "DeviceIDValue")]
+        [TestCase("Name", "", "ModelIdValue", "DeviceIDValue")]
         [TestCase("ModelId", "DeviceNameValue", "", "DeviceIDValue")]
         public void ValidateMissingAWSFieldShouldReturnError(
             string testedValue,

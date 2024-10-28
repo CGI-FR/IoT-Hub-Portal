@@ -30,7 +30,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             Assert.AreEqual(0, concentratorValidation.Errors.Count);
         }
 
-        [TestCase("DeviceName", "", "LoraRegionValue")]
+        [TestCase("Name", "", "LoraRegionValue")]
         [TestCase("LoraRegion", "DeviceNameValue", "")]
         public void ValidateMissingFieldShouldReturnError(
             string testedValue,

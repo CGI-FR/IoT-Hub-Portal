@@ -22,7 +22,6 @@ namespace IoTHub.Portal.Server.Managers
     using CsvHelper;
     using CsvHelper.Configuration;
     using Microsoft.Extensions.Options;
-    using Microsoft.IdentityModel.Tokens;
 
     public class ExportManager : IExportManager
     {
@@ -248,7 +247,7 @@ namespace IoTHub.Portal.Server.Managers
 
         private static bool TryReadMandatoryFields(CsvReader reader, int lineNumber, ref string deviceId, ref string deviceName, ref string modelId, ref List<ImportResultLine> report)
         {
-            if (!reader.TryGetField<string>("Id", out deviceId) || deviceId.IsNullOrEmpty())
+            if (!reader.TryGetField<string>("Id", out deviceId) || string.IsNullOrEmpty(deviceId))
             {
                 report.Add(new ImportResultLine
                 {
@@ -262,7 +261,7 @@ namespace IoTHub.Portal.Server.Managers
                 return false;
             }
 
-            if (!reader.TryGetField<string>("Name", out deviceName) || deviceName.IsNullOrEmpty())
+            if (!reader.TryGetField<string>("Name", out deviceName) || string.IsNullOrEmpty(deviceName))
             {
                 report.Add(new ImportResultLine
                 {
@@ -276,7 +275,7 @@ namespace IoTHub.Portal.Server.Managers
                 return false;
             }
 
-            if (!reader.TryGetField<string>("ModelId", out modelId) || modelId.IsNullOrEmpty())
+            if (!reader.TryGetField<string>("ModelId", out modelId) || string.IsNullOrEmpty(modelId))
             {
                 report.Add(new ImportResultLine
                 {
