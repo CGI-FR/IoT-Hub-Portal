@@ -66,6 +66,11 @@ namespace IoTHub.Portal.Infrastructure
                 .HasMany(c => c.Tags)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            _ = modelBuilder.Entity<Planning>()
+                .HasMany(c => c.Schedules)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

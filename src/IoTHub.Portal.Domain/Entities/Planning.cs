@@ -3,6 +3,10 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
+    using System.Collections.ObjectModel;
+    using IoTHub.Portal.Domain.Base;
+    using IoTHub.Portal.Shared.Constants;
+
     public class Planning : EntityBase
     {
         /// <summary>
@@ -34,5 +38,10 @@ namespace IoTHub.Portal.Domain.Entities
         /// Day off command.
         /// </summary>
         public string CommandId { get; set; } = default!;
+
+        /// <summary>
+        /// Gets or sets the schedules.
+        /// </summary>
+        public ICollection<Schedule> Schedules { get; set; } = new Collection<Schedule>();
     }
 }

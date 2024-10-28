@@ -1,5 +1,8 @@
-﻿@inject ISnackbar Snackbar
+﻿@using IoTHub.Portal.Shared.Models.v10
+@inject ISnackbar Snackbar
 @inject IPlanningClientService PlanningClientService
+@inject ILayerClientService LayerClientService
+@inject IScheduleClientService ScheduleClientService
 
 <MudDialog>
     <DialogContent>
@@ -28,13 +31,21 @@
     [Parameter] public string planningID { get; set; } = default!;
     [Parameter] public string planningName { get; set; } = default!;
 
+    List<LayerDto> Layers { get; set; } = new List<LayerDto>();
+
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Layers = await LayerClientService.GetLayers();
+    }
 
     private async Task DeletePlanning()
     {
         try
         {
+            await DeletePlanningOnLayer(planningID);
             await PlanningClientService.DeletePlanning(planningID);
 
             Snackbar.Add($"Planning {planningName} has been successfully deleted!", Severity.Success);
@@ -48,4 +59,32 @@
             MudDialog.Close();
         }
     }
+
+    private async Task DeletePlanningOnLayer(string planningId)
+    {
+        foreach (var layer in Layers.Where(layer => layer.Planning == planningId))
+        {
+            var updatedLayer = FindLayer(layer.Id);
+            updatedLayer.Planning = null;
+            await LayerClientService.UpdateLayer(updatedLayer);
+        }
+    }
+
+    private LayerDto FindLayer(string layerId)
+    {
+        var layer = Layers.FirstOrDefault(layer => layer.Id == layerId);
+
+        var layerDto = new LayerDto();
+
+        if (layer == null) return layerDto;
+
+        layerDto.Id = layer.Id;
+        layerDto.Name = layer.Name;
+        layerDto.Father = layer.Father;
+        layerDto.Planning = layer.Planning;
+        layerDto.hasSub = layer.hasSub;
+
+        return layerDto;
+    }
+
 }
