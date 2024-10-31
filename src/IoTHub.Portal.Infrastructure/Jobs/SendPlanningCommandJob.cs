@@ -3,20 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Jobs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Globalization;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Constants;
-    using IoTHub.Portal.Shared.Models.v1._0;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.Extensions.Logging;
-    using Quartz;
-
     public class PlanningCommand
     {
         public string planningId { get; set; } = default!;

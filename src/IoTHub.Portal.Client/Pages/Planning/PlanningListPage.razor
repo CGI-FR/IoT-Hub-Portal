@@ -1,24 +1,5 @@
 ﻿@page "/planning"
 
-@using IoTHub.Portal
-@using IoTHub.Portal.Client.Dialogs.Planning
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Shared.Models.v10;
-@using IoTHub.Portal.Client.Dialogs.Layer
-@using System.Web
-@using System.IO
-@using System.Text.RegularExpressions
-@using System.Net.Http.Headers
-@using IoTHub.Portal.Shared.Models.v10.Filters
-@using IoTHub.Portal.Client.Enums
-@using IoTHub.Portal.Client.Pages.Devices
-@using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Shared.Constants;
-@using IoTHub.Portal.Shared.Models
-@using IoTHub.Portal.Models
-@using IoTHub.Portal.Models.v10.LoRaWAN
-@using Microsoft.AspNetCore.WebUtilities
-
 @attribute [Authorize]
 
 @inject NavigationManager navigationManager
@@ -151,7 +132,7 @@
         parameters.Add("planningID", item.Id);
         parameters.Add("planningName", item.Name);
 
-        var result = await DialogService.Show<DeletePlanningDialog>("Confirm Deletion", parameters).Result;
+        var result = await DialogService.Show<Dialogs.Planning.DeletePlanningDialog>("Confirm Deletion", parameters).Result;
 
         if (result.Canceled)
         {

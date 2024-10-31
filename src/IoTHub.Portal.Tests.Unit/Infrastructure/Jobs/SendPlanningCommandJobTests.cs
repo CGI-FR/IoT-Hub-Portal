@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using Microsoft.Extensions.Logging;
-    using Moq;
-    using Quartz;
-
     [TestFixture]
     public class SendPlanningCommandJobTests : BackendUnitTest
     {
