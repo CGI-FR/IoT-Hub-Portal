@@ -192,7 +192,26 @@
                                 <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.Children">
                                     <Content>
                                         <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@(context.Children.Count() != 0)" />
-                                        <MudCheckBox T="bool?" Checked="@(context.LayerData.Planning == planning.Id)" ValueChanged="@(() => CheckedChanged(context))"></MudCheckBox>
+
+                                        @if ((context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning == planning.Id))
+                                        {
+                                            <MudTooltip Text="Already registered">
+                                                <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.CheckBox" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
+                                            </MudTooltip>
+                                        }
+                                        else if (context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning != planning.Id)
+                                        {
+                                            <MudTooltip Text="Registered on other planning">
+                                                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.IndeterminateCheckBox" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
+                                            </MudTooltip>
+                                        }
+                                        else
+                                        {
+                                            <MudTooltip Text="Add device">
+                                                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
+                                            </MudTooltip>
+                                        }
+
                                         <MudText>@context.LayerData.Name</MudText>
                                     </Content>
                                 </MudTreeViewItem>
