@@ -141,7 +141,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             foreach (var device in this.devices.Data)
             {
-                if (device.LayerId != null) AddNewDevice(device);
+                if (!string.IsNullOrWhiteSpace(device.LayerId)) AddNewDevice(device);
             }
         }
 
@@ -169,16 +169,27 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             var planningData = plannings.FirstOrDefault(planning => planning.Id == planningCommand.planningId);
 
-            // Connect off days command to the planning
-            addPlanningSchedule(planningData, planningCommand);
-
-
-            foreach (var schedule in schedules)
+            // If planning is active
+            if (planningData != null && IsPlanningActive(planningData))
             {
-                // Add schedules to the planning
-                if (schedule.PlanningId == planningCommand.planningId) addSchedule(schedule, planningCommand);
-            }
+                // Connect off days command to the planning
+                addPlanningSchedule(planningData, planningCommand);
 
+
+                foreach (var schedule in schedules)
+                {
+                    // Add schedules to the planning
+                    if (schedule.PlanningId == planningCommand.planningId) addSchedule(schedule, planningCommand);
+                }
+            }
+        }
+
+        private bool IsPlanningActive(PlanningDto planning)
+        {
+            var startDay = DateTime.ParseExact(planning.Start, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            var endDay = DateTime.ParseExact(planning.End, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            return DateTime.Now >= startDay && DateTime.Now <= endDay;
         }
 
         // Include Planning Commands used for off days in the command dictionary.
@@ -186,12 +197,15 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         // planning.commands[Sa] contains a list of PayloadCommand Values.
         public void addPlanningSchedule(PlanningDto planningData, PlanningCommand planning)
         {
-            foreach (var key in planning.commands.Keys)
+            if (planningData != null)
             {
-                if ((planningData.DayOff & key) == planningData.DayOff)
+                foreach (var key in planning.commands.Keys)
                 {
-                    var newPayload = new PayloadCommand(getTimeSpan("0:00"), getTimeSpan("24:00"), planningData.CommandId);
-                    planning.commands[key].Add(newPayload);
+                    if ((planningData.DayOff & key) == planningData.DayOff)
+                    {
+                        var newPayload = new PayloadCommand(getTimeSpan("0:00"), getTimeSpan("24:00"), planningData.CommandId);
+                        planning.commands[key].Add(newPayload);
+                    }
                 }
             }
         }
