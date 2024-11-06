@@ -45,28 +45,12 @@
                                 </MudExpansionPanel>
                             </MudItem>
                         </MudGrid>
-                    </MudExpansionPanels>
-                </MudTabPanel>
-                <MudTabPanel Text="Members">
-                    <MudExpansionPanels MultiExpansion="true">
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Détails" IsInitiallyExpanded="true">
-                                    <TitleContent><MudText Typo="Typo.h6">Members</MudText></TitleContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
-                    </MudExpansionPanels>
-                </MudTabPanel>
-                <MudTabPanel Text="AccessControls">
-                    <MudExpansionPanels MultiExpansion="true">
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Détails" IsInitiallyExpanded="true">
-                                    <TitleContent><MudText Typo="Typo.h6">Access Controls</MudText></TitleContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
+                        <MudSelect T="string" MultiSelection="true" SelectAll="true" SelectAllText="Select all roles" HelperText="@value" @bind-Value="value" @bind-SelectedValues="options" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))" Label="Roles" AdornmentIcon="@Icons.Material.Filled.Search">
+                            @foreach (var action in actions)
+                            {
+                                <MudSelectItem T="string" Value="@action">@action</MudSelectItem>
+                            }
+                        </MudSelect>
                     </MudExpansionPanels>
                 </MudTabPanel>
             </MudTabs>
@@ -102,5 +86,19 @@
         {
             isProcessing = false;
         }
+    }
+
+
+    private string value { get; set; } = "Nothing selected";
+    private IEnumerable<string> options { get; set; } = new HashSet<string>() { "CreateEdgeDevice" };
+
+    private string[] actions =
+    {
+        "RemoveEdgeDevice", "CreateEdgeDevice", "CreateGroup", "EditRole", "RemoveUser", "CreateUser", "RemoveLora"
+    };
+
+    private string GetMultiSelectionText(List<string> selectedValues)
+    {
+        return $"{selectedValues.Count} role{(selectedValues.Count > 1 ? "s have" : " has")} been selected";
     }
 }
