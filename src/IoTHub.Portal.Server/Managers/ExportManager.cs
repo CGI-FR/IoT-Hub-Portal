@@ -74,6 +74,8 @@ namespace IoTHub.Portal.Server.Managers
         public async Task ExportTemplateFile(Stream stream)
         {
             var tags = new List<string>(this.deviceTagService.GetAllTagsNames());
+            if (!tags.Contains("supportLoRaFeatures"))
+                tags.Add("supportLoRaFeatures");
             var properties = GetPropertiesToExport();
 
             using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
