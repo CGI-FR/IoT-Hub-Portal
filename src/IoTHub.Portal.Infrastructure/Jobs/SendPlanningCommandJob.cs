@@ -135,7 +135,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             var layer = layers.FirstOrDefault(layer => layer.Id == device.LayerId);
 
-            if (layer?.Planning != "None")
+            if (layer?.Planning is not "None" and not null)
             {
                 // If the layer linked to a device already has a planning, add the device to the planning list
                 foreach (var planning in this.planningCommands.Where(planning => planning.planningId == layer.Planning))
