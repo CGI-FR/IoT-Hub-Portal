@@ -290,9 +290,15 @@ namespace IoTHub.Portal.Server.Managers
 
             TryReadProperty(csvReader, newDevice, c => c.AppKey, string.Empty);
             TryReadProperty(csvReader, newDevice, c => c.AppEUI, string.Empty);
-            TryReadProperty(csvReader, newDevice, c => c.AppSKey, string.Empty);
-            TryReadProperty(csvReader, newDevice, c => c.NwkSKey, string.Empty);
-            TryReadProperty(csvReader, newDevice, c => c.DevAddr, string.Empty);
+            if (string.IsNullOrEmpty(newDevice.AppKey) && string.IsNullOrEmpty(newDevice.AppEUI))
+            {
+                // ABP Settings
+                TryReadProperty(csvReader, newDevice, c => c.AppSKey, string.Empty);
+                TryReadProperty(csvReader, newDevice, c => c.NwkSKey, string.Empty);
+                TryReadProperty(csvReader, newDevice, c => c.DevAddr, string.Empty);
+                newDevice.AppEUI = null;
+                newDevice.AppKey = null;
+            }
             TryReadProperty(csvReader, newDevice, c => c.GatewayID, string.Empty);
             TryReadProperty(csvReader, newDevice, c => c.Downlink, null);
             TryReadProperty(csvReader, newDevice, c => c.ClassType, ClassType.A);
