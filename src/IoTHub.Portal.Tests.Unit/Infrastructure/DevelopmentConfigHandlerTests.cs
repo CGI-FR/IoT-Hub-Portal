@@ -299,5 +299,15 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             // Assert
             _ = developmentConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);
         }
+
+        [Test]
+        public void SendCommandsToDevicesIntervalInMinutesConfigMustHaveDefaultValue()
+        {
+            // Arrange
+            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = developmentConfigHandler.SendCommandsToDevicesIntervalInMinutes.Should().Be(10);
+        }
     }
 }
