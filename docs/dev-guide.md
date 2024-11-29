@@ -346,12 +346,6 @@ Follow the next steps to create EF migration:
     dotnet ef migrations add "<nameofyourmigration>" -p ..\IoTHub.Portal.Postgres\ -v -- --DbProvider PostgreSQL
     ```
 
-1. Execute this command for MySQL provider
-
-    ```console
-    dotnet ef migrations add "<nameofyourmigration>" -p ..\IoTHub.Portal.MySql\ -v -- --DbProvider MySQL
-    ```
-
 1. Open the created migration and follow the following steps:
 
     1. Move the using directive into the namespace directive
@@ -359,3 +353,11 @@ Follow the next steps to create EF migration:
     1. Add "_ =" before each statement of the Up and Down methods
 
     1. Add the CGI copyright to the top of the file
+
+1. Execute this command for MySQL provider
+
+    ```console
+    dotnet ef migrations add "<nameofyourmigration>" -p ..\IoTHub.Portal.MySql\ -v -- --DbProvider MySQL
+    ```
+
+1. Open the newly created migration for MySQL and repeat step 3
