@@ -80,20 +80,6 @@
                             </MudRadioGroup>
 
                         </MudItem>
-                        <MudItem xs="12" md="6">
-                            <MudText>Connection state</MudText>
-                            <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
-                                <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("true") Color="Color.Primary" id="searchStateConnected">Connected</MudRadio>
-                                </MudItem>
-                                <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("false") Color="Color.Primary" id="searchStateDisconnected">Disconnected</MudRadio>
-                                </MudItem>
-                                <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("") Color="Color.Secondary" id="searchStateAll">All</MudRadio>
-                                </MudItem>
-                            </MudRadioGroup>
-                        </MudItem>
                     </MudGrid>
 
                     <MudItem xs="12">
@@ -161,8 +147,7 @@
                 <MudTh></MudTh>
                 <MudTh><MudTableSortLabel id="sortDeviceId" SortLabel="Id" T="DeviceListItem">Device</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="DeviceListItem">Connection state</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="StatusUpdatedTime" T="DeviceListItem">Last status update</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="LastActivityTime" T="DeviceListItem">Last activity time</MudTableSortLabel></MudTh>
                 @if (Portal.IsLoRaSupported)
                 {
                     <MudTh Style="text-align: center">Telemetry</MudTh>
@@ -199,21 +184,7 @@
                     }
                 </MudTd>
 
-                <MudTd DataLabel="Connection" Style="text-align: center">
-                    @if (context.IsConnected)
-                    {
-                        <MudTooltip Text="Device is connected">
-                            <MudIcon Icon="@Icons.Material.Filled.Wifi" Color="Color.Success" />
-                        </MudTooltip>
-                    }
-                    else
-                    {
-                        <MudTooltip Text="Device is not connected">
-                            <MudIcon Icon="@Icons.Material.Filled.WifiOff" Color="Color.Error" />
-                        </MudTooltip>
-                    }
-                </MudTd>
-                <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
+                <MudTd DataLabel="LSU" Style="text-align: center">@context.LastActivityTime</MudTd>
 
                 @if (Portal.IsLoRaSupported)
                 {

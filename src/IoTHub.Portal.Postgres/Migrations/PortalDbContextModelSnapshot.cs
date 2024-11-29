@@ -71,6 +71,9 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("LastActivityTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("LayerId")
                         .HasColumnType("text");
 

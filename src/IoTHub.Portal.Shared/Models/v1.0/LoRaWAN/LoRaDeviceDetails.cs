@@ -46,6 +46,11 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
+        /// Gets or sets the last activity time.
+        /// </summary>
+        public DateTime LastActivityTime { get; set; }
+
+        /// <summary>
         /// List of custom device tags and their values.
         /// </summary>
         public Dictionary<string, string> Tags { get; set; } = new();

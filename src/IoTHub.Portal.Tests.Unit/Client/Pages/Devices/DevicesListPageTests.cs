@@ -86,7 +86,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             cut.WaitForElement("#searchID").NodeValue = Guid.NewGuid().ToString();
             cut.WaitForElement("#searchStatusEnabled").Click();
-            cut.WaitForElement("#searchStateDisconnected").Click();
 
             cut.WaitForElement("#resetSearch").Click();
             await Task.Delay(100);
@@ -94,9 +93,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Assert
             cut.WaitForAssertion(() => Assert.IsNull(cut.Find("#searchID").NodeValue));
             cut.WaitForAssertion(() => Assert.AreEqual("false", cut.Find("#searchStatusEnabled").Attributes["aria-checked"].Value));
-            cut.WaitForAssertion(() => Assert.AreEqual("false", cut.Find("#searchStateDisconnected").Attributes["aria-checked"].Value));
             cut.WaitForAssertion(() => Assert.AreEqual("true", cut.Find("#searchStatusAll").Attributes["aria-checked"].Value));
-            cut.WaitForAssertion(() => Assert.AreEqual("true", cut.Find("#searchStateAll").Attributes["aria-checked"].Value));
 
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }

@@ -31,7 +31,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Concentrators
 
             cut.WaitForElement("#searchKeyword").Change(searchKeyword);
             cut.WaitForElement("#searchStatusAll").Click();
-            cut.WaitForElement("#searchStateAll").Click();
 
             // Act
             cut.WaitForElement("#searchButton").Click();
@@ -62,7 +61,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Concentrators
 
             cut.WaitForElement("#searchKeyword").Input(searchKeyword);
             cut.WaitForElement("#searchStatusAll").Click();
-            cut.WaitForElement("#searchStateAll").Click();
 
             // Act
             cut.WaitForElement("#resetSearch").Click();

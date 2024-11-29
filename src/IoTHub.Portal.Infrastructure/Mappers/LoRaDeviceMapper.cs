@@ -35,6 +35,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
+                LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
                 LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId)),
                 GatewayID = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.GatewayID)),
                 SensorDecoder =
@@ -150,6 +151,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId)),
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
+                LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
                 SupportLoRaFeatures =
                     bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ??
                                "false")
