@@ -142,6 +142,7 @@ namespace IoTHub.Portal.Application.Helpers
                 ModuleName = module.Name,
                 Image = module.Value["settings"]?["image"]?.Value<string>(),
                 ContainerCreateOptions = module.Value["settings"]?["createOptions"]?.Value<string>(),
+                StartupOrder = module.Value["settings"]?["startupOrder"]?.Value<int>() ?? 0,
                 Status = module.Value["status"]?.Value<string>(),
             };
 
@@ -229,6 +230,11 @@ namespace IoTHub.Portal.Application.Helpers
                 edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.CreateOptions = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ContainerCreateOptions;
             }
 
+            if (edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").StartupOrder > 0)
+            {
+                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.StartupOrder = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").StartupOrder;
+            }
+
             if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").Image))
             {
                 edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").Image;
@@ -239,6 +245,11 @@ namespace IoTHub.Portal.Application.Helpers
             if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ContainerCreateOptions))
             {
                 edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.CreateOptions = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ContainerCreateOptions;
+            }
+
+            if (edgeModel.SystemModules.Single(x => x.Name == "edgeHub").StartupOrder > 0)
+            {
+                edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.StartupOrder = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").StartupOrder;
             }
 
             foreach (var item in edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").EnvironmentVariables)
@@ -262,7 +273,8 @@ namespace IoTHub.Portal.Application.Helpers
                     Settings = new ModuleSettings()
                     {
                         Image = module.Image,
-                        CreateOptions = module.ContainerCreateOptions
+                        CreateOptions = module.ContainerCreateOptions,
+                        StartupOrder = module.StartupOrder,
                     },
                     RestartPolicy = "always",
                     EnvironmentVariables = new Dictionary<string, EnvironmentVariable>()

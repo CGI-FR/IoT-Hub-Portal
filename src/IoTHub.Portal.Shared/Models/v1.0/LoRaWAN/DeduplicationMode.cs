@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
     /// <summary>
     /// LoRaWAN Deduplication strategy.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DeduplicationMode
     {
         /// <summary>
