@@ -80,7 +80,7 @@
                 {
                     Name = "New Layer",
                     Father = layer.LayerData.Id,
-                    Planning = "None"
+                    Planning = layer.LayerData.Planning != null ? layer.LayerData.Planning : "None"
                 };
             newLayer.Id = await LayerClientService.CreateLayer(newLayer);
 
@@ -150,6 +150,7 @@
         deviceDetails.IsConnected = device.IsConnected;
         deviceDetails.IsEnabled = device.IsEnabled;
         deviceDetails.StatusUpdatedTime = device.StatusUpdatedTime;
+        deviceDetails.LastActivityTime = device.LastActivityTime;
         deviceDetails.Labels = device.Labels.ToList();
         deviceDetails.LayerId = device.LayerId;
 

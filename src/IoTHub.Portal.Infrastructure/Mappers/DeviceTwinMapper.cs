@@ -35,7 +35,9 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 Image = this.deviceModelImageManager.GetDeviceModelImageAsync(modelId!).Result,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
-                StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue
+                StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
+                LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
+                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.LayerId))
             };
 
             foreach (var item in customTags)
@@ -56,9 +58,11 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
+                LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
                 Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!).Result,
-                SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false")
+                SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false"),
+                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.LayerId))
             };
         }
 
@@ -70,6 +74,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             // Update the twin properties
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
+            DeviceHelper.SetTagValue(twin, nameof(item.LayerId), item.LayerId ?? string.Empty);
 
             if (item.Tags == null)
             {

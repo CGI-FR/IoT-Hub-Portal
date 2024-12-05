@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Postgres.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -70,6 +70,9 @@ namespace IoTHub.Portal.Postgres.Migrations
 
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastActivityTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LayerId")
                         .HasColumnType("text");
@@ -476,6 +479,8 @@ namespace IoTHub.Portal.Postgres.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PlanningId");
+
                     b.ToTable("Schedules");
                 });
 
@@ -650,6 +655,15 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .HasForeignKey("LorawanDeviceId");
                 });
 
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Schedule", b =>
+                {
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Planning", null)
+                        .WithMany("Schedules")
+                        .HasForeignKey("PlanningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LorawanDevice", b =>
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Device", null)
@@ -681,6 +695,11 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.EdgeDeviceModel", b =>
                 {
                     b.Navigation("Labels");
+                });
+
+            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Planning", b =>
+                {
+                    b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LorawanDevice", b =>

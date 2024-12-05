@@ -11,7 +11,8 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .ConfigureAWSClient(configuration).Result
                 .ConfigureAWSServices()
                 .ConfigureAWSDeviceModelImages()
-                .ConfigureAWSSyncJobs(configuration);
+                .ConfigureAWSSyncJobs(configuration)
+                .ConfigureAWSSendingCommands(configuration);
         }
         private static async Task<IServiceCollection> ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -106,6 +107,20 @@ namespace IoTHub.Portal.Infrastructure.Startup
                         .ForJob(nameof(EdgeDeviceMetricLoaderJob))
                     .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+            });
+        }
+
+        private static IServiceCollection ConfigureAWSSendingCommands(this IServiceCollection services, ConfigHandler configuration)
+        {
+            return services.AddQuartz(q =>
+            {
+                _ = q.AddJob<SendPlanningCommandJob>(j => j.WithIdentity(nameof(SendPlanningCommandJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SendPlanningCommandJob)}")
+                        .ForJob(nameof(SendPlanningCommandJob))
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SendCommandsToDevicesIntervalInMinutes)
                             .RepeatForever()));
             });
         }

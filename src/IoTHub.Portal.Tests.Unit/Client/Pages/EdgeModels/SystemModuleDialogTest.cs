@@ -27,6 +27,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                     }
                 },
                 ContainerCreateOptions = Fixture.Create<string>(),
+                StartupOrder = Fixture.Create<int>(),
             };
 
             var cut = RenderComponent<MudDialogProvider>();

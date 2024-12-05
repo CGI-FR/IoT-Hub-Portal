@@ -46,7 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Client\Dialogs\Layer\" />
     <Folder Include="Client\Handlers\" />
     <Folder Include="UnitTests\Mocks\" />
     <Folder Include="Client\Constants\" />

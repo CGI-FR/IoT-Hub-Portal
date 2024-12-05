@@ -36,6 +36,11 @@ namespace IoTHub.Portal.Domain.Entities
         public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
+        /// Gets or sets the last activity time.
+        /// </summary>
+        public DateTime LastActivityTime { get; set; }
+
+        /// <summary>
         /// The device labels.
         /// </summary>
         public ICollection<Label> Labels { get; set; }

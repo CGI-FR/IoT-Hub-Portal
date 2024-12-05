@@ -125,6 +125,7 @@ namespace IoTHub.Portal.Server.Services
                             Image = newModule.Image,
                             EnvironmentVariables = newModule.EnvironmentVariables,
                             ContainerCreateOptions = newModule.ContainerCreateOptions,
+                            StartupOrder = newModule.StartupOrder
                         });
                     }
                 }

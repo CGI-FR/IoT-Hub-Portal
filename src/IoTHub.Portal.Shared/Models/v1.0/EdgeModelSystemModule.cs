@@ -11,6 +11,8 @@ namespace IoTHub.Portal.Shared.Models.v10
 
         public string ContainerCreateOptions { get; set; } = default!;
 
+        public int StartupOrder { get; set; }
+
         public List<IoTEdgeModuleEnvironmentVariable> EnvironmentVariables { get; set; }
 
         public EdgeModelSystemModule(string name)

@@ -34,5 +34,10 @@ namespace IoTHub.Portal.Domain.Entities
         /// Day off command.
         /// </summary>
         public string CommandId { get; set; } = default!;
+
+        /// <summary>
+        /// Gets or sets the schedules.
+        /// </summary>
+        public ICollection<Schedule> Schedules { get; set; } = new Collection<Schedule>();
     }
 }

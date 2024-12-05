@@ -79,6 +79,8 @@ namespace IoTHub.Portal.Infrastructure
         public override string IdeasAuthenticationHeader => this.config.GetValue(IdeasAuthenticationHeaderKey, "Ocp-Apim-Subscription-Key")!;
         public override string IdeasAuthenticationToken => this.config.GetValue(IdeasAuthenticationTokenKey, string.Empty)!;
 
+        public override int SendCommandsToDevicesIntervalInMinutes => this.config.GetValue(SendCommandsToDevicesIntervalKey, 10);
+
         public override string CloudProvider => this.config[CloudProviderKey]!;
 
         public override string AWSAccess => throw new NotImplementedException();

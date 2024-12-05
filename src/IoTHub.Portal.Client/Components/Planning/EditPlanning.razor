@@ -1,16 +1,4 @@
-﻿@using IoTHub.Portal.Models
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Shared.Models.v10
-@using IoTHub.Portal.Client.Validators
-@using System.Net.Http.Headers
-@using IoTHub.Portal.Shared.Constants
-@using IoTHub.Portal.Client.Models
-@using IoTHub.Portal.Shared.Models
-@using IoTHub.Portal.Shared.Models.v10.Filters
-@using IoTHub.Portal.Models.v10.LoRaWAN
-@using IoTHub.Portal.Client.Helpers
-
-@attribute [Authorize]
+﻿@attribute [Authorize]
 @inject NavigationManager NavigationManager
 @inject PortalSettings Portal
 
@@ -25,6 +13,10 @@
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">
     @mode Planning
     <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save</MudButton>
+    @if (mode == "Edit")
+    {
+        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeletePlanning" id="deleteButton" Disabled="isProcessing">Delete planning</MudButton>
+    }
 </MudText>
 @if (!isProcessing)
 {
@@ -85,7 +77,7 @@
                                     </MudSelect>
                                 </MudTd>
                                 <MudTd DataLabel="Delete" Style="text-align: center">
-                                    <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="( () => DeleteSchedule(ContextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                    <MudIconButton Color="Color.Default" Class="deleteRouteButton" id="deleteScheduleButton" OnClick="( () => DeleteSchedule(ContextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
                                 </MudTd>
                             </RowTemplate>
                             <FooterContent>
@@ -184,10 +176,29 @@
                     <MudPaper Class="overflow-y-auto" Elevation="0">
                         <MudTreeView Items="@Layers">
                             <ItemTemplate>
-                                <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.Children">
+                                <MudTreeViewItem id="selectLayer" @bind-Expanded="@context.IsExpanded" Items="@context.Children">
                                     <Content>
                                         <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@(context.Children.Count() != 0)" />
-                                        <MudCheckBox T="bool?" Checked="@(context.LayerData.Planning == planning.Id)" ValueChanged="@(() => CheckedChanged(context))"></MudCheckBox>
+
+                                        @if ((context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning == planning.Id))
+                                        {
+                                            <MudTooltip Text="Already registered">
+                                                <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.CheckBox" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
+                                            </MudTooltip>
+                                        }
+                                        else if (context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning != planning.Id)
+                                        {
+                                            <MudTooltip Text="Registered on other planning">
+                                                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.IndeterminateCheckBox" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
+                                            </MudTooltip>
+                                        }
+                                        else
+                                        {
+                                            <MudTooltip Text="Add layer">
+                                                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
+                                            </MudTooltip>
+                                        }
+
                                         <MudText>@context.LayerData.Name</MudText>
                                     </Content>
                                 </MudTreeViewItem>
@@ -416,6 +427,32 @@
 
         if (connections.Count != 1) return " - Business Day is not fully completed";
         return "";
+    }
+
+    /// <summary>
+    /// Prompts a pop-up windows to confirm the planning's deletion.
+    /// </summary>
+    /// <returns></returns>
+    private async Task DeletePlanning()
+    {
+        isProcessing = true;
+
+        var parameters = new DialogParameters
+        {
+            {"planningID", planning.Id},
+            {"planningName", planning.Name}
+        };
+        var result = await DialogService.Show<DeletePlanningDialog>("Confirm Deletion", parameters).Result;
+
+        isProcessing = false;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        // Go back to the list of plannings
+        NavigationManager.NavigateTo($"/planning");
     }
 
 }

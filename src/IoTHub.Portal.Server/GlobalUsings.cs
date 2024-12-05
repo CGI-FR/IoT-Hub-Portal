@@ -3,7 +3,6 @@
 
 global using System;
 global using System.Collections.Generic;
-global using System.Collections.ObjectModel;
 global using System.Globalization;
 global using System.IO;
 global using System.Linq;
@@ -89,9 +88,6 @@ global using System.Net.Http.Json;
 global using UAParser;
 global using IoTHub.Portal.Application.Mappers;
 global using System.Text.Json.Serialization;
-global using System.Threading;
-global using IoTHub.Portal.Client.Shared;
 global using IoTHub.Portal.Server.Controllers.V10;
-global using Microsoft.AspNetCore.Components;
 global using ValidationException = FluentValidation.ValidationException;
 global using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;

@@ -1,0 +1,88 @@
+﻿@inject ISnackbar Snackbar
+@inject IPlanningClientService PlanningClientService
+@inject ILayerClientService LayerClientService
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs=12>
+                <MudText>
+                    Delete @planningName ?
+                </MudText>
+            </MudItem>
+            <MudItem xs=12>
+                <MudText><i>Warning : this cannot  be undone.</i></MudText>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="delete-planning" Color="Color.Primary" OnClick="DeletePlanning">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string planningID { get; set; } = default!;
+    [Parameter] public string planningName { get; set; } = default!;
+
+    List<LayerDto> Layers { get; set; } = new List<LayerDto>();
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Layers = await LayerClientService.GetLayers();
+    }
+
+    private async Task DeletePlanning()
+    {
+        try
+        {
+            await DeletePlanningOnLayer(planningID);
+            await PlanningClientService.DeletePlanning(planningID);
+
+            Snackbar.Add($"Planning {planningName} has been successfully deleted!", Severity.Success);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            MudDialog.Close();
+        }
+    }
+
+    private async Task DeletePlanningOnLayer(string planningId)
+    {
+        foreach (var layer in Layers.Where(layer => layer.Planning == planningId))
+        {
+            var updatedLayer = FindLayer(layer.Id);
+            updatedLayer.Planning = null;
+            await LayerClientService.UpdateLayer(updatedLayer);
+        }
+    }
+
+    private LayerDto FindLayer(string layerId)
+    {
+        var layer = Layers.FirstOrDefault(layer => layer.Id == layerId);
+
+        var layerDto = new LayerDto();
+
+        if (layer == null) return layerDto;
+
+        layerDto.Id = layer.Id;
+        layerDto.Name = layer.Name;
+        layerDto.Father = layer.Father;
+        layerDto.Planning = layer.Planning;
+        layerDto.hasSub = layer.hasSub;
+
+        return layerDto;
+    }
+
+}
