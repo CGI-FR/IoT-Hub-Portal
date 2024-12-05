@@ -300,5 +300,15 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             // Assert
             _ = productionConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);
         }
+
+        [Test]
+        public void SendCommandsToDevicesIntervalInMinutesConfigMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.SendCommandsToDevicesIntervalInMinutes.Should().Be(10);
+        }
     }
 }

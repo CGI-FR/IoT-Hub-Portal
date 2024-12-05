@@ -3,7 +3,7 @@
     <DialogContent>
         <MudContainer Style="max-height: 600px; overflow-y: scroll">
             <MudGrid>
-                <MudItem xs="12" md="6">
+                <MudItem xs="12" md="4">
                     <MudTextField @bind-Value="@currentModuleName"
                                   id=@nameof(EdgeModelSystemModule.Name)
                                   Label="Module name"
@@ -11,6 +11,14 @@
                                   For="@(()=> Module.Name)"
                                   Required="true" Disabled/>
                 </MudItem>
+                 <MudItem xs="12" md="2">
+                     <MudTextField @bind-Value="@currentStartupOrder"
+                                   id=@nameof(EdgeModelSystemModule.StartupOrder)
+                                   Label="Startup Order"
+                                   Variant="Variant.Outlined"
+                                   For="@(() => Module.StartupOrder)"
+                                   Required="false" />
+                 </MudItem>
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="@currentImage"
                                   id=@nameof(EdgeModelSystemModule.Image)
@@ -45,7 +53,7 @@
     </DialogActions>
 </MudDialog>
 
-@code {
+ @code {
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = default!;
 
@@ -55,6 +63,7 @@
     private string currentModuleName = default!;
     private string currentImage = default!;
     private string currentContainerCreateOptions = default!;
+    private int currentStartupOrder;
 
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
 
@@ -67,6 +76,7 @@
         currentModuleName = Module.Name;
         currentImage = Module.Image;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
+        currentStartupOrder = Module.StartupOrder;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         await Task.Delay(0);
         IsLoading = false;
@@ -77,6 +87,7 @@
         Module.Name = currentModuleName;
         Module.Image = currentImage;
         Module.ContainerCreateOptions = currentContainerCreateOptions;
+        Module.StartupOrder = currentStartupOrder;
         Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
         MudDialog.Close(DialogResult.Ok(true));
     }

@@ -42,6 +42,7 @@ namespace IoTHub.Portal.Infrastructure
         public const string MetricLoaderRefreshIntervalKey = "Metrics:LoaderRefreshIntervalInMinutes";
 
         public const string SyncDatabaseJobRefreshIntervalKey = "Job:SyncDatabaseJobRefreshIntervalInMinutes";
+        public const string SendCommandsToDevicesIntervalKey = "Job:SendCommandsToDevicesIntervalInMinutes";
 
         public const string IdeasEnabledKey = "Ideas:Enabled";
         public const string IdeasUrlKey = "Ideas:Url";

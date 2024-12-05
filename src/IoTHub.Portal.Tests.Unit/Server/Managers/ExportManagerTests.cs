@@ -117,7 +117,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
 
             using var reader = new StreamReader(fileStream);
             var header = reader.ReadLine();
-            _ = header.Split(",").Length.Should().Be(28);
+            _ = header.Split(",").Length.Should().Be(14);
             var content = reader.ReadToEnd();
             _ = content.TrimEnd().Split("\r\n").Length.Should().Be(2);
 
@@ -151,7 +151,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             using var reader = new StreamReader(fileStream);
             var content = reader.ReadToEnd();
             _ = content.TrimEnd().Split("\r\n").Length.Should().Be(1);
-            _ = content.Split(",").Length.Should().Be(7);
+            _ = content.Split(",").Length.Should().Be(8);
         }
 
         [Test]
@@ -181,7 +181,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             using var reader = new StreamReader(fileStream);
             var content = reader.ReadToEnd();
             _ = content.TrimEnd().Split("\r\n").Length.Should().Be(1);
-            _ = content.Split(",").Length.Should().Be(27);
+            _ = content.Split(",").Length.Should().Be(14);
 
             MockRepository.VerifyAll();
         }

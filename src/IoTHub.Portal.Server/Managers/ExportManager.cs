@@ -41,7 +41,7 @@ namespace IoTHub.Portal.Server.Managers
 
             using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
 
-            using var csvWriter = new CsvWriter(writer, CultureInfo.CurrentCulture, leaveOpen: true);
+            using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture, leaveOpen: true);
 
             WriteHeader(tags, properties, csvWriter);
 
@@ -74,11 +74,13 @@ namespace IoTHub.Portal.Server.Managers
         public async Task ExportTemplateFile(Stream stream)
         {
             var tags = new List<string>(this.deviceTagService.GetAllTagsNames());
+            if (!tags.Contains("supportLoRaFeatures"))
+                tags.Add("supportLoRaFeatures");
             var properties = GetPropertiesToExport();
 
             using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
 
-            using var csvWriter = new CsvWriter(writer, CultureInfo.CurrentCulture, leaveOpen: true);
+            using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture, leaveOpen: true);
 
             WriteHeader(tags, properties, csvWriter);
 
@@ -97,21 +99,7 @@ namespace IoTHub.Portal.Server.Managers
                     nameof(LoRaDeviceDetails.AppSKey),
                     nameof(LoRaDeviceDetails.NwkSKey),
                     nameof(LoRaDeviceDetails.DevAddr),
-                    nameof(LoRaDeviceDetails.GatewayID),
-                    nameof(LoRaDeviceDetails.Downlink),
-                    nameof(LoRaDeviceDetails.ClassType),
-                    nameof(LoRaDeviceDetails.PreferredWindow),
-                    nameof(LoRaDeviceDetails.Deduplication),
-                    nameof(LoRaDeviceDetails.RX1DROffset),
-                    nameof(LoRaDeviceDetails.RX2DataRate),
-                    nameof(LoRaDeviceDetails.RXDelay),
-                    nameof(LoRaDeviceDetails.ABPRelaxMode),
-                    nameof(LoRaDeviceDetails.SensorDecoder),
-                    nameof(LoRaDeviceDetails.FCntUpStart),
-                    nameof(LoRaDeviceDetails.FCntDownStart),
-                    nameof(LoRaDeviceDetails.FCntResetCounter),
-                    nameof(LoRaDeviceDetails.Supports32BitFCnt),
-                    nameof(LoRaDeviceDetails.KeepAliveTimeout)
+                    nameof(LoRaDeviceDetails.GatewayID)
                 });
             }
 
@@ -288,24 +276,16 @@ namespace IoTHub.Portal.Server.Managers
 
             TryReadProperty(csvReader, newDevice, c => c.AppKey, string.Empty);
             TryReadProperty(csvReader, newDevice, c => c.AppEUI, string.Empty);
-            TryReadProperty(csvReader, newDevice, c => c.AppSKey, string.Empty);
-            TryReadProperty(csvReader, newDevice, c => c.NwkSKey, string.Empty);
-            TryReadProperty(csvReader, newDevice, c => c.DevAddr, string.Empty);
+            if (string.IsNullOrEmpty(newDevice.AppKey) && string.IsNullOrEmpty(newDevice.AppEUI))
+            {
+                // ABP Settings
+                TryReadProperty(csvReader, newDevice, c => c.AppSKey, string.Empty);
+                TryReadProperty(csvReader, newDevice, c => c.NwkSKey, string.Empty);
+                TryReadProperty(csvReader, newDevice, c => c.DevAddr, string.Empty);
+                newDevice.AppEUI = null;
+                newDevice.AppKey = null;
+            }
             TryReadProperty(csvReader, newDevice, c => c.GatewayID, string.Empty);
-            TryReadProperty(csvReader, newDevice, c => c.Downlink, null);
-            TryReadProperty(csvReader, newDevice, c => c.ClassType, ClassType.A);
-            TryReadProperty(csvReader, newDevice, c => c.PreferredWindow, 1);
-            TryReadProperty(csvReader, newDevice, c => c.Deduplication, DeduplicationMode.Drop);
-            TryReadProperty(csvReader, newDevice, c => c.RX1DROffset, null);
-            TryReadProperty(csvReader, newDevice, c => c.RX2DataRate, null);
-            TryReadProperty(csvReader, newDevice, c => c.RXDelay, null);
-            TryReadProperty(csvReader, newDevice, c => c.ABPRelaxMode, null);
-            TryReadProperty(csvReader, newDevice, c => c.SensorDecoder, string.Empty);
-            TryReadProperty(csvReader, newDevice, c => c.FCntUpStart, null);
-            TryReadProperty(csvReader, newDevice, c => c.FCntDownStart, null);
-            TryReadProperty(csvReader, newDevice, c => c.FCntResetCounter, null);
-            TryReadProperty(csvReader, newDevice, c => c.Supports32BitFCnt, null);
-            TryReadProperty(csvReader, newDevice, c => c.KeepAliveTimeout, null);
 
             _ = await this.loraDeviceService.CheckIfDeviceExists(newDevice.DeviceID)
                 ? await this.loraDeviceService.UpdateDevice(newDevice)

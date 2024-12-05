@@ -104,6 +104,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     IsEnabled = device.IsEnabled,
                     IsConnected = device.IsConnected,
                     StatusUpdatedTime = device.StatusUpdatedTime,
+                    LastActivityTime = device.LastActivityTime,
                     DeviceModelId = device.DeviceModelId,
                     SupportLoRaFeatures = device is LorawanDevice,
                     HasLoRaTelemetry = device is LorawanDevice && ((LorawanDevice) device).Telemetry.Any(),
