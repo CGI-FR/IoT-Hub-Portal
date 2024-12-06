@@ -563,14 +563,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
 
             var mockScheduleList = Fixture.CreateMany<ScheduleDto>(2).ToList();
 
-            var deviceModels = Fixture.CreateMany<DeviceModelDto>(2).ToList();
-
-            var expectedPaginatedDeviceModels = new PaginationResult<DeviceModelDto>()
-            {
-                Items = mockDeviceModel.ToList(),
-                TotalItems = mockDeviceModel.Count
-            };
-
             _ = this.mockLayerClientService.Setup(service =>
                     service.GetLayers())
                     .ReturnsAsync(new List<LayerDto>

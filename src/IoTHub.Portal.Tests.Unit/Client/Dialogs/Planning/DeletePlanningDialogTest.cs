@@ -7,6 +7,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Planning
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using IoTHub.Portal.Client.Dialogs.Planning;
+    using MudBlazor;
 
     [TestFixture]
     public class DeletePlanningDialogTest : BlazorUnitTest
@@ -52,6 +53,39 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Planning
             cut.WaitForElement("#delete-planning").Click();
 
             // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public async Task OnClickOnCancelShouldCancelDialog2()
+        {
+            // Arrange
+            var planningId = Guid.NewGuid().ToString();
+            var planningName = Guid.NewGuid().ToString();
+
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
+                .ReturnsAsync(new List<LayerDto>());
+
+            var cut = RenderComponent<MudDialogProvider>();
+            var dialogService = Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {"planningID", planningId},
+                {"planningName", planningName}
+            };
+
+            IDialogReference dialogReference = null;
+
+            _ = await cut.InvokeAsync(() => dialogReference = dialogService?.Show<DeletePlanningDialog>(string.Empty, parameters));
+            cut.WaitForAssertion(() => cut.Find("#cancel-delete-planning"));
+
+            // Act
+            cut.Find("#cancel-delete-planning").Click();
+            var result = await dialogReference.Result;
+
+            // Assert
+            _ = result.Canceled.Should().BeTrue();
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

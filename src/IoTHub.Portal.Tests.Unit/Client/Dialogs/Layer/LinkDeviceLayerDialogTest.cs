@@ -33,7 +33,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
         public async Task LinkDeviceLayerDialog_Search_RendersCorrectlyAsync()
         {
             // Arrange
-            var searchedDevices = Fixture.CreateMany<TableData<DeviceListItem>>(3).ToList();
             var expectedLayerDto = Fixture.Create<LayerDto>();
 
             _ = this.mockDeviceClientService.Setup(service =>
@@ -71,7 +70,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
         public async Task LinkDeviceLayerDialog_Search_ShouldDisplayDevicesAsync()
         {
             // Arrange
-            var searchedDevices = Fixture.CreateMany<TableData<DeviceListItem>>(3).ToList();
             var expectedLayerDto = Fixture.Create<LayerDto>();
 
             var mockDeviceModel = new DeviceModelDto
@@ -127,7 +125,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
         public async Task LinkDeviceLayerDialog_Save_UpdatesDevices()
         {
             // Arrange
-            var searchedDevices = Fixture.CreateMany<TableData<DeviceListItem>>(3).ToList();
             var expectedLayerDto = Fixture.Create<LayerDto>();
 
             var mockDeviceModel = new DeviceModelDto
