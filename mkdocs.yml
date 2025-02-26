@@ -120,6 +120,7 @@ nav:
     - 'Migrations':
       - 'dev-guide/migrations/v3-to-v4.md'
       - 'dev-guide/migrations/v4-to-v5.md'
+      - 'dev-guide/migrations/v5-to-v6.md'
     - 'Project conception':
       - 'dev-guide/conception/diagrams.md'
   - Concepts: 'concepts.md'

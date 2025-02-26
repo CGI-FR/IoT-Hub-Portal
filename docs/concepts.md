@@ -317,3 +317,34 @@ The configuration will be created with the following schema:
 Please note that the ``created-by`` label is used to identify the configuration created by the IoT Hub portal.
 
 > For more information see [Automatic IoT device and module management](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-automatic-device-management).
+
+## Site management
+
+### Layers
+
+It is possible to define a hierarchical structure corresponding to the areas in which the sensors are installed. On each layer, one or more devices can be associated. These layers will then be used for planning and  schedulers.
+
+![alt text](images/layers.png)
+
+> Note: As a layer can only refer to one planning (so one type of device model), only one type of devices should be linked to a layer.
+
+### Planning
+
+This functionality is designed to define commands to send to devices based on a schedule. A schedule can only be associated with a single device model, which allows you to obtain the list of available commands. A schedule must be linked to one or more layers with associated devices for the orders to be taken into account.
+
+![alt text](images/planning.png)
+
+> Note: When a layer is associated to a planning, all its children are automatically added too.
+
+#### Planning parameters
+
+- ``Name``: The ID of the device model.
+- ``Device Model``: The name of the device model.
+    > Note: Available commands depend on the selected device model.
+- ``Business Day``: Scheduled commands for business days.
+- ``Off Day``: Scheduled command for off days.
+- ``Date of application of this planning``: Start and end dates of validity of the planning.
+- ``Select your application areas``: Treeview displaying the list of layers.
+    > Note: Layers can be created after planning, but the link between the two entities can only be made here.
+    >
+    > A layer can be associated to only one schedule.
