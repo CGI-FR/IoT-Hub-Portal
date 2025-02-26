@@ -60,7 +60,7 @@ _Secrets_ are used to fill in the login credentials to the cloud platform. You h
 
 ```json
 {
-  "StorageAccount:ConnectionString": "<CONNECTION_STRING_STORAGE_ACCOUNT>",
+  "Azure:StorageAccount:ConnectionString": "<CONNECTION_STRING_STORAGE_ACCOUNT>",
   "StorageAccount:BlobContainerName": "<BLOB_CONTAINER_NAME>",
   "OIDC:Scope": "<SCOPE>",
   "OIDC:MetadataUrl": "<METADATA_URL>",
@@ -68,17 +68,18 @@ _Secrets_ are used to fill in the login credentials to the cloud platform. You h
   "OIDC:Authority": "<AUTHORITY>",
   "OIDC:ApiClientId": "<API_CLIENT_ID>",
   "LoRaRegionRouterConfig:Url": "<LORA_WAN_ROUTER_CONFIGURATION_URL>",
-  "LoRaKeyManagement:Url": "<LORA_WAN_KEY_MANAGEMENT_URL>",
-  "LoRaKeyManagement:Code": "<LORA_WAN_KEY_MANAGEMENT_CODE>",
+  "Azure:LoRaKeyManagement:Url": "<LORA_WAN_KEY_MANAGEMENT_URL>",
+  "Azure:LoRaKeyManagement:Code": "<LORA_WAN_KEY_MANAGEMENT_CODE>",
   "LoRaFeature:Enabled": "<TRUE_OR_FALSE>",
   "Kestrel:Certificates:Development:Password": "<DEV_PASSWORD>",
-  "IoTHub:ConnectionString": "<IOT_HUB_CONNECTION_STRING>",
-  "IoTHub:EventHub:Endpoint": "<IOT_HUB_EVENT_HUB_ENDPOINT>",
-  "IoTHub:EventHub:ConsumerGroup": "<IOT_HUB_EVENT_HUB_CONSUMER_GROUP>",
-  "IoTDPS:ServiceEndpoint": "<SERVICE_END_POINT>",
-  "IoTDPS:LoRaEnrollmentGroup": "<LORA_WAN_ENROLLMENT_GROUP>",
-  "IoTDPS:DefaultEnrollmentGroup": "<LORA_WAN_DEFAULT_ENROLLMENT_GROUP>",
-  "IoTDPS:ConnectionString": "<IOT_DPS_CONNECTION_STRING>",
+  "Azure:IoTHub:ConnectionString": "<IOT_HUB_CONNECTION_STRING>",
+  "Azure:IoTHub:EventHub:Endpoint": "<IOT_HUB_EVENT_HUB_ENDPOINT>",
+  "Azure:IoTHub:EventHub:ConsumerGroup": "<IOT_HUB_EVENT_HUB_CONSUMER_GROUP>",
+  "Azure:IoTDPS:ServiceEndpoint": "<SERVICE_END_POINT>",
+  "Azure:IoTDPS:LoRaEnrollmentGroup": "<LORA_WAN_ENROLLMENT_GROUP>",
+  "Azure:IoTDPS:DefaultEnrollmentGroup": "<LORA_WAN_DEFAULT_ENROLLMENT_GROUP>",
+  "Azure:IoTDPS:ConnectionString": "<IOT_DPS_CONNECTION_STRING>",
+  "Azure:IoTDPS:IDScope": "<IOT_DPS_ID_SCOPE>",
   "PostgreSQL:ConnectionString": "<POSTGRE_SQL_CONNECTION_STRING>"
 }
 ```
@@ -105,13 +106,13 @@ Here are different settings that the user can configure:
 * **OIDC__ClientId**: The OpenID Connect client ID for the Web UI.
 * **OIDC__ApiClientId**: The OpenID Connect client ID for the API.
 * **OIDC__Scope**: The OpenID Connect scope that represents the portal API.
-* **IoTDPS__ServiceEndpoint**: The IoT Device Provisioning Service endpoint.
-* **IoTDPS__IDScope**: The IoT Device Provisioning Service ID scope.
+* **Azure__IoTDPS__ServiceEndpoint**: The IoT Device Provisioning Service endpoint.
+* **Azure__IoTDPS__IDScope**: The IoT Device Provisioning Service ID scope.
 * **LoRaFeature__Enabled**: Whether the LoRaWAN feature is enabled or not.
-* **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
+* **Azure__LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
 * **StorageAccount__BlobContainerName**: The name of the Azure Storage container where the device models images are stored.
-* **IoTHub__EventHub__Endpoint**: The IotHub Event Hub compatible endpoint.
-* **IoTHub__EventHub__ConsumerGroup**: (Default value `iothub-portal`) The name of the consumer group used to to pull data from the IoT Hub (Automatically created by the Bicep/ARM deployement)
+* **Azure__IoTHub__EventHub__Endpoint**: The IotHub Event Hub compatible endpoint.
+* **Azure__IoTHub__EventHub__ConsumerGroup**: (Default value `iothub-portal`) The name of the consumer group used to to pull data from the IoT Hub (Automatically created by the Bicep/ARM deployement)
 * **ASPNETCORE_ENVIRONMENT**: Built-in environment variable, used to target the configuration provided by a specific environment. Two accepted values:
   * `Development`: On this environment, logs are produced up to `Debug` level.
   * `Production`: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environment, logs are produced up to `Information` level.
@@ -127,10 +128,10 @@ Here are different settings that the user can configure:
 
 Here are different connection strings that the user can configure:
 
-* **IoTHub__ConnectionString**: The connection string to the IoT Hub.
-* **IoTDPS__ConnectionString**: The connection string to the Azure IoT Device Provisioning Service.
-* **StorageAccount__ConnectionString**: The connection string to the Azure Storage account.
-* **LoRaKeyManagement__Code**: The LoRa Key Management Facade code.
+* **Azure__IoTHub__ConnectionString**: The connection string to the IoT Hub.
+* **Azure__IoTDPS__ConnectionString**: The connection string to the Azure IoT Device Provisioning Service.
+* **Azure__StorageAccount__ConnectionString**: The connection string to the Azure Storage account.
+* **Azure__LoRaKeyManagement__Code**: The LoRa Key Management Facade code.
 * **PostgreSQL__ConnectionString**: The connection string allowing the connection to the PostgreSQL database.
 
 > Note: For a production environment, an Azure Key Vault is advised to store the connection strings.
@@ -346,12 +347,6 @@ Follow the next steps to create EF migration:
     dotnet ef migrations add "<nameofyourmigration>" -p ..\IoTHub.Portal.Postgres\ -v -- --DbProvider PostgreSQL
     ```
 
-1. Execute this command for MySQL provider
-
-    ```console
-    dotnet ef migrations add "<nameofyourmigration>" -p ..\IoTHub.Portal.MySql\ -v -- --DbProvider MySQL
-    ```
-
 1. Open the created migration and follow the following steps:
 
     1. Move the using directive into the namespace directive
@@ -359,3 +354,11 @@ Follow the next steps to create EF migration:
     1. Add "_ =" before each statement of the Up and Down methods
 
     1. Add the CGI copyright to the top of the file
+
+1. Execute this command for MySQL provider
+
+    ```console
+    dotnet ef migrations add "<nameofyourmigration>" -p ..\IoTHub.Portal.MySql\ -v -- --DbProvider MySQL
+    ```
+
+1. Open the newly created migration for MySQL and repeat step 3
