@@ -9,7 +9,7 @@
 <link href="../unit-tests-common-practices/" rel="prev"/>
 <link href="../../migrations/v3-to-v4/" rel="next"/>
 <link href="../../../assets/images/favicon.svg" rel="icon"/>
-<meta content="mkdocs-1.6.0, mkdocs-material-9.5.2" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
 <title>Unit Tests on Blazor components - IoT Hub Portal</title>
 <link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
@@ -660,12 +660,12 @@ was called after the component was initialized:</p>
 <p class="admonition-title">Tip</p>
 <p><code>WaitForAssertion</code> is useful in asserting asynchronous changes: It will blocks and waits in a
 test method until the specified assertion action does not throw an exception, or until the timeout is reached (the default
-timeout is one second). <img alt="👉" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f449.svg" title=":point_right:"> <a href="https://bunit.dev/docs/verification/async-assertion.html">Assertion of asynchronous changes</a></img></p>
+timeout is one second). <img alt="👉" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f449.svg" title=":point_right:"> <a href="https://bunit.dev/docs/verification/async-assertion.html">Assertion of asynchronous changes</a></img></p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Within unit tests on Blazor components, you can interact with HTML DOM and query rendered HTMLelements (buttons, div...) by using
-CSS selectors (id, class...) <img alt="👉" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f449.svg" title=":point_right:"> Lean more about <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">CSS selectors</a></img></p>
+CSS selectors (id, class...) <img alt="👉" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f449.svg" title=":point_right:"> Lean more about <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">CSS selectors</a></img></p>
 </div>
 <h2 id="how-to-unit-test-a-component-requiring-an-external-component">How to unit test a component requiring an external component<a class="headerlink" href="#how-to-unit-test-a-component-requiring-an-external-component" title="Permanent link">¶</a></h2>
 <p>Some components proposed by MudBlazor (MudAutocomplete, MudSelect...) use another component <code>MudPopoverProvider</code> to display elements.
@@ -702,7 +702,7 @@ If in a unit test that uses these MudBlazor components, the <code>MudPopoverProv
 <a id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Search</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
 <a id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="p">{</span>
 <a id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">        </span><span class="c1">// In real life use an asynchronous function for fetching data from an api.</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="m">5</span><span class="p">);</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
 <a id="__codelineno-5-14" name="__codelineno-5-14"></a>
 <a id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">        </span><span class="c1">// if text is null or empty, show complete list</span>
 <a id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="k">value</span><span class="p">))</span><span class="w"> </span>
@@ -773,7 +773,7 @@ If in a unit test that uses these MudBlazor components, the <code>MudPopoverProv
 <a id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="w">        </span><span class="n">autocompleteComponent</span><span class="p">.</span><span class="n">Find</span><span class="p">(</span><span class="s">"input"</span><span class="p">).</span><span class="n">Input</span><span class="p">(</span><span class="n">userQuery</span><span class="p">);</span>
 <a id="__codelineno-6-23" name="__codelineno-6-23"></a>
 <a id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="w">        </span><span class="c1">// Wait until the count of element in the list rendred on the component MudPopoverProvider is equals to one</span>
-<a id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="w">        </span><span class="n">popoverProvider</span><span class="p">.</span><span class="n">WaitForAssertion</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">popoverProvider</span><span class="p">.</span><span class="n">FindAll</span><span class="p">(</span><span class="s">"div.mud-list-item"</span><span class="p">).</span><span class="n">Count</span><span class="p">.</span><span class="n">Should</span><span class="p">().</span><span class="n">Be</span><span class="p">(</span><span class="m">1</span><span class="p">));</span>
+<a id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="w">        </span><span class="n">popoverProvider</span><span class="p">.</span><span class="n">WaitForAssertion</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">popoverProvider</span><span class="p">.</span><span class="n">FindAll</span><span class="p">(</span><span class="s">"div.mud-list-item"</span><span class="p">).</span><span class="n">Count</span><span class="p">.</span><span class="n">Should</span><span class="p">().</span><span class="n">Be</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
 <a id="__codelineno-6-26" name="__codelineno-6-26"></a>
 <a id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="w">        </span><span class="c1">// Act</span>
 <a id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="w">        </span><span class="c1">// Get the only element present on the list</span>

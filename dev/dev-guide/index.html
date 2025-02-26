@@ -9,7 +9,7 @@
 <link href="../aws/" rel="prev"/>
 <link href="testing/unit-tests-common-practices/" rel="next"/>
 <link href="../assets/images/favicon.svg" rel="icon"/>
-<meta content="mkdocs-1.6.0, mkdocs-material-9.5.2" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
 <title>Developer Guide - IoT Hub Portal</title>
 <link href="../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
@@ -835,8 +835,9 @@
 <span class="normal"><a href="#__codelineno-0-19">19</a></span>
 <span class="normal"><a href="#__codelineno-0-20">20</a></span>
 <span class="normal"><a href="#__codelineno-0-21">21</a></span>
-<span class="normal"><a href="#__codelineno-0-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">"StorageAccount:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CONNECTION_STRING_STORAGE_ACCOUNT&gt;"</span><span class="p">,</span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">"Azure:StorageAccount:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CONNECTION_STRING_STORAGE_ACCOUNT&gt;"</span><span class="p">,</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">"StorageAccount:BlobContainerName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;BLOB_CONTAINER_NAME&gt;"</span><span class="p">,</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">"OIDC:Scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SCOPE&gt;"</span><span class="p">,</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span><span class="nt">"OIDC:MetadataUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;METADATA_URL&gt;"</span><span class="p">,</span>
@@ -844,19 +845,20 @@
 <a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">  </span><span class="nt">"OIDC:Authority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;AUTHORITY&gt;"</span><span class="p">,</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">  </span><span class="nt">"OIDC:ApiClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;API_CLIENT_ID&gt;"</span><span class="p">,</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">  </span><span class="nt">"LoRaRegionRouterConfig:Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_ROUTER_CONFIGURATION_URL&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">  </span><span class="nt">"LoRaKeyManagement:Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_KEY_MANAGEMENT_URL&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">  </span><span class="nt">"LoRaKeyManagement:Code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_KEY_MANAGEMENT_CODE&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">  </span><span class="nt">"Azure:LoRaKeyManagement:Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_KEY_MANAGEMENT_URL&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">  </span><span class="nt">"Azure:LoRaKeyManagement:Code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_KEY_MANAGEMENT_CODE&gt;"</span><span class="p">,</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">  </span><span class="nt">"LoRaFeature:Enabled"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;TRUE_OR_FALSE&gt;"</span><span class="p">,</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">  </span><span class="nt">"Kestrel:Certificates:Development:Password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;DEV_PASSWORD&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">  </span><span class="nt">"IoTHub:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_CONNECTION_STRING&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">  </span><span class="nt">"IoTHub:EventHub:Endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_EVENT_HUB_ENDPOINT&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">  </span><span class="nt">"IoTHub:EventHub:ConsumerGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_EVENT_HUB_CONSUMER_GROUP&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="nt">"IoTDPS:ServiceEndpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SERVICE_END_POINT&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="nt">"IoTDPS:LoRaEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="nt">"IoTDPS:DefaultEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_DEFAULT_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">  </span><span class="nt">"IoTDPS:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_CONNECTION_STRING&gt;"</span><span class="p">,</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="p">}</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">  </span><span class="nt">"Azure:IoTHub:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_CONNECTION_STRING&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">  </span><span class="nt">"Azure:IoTHub:EventHub:Endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_EVENT_HUB_ENDPOINT&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">  </span><span class="nt">"Azure:IoTHub:EventHub:ConsumerGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_EVENT_HUB_CONSUMER_GROUP&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="nt">"Azure:IoTDPS:ServiceEndpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SERVICE_END_POINT&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="nt">"Azure:IoTDPS:LoRaEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="nt">"Azure:IoTDPS:DefaultEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_DEFAULT_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">  </span><span class="nt">"Azure:IoTDPS:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_CONNECTION_STRING&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">  </span><span class="nt">"Azure:IoTDPS:IDScope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_ID_SCOPE&gt;"</span><span class="p">,</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <blockquote>
 <p><u>Note:</u> You must replace all values in the brackets by your own Azure settings. If you can't find them in the Azure Portal, please contact an administrator of this project to have more information.</p>
@@ -875,13 +877,13 @@
 <li><strong>OIDC__ClientId</strong>: The OpenID Connect client ID for the Web UI.</li>
 <li><strong>OIDC__ApiClientId</strong>: The OpenID Connect client ID for the API.</li>
 <li><strong>OIDC__Scope</strong>: The OpenID Connect scope that represents the portal API.</li>
-<li><strong>IoTDPS__ServiceEndpoint</strong>: The IoT Device Provisioning Service endpoint.</li>
-<li><strong>IoTDPS__IDScope</strong>: The IoT Device Provisioning Service ID scope.</li>
+<li><strong>Azure__IoTDPS__ServiceEndpoint</strong>: The IoT Device Provisioning Service endpoint.</li>
+<li><strong>Azure__IoTDPS__IDScope</strong>: The IoT Device Provisioning Service ID scope.</li>
 <li><strong>LoRaFeature__Enabled</strong>: Whether the LoRaWAN feature is enabled or not.</li>
-<li><strong>LoRaKeyManagement__Url</strong>: The LoRa Key Management Facade URL.</li>
+<li><strong>Azure__LoRaKeyManagement__Url</strong>: The LoRa Key Management Facade URL.</li>
 <li><strong>StorageAccount__BlobContainerName</strong>: The name of the Azure Storage container where the device models images are stored.</li>
-<li><strong>IoTHub__EventHub__Endpoint</strong>: The IotHub Event Hub compatible endpoint.</li>
-<li><strong>IoTHub__EventHub__ConsumerGroup</strong>: (Default value <code>iothub-portal</code>) The name of the consumer group used to to pull data from the IoT Hub (Automatically created by the Bicep/ARM deployement)</li>
+<li><strong>Azure__IoTHub__EventHub__Endpoint</strong>: The IotHub Event Hub compatible endpoint.</li>
+<li><strong>Azure__IoTHub__EventHub__ConsumerGroup</strong>: (Default value <code>iothub-portal</code>) The name of the consumer group used to to pull data from the IoT Hub (Automatically created by the Bicep/ARM deployement)</li>
 <li><strong>ASPNETCORE_ENVIRONMENT</strong>: Built-in environment variable, used to target the configuration provided by a specific environment. Two accepted values:</li>
 <li><code>Development</code>: On this environment, logs are produced up to <code>Debug</code> level.</li>
 <li><code>Production</code>: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environment, logs are produced up to <code>Information</code> level.</li>
@@ -896,10 +898,10 @@
 <h3 id="connection-strings">Connection strings<a class="headerlink" href="#connection-strings" title="Permanent link">¶</a></h3>
 <p>Here are different connection strings that the user can configure:</p>
 <ul>
-<li><strong>IoTHub__ConnectionString</strong>: The connection string to the IoT Hub.</li>
-<li><strong>IoTDPS__ConnectionString</strong>: The connection string to the Azure IoT Device Provisioning Service.</li>
-<li><strong>StorageAccount__ConnectionString</strong>: The connection string to the Azure Storage account.</li>
-<li><strong>LoRaKeyManagement__Code</strong>: The LoRa Key Management Facade code.</li>
+<li><strong>Azure__IoTHub__ConnectionString</strong>: The connection string to the IoT Hub.</li>
+<li><strong>Azure__IoTDPS__ConnectionString</strong>: The connection string to the Azure IoT Device Provisioning Service.</li>
+<li><strong>Azure__StorageAccount__ConnectionString</strong>: The connection string to the Azure Storage account.</li>
+<li><strong>Azure__LoRaKeyManagement__Code</strong>: The LoRa Key Management Facade code.</li>
 <li><strong>PostgreSQL__ConnectionString</strong>: The connection string allowing the connection to the PostgreSQL database.</li>
 </ul>
 <blockquote>
@@ -1110,11 +1112,6 @@ Below an example on how to:</p>
 </code></pre></div></td></tr></table></div>
 </li>
 <li>
-<p>Execute this command for MySQL provider</p>
-<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="go">dotnet ef migrations add "&lt;nameofyourmigration&gt;" -p ..\IoTHub.Portal.MySql\ -v -- --DbProvider MySQL</span>
-</code></pre></div></td></tr></table></div>
-</li>
-<li>
 <p>Open the created migration and follow the following steps:</p>
 <ol>
 <li>
@@ -1127,6 +1124,14 @@ Below an example on how to:</p>
 <p>Add the CGI copyright to the top of the file</p>
 </li>
 </ol>
+</li>
+<li>
+<p>Execute this command for MySQL provider</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="go">dotnet ef migrations add "&lt;nameofyourmigration&gt;" -p ..\IoTHub.Portal.MySql\ -v -- --DbProvider MySQL</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Open the newly created migration for MySQL and repeat step 3</p>
 </li>
 </ol>
 </article>
