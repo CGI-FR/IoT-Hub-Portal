@@ -313,6 +313,13 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -593,6 +600,42 @@
       Automatic device configuration for LoRa WAN
     </span>
 </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#site-management">
+<span class="md-ellipsis">
+      Site management
+    </span>
+</a>
+<nav aria-label="Site management" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#layers">
+<span class="md-ellipsis">
+      Layers
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#planning">
+<span class="md-ellipsis">
+      Planning
+    </span>
+</a>
+<nav aria-label="Planning" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#planning-parameters">
+<span class="md-ellipsis">
+      Planning parameters
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -894,6 +937,42 @@
       Automatic device configuration for LoRa WAN
     </span>
 </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#site-management">
+<span class="md-ellipsis">
+      Site management
+    </span>
+</a>
+<nav aria-label="Site management" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#layers">
+<span class="md-ellipsis">
+      Layers
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#planning">
+<span class="md-ellipsis">
+      Planning
+    </span>
+</a>
+<nav aria-label="Planning" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#planning-parameters">
+<span class="md-ellipsis">
+      Planning parameters
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -1273,6 +1352,32 @@ sequenceDiagram
 <blockquote>
 <p>For more information see <a href="https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-automatic-device-management">Automatic IoT device and module management</a>.</p>
 </blockquote>
+<h2 id="site-management">Site management<a class="headerlink" href="#site-management" title="Permanent link">¶</a></h2>
+<h3 id="layers">Layers<a class="headerlink" href="#layers" title="Permanent link">¶</a></h3>
+<p>It is possible to define a hierarchical structure corresponding to the areas in which the sensors are installed. On each layer, one or more devices can be associated. These layers will then be used for planning and  schedulers.</p>
+<p><img alt="alt text" src="../images/layers.png"/></p>
+<blockquote>
+<p>Note: As a layer can only refer to one planning (so one type of device model), only one type of devices should be linked to a layer.</p>
+</blockquote>
+<h3 id="planning">Planning<a class="headerlink" href="#planning" title="Permanent link">¶</a></h3>
+<p>This functionality is designed to define commands to send to devices based on a schedule. A schedule can only be associated with a single device model, which allows you to obtain the list of available commands. A schedule must be linked to one or more layers with associated devices for the orders to be taken into account.</p>
+<p><img alt="alt text" src="../images/planning.png"/></p>
+<blockquote>
+<p>Note: When a layer is associated to a planning, all its children are automatically added too.</p>
+</blockquote>
+<h4 id="planning-parameters">Planning parameters<a class="headerlink" href="#planning-parameters" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>Name</code>: The ID of the device model.</li>
+<li><code>Device Model</code>: The name of the device model.
+    &gt; Note: Available commands depend on the selected device model.</li>
+<li><code>Business Day</code>: Scheduled commands for business days.</li>
+<li><code>Off Day</code>: Scheduled command for off days.</li>
+<li><code>Date of application of this planning</code>: Start and end dates of validity of the planning.</li>
+<li><code>Select your application areas</code>: Treeview displaying the list of layers.
+    &gt; Note: Layers can be created after planning, but the link between the two entities can only be made here.
+    &gt;
+    &gt; A layer can be associated to only one schedule.</li>
+</ul>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>

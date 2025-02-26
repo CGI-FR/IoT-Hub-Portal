@@ -6,24 +6,24 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="IoT Hub Portal for device management" name="description"/>
-<link href="../concepts/" rel="prev"/>
-<link href="../about/issues/" rel="next"/>
-<link href="../assets/images/favicon.svg" rel="icon"/>
+<link href="../v4-to-v5/" rel="prev"/>
+<link href="../../conception/diagrams/" rel="next"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
 <meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
-<title>Web API Reference - IoT Hub Portal</title>
-<link href="../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
-<link href="../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<title>Migrate from v5 to v6 - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
 <body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
 <input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#web-api-reference">
+<a class="md-skip" href="#migrate-from-v5-to-v6">
           Skip to content
         </a>
 </div>
@@ -33,8 +33,8 @@
 </div>
 <header class="md-header" data-md-component="header">
 <nav aria-label="Header" class="md-header__inner md-grid">
-<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href=".." title="IoT Hub Portal">
-<img alt="logo" src="../assets/images/logo.svg"/>
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
 </a>
 <label class="md-header__button md-icon" for="__drawer">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
@@ -49,7 +49,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Web API Reference
+              Migrate from v5 to v6
             
           </span>
 </div>
@@ -117,7 +117,7 @@
 <div class="md-grid">
 <ul class="md-tabs__list">
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="..">
+<a class="md-tabs__link" href="../../..">
         
   
     
@@ -127,7 +127,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../azure/">
+<a class="md-tabs__link" href="../../../azure/">
         
   
     
@@ -137,7 +137,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../aws/">
+<a class="md-tabs__link" href="../../../aws/">
         
   
     
@@ -146,8 +146,8 @@
 
       </a>
 </li>
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../dev-guide/">
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../">
           
   
     
@@ -157,7 +157,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../concepts/">
+<a class="md-tabs__link" href="../../../concepts/">
         
   
     
@@ -166,8 +166,8 @@
 
       </a>
 </li>
-<li class="md-tabs__item md-tabs__item--active">
-<a class="md-tabs__link" href="./">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
         
   
     
@@ -177,7 +177,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../about/issues/">
+<a class="md-tabs__link" href="../../../about/issues/">
           
   
     
@@ -196,8 +196,8 @@
 <div class="md-sidebar__inner">
 <nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
 <label class="md-nav__title" for="__drawer">
-<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href=".." title="IoT Hub Portal">
-<img alt="logo" src="../assets/images/logo.svg"/>
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
 </a>
     IoT Hub Portal
   </label>
@@ -213,42 +213,42 @@
 </div>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="..">
+<a class="md-nav__link" href="../../..">
 <span class="md-ellipsis">
     IoT Hub Portal
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../azure/">
+<a class="md-nav__link" href="../../../azure/">
 <span class="md-ellipsis">
     Azure
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../aws/">
+<a class="md-nav__link" href="../../../aws/">
 <span class="md-ellipsis">
     AWS
   </span>
 </a>
 </li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
 <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
 <span class="md-ellipsis">
     Dev Guide
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<nav aria-expanded="true" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_4">
 <span class="md-nav__icon md-icon"></span>
             Dev Guide
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../dev-guide/">
+<a class="md-nav__link" href="../../">
 <span class="md-ellipsis">
     Developer Guide
   </span>
@@ -269,14 +269,14 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../dev-guide/testing/unit-tests-common-practices/">
+<a class="md-nav__link" href="../../testing/unit-tests-common-practices/">
 <span class="md-ellipsis">
     Unit Tests Common Practices
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../dev-guide/testing/unit-tests-on-blazor-components/">
+<a class="md-nav__link" href="../../testing/unit-tests-on-blazor-components/">
 <span class="md-ellipsis">
     Unit Tests on Blazor components
   </span>
@@ -285,36 +285,37 @@
 </ul>
 </nav>
 </li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_4_3" type="checkbox"/>
 <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
 <span class="md-ellipsis">
     Migrations
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<nav aria-expanded="true" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
 <label class="md-nav__title" for="__nav_4_3">
 <span class="md-nav__icon md-icon"></span>
             Migrations
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../dev-guide/migrations/v3-to-v4/">
+<a class="md-nav__link" href="../v3-to-v4/">
 <span class="md-ellipsis">
     Migrate from v3 to v4
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../dev-guide/migrations/v4-to-v5/">
+<a class="md-nav__link" href="../v4-to-v5/">
 <span class="md-ellipsis">
     Migrate from v4 to v5
   </span>
 </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../dev-guide/migrations/v5-to-v6/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<a class="md-nav__link md-nav__link--active" href="./">
 <span class="md-ellipsis">
     Migrate from v5 to v6
   </span>
@@ -338,7 +339,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../dev-guide/conception/diagrams/">
+<a class="md-nav__link" href="../../conception/diagrams/">
 <span class="md-ellipsis">
     Diagrams
   </span>
@@ -351,15 +352,14 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../concepts/">
+<a class="md-nav__link" href="../../../concepts/">
 <span class="md-ellipsis">
     Concepts
   </span>
 </a>
 </li>
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
-<a class="md-nav__link md-nav__link--active" href="./">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
 <span class="md-ellipsis">
     Web API Reference
   </span>
@@ -380,28 +380,28 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../about/issues/">
+<a class="md-nav__link" href="../../../about/issues/">
 <span class="md-ellipsis">
     Known Issues
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../about/support/">
+<a class="md-nav__link" href="../../../about/support/">
 <span class="md-ellipsis">
     Support
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../about/credits/">
+<a class="md-nav__link" href="../../../about/credits/">
 <span class="md-ellipsis">
     Credits
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../about/license/">
+<a class="md-nav__link" href="../../../about/license/">
 <span class="md-ellipsis">
     License
   </span>
@@ -425,8 +425,10 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="web-api-reference">Web API Reference<a class="headerlink" href="#web-api-reference" title="Permanent link">¶</a></h1>
-<p><iframe class="swagger-ui-iframe" frameborder="0" id="607027a3" src="swagger-607027a3.html" style="overflow:hidden;width:100%;" width="100%"></iframe></p>
+<h1 id="migrate-from-v5-to-v6">Migrate from v5 to v6<a class="headerlink" href="#migrate-from-v5-to-v6" title="Permanent link">¶</a></h1>
+<p>In this new version, a site management has been added, giving the possibility to schedule commands to send to devices.</p>
+<p>The following optional parameter has been added:
+<code>Job__SendCommandsToDevicesIntervalInMinutes</code>: The interval in <code>minutes</code> to send scheduled commands to devices. Its default value is 10.</p>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
@@ -457,8 +459,8 @@
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
-<script src="../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
 <script>document$.subscribe(() => {
             window.update_swagger_ui_iframe_height = function (id) {
                 var iFrameID = document.getElementById(id);
@@ -475,7 +477,7 @@
                 iframe_id_list.push(iframes[i].getAttribute("id"))
             }
         
-            let ticking = false;
+            let ticking = true;
             
             document.addEventListener('scroll', function(e) {
                 if (!ticking) {
