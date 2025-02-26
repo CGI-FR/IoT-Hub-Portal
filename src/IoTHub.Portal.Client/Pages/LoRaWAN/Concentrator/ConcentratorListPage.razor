@@ -12,8 +12,7 @@
     <MudItem xs="12">
         <MudTable T="ConcentratorDto" id="concentrators-listing" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
-                <col style="width: 60%;" />
-                <col style="width: 10%;" />
+                <col style="width: 70%;" />
                 <col style="width: 10%;" />
                 <col style="width: 10%;" />
                 <col style="width: 10%;" />
@@ -31,7 +30,6 @@
             <HeaderContent>
                 <MudTh><MudTableSortLabel SortLabel="Name" T="ConcentratorDto">Device</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="ConcentratorDto">Allowed</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="ConcentratorDto">Connection state</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -54,20 +52,6 @@
                     }
                 </MudTd>
 
-                <MudTd DataLabel="Connection" Style="text-align: center">
-                    @if (context.IsConnected)
-                    {
-                        <MudTooltip Text="Concentrator is connected">
-                            <MudIcon Icon="@Icons.Material.Filled.Wifi" Color="Color.Success" />
-                        </MudTooltip>
-                    }
-                    else
-                    {
-                        <MudTooltip Text="Concentrator is not connected">
-                            <MudIcon Icon="@Icons.Material.Filled.WifiOff" Color="Color.Error" />
-                        </MudTooltip>
-                    }
-                </MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="See concentrator details">
                         <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />

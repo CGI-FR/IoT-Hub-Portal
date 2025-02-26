@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Models
     /// <summary>
     /// Device property type.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DevicePropertyType
     {
         /// <summary>

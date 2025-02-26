@@ -65,6 +65,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.AreEqual(DeviceModelImageOptions.DefaultImage, result.Image);
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
+            Assert.AreEqual(DateTime.MinValue, result.LastActivityTime);
 
             this.mockRepository.VerifyAll();
         }
@@ -106,6 +107,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.AreEqual(DeviceModelImageOptions.DefaultImage, result.Image);
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
+            Assert.AreEqual(DateTime.MinValue, result.LastActivityTime);
 
             this.mockRepository.VerifyAll();
         }
@@ -138,6 +140,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             Assert.IsFalse(result.IsEnabled);
 
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
+            Assert.AreEqual(DateTime.MinValue, result.LastActivityTime);
 
             this.mockRepository.VerifyAll();
         }
@@ -180,6 +183,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.AreEqual(DeviceModelImageOptions.DefaultImage, result.Image);
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
+            Assert.AreEqual(DateTime.MinValue, result.LastActivityTime);
 
             this.mockRepository.VerifyAll();
         }

@@ -170,7 +170,12 @@
         if (device.LayerId != null && device.LayerId == InitLayer.Id)
         {
             if (DeviceRemoveList.Contains(device.DeviceID)) DeviceRemoveList.Remove(device.DeviceID);
-            else DeviceRemoveList.Add(device.DeviceID);
+            else
+            {
+                DeviceList.Remove(device.DeviceID);
+                DeviceRemoveList.Add(device.DeviceID);
+                device.LayerId = null;
+            }
         }
         else
         {
@@ -223,6 +228,7 @@
         deviceDetails.IsConnected = device.IsConnected;
         deviceDetails.IsEnabled = device.IsEnabled;
         deviceDetails.StatusUpdatedTime = device.StatusUpdatedTime;
+        deviceDetails.LastActivityTime = device.LastActivityTime;
         deviceDetails.Labels = device.Labels.ToList();
         deviceDetails.LayerId = device.LayerId;
 

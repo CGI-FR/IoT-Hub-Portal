@@ -1,11 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-global using System;
-global using System.Collections.Generic;
+global using System.Collections.ObjectModel;
 global using System.Globalization;
-global using System.IO;
-global using System.Linq;
 global using System.Linq.Dynamic.Core;
 global using System.Linq.Expressions;
 global using System.Net;
@@ -17,8 +14,6 @@ global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
-global using System.Threading;
-global using System.Threading.Tasks;
 global using Amazon;
 global using Amazon.GreengrassV2;
 global using Amazon.GreengrassV2.Model;
@@ -93,4 +88,3 @@ global using Polly;
 global using Polly.Extensions.Http;
 global using EntityFramework.Exceptions.PostgreSQL;
 global using Metrics = Prometheus.Metrics;
-global using Stream = System.IO.Stream;

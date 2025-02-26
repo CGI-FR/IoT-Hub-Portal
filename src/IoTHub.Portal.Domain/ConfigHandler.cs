@@ -83,5 +83,7 @@ namespace IoTHub.Portal.Domain
         public abstract string AWSAccountId { get; }
         public abstract string AWSGreengrassCoreTokenExchangeRoleAliasName { get; }
         public abstract IEnumerable<string> AWSGreengrassRequiredRoles { get; }
+
+        public abstract int SendCommandsToDevicesIntervalInMinutes { get; }
     }
 }

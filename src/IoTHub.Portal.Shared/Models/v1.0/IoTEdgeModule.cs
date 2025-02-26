@@ -27,6 +27,8 @@ namespace IoTHub.Portal.Models.v10
 
         public string ContainerCreateOptions { get; set; } = default!;
 
+        public int StartupOrder { get; set; }
+
         /// <summary>
         /// The module status.
         /// </summary>

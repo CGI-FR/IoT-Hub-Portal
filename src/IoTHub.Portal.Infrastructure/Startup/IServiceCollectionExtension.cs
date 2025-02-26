@@ -90,6 +90,9 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>()
                             .AddScoped<IConcentratorRepository, ConcentratorRepository>()
                             .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
+                            .AddScoped<ILayerRepository, LayerRepository>()
+                            .AddScoped<IScheduleRepository, ScheduleRepository>()
+                            .AddScoped<IPlanningRepository, PlanningRepository>()
                             .AddScoped<ILabelRepository, LabelRepository>();
         }
 
@@ -99,6 +102,9 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IEdgeEnrollementHelper, EdgeEnrollementHelper>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>()
                 .AddTransient<IDeviceTagService, DeviceTagService>()
+                .AddTransient<ILayerService, LayerService>()
+                .AddTransient<IScheduleService, ScheduleService>()
+                .AddTransient<IPlanningService, PlanningService>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
         }
     }
