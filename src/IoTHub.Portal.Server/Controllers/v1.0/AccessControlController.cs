@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.AspNetCore.Authorization;
+    //using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
