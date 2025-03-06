@@ -24,6 +24,12 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<LoRaDeviceTelemetry> LoRaDeviceTelemetry { get; set; }
         public DbSet<Label> Labels { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Domain.Entities.Group> Groups { get; set; }
+        public DbSet<AccessControl> AccessControls { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Domain.Entities.Action> Actions { get; set; }
+        public DbSet<Principal> Principals { get; set; }
 
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
             : base(options)
@@ -56,6 +62,29 @@ namespace IoTHub.Portal.Infrastructure
                 .HasOne(x => x.DeviceModel)
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
+
+            _ = modelBuilder.Entity<Role>()
+                .HasIndex(r => r.Name)
+                .IsUnique();
+
+            _ = modelBuilder.Entity<AccessControl>()
+                .HasOne(ac => ac.Role)
+                .WithMany()
+                .HasForeignKey(ac => ac.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            _ = modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            _ = modelBuilder.Entity<User>()
+                .HasIndex(u => u.GivenName)
+                .IsUnique();
+
+            _ = modelBuilder.Entity<Domain.Entities.Group>()
+                .HasIndex(g => g.Name)
+                .IsUnique();
+
 
             _ = modelBuilder.Entity<EdgeDevice>()
                 .HasMany(c => c.Tags)

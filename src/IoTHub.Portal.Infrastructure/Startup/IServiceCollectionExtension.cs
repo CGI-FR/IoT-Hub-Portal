@@ -93,7 +93,13 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddScoped<ILayerRepository, LayerRepository>()
                             .AddScoped<IScheduleRepository, ScheduleRepository>()
                             .AddScoped<IPlanningRepository, PlanningRepository>()
-                            .AddScoped<ILabelRepository, LabelRepository>();
+                            .AddScoped<ILabelRepository, LabelRepository>()
+                            .AddScoped<IRoleRepository, RoleRepository>()
+                            .AddScoped<IActionRepository, ActionRepository>()
+                            .AddScoped<IGroupRepository, GroupRepository>()
+                            .AddScoped<IUserRepository, UserRepository>()
+                            .AddScoped<IPrincipalRepository, PrincipalRepository>()
+                            .AddScoped<IAccessControlRepository, AccessControlRepository>();
         }
 
         private static IServiceCollection ConfigureServices(this IServiceCollection services)

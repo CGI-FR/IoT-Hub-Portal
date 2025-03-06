@@ -1,8 +1,9 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Infrastructure.Repositories
+namespace IoTHub.Portal.Crosscutting
 {
+
     public static class PredicateBuilder
     {
         public static Expression<Func<T, bool>> True<T>()

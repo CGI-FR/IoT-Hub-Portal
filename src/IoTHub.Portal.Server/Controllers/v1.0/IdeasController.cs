@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.v1._0
+namespace IoTHub.Portal.Server.Controllers.v10
 {
     [Authorize]
     [ApiController]
@@ -18,6 +18,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpPost(Name = "Submit Idea to Iot Hub Portal community")]
+        [AllowAnonymous]
         public Task<IdeaResponse> SubmitIdea([FromBody] IdeaRequest ideaRequest)
         {
             return this.ideasService.SubmitIdea(ideaRequest, Request.Headers.UserAgent.ToString());

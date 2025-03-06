@@ -18,6 +18,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpPost("devices/_export", Name = "Export devices")]
+        [AllowAnonymous]
         public async Task<IActionResult> ExportDeviceList()
         {
             var stream = new MemoryStream();
@@ -29,6 +30,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpPost("devices/_template", Name = "Download template file")]
+        [AllowAnonymous]
         public async Task<IActionResult> ExportTemplateFile()
         {
             var stream = new MemoryStream();
@@ -40,6 +42,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpPost("devices/_import", Name = "Import devices")]
+        [AllowAnonymous]
         public async Task<ActionResult<ImportResultLine[]>> ImportDeviceList(IFormFile file)
         {
             using var stream = file.OpenReadStream();

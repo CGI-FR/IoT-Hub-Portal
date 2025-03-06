@@ -64,6 +64,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="modelId"></param>
         /// <param name="labels"></param>
         [HttpGet(Name = "GET IoT Edge devices")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<IoTEdgeListItem>))]
         public async Task<PaginationResult<IoTEdgeListItem>> Get(
             string searchText = null,
@@ -114,6 +115,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         [HttpGet("{deviceId}", Name = "GET IoT Edge device")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IoTEdgeDevice))]
         public async Task<IActionResult> Get(string deviceId)
         {
@@ -132,6 +134,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="edgeDevice">The IoT Edge device.</param>
         [HttpPost(Name = "POST Create IoT Edge")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateEdgeDeviceAsync(IoTEdgeDevice edgeDevice)
@@ -143,7 +146,9 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Updates the device.
         /// </summary>
         /// <param name="edgeDevice">The IoT Edge device.</param>
+
         [HttpPut(Name = "PUT Update IoT Edge")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateDeviceAsync(IoTEdgeDevice edgeDevice)
         {
@@ -155,6 +160,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         [HttpDelete("{deviceId}", Name = "DELETE Remove IoT Edge")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
         {
@@ -169,6 +175,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         [HttpGet("{deviceId}/credentials", Name = "GET Device enrollment credentials")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<SymmetricCredentials>> GetCredentials(string deviceId)
         {
@@ -188,6 +195,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         [HttpGet("{deviceId}/enrollementScript/{templateName}", Name = "GET Device enrollment script URL")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<string> GetEnrollementScriptUrl(string deviceId, string templateName)
         {
@@ -237,6 +245,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="methodName">Name of the method.</param>
         [HttpPost("{deviceId}/{moduleName}/{methodName}", Name = "POST Execute module command")]
+        [AllowAnonymous]
         public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
         {
             return await this.edgeDevicesService.ExecuteModuleMethod(deviceId, moduleName, methodName);
@@ -257,6 +266,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpGet("available-labels", Name = "GET Available Labels on Edge Devices")]
+        [AllowAnonymous]
         public Task<IEnumerable<LabelDto>> GetAvailableLabels()
         {
             return this.edgeDevicesService.GetAvailableLabels();

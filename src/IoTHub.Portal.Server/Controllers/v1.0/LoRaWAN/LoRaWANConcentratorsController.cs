@@ -40,6 +40,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Gets all device concentrators.
         /// </summary>
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginationResult<ConcentratorDto>>> GetAllDeviceConcentrator([FromQuery] ConcentratorFilter concentratorFilter)
         {
@@ -74,6 +75,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         [HttpGet("{deviceId}", Name = "GET LoRaWAN Concentrator")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ConcentratorDto>> GetDeviceConcentrator(string deviceId)
         {
@@ -85,6 +87,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPost(Name = "POST Create LoRaWAN concentrator")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateDeviceAsync(ConcentratorDto device)
@@ -111,6 +114,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPut(Name = "PUT Update LoRaWAN concentrator")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateDeviceAsync(ConcentratorDto device)
@@ -137,6 +141,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         [HttpDelete("{deviceId}", Name = "DELETE Remove LoRaWAN concentrator")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string deviceId)
         {

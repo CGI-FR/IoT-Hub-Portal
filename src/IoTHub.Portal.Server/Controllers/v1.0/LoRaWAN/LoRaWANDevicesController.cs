@@ -38,6 +38,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="orderBy"></param>
         /// <param name="modelId"></param>
         [HttpGet(Name = "GET LoRaWAN device list")]
+        [AllowAnonymous]
         public Task<PaginationResult<DeviceListItem>> SearchItems(
             string searchText = null,
             bool? searchStatus = null,
@@ -55,6 +56,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpGet("{deviceID}", Name = "GET LoRaWAN device details")]
+        [AllowAnonymous]
         public override Task<LoRaDeviceDetails> GetItem(string deviceID)
         {
             return base.GetItem(deviceID);
@@ -65,6 +67,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPost(Name = "POST Create LoRaWAN device")]
+        [AllowAnonymous]
         public override Task<IActionResult> CreateDeviceAsync(LoRaDeviceDetails device)
         {
             return base.CreateDeviceAsync(device);
@@ -75,6 +78,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="device">The device.</param>
         [HttpPut(Name = "PUT Update LoRaWAN device")]
+        [AllowAnonymous]
         public override Task<IActionResult> UpdateDeviceAsync(LoRaDeviceDetails device)
         {
             return base.UpdateDeviceAsync(device);
@@ -85,6 +89,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         [HttpDelete("{deviceID}", Name = "DELETE Remove LoRaWAN device")]
+        [AllowAnonymous]
         public override Task<IActionResult> Delete(string deviceID)
         {
             return base.Delete(deviceID);
@@ -97,6 +102,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="commandId">The command identifier.</param>
         /// <exception cref="System.FormatException">Incorrect port or invalid DevEui Format.</exception>
         [HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
+        [AllowAnonymous]
         public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
             await this.loRaWanCommandService.ExecuteLoRaWANCommand(deviceId, commandId);
@@ -111,18 +117,21 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpGet("gateways", Name = "Get Gateways")]
+        [AllowAnonymous]
         public ActionResult<LoRaGatewayIDList> GetGateways()
         {
             return Ok(this.gatewayIdList);
         }
 
         [HttpGet("{deviceId}/telemetry")]
+        [AllowAnonymous]
         public Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
         {
             return this.deviceService.GetDeviceTelemetry(deviceId);
         }
 
         [HttpGet("available-labels", Name = "GET Available Labels on LoRaWAN Devices")]
+        [AllowAnonymous]
         public override Task<IEnumerable<LabelDto>> GetAvailableLabels()
         {
             return base.GetAvailableLabels();

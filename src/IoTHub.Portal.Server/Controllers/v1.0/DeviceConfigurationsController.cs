@@ -20,6 +20,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpGet(Name = "GET Device configurations")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IEnumerable<ConfigListItem>> Get()
         {
@@ -27,6 +28,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpGet("{configurationId}", Name = "GET Device configuration")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DeviceConfig>> Get(string configurationId)
         {
@@ -34,6 +36,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpGet("{configurationId}/metrics", Name = "GET Device configuration metrics")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ConfigurationMetrics>> GetConfigurationMetrics(string configurationId)
         {
@@ -41,13 +44,16 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpPost(Name = "POST Create Device configuration")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task CreateConfig(DeviceConfig deviceConfig)
         {
             await this.deviceConfigurationsService.CreateConfigurationAsync(deviceConfig);
         }
 
+
         [HttpPut(Name = "PUT Update Device configuration")]
+        //[AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task UpdateConfig(DeviceConfig deviceConfig)
         {
@@ -55,6 +61,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpDelete("{configurationId}", Name = "DELETE Device configuration")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task DeleteConfig(string configurationId)
         {

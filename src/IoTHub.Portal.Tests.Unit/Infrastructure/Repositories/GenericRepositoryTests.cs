@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
+
     [TestFixture]
     public class GenericRepositoryTests : RepositoryTestBase
     {

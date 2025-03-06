@@ -39,6 +39,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <response code="200">Returns the OIDC settings.</response>
         /// <response code="500">Internal server error.</response>
         [HttpGet("oidc", Name = "GET Open ID settings")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetOIDCSettings()
@@ -50,6 +51,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Get the portal settings.
         /// </summary>
         [HttpGet("portal", Name = "GET Portal settings")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PortalSettings))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetPortalSetting()

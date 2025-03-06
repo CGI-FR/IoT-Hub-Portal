@@ -122,7 +122,6 @@ global using IoTHub.Portal.Server.Managers;
 global using IoTHub.Portal.Server.Services;
 global using IoTHub.Portal.Shared.Constants;
 global using IoTHub.Portal.Shared.Models;
-global using IoTHub.Portal.Shared.Models.v1._0;
 global using IoTHub.Portal.Shared.Models.v10;
 global using IoTHub.Portal.Shared.Models.v10.Filters;
 global using IoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
@@ -175,4 +174,4 @@ global using JsonSerializer = System.Text.Json.JsonSerializer;
 global using JsonSerializerOptions = System.Text.Json.JsonSerializerOptions;
 global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 global using Stream = System.IO.Stream;
-
+global using IoTHub.Portal.Crosscutting;

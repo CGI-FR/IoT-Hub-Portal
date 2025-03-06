@@ -3,6 +3,10 @@
 
 namespace IoTHub.Portal.Client.Services
 {
+
+
+
+
     public class EdgeDeviceClientService : IEdgeDeviceClientService
     {
         private readonly HttpClient http;

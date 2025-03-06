@@ -16,6 +16,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0.LoRaWAN
         /// </summary>
         [HttpGet(Name = "GET LoRaWAN Frequency plans")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<FrequencyPlan>> GetFrequencyPlans()
         {
             return this.Ok(new[] {

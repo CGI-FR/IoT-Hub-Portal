@@ -18,18 +18,23 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpGet]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<IoTEdgeModelListItem>>> GetEdgeModelList([FromQuery] EdgeModelFilter edgeModelFilter)
         {
             return Ok(await this.edgeModelService.GetEdgeModels(edgeModelFilter));
         }
 
         [HttpGet("{edgeModelId}")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IoTEdgeModel>> GetEdgeDeviceModel(string edgeModelId)
         {
             return Ok(await this.edgeModelService.GetEdgeModel(edgeModelId));
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateEdgeModel(IoTEdgeModel EdgeModel)
         {
             await this.edgeModelService.CreateEdgeModel(EdgeModel);
@@ -38,6 +43,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpPut]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateEdgeModel(IoTEdgeModel EdgeModel)
         {
             await this.edgeModelService.UpdateEdgeModel(EdgeModel);
@@ -52,6 +58,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <returns>Http response</returns>
         /// <exception cref="InternalServerErrorException"></exception>
         [HttpDelete("{edgeModelId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> DeleteModelAsync(string edgeModelId)
         {
             await this.edgeModelService.DeleteEdgeModel(edgeModelId);
@@ -65,6 +72,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="edgeModelId">The model identifier.</param>
         /// <returns>The avatar.</returns>
         [HttpGet("{edgeModelId}/avatar", Name = "GET edge Device model avatar URL")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<ActionResult<string>> GetAvatar(string edgeModelId)
@@ -78,7 +86,8 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="edgeModelId">The model identifier.</param>
         /// <param name="avatar"></param>
         /// <returns>The avatar.</returns>
-        [HttpPost("{edgeModelId}/{avatar}", Name = "POST Update the edge device model avatar")]
+        [HttpPost("{edgeModelId}/avatar", Name = "POST Update the edge device model avatar")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, string avatar)
@@ -91,6 +100,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// </summary>
         /// <param name="edgeModelId">The model identifier.</param>
         [HttpDelete("{edgeModelId}/avatar", Name = "DELETE Remove the edge device model avatar")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<IActionResult> DeleteAvatar(string edgeModelId)
@@ -104,6 +114,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// </summary>
         /// <returns>Public edge modules</returns>
         [HttpGet("public-modules", Name = "GET edge public modules")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<ActionResult<IEnumerable<IoTEdgeModel>>> GetPublicEdgeModules()
