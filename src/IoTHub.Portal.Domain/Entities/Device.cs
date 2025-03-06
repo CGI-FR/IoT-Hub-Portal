@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System.Collections.ObjectModel;
-    using IoTHub.Portal.Domain.Base;
-
     public class Device : EntityBase
     {
         /// <summary>
@@ -34,6 +31,11 @@ namespace IoTHub.Portal.Domain.Entities
         public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
+        /// Gets or sets the last activity time.
+        /// </summary>
+        public DateTime LastActivityTime { get; set; }
+
+        /// <summary>
         /// The current version of the device stored n he database
         /// </summary>
         public int Version { get; set; }
@@ -52,5 +54,10 @@ namespace IoTHub.Portal.Domain.Entities
         /// List of custom device tags and their values.
         /// </summary>
         public ICollection<DeviceTagValue> Tags { get; set; } = new Collection<DeviceTagValue>();
+
+        /// <summary>
+        /// The LayerId of the device.
+        /// </summary>
+        public string? LayerId { get; set; }
     }
 }

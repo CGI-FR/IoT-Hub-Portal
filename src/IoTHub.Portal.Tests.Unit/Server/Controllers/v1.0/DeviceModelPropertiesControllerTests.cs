@@ -3,21 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Server.Controllers.V10;
-    using FluentAssertions;
-    using Hellang.Middleware.ProblemDetails;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
+    using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
     public class DeviceModelPropertiesControllerTests

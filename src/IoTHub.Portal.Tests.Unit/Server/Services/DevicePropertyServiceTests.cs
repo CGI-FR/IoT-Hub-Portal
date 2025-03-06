@@ -3,22 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Azure;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Server.Services;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
-    using UnitTests.Bases;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
     public class DevicePropertyServiceTests : BackendUnitTest

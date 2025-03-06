@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Client.Validators
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Models.v10;
-    using FluentValidation;
-
     public class IoTEdgeModuleValidator : AbstractValidator<IEnumerable<IoTEdgeModule>>
     {
         private class IoTEdgeModuleComparer : IEqualityComparer<IoTEdgeModule>
@@ -35,9 +30,9 @@ namespace IoTHub.Portal.Client.Validators
                     .NotEmpty()
                     .WithMessage("Module name is required.");
 
-                    _ = c.RuleFor(x => x.ImageURI)
+                    _ = c.RuleFor(x => x.Image)
                     .NotEmpty()
-                    .WithMessage("Image uri is required.");
+                    .WithMessage("Image is required.");
                 });
         }
     }

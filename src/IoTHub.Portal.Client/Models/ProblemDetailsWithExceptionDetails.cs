@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Client.Models
 {
-    using System.Collections.Generic;
-
     public class ProblemDetailsWithExceptionDetails : Microsoft.AspNetCore.Mvc.ProblemDetails
     {
         public string TraceId { get; set; } = default!;

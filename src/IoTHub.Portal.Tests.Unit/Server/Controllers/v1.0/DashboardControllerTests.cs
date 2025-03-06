@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
-    using IoTHub.Portal.Server.Controllers.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using FluentAssertions;
-    using NUnit.Framework;
-
     [TestFixture]
     public class DashboardControllerTests
     {

@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// IoT Edge configuration list item.
     /// </summary>

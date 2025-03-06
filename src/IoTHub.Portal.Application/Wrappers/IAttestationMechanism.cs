@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Application.Wrappers
 {
-    using Microsoft.Azure.Devices.Provisioning.Service;
-
     public interface IAttestationMechanism
     {
         Attestation GetAttestation();

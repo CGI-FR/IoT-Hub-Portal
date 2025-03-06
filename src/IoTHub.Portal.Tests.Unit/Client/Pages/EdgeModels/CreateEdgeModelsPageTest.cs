@@ -3,25 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 {
-    using System;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Dialogs.EdgeModels;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.EdgeModels;
-    using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-
     [TestFixture]
     public class CreateEdgeModelsPageTest : BlazorUnitTest
     {
@@ -247,8 +228,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             var editButton = cut.WaitForElement("#editButton");
 
-            cut.WaitForElement($"#{nameof(IoTEdgeModule.ModuleName)}").Change("module test");
-            cut.WaitForElement($"#{nameof(IoTEdgeModule.ImageURI)}").Change("image test");
+            var moduleNameElement = cut.WaitForElement($"#{nameof(IoTEdgeModule.ModuleName)}");
+            var imageElement = cut.WaitForElement($"#{nameof(IoTEdgeModule.Image)}");
+
+            moduleNameElement.Change("module test");
+            imageElement.Change("image test");
 
             editButton.Click();
 
@@ -280,7 +264,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var editButton = cut.WaitForElement("#editButton");
 
             cut.WaitForElement($"#{nameof(IoTEdgeModule.ModuleName)}").Change("module test");
-            cut.WaitForElement($"#{nameof(IoTEdgeModule.ImageURI)}").Change("image test");
+            cut.WaitForElement($"#{nameof(IoTEdgeModule.Image)}").Change("image test");
 
             editButton.Click();
 
@@ -307,7 +291,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var editEdgeAgentButton = cut.WaitForElement("#editSystModuleButton_edgeAgent");
 
             cut.WaitForElement($"#{nameof(EdgeModelSystemModule.Name)}").Change("newTest");
-            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.ImageUri)}").Change("image/test");
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.Name)}-image").Change("image/test");
 
             editEdgeAgentButton.Click();
 
@@ -333,7 +317,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             var editEdgeAgentButton = cut.WaitForElement("#editSystModuleButton_edgeAgent");
 
-            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.ImageUri)}").Change("image/test");
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.Name)}-image").Change("image/test");
 
             editEdgeAgentButton.Click();
 

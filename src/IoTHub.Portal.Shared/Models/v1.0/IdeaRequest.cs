@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    using System.ComponentModel.DataAnnotations;
-
     public class IdeaRequest
     {
         [Required]

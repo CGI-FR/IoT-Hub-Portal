@@ -3,16 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using System;
-    using System.Globalization;
-    using System.Reflection;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure;
-    using FluentAssertions;
-    using Microsoft.Extensions.Configuration;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class ProductionAWSConfigHandlerTests
     {
@@ -28,7 +18,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
         }
 
-        private ProductionAWSConfigHandler CreateProductionAWSConfigHandler()
+        public ProductionAWSConfigHandler CreateProductionAWSConfigHandler()
         {
             return new ProductionAWSConfigHandler(this.mockConfiguration.Object);
         }
@@ -323,6 +313,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
 
             // Assert
             _ = productionAWSConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);
+        }
+
+        [Test]
+        public void SendCommandsToDevicesIntervalInMinutesConfigMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionAWSConfigHandler.SendCommandsToDevicesIntervalInMinutes.Should().Be(10);
         }
     }
 }

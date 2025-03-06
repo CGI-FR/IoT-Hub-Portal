@@ -3,23 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using System;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Infrastructure.Services;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10.LoRaWAN;
-    using NUnit.Framework;
-    using RichardSzalay.MockHttp;
-    using UnitTests.Bases;
-    using System.Linq;
-    using Fare;
-
     [TestFixture]
     public class LoRaWanManagementServiceTests : BackendUnitTest
     {

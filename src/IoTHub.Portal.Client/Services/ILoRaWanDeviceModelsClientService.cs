@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using Portal.Models.v10.LoRaWAN;
-
     public interface ILoRaWanDeviceModelsClientService
     {
         Task<LoRaDeviceModelDto> GetDeviceModel(string deviceModelId);
@@ -20,8 +15,8 @@ namespace IoTHub.Portal.Client.Services
 
         Task<IList<DeviceModelCommandDto>> GetDeviceModelCommands(string deviceModelId);
 
-        Task<string> GetAvatarUrl(string deviceModelId);
+        Task<string> GetAvatar(string deviceModelId);
 
-        Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar);
+        Task ChangeAvatarAsync(string deviceModelId, StringContent avatar);
     }
 }

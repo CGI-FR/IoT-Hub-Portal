@@ -3,17 +3,7 @@
 
 namespace IoTHub.Portal.Server.Controllers.V10
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models.v10;
-    using Hellang.Middleware.ProblemDetails;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
+    using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
 
     public abstract class DeviceModelPropertiesControllerBase : ControllerBase
     {

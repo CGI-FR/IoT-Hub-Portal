@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System.Text.Json.Serialization;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// LoRaWAN Concentrator Channel configuration.
     /// </summary>

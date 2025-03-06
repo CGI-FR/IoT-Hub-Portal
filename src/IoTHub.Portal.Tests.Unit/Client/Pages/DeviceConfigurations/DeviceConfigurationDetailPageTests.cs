@@ -3,25 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.DeviceConfigurations;
-    using IoTHub.Portal.Client.Services;
-    using Models;
-    using Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using UnitTests.Bases;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
+    using ConfigurationMetrics = Portal.Shared.Models.v10.ConfigurationMetrics;
 
     [TestFixture]
     public class DeviceConfigurationDetailPageTests : BlazorUnitTest
@@ -92,7 +74,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>());
 
@@ -195,7 +177,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>());
 
@@ -271,7 +253,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 .ReturnsAsync(model);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>());
 
@@ -349,7 +331,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>());
 
@@ -434,7 +416,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>());
 
@@ -523,7 +505,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>());
 
@@ -617,7 +599,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>
                 {
@@ -729,7 +711,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>
                 {
@@ -839,7 +821,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>
                 {
@@ -954,7 +936,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>
                 {
@@ -1075,7 +1057,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>
                 {
@@ -1189,7 +1171,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                    service.GetDeviceModelModelPropertiesAsync(It.Is<string>(s =>
                         modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new List<DeviceProperty>());
 

@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
-
     public class LabelRepository : GenericRepository<Label>, ILabelRepository
     {
         public LabelRepository(PortalDbContext context) : base(context)

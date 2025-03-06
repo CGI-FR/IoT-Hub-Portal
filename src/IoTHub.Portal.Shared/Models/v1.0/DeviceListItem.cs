@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Shared.Models.v10;
-
     /// <summary>
     /// Device list item.
     /// </summary>
@@ -30,7 +26,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         /// A value indicating whether the device is currently connected.
@@ -58,8 +54,18 @@ namespace IoTHub.Portal.Models.v10
         public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
+        /// Gets or sets the last activity time.
+        /// </summary>
+        public DateTime LastActivityTime { get; set; }
+
+        /// <summary>
         /// The device labels.
         /// </summary>
         public IEnumerable<LabelDto> Labels { get; set; } = new List<LabelDto>();
+
+        /// <summary>
+        /// The LayerId of the device.
+        /// </summary>
+        public string? LayerId { get; set; }
     }
 }

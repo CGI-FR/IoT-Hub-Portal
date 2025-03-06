@@ -3,15 +3,15 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    using System.Collections.Generic;
-
     public class EdgeModelSystemModule
     {
-        public string Name { get; internal set; }
+        public string Name { get; set; }
 
-        public string ImageUri { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         public string ContainerCreateOptions { get; set; } = default!;
+
+        public int StartupOrder { get; set; }
 
         public List<IoTEdgeModuleEnvironmentVariable> EnvironmentVariables { get; set; }
 

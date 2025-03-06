@@ -1,12 +1,7 @@
 ﻿@page "/edge/models"
 
-@using IoTHub.Portal.Shared.Models.v10.Filters;
-@using Microsoft.AspNetCore.Authorization
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Client.Dialogs.EdgeModels.EdgeModule
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-
 @attribute [Authorize]
+
 @inject IEdgeModelClientService EdgeModelService
 @inject IDialogService dialogService
 @inject NavigationManager NavigationManager
@@ -43,7 +38,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd Style="text-align: center">
-                    <img height="25" src="@context.ImageUrl" />
+                    <img height="25" src="@context.Image" />
                 </MudTd>
                 <MudTd DataLabel="Name">
                     <MudItem>

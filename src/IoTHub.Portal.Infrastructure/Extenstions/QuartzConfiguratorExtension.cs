@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Extensions
 {
-    using IoTHub.Portal.Domain;
-    using Quartz;
-
     public static class QuartzConfiguratorExtension
     {
         public static void AddMetricsService<TExporterService, TLoaderService>(this IServiceCollectionQuartzConfigurator q, ConfigHandler configuration)

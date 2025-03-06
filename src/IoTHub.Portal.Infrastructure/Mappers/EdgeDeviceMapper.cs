@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Azure.Devices.Shared;
-
     public class EdgeDeviceMapper : IEdgeDeviceMapper
     {
         private readonly IDeviceModelImageManager deviceModelImageManager;
@@ -27,7 +20,9 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.DeviceName)),
                 Status = deviceTwin?.Status.ToString(),
                 NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin!),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!)
+                Image = this.deviceModelImageManager
+                    .GetDeviceModelImageAsync(
+                        DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!).Result
             };
         }
 
@@ -66,7 +61,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules),
                 LastDeployment = lastConfiguration,
                 Tags = customTags,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!)
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!).Result,
             };
         }
     }

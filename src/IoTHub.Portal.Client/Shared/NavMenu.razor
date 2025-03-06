@@ -1,8 +1,4 @@
-﻿@using IoTHub.Portal.Security;
-@using Microsoft.AspNetCore.Components.Authorization
-@using IoTHub.Portal.Models.v10
-@using Blazored.LocalStorage
-@using IoTHub.Portal.Shared.Constants
+﻿
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
 @inject ILayoutService LayoutService
@@ -51,6 +47,13 @@
                          ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("IoTEdge", b))">
                 <MudNavLink Href="/edge/devices">Devices</MudNavLink>
                 <MudNavLink Href="/edge/models">Edge Models</MudNavLink>
+            </MudNavGroup>
+
+            <MudNavGroup Title="Site Management" Icon="@Icons.Material.Outlined.Business"
+                         Expanded="@LayoutService.GetNavGroupExpanded("Site Management")"
+                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Site Management", b))">
+                <MudNavLink Href="/layer">Layers</MudNavLink>
+                <MudNavLink Href="/planning">Plannings</MudNavLink>
             </MudNavGroup>
 
             @if (Portal.IsLoRaSupported)

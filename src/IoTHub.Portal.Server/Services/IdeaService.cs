@@ -5,19 +5,6 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Reflection;
-    using System.Text;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
-    using Shared.Models.v10;
-    using UAParser;
-
     public class IdeaService : IIdeaService
     {
         private readonly ILogger<IdeaService> logger;

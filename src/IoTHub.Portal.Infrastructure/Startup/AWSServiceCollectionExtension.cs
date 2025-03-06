@@ -3,24 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Startup
 {
-    using Amazon;
-    using Amazon.GreengrassV2;
-    using Amazon.IoT;
-    using Amazon.IotData;
-    using Amazon.S3;
-    using Amazon.SecretsManager;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Infrastructure.Jobs;
-    using IoTHub.Portal.Infrastructure.Jobs.AWS;
-    using IoTHub.Portal.Infrastructure.Managers;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Infrastructure.Services.AWS;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Extensions.DependencyInjection;
-    using Quartz;
-
     public static class AWSServiceCollectionExtension
     {
         public static IServiceCollection AddAWSInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
@@ -29,7 +11,8 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .ConfigureAWSClient(configuration).Result
                 .ConfigureAWSServices()
                 .ConfigureAWSDeviceModelImages()
-                .ConfigureAWSSyncJobs(configuration);
+                .ConfigureAWSSyncJobs(configuration)
+                .ConfigureAWSSendingCommands(configuration);
         }
         private static async Task<IServiceCollection> ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -124,6 +107,20 @@ namespace IoTHub.Portal.Infrastructure.Startup
                         .ForJob(nameof(EdgeDeviceMetricLoaderJob))
                     .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+            });
+        }
+
+        private static IServiceCollection ConfigureAWSSendingCommands(this IServiceCollection services, ConfigHandler configuration)
+        {
+            return services.AddQuartz(q =>
+            {
+                _ = q.AddJob<SendPlanningCommandJob>(j => j.WithIdentity(nameof(SendPlanningCommandJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SendPlanningCommandJob)}")
+                        .ForJob(nameof(SendPlanningCommandJob))
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SendCommandsToDevicesIntervalInMinutes)
                             .RepeatForever()));
             });
         }

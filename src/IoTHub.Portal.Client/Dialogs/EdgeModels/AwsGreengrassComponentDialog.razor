@@ -1,6 +1,4 @@
-﻿@using IoTHub.Portal.Models.v10;
-@using System.Text.Json;
-
+﻿
 <MudDialog>
     <DialogContent>
         <MudForm @ref="form" @bind-IsValid="@formIsValid" >
@@ -95,7 +93,7 @@
             {
                 ModuleName = currentModuleName,
                 Version = currentModuleVersion,
-                ImageURI = "example.com",
+                Image = "example.com",
                 ContainerCreateOptions = jsonRecipe
             });
         }
@@ -103,8 +101,8 @@
         {
             Module.ModuleName = currentModuleName;
             Module.Version = currentModuleVersion;
-            // ImageURI is required, but not used for Greengrass components
-            Module.ImageURI = "example.com";
+            // Image is required, but not used for Greengrass components
+            Module.Image = "example.com";
             Module.ContainerCreateOptions = jsonRecipe;
         }
 

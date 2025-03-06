@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Crosscutting
 {
-    using System.Linq.Expressions;
 
     public static class PredicateBuilder
     {

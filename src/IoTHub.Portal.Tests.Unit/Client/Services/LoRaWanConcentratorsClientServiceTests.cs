@@ -3,21 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v10.LoRaWAN;
-    using UnitTests.Bases;
-    using UnitTests.Helpers;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10.LoRaWAN;
-    using NUnit.Framework;
-    using RichardSzalay.MockHttp;
-
     [TestFixture]
     public class LoRaWanConcentratorsClientServiceTests : BlazorUnitTest
     {

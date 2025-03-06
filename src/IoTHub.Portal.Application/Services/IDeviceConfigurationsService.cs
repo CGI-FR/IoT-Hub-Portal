@@ -3,10 +3,7 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using ConfigurationMetrics = Shared.Models.v10.ConfigurationMetrics;
 
     public interface IDeviceConfigurationsService
     {

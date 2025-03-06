@@ -3,19 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
 {
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using IoTHub.Portal.Client.Pages.Dashboard;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v10;
-    using UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using IoTHub.Portal.Models.v10;
+    using Dashboard = Portal.Client.Pages.Dashboard.Dashboard;
 
     [TestFixture]
     public class DashboardTests : BlazorUnitTest

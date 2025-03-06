@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Http;
-
     public interface IEdgeModelService
     {
         Task<IEnumerable<IoTEdgeModelListItem>> GetEdgeModels(EdgeModelFilter edgeModelFilter);
@@ -22,7 +16,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<string> GetEdgeModelAvatar(string edgeModelId);
 
-        Task<string> UpdateEdgeModelAvatar(string edgeModelId, IFormFile file);
+        Task<string> UpdateEdgeModelAvatar(string edgeModelId, string avatar);
 
         Task DeleteEdgeModelAvatar(string edgeModelId);
 

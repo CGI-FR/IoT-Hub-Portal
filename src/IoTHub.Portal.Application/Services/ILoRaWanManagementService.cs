@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Net.Http;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-
     public interface ILoRaWanManagementService
     {
         Task<HttpResponseMessage> CheckAzureFunctionReturn(CancellationToken cancellationToken);

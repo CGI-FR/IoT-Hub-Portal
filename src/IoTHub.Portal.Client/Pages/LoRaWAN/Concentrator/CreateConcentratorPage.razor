@@ -1,7 +1,4 @@
 ﻿@page "/lorawan/concentrators/new"
-@using IoTHub.Portal.Models.v10.LoRaWAN
-@using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Shared.Models.v10.LoRaWAN
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
@@ -161,6 +158,6 @@
     }
 
     // Workaround to change MudSelect value when performing unit tests.
-    internal void ChangeRegion(string region) { concentrator.LoraRegion = region; }
+    public void ChangeRegion(string region) { concentrator.LoraRegion = region; }
 
 }

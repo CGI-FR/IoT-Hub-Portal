@@ -3,19 +3,7 @@
 
 namespace IoTHub.Portal.Server.Controllers.V10
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Hellang.Middleware.ProblemDetails;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.Extensions.Logging;
-    using Models.v10;
-    using Shared.Models;
+    using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
 
     public abstract class DevicesControllerBase<TDto> : ControllerBase
         where TDto : IDeviceDetails

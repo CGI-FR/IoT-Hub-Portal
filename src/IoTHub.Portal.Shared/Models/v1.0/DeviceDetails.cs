@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-
     /// <summary>
     /// Device details.
     /// </summary>
@@ -42,7 +36,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
@@ -60,6 +54,11 @@ namespace IoTHub.Portal.Models.v10
         public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
+        /// Gets or sets the last activity time.
+        /// </summary>
+        public DateTime LastActivityTime { get; set; }
+
+        /// <summary>
         /// List of custom device tags and their values.
         /// </summary>
         public Dictionary<string, string> Tags { get; set; } = new();
@@ -73,5 +72,10 @@ namespace IoTHub.Portal.Models.v10
         /// Labels
         /// </summary>
         public List<LabelDto> Labels { get; set; } = new();
+
+        /// <summary>
+        /// The LayerId of the device.
+        /// </summary>
+        public string? LayerId { get; set; } = default!;
     }
 }

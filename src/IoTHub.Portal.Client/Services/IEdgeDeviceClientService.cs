@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public interface IEdgeDeviceClientService
     {
         Task<PaginationResult<IoTEdgeListItem>> GetDevices(string continuationUri);

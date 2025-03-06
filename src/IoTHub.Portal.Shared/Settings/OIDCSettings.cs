@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Settings
 {
-    using System;
-
     /// <summary>
     /// Open ID Connect Settings.
     /// </summary>

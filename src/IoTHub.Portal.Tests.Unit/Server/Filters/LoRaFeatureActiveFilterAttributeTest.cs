@@ -3,17 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Filters
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Server.Filters;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Abstractions;
-    using Microsoft.AspNetCore.Mvc.Filters;
-    using Microsoft.AspNetCore.Routing;
-    using Moq;
-    using NUnit.Framework;
+    using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
     [TestFixture]
     public class LoRaFeatureActiveFilterAttributeTest

@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
-    using IoTHub.Portal.Infrastructure;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Diagnostics;
-
     public abstract class RepositoryTestBase
     {
         protected static PortalDbContext SetupDbContext()

@@ -3,26 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Handlers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Net.Mime;
-    using System.Text;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Handlers;
-    using IoTHub.Portal.Client.Models;
-    using FluentAssertions;
-    using Newtonsoft.Json;
-    using NUnit.Framework;
-    using RichardSzalay.MockHttp;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Bunit.TestDoubles;
-    using Microsoft.Extensions.DependencyInjection;
-    using MudBlazor;
-    using System.Linq;
-    using Bunit;
-
     [TestFixture]
     public class ProblemDetailsHandlerTests : BlazorUnitTest
     {
@@ -79,7 +59,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
 
             _ = mockHttp.When(HttpMethod.Get, "http://fake.com")
                 .Respond(System.Net.HttpStatusCode.InternalServerError, new StringContent(
-                    JsonConvert.SerializeObject(problemDetailsWithExceptionDetails),
+                    JsonSerializer.Serialize(problemDetailsWithExceptionDetails),
                     Encoding.UTF8,
                     MediaTypeNames.Application.Json));
 
@@ -120,7 +100,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Handlers
 
             _ = mockHttp.When(HttpMethod.Get, "http://fake.com")
                 .Respond(System.Net.HttpStatusCode.Unauthorized, new StringContent(
-                    JsonConvert.SerializeObject(problemDetailsWithExceptionDetails),
+                    JsonSerializer.Serialize(problemDetailsWithExceptionDetails),
                     Encoding.UTF8,
                     MediaTypeNames.Application.Json));
 

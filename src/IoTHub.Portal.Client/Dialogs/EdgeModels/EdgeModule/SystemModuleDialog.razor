@@ -1,10 +1,9 @@
-﻿@using IoTHub.Portal.Shared.Models.v10
-
+﻿
 <MudDialog DisableSidePadding="true">
     <DialogContent>
         <MudContainer Style="max-height: 600px; overflow-y: scroll">
             <MudGrid>
-                <MudItem xs="12" md="6">
+                <MudItem xs="12" md="4">
                     <MudTextField @bind-Value="@currentModuleName"
                                   id=@nameof(EdgeModelSystemModule.Name)
                                   Label="Module name"
@@ -12,12 +11,20 @@
                                   For="@(()=> Module.Name)"
                                   Required="true" Disabled/>
                 </MudItem>
+                 <MudItem xs="12" md="2">
+                     <MudTextField @bind-Value="@currentStartupOrder"
+                                   id=@nameof(EdgeModelSystemModule.StartupOrder)
+                                   Label="Startup Order"
+                                   Variant="Variant.Outlined"
+                                   For="@(() => Module.StartupOrder)"
+                                   Required="false" />
+                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="@currentImageUri"
-                                  id=@nameof(EdgeModelSystemModule.ImageUri)
+                    <MudTextField @bind-Value="@currentImage"
+                                  id=@nameof(EdgeModelSystemModule.Image)
                                   Label="Image URI"
                                   Variant="Variant.Outlined"
-                                  For="@(()=> Module.ImageUri)"
+                                  For="@(()=> Module.Image)"
                                   Required="true" />
                 </MudItem>
                 <MudItem xs="12">
@@ -46,7 +53,7 @@
     </DialogActions>
 </MudDialog>
 
-@code {
+ @code {
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = default!;
 
@@ -54,8 +61,9 @@
     public EdgeModelSystemModule Module { get; set; } = default!;
 
     private string currentModuleName = default!;
-    private string currentImageUri = default!;
+    private string currentImage = default!;
     private string currentContainerCreateOptions = default!;
+    private int currentStartupOrder;
 
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
 
@@ -66,8 +74,9 @@
         IsLoading = true;
 
         currentModuleName = Module.Name;
-        currentImageUri = Module.ImageUri;
+        currentImage = Module.Image;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
+        currentStartupOrder = Module.StartupOrder;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         await Task.Delay(0);
         IsLoading = false;
@@ -76,8 +85,9 @@
     public void Submit()
     {
         Module.Name = currentModuleName;
-        Module.ImageUri = currentImageUri;
+        Module.Image = currentImage;
         Module.ContainerCreateOptions = currentContainerCreateOptions;
+        Module.StartupOrder = currentStartupOrder;
         Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
         MudDialog.Close(DialogResult.Ok(true));
     }

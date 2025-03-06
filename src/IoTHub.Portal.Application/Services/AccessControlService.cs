@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Crosscutting;
 
-    internal class AccessControlService : IAccessControlManagementService
+    public class AccessControlService : IAccessControlManagementService
     {
         private readonly IAccessControlRepository accessControlRepository;
         private readonly IUnitOfWork unitOfWork;

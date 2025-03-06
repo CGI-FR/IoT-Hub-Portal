@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Constants
 {
-    using IoTHub.Portal.Client.Constants;
-    using FluentAssertions;
-    using MudBlazor;
-    using NUnit.Framework;
-
     [TestFixture]
     public class ThemeTests
     {

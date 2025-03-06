@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Domain.Repositories;
-    using Domain.Entities;
-
     public class LorawanDeviceRepository : GenericRepository<LorawanDevice>, ILorawanDeviceRepository
     {
         public LorawanDeviceRepository(PortalDbContext context) : base(context)

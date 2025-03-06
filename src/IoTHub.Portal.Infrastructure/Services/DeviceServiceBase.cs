@@ -3,25 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Dynamic.Core;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Azure.Messaging.EventHubs;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Domain.Entities;
-    using Infrastructure;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Logging;
-    using Models.v10;
-    using Shared.Models.v10.Filters;
     using Device = Domain.Entities.Device;
     using IoTHub.Portal.Crosscutting;
 
@@ -54,7 +35,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         }
 
         public async Task<PaginatedResult<DeviceListItem>> GetDevices(string searchText = null, bool? searchStatus = null, bool? searchState = null, int pageSize = 10,
-            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null, List<string> labels = default)
+            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null, List<string> labels = default, string layerId = null)
         {
             var deviceListFilter = new DeviceListFilter
             {
@@ -66,7 +47,8 @@ namespace IoTHub.Portal.Infrastructure.Services
                 OrderBy = orderBy,
                 Tags = GetSearchableTags(tags),
                 ModelId = modelId,
-                Labels = labels
+                Labels = labels,
+                LayerId = layerId
             };
 
             var devicePredicate = PredicateBuilder.True<Device>();
@@ -123,6 +105,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     IsEnabled = device.IsEnabled,
                     IsConnected = device.IsConnected,
                     StatusUpdatedTime = device.StatusUpdatedTime,
+                    LastActivityTime = device.LastActivityTime,
                     DeviceModelId = device.DeviceModelId,
                     SupportLoRaFeatures = device is LorawanDevice,
                     HasLoRaTelemetry = device is LorawanDevice && ((LorawanDevice) device).Telemetry.Any(),
@@ -132,13 +115,15 @@ namespace IoTHub.Portal.Infrastructure.Services
                         {
                             Color = x.Color,
                             Name = x.Name,
-                        })
+                        }),
+                    Image = this.deviceModelImageManager.GetDeviceModelImageAsync(device.DeviceModelId).Result,
+                    LayerId = device.LayerId
                 })
                 .ToListAsync();
 
             devices.ForEach(device =>
             {
-                device.ImageUrl = this.deviceModelImageManager.ComputeImageUri(device.DeviceModelId);
+                device.Image = this.deviceModelImageManager.GetDeviceModelImageAsync(device.DeviceModelId).Result;
             });
 
             return new PaginatedResult<DeviceListItem>(devices, resultCount);

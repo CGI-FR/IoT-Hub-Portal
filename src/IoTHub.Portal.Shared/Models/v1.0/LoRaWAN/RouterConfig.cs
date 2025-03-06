@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System.Collections.Generic;
-    using System.Text.Json.Serialization;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// Router configuration.
     /// </summary>
@@ -74,6 +70,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         [JsonPropertyName("nodc")]
         [JsonProperty("nodc")]
         public bool Nodc { get; set; }
+
         /// <summary>
         ///   <c>true</c> if nodwell; otherwise, <c>false</c>.
         /// </summary>

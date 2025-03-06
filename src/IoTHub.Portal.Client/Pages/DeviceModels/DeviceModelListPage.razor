@@ -1,6 +1,4 @@
 ﻿@page "/device-models"
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Shared.Models.v10.Filters;
 
 @attribute [Authorize]
 @inject NavigationManager navigationManager
@@ -40,7 +38,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd Style="text-align: center">
-                    <img height="25" src="@context.ImageUrl" />
+                    <img height="25" src="@context.Image" />
                 </MudTd>
                 <MudTd DataLabel="Name">
                     <MudItem>
@@ -126,7 +124,7 @@
                     break;
             }
 
-            var result = await DeviceModelsClientService.GetDeviceModels(new DeviceModelFilter
+            var result = await DeviceModelsClientService.GetDeviceModelsAsync(new DeviceModelFilter
                 {
                     SearchText = this.deviceModelSearchInfo.SearchText!,
                     PageNumber = state.Page,

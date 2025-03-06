@@ -1,18 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.v10
+namespace IoTHub.Portal.Server.Controllers.v1._0
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-
     [Authorize]
     [Route("api/edge/models")]
     [ApiExplorerSettings(GroupName = "IoT Edge Devices Models")]
@@ -94,15 +84,15 @@ namespace IoTHub.Portal.Server.Controllers.v10
         /// Changes the avatar.
         /// </summary>
         /// <param name="edgeModelId">The model identifier.</param>
-        /// <param name="file">The file.</param>
+        /// <param name="avatar"></param>
         /// <returns>The avatar.</returns>
         [HttpPost("{edgeModelId}/avatar", Name = "POST Update the edge device model avatar")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, IFormFile file)
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, string avatar)
         {
-            return Ok(await this.edgeModelService.UpdateEdgeModelAvatar(edgeModelId, file));
+            return Ok(await this.edgeModelService.UpdateEdgeModelAvatar(edgeModelId, avatar));
         }
 
         /// <summary>

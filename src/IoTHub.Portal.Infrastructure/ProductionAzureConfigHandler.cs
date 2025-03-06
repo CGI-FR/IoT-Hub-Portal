@@ -3,15 +3,11 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using Microsoft.Extensions.Configuration;
-
-    internal class ProductionAzureConfigHandler : ConfigHandlerBase
+    public class ProductionAzureConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;
 
-        internal ProductionAzureConfigHandler(IConfiguration config)
+        public ProductionAzureConfigHandler(IConfiguration config)
         {
             this.config = config;
         }
@@ -82,6 +78,8 @@ namespace IoTHub.Portal.Infrastructure
         public override string IdeasUrl => this.config.GetValue(IdeasUrlKey, string.Empty)!;
         public override string IdeasAuthenticationHeader => this.config.GetValue(IdeasAuthenticationHeaderKey, "Ocp-Apim-Subscription-Key")!;
         public override string IdeasAuthenticationToken => this.config.GetValue(IdeasAuthenticationTokenKey, string.Empty)!;
+
+        public override int SendCommandsToDevicesIntervalInMinutes => this.config.GetValue(SendCommandsToDevicesIntervalKey, 10);
 
         public override string CloudProvider => this.config[CloudProviderKey]!;
 

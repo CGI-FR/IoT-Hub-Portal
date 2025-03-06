@@ -1,21 +1,6 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Net.Http.Json;
-using IoTHub.Portal.Client;
-using IoTHub.Portal.Client.Handlers;
-using IoTHub.Portal.Client.Services;
-using IoTHub.Portal.Models.v10;
-using IoTHub.Portal.Settings;
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using MudBlazor;
-using MudBlazor.Services;
-using Tewr.Blazor.FileReader;
-using Toolbelt.Blazor.Extensions.DependencyInjection;
-
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.RootComponents.Add<App>("#app");
@@ -84,6 +69,9 @@ _ = builder.Services.AddScoped<ILoRaWanConcentratorClientService, LoRaWanConcent
 _ = builder.Services.AddScoped<IDeviceClientService, DeviceClientService>();
 _ = builder.Services.AddScoped<ILoRaWanDeviceModelsClientService, LoRaWanDeviceModelsClientService>();
 _ = builder.Services.AddScoped<ILoRaWanDeviceClientService, LoRaWanDeviceClientService>();
+_ = builder.Services.AddScoped<ILayerClientService, LayerClientService>();
+_ = builder.Services.AddScoped<IPlanningClientService, PlanningClientService>();
+_ = builder.Services.AddScoped<IScheduleClientService, ScheduleClientService>();
 _ = builder.Services.AddScoped<IEdgeDeviceConfigurationsClientService, EdgeDeviceConfigurationsClientService>();
 _ = builder.Services.AddScoped<IIdeaClientService, IdeaClientService>();
 _ = builder.Services.AddScoped<ClipboardService>();

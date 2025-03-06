@@ -3,30 +3,24 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Portal.Models.v10;
-
     public interface IDeviceModelsClientService
     {
-        Task<PaginationResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter? deviceModelFilter = null);
+        Task<PaginationResult<DeviceModelDto>> GetDeviceModelsAsync(DeviceModelFilter? deviceModelFilter = null);
 
         Task<DeviceModelDto> GetDeviceModel(string deviceModelId);
 
-        Task<DeviceModelDto> CreateDeviceModel(DeviceModelDto deviceModel);
+        Task<DeviceModelDto> CreateDeviceModelAsync(DeviceModelDto deviceModel);
 
         Task UpdateDeviceModel(DeviceModelDto deviceModel);
 
         Task DeleteDeviceModel(string deviceModelId);
 
-        Task<IList<DeviceProperty>> GetDeviceModelModelProperties(string deviceModelId);
+        Task<IList<DeviceProperty>> GetDeviceModelModelPropertiesAsync(string deviceModelId);
 
         Task SetDeviceModelModelProperties(string deviceModelId, IList<DeviceProperty> deviceProperties);
 
-        Task<string> GetAvatarUrl(string deviceModelId);
+        Task<string> GetAvatar(string deviceModelId);
 
-        Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar);
+        Task ChangeAvatarAsync(string deviceModelId, StringContent avatar);
     }
 }

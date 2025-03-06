@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Mappers
 {
-    using System;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-
     public class DeviceTwinMapper : IDeviceTwinMapper<DeviceListItem, DeviceDetails>
     {
         private readonly IDeviceModelImageManager deviceModelImageManager;
@@ -23,7 +14,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public DeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<string> tags)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             var modelId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
             var customTags = new Dictionary<string, string>();
@@ -41,10 +32,12 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 DeviceID = twin.DeviceId,
                 ModelId = modelId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceName)),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId!),
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(modelId!).Result,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
-                StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue
+                StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
+                LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
+                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.LayerId))
             };
 
             foreach (var item in customTags)
@@ -57,7 +50,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public DeviceListItem CreateDeviceListItem(Twin twin)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             return new DeviceListItem
             {
@@ -65,20 +58,23 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
+                LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!),
-                SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false")
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!).Result,
+                SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false"),
+                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.LayerId))
             };
         }
 
         public void UpdateTwin(Twin twin, DeviceDetails item)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
-            ArgumentNullException.ThrowIfNull(item, nameof(item));
+            ArgumentNullException.ThrowIfNull(twin);
+            ArgumentNullException.ThrowIfNull(item);
 
             // Update the twin properties
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
+            DeviceHelper.SetTagValue(twin, nameof(item.LayerId), item.LayerId ?? string.Empty);
 
             if (item.Tags == null)
             {

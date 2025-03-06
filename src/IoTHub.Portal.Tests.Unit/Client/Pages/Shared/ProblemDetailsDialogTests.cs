@@ -3,23 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Extensions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Shared;
-    using IoTHub.Portal.Client.Dialogs.Shared;
-    using UnitTests.Bases;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-
     [TestFixture]
     public class ProblemDetailsDialogTests : BlazorUnitTest
     {

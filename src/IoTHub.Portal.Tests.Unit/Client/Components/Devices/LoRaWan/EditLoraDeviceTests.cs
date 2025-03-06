@@ -3,29 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AngleSharp.Dom;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Components.Devices.LoRaWAN;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Client.Validators;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Bunit;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using MudBlazor.Services;
-    using NUnit.Framework;
-    using UnitTests.Bases;
-    using UnitTests.Mocks;
-
     [TestFixture]
     public class EditLoraDeviceTests : BlazorUnitTest
     {

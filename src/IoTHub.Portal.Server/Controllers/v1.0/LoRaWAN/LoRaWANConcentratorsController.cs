@@ -3,18 +3,7 @@
 
 namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
-    using System;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Filters;
-    using Hellang.Middleware.ProblemDetails;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.Extensions.Logging;
+    using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
 
     [Authorize]
     [ApiController]

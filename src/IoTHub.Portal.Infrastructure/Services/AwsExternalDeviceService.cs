@@ -3,32 +3,8 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
-    using Amazon.GreengrassV2;
-    using Amazon.GreengrassV2.Model;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using Amazon.IotData;
-    using Amazon.IotData.Model;
-    using Amazon.SecretsManager;
-    using Amazon.SecretsManager.Model;
-    using AutoMapper;
-    using IoTHub.Portal;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
-    using Shared.Models.v10;
     using Device = Microsoft.Azure.Devices.Device;
     using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
-    using ResourceAlreadyExistsException = Amazon.IoT.Model.ResourceAlreadyExistsException;
-    using ResourceNotFoundException = Amazon.IoT.Model.ResourceNotFoundException;
     using Tag = Amazon.IoT.Model.Tag;
 
     public class AwsExternalDeviceService : IExternalDeviceService
@@ -84,13 +60,13 @@ namespace IoTHub.Portal.Infrastructure.Services
 
                 return deviceModel;
             }
-            catch (ResourceAlreadyExistsException e)
+            catch (Amazon.IoT.Model.ResourceAlreadyExistsException e)
             {
                 throw new Domain.Exceptions.ResourceAlreadyExistsException($"Device Model already exists. Unable to create the device model {deviceModel.Name}: {e.Message}", e);
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException($"Unable to create the device model {deviceModel.Name}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to create the device model {deviceModel.Name}: {e.Message}", e);
             }
         }
 
@@ -120,7 +96,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     ThingName = deviceId
                 });
             }
-            catch (ResourceNotFoundException e)
+            catch (Amazon.IoT.Model.ResourceNotFoundException e)
             {
                 this.logger.LogWarning(e, "Unable to delete the thing because it doesn't exist");
             }
@@ -146,7 +122,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                         ThingGroupName = deviceModel.Name
                     });
                 }
-                catch (ResourceNotFoundException e)
+                catch (Amazon.IoT.Model.ResourceNotFoundException e)
                 {
                     throw new Domain.Exceptions.ResourceNotFoundException($"Thing Group not found. Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
                 }
@@ -156,7 +132,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 }
 
             }
-            catch (ResourceNotFoundException e)
+            catch (Amazon.IoT.Model.ResourceNotFoundException e)
             {
                 throw new Domain.Exceptions.ResourceNotFoundException($"Thing type not Found. Unable to deprecate the device model {deviceModel.Name}: {e.Message}", e);
             }
@@ -380,7 +356,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                             ThingName = device.ThingName,
                         });
                     }
-                    catch (ResourceNotFoundException e)
+                    catch (Amazon.IoT.Model.ResourceNotFoundException e)
                     {
                         this.logger.LogInformation($"Cannot import device '{device.ThingName}' since it doesn't have related classic thing shadow", e);
                         continue;
@@ -513,7 +489,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
                 _ = await this.amazonIoTClient.DescribeThingGroupAsync(dynamicThingGroup);
             }
-            catch (ResourceNotFoundException)
+            catch (Amazon.IoT.Model.ResourceNotFoundException)
             {
                 _ = await this.amazonIoTClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
                 {

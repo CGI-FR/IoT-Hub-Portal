@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Shared.Models.v10.Filters
 {
-    using System.Collections.Generic;
-
     public class DeviceListFilter : PaginationFilter
     {
         public string Keyword { get; set; } = default!;
@@ -18,5 +16,7 @@ namespace IoTHub.Portal.Shared.Models.v10.Filters
         public string ModelId { get; set; } = default!;
 
         public List<string> Labels { get; set; } = new();
+
+        public string? LayerId { get; set; } = default!;
     }
 }

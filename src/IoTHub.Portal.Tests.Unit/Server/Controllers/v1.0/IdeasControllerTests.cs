@@ -3,19 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Server.Controllers.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using FluentAssertions;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using UnitTests.Bases;
-
     [TestFixture]
     public class IdeasControllerTests : BackendUnitTest
     {

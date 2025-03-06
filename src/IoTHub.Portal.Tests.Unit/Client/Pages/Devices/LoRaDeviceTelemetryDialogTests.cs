@@ -3,22 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
-    using System;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Pages.Devices;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Client.Dialogs.Devices;
-    using UnitTests.Bases;
-    using Bunit;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-    using AutoFixture;
-    using System.Linq;
-    using FluentAssertions;
-    using IoTHub.Portal.Shared.Models.v10;
-
     [TestFixture]
     public class LoRaDeviceTelemetryDialogTests : BlazorUnitTest
     {

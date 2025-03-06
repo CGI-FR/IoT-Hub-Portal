@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Shared.Models.v10;
-
     /// <summary>
     /// IoT Edge module.
     /// </summary>
@@ -27,9 +23,11 @@ namespace IoTHub.Portal.Models.v10
         /// the device image URI.
         /// </summary>
         [Required(ErrorMessage = "The device image uri is required.")]
-        public string ImageURI { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         public string ContainerCreateOptions { get; set; } = default!;
+
+        public int StartupOrder { get; set; }
 
         /// <summary>
         /// The module status.

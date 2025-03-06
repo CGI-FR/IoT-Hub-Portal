@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Threading.Tasks;
-    using Portal.Shared.Models.v10;
-
     public interface IDashboardMetricsClientService
     {
         Task<PortalMetric> GetPortalMetrics();

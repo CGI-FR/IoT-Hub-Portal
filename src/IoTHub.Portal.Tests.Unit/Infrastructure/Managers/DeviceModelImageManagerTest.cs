@@ -1,29 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Server.Managers
+namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
-    using System;
-    using System.IO;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using Azure;
-    using Azure.Storage.Blobs;
-    using Azure.Storage.Blobs.Models;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Infrastructure.Managers;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
-    using Moq;
-    using NUnit.Framework;
-    using UnitTests.Bases;
-
     [TestFixture]
     public class DeviceModelImageManagerTest : BackendUnitTest
     {
@@ -56,19 +35,17 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         }
 
         [Test]
-        public async Task ChangeDeviceModelImageShouldUploadImageAndReturnItsUri()
+        public async Task ChangeDeviceModelImageShouldUploadImageAndReturnItsValue()
         {
             // Arrange
             var deviceModelId = Fixture.Create<string>();
-            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedImage = DeviceModelImageOptions.DefaultImage;
             using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
 
             var mockOptions = new DeviceModelImageOptions()
             {
                 BaseUri = Fixture.Create<Uri>()
             };
-
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
 
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
@@ -90,16 +67,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                         1L), Mock.Of<Response>()));
 
             _ = this.mockBlobClient
-                .Setup(client => client.Uri)
-                .Returns(expectedImageUri);
+                .Setup(client => client.Name)
+                .Returns(deviceModelId);
 
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(3600);
 
             // Act
-            var result = await this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+            var result = await this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, expectedImage);
 
             // Assert
-            _ = result.Should().Be(expectedImageUri.ToString());
+            _ = result.Should().Be(expectedImage);
             MockRepository.VerifyAll();
         }
 
@@ -108,15 +85,15 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             var deviceModelId = Fixture.Create<string>();
-            var expectedImageUri = Fixture.Create<Uri>();
-            using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
+            var expectedImage = DeviceModelImageOptions.DefaultImage;
+            var blobDownloadResult = BlobsModelFactory.BlobDownloadResult(BinaryData.FromString(expectedImage));
+
+            using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(expectedImage));
 
             var mockOptions = new DeviceModelImageOptions()
             {
                 BaseUri = Fixture.Create<Uri>()
             };
-
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
 
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
@@ -138,8 +115,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                         1L), Mock.Of<Response>()));
 
             _ = this.mockBlobClient
-                .Setup(client => client.Uri)
-                .Returns(expectedImageUri);
+                .Setup(client => client.Name)
+                .Returns(deviceModelId);
 
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(3600);
 
@@ -147,7 +124,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             var result = await this.deviceModelImageManager.SetDefaultImageToModel(deviceModelId);
 
             // Assert
-            _ = result.Should().Be(expectedImageUri.ToString());
+            _ = result.Should().Be(expectedImage);
             MockRepository.VerifyAll();
         }
 
@@ -156,14 +133,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             var deviceModelId = Fixture.Create<string>();
-            var imageUri = Fixture.Create<Uri>();
-
-            var mockOptions = new DeviceModelImageOptions()
-            {
-                BaseUri = imageUri
-            };
-
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
+            var image = DeviceModelImageOptions.DefaultImage;
 
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
@@ -174,12 +144,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                 .Returns(this.mockBlobClient.Object);
 
             _ = this.mockBlobClient
-                .Setup(client => client.Uri)
-                .Returns(imageUri);
+                .Setup(client => client.Name)
+                .Returns(image);
 
             _ = this.mockBlobClient
                 .Setup(x => x.DeleteIfExistsAsync(It.IsAny<DeleteSnapshotsOption>(), It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
-                .Throws(new RequestFailedException(""));
+                .Throws(new RequestFailedException(string.Empty));
 
             // Act
             var act = async () => await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelId);
@@ -203,8 +173,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             {
                 BaseUri = Fixture.Create<Uri>()
             };
-
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
 
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
@@ -233,27 +201,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         }
 
         [Test]
-        public void ComputeImageUriShouldReturnTheRightUri()
-        {
-            // Arrange
-            var deviceModelId = Fixture.Create<string>();
-            var imageUri = Fixture.Create<Uri>();
-
-            var mockOptions = new DeviceModelImageOptions()
-            {
-                BaseUri = imageUri
-            };
-
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
-
-            // Act
-            var result = this.deviceModelImageManager.ComputeImageUri(deviceModelId);
-
-            // Assert
-            Assert.AreEqual($"{imageUri}/{deviceModelId}", result.ToString());
-        }
-
-        [Test]
         public async Task InitializeDefaultImageBlob()
         {
             // Arrange
@@ -275,8 +222,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             {
                 BaseUri = Fixture.Create<Uri>()
             };
-
-            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
 
             // Act
             await this.deviceModelImageManager.InitializeDefaultImageBlob();

@@ -3,15 +3,11 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    using System.Collections.Generic;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using Microsoft.Extensions.Configuration;
-
-    internal class DevelopmentConfigHandler : ConfigHandlerBase
+    public class DevelopmentConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;
 
-        internal DevelopmentConfigHandler(IConfiguration config)
+        public DevelopmentConfigHandler(IConfiguration config)
         {
             this.config = config;
         }
@@ -93,5 +89,7 @@ namespace IoTHub.Portal.Infrastructure
         public override string AWSAccountId => this.config[AWSAccountIdKey]!;
         public override IEnumerable<string> AWSGreengrassRequiredRoles => this.config.GetSection(AWSGreengrassRequiredRolesKey).Get<string[]>()!;
         public override string AWSGreengrassCoreTokenExchangeRoleAliasName => this.config[AWSGreengrassCoreTokenExchangeRoleAliasNameKey]!;
+
+        public override int SendCommandsToDevicesIntervalInMinutes => this.config.GetValue(SendCommandsToDevicesIntervalKey, 10);
     }
 }

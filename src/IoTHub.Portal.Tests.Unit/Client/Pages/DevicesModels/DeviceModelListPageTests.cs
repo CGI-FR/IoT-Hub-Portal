@@ -3,26 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 {
-    using System;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.DeviceModels;
-    using IoTHub.Portal.Client.Services;
-    using Models.v10;
-    using UnitTests.Bases;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using System.Collections.Generic;
-    using System.Linq;
-
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest
     {
@@ -46,7 +26,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var modelId = Fixture.Create<string>();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = false } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
@@ -68,7 +48,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var modelId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
@@ -88,7 +68,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void DeviceModelListPageRendersCorrectly()
         {
             // Arrange
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new[] {
@@ -119,7 +99,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
@@ -137,7 +117,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void LoadDeviceModelsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
         {
             // Arrange
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
@@ -156,7 +136,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
@@ -172,7 +152,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             }
 
             // Assert
-            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()), Times.Exactly(4)));
+            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()), Times.Exactly(4)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -182,7 +162,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
@@ -208,7 +188,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
@@ -225,7 +205,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             deleteButton.Click();
 
             // Assert            
-            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()), Times.Exactly(2)));
+            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()), Times.Exactly(2)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -237,7 +217,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.SearchText)))).ReturnsAsync(new PaginationResult<DeviceModelDto>
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.SearchText)))).ReturnsAsync(new PaginationResult<DeviceModelDto>
             {
                 Items = new List<DeviceModelDto>()
                 {
@@ -246,7 +226,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 }
             });
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => expectedSearchText.Equals(x.SearchText)))).ReturnsAsync(new PaginationResult<DeviceModelDto>
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.Is<DeviceModelFilter>(x => expectedSearchText.Equals(x.SearchText)))).ReturnsAsync(new PaginationResult<DeviceModelDto>
             {
                 Items = new List<DeviceModelDto>()
                 {
@@ -275,7 +255,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()
@@ -308,19 +288,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.OrderBy.First()))))
+                    service.GetDeviceModelsAsync(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.OrderBy.First()))))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()
                 });
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.Is<DeviceModelFilter>(x => "Name asc".Equals(x.OrderBy.First()))))
+                    service.GetDeviceModelsAsync(It.Is<DeviceModelFilter>(x => "Name asc".Equals(x.OrderBy.First()))))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()
                 });
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels(It.Is<DeviceModelFilter>(x => "Name desc".Equals(x.OrderBy.First()))))
+                    service.GetDeviceModelsAsync(It.Is<DeviceModelFilter>(x => "Name desc".Equals(x.OrderBy.First()))))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()

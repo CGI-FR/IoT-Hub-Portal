@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Microsoft.AspNetCore.WebUtilities;
-
     public class EdgeModelClientService : IEdgeModelClientService
     {
         private readonly HttpClient http;
@@ -53,12 +45,12 @@ namespace IoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"{this.apiUrlBase}/{modelId}");
         }
 
-        public async Task<string> GetAvatarUrl(string modelId)
+        public async Task<string> GetAvatar(string modelId)
         {
             return await this.http.GetStringAsync($"{this.apiUrlBase}/{modelId}/avatar");
         }
 
-        public Task ChangeAvatar(string id, MultipartFormDataContent content)
+        public Task ChangeAvatar(string id, StringContent content)
         {
             return this.http.PostAsync($"{this.apiUrlBase}/{id}/avatar", content);
         }

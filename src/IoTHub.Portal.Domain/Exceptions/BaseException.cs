@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Exceptions
 {
-    using System;
-
     public abstract class BaseException : Exception
     {
         protected BaseException(string title, string detail, Exception? innerException = null) : base(detail, innerException)

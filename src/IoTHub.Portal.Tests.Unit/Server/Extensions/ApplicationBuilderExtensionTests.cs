@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Extensions
 {
-    using System;
-    using IoTHub.Portal.Server.Extensions;
-    using FluentAssertions;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.DependencyInjection;
-    using NUnit.Framework;
-
     public class ApplicationBuilderExtensionTests
     {
         [Test]

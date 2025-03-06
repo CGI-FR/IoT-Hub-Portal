@@ -3,20 +3,6 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using Domain;
-    using Domain.Entities;
-    using Domain.Exceptions;
-    using Domain.Repositories;
-    using Microsoft.Azure.Devices;
-    using Models.v10.LoRaWAN;
-    using Shared.Models.v10;
-    using IoTHub.Portal.Crosscutting;
-
     public class LoRaWANConcentratorService : ILoRaWANConcentratorService
     {
         /// <summary>

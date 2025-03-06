@@ -3,27 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Managers
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using IoTHub.Portal.Server.Managers;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class ExportManagerTests : BackendUnitTest
     {
@@ -138,7 +117,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
 
             using var reader = new StreamReader(fileStream);
             var header = reader.ReadLine();
-            _ = header.Split(",").Length.Should().Be(28);
+            _ = header.Split(",").Length.Should().Be(14);
             var content = reader.ReadToEnd();
             _ = content.TrimEnd().Split("\r\n").Length.Should().Be(2);
 
@@ -172,7 +151,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             using var reader = new StreamReader(fileStream);
             var content = reader.ReadToEnd();
             _ = content.TrimEnd().Split("\r\n").Length.Should().Be(1);
-            _ = content.Split(",").Length.Should().Be(7);
+            _ = content.Split(",").Length.Should().Be(8);
         }
 
         [Test]
@@ -202,7 +181,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             using var reader = new StreamReader(fileStream);
             var content = reader.ReadToEnd();
             _ = content.TrimEnd().Split("\r\n").Length.Should().Be(1);
-            _ = content.Split(",").Length.Should().Be(27);
+            _ = content.Split(",").Length.Should().Be(14);
 
             MockRepository.VerifyAll();
         }

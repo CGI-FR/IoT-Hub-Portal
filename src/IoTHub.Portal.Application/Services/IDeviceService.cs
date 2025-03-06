@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Azure.Messaging.EventHubs;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Models.v10;
-    using Shared.Models;
-    using Shared.Models.v10;
-
     public interface IDeviceService<TDto>
         where TDto : IDeviceDetails
     {
@@ -23,7 +15,8 @@ namespace IoTHub.Portal.Application.Services
             string[]? orderBy = null,
             Dictionary<string, string>? tags = default,
             string? modelId = null,
-            List<string>? labels = default);
+            List<string>? labels = default,
+            string? layerId = null);
 
         Task<TDto> GetDevice(string deviceId);
 

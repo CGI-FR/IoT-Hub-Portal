@@ -1,15 +1,10 @@
-﻿@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Shared.Models.v10
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Shared.Constants
-
-@inject PortalSettings Portal
+﻿@inject PortalSettings Portal
 
 <MudDialog DisableSidePadding="true">
     <DialogContent>
         <MudContainer Style="max-height: 600px; overflow-y: scroll">
             <MudGrid>
-                <MudItem xs="12" md="6">
+                <MudItem xs="12" md="4">
                     <MudTextField @bind-Value="@currentModuleName"
                                   id=@nameof(IoTEdgeModule.ModuleName)
                                   Label="Module name"
@@ -17,12 +12,20 @@
                                   For="@(() => Module.ModuleName)"
                                   Required="true"/>
                 </MudItem>
+                <MudItem xs="12" md="2">
+                    <MudTextField @bind-Value="@currentStartupOrder"
+                                  id=@nameof(IoTEdgeModule.StartupOrder)
+                                  Label="Startup Order"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => Module.StartupOrder)"
+                                  Required="false" />
+                </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="@currentImageUri"
-                                  id=@nameof(IoTEdgeModule.ImageURI)
+                    <MudTextField @bind-Value="@currentImage"
+                                  id=@nameof(IoTEdgeModule.Image)
                                   Label="Image URI"
                                   Variant="Variant.Outlined"
-                                  For="@(() => Module.ImageURI)"
+                                  For="@(() => Module.Image)"
                                   Required="true"/>
                 </MudItem>
 
@@ -89,9 +92,10 @@
     public IoTEdgeModule Module { get; set; } = default!;
 
     private string currentModuleName = default!;
-    private string currentImageUri = default!;
+    private string currentImage = default!;
     private string currentContainerCreateOptions = default!;
     private string currentNumVersion = "1.0.0";
+    private int currentStartupOrder;
 
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
     private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings = new();
@@ -105,9 +109,10 @@
         IsLoading = true;
 
         currentModuleName = Module.ModuleName;
-        currentImageUri = Module.ImageURI;
+        currentImage = Module.Image;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
         currentNumVersion = Module.Version;
+        currentStartupOrder = Module.StartupOrder;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(Module.ModuleIdentityTwinSettings.ToArray());
         currentCommands = new List<IoTEdgeModuleCommand>(Module.Commands.ToArray());
@@ -118,8 +123,9 @@
     public void Submit()
     {
         Module.ModuleName = currentModuleName;
-        Module.ImageURI = currentImageUri;
+        Module.Image = currentImage;
         Module.ContainerCreateOptions = currentContainerCreateOptions;
+        Module.StartupOrder = currentStartupOrder;
 
         if (Portal.CloudProvider.Equals(CloudProviders.Azure)) { Module.Version = " "; }
         else { Module.Version = currentNumVersion; }

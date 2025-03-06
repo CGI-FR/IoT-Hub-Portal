@@ -3,16 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Concentrators
 {
-    using AutoFixture;
-    using System.Collections.Generic;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Bunit;
-    using NUnit.Framework;
-    using IoTHub.Portal.Client.Components.Concentrators;
-    using FluentAssertions;
-    using System.Linq;
-    using IoTHub.Portal.Client.Models;
-
     [TestFixture]
     public class ConcentratorSearchTests : BlazorUnitTest
     {
@@ -41,7 +31,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Concentrators
 
             cut.WaitForElement("#searchKeyword").Change(searchKeyword);
             cut.WaitForElement("#searchStatusAll").Click();
-            cut.WaitForElement("#searchStateAll").Click();
 
             // Act
             cut.WaitForElement("#searchButton").Click();
@@ -72,7 +61,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Concentrators
 
             cut.WaitForElement("#searchKeyword").Input(searchKeyword);
             cut.WaitForElement("#searchStatusAll").Click();
-            cut.WaitForElement("#searchStateAll").Click();
 
             // Act
             cut.WaitForElement("#resetSearch").Click();

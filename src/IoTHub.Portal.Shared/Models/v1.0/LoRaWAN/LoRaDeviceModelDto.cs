@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// LoRa Device model.
     /// </summary>
@@ -24,7 +16,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         /// The device model name.
@@ -52,7 +44,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// Default is true.
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool UseOTAA { get; set; }
 
         /// <summary>
@@ -60,7 +51,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// By default downstream messages are enabled.
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? Downlink { get; set; }
 
         /// <summary>
@@ -74,13 +64,13 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <param name="from">The device model taht the LoRa Device model should herit.</param>
         public LoRaDeviceModelDto(IDeviceModel from)
         {
-            ArgumentNullException.ThrowIfNull(from, nameof(from));
+            ArgumentNullException.ThrowIfNull(from);
 
             ModelId = from.ModelId;
             Name = from.Name;
             Description = from.Description;
             IsBuiltin = from.IsBuiltin;
-            ImageUrl = from.ImageUrl;
+            Image = from.Image;
             UseOTAA = true;
         }
 

@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.ServicesHealthCheck
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
-
     public class IoTHubHealthCheck : IHealthCheck
     {
         private readonly RegistryManager registryManager;

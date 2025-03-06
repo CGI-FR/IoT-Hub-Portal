@@ -3,18 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
-    using System;
-    using System.IO;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Server.Controllers.V10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using FluentAssertions;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class AdminControllerTests
     {

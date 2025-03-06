@@ -3,21 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Azure;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Server.Services;
-    using IoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices;
-    using Moq;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using NUnit.Framework;
+    using Configuration = Microsoft.Azure.Devices.Configuration;
 
     [TestFixture]
     public class ConfigServiceTests
@@ -493,7 +479,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var configService = CreateConfigsServices();
 
             var configTest = new Configuration(Guid.NewGuid().ToString());
-            var listConfig = new List<Configuration>()
+            var listConfig = new List<Configuration>
             {
                 configTest
             };
@@ -515,7 +501,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                     "$edgeAgent", new Dictionary<string, object>()
                     {
                         {
-                            "properties.desired", JObject.Parse(JsonConvert.SerializeObject(edgeAgentPropertiesDesired))
+                            "properties.desired", JObject.Parse(JsonSerializer.Serialize(edgeAgentPropertiesDesired))
                         }
                     }
                 }
@@ -640,7 +626,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                     "$edgeAgent", new Dictionary<string, object>()
                     {
                         {
-                            "properties.desired", JObject.Parse(JsonConvert.SerializeObject(edgeAgentPropertiesDesired))
+                            "properties.desired", JObject.Parse(JsonSerializer.Serialize(edgeAgentPropertiesDesired))
                         }
                     }
                 }
@@ -766,7 +752,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                     "$edgeHub", new Dictionary<string, object>()
                     {
                         {
-                            "properties.desired", JObject.Parse(JsonConvert.SerializeObject(edgeHubPropertiesDesired))
+                            "properties.desired", JObject.Parse(JsonSerializer.Serialize(edgeHubPropertiesDesired))
                         }
                     }
                 }

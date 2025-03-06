@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using AutoMapper;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Models.v10;
-
     public class DeviceTagProfile : Profile
     {
         public DeviceTagProfile()

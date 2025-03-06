@@ -3,34 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using AutoMapper;
-    using Azure.Messaging.EventHubs;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Mappers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Shared.Models.v10;
-    using EntityFramework.Exceptions.Common;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using Moq;
-    using NUnit.Framework;
-    using Portal.Domain;
-    using Portal.Domain.Entities;
-    using Portal.Domain.Repositories;
-    using UnitTests.Bases;
     using Device = Portal.Domain.Entities.Device;
+    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest
@@ -90,8 +64,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             await DbContext.AddRangeAsync(expectedLorawanDevices);
             _ = await DbContext.SaveChangesAsync();
 
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(Fixture.Create<Uri>());
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage);
 
             // Act
             var result = await this.deviceService.GetDevices();
@@ -142,7 +116,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                         Color = "green"
                     }
                 },
-                DeviceModel = Fixture.Create<DeviceModel>()
+                DeviceModel = Fixture.Create<DeviceModel>(),
+                LayerId = Fixture.Create<string>()
             };
 
             var device2 = new Device
@@ -167,7 +142,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                         Color = "green"
                     }
                 },
-                DeviceModel = Fixture.Create<DeviceModel>()
+                DeviceModel = Fixture.Create<DeviceModel>(),
+                LayerId = Fixture.Create<string>()
             };
 
             var expectedTotalDevicesCount = 1;
@@ -181,8 +157,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockDeviceTagService.Setup(service => service.GetAllSearchableTagsNames())
                 .Returns(new List<string> { "location" });
 
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(Fixture.Create<Uri>());
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage);
 
             // Act
             var result = await this.deviceService.GetDevices(searchText: keywordFilter, searchState: false, searchStatus: true, tags: tagFilter, labels: labelFilter);
@@ -192,7 +168,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
             _ = result.PageSize.Should().Be(expectedPageSize);
             _ = result.CurrentPage.Should().Be(expectedCurrentPage);
-            _ = result.Data.First().DeviceName.Should().Be(device1.Name);
+            _ = result.Data[0].DeviceName.Should().Be(device1.Name);
             MockRepository.VerifyAll();
         }
 
@@ -202,15 +178,15 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var expectedDevice = Fixture.Create<Device>();
 
-            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedImage = DeviceModelImageOptions.DefaultImage;
             var expectedDeviceDto = Mapper.Map<DeviceDetails>(expectedDevice);
-            expectedDeviceDto.ImageUrl = expectedImageUri;
+            expectedDeviceDto.Image = expectedImage;
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(expectedDevice);
 
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(expectedImageUri);
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
+                .Returns(DeviceModelImageOptions.DefaultImage);
 
             _ = this.mockDeviceTagService.Setup(service => service.GetAllTagsNames())
                 .Returns(expectedDevice.Tags.Select(tag => tag.Name));

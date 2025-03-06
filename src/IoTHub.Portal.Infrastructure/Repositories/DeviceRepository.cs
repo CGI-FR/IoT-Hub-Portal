@@ -3,8 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Domain.Repositories;
-    using Domain.Entities;
+    using Device = Domain.Entities.Device;
 
     public class DeviceRepository : GenericRepository<Device>, IDeviceRepository
     {

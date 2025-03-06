@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using Models.v10.LoRaWAN;
-
     public class LorawanDevice : Device
     {
         public LorawanDevice()

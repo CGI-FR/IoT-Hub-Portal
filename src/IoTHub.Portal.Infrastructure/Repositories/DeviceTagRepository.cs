@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Domain.Repositories;
-    using Domain.Entities;
-
     public class DeviceTagRepository : GenericRepository<DeviceTag>, IDeviceTagRepository
     {
         public DeviceTagRepository(PortalDbContext context) : base(context)

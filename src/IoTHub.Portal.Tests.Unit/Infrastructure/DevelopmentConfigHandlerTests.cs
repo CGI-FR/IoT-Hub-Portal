@@ -3,15 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using System;
-    using System.Globalization;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure;
-    using FluentAssertions;
-    using Microsoft.Extensions.Configuration;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class DevelopmentConfigHandlerTests
     {
@@ -307,6 +298,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
 
             // Assert
             _ = developmentConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);
+        }
+
+        [Test]
+        public void SendCommandsToDevicesIntervalInMinutesConfigMustHaveDefaultValue()
+        {
+            // Arrange
+            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = developmentConfigHandler.SendCommandsToDevicesIntervalInMinutes.Should().Be(10);
         }
     }
 }

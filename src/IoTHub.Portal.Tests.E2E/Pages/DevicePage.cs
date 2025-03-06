@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E.Pages
 {
-    using OpenQA.Selenium;
-    using OpenQA.Selenium.Support.UI;
-
     public class DevicePage
     {
 #pragma warning disable CA1051 // Ne pas déclarer de champs d'instances visibles

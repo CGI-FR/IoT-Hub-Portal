@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    using IoTHub.Portal.Domain;
-    using Microsoft.EntityFrameworkCore;
-    using System;
-    using System.Threading.Tasks;
-
     public class UnitOfWork<TContext> : IUnitOfWork, IDisposable
          where TContext : DbContext
     {

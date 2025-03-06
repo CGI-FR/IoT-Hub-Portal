@@ -3,30 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.Devices;
-    using IoTHub.Portal.Client.Dialogs.Devices;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using Moq;
-    using MudBlazor;
-    using NUnit.Framework;
-    using UnitTests.Bases;
-    using AutoFixture;
-    using Microsoft.AspNetCore.Components.Forms;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-
     [TestFixture]
     public class DevicesListPageTests : BlazorUnitTest
     {
@@ -110,7 +86,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             cut.WaitForElement("#searchID").NodeValue = Guid.NewGuid().ToString();
             cut.WaitForElement("#searchStatusEnabled").Click();
-            cut.WaitForElement("#searchStateDisconnected").Click();
 
             cut.WaitForElement("#resetSearch").Click();
             await Task.Delay(100);
@@ -118,9 +93,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Assert
             cut.WaitForAssertion(() => Assert.IsNull(cut.Find("#searchID").NodeValue));
             cut.WaitForAssertion(() => Assert.AreEqual("false", cut.Find("#searchStatusEnabled").Attributes["aria-checked"].Value));
-            cut.WaitForAssertion(() => Assert.AreEqual("false", cut.Find("#searchStateDisconnected").Attributes["aria-checked"].Value));
             cut.WaitForAssertion(() => Assert.AreEqual("true", cut.Find("#searchStatusAll").Attributes["aria-checked"].Value));
-            cut.WaitForAssertion(() => Assert.AreEqual("true", cut.Find("#searchStateAll").Attributes["aria-checked"].Value));
 
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
@@ -206,7 +179,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()
@@ -243,7 +216,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto>()
@@ -339,7 +312,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
                 .ReturnsAsync(Array.Empty<LabelDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = new List<DeviceModelDto> { new DeviceModelDto
@@ -545,7 +518,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText, StringComparison.Ordinal))))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText, StringComparison.Ordinal))))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = deviceModels.Where(x => expectedDeviceModel.Name.Equals(x.Name, StringComparison.Ordinal))

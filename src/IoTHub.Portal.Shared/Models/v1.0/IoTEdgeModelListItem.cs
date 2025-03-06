@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public class IoTEdgeModelListItem
     {
         /// <summary>
@@ -26,7 +21,7 @@ namespace IoTHub.Portal.Models.v10
         /// </summary>
         public string Description { get; set; } = default!;
 
-        public Uri ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         /// The aws deployment ID.

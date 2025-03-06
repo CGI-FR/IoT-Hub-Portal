@@ -1,9 +1,6 @@
 ﻿@page "/edge/devices/{deviceId}"
 
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Shared.Models.v10
-@using IoTHub.Portal.Shared.Constants
-@using IoTHub.Portal.Client.Dialogs.EdgeDevices;
+@using ConnectionStringDialog = IoTHub.Portal.Client.Dialogs.EdgeDevices.ConnectionStringDialog
 
 @attribute [Authorize]
 @inject PortalSettings Portal
@@ -35,7 +32,7 @@
                     <MudCardContent>
                         <div class="d-flex justify-center mb-4">
                             <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                                <MudImage Src="@edgeModel?.ImageUrl?.ToString()" />
+                                <MudImage Src="@edgeModel?.Image?.ToString()" />
                             </MudAvatar>
                         </div>
                     </MudCardContent>

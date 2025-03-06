@@ -3,15 +3,15 @@
 
 namespace IoTHub.Portal.Infrastructure
 {
-    using Domain.Entities;
-    using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore;
-    using Newtonsoft.Json;
+    using Device = Domain.Entities.Device;
 
     public class PortalDbContext : DbContext, IDataProtectionKeyContext
     {
         public DbSet<DeviceModelProperty> DeviceModelProperties { get; set; }
         public DbSet<DeviceTag> DeviceTags { get; set; }
+        public DbSet<Layer> Layers { get; set; }
+        public DbSet<Planning> Plannings { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
         public DbSet<DeviceModelCommand> DeviceModelCommands { get; set; }
         public DbSet<DeviceModel> DeviceModels { get; set; }
         public DbSet<Device> Devices { get; set; }
@@ -25,10 +25,10 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<Label> Labels { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Group> Groups { get; set; }
+        public DbSet<Domain.Entities.Group> Groups { get; set; }
         public DbSet<AccessControl> AccessControls { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<Action> Actions { get; set; }
+        public DbSet<Domain.Entities.Action> Actions { get; set; }
         public DbSet<Principal> Principals { get; set; }
 
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Infrastructure
                 .HasIndex(u => u.GivenName)
                 .IsUnique();
 
-            _ = modelBuilder.Entity<Group>()
+            _ = modelBuilder.Entity<Domain.Entities.Group>()
                 .HasIndex(g => g.Name)
                 .IsUnique();
 
@@ -93,6 +93,11 @@ namespace IoTHub.Portal.Infrastructure
 
             _ = modelBuilder.Entity<Device>()
                 .HasMany(c => c.Tags)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            _ = modelBuilder.Entity<Planning>()
+                .HasMany(c => c.Schedules)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
         }

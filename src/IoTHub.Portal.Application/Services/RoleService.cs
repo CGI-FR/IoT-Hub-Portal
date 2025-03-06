@@ -18,7 +18,7 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Crosscutting;
 
-    internal class RoleService : IRoleManagementService
+    public class RoleService : IRoleManagementService
     {
         private readonly IRoleRepository roleRepository;
         private readonly IUnitOfWork unitOfWork;

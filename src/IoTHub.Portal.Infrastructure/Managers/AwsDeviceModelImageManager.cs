@@ -3,18 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Managers
 {
-    using System;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using Amazon.S3;
-    using Amazon.S3.Model;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-
     public class AwsDeviceModelImageManager : IDeviceModelImageManager
     {
         private readonly ILogger<AwsDeviceModelImageManager> logger;
@@ -34,8 +22,12 @@ namespace IoTHub.Portal.Infrastructure.Managers
             this.s3Client = s3Client;
         }
 
+        public Task<string> GetDeviceModelImageAsync(string deviceModelId)
+        {
+            throw new NotImplementedException();
+        }
 
-        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
+        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file)
         {
 
             this.logger.LogInformation($"Uploading Image to AWS S3 storage");
@@ -47,7 +39,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 {
                     BucketName = this.configHandler.AWSBucketName,
                     Key = deviceModelId,
-                    InputStream = stream,
+                    ContentBody = file,
                     ContentType = "image/*",
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
                 };
@@ -116,7 +108,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             var currentAssembly = Assembly.GetExecutingAssembly();
             var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{DeviceModelImageOptions.DefaultImageName}");
 
             try
             {
@@ -166,14 +158,14 @@ namespace IoTHub.Portal.Infrastructure.Managers
             var currentAssembly = Assembly.GetExecutingAssembly();
 
             var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{DeviceModelImageOptions.DefaultImageName}");
 
             try
             {
                 var putObjectRequest = new PutObjectRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
-                    Key = this.imageOptions.Value.DefaultImageName,
+                    Key = DeviceModelImageOptions.DefaultImageName,
                     InputStream = defaultImageStream,
                     ContentType = "image/*", // image content type
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
@@ -188,7 +180,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                     var putAclRequest = new PutACLRequest
                     {
                         BucketName = this.configHandler.AWSBucketName,
-                        Key = this.imageOptions.Value.DefaultImageName,
+                        Key = DeviceModelImageOptions.DefaultImageName,
                         CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
                     };
 

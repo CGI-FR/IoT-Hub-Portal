@@ -3,16 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using System;
-    using System.Globalization;
-    using FluentAssertions;
-    using Microsoft.Extensions.Configuration;
-    using Moq;
-    using NUnit.Framework;
-    using IoTHub.Portal.Infrastructure;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using System.Reflection;
-
     [TestFixture]
     public class ProductionAzureConfigHandlerTests
     {
@@ -28,7 +18,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
         }
 
-        private ProductionAzureConfigHandler CreateProductionAzureConfigHandler()
+        public ProductionAzureConfigHandler CreateProductionAzureConfigHandler()
         {
             return new ProductionAzureConfigHandler(this.mockConfiguration.Object);
         }
@@ -309,6 +299,16 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
 
             // Assert
             _ = productionConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);
+        }
+
+        [Test]
+        public void SendCommandsToDevicesIntervalInMinutesConfigMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.SendCommandsToDevicesIntervalInMinutes.Should().Be(10);
         }
     }
 }

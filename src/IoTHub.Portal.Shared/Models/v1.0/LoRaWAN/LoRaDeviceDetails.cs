@@ -3,14 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10.LoRaWAN
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Shared.Models;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// LoRa WAN Device details.
     /// </summary>
@@ -36,7 +28,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; } = default!;
+        public string Image { get; set; } = default!;
 
         /// <summary>
         ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
@@ -52,6 +44,11 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// The status updated time.
         /// </summary>
         public DateTime StatusUpdatedTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last activity time.
+        /// </summary>
+        public DateTime LastActivityTime { get; set; }
 
         /// <summary>
         /// List of custom device tags and their values.
@@ -70,7 +67,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool UseOTAA { get; set; }
 
         /// <summary>
@@ -146,17 +142,20 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         public string GatewayID { get; set; } = default!;
 
         /// <summary>
+        /// The LayerId of the device.
+        /// </summary>
+        public string? LayerId { get; set; } = default!;
+
+        /// <summary>
         /// A value indicating whether the downlinks are enabled (True if not provided)
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? Downlink { get; set; }
 
         /// <summary>
         /// A value indicating whether the device supports LoRaWAN features.
         /// </summary>
         [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public static bool IsLoraWan => true;
 
         /// <summary>

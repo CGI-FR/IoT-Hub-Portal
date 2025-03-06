@@ -3,20 +3,21 @@
 
 namespace IoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 {
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-
     public class EdgeAgentPropertiesDesired
     {
+        [JsonPropertyName("modules")]
         [JsonProperty(PropertyName = "modules")]
         public IDictionary<string, ConfigModule> Modules { get; set; }
 
+        [JsonPropertyName("runtime")]
         [JsonProperty(PropertyName = "runtime")]
         public Runtime Runtime { get; set; }
 
+        [JsonPropertyName("schemaVersion")]
         [JsonProperty(PropertyName = "schemaVersion")]
         public string SchemaVersion { get; set; }
 
+        [JsonPropertyName("systemModules")]
         [JsonProperty(PropertyName = "systemModules")]
         public SystemModules SystemModules { get; set; }
 
@@ -31,9 +32,11 @@ namespace IoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class Runtime
     {
+        [JsonPropertyName("settings")]
         [JsonProperty(PropertyName = "settings")]
         public RuntimeSettings Settings { get; set; }
 
+        [JsonPropertyName("type")]
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
 
@@ -46,6 +49,7 @@ namespace IoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class RuntimeSettings
     {
+        [JsonPropertyName("minDockerVersion")]
         [JsonProperty(PropertyName = "minDockerVersion")]
         public string MinDockerVersion { get; set; }
 
@@ -57,9 +61,11 @@ namespace IoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class SystemModules
     {
+        [JsonPropertyName("edgeAgent")]
         [JsonProperty(PropertyName = "edgeAgent")]
         public ConfigModule EdgeAgent { get; set; }
 
+        [JsonPropertyName("edgeHub")]
         [JsonProperty(PropertyName = "edgeHub")]
         public ConfigModule EdgeHub { get; set; }
 

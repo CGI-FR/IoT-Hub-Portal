@@ -1,7 +1,4 @@
 ﻿@page "/device-configurations/new"
-@using IoTHub.Portal.Models.v10
-@using IoTHub.Portal.Models
-@using IoTHub.Portal.Shared.Models.v10.Filters;
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
@@ -251,7 +248,7 @@
                 OrderBy = new string[0]
             };
 
-            var models = await DeviceModelsClientService.GetDeviceModels(filter);
+            var models = await DeviceModelsClientService.GetDeviceModelsAsync(filter);
 
             AvailableModels = models.Items.Where(c => !c.SupportLoRaFeatures).ToArray();
 
@@ -300,7 +297,7 @@
         try
         {
             Configuration.ModelId = model.ModelId;
-            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
+            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
         }
         catch (ProblemDetailsException exception)
         {

@@ -3,17 +3,7 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.Json;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.Azure.Devices.Shared;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
+    using Device = Domain.Entities.Device;
 
     public class DeviceProfile : Profile
     {
@@ -25,6 +15,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceID))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
+                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.LayerId))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(pair => new DeviceTagValue
                 {
                     Name = pair.Key,
@@ -35,12 +26,14 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.DeviceID, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ModelId, opts => opts.MapFrom(src => src.DeviceModelId))
+                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.LayerId))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Name, tag => tag.Value)));
 
             _ = CreateMap<Twin, Device>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.Tags["modelId"]))
+                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.Tags.Contains("layerId") ? src.Tags["layerId"] : null))
                 .ForMember(dest => dest.Version, opts => opts.MapFrom(src => src.Version))
                 .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == Microsoft.Azure.Devices.DeviceConnectionState.Connected))
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
@@ -52,6 +45,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceID))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
+                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.LayerId))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(pair => new DeviceTagValue
                 {
                     Name = pair.Key,
@@ -62,12 +56,14 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.DeviceID, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ModelId, opts => opts.MapFrom(src => src.DeviceModelId))
+                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.LayerId))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Name, tag => tag.Value)));
 
             _ = CreateMap<Twin, LorawanDevice>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.Tags["modelId"]))
+                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.Tags.Contains("layerId") ? src.Tags["layerId"] : null))
                 .ForMember(dest => dest.Version, opts => opts.MapFrom(src => src.Version))
                 .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == Microsoft.Azure.Devices.DeviceConnectionState.Connected))
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))

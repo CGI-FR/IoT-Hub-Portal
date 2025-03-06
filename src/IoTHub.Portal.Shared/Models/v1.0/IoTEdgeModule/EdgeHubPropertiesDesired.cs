@@ -3,17 +3,17 @@
 
 namespace IoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 {
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-
     public class EdgeHubPropertiesDesired
     {
+        [JsonPropertyName("routes")]
         [JsonProperty(PropertyName = "routes")]
         public IDictionary<string, object> Routes { get; set; }
 
+        [JsonPropertyName("schemaVersion")]
         [JsonProperty(PropertyName = "schemaVersion")]
         public string SchemaVersion { get; set; }
 
+        [JsonPropertyName("storeAndForwardConfiguration")]
         [JsonProperty(PropertyName = "storeAndForwardConfiguration")]
         public StoreAndForwardConfiguration StoreAndForwardConfiguration { get; set; }
 
@@ -27,6 +27,7 @@ namespace IoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class StoreAndForwardConfiguration
     {
+        [JsonPropertyName("timeToLiveSecs")]
         [JsonProperty(PropertyName = "timeToLiveSecs")]
         public int TimeToLiveSecs { get; set; }
 

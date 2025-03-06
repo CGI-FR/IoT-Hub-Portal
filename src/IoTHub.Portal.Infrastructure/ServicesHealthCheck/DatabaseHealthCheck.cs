@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.ServicesHealthCheck
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Infrastructure;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
-
     public class DatabaseHealthCheck : IHealthCheck
     {
         private readonly PortalDbContext portalDbContext;

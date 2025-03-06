@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.E2E
 {
-    using OpenQA.Selenium;
-    using OpenQA.Selenium.Chrome;
-
     internal static class WebDriverFactory
     {
         private static IWebDriver? instance;

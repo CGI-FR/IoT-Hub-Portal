@@ -3,37 +3,11 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Amazon.GreengrassV2;
-    using Amazon.GreengrassV2.Model;
-    using Amazon.IoT;
-    using Amazon.IoT.Model;
-    using Amazon.SecretsManager;
-    using Amazon.SecretsManager.Model;
-    using AutoFixture;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Shared;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
-    using Amazon.IotData;
     using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
     using ListTagsForResourceResponse = Amazon.IoT.Model.ListTagsForResourceResponse;
-    using IoTHub.Portal.Domain.Entities;
-    using System.Net;
     using Tag = Amazon.IoT.Model.Tag;
     using Device = Portal.Domain.Entities.Device;
+    using ResourceAlreadyExistsException = Portal.Domain.Exceptions.ResourceAlreadyExistsException;
 
     [TestFixture]
     public class AwsExternalDeviceServiceTests : BackendUnitTest
@@ -844,7 +818,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
 
             //Act
-            var result = await this.externalDeviceService.GetAllThing();
+            _ = await this.externalDeviceService.GetAllThing();
 
             //Assert
             MockRepository.VerifyAll();

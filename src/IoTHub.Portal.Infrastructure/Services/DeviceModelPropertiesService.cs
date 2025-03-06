@@ -3,14 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain.Entities;
-    using Domain;
-    using Domain.Exceptions;
-    using Domain.Repositories;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class DeviceModelPropertiesService : IDeviceModelPropertiesService
     {

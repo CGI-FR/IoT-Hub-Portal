@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
 {
-    using System;
-    using IoTHub.Portal.Infrastructure.Helpers;
-    using Microsoft.EntityFrameworkCore;
-    using NUnit.Framework;
-
     [TestFixture]
     public class DatabaseHelperTests
     {

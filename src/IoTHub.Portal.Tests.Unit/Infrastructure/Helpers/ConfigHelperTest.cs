@@ -3,18 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using IoTHub.Portal.Application.Helpers;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using NUnit.Framework;
+    using Configuration = Microsoft.Azure.Devices.Configuration;
 
     [TestFixture]
     public class ConfigHelperTest
@@ -97,7 +86,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                 { "settings", new Dictionary<string, object>()
                     {
                         { "image", "image_test" },
-                        { "createOptions", expectedContainerCreateOptions }
+                        { "createOptions", expectedContainerCreateOptions },
+                        { "startupOrder", 100 },
                     }
                 },
                 { "env", new Dictionary<string, object>()
@@ -112,7 +102,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                 }
             };
 
-            var module = new JProperty("moduleTest", JObject.Parse(JsonConvert.SerializeObject(jPropModule)));
+            var module = new JProperty("moduleTest", JObject.Parse(JsonSerializer.Serialize(jPropModule)));
 
             // Act
             var result = ConfigHelper.CreateGatewayModule(config, module);
@@ -120,8 +110,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("running", result.Status);
-            Assert.AreEqual("image_test", result.ImageURI);
+            Assert.AreEqual("image_test", result.Image);
             Assert.AreEqual(expectedContainerCreateOptions, result.ContainerCreateOptions);
+            Assert.AreEqual(100, result.StartupOrder);
             Assert.AreEqual(1, result.EnvironmentVariables.Count);
         }
 
@@ -170,8 +161,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                     {
                         ModuleName = expectedModuleName,
                         Status = "running",
-                        ImageURI = "image",
+                        Image = "image",
                         ContainerCreateOptions = expectedContainerCreateOptions,
+                        StartupOrder = 100,
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {
                             new() { Name = "envTest01", Value = "test" }
@@ -183,8 +175,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                 {
                     new EdgeModelSystemModule("edgeAgent")
                     {
-                        ImageUri = "image",
+                        Image = "image",
                         ContainerCreateOptions = Guid.NewGuid().ToString(),
+                        StartupOrder = 100,
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {
                             new IoTEdgeModuleEnvironmentVariable(){ Name ="test", Value = "test" }
@@ -192,7 +185,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                     },
                     new EdgeModelSystemModule("edgeHub")
                     {
-                        ImageUri = "image",
+                        Image = "image",
                         ContainerCreateOptions = Guid.NewGuid().ToString(),
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {
@@ -212,6 +205,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
             var edgeHubPropertiesDesired = (EdgeAgentPropertiesDesired)result["$edgeAgent"]["properties.desired"];
             _ = edgeHubPropertiesDesired.Modules[expectedModuleName].Settings.CreateOptions.Should()
                 .Be(expectedContainerCreateOptions);
+            _ = edgeHubPropertiesDesired.Modules[expectedModuleName].Settings.StartupOrder.Should().Be(100);
         }
 
         [Test]

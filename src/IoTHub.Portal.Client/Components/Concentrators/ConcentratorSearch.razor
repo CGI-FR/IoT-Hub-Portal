@@ -20,20 +20,6 @@
                     </MudRadioGroup>
 
                 </MudItem>
-                <MudItem xs="12" md="6">
-                    <MudText>Connection state</MudText>
-                    <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
-                        <MudItem md="4" sm="12">
-                            <MudRadio Option=@("true") Color="Color.Primary" id="searchStateConnected">Connected</MudRadio>
-                        </MudItem>
-                        <MudItem md="4" sm="12">
-                            <MudRadio Option=@("false") Color="Color.Primary" id="searchStateDisconnected">Disconnected</MudRadio>
-                        </MudItem>
-                        <MudItem md="4" sm="12">
-                            <MudRadio Option=@("") Color="Color.Secondary" id="searchStateAll">All</MudRadio>
-                        </MudItem>
-                    </MudRadioGroup>
-                </MudItem>
             </MudGrid>
 
             <MudItem xs="12">

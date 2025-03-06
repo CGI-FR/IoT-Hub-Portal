@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Models.v10
 {
-    using System;
-
     public class IoTEdgeDeviceLog
     {
         public string Id { get; set; } = default!;

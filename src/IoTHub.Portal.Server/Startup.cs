@@ -3,46 +3,6 @@
 
 namespace IoTHub.Portal.Server
 {
-    using System;
-    using System.IO;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Application.Startup;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Infrastructure.Startup;
-    using IoTHub.Portal.Shared.Constants;
-    using Domain;
-    using Domain.Exceptions;
-    using EntityFramework.Exceptions.Common;
-    using Extensions;
-    using Hellang.Middleware.ProblemDetails;
-    using Hellang.Middleware.ProblemDetails.Mvc;
-    using Identity;
-    using Infrastructure;
-    using Managers;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.DataProtection;
-    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Versioning;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Primitives;
-    using Microsoft.OpenApi.Models;
-    using MudBlazor.Services;
-    using Prometheus;
-    using Quartz;
-    using Quartz.Impl.AdoJobStore.Common;
-    using Services;
-    using Shared.Models.v10;
-
     public class Startup
     {
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
@@ -207,7 +167,6 @@ namespace IoTHub.Portal.Server
                     Description = "Available APIs for managing devices from Azure IoT Hub."
                 });
 
-                // using System.Reflection;
                 opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "IoTHub.Portal.Server.xml"));
                 opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "IoTHub.Portal.Shared.xml"));
 

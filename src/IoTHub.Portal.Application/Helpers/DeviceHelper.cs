@@ -3,18 +3,6 @@
 
 namespace IoTHub.Portal.Application.Helpers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Security.Cryptography;
-    using System.Text;
-    using IoTHub.Portal.Crosscutting.Extensions;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Models.v10;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.Azure.Devices.Shared;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-
     public static class DeviceHelper
     {
         /// <summary>
@@ -194,7 +182,7 @@ namespace IoTHub.Portal.Application.Helpers
                 if (propertyObject!.TryGetValue("settings", out var moduleSettings))
                 {
                     var setting = moduleSettings.ToObject<Dictionary<string, string>>();
-                    module.ImageURI = setting?["image"];
+                    module.Image = setting?["image"];
                 }
 
                 if (propertyObject.TryGetValue("status", out var status))
@@ -244,7 +232,7 @@ namespace IoTHub.Portal.Application.Helpers
                 }
             }
 
-            return new TwinCollection(JsonConvert.SerializeObject(root));
+            return new TwinCollection(JsonSerializer.Serialize(root));
         }
 
         public static string? RetrieveClientThumbprintValue(Twin twin)
@@ -259,7 +247,7 @@ namespace IoTHub.Portal.Application.Helpers
 
             try
             {
-                var clientThumbprintArray=JsonConvert.DeserializeObject<string[]>(serializedClientThumbprint);
+                var clientThumbprintArray=JsonSerializer.Deserialize<string[]>(serializedClientThumbprint);
 
                 if (clientThumbprintArray?.Length == 0)
                 {
@@ -269,7 +257,7 @@ namespace IoTHub.Portal.Application.Helpers
 
                 return clientThumbprintArray?[0];
             }
-            catch (JsonReaderException)
+            catch (JsonException)
             {
                 // clientThumbprint is not an array in the device twin
                 return null;

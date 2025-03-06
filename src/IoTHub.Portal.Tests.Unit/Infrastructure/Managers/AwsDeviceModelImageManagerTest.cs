@@ -3,27 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
-    using System;
-    using System.IO;
-    using System.Net;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Amazon.S3;
-    using Amazon.S3.Model;
-    using AutoFixture;
-    using FluentAssertions;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Options;
-    using IoTHub.Portal.Infrastructure.Managers;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class AwsDeviceModelImageManagerTest : BackendUnitTest
     {
@@ -65,7 +44,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
         {
             // Arrange
             var deviceModelId = Fixture.Create<string>();
-            using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
             var bucketName = Fixture.Create<string>();
             var region = "eu-west-1";
             var mockOptions = new DeviceModelImageOptions()
@@ -97,7 +75,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 
 
             // Act
-            var result = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+            var result = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, DeviceModelImageOptions.DefaultImage);
 
             // Assert
             Assert.NotNull(result);
@@ -128,7 +106,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
             {
                 // Act
-                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, DeviceModelImageOptions.DefaultImage);
 
             }, "Unable to upload the image in S3 Bucket due to an error in Amazon S3 API.");
             this.s3ClientMock.VerifyAll();
@@ -160,7 +138,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
             {
                 // Act
-                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, DeviceModelImageOptions.DefaultImage);
 
             }, "Unable to set the image access to public and read-only due to an error in Amazon S3 API.");
             this.s3ClientMock.VerifyAll();
@@ -401,14 +379,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
 
             // Assert
             _ = act.Should().ThrowAsync<NotImplementedException>();
-        }
-
-        /*===========================*** Tests for ComputeImageUri() **===========================*/
-
-
-        [Test]
-        public void ComputeImageUriShouldThrowsANotImplmentedException()
-        {
         }
     }
 }

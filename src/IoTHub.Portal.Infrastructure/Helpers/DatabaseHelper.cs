@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Helpers
 {
-    using System;
-    using Microsoft.EntityFrameworkCore;
-
     public static class DatabaseHelper
     {
         public static ServerVersion GetMySqlServerVersion(string mySQLConnectionString)

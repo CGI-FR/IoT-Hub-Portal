@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Postgres
 {
-    using IoTHub.Portal.Infrastructure;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Design;
-
     public class PortalDbContextFactory : IDesignTimeDbContextFactory<PortalDbContext>
     {
         public PortalDbContext CreateDbContext(string[] args)

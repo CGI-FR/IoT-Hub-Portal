@@ -3,12 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-
     public interface IEdgeModelClientService
     {
         Task<List<IoTEdgeModelListItem>> GetIoTEdgeModelList(EdgeModelFilter? edgeModelFilter = null);
@@ -21,9 +15,9 @@ namespace IoTHub.Portal.Client.Services
 
         Task DeleteIoTEdgeModel(string modelId);
 
-        Task<string> GetAvatarUrl(string modelId);
+        Task<string> GetAvatar(string modelId);
 
-        Task ChangeAvatar(string id, MultipartFormDataContent content);
+        Task ChangeAvatar(string id, StringContent content);
 
         Task DeleteAvatar(string id);
 

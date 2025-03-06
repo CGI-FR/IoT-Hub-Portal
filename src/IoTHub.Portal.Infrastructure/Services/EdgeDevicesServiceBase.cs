@@ -3,21 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Application.Managers;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Crosscutting;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public abstract class EdgeDevicesServiceBase
     {
@@ -92,7 +78,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 Data = paginatedEdgeDevices.Data.Select(x => this.mapper.Map<IoTEdgeListItem>(x, opts =>
                 {
-                    opts.Items["imageUrl"] = this.deviceModelImageManager.ComputeImageUri(x.DeviceModelId);
+                    opts.Items["image"] = this.deviceModelImageManager.GetDeviceModelImageAsync(x.DeviceModelId).Result;
                 })).ToList(),
                 TotalCount = paginatedEdgeDevices.TotalCount,
                 CurrentPage = paginatedEdgeDevices.CurrentPage,
@@ -117,7 +103,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
 
             var deviceDto = this.mapper.Map<IoTEdgeDevice>(deviceEntity);
-            deviceDto.ImageUrl = this.deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
+            deviceDto.Image = await this.deviceModelImageManager.GetDeviceModelImageAsync(deviceDto.ModelId);
             deviceDto.Tags = FilterDeviceTags(deviceDto);
 
             return deviceDto;

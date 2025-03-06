@@ -3,27 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.DeviceModels;
-    using IoTHub.Portal.Client.Services;
-    using Models;
-    using Models.v10;
-    using IoTHub.Portal.Models.v10.LoRaWAN;
-    using UnitTests.Bases;
-    using Bunit;
-    using Bunit.TestDoubles;
-    using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using MudBlazor;
-    using MudBlazor.Services;
-    using NUnit.Framework;
-    using UnitTests.Mocks;
-
     [TestFixture]
     public class CreateDeviceModelPageTests : BlazorUnitTest
     {
@@ -63,7 +42,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
+                    service.CreateDeviceModelAsync(It.Is<DeviceModelDto>(model =>
                         deviceModel.Name.Equals(model.Name, StringComparison.Ordinal) && deviceModel.Description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures)))
                 .ReturnsAsync(deviceModel);
 
@@ -97,7 +76,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
+                    service.CreateDeviceModelAsync(It.Is<DeviceModelDto>(model =>
                         modelName.Equals(model.Name, StringComparison.Ordinal) && description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures)))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -131,7 +110,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
+                    service.CreateDeviceModelAsync(It.IsAny<DeviceModelDto>()))
                 .ReturnsAsync(deviceModel);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -180,7 +159,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
+                    service.CreateDeviceModelAsync(It.IsAny<DeviceModelDto>()))
                 .ReturnsAsync(deviceModel);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>

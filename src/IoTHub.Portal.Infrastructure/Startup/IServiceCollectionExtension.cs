@@ -3,20 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Startup
 {
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Domain.Shared.Constants;
-    using IoTHub.Portal.Infrastructure.Helpers;
-    using IoTHub.Portal.Infrastructure.Repositories;
-    using IoTHub.Portal.Infrastructure.Services;
-    using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using IoTHub.Portal.Shared.Constants;
-    using EntityFramework.Exceptions.PostgreSQL;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.DependencyInjection;
-    using Quartz;
-
     public static class IServiceCollectionExtension
     {
         public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
@@ -104,6 +90,9 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>()
                             .AddScoped<IConcentratorRepository, ConcentratorRepository>()
                             .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
+                            .AddScoped<ILayerRepository, LayerRepository>()
+                            .AddScoped<IScheduleRepository, ScheduleRepository>()
+                            .AddScoped<IPlanningRepository, PlanningRepository>()
                             .AddScoped<ILabelRepository, LabelRepository>()
                             .AddScoped<IRoleRepository, RoleRepository>()
                             .AddScoped<IActionRepository, ActionRepository>()
@@ -119,6 +108,9 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IEdgeEnrollementHelper, EdgeEnrollementHelper>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>()
                 .AddTransient<IDeviceTagService, DeviceTagService>()
+                .AddTransient<ILayerService, LayerService>()
+                .AddTransient<IScheduleService, ScheduleService>()
+                .AddTransient<IPlanningService, PlanningService>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
         }
     }
