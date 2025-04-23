@@ -21,6 +21,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Creates the schedule.
         /// </summary>
         /// <param name="schedule">The schedule.</param>
+        [Authorize("schedule:write")]
         [HttpPost(Name = "POST Create schedule")]
         public async Task<IActionResult> CreateScheduleAsync(ScheduleDto schedule)
         {
@@ -36,6 +37,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="Schedule">The schedule.</param>
         /// <returns>The action result.</returns>
+        [Authorize("schedule:write")]
         [HttpPut(Name = "PUT Update the schedule")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateSchedule(ScheduleDto Schedule)
@@ -51,6 +53,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="scheduleId">the schedule id.</param>
         /// <returns>Http response</returns>
         /// <exception cref="InternalServerErrorException"></exception>
+        [Authorize("schedule:write")]
         [HttpDelete("{scheduleId}", Name = "DELETE Remove the schedule")]
         public async Task<IActionResult> DeleteSchedule(string scheduleId)
         {
@@ -63,6 +66,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the specified schedule.
         /// </summary>
         /// <param name="scheduleId">The schedule identifier.</param>
+        [Authorize("schedule:read")]
         [HttpGet("{scheduleId}", Name = "GET Schedule")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ScheduleDto))]
         public async Task<IActionResult> GetSchedule(string scheduleId)
@@ -81,6 +85,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the schedule list.
         /// </summary>
         /// <returns>An array representing the schedules.</returns>
+        [Authorize("schedule:read")]
         [HttpGet(Name = "GET Schedule list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ScheduleDto>>> GetSchedules()

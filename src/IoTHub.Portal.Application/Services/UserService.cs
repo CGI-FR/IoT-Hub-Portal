@@ -11,6 +11,8 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
+    using System.Collections.ObjectModel;
+    using System.Security.Claims;
     using System.Threading.Tasks;
 
     public class UserService : IUserManagementService
@@ -132,6 +134,41 @@ namespace IoTHub.Portal.Application.Services
             userRepository.Delete(id);
             await unitOfWork.SaveAsync();
             return true;
+        }
+
+        public async Task<UserDetailsModel> GetOrCreateUserByEmailAsync(string email, ClaimsPrincipal principal)
+        {
+            // Retrieve the user by email (case insensitive)
+            var users = await this.userRepository.GetAllAsync(u => u.Email.ToLower() == email.ToLower());
+            var userEntity = users.FirstOrDefault();
+
+            if (userEntity != null)
+            {
+                return mapper.Map<UserDetailsModel>(userEntity);
+            }
+
+            // Extract user information from the ClaimsPrincipal
+            var fullName = principal.FindFirst("name")?.Value ?? "";
+            var preferredUsername = principal.FindFirst("preferred_username")?.Value ?? email;
+            var familyName = principal.FindFirst("family_name")?.Value ?? "";
+
+            // We ignore the "given_name" from the token since you want to use preferred_username
+            // Create a new user
+            var newUser = new User
+            {
+                Email = email,
+                Name = fullName,
+                GivenName = preferredUsername,
+                FamilyName = familyName,
+                PrincipalId = Guid.NewGuid().ToString(),
+                Principal = new Principal(),
+                Groups = new Collection<Group>()
+            };
+
+            await userRepository.InsertAsync(newUser);
+            await unitOfWork.SaveAsync();
+
+            return mapper.Map<UserDetailsModel>(newUser);
         }
     }
 }
