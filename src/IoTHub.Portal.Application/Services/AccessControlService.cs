@@ -179,7 +179,6 @@ namespace IoTHub.Portal.Application.Services
                     return true;
                 }
             }
-
             return false;
         }
     }

@@ -21,6 +21,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
+#pragma warning disable IDE0005
+    using DomainAction = Portal.Domain.Entities.Action;
+#pragma warning restore IDE0005
 
     public class AccessControlServiceTest : BackendUnitTest
     {
@@ -249,6 +252,55 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         {
             // Act & Assert
             _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.accessControlService.DeleteAccessControl(invalidId));
+        }
+
+        [Test]
+        public async Task UserHasPermissionAsync_ShouldReturnTrue_WhenPermissionExists()
+        {
+            // Arrange
+            var principalId = "principal-123";
+            var permission = "access-control:read";
+            var matchingAction = new DomainAction { Name = permission };
+            var role = new Role { Actions = new List<DomainAction> { matchingAction } };
+            var accessControl = new AccessControl { PrincipalId = principalId, Role = role };
+
+            _ = this.mockAccessControlRepository.Setup(repo => repo.GetAllAsync(
+                It.IsAny<Expression<Func<AccessControl, bool>>>(),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<Expression<Func<AccessControl, object>>[]>()
+            ))
+            .ReturnsAsync(new List<AccessControl> { accessControl });
+
+            // Act
+            var result = await accessControlService.UserHasPermissionAsync(principalId, permission);
+
+            // Assert
+            _ = result.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task UserHasPermissionAsync_ShouldReturnFalse_WhenPermissionDoesNotExist()
+        {
+            // Arrange
+            var principalId = "principal-456";
+            var permission = "access-control:write";
+            // Here the action does not match the requested permission.
+            var nonMatchingAction = new DomainAction { Name = "another-action" };
+            var role = new Role { Actions = new List<DomainAction> { nonMatchingAction } };
+            var accessControl = new AccessControl { PrincipalId = principalId, Role = role };
+
+            _ = this.mockAccessControlRepository.Setup(repo => repo.GetAllAsync(
+                It.IsAny<Expression<Func<AccessControl, bool>>>(),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<Expression<Func<AccessControl, object>>[]>()
+            ))
+            .ReturnsAsync(new List<AccessControl> { accessControl });
+
+            // Act
+            var result = await accessControlService.UserHasPermissionAsync(principalId, permission);
+
+            // Assert
+            _ = result.Should().BeFalse();
         }
     }
 }

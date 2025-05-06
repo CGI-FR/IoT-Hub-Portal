@@ -13,12 +13,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using NUnit.Framework;
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Mvc;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Mvc.Routing;
     using System.Linq;
     using System;
-    using Microsoft.AspNetCore.Http;
 
     [TestFixture]
     public class GroupssControllerTests
@@ -403,6 +400,55 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             Assert.IsNotNull(ex);
             Assert.AreEqual("Test exception", ex.Message);
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetGroupDetails_ShouldMergeAccessControls_WhenFound()
+        {
+            // Arrange
+            var groupsController = CreateGroupsController();
+            var groupId = "group-123";
+            var groupDetails = new GroupDetailsModel
+            {
+                Id = groupId,
+                PrincipalId = "principal-group",
+                AccessControls = new List<AccessControlModel>()
+            };
+
+            var accessControls = new PaginatedResult<AccessControlModel>
+            {
+                Data = new List<AccessControlModel>
+                {
+                    new AccessControlModel { Id = "ac-1" },
+                    new AccessControlModel { Id = "ac-2" }
+                },
+                TotalCount = 2,
+                PageSize = 100,
+                CurrentPage = 0
+            };
+
+            // We configure the group service to return the details
+            _ = this.mockGroupService.Setup(s => s.GetGroupDetailsAsync(It.IsAny<string>())).ReturnsAsync(groupDetails);
+            // We configure the access control service to return a page with the access
+            _ = this.mockAccessControlService.Setup(s => s.GetAccessControlPage(null, 100, 0, null, groupDetails.PrincipalId))
+                .ReturnsAsync(accessControls);
+            _ = this.mockLogger.Setup(x => x.Log(
+               LogLevel.Information,
+               It.IsAny<EventId>(),
+               It.IsAny<It.IsAnyType>(),
+               null,
+               It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            // Act
+            var actionResult = await groupsController.GetGroupDetails(groupId);
+            var okResult = actionResult as OkObjectResult;
+            var returnedGroup = okResult.Value as GroupDetailsModel;
+
+            // Assert
+            Assert.IsNotNull(okResult);
+            Assert.IsNotNull(returnedGroup);
+            Assert.AreEqual(2, returnedGroup.AccessControls.Count);
             this.mockRepository.VerifyAll();
         }
     }

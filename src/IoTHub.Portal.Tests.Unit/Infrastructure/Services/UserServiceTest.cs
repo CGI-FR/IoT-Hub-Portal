@@ -6,6 +6,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using System;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
     using AutoFixture;
@@ -27,21 +28,29 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IUserRepository> mockUserRepository;
         private Mock<IPrincipalRepository> mockPrincipalRepository;
-
+        private Mock<IMapper> mockMapper;
         private IUserManagementService userService;
 
         [SetUp]
         public void Setup()
         {
             base.Setup();
+            Fixture.Behaviors
+                .OfType<ThrowingRecursionBehavior>()
+                .ToList()
+                .ForEach(b => Fixture.Behaviors.Remove(b));
+            Fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
             this.mockUnitOfWork = new Mock<IUnitOfWork>();
             this.mockUserRepository = new Mock<IUserRepository>();
             this.mockPrincipalRepository = new Mock<IPrincipalRepository>();
+            this.mockMapper = new Mock<IMapper>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockUserRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockPrincipalRepository.Object);
             _ = ServiceCollection.AddSingleton<IUserManagementService, UserService>();
+            _ = ServiceCollection.AddSingleton<IMapper>(this.mockMapper.Object);
 
             Services = ServiceCollection.BuildServiceProvider();
 
@@ -252,6 +261,69 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         {
             // Act & Assert
             _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.userService.DeleteUser(invalidId));
+        }
+
+        [Test]
+        public async Task GetOrCreateUserByEmailAsync_ShouldCreateNewUser_WhenUserDoesNotExist()
+        {
+            // Arrange
+            var email = "new@example.com";
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(new []
+            {
+                new Claim("name", "New User"),
+                new Claim("preferred_username", "newuser"),
+                new Claim("family_name", "User")
+            }, "TestAuth"));
+
+            // No existing user for this email
+            _ = this.mockUserRepository
+                 .Setup(r => r.GetAllAsync(
+                     It.IsAny<Expression<Func<User, bool>>>(),
+                     It.IsAny<CancellationToken>(),
+                     It.IsAny<Expression<Func<User, object>>[]>()
+                 ))
+                 .ReturnsAsync(new List<User>());
+
+            // We suppose that the insertion succeeds
+            _ = this.mockUserRepository
+                 .Setup(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())))
+                 .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask);
+
+            // We assume that the new user is created and we can retrieve it
+            var newUser = Fixture.Build<User>()
+                         .With(u => u.Email, email)
+                         .With(u => u.Name, "New User")
+                         .With(u => u.GivenName, "newuser")
+                         .With(u => u.FamilyName, "User")
+                         .With(u => u.PrincipalId, "principal-new")
+                         .Create();
+            _ = this.mockUserRepository
+                 .Setup(r => r.GetByIdAsync(It.IsAny<string>(), It.IsAny<Expression<Func<User, object>>[]>()))
+                 .ReturnsAsync(newUser);
+
+            var expectedModel = new UserDetailsModel
+            {
+                Id = newUser.Id,
+                Email = newUser.Email,
+                Name = newUser.Name,
+                GivenName = newUser.GivenName,
+                FamilyName = newUser.FamilyName,
+                PrincipalId = newUser.PrincipalId
+            };
+
+            _ = mockMapper
+                .Setup(m => m.Map<UserDetailsModel>(It.Is<User>(u => u.Email.ToLower() == email.ToLower())))
+                .Returns(expectedModel);
+
+            // Act
+            var result = await userService.GetOrCreateUserByEmailAsync(email, principal);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedModel);
+            this.mockUserRepository.Verify(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())), Times.Once);
+            this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);
         }
     }
 }
