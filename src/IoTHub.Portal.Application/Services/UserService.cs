@@ -11,7 +11,6 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
-    using System.Collections.ObjectModel;
     using System.Security.Claims;
     using System.Threading.Tasks;
 
@@ -31,7 +30,7 @@ namespace IoTHub.Portal.Application.Services
         }
         public async Task<UserDetailsModel> GetUserDetailsAsync(string id)
         {
-            var user = await userRepository.GetByIdAsync(id, u => u.Groups);
+            var user = await userRepository.GetByIdAsync(id);// u => u.Groups);
             if (user == null) throw new ResourceNotFoundException($"The user with the id {id} doesn't exist");
             return mapper.Map<UserDetailsModel>(user);
         }
@@ -162,7 +161,6 @@ namespace IoTHub.Portal.Application.Services
                 FamilyName = familyName,
                 PrincipalId = Guid.NewGuid().ToString(),
                 Principal = new Principal(),
-                Groups = new Collection<Group>()
             };
 
             await userRepository.InsertAsync(newUser);

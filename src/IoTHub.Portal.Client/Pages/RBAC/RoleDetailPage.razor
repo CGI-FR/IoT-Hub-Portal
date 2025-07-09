@@ -1,0 +1,30 @@
+@page "/roles/{RoleId}"
+@inject IRoleClientService RoleClientService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Détail du rôle</MudText>
+@if (Role != null)
+{
+    <EditRole Role="Role" OnSaved="OnSaved" IsEdit="true" />
+}
+else
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+
+@code {
+    [Parameter] public string RoleId { get; set; }
+    private RoleDetailsModel Role;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Role = await RoleClientService.GetRole(RoleId);
+    }
+
+    private void OnSaved()
+    {
+        Snackbar.Add("Rôle modifié avec succès", Severity.Success);
+        NavigationManager.NavigateTo("/roles");
+    }
+}

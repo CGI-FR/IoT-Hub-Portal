@@ -1,0 +1,56 @@
+@using IoTHub.Portal.Shared.Models.v10
+@inject IRoleClientService RoleClientService
+@inject ISnackbar Snackbar
+
+<MudForm Model="@Role" @ref="form">
+    <MudTextField T="string" Label="Nom" @bind-Value="Role.Name" Required="true" />
+    <MudTextField T="string" Label="Description" @bind-Value="Role.Description" />
+    <MudColorPicker Label="Couleur" @bind-Text="Role.Color" />
+   @* <MudSelect T="string" MultiSelection="true" @bind-SelectedValues="Role.Actions">
+        @foreach (var action in Actions)
+        {
+            <MudSelectItem T="string" Value="@action">@action</MudSelectItem>
+        }
+    </MudSelect>*@
+    <MudButton OnClick="Save" Disabled="isProcessing">@ButtonText</MudButton>
+</MudForm>
+
+@code {
+    [Parameter] public RoleDetailsModel Role { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
+    [Parameter] public bool IsEdit { get; set; } = false;
+
+    private MudForm form;
+    private bool isProcessing = false;
+    private string ButtonText => IsEdit ? "Enregistrer" : "Créer";
+    private string[] Actions = new[] { "RemoveEdgeDevice", "CreateEdgeDevice", "CreateGroup", "EditRole", "RemoveUser", "CreateUser", "RemoveLora" };
+
+    private async Task Save()
+    {
+        isProcessing = true;
+        await form.Validate();
+        if (!form.IsValid)
+        {
+            Snackbar.Add("Erreur de validation", Severity.Error);
+            isProcessing = false;
+            return;
+        }
+        try
+        {
+            if (IsEdit)
+                await RoleClientService.UpdateRole(Role.Id, Role);
+            else
+                await RoleClientService.CreateRole(Role);
+
+            await OnSaved.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erreur : {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+}

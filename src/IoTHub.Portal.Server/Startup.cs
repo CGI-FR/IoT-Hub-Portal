@@ -274,7 +274,6 @@ namespace IoTHub.Portal.Server
         private static void ConfigureServicesRBAC(IServiceCollection services)
         {
             _ = services.AddTransient<IRoleManagementService, RoleService>();
-            _ = services.AddTransient<IGroupManagementService, GroupService>();
             _ = services.AddTransient<IUserManagementService, UserService>();
             _ = services.AddTransient<IAccessControlManagementService, AccessControlService>();
         }

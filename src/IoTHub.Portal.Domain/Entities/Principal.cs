@@ -14,6 +14,5 @@ namespace IoTHub.Portal.Domain.Entities
         [Required]
         public virtual ICollection<AccessControl> AccessControls { get; set; } = new Collection<AccessControl>();
         public virtual User? User { get; set; }
-        public virtual Group? Group { get; set; }
     }
 }
