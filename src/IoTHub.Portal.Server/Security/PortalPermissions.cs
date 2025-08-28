@@ -40,6 +40,8 @@ namespace IoTHub.Portal.Server.Security
             "planning:write",
             "role:read",
             "role:write",
+            "user:read",
+            "user:write",
             "schedule:read",
             "schedule:write",
             "setting:read",

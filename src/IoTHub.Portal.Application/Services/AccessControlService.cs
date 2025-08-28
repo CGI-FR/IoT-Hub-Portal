@@ -12,6 +12,8 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Crosscutting;
+    using System.Linq; // for Select
+    using System.Linq.Expressions; // for includes expressions
 
     public class AccessControlService : IAccessControlManagementService
     {
@@ -67,11 +69,13 @@ namespace IoTHub.Portal.Application.Services
                 acPredicate = acPredicate.And(ac => ac.PrincipalId == principalId);
             }
 
+            // Include Role so that Role.Name is populated for UI display
             var paginatedAc = await this.accessControlRepository.GetPaginatedListAsync(
                 pageNumber,
                 pageSize,
                 orderBy,
-                acPredicate
+                acPredicate,
+                includes: new Expression<System.Func<AccessControl, object>>[] { ac => ac.Role }
             );
 
             var paginatedAcDto = new PaginatedResult<AccessControlModel>

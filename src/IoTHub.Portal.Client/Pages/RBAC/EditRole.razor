@@ -9,7 +9,7 @@
     <MudTextField T="string" Label="Description" @bind-Value="Role.Description" />
     <MudColorPicker Label="Couleur" @bind-Text="Role.Color" />
 
-    <MudPaper Class="pa-4" Elevation="1">
+    <MudPaper Class="pa-4 mt-4" Elevation="1">
         <MudStack Row Spacing="2" Class="mb-3" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.subtitle1" Class="mr-4">Permissions</MudText>
             <MudSelect T="string" Label="Ressource" Dense="true" Clearable="true" @bind-Value="resourceFilter" Class="mr-4" ResetValueOnEmptyText="true">
@@ -52,9 +52,11 @@
             </MudGrid>
             <MudText Class="mt-2" Color="Color.Secondary">@GetMultiSelectionText(SelectedPermissions)</MudText>
         }
+        <MudDivider Class="my-4" />
+        <MudStack Row Justify="Justify.FlexEnd">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Save" Disabled="isProcessing || isLoadingPermissions" id="saveRoleButton">@ButtonText</MudButton>
+        </MudStack>
     </MudPaper>
-
-    <MudButton OnClick="Save" Disabled="isProcessing || isLoadingPermissions" Class="mt-4">@ButtonText</MudButton>
 </MudForm>
 
 @code {
