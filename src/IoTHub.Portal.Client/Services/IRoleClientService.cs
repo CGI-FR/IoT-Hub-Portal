@@ -16,6 +16,8 @@ namespace IoTHub.Portal.Client.Services
 
         Task CreateRole(RoleDetailsModel role);
 
-        Task UpdateRole(string roleId, RoleDetailsModel role);
+        Task UpdateRole(RoleDetailsModel role);
+
+        Task<string[]> GetPermissions();
     }
 }

@@ -12,35 +12,30 @@ namespace IoTHub.Portal.Client.Services
     public class RoleClientService : IRoleClientService
     {
         private readonly HttpClient http;
-        private readonly string apiUrlBase = "api/roles";
-        public RoleClientService(HttpClient http)
+        private const string ApiUrlBase = "api/roles";
+
+        // Use the named "api" HttpClient so auth header, version header and handlers (ProblemDetails) are applied
+        public RoleClientService(IHttpClientFactory httpClientFactory)
         {
-            this.http = http;
+            this.http = httpClientFactory.CreateClient("api");
         }
 
         public Task<PaginationResult<RoleModel>> GetRoles(string continuationUri)
-        {
-            return this.http.GetFromJsonAsync<PaginationResult<RoleModel>>(continuationUri)!;
-        }
+            => this.http.GetFromJsonAsync<PaginationResult<RoleModel>>(continuationUri)!;
 
         public Task DeleteRole(string roleId)
-        {
-            return this.http.DeleteAsync($"api/roles/{roleId}");
-        }
+            => this.http.DeleteAsync($"api/roles/{roleId}");
 
         public async Task<RoleDetailsModel> GetRole(string roleId)
-        {
-            return await this.http.GetFromJsonAsync<RoleDetailsModel>($"{this.apiUrlBase}/{roleId}") ?? new RoleDetailsModel();
-        }
+            => await this.http.GetFromJsonAsync<RoleDetailsModel>($"{ApiUrlBase}/{roleId}") ?? new RoleDetailsModel();
 
         public Task CreateRole(RoleDetailsModel role)
-        {
-            return this.http.PostAsJsonAsync(this.apiUrlBase, role);
-        }
+            => this.http.PostAsJsonAsync(ApiUrlBase, role);
 
-        public Task UpdateRole(string roleId, RoleDetailsModel role)
-        {
-            return this.http.PutAsJsonAsync($"{this.apiUrlBase}/{roleId}", role);
-        }
+        public Task<string[]> GetPermissions()
+            => this.http.GetFromJsonAsync<string[]>("api/permissions")!;
+
+        public Task UpdateRole(RoleDetailsModel role)
+            => this.http.PutAsJsonAsync($"{ApiUrlBase}/{role.Id}", role);
     }
 }
