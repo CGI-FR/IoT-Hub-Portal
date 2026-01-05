@@ -39,7 +39,6 @@ services:
       database:
         condition: service_healthy
   IoTHub.Portal.Server:
-    image: ${DOCKER_REGISTRY-}iothubportalserver
     build:
       context: .
       dockerfile: IoTHub.Portal.Server/Dockerfile
