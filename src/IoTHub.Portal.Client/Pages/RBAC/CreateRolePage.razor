@@ -1,17 +1,12 @@
 ﻿@page "/roles/new"
 
-@using IoTHub.Portal.Client.Services
-@using IoTHub.Portal.Shared.Models.v10
-@using Microsoft.AspNetCore.Authorization
-@using MudBlazor
-
 @attribute [Authorize]
 @inject IRoleClientService RoleClientService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create a Role :</MudText>
-<MudForm Model="@Role" @ref="form">
+<MudForm Model="@role">
     <MudGrid>
         <MudItem xs="12">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
@@ -24,21 +19,21 @@
                                     <ChildContent>
                                         <MudGrid>
                                             <MudItem xs="12" md="6">
-                                                <MudAvatar Style="@($"background-color: {Role.Color}; color: white;")" Size="Size.Large" Class="mr-2">
-                                                    @if (!string.IsNullOrEmpty(Role.Name))
+                                                <MudAvatar Style="@($"background-color: {role.Color}; color: white;")" Size="Size.Large" Class="mr-2">
+                                                    @if (!string.IsNullOrEmpty(role.Name))
                                                     {
-                                                        @Role.Name[0].ToString().ToUpper()
+                                                        @role.Name[0].ToString().ToUpper()
                                                     }
                                                 </MudAvatar>
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudTextField T="string" Label="Name" @bind-Value="Role.Name" Required="true" />
+                                                <MudTextField T="string" Label="Name" @bind-Value="role.Name" Required="true" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudTextField T="string" Label="Description" @bind-Value="Role.Description" />
+                                                <MudTextField T="string" Label="Description" @bind-Value="role.Description" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudColorPicker Label="Color" @bind-Text="Role.Color" Style="@($"color: {Role.Color};")" Placeholder="Select Color" />
+                                                <MudColorPicker Label="Color" @bind-Text="role.Color" Style="@($"color: {role.Color};")" Placeholder="Select Color" />
                                             </MudItem>
                                         </MudGrid>
                                     </ChildContent>
@@ -57,26 +52,25 @@
         </MudItem>
         <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
             <MudButtonRole Color="Color.Primary" Variant="Variant.Filled">
-                <MudButton id="SaveButton" OnClick="Save" Disabled="isProcessing">@saveButtonText</MudButton>
+                <MudButton id="SaveButton" OnClick="Save" Disabled="isProcessing">@SaveButtonText</MudButton>
             </MudButtonRole>
         </MudItem>
     </MudGrid>
 </MudForm>
 
 @code {
-    private RoleDetailsModel Role = new RoleDetailsModel();
-    private MudForm form;
-    private bool isProcessing = false;
-    private string saveButtonText = "Save";
+    private readonly RoleDetailsModel role = new();
+    private bool isProcessing;
+    private const string SaveButtonText = "Save";
 
     private async Task Save()
     {
         isProcessing = true;
         try
         {
-            await RoleClientService.CreateRole(Role);
-            Snackbar.Add($"Role {Role.Name} has been successfully created !", Severity.Success);
-            NavigationManager.NavigateTo("/role");
+            await RoleClientService.CreateRole(role);
+            Snackbar.Add($"Role {role.Name} has been successfully created !", Severity.Success);
+            NavigationManager.NavigateTo("/roles");
         }
         catch (Exception ex)
         {

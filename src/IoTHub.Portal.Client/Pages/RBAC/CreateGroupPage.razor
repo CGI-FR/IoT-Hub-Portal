@@ -89,9 +89,9 @@
         isProcessing = true;
         try
         {
-            await GroupsClientService.CreateGroup(Group);
-            Snackbar.Add($"Group {Group.Name} has been successfully created !", Severity.Success);
-            NavigationManager.NavigateTo("/group");
+            await GroupsClientService.CreateGroup(group);
+            Snackbar.Add($"Group {group.Name} has been successfully created !", Severity.Success);
+            NavigationManager.NavigateTo("/groups");
         }
         catch (Exception ex)
         {
