@@ -33,7 +33,7 @@ namespace IoTHub.Portal.Client.Services
             return await this.http.GetFromJsonAsync<GroupDetailsModel>($"{this.apiUrlBase}/{groupId}") ?? new GroupDetailsModel();
         }
 
-        public Task CreateGroup(GroupDetailsModel group)
+        public Task<HttpResponseMessage> CreateGroup(GroupDetailsModel group)
         {
             return this.http.PostAsJsonAsync(this.apiUrlBase, group);
         }
