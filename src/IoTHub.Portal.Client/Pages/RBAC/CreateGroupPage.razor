@@ -11,7 +11,7 @@
 @inject NavigationManager NavigationManager
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create a Group :</MudText>
-<MudForm Model="@Group" @ref="form">
+<MudForm Model="@group">
     <MudGrid>
         <MudItem xs="12">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
@@ -24,21 +24,21 @@
                                     <ChildContent>
                                         <MudGrid>
                                             <MudItem xs="12" md="6">
-                                                <MudAvatar Style="@($"background-color: {Group.Color}; color: white;")" Size="Size.Large" Class="mr-2">
-                                                    @if (!string.IsNullOrEmpty(Group.Name))
+                                                <MudAvatar Style="@($"background-color: {group.Color}; color: white;")" Size="Size.Large" Class="mr-2">
+                                                    @if (!string.IsNullOrEmpty(group.Name))
                                                     {
-                                                        @Group.Name[0].ToString().ToUpper()
+                                                        @group.Name[0].ToString().ToUpper()
                                                     }
                                                 </MudAvatar>
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudTextField T="string" Label="Name" @bind-Value="Group.Name" Required="true" />
+                                                <MudTextField T="string" Label="Name" @bind-Value="group.Name" Required="true" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudTextField T="string" Label="Description" @bind-Value="Group.Description" />
+                                                <MudTextField T="string" Label="Description" @bind-Value="group.Description" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudColorPicker Label="Color" @bind-Text="Group.Color" Style="@($"color: {Group.Color};")" Placeholder="Select Color" />
+                                                <MudColorPicker Label="Color" @bind-Text="group.Color" Style="@($"color: {group.Color};")" Placeholder="Select Color" />
                                             </MudItem>
                                         </MudGrid>
                                     </ChildContent>
@@ -80,10 +80,9 @@
 </MudForm>
 
 @code {
-    private GroupDetailsModel Group = new GroupDetailsModel();
-    private MudForm form;
-    private bool isProcessing = false;
-    private string saveButtonText = "Save";
+    private readonly GroupDetailsModel group = new();
+    private bool isProcessing;
+    private const string saveButtonText = "Save";
 
     private async Task Save()
     {
