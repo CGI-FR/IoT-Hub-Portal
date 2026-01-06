@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Client.Services
 
         Task<GroupDetailsModel> GetGroup(string groupId);
 
-        Task<HttpResponseMessage> CreateGroup(GroupDetailsModel group);
+        Task CreateGroup(GroupDetailsModel group);
 
         Task UpdateGroup(string groupId, GroupDetailsModel group);
 

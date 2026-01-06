@@ -89,26 +89,9 @@
         isProcessing = true;
         try
         {
-            var response = await GroupsClientService.CreateGroup(group);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                Snackbar.Add($"Error while creating the group : {error}", Severity.Error);
-            }
-            else
-            {
-                var createdGroup = await response.Content.ReadFromJsonAsync<GroupDetailsModel>();
-
-                if (createdGroup == null)
-                {
-                    Snackbar.Add("Error while creating the group : Unable to parse the created group.", Severity.Error);
-                    return;
-                }
-
-                Snackbar.Add($"Group {group.Name} has been successfully created !", Severity.Success);
-                NavigationManager.NavigateTo($"/groups/{createdGroup.Id}");
-            }
+            await GroupsClientService.CreateGroup(Group);
+            Snackbar.Add($"Group {Group.Name} has been successfully created !", Severity.Success);
+            NavigationManager.NavigateTo("/group");
         }
         catch (Exception ex)
         {
