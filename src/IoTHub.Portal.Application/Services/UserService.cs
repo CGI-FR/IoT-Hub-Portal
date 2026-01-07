@@ -20,13 +20,19 @@ namespace IoTHub.Portal.Application.Services
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IPrincipalRepository principalRepository;
+        private readonly IAccessControlRepository accessControlRepository;
+        private readonly IRoleRepository roleRepository;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IUnitOfWork unitOfWork, IPrincipalRepository principalRepository)
+
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IUserRepository userRepository, IPrincipalRepository principalRepository, IAccessControlRepository accessControlRepository, IRoleRepository roleRepository)
         {
-            this.userRepository = userRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.userRepository = userRepository;
             this.principalRepository = principalRepository;
+            this.accessControlRepository = accessControlRepository;
+            this.roleRepository = roleRepository;
+
         }
         public async Task<UserDetailsModel> GetUserDetailsAsync(string id)
         {
@@ -146,6 +152,9 @@ namespace IoTHub.Portal.Application.Services
                 return mapper.Map<UserDetailsModel>(userEntity);
             }
 
+            // Check if it's the first user in the system, add to administrators role if so
+            var isAny = (await this.userRepository.CountAsync()) > 0;
+
             // Extract user information from the ClaimsPrincipal
             var fullName = principal.FindFirst("name")?.Value ?? "";
             var preferredUsername = principal.FindFirst("preferred_username")?.Value ?? email;
@@ -160,11 +169,36 @@ namespace IoTHub.Portal.Application.Services
                 GivenName = preferredUsername,
                 FamilyName = familyName,
                 PrincipalId = Guid.NewGuid().ToString(),
-                Principal = new Principal(),
+                Principal = new Principal()
             };
 
-            await userRepository.InsertAsync(newUser);
-            await unitOfWork.SaveAsync();
+            await this.userRepository.InsertAsync(newUser);
+            await this.unitOfWork.SaveAsync();
+
+            if (!isAny)
+            {
+                // If this is the first user, assign them to the Administrators role
+                var adminRole = await this.roleRepository.GetByNameAsync("Administrators");
+
+                if (adminRole == null)
+                {
+                    throw new ResourceNotFoundException(
+                        "The 'Administrators' role does not exist. Cannot assign the first user to this role.");
+                }
+
+                var newAccessControl = new AccessControl
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Principal = newUser.Principal,
+                    PrincipalId = newUser.PrincipalId,
+                    RoleId = adminRole.Id,
+                    Role = adminRole,
+                    Scope = ""
+                };
+
+                await this.accessControlRepository.InsertAsync(newAccessControl);
+                await this.unitOfWork.SaveAsync();
+            }
 
             return mapper.Map<UserDetailsModel>(newUser);
         }
