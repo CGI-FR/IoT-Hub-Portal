@@ -12,6 +12,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   portal:
     restart: always
@@ -54,3 +56,6 @@ services:
         condition: service_healthy
     ports:
       - ${HOST_PORT}:80
+
+volumes:
+  pgdata:
