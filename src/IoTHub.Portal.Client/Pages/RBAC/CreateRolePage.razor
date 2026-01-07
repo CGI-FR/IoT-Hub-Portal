@@ -88,7 +88,7 @@
                                     }
                                     <MudDivider Class="my-4" />
                                     <MudStack Row Justify="Justify.FlexEnd">
-                                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Save" Disabled="isProcessing || isLoadingPermissions" id="createRoleButton">@saveButtonText</MudButton>
+                                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Save" Disabled="isProcessing || isLoadingPermissions" id="createRoleButton">@SaveButtonText</MudButton>
                                     </MudStack>
                                 </MudPaper>
                             </MudItem>
@@ -201,9 +201,9 @@
         isProcessing = true;
         try
         {
-            Role.Actions = SelectedPermissions.ToList();
-            await RoleClientService.CreateRole(Role);
-            Snackbar.Add($"Role {Role.Name} has been successfully created !", Severity.Success);
+            role.Actions = SelectedPermissions.ToList();
+            await RoleClientService.CreateRole(role);
+            Snackbar.Add($"Role {role.Name} has been successfully created !", Severity.Success);
             NavigationManager.NavigateTo("/roles");
         }
         catch (Exception ex)
