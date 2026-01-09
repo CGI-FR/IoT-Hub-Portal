@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Client.Services
 
         public Task UpdateDeviceModel(LoRaDeviceModelDto deviceModelDto)
         {
-            return this.http.PutAsJsonAsync($"api/lorawan/models/{deviceModelDto.ModelId}", deviceModelDto);
+            return this.http.PutAsJsonAsync("api/lorawan/models", deviceModelDto);
         }
 
         public Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommandDto> commands)
