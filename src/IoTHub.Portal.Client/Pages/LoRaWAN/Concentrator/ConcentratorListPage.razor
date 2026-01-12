@@ -1,93 +1,116 @@
 ﻿@page "/lorawan/concentrators"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @inject ILoRaWanConcentratorClientService LoRaWanConcentratorsClientService
 
-<MudGrid>
-    <MudItem xs="12">
-        <ConcentratorSearch OnSearch=@(async args => await Search(args)) />
-    </MudItem>
-    <MudItem xs="12">
-        <MudTable T="ConcentratorDto" id="concentrators-listing" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
-            <ColGroup>
-                <col style="width: 70%;" />
-                <col style="width: 10%;" />
-                <col style="width: 10%;" />
-                <col style="width: 10%;" />
-            </ColGroup>
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">LoRaWAN Concentrators</MudText>
-                <MudSpacer />
-                <MudTooltip Text="Refresh list">
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" id="tableRefreshButton" Class="ma-2"></MudIconButton>
-                </MudTooltip>
-                <MudTooltip Text="Add LoRaWAN concentrator">
-                    <MudFab id="add-concentrator" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" />
-                </MudTooltip>
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh><MudTableSortLabel SortLabel="Name" T="ConcentratorDto">Device</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="ConcentratorDto">Allowed</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center">See details</MudTh>
-                <MudTh Style="text-align: center">Delete</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Device" >
-                    <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText><MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceId</MudText>
-                </MudTd>
-                <MudTd DataLabel="Status" Style="text-align: center">
-                    @if (context.IsEnabled)
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudGrid>
+        <MudItem xs="12">
+            <ConcentratorSearch OnSearch=@(async args => await Search(args)) />
+        </MudItem>
+        <MudItem xs="12">
+            <MudTable T="ConcentratorDto" id="concentrators-listing" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+                <ColGroup>
+                    <col style="width: 70%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                    @if (canWrite)
                     {
-                        <MudTooltip Text="Concentrator can connect">
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                        <col style="width: 10%;" />
+                    }
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">LoRaWAN Concentrators</MudText>
+                    <MudSpacer />
+                    <MudTooltip Text="Refresh list">
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" id="tableRefreshButton" Class="ma-2"></MudIconButton>
+                    </MudTooltip>
+                    @if (canWrite)
+                    {
+                        <MudTooltip Text="Add LoRaWAN concentrator">
+                            <MudFab id="add-concentrator" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" />
                         </MudTooltip>
                     }
-                    else
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortLabel="Name" T="ConcentratorDto">Device</MudTableSortLabel></MudTh>
+                    <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="ConcentratorDto">Allowed</MudTableSortLabel></MudTh>
+                    <MudTh Style="text-align: center">See details</MudTh>
+                    @if (canWrite)
                     {
-                        <MudTooltip Text="Concentrator cannot connect">
-                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Default" />
-                        </MudTooltip>
+                        <MudTh Style="text-align: center">Delete</MudTh>
                     }
-                </MudTd>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Device">
+                        <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText><MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceId</MudText>
+                    </MudTd>
+                    <MudTd DataLabel="Status" Style="text-align: center">
+                        @if (context.IsEnabled)
+                        {
+                            <MudTooltip Text="Concentrator can connect">
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                            </MudTooltip>
+                        }
+                        else
+                        {
+                            <MudTooltip Text="Concentrator cannot connect">
+                                <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Default" />
+                            </MudTooltip>
+                        }
+                    </MudTd>
 
-                <MudTd DataLabel="Details" Style="text-align: center">
-                    <MudTooltip Text="See concentrator details">
-                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
-                    </MudTooltip>
-                </MudTd>
-                <MudTd DataLabel="Delete" Style="text-align: center">
-                    <MudTooltip Text="Delete concentrator">
-                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
-                    </MudTooltip>
-                </MudTd>
-            </RowTemplate>
-            <NoRecordsContent>
-                <MudText>No matching records found</MudText>
-            </NoRecordsContent>
-            <LoadingContent>
-                <MudText>Loading...</MudText>
-            </LoadingContent>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-        </MudTable>
-    </MudItem>
-
-</MudGrid>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <MudTooltip Text="See concentrator details">
+                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                        </MudTooltip>
+                    </MudTd>
+                    @if (canWrite)
+                    {
+                        <MudTd DataLabel="Delete" Style="text-align: center">
+                            <MudTooltip Text="Delete concentrator">
+                                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
+                            </MudTooltip>
+                        </MudTd>
+                    }
+                </RowTemplate>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        </MudItem>
+    </MudGrid>
+</AuthorizedContent>
 
 @code {
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.ConcentratorRead };
+    private bool canWrite;
+
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
     private MudTable<ConcentratorDto> table = default!;
-
-    private readonly Dictionary<int, string> pages = new();
-
-    private bool IsLoading { get; set; } = true;
-
     private ConcentratorSearchInfo concentratorSearchInfo = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        // Check if user has write permission for conditional UI elements
+        canWrite = await HasPermissionAsync(PortalPermissions.ConcentratorWrite);
+    }
 
     private async Task<TableData<ConcentratorDto>> LoadItems(TableState state)
     {

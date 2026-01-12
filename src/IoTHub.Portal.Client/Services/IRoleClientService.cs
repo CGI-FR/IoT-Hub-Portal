@@ -5,6 +5,7 @@ namespace IoTHub.Portal.Client.Services
 {
     using System.Threading.Tasks;
     using IoTHub.Portal.Shared.Models.v10;
+    using IoTHub.Portal.Shared.Security;
 
     public interface IRoleClientService
     {
@@ -18,6 +19,6 @@ namespace IoTHub.Portal.Client.Services
 
         Task UpdateRole(RoleDetailsModel role);
 
-        Task<string[]> GetPermissions();
+        Task<PortalPermissions[]> GetPermissions();
     }
 }

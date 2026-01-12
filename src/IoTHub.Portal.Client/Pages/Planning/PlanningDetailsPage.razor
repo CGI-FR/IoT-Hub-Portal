@@ -1,13 +1,23 @@
 ﻿@page "/planning/{PlanningId}"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
+
+@attribute [Authorize]
 
 @inject IPlanningClientService PlanningClientService
 @inject IScheduleClientService ScheduleClientService
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 
-<EditPlanning planning=@Planning scheduleList=@ScheduleList initScheduleList=@(new List<ScheduleDto>(ScheduleList)) mode="Edit" SelectedModel="@DeviceModel.Name" />
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <EditPlanning planning=@Planning scheduleList=@ScheduleList initScheduleList=@(new List<ScheduleDto>(ScheduleList)) mode="Edit" SelectedModel="@DeviceModel.Name" CanWrite="@canWrite"/>
+</AuthorizedContent>
 
 @code {
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.PlanningRead };
+    private bool canWrite;
+
     public List<ScheduleDto> ScheduleList { get; } = new List<ScheduleDto> { };
     public PlanningDto Planning { get; set; } = new PlanningDto();
     public DeviceModelDto DeviceModel { get; } = new DeviceModelDto();
@@ -17,9 +27,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         Planning = await PlanningClientService.GetPlanning(PlanningId);
 
         List<ScheduleDto> newSchedule = await ScheduleClientService.GetSchedules();
         ScheduleList.AddRange(newSchedule.Where(obj => obj.PlanningId == PlanningId));
+
+        // Check if user has write permission for conditional UI elements
+        canWrite = await HasPermissionAsync(PortalPermissions.PlanningWrite);
     }
 }

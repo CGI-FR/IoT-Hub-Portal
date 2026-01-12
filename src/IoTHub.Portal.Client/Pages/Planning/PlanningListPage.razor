@@ -1,82 +1,97 @@
 ﻿@page "/planning"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
 @inject NavigationManager navigationManager
-@inject PortalSettings Portal
 @inject IPlanningClientService PlanningClientService
 @inject IDialogService DialogService
 
-<MudGrid>
-    <MudItem xs="12">
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudGrid>
         <MudItem xs="12">
-            <MudTable T="PlanningDto" Items="@Plannings" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
-                <ColGroup>
-                    <col style="width: 50%;" />
-                    <col style="width: 25%;" />
-                    <col style="width: 25%;" />
-                    <col style="width: 10%;" />
-                </ColGroup>
-                <ToolBarContent>
-                    <MudText Typo="Typo.h6">Plannings</MudText>
-                    <MudSpacer />
-                    <MudTooltip Text="Refresh list">
-                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@GetPlannings" Class="ma-2"></MudIconButton>
-                    </MudTooltip>
-                    <MudTooltip Text="Add new Planning">
-                        <MudFab id="planningListAddLayer" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@AddPlanning" Size="Size.Medium" />
-                    </MudTooltip>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh><MudTableSortLabel SortBy="new Func<PlanningDto, object>(x => x.Name)" id="NameLabel">Name</MudTableSortLabel></MudTh>
-                    <MudTh>Start</MudTh>
-                    <MudTh>End</MudTh>
-                    <MudTh>Frequency</MudTh>
-                    <MudTh>Detail</MudTh>
-                    <MudTh>Delete</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Name">
-                        <MudItem>
-                            <MudText Typo="Typo.body1" Inline="true">
-                                @context.Name
-                            </MudText>
-                        </MudItem>
-                    </MudTd>
-                    <MudTd DataLabel="Start" Style="word-break: break-all; ">
-                        @context.Start
-                    </MudTd>
-                    <MudTd DataLabel="End" Style="word-break: break-all; ">
-                        @context.End
-                    </MudTd>
-                    <MudTd DataLabel="Frequency" Style="word-break: break-all; ">
-                        @context.Frequency
-                    </MudTd>
-                    <MudTd DataLabel="Details" Style="text-align: center">
-                        <MudIconButton id="planningListDetailDetail" Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
-                    </MudTd>
-                    <MudTh DataLabel="Delete" Style="text-align: center">
-                        <MudTooltip Text="Delete planning">
-                            <MudIconButton id="@($"delete-planning-{@context.Id}")" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeletePlanning(context))"></MudIconButton>
+            <MudItem xs="12">
+                <MudTable T="PlanningDto" Items="@Plannings" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
+                    <ColGroup>
+                        <col style="width: 50%;" />
+                        <col style="width: 25%;" />
+                        <col style="width: 25%;" />
+                        @if (canWrite)
+                        {
+                            <col style="width: 10%;" />
+                        }
+                    </ColGroup>
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Plannings</MudText>
+                        <MudSpacer />
+                        <MudTooltip Text="Refresh list">
+                            <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@GetPlannings" Class="ma-2"></MudIconButton>
                         </MudTooltip>
-                    </MudTh>
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
-                </PagerContent>
-                <NoRecordsContent>
-                    <MudText>No matching records found</MudText>
-                </NoRecordsContent>
-                <LoadingContent>
-                    <MudText>Loading...</MudText>
-                </LoadingContent>
-            </MudTable>
+                        <MudTooltip Text="Add new Planning">
+                            <MudFab id="planningListAddLayer" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@AddPlanning" Size="Size.Medium" />
+                        </MudTooltip>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh><MudTableSortLabel SortBy="new Func<PlanningDto, object>(x => x.Name)" id="NameLabel">Name</MudTableSortLabel></MudTh>
+                        <MudTh>Start</MudTh>
+                        <MudTh>End</MudTh>
+                        <MudTh>Frequency</MudTh>
+                        <MudTh>Detail</MudTh>
+                        @if (canWrite)
+                        {
+                            <MudTh>Delete</MudTh>
+                        }
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Name">
+                            <MudItem>
+                                <MudText Typo="Typo.body1" Inline="true">
+                                    @context.Name
+                                </MudText>
+                            </MudItem>
+                        </MudTd>
+                        <MudTd DataLabel="Start" Style="word-break: break-all; ">
+                            @context.Start
+                        </MudTd>
+                        <MudTd DataLabel="End" Style="word-break: break-all; ">
+                            @context.End
+                        </MudTd>
+                        <MudTd DataLabel="Frequency" Style="word-break: break-all; ">
+                            @context.Frequency
+                        </MudTd>
+                        <MudTd DataLabel="Details" Style="text-align: center">
+                            <MudIconButton id="planningListDetailDetail" Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                        </MudTd>
+                        @if (canWrite)
+                        {
+                            <MudTh DataLabel="Delete" Style="text-align: center">
+                                <MudTooltip Text="Delete planning">
+                                    <MudIconButton id="@($"delete-planning-{@context.Id}")" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeletePlanning(context))"></MudIconButton>
+                                </MudTooltip>
+                            </MudTh>
+                        }
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                    </PagerContent>
+                    <NoRecordsContent>
+                        <MudText>No matching records found</MudText>
+                    </NoRecordsContent>
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                </MudTable>
+            </MudItem>
         </MudItem>
-    </MudItem>
-
-</MudGrid>
+    </MudGrid>
+</AuthorizedContent>
 
 @code {
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.PlanningRead };
+    private bool canWrite;
+
     [Parameter]
     public CreateEditMode context { get; set; }
 
@@ -87,12 +102,16 @@
 
     public List<PlanningDto> Plannings = new List<PlanningDto>();
 
-    public bool IsLoading { get; set; } = true;
     public readonly int[] pageSizeOptions = { 10, 5, 3 };
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         await GetPlannings();
+
+        // Check if user has write permission for conditional UI elements
+        canWrite = await HasPermissionAsync(PortalPermissions.PlanningWrite);
     }
 
     private async Task GetPlannings()

@@ -1,4 +1,6 @@
 ﻿@page "/device-models/new"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -9,164 +11,168 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device Model</MudText>
 
-<MudForm Model="@Model" @ref="form" id="form">
-    <MudGrid>
-        <MudItem xs="12" sm="4" md="3">
-            <MudCard>
-                <MudCardContent>
-                    <div class="d-flex justify-center mb-4">
-                        <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@imageData"/>
-                        </MudAvatar>
-                    </div>
-                </MudCardContent>
-                <MudCardActions Class="d-flex justify-center">
-                    @if (imageData != null)
-                    {
-                        <MudButton OnClick="DeleteAvatar" Color="Color.Error">Delete Picture</MudButton>
-                    }
-                    else
-                    {
-                        <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
-                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">Change Picture</MudButton>
-                    }
-                </MudCardActions>
-            </MudCard>
-            <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton" Disabled="isProcessing">Save Changes</MudButton>
-            </MudItem>
-        </MudItem>
-        <MudItem xs="12" sm="8" md="9">
-            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content" id="tabs">
-                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
-                    <MudExpansionPanels MultiExpansion="true" id="general">
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
-                                    <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
-                                    <ChildContent>
-                                        <MudGrid>
-                                            <MudItem xs="12" md="6">
-                                                <MudTextField id="@nameof(Model.Name)" @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
-                                            </MudItem>
-                                            <MudItem xs="12" md="6">
-                                                <MudTextField id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
-                                            </MudItem>
-                                            @if (Portal.IsLoRaSupported)
-                                            {
-                                                <MudItem xs="12">
-                                                    <MudText>
-                                                        <b>LoRa Device</b>
-                                                    </MudText>
-
-                                                    <MudSwitch @bind-Checked="@IsLoRa" id="SupportLoRaFeatures" Color="Color.Secondary" Label="Support LoRa"></MudSwitch>
-                                                    @if (IsLoRa)
-                                                    {
-                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>is</b> a LoRa Device.</MudText>
-
-                                                    }
-                                                </MudItem>
-                                            }
-                                        </MudGrid>
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
-                        @if (!IsLoRa)
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudForm Model="@Model" @ref="form" id="form">
+        <MudGrid>
+            <MudItem xs="12" sm="4" md="3">
+                <MudCard>
+                    <MudCardContent>
+                        <div class="d-flex justify-center mb-4">
+                            <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
+                                <MudImage Src="@imageData" />
+                            </MudAvatar>
+                        </div>
+                    </MudCardContent>
+                    <MudCardActions Class="d-flex justify-center">
+                        @if (imageData != null)
                         {
+                            <MudButton OnClick="DeleteAvatar" Color="Color.Error">Delete Picture</MudButton>
+                        }
+                        else
+                        {
+                            <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
+                            <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">Change Picture</MudButton>
+                        }
+                    </MudCardActions>
+                </MudCard>
+                <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton" Disabled="isProcessing">Save Changes</MudButton>
+                </MudItem>
+            </MudItem>
+            <MudItem xs="12" sm="8" md="9">
+                <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content" id="tabs">
+                    <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red" : "")>
+                        <MudExpansionPanels MultiExpansion="true" id="general">
                             <MudGrid>
                                 <MudItem xs="12">
-                                    <MudExpansionPanel Text="Properties">
-                                        <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
+                                    <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
                                         <ChildContent>
                                             <MudGrid>
-                                                <MudItem xs="12">
-                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                                <MudItem xs="12" md="6">
+                                                    <MudTextField id="@nameof(Model.Name)" @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
                                                 </MudItem>
-                                                <MudItem xs="12">
-                                                    @foreach (var item in this.Properties.OrderBy(x => x.Order))
-                                                    {
-                                                        <MudGrid id="@($"property-{item.Name}")">
-                                                            <MudItem md="4" xs="12">
-                                                                <MudTextField id="@nameof(item.DisplayName)"
-                                                                      @bind-Value="@item.DisplayName"
-                                                                      Label="Display name"
-                                                                      Variant="Variant.Outlined"
-                                                                      For="@(()=> item.DisplayName)"
-                                                                      Required="true" />
-                                                            </MudItem>
-                                                            <MudItem md="3" xs="12">
-                                                                <MudTextField id="@nameof(item.Name)" @bind-Value="@item.Name"
-                                                                      Label="Name"
-                                                                      Variant="Variant.Outlined"
-                                                                      For="@(()=> item.Name)"
-                                                                      Required="true" />
-                                                            </MudItem>
-                                                            <MudItem md="1" xs="12">
-                                                                <MudNumericField id="@nameof(item.Order)"
-                                                                         @bind-Value="@item.Order"
-                                                                         Label="Order"
-                                                                         Variant="Variant.Outlined"
-                                                                         Min=0
-                                                                         For="@(()=> item.Order)"
-                                                                         Required="true" />
-                                                            </MudItem>
-                                                            <MudItem md="2" xs="6">
-                                                                <MudSelect id="@nameof(item.PropertyType)"
-                                                                   @bind-Value="@item.PropertyType"
-                                                                   Label="Type"
-                                                                   Variant="Variant.Outlined"
-                                                                   For="@(()=> item.PropertyType)"
-                                                                   Required="true">
-                                                                    @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
-                                                                    {
-                                                                        <MudSelectItem Value="@item">@item</MudSelectItem>
-                                                                    }
-                                                                </MudSelect>
-                                                            </MudItem>
-                                                            <MudItem md="1" xs="3">
-                                                                <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
+                                                <MudItem xs="12" md="6">
+                                                    <MudTextField id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
+                                                </MudItem>
+                                                @if (Portal.IsLoRaSupported)
+                                                {
+                                                    <MudItem xs="12">
+                                                        <MudText>
+                                                            <b>LoRa Device</b>
+                                                        </MudText>
 
-                                                            </MudItem>
-                                                            <MudItem md="1" xs="3">
-                                                                <MudIconButton id="deletePropertyButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
-                                                            </MudItem>
-                                                        </MudGrid>
-                                                    }
-                                                </MudItem>
+                                                        <MudSwitch @bind-Checked="@IsLoRa" id="SupportLoRaFeatures" Color="Color.Secondary" Label="Support LoRa"></MudSwitch>
+                                                        @if (IsLoRa)
+                                                        {
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>is</b> a LoRa Device.</MudText>
+
+                                                        }
+                                                    </MudItem>
+                                                }
                                             </MudGrid>
                                         </ChildContent>
                                     </MudExpansionPanel>
                                 </MudItem>
                             </MudGrid>
-                        }
+                            @if (!IsLoRa)
+                            {
+                                <MudGrid>
+                                    <MudItem xs="12">
+                                        <MudExpansionPanel Text="Properties">
+                                            <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
+                                            <ChildContent>
+                                                <MudGrid>
+                                                    <MudItem xs="12">
+                                                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() { Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                                    </MudItem>
+                                                    <MudItem xs="12">
+                                                        @foreach (var item in this.Properties.OrderBy(x => x.Order))
+                                                        {
+                                                            <MudGrid id="@($"property-{item.Name}")">
+                                                                <MudItem md="4" xs="12">
+                                                                    <MudTextField id="@nameof(item.DisplayName)"
+                                                                                  @bind-Value="@item.DisplayName"
+                                                                                  Label="Display name"
+                                                                                  Variant="Variant.Outlined"
+                                                                                  For="@(() => item.DisplayName)"
+                                                                                  Required="true" />
+                                                                </MudItem>
+                                                                <MudItem md="3" xs="12">
+                                                                    <MudTextField id="@nameof(item.Name)" @bind-Value="@item.Name"
+                                                                                  Label="Name"
+                                                                                  Variant="Variant.Outlined"
+                                                                                  For="@(() => item.Name)"
+                                                                                  Required="true" />
+                                                                </MudItem>
+                                                                <MudItem md="1" xs="12">
+                                                                    <MudNumericField id="@nameof(item.Order)"
+                                                                                     @bind-Value="@item.Order"
+                                                                                     Label="Order"
+                                                                                     Variant="Variant.Outlined"
+                                                                                     Min=0
+                                                                                     For="@(() => item.Order)"
+                                                                                     Required="true" />
+                                                                </MudItem>
+                                                                <MudItem md="2" xs="6">
+                                                                    <MudSelect id="@nameof(item.PropertyType)"
+                                                                               @bind-Value="@item.PropertyType"
+                                                                               Label="Type"
+                                                                               Variant="Variant.Outlined"
+                                                                               For="@(() => item.PropertyType)"
+                                                                               Required="true">
+                                                                        @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
+                                                                        {
+                                                                            <MudSelectItem Value="@item">@item</MudSelectItem>
+                                                                        }
+                                                                    </MudSelect>
+                                                                </MudItem>
+                                                                <MudItem md="1" xs="3">
+                                                                    <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
 
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Labels">
-                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
-                                    <ChildContent>
-                                        <LabelsEditor Labels="Model.Labels" />
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
+                                                                </MudItem>
+                                                                <MudItem md="1" xs="3">
+                                                                    <MudIconButton id="deletePropertyButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
+                                                                </MudItem>
+                                                            </MudGrid>
+                                                        }
+                                                    </MudItem>
+                                                </MudGrid>
+                                            </ChildContent>
+                                        </MudExpansionPanel>
+                                    </MudItem>
+                                </MudGrid>
+                            }
 
-                    </MudExpansionPanels>
-                </MudTabPanel>
-                @if (IsLoRa)
-                {
-                    <MudTabPanel Class="LoRaWANTab" Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
-                        <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModelDto)"
-                                               Commands="Commands" />
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Labels">
+                                        <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                        <ChildContent>
+                                            <LabelsEditor Labels="Model.Labels" />
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+
+                        </MudExpansionPanels>
                     </MudTabPanel>
-                }
-            </MudTabs>
-        </MudItem>
-    </MudGrid>
-</MudForm>
+                    @if (IsLoRa)
+                    {
+                        <MudTabPanel Class="LoRaWANTab" Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red" : "")>
+                            <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModelDto)"
+                                                   Commands="Commands" />
+                        </MudTabPanel>
+                    }
+                </MudTabs>
+            </MudItem>
+        </MudGrid>
+    </MudForm>
+</AuthorizedContent>
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.ModelWrite };
+
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 

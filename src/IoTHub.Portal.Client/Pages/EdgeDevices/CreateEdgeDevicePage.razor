@@ -1,6 +1,9 @@
 ﻿@page "/edge/devices/new"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
+
 @inject PortalSettings Portal
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
@@ -11,15 +14,16 @@
 
 @implements IDisposable
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Edge Device</MudText>
-<MudForm Model="@EdgeDevice" @ref="form">
-    <MudGrid>
-        <MudItem xs="12" sm="4" md="3">
-            <MudCard>
-                <MudCardHeader Class="DeviceCardHeader">
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModel.Name)>Model: <b>@edgeModel?.Name</b></MudText>
-                        <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(EdgeDevice?.DeviceName) ? EdgeDevice?.DeviceId : EdgeDevice?.DeviceName)</MudText>
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Edge Device</MudText>
+    <MudForm Model="@EdgeDevice" @ref="form">
+        <MudGrid>
+            <MudItem xs="12" sm="4" md="3">
+                <MudCard>
+                    <MudCardHeader Class="DeviceCardHeader">
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModel.Name)>Model: <b>@edgeModel?.Name</b></MudText>
+                            <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(EdgeDevice?.DeviceName) ? EdgeDevice?.DeviceId : EdgeDevice?.DeviceName)</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
@@ -53,127 +57,129 @@
                                             <MudGrid>
                                                 <MudItem xs="12" md="6">
                                                     @if (duplicateDevice)
-                                                {
-                                                    <EdgeDeviceToDuplicateSelector />
-                                                }
-                                                else
-                                                {
-                                                    <MudAutocomplete T="IoTEdgeModel"
-                                                                     id="@nameof(IoTEdgeModel.ModelId)"
-                                                                     @bind-Value="edgeModel"
-                                                                     SearchFunc="@Search"
-                                                                     Label="Model*"
-                                                                     Dense=true
-                                                                     For=@(() => this.edgeModel)
-                                                                     Variant="Variant.Outlined"
-                                                                     ToStringFunc="@(x => x?.Name)"
-                                                                     ResetValueOnEmptyText=true
-                                                                     Immediate=true
-                                                                     Clearable=true
-                                                                     CoerceText=true
-                                                                     CoerceValue=false>
-                                                        <ItemTemplate>
-                                                            @context.Name
-                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-                                                                @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
-                                                            </MudText>
-                                                        </ItemTemplate>
-                                                    </MudAutocomplete>
-                                                    @if (EdgeDevice.ModelId == null && displayValidationErrorMessages)
                                                     {
-                                                        <p class="validation-error-message">The Model is required.</p>
+                                                        <EdgeDeviceToDuplicateSelector />
                                                     }
-                                                }
+                                                    else
+                                                    {
+                                                        <MudAutocomplete T="IoTEdgeModel"
+                                                                         id="@nameof(IoTEdgeModel.ModelId)"
+                                                                         @bind-Value="edgeModel"
+                                                                         SearchFunc="@Search"
+                                                                         Label="Model*"
+                                                                         Dense=true
+                                                                         For=@(() => this.edgeModel)
+                                                                         Variant="Variant.Outlined"
+                                                                         ToStringFunc="@(x => x?.Name)"
+                                                                         ResetValueOnEmptyText=true
+                                                                         Immediate=true
+                                                                         Clearable=true
+                                                                         CoerceText=true
+                                                                         CoerceValue=false>
+                                                            <ItemTemplate>
+                                                                @context.Name
+                                                                <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                                                    @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                                                </MudText>
+                                                            </ItemTemplate>
+                                                        </MudAutocomplete>
+                                                        @if (EdgeDevice.ModelId == null && displayValidationErrorMessages)
+                                                        {
+                                                            <p class="validation-error-message">The Model is required.</p>
+                                                        }
+                                                    }
 
-                                            </MudItem>
-                                            <MudItem xs="12" md="6">
+                                                </MudItem>
+                                                <MudItem xs="12" md="6">
+                                                    @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
+                                                    {
+                                                        <MudTextField @bind-Value="@EdgeDevice.DeviceId"
+                                                                      id=@nameof(IoTEdgeDevice.DeviceId)
+                                                                      Label="Device ID"
+                                                                      Variant="Variant.Outlined"
+                                                                      For="@(() => EdgeDevice.DeviceId)"
+                                                                      HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+
+                                                    }
+                                                </MudItem>
+                                                <MudItem xs="12">
+                                                    <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
+                                                </MudItem>
+                                                <MudItem xs="12">
+                                                    <MudTextField @bind-Value="@EdgeDevice.DeviceName"
+                                                                  id="@nameof(IoTEdgeDevice.DeviceName)"
+                                                                  Label="Device name"
+                                                                  Variant="Variant.Outlined"
+                                                                  For="@(() => EdgeDevice.DeviceName)"
+                                                                  Required="true" />
+                                                </MudItem>
+
                                                 @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
                                                 {
-                                                    <MudTextField @bind-Value="@EdgeDevice.DeviceId"
-                                                                  id=@nameof(IoTEdgeDevice.DeviceId)
-                                                                  Label="Device ID"
-                                                                  Variant="Variant.Outlined"
-                                                                  For="@(()=> EdgeDevice.DeviceId)"
-                                                                  HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
-
+                                                    <MudItem xs="12">
+                                                        <MudText>
+                                                            <b>Status</b>
+                                                        </MudText>
+                                                        <MudRadioGroup @bind-SelectedOption="@EdgeDevice.IsEnabled">
+                                                            <MudRadio Option=@(true) Color="Color.Primary">
+                                                                Enabled
+                                                                <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                            </MudRadio>
+                                                            <MudRadio Option=@(false) Color="Color.Primary">
+                                                                Disabled
+                                                                <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                            </MudRadio>
+                                                        </MudRadioGroup>
+                                                    </MudItem>
                                                 }
-                                            </MudItem>
-                                            <MudItem xs="12">
-                                                <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
-                                            </MudItem>
-                                            <MudItem xs="12">
-                                                <MudTextField @bind-Value="@EdgeDevice.DeviceName"
-                                                              id="@nameof(IoTEdgeDevice.DeviceName)"
-                                                              Label="Device name"
-                                                              Variant="Variant.Outlined"
-                                                              For="@(()=> EdgeDevice.DeviceName)"
-                                                              Required="true" />
-                                            </MudItem>
 
-                                            @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
-                                            {
-                                                <MudItem xs="12">
-                                                    <MudText>
-                                                        <b>Status</b>
-                                                    </MudText>
-                                                    <MudRadioGroup @bind-SelectedOption="@EdgeDevice.IsEnabled">
-                                                        <MudRadio Option=@(true) Color="Color.Primary">
-                                                            Enabled
-                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
-                                                        </MudRadio>
-                                                        <MudRadio Option=@(false) Color="Color.Primary">
-                                                            Disabled
-                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
-                                                        </MudRadio>
-                                                    </MudRadioGroup>
-                                                </MudItem>
-                                            }
+                                            </MudGrid>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Tags">
+                                        <TitleContent><MudText Typo="Typo.h6" Style=@(CheckTagsError() ? "color: red" : "")>Tags</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudGrid>
+                                                @foreach (DeviceTagDto tag in TagList)
+                                                {
+                                                    <MudItem xs="12" md="6">
+                                                        <MudTextField @bind-Value="EdgeDevice.Tags[tag.Name]" id="@tag.Name" Label="@tag.Label"
+                                                                      Required="@tag.Required"
+                                                                      Variant="Variant.Outlined" />
+                                                    </MudItem>
+                                                }
+                                            </MudGrid>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
 
-                                        </MudGrid>
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Tags">
-                                    <TitleContent><MudText Typo="Typo.h6" Style=@(CheckTagsError() ? "color: red" : "")>Tags</MudText></TitleContent>
-                                    <ChildContent>
-                                        <MudGrid>
-                                            @foreach (DeviceTagDto tag in TagList)
-                                            {
-                                                <MudItem xs="12" md="6">
-                                                    <MudTextField @bind-Value="EdgeDevice.Tags[tag.Name]" id="@tag.Name" Label="@tag.Label"
-                                                                  Required="@tag.Required"
-                                                                  Variant="Variant.Outlined" />
-                                                </MudItem>
-                                            }
-                                        </MudGrid>
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Labels">
+                                        <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                        <ChildContent>
+                                            <LabelsEditor ReadOnlyLabels="edgeModel?.Labels" Labels="EdgeDevice.Labels" />
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
 
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Labels">
-                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
-                                    <ChildContent>
-                                        <LabelsEditor ReadOnlyLabels="edgeModel?.Labels" Labels="EdgeDevice.Labels" />
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
-
-                    </MudExpansionPanels>
-                </MudTabPanel>
-            </MudTabs>
-        </MudItem>
-    </MudGrid>
-</MudForm>
-
+                        </MudExpansionPanels>
+                    </MudTabPanel>
+                </MudTabs>
+            </MudItem>
+        </MudGrid>
+    </MudForm>
+</AuthorizedContent>
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.EdgeDeviceWrite };
+
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
@@ -204,6 +210,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         try
         {
             EdgeDeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;

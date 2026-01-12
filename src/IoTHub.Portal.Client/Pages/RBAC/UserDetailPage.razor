@@ -1,27 +1,17 @@
 @page "/users/{UserId}"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
-@using IoTHub.Portal.Shared.Models.v10
+@attribute [Authorize]
+
 @inject IUserClientService UserClientService
 @inject IAccessControlClientService AccessControlClientService
 @inject IRoleClientService RoleClientService
 @inject ISnackbar Snackbar
 @inject NavigationManager Nav
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">User Detail</MudText>
-@if (isLoading)
-{
-    <MudProgressCircular Indeterminate="true" />
-}
-else if (loadError)
-{
-    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
-}
-else if (user == null)
-{
-    <MudAlert Severity="Severity.Warning">User not found.</MudAlert>
-}
-else
-{
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">User Detail</MudText>
     <MudPaper Class="pa-4" Elevation="1">
         <MudGrid>
             <MudItem xs="12" md="4">
@@ -38,7 +28,7 @@ else
         <MudStack Row Spacing="2" AlignItems="AlignItems.Center" Class="mb-2">
             <MudText Typo="Typo.subtitle1">Roles</MudText>
             <MudSpacer />
-            <MudSelect T="string" Label="Role" @bind-Value="newRoleId" Dense="true" Style="min-width:200px" Disabled="isSaving || allRoles.Count == 0">
+            <MudSelect T="string" Label="Role" @bind-Value="newRoleId" Dense="true" Style="min-width:200px" Disabled="isSaving || allRoles.Count == 0 || !canWrite">
                 @foreach (var r in allRoles)
                 {
                     <MudSelectItem Value="@r.Id">@r.Name</MudSelectItem>
@@ -51,23 +41,33 @@ else
             <HeaderContent>
                 <MudTh>Role</MudTh>
                 <MudTh>Scope</MudTh>
-                <MudTh Style="text-align:center">Actions</MudTh>
+                @if (canWrite)
+                {
+                    <MudTh Style="text-align:center">Actions</MudTh>
+                }
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Role">@context.Role?.Name</MudTd>
                 <MudTd DataLabel="Scope">@allScopeDisplay</MudTd>
-                <MudTd DataLabel="Actions" Style="text-align:center">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => RemoveAccessControl(context)" Disabled="isSaving" />
-                </MudTd>
+                @if (canWrite)
+                {
+                    <MudTd DataLabel="Actions" Style="text-align:center">
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => RemoveAccessControl(context)" Disabled="isSaving" />
+                    </MudTd>
+                }
             </RowTemplate>
             <NoRecordsContent>
                 <MudText>No roles assigned.</MudText>
             </NoRecordsContent>
         </MudTable>
     </MudPaper>
-}
+</AuthorizedContent>
 
 @code {
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.UserRead };
+    private bool canWrite;
+
     [Parameter] public string UserId { get; set; } = string.Empty;
 
     private UserDetailsModel user;
@@ -75,19 +75,20 @@ else
     private List<AccessControlModel> accessControls = new();
     private string newRoleId;
     private bool isSaving;
-    private bool isLoading = true;
     private bool loadError;
     private string errorMessage = string.Empty;
     private const string allScopeDisplay = "ALL";
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         try
         {
             user = await SafeApiCall(() => UserClientService.GetUser(UserId));
             if (user == null)
             {
-                isLoading = false;
+                IsLoading = false;
                 return;
             }
             await LoadRoles();
@@ -95,10 +96,13 @@ else
             {
                 await LoadAccessControls();
             }
+
+            // Check if user has write permission for conditional UI elements
+            canWrite = await HasPermissionAsync(PortalPermissions.UserWrite);
         }
         finally
         {
-            isLoading = false;
+            IsLoading = false;
         }
     }
 

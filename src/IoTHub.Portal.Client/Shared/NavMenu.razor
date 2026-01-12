@@ -1,92 +1,136 @@
-﻿
-@inject NavigationManager navigationManager
+﻿@inherits AuthorizedComponentBase
+
+@inject NavigationManager NavigationManager
 @inject PortalSettings Portal
 @inject ILayoutService LayoutService
 
+@using IoTHub.Portal.Shared.Helpers
+@using IoTHub.Portal.Shared.Security
 @implements IDisposable
 
-<AuthorizeView>
-    <Authorized>
-        <MudNavMenu>
-            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudNavMenu>
+        <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
 
-            <MudNavGroup Title="Devices" Icon="@Icons.Material.Outlined.Memory"
-                         Expanded="@LayoutService.GetNavGroupExpanded("Devices")"
-                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Devices", b))">
-                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/devices">Device List</MudNavLink>
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/>
-                    <MudTooltip Text="Add device">
-                        <MudIconButton id="addDeviceButton" OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
-                    </MudTooltip>
-                </MudPaper>
-
-                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/device-models">Device Models</MudNavLink>
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/>
-                    <MudTooltip Text="Add device model">
-                        <MudIconButton id="addDeviceModelButton" OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
-                    </MudTooltip>
-                </MudPaper>
-
-                @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
-                {
-                    <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                        <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/device-configurations/">Configurations</MudNavLink>
-                        <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
-                        <MudTooltip Text="Add device configuration">
-                            <MudIconButton id="addDeviceConfigurationButton" OnClick="AddDeviceConfig" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
-                        </MudTooltip>
-                    </MudPaper>
-                }
-                
-            </MudNavGroup>
-
-            <MudNavGroup Title="IoT Edge" Icon="@Icons.Material.Outlined.DeveloperBoard"
-                         Expanded="@LayoutService.GetNavGroupExpanded("IoTEdge")"
-                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("IoTEdge", b))">
-                <MudNavLink Href="/edge/devices">Devices</MudNavLink>
-                <MudNavLink Href="/edge/models">Edge Models</MudNavLink>
-            </MudNavGroup>
-
-            <MudNavGroup Title="Site Management" Icon="@Icons.Material.Outlined.Business"
-                         Expanded="@LayoutService.GetNavGroupExpanded("Site Management")"
-                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Site Management", b))">
-                <MudNavLink Href="/layer">Layers</MudNavLink>
-                <MudNavLink Href="/planning">Plannings</MudNavLink>
-            </MudNavGroup>
-
-            @if (Portal.IsLoRaSupported)
+        <MudNavGroup Title="Devices" Icon="@Icons.Material.Outlined.Memory"
+                     Expanded="@LayoutService.GetNavGroupExpanded("Devices")"
+                     ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Devices", b))">
+            @if (portalPermissions.Contains(PortalPermissions.DeviceRead))
             {
-                <MudNavGroup Title="LoRaWAN" Icon="@Icons.Material.Outlined.WifiTethering"
-                             Expanded="@LayoutService.GetNavGroupExpanded("LoRaWAN")"
-                             ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("LoRaWAN", b))">
-                    <MudNavLink Href="/lorawan/concentrators">
-                        Concentrators
-                    </MudNavLink>
-                </MudNavGroup>
+                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                    <MudNavLink Href="/devices">Device List</MudNavLink>
+                    @if (portalPermissions.Contains(PortalPermissions.DeviceWrite))
+                    {
+                        <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                        <MudTooltip Text="Add device">
+                            <MudIconButton id="addDeviceButton"
+                                           OnClick="AddDevice"
+                                           Color="Color.Secondary"
+                                           Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                        </MudTooltip>
+                    }
+                </MudPaper>
+            }
+            else
+            {
+                <MudNavLink Disabled="true">Devices</MudNavLink>
             }
 
-            <MudNavGroup Title="Settings" Icon="@Icons.Material.Outlined.Settings"
-                         Expanded="@LayoutService.GetNavGroupExpanded("Settings")"
-                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Settings", b))">
-                <MudNavLink Href="/settings/device-tag">Device Tags</MudNavLink>
-                <MudNavLink Href="/roles">Roles</MudNavLink>
-                <MudNavLink Href="/users">Users</MudNavLink>
+            @if (portalPermissions.Contains(PortalPermissions.ModelRead))
+            {
+                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                    <MudNavLink Href="/device-models">Device Models</MudNavLink>
+                @if (portalPermissions.Contains(PortalPermissions.ModelWrite))
+                {
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/>
+                    <MudTooltip Text="Add device model">
+                        <MudIconButton id="addDeviceModelButton"
+                                       OnClick="AddDeviceModel"
+                                       Color="Color.Secondary"
+                                       Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
+                    </MudTooltip>
+                }
+                </MudPaper>
+            }
+            else
+            {
+                <MudNavLink Disabled="true">Devices Models</MudNavLink>
+            }
+
+            @if (Portal.CloudProvider.Equals(CloudProviders.Azure) && portalPermissions.Contains(PortalPermissions.DeviceConfigurationRead))
+            {
+                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                    <MudNavLink Href="/device-configurations/">Configurations</MudNavLink>
+                @if (portalPermissions.Contains(PortalPermissions.DeviceConfigurationWrite))
+                {
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/>
+                    <MudTooltip Text="Add device configuration">
+                        <MudIconButton id="addDeviceConfigurationButton"
+                                       OnClick="AddDeviceConfig"
+                                       Color="Color.Secondary"
+                                       Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
+                    </MudTooltip>
+                }
+                </MudPaper>
+            }
+            else
+            {
+                <MudNavLink Disabled="true">Configurations</MudNavLink>
+            }
+
+        </MudNavGroup>
+
+        <MudNavGroup Title="IoT Edge" Icon="@Icons.Material.Outlined.DeveloperBoard"
+                     Expanded="@LayoutService.GetNavGroupExpanded("IoTEdge")"
+                     ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("IoTEdge", b))">
+            <MudNavLink Href="/edge/devices" Disabled="@(!portalPermissions.Contains(PortalPermissions.EdgeDeviceRead))">Devices</MudNavLink>
+            <MudNavLink Href="/edge/models" Disabled="@(!portalPermissions.Contains(PortalPermissions.EdgeModelRead))">Edge Models</MudNavLink>
+        </MudNavGroup>
+
+        <MudNavGroup Title="Site Management" Icon="@Icons.Material.Outlined.Business"
+                     Expanded="@LayoutService.GetNavGroupExpanded("Site Management")"
+                     ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Site Management", b))">
+            <MudNavLink Href="/layer" Disabled="@(!portalPermissions.Contains(PortalPermissions.LayerRead))">Layers</MudNavLink>
+            <MudNavLink Href="/planning" Disabled="@(!portalPermissions.Contains(PortalPermissions.PlanningRead))">Plannings</MudNavLink>
+        </MudNavGroup>
+
+        @if (Portal.IsLoRaSupported)
+        {
+            <MudNavGroup Title="LoRaWAN" Icon="@Icons.Material.Outlined.WifiTethering"
+                         Expanded="@LayoutService.GetNavGroupExpanded("LoRaWAN")"
+                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("LoRaWAN", b))">
+                <MudNavLink Href="/lorawan/concentrators" Disabled="@(!portalPermissions.Contains(PortalPermissions.ConcentratorRead))">
+                    Concentrators
+                </MudNavLink>
             </MudNavGroup>
-        </MudNavMenu>
-    </Authorized>
-</AuthorizeView>
+        }
+
+        <MudNavGroup Title="Settings" Icon="@Icons.Material.Outlined.Settings"
+                     Expanded="@LayoutService.GetNavGroupExpanded("Settings")"
+                     ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Settings", b))">
+            <MudNavLink Href="/settings/device-tag" Disabled="@(!portalPermissions.Contains(PortalPermissions.DeviceTagRead))">Device Tags</MudNavLink>
+            <MudNavLink Href="/roles" Disabled="@(!portalPermissions.Contains(PortalPermissions.RoleRead))">Roles</MudNavLink>
+            <MudNavLink Href="/users" Disabled="@(!portalPermissions.Contains(PortalPermissions.UserRead))">Users</MudNavLink>
+        </MudNavGroup>
+    </MudNavMenu>
+</AuthorizedContent>
 
 @code {
-    private void AddDevice() => navigationManager.NavigateTo("/devices/new");
-    private void AddDeviceModel() => navigationManager.NavigateTo("/device-models/new");
-    private void AddDeviceConfig() => navigationManager.NavigateTo("/device-configurations/new");
+    protected override PortalPermissions[] RequiredPermissions { get; } = PortalPermissionsHelper.GetAllPermissions();
 
-    protected override void OnInitialized()
+    private void AddDevice() => NavigationManager.NavigateTo("/devices/new");
+    private void AddDeviceModel() => NavigationManager.NavigateTo("/device-models/new");
+    private void AddDeviceConfig() => NavigationManager.NavigateTo("/device-configurations/new");
+
+    private PortalPermissions[] portalPermissions;
+
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
+        portalPermissions = await PermissionsService.GetUserPermissions();
+
         LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred!;
-        base.OnInitialized();
     }
 
     public void Dispose()

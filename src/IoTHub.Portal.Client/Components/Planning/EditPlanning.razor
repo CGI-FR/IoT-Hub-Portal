@@ -10,14 +10,17 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">
-    @mode Planning
-    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save</MudButton>
-    @if (mode == "Edit")
-    {
-        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeletePlanning" id="deleteButton" Disabled="isProcessing">Delete planning</MudButton>
-    }
-</MudText>
+@if (CanWrite)
+{
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">
+        @mode Planning
+        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save</MudButton>
+        @if (mode == "Edit")
+        {
+            <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeletePlanning" id="deleteButton" Disabled="isProcessing">Delete planning</MudButton>
+        }
+    </MudText>
+}
 @if (!isProcessing)
 {
     <MudGrid>
@@ -53,13 +56,19 @@
                                 <col style="width: 5%;" />
                                 <col style="width: 5%;" />
                                 <col style="width: 10%;" />
-                                <col style="width: 5%;" />
+                                @if (CanWrite)
+                                {
+                                    <col style="width: 5%;" />
+                                }
                             </ColGroup>
                             <HeaderContent>
                                 <MudTh Style="text-align: center">From</MudTh>
                                 <MudTh Style="text-align: center">To</MudTh>
                                 <MudTh Style="text-align: center">Command</MudTh>
-                                <MudTh Style="text-align: center">Delete</MudTh>
+                                @if (CanWrite)
+                                {
+                                    <MudTh Style="text-align: center">Delete</MudTh>
+                                }
                             </HeaderContent>
                             <RowTemplate Context="ContextSchedule">
                                 <MudTd DataLabel="Start" Style="word-break: break-all;">
@@ -76,12 +85,19 @@
                                         }
                                     </MudSelect>
                                 </MudTd>
-                                <MudTd DataLabel="Delete" Style="text-align: center">
-                                    <MudIconButton Color="Color.Default" Class="deleteRouteButton" id="deleteScheduleButton" OnClick="( () => DeleteSchedule(ContextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
-                                </MudTd>
+                                @if (CanWrite)
+                                {
+                                    <MudTd DataLabel="Delete" Style="text-align: center">
+                                        <MudIconButton Color="Color.Default" Class="deleteRouteButton" id="deleteScheduleButton" OnClick="(() => DeleteSchedule(ContextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                    </MudTd>
+                                }
                             </RowTemplate>
+
                             <FooterContent>
-                                <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" id="addScheduleButton" OnClick="AddSchedule" Color="Color.Success">Add slot</MudButton>
+                                @if (CanWrite)
+                                {
+                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" id="addScheduleButton" OnClick="AddSchedule" Color="Color.Success">Add slot</MudButton>
+                                }
                             </FooterContent>
                         </MudTable>
                         <div>
@@ -90,7 +106,11 @@
                             {
                                 if (day != DaysEnumFlag.DaysOfWeek.None)
                                 {
-                                    <MudButton id="editPlanningChangeOnDayLayers" Style=@((planning.DayOff & day) != day ? "" : "text-decoration: line-through;") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) != day ? Color.Success : Color.Error)">@day</MudButton>
+                                    <MudButton id="editPlanningChangeOnDayLayers"
+                                               Style=@((planning.DayOff & day) != day ? "" : "text-decoration: line-through;") Size="Size.Medium"
+                                               OnClick="() => ChangeOffDay(day)"
+                                               Color="@((planning.DayOff & day) != day ? Color.Success : Color.Error)"
+                                               Disabled="@(!CanWrite)">@day</MudButton>
                                 }
                             }
                         </div>
@@ -110,13 +130,19 @@
                                 <col style="width: 5%;" />
                                 <col style="width: 5%;" />
                                 <col style="width: 10%;" />
-                                <col style="width: 5%;" />
+                                @if (CanWrite)
+                                {
+                                    <col style="width: 5%;" />
+                                }
                             </ColGroup>
                             <HeaderContent>
                                 <MudTh Style="text-align: center">From</MudTh>
                                 <MudTh Style="text-align: center">To</MudTh>
                                 <MudTh Style="text-align: center">Command</MudTh>
-                                <MudTh Style="text-align: center">Delete</MudTh>
+                                @if (CanWrite)
+                                {
+                                    <MudTh Style="text-align: center">Delete</MudTh>
+                                }
                             </HeaderContent>
                             <RowTemplate Context="ContextSchedule">
                                 <MudTd DataLabel="Start" Style="word-break: break-all;">
@@ -225,6 +251,9 @@
     public PlanningDto planning { get; set; } = new PlanningDto();
     [Parameter]
     public string SelectedModel { get; set; } = "";
+
+    [Parameter]
+    public bool CanWrite { get; set; }
 
     public List<ScheduleDto> scheduleOffList { get; set; } = new List<ScheduleDto> { new ScheduleDto() };
 

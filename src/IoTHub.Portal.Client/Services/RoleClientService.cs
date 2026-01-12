@@ -7,6 +7,7 @@ namespace IoTHub.Portal.Client.Services
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using IoTHub.Portal.Shared.Models.v10;
+    using Portal.Shared.Security;
 
 
     public class RoleClientService : IRoleClientService
@@ -32,8 +33,8 @@ namespace IoTHub.Portal.Client.Services
         public Task CreateRole(RoleDetailsModel role)
             => this.http.PostAsJsonAsync(ApiUrlBase, role);
 
-        public Task<string[]> GetPermissions()
-            => this.http.GetFromJsonAsync<string[]>("api/permissions")!;
+        public Task<PortalPermissions[]> GetPermissions()
+            => this.http.GetFromJsonAsync<PortalPermissions[]>("api/permissions")!;
 
         public Task UpdateRole(RoleDetailsModel role)
             => this.http.PutAsJsonAsync($"{ApiUrlBase}/{role.Id}", role);

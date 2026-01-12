@@ -77,6 +77,7 @@ _ = builder.Services.AddScoped<IPlanningClientService, PlanningClientService>();
 _ = builder.Services.AddScoped<IScheduleClientService, ScheduleClientService>();
 _ = builder.Services.AddScoped<IEdgeDeviceConfigurationsClientService, EdgeDeviceConfigurationsClientService>();
 _ = builder.Services.AddScoped<IIdeaClientService, IdeaClientService>();
+_ = builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 _ = builder.Services.AddScoped<ClipboardService>();
 
 

@@ -1,4 +1,6 @@
 @page "/device-configurations/{ConfigId}"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
@@ -9,212 +11,226 @@
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
-    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton" />       
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
 </MudTooltip>
 <MudTooltip Placement="Placement.Top">
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Configuration Details</MudText>
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Configuration Details</MudText>
 </MudTooltip>
 
-<MudForm Model="Configuration">
-    <MudGrid>
-        <MudItem xs="12" sm="4" md="3">
-            <MudCard>
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h5" Align="Align.Center">@Configuration.ConfigurationId</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudGrid>
-                        <MudItem xs="12">
-                            <MudText>Model: <b>@DeviceModel.Name</b></MudText>
-                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-                                @((!string.IsNullOrEmpty(@DeviceModel.Description) && @DeviceModel.Description.Length > 100) ? @DeviceModel.Description.Substring(0, 100) + "..." : @DeviceModel.Description)
-                            </MudText>
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudText Typo="Typo.h6">Metrics</MudText>
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudText>Created at @Metrics.CreationDate</MudText>
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudText>@Metrics.MetricsTargeted devices targeted</MudText>
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudText>@Metrics.MetricsApplied devices applied</MudText>
-                        </MudItem>
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
-            <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton id="delete-device-configuration" Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="Delete" Disabled="isProcessing">Delete</MudButton>
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+
+    <MudForm Model="Configuration">
+        <MudGrid>
+            <MudItem xs="12" sm="4" md="3">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Align="Align.Center">@Configuration.ConfigurationId</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudText>Model: <b>@DeviceModel.Name</b></MudText>
+                                <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                    @((!string.IsNullOrEmpty(@DeviceModel.Description) && @DeviceModel.Description.Length > 100) ? @DeviceModel.Description.Substring(0, 100) + "..." : @DeviceModel.Description)
+                                </MudText>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.h6">Metrics</MudText>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudText>Created at @Metrics.CreationDate</MudText>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudText>@Metrics.MetricsTargeted devices targeted</MudText>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudText>@Metrics.MetricsApplied devices applied</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+                @if (canWrite)
+                {
+                    <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+                        <MudButton id="delete-device-configuration" Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="Delete" Disabled="isProcessing">Delete</MudButton>
+                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+                    </MudItem>
+                }
             </MudItem>
-        </MudItem>
-        <MudItem xs="12" sm="8" md="9">
-            <MudExpansionPanels MultiExpansion="true">
-                <MudExpansionPanel Text="Target conditions" IsInitiallyExpanded="true">
-                    <TitleContent>
-                        <MudText Typo="Typo.h6">Target conditions</MudText>
-                    </TitleContent>
-                    <ChildContent>
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudText>This configuration will be applied on devices that have the selected tags:</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                <MudGrid>
-                                    <MudItem xs="12" sm="8">
-                                        <MudSelect @bind-Value="@SelectedTag"
-                                                   Label="Tag"
-                                                   HelperText="Select the tag and click 'Add Tag' to add a new restriction."
-                                                   HelperTextOnFocus="false"
-                                                   Margin="Margin.Dense"
-                                                   Variant="Variant.Outlined">
-                                            @foreach (var tag in AvailableTags.Where(x => !Configuration.Tags.ContainsKey(x.Name)))
-                                            {
-                                                <MudSelectItem Value="@(tag.Name)">@tag.Label</MudSelectItem>
-                                            }
-                                        </MudSelect>
-                                    </MudItem>
-                                    <MudItem xs="12" sm="4">
-                                        <MudButton Variant="Variant.Outlined"
-                                                   Color="Color.Primary"
-                                                   Disabled="string.IsNullOrEmpty(SelectedTag)"
-                                                   OnClick="AddSelectedTag"
-                                                   StartIcon="@Icons.Material.Filled.Add" id="addTagButton">Add Tag</MudButton>
-                                    </MudItem>
-                                </MudGrid>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                @foreach (var item in Configuration.Tags.Keys)
-                                {
-                                    <MudForm Model="item">
-                                        <MudGrid id="@($"tag-{item}")">
-                                            <MudItem xs="8" md="10">
-                                                <MudTextField Label="@AvailableTags.Single(c => c.Name == item).Label"
-                                                          @bind-Value="@Configuration.Tags[item]"
-                                                          HelperText="The Value of the tag"
-                                                          HelperTextOnFocus="true"
-                                                          Variant="Variant.Outlined"
-                                                          Required="true"></MudTextField>
-                                            </MudItem>
-                                            <MudItem xs="4" md="2">
-                                                <MudIconButton id="deleteTagButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Tags.Remove(item)"></MudIconButton>
-                                            </MudItem>
-                                        </MudGrid>
-                                    </MudForm>
-                                }
-                            </MudItem>
-                        </MudGrid>
-                    </ChildContent>
-                </MudExpansionPanel>
-
-                <MudExpansionPanel Text="Properties" IsInitiallyExpanded="true">
-                    <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
-                    <ChildContent>
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudText>This configuration will apply on devices these settings:</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                <MudGrid>
-                                    <MudItem xs="12" sm="8">
-                                        <MudSelect @bind-Value="@SelectedProperty"
-                                                   Label="Property"
-                                                   HelperText="Select the property and click 'Add Property' to add a new setting."
-                                                   HelperTextOnFocus="false"
-                                                   Margin="Margin.Dense"
-                                                   Variant="Variant.Outlined">
-                                            @foreach (var prop in AvailableProperties
-                                            .Where(x => x.IsWritable)
-                                            .Where(x => !Configuration.Properties.ContainsKey(x.Name)))
-                                            {
-                                                <MudSelectItem Value="@(prop.Name)">@prop.DisplayName</MudSelectItem>
-                                            }
-                                        </MudSelect>
-                                    </MudItem>
-                                    <MudItem xs="12" sm="4">
-                                        <MudButton Variant="Variant.Outlined"
-                                                   Color="Color.Primary"
-                                                   Disabled="string.IsNullOrEmpty(SelectedProperty)"
-                                                   OnClick="AddSelectedProperty"
-                                                   StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add Property</MudButton>
-                                    </MudItem>
-                                </MudGrid>
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                @foreach (var item in Configuration.Properties.Keys)
-                                {
-                                    <MudForm Model="item">
-                                        <MudGrid id="@($"property-{item}")">
-                                            <MudItem xs="8" md="10">
-                                                @{
-                                                    var property = this.AvailableProperties.Single(x => x.Name == item);
-                                                }
-                                                @switch (property.PropertyType)
+            <MudItem xs="12" sm="8" md="9">
+                <MudExpansionPanels MultiExpansion="true">
+                    <MudExpansionPanel Text="Target conditions" IsInitiallyExpanded="true">
+                        <TitleContent>
+                            <MudText Typo="Typo.h6">Target conditions</MudText>
+                        </TitleContent>
+                        <ChildContent>
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudText>This configuration will be applied on devices that have the selected tags:</MudText>
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudGrid>
+                                        <MudItem xs="12" sm="8">
+                                            <MudSelect @bind-Value="@SelectedTag"
+                                                       Label="Tag"
+                                                       HelperText="Select the tag and click 'Add Tag' to add a new restriction."
+                                                       HelperTextOnFocus="false"
+                                                       Margin="Margin.Dense"
+                                                       Variant="Variant.Outlined">
+                                                @foreach (var tag in AvailableTags.Where(x => !Configuration.Tags.ContainsKey(x.Name)))
                                                 {
-                                                    case DevicePropertyType.Boolean:
-                                                        <MudCheckBox @bind-Checked="@Configuration.Properties[item]"
-                                                         Label="@property.DisplayName" Color="@Color.Primary"
-                                                         Converter="@(new StringToBoolConverter())"
-                                                         TriState="true" />
-                                                        break;
-                                                    case DevicePropertyType.Double:
-                                                        <MudTextField @bind-Value="@Configuration.Properties[item]"
-                                                          Label="@property.DisplayName"
-                                                          Variant="Variant.Outlined"
-                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
-                                                          Clearable="true" />
-                                                        break;
-                                                    case DevicePropertyType.Float:
-                                                        <MudTextField @bind-Value="@Configuration.Properties[item]"
-                                                          Label="@property.DisplayName"
-                                                          Variant="Variant.Outlined"
-                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
-                                                          Clearable="true" />
-                                                        break;
-                                                    case DevicePropertyType.Integer:
-                                                        <MudTextField @bind-Value="@Configuration.Properties[item]"
-                                                          Label="@property.DisplayName"
-                                                          Variant="Variant.Outlined"
-                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
-                                                          Clearable="true" />
-                                                        break;
-                                                    case DevicePropertyType.Long:
-                                                        <MudTextField @bind-Value="@Configuration.Properties[item]"
-                                                          Label="@property.DisplayName"
-                                                          Variant="Variant.Outlined"
-                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
-                                                          Clearable="true" />
-                                                        break;
-                                                    case DevicePropertyType.String:
-                                                        <MudTextField @bind-Value="@Configuration.Properties[item]"
-                                                          Label="@property.DisplayName"
-                                                          Format="F1"
-                                                          Variant="Variant.Outlined"
-                                                          Clearable="true" />
-                                                        break;
+                                                    <MudSelectItem Value="@(tag.Name)">@tag.Label</MudSelectItem>
                                                 }
-                                            </MudItem>
-                                            <MudItem xs="4" md="2">
-                                                <MudIconButton id="deletePropertyButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Properties.Remove(item)"></MudIconButton>
-                                            </MudItem>
-                                        </MudGrid>
-                                    </MudForm>
-                                }
-                            </MudItem>
-                        </MudGrid>
-                    </ChildContent>
-                </MudExpansionPanel>
-            </MudExpansionPanels>
-        </MudItem>
-    </MudGrid>
+                                            </MudSelect>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4">
+                                            <MudButton Variant="Variant.Outlined"
+                                                       Color="Color.Primary"
+                                                       Disabled="string.IsNullOrEmpty(SelectedTag)"
+                                                       OnClick="AddSelectedTag"
+                                                       StartIcon="@Icons.Material.Filled.Add" id="addTagButton">Add Tag</MudButton>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    @foreach (var item in Configuration.Tags.Keys)
+                                    {
+                                        <MudForm Model="item">
+                                            <MudGrid id="@($"tag-{item}")">
+                                                <MudItem xs="8" md="10">
+                                                    <MudTextField Label="@AvailableTags.Single(c => c.Name == item).Label"
+                                                                  @bind-Value="@Configuration.Tags[item]"
+                                                                  HelperText="The Value of the tag"
+                                                                  HelperTextOnFocus="true"
+                                                                  Variant="Variant.Outlined"
+                                                                  Required="true"></MudTextField>
+                                                </MudItem>
+                                                @if (canWrite)
+                                                {
+                                                    <MudItem xs="4" md="2">
+                                                        <MudIconButton id="deleteTagButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Tags.Remove(item)"></MudIconButton>
+                                                    </MudItem>
+                                                }
+                                            </MudGrid>
+                                        </MudForm>
+                                    }
+                                </MudItem>
+                            </MudGrid>
+                        </ChildContent>
+                    </MudExpansionPanel>
 
-</MudForm>
+                    <MudExpansionPanel Text="Properties" IsInitiallyExpanded="true">
+                        <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
+                        <ChildContent>
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudText>This configuration will apply on devices these settings:</MudText>
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudGrid>
+                                        <MudItem xs="12" sm="8">
+                                            <MudSelect @bind-Value="@SelectedProperty"
+                                                       Label="Property"
+                                                       HelperText="Select the property and click 'Add Property' to add a new setting."
+                                                       HelperTextOnFocus="false"
+                                                       Margin="Margin.Dense"
+                                                       Variant="Variant.Outlined">
+                                                @foreach (var prop in AvailableProperties
+                                                                                                .Where(x => x.IsWritable)
+                                                                                                .Where(x => !Configuration.Properties.ContainsKey(x.Name)))
+                                                {
+                                                    <MudSelectItem Value="@(prop.Name)">@prop.DisplayName</MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4">
+                                            <MudButton Variant="Variant.Outlined"
+                                                       Color="Color.Primary"
+                                                       Disabled="string.IsNullOrEmpty(SelectedProperty)"
+                                                       OnClick="AddSelectedProperty"
+                                                       StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add Property</MudButton>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    @foreach (var item in Configuration.Properties.Keys)
+                                    {
+                                        <MudForm Model="item">
+                                            <MudGrid id="@($"property-{item}")">
+                                                <MudItem xs="8" md="10">
+                                                    @{
+                                                        var property = this.AvailableProperties.Single(x => x.Name == item);
+                                                    }
+                                                    @switch (property.PropertyType)
+                                                    {
+                                                        case DevicePropertyType.Boolean:
+                                                            <MudCheckBox @bind-Checked="@Configuration.Properties[item]"
+                                                                         Label="@property.DisplayName" Color="@Color.Primary"
+                                                                         Converter="@(new StringToBoolConverter())"
+                                                                         TriState="true" />
+                                                            break;
+                                                        case DevicePropertyType.Double:
+                                                            <MudTextField @bind-Value="@Configuration.Properties[item]"
+                                                                          Label="@property.DisplayName"
+                                                                          Variant="Variant.Outlined"
+                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
+                                                                          Clearable="true" />
+                                                            break;
+                                                        case DevicePropertyType.Float:
+                                                            <MudTextField @bind-Value="@Configuration.Properties[item]"
+                                                                          Label="@property.DisplayName"
+                                                                          Variant="Variant.Outlined"
+                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
+                                                                          Clearable="true" />
+                                                            break;
+                                                        case DevicePropertyType.Integer:
+                                                            <MudTextField @bind-Value="@Configuration.Properties[item]"
+                                                                          Label="@property.DisplayName"
+                                                                          Variant="Variant.Outlined"
+                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
+                                                                          Clearable="true" />
+                                                            break;
+                                                        case DevicePropertyType.Long:
+                                                            <MudTextField @bind-Value="@Configuration.Properties[item]"
+                                                                          Label="@property.DisplayName"
+                                                                          Variant="Variant.Outlined"
+                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
+                                                                          Clearable="true" />
+                                                            break;
+                                                        case DevicePropertyType.String:
+                                                            <MudTextField @bind-Value="@Configuration.Properties[item]"
+                                                                          Label="@property.DisplayName"
+                                                                          Format="F1"
+                                                                          Variant="Variant.Outlined"
+                                                                          Clearable="true" />
+                                                            break;
+                                                    }
+                                                </MudItem>
+                                                @if (canWrite)
+                                                {
+                                                    <MudItem xs="4" md="2">
+                                                        <MudIconButton id="deletePropertyButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Properties.Remove(item)"></MudIconButton>
+                                                    </MudItem>
+                                                }
+                                            </MudGrid>
+                                        </MudForm>
+                                    }
+                                </MudItem>
+                            </MudGrid>
+                        </ChildContent>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+            </MudItem>
+        </MudGrid>
+    </MudForm>
+</AuthorizedContent>
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.DeviceConfigurationRead };
+    private bool canWrite;
+
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
@@ -246,6 +262,9 @@
 
             AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(DeviceModel.ModelId);
             AvailableTags = await DeviceTagSettingsClientService.GetDeviceTags();
+
+            // Check if user has write permission for conditional UI elements
+            canWrite = await HasPermissionAsync(PortalPermissions.DeviceConfigurationWrite);
         }
         catch (ProblemDetailsException exception)
         {

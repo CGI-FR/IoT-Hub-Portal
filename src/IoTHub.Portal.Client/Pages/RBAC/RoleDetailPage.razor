@@ -1,25 +1,36 @@
 @page "/roles/{RoleId}"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
+
+@attribute [Authorize]
+
+@using IoTHub.Portal.Client.Components.Roles
+
 @inject IRoleClientService RoleClientService
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Détail du rôle</MudText>
-@if (Role != null)
-{
-    <EditRole Role="Role" OnSaved="OnSaved" IsEdit="true" />
-}
-else
-{
-    <MudProgressCircular Indeterminate="true" />
-}
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Détail du rôle</MudText>
+    <EditRole Role="@Role" OnSaved="OnSaved" IsEdit="@canWrite" />
+</AuthorizedContent>
 
 @code {
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.RoleRead };
+    private bool canWrite;
+
     [Parameter] public string RoleId { get; set; }
     private RoleDetailsModel Role;
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         Role = await RoleClientService.GetRole(RoleId);
+
+        // Check if user has write permission for conditional UI elements
+        canWrite = await HasPermissionAsync(PortalPermissions.RoleWrite);
     }
 
     private void OnSaved()
