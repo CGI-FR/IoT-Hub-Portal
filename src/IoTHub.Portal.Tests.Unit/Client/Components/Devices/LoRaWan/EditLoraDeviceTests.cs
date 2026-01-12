@@ -21,9 +21,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
-
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
-                .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite, PortalPermissions.DeviceExecute });
         }
 
         [Test]
@@ -231,7 +228,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), device),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), model),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands));
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.CanWrite), true),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.CanExec), true));
 
             // Assert
             cut.WaitForAssertion(() => cut.FindAll("#LoRaWANCommandsTable tbody tr").Count.Should().Be(1));
@@ -273,7 +272,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), device),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), model),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands));
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.CanWrite), true),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.CanExec), true));
 
             // Assert
             cut.WaitForAssertion(() => cut.FindAll("#LoRaWANCommandsTable tbody tr").Count.Should().Be(1));
@@ -349,7 +350,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), mockLoRaModel),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.CanWrite), true),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.CanExec), true));
             var autocompleteComponent = cut.FindComponent<MudAutocomplete<string>>();
 
             // Act
@@ -397,7 +400,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), mockLoRaModel),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.CanWrite), true),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.CanExec), true));
             var autocompleteComponent = cut.FindComponent<MudAutocomplete<string>>();
 
             // Act

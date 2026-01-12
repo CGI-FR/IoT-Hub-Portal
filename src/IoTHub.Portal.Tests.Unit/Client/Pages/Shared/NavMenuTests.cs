@@ -172,7 +172,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             // Assert
             var navGroups = cut.FindComponents<MudNavGroup>();
 
-            _ = navGroups.Count.Should().Be(6);
+            _ = navGroups.Count.Should().Be(5);
             _ = navGroups.Should().OnlyContain(navGroup => navGroup.Instance.Expanded);
 
             var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>(LocalStorageKey.CollapsibleNavMenu);

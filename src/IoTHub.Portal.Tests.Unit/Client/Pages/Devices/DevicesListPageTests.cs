@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[]
-                    { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite, PortalPermissions.DeviceExecute });
+                    { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite, PortalPermissions.DeviceExecute, PortalPermissions.DeviceExport, PortalPermissions.DeviceImport });
         }
 
         [Test]

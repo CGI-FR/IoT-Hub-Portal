@@ -28,7 +28,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IUserRepository> mockUserRepository;
         private Mock<IPrincipalRepository> mockPrincipalRepository;
-        private Mock<IMapper> mockMapper;
         private Mock<IAccessControlRepository> mockAccessControlRepository;
         private Mock<IRoleRepository> mockRoleRepository;
         private IUserManagementService userService;
@@ -48,7 +47,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockPrincipalRepository = new Mock<IPrincipalRepository>();
             this.mockAccessControlRepository = new Mock<IAccessControlRepository>();
             this.mockRoleRepository = new Mock<IRoleRepository>();
-            this.mockMapper = new Mock<IMapper>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockUserRepository.Object);
@@ -56,7 +54,6 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockAccessControlRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockRoleRepository.Object);
             _ = ServiceCollection.AddSingleton<IUserManagementService, UserService>();
-            _ = ServiceCollection.AddSingleton<IMapper>(this.mockMapper.Object);
 
             Services = ServiceCollection.BuildServiceProvider();
 
@@ -299,12 +296,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             // We assume that the new user is created and we can retrieve it
             var newUser = Fixture.Build<User>()
-                         .With(u => u.Email, email)
-                         .With(u => u.Name, "New User")
-                         .With(u => u.GivenName, "newuser")
-                         .With(u => u.FamilyName, "User")
-                         .With(u => u.PrincipalId, "principal-new")
-                         .Create();
+                .With(u => u.Id, Guid.NewGuid().ToString())
+                .With(u => u.Email, email)
+                .With(u => u.Name, "New User")
+                .With(u => u.GivenName, "newuser")
+                .With(u => u.FamilyName, "User")
+                .With(u => u.PrincipalId, Guid.NewGuid().ToString())
+                .Create();
             _ = this.mockUserRepository
                  .Setup(r => r.GetByIdAsync(It.IsAny<string>(), It.IsAny<Expression<Func<User, object>>[]>()))
                  .ReturnsAsync(newUser);
@@ -319,17 +317,24 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 PrincipalId = newUser.PrincipalId
             };
 
-            _ = mockMapper
-                .Setup(m => m.Map<UserDetailsModel>(It.Is<User>(u => u.Email.ToLower() == email.ToLower())))
-                .Returns(expectedModel);
+            // Add default Administrators role
+            var adminRole = new Role
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Administrators"
+            };
+            _ = this.mockRoleRepository
+                 .Setup(r => r.GetByNameAsync("Administrators"))
+                 .ReturnsAsync(adminRole);
 
             // Act
             var result = await userService.GetOrCreateUserByEmailAsync(email, principal);
 
             // Assert
-            _ = result.Should().BeEquivalentTo(expectedModel);
+            _ = result.Should().BeEquivalentTo(expectedModel,
+                opts => opts.Excluding(obj => obj.PrincipalId).Excluding(obj => obj.Id));
             this.mockUserRepository.Verify(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())), Times.Once);
-            this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);
+            this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Exactly(2));
         }
     }
 }

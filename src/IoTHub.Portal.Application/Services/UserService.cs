@@ -169,7 +169,7 @@ namespace IoTHub.Portal.Application.Services
                 GivenName = preferredUsername,
                 FamilyName = familyName,
                 PrincipalId = Guid.NewGuid().ToString(),
-                Principal = new Principal()
+                //Principal = new Principal()
             };
 
             await this.userRepository.InsertAsync(newUser);
@@ -189,7 +189,7 @@ namespace IoTHub.Portal.Application.Services
                 var newAccessControl = new AccessControl
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Principal = newUser.Principal,
+                    //Principal = newUser.Principal,
                     PrincipalId = newUser.PrincipalId,
                     RoleId = adminRole.Id,
                     Role = adminRole,

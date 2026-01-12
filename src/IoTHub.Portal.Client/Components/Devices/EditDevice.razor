@@ -66,7 +66,7 @@
                     <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
                         <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton" Disabled="isProcessing">Delete device</MudButton>
                         <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                            <MudButton id="saveButton" OnClick="ProcessActionOnDevice" Disabled="isProcessing">@saveButtonText</MudButton>
+                            <MudButton id="SaveButton" OnClick="ProcessActionOnDevice" Disabled="isProcessing">@saveButtonText</MudButton>
                             <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
                                 <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
                                 <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Duplicate)">Duplicate</MudMenuItem>

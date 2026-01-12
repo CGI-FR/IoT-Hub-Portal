@@ -124,7 +124,7 @@
     private bool canWrite;
 
     [CascadingParameter]
-    public Error Error { get; set; } = default!;
+    public Error? Error { get; set; } = default!;
 
     [Parameter]
     public string DeviceID { get; set; } = default!;
@@ -149,7 +149,7 @@
         }
         catch (ProblemDetailsException exception)
         {
-            Error.ProcessProblemDetails(exception);
+            Error?.ProcessProblemDetails(exception);
         }
         finally
         {

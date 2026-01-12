@@ -44,7 +44,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
 
             _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
-                .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite, PortalPermissions.DeviceExecute });
+                .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite });
         }
 
         [Test]
@@ -88,7 +88,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
                 .Returns(Task.CompletedTask);
 
-            var cut = RenderComponent<EditDevice>();
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
 
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
@@ -128,7 +130,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
-            var cut = RenderComponent<EditDevice>();
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
 
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(string.Empty);
@@ -190,7 +194,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Setup(service => service.GetDeviceModelModelPropertiesAsync(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
 
-            var cut = RenderComponent<EditDevice>();
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
 
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
@@ -288,7 +294,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Returns(Task.CompletedTask);
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Create));
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.context, CreateEditMode.Create)
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
 
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
@@ -363,7 +372,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Returns(Task.CompletedTask);
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, expectedDeviceDetails.DeviceID));
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.context, CreateEditMode.Edit)
+                .Add(p => p.DeviceID, expectedDeviceDetails.DeviceID)
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#saveButton");
 
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
@@ -428,7 +441,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Returns(Task.CompletedTask);
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
-            var cut = RenderComponent<EditDevice>();
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
 
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
@@ -495,7 +510,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Returns(Task.CompletedTask);
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
-            var cut = RenderComponent<EditDevice>();
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
 
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
@@ -560,7 +577,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
-            var cut = RenderComponent<EditDevice>();
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
 
             cut.WaitForElement("#duplicate-device-switch").Change(true);
 
@@ -573,7 +592,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
-            var cut = RenderComponent<EditDevice>();
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
 
             cut.WaitForElement("#SaveButton").Click();
 
@@ -848,8 +869,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, mockDeviceDetails.DeviceID));
-
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.context, CreateEditMode.Edit)
+                .Add(p => p.DeviceID, mockDeviceDetails.DeviceID)
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
 
             var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();
@@ -969,7 +993,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             _ = this.mockDialogService.Setup(c => c.Show<DeleteDevicePage>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, mockDeviceDetails.DeviceID));
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.context, CreateEditMode.Edit)
+                .Add(p => p.DeviceID, mockDeviceDetails.DeviceID)
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
 
             var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();
@@ -1029,7 +1057,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             _ = this.mockDialogService.Setup(c => c.Show<DeleteDevicePage>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, mockDeviceDetails.DeviceID));
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.context, CreateEditMode.Edit)
+                .Add(p => p.DeviceID, mockDeviceDetails.DeviceID)
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
 
             var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();
@@ -1086,7 +1118,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, mockDeviceDetails.DeviceID));
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.context, CreateEditMode.Edit)
+                .Add(p => p.DeviceID, mockDeviceDetails.DeviceID)
+                .Add(p => p.CanWrite, true)
+                .Add(p => p.CanExec, true));
             cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModelDto.Name)}").InnerHtml.Should().NotBeEmpty());
 
             var saveButton = cut.WaitForElement("#saveButton");

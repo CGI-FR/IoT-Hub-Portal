@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 ModelId = Fixture.Create<string>()
             };
 
-            _ = MockHttpClient.When(HttpMethod.Put, $"/api/lorawan/models/{expectedDeviceModel.ModelId}")
+            _ = MockHttpClient.When(HttpMethod.Put, $"/api/lorawan/models")
                 .With(m =>
                 {
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceModelDto>>();

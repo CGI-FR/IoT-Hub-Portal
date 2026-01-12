@@ -197,6 +197,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Act
+            // Wait for authorization to complete before accessing elements
+            cut.WaitForAssertion(() => cut.FindAll("div").Count.Should().BeGreaterThan(0));
+
             cut.WaitForElement("#delete-device-configuration").Click();
 
             // Assert

@@ -168,7 +168,7 @@
 </AuthorizedContent>
 
 @code {
-    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.DeviceConfigurationRead };
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.ModelRead };
     private bool canWrite;
 
     [CascadingParameter]

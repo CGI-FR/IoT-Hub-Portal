@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
 
             _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
-                .ReturnsAsync(new[] { PortalPermissions.ModelRead, PortalPermissions.ModelRead });
+                .ReturnsAsync(new[] { PortalPermissions.ModelRead, PortalPermissions.ModelWrite });
         }
 
         [Test]

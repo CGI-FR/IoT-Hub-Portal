@@ -17,6 +17,5 @@ namespace IoTHub.Portal.Domain.Entities
         public string? FamilyName { get; set; } = default!;
         public string? Avatar { get; set; } = default!;
         public string PrincipalId { get; set; }
-        public virtual Principal Principal { get; set; } = new Principal();
     }
 }

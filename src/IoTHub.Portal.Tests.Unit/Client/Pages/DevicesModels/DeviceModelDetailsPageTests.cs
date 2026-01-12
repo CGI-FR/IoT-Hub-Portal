@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
             _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
-                .ReturnsAsync(new[] { PortalPermissions.ModelRead, PortalPermissions.ModelRead });
+                .ReturnsAsync(new[] { PortalPermissions.ModelRead, PortalPermissions.ModelWrite });
         }
 
         [Test]

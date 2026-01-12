@@ -18,7 +18,6 @@
 </MudTooltip>
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
-
     <MudForm Model="Configuration">
         <MudGrid>
             <MudItem xs="12" sm="4" md="3">
@@ -54,8 +53,8 @@
                 @if (canWrite)
                 {
                     <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                        <MudButton id="delete-device-configuration" Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="Delete" Disabled="isProcessing">Delete</MudButton>
-                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+                        <MudButton id="delete-device-configuration" Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="Delete" Disabled="IsLoading">Delete</MudButton>
+                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="IsLoading">Save Changes</MudButton>
                     </MudItem>
                 }
             </MudItem>
@@ -232,7 +231,7 @@
     private bool canWrite;
 
     [CascadingParameter]
-    public Error Error { get; set; } = default!;
+    public Error? Error { get; set; } = default!;
 
     IEnumerable<DeviceTagDto> AvailableTags { get; set; } = Array.Empty<DeviceTagDto>();
     IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
@@ -248,13 +247,13 @@
     private ConfigurationMetrics Metrics { get; set; } = new();
     private void Return() => navigationManager.NavigateTo("/device-configurations");
 
-    private bool isProcessing;
-
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         try
         {
-            isProcessing = true;
+            IsLoading = true;
 
             Configuration = await DeviceConfigurationsClientService.GetDeviceConfiguration(ConfigId);
             Metrics = await DeviceConfigurationsClientService.GetDeviceConfigurationMetrics(ConfigId);
@@ -272,7 +271,7 @@
         }
         finally
         {
-            isProcessing = false;
+            IsLoading = false;
         }
     }
 
@@ -290,7 +289,7 @@
 
     private async Task Delete()
     {
-        isProcessing = true;
+        IsLoading = true;
 
         var parameters = new DialogParameters
         {
@@ -300,7 +299,7 @@
 
         var confirm = await DialogService.Show<DeleteDeviceConfiguration>("Confirm Deletion", parameters).Result;
 
-        isProcessing = false;
+        IsLoading = false;
 
         if (confirm.Canceled)
         {
@@ -314,7 +313,7 @@
     {
         try
         {
-            isProcessing = true;
+            IsLoading = true;
 
             await DeviceConfigurationsClientService.UpdateDeviceConfiguration(Configuration);
 
@@ -329,7 +328,7 @@
         }
         finally
         {
-            isProcessing = false;
+            IsLoading = false;
         }
     }
 }
