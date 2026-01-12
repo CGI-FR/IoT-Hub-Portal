@@ -62,7 +62,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 return Unauthorized();
             }
 
-            this.logger.LogDebug("Getting permissions for user {Email}", emailClaim);
+            this.logger.LogDebug("Getting permissions for current user");
 
             var user = await userManagementService.GetOrCreateUserByEmailAsync(emailClaim, User);
 
@@ -75,7 +75,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 }
             }
 
-            this.logger.LogInformation("User {Email} has {Count} permissions", emailClaim, userPermissions.Count);
+            this.logger.LogInformation("User with principal ID {PrincipalId} has {Count} permissions", user.PrincipalId, userPermissions.Count);
 
             return Ok(userPermissions.ToArray());
         }
