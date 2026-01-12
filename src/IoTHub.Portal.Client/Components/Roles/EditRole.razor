@@ -23,7 +23,8 @@
                     <MudSelectItem Value="@act">@act</MudSelectItem>
                 }
             </MudSelect>
-            <MudButton Variant="Variant.Outlined" Disabled="string.IsNullOrEmpty(resourceFilter) && string.IsNullOrEmpty(actionFilter)" OnClick="ClearFilters">Réinitialiser</MudButton>
+            <MudButton Variant="Variant.Outlined" Disabled="string.IsNullOrEmpty(resourceFilter) && string.IsNullOrEmpty(actionFilter)" OnClick="ClearFilters">Clear</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="SelectAll">Select All</MudButton>
             <MudSpacer />
             <MudChip Color="Color.Primary" Variant="Variant.Outlined">@FilteredPermissions.Count() / @AllPermissions.Length</MudChip>
         </MudStack>
@@ -61,11 +62,11 @@
 @code {
     [Parameter] public RoleDetailsModel Role { get; set; } = default!;
     [Parameter] public EventCallback OnSaved { get; set; }
-    [Parameter] public bool IsEdit { get; set; } = false;
+    [Parameter] public bool IsEdit { get; set; }
 
     private MudForm form = default!;
-    private bool isProcessing = false;
-    private string ButtonText => IsEdit ? "Enregistrer" : "Créer";
+    private bool isProcessing;
+    private string ButtonText => "Save";
 
     private HashSet<string> SelectedPermissions { get; set; } = new();
     private string[] AllPermissions = Array.Empty<string>();
@@ -98,6 +99,14 @@
     {
         resourceFilter = null;
         actionFilter = null;
+    }
+
+    private void SelectAll()
+    {
+        foreach (var permission in FilteredPermissions)
+        {
+            _ = SelectedPermissions.Add(permission);
+        }
     }
 
     protected override async Task OnParametersSetAsync()
