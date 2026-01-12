@@ -133,19 +133,15 @@
             var result = await LoRaWanConcentratorsClientService.GetConcentrators(uri);
 
             return new TableData<ConcentratorDto>
-                {
-                    Items = result.Items,
-                    TotalItems = result.TotalItems
-                };
+            {
+                Items = result.Items,
+                TotalItems = result.TotalItems
+            };
         }
         catch (ProblemDetailsException exception)
         {
-            Error?.ProcessProblemDetails(exception);
+            Error.ProcessProblemDetails(exception);
             return new TableData<ConcentratorDto>();
-        }
-        finally
-        {
-            IsLoading = false;
         }
     }
 
@@ -156,7 +152,7 @@
 
     private async Task DeleteDevice(ConcentratorDto device)
     {
-        var parameters = new DialogParameters {{"deviceId", device.DeviceId}};
+        var parameters = new DialogParameters { { "deviceId", device.DeviceId } };
 
         var result = await DialogService.Show<DeleteConcentratorPage>("Confirm Deletion", parameters).Result;
 
@@ -165,7 +161,6 @@
             return;
         }
 
-        // Update the list of devices after the deletion
         await Search();
     }
 

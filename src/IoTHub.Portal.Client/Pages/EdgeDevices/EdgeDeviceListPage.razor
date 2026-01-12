@@ -238,7 +238,7 @@
 
             var uri = $"api/edge/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&orderBy={orderBy}&modelId={this.edgeModel?.ModelId}";
 
-            foreach(var label in selectedLabels)
+            foreach (var label in selectedLabels)
             {
                 uri += $"&labels={label.Name}";
             }
@@ -246,10 +246,10 @@
             var result = await EdgeDeviceClientService.GetDevices(uri);
 
             return new TableData<IoTEdgeListItem>
-                {
-                    Items = result.Items,
-                    TotalItems = result.TotalItems
-                };
+            {
+                Items = result.Items,
+                TotalItems = result.TotalItems
+            };
         }
         catch (ProblemDetailsException exception)
         {

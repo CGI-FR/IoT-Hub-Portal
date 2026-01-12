@@ -32,7 +32,7 @@
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
                         <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@Device.Image?.ToString()" />
+                            <MudImage Src="@Device.Image" />
                         </MudAvatar>
                     </div>
                 </MudCardContent>
@@ -78,7 +78,7 @@
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
+                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red" : "")>
                     <MudExpansionPanels MultiExpansion="true">
                         <MudGrid>
                             <MudItem xs="12">
@@ -97,7 +97,7 @@
                                                     {
                                                         <MudAutocomplete T="IDeviceModel"
                                                                          id="@nameof(DeviceDetails.ModelId)"
-                                                        @bind-Value="DeviceModel"
+                                                                         @bind-Value="DeviceModel"
                                                                          SearchFunc="@Search"
                                                                          Label="Model*"
                                                                          Dense=true
@@ -148,7 +148,7 @@
                                                                       Label="Device ID"
                                                                       Variant="Variant.Outlined"
                                                                       Validation=@(standardValidator.ValidateValue)
-                                                                      For="@(()=> Device.DeviceID)"
+                                                                      For="@(() => Device.DeviceID)"
                                                                       HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
                                                     }
                                                 }
@@ -322,7 +322,7 @@
                 {
                     if (IsLoRa)
                     {
-                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
+                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red" : "")>
                             <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraModelDto="@(LoRaDeviceModelDto)" LoraValidator="@(loraValidator)" />
                         </MudTabPanel>
                     }
@@ -364,11 +364,11 @@
     private IDeviceDetails Device { get; set; } = new DeviceDetails();
 
     public PatternMask maskLoRaDeviceID = new PatternMask("XXXXXXXXXXXXXXXX")
-        {
-            MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
-            CleanDelimiters = false,
-            Transformation = AllUpperCase
-        };
+    {
+        MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
+        CleanDelimiters = false,
+        Transformation = AllUpperCase
+    };
 
     private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 
@@ -707,15 +707,15 @@
     private async Task<IEnumerable<IDeviceModel>> Search(string value)
     {
         var filter = new DeviceModelFilter
-            {
-                SearchText = value,
-                PageNumber = 0,
-                PageSize = 100,
-                OrderBy = new string[]
+        {
+            SearchText = value,
+            PageNumber = 0,
+            PageSize = 100,
+            OrderBy = new string[]
                             {
                     string.Empty
                             }
-            };
+        };
         return (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
     }
 
@@ -753,14 +753,14 @@
             _deviceModel = model;
 
             Device = new DeviceDetails
-                {
-                    DeviceID = Device.DeviceID,
-                    ModelId = model?.ModelId,
-                    Image = model?.Image,
-                    DeviceName = Device.DeviceName,
-                    IsEnabled = Device.IsEnabled,
-                    Tags = Device.Tags
-                };
+            {
+                DeviceID = Device.DeviceID,
+                ModelId = model?.ModelId,
+                Image = model?.Image,
+                DeviceName = Device.DeviceName,
+                IsEnabled = Device.IsEnabled,
+                Tags = Device.Tags
+            };
 
             if (model == null || string.IsNullOrWhiteSpace(model.ModelId))
             {
@@ -772,16 +772,16 @@
                 var loRaDeviceModelResult = await LoRaWanDeviceModelsClientService.GetDeviceModel(model.ModelId);
 
                 this.Device = new LoRaDeviceDetails
-                    {
-                        DeviceID = this.Device.DeviceID,
-                        ModelId = model.ModelId,
-                        Image = model.Image,
-                        DeviceName = this.Device.DeviceName,
-                        IsEnabled = this.Device.IsEnabled,
-                        Tags = this.Device.Tags,
-                        SensorDecoder = loRaDeviceModelResult.SensorDecoder,
-                        UseOTAA = loRaDeviceModelResult.UseOTAA
-                    };
+                {
+                    DeviceID = this.Device.DeviceID,
+                    ModelId = model.ModelId,
+                    Image = model.Image,
+                    DeviceName = this.Device.DeviceName,
+                    IsEnabled = this.Device.IsEnabled,
+                    Tags = this.Device.Tags,
+                    SensorDecoder = loRaDeviceModelResult.SensorDecoder,
+                    UseOTAA = loRaDeviceModelResult.UseOTAA
+                };
 
                 LoRaDeviceModelDto = loRaDeviceModelResult;
 
@@ -792,13 +792,13 @@
                 var properties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
 
                 Properties.AddRange(properties.Select(x => new DevicePropertyValue
-                    {
-                        DisplayName = x.DisplayName,
-                        IsWritable = x.IsWritable,
-                        Name = x.Name,
-                        Order = x.Order,
-                        PropertyType = x.PropertyType
-                    }));
+                {
+                    DisplayName = x.DisplayName,
+                    IsWritable = x.IsWritable,
+                    Name = x.Name,
+                    Order = x.Order,
+                    PropertyType = x.PropertyType
+                }));
 
                 IsLoRa = false;
             }

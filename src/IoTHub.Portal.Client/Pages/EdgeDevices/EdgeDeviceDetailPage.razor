@@ -35,7 +35,7 @@
                     <MudCardContent>
                         <div class="d-flex justify-center mb-4">
                             <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                                <MudImage Src="@edgeModel?.Image?.ToString()" />
+                                <MudImage Src="@edgeModel.Image" />
                             </MudAvatar>
                         </div>
                     </MudCardContent>
@@ -445,7 +445,7 @@
     {
         var parameters = new DialogParameters { { nameof(ConnectionStringDialog.deviceId), this.deviceId } };
 
-        _ =  await DialogService.Show<ConnectionStringDialog>("Connect Edge device", parameters).Result;
+        _ = await DialogService.Show<ConnectionStringDialog>("Connect Edge device", parameters).Result;
     }
 
     public async Task ShowDeleteModal()

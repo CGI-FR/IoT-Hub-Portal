@@ -64,11 +64,11 @@
             try
             {
                 LayerDto newLayer = new LayerDto
-                    {
-                        Name = "Main Layer",
-                        Father = null,
-                        Planning = "None"
-                    };
+                {
+                    Name = "Main Layer",
+                    Father = null,
+                    Planning = "None"
+                };
                 newLayer.Id = await LayerClientService.CreateLayer(newLayer);
                 Layers.Add(new LayerHash(newLayer, 0, false));
             }
@@ -85,11 +85,11 @@
         try
         {
             LayerDto newLayer = new LayerDto
-                {
-                    Name = "New Layer",
-                    Father = layer.LayerData.Id,
-                    Planning = layer.LayerData.Planning != null ? layer.LayerData.Planning : "None"
-                };
+            {
+                Name = "New Layer",
+                Father = layer.LayerData.Id,
+                Planning = layer.LayerData.Planning != null ? layer.LayerData.Planning : "None"
+            };
             newLayer.Id = await LayerClientService.CreateLayer(newLayer);
 
             layer.Children.Add(new LayerHash(newLayer, layer.Level + 1, false));

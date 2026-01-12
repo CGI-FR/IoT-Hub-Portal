@@ -215,18 +215,18 @@
     private void SetStandardDeviceModel()
     {
         Model = new DeviceModelDto
-            {
-                ModelId = Model.ModelId,
-                Name = Model.Name,
-                IsBuiltin = Model.IsBuiltin,
-                Description = Model.Description
-            };
+        {
+            ModelId = Model.ModelId,
+            Name = Model.Name,
+            IsBuiltin = Model.IsBuiltin,
+            Description = Model.Description
+        };
     }
 
     internal IDeviceModel Model { get; set; } = new DeviceModelDto
-        {
-            ModelId = Guid.NewGuid().ToString()
-        };
+    {
+        ModelId = Guid.NewGuid().ToString()
+    };
 
     // Used to manage the picture
     private string? imageData = default!;

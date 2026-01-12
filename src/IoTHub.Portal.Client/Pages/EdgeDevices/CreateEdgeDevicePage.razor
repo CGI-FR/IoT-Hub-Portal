@@ -325,18 +325,18 @@
         if (string.IsNullOrEmpty(value))
             return edgeModelList
                     .Select(m => new IoTEdgeModel
-                        {
-                            ModelId = m.ModelId,
-                            Name = m.Name
-                        }); ;
+                    {
+                        ModelId = m.ModelId,
+                        Name = m.Name
+                    }); ;
 
         return edgeModelList
                     .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
                     .Select(m => new IoTEdgeModel
-                        {
-                            ModelId = m.ModelId,
-                            Name = m.Name
-                        });
+                    {
+                        ModelId = m.ModelId,
+                        Name = m.Name
+                    });
     }
 
     public async Task ChangeModel(IoTEdgeModel edgeModel)
@@ -346,14 +346,14 @@
             this._edgeModel = await this.EdgeModelClientService.GetIoTEdgeModel(edgeModel.ModelId);
 
             this.EdgeDevice = new IoTEdgeDevice()
-                {
-                    DeviceId = this.EdgeDevice.DeviceId,
-                    DeviceName = this.EdgeDevice.DeviceName,
-                    ModelId = edgeModel?.ModelId!,
-                    Image = edgeModel?.Image!,
-                    Tags = this.EdgeDevice.Tags,
-                    IsEnabled = this.EdgeDevice.IsEnabled
-                };
+            {
+                DeviceId = this.EdgeDevice.DeviceId,
+                DeviceName = this.EdgeDevice.DeviceName,
+                ModelId = edgeModel?.ModelId!,
+                Image = edgeModel?.Image!,
+                Tags = this.EdgeDevice.Tags,
+                IsEnabled = this.EdgeDevice.IsEnabled
+            };
 
             if (edgeModel == null || string.IsNullOrWhiteSpace(edgeModel.ModelId))
             {

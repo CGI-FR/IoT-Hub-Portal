@@ -1,0 +1,210 @@
+@using IoTHub.Portal.Shared.Extensions
+@inject IRoleClientService RoleClientService
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthStateProvider
+
+<MudForm Model="@Role" @ref="form">
+    <MudTextField T="string" Label="Nom" @bind-Value="Role.Name" Required="true" />
+    <MudTextField T="string" Label="Description" @bind-Value="Role.Description" />
+    <MudColorPicker Label="Couleur" @bind-Text="Role.Color" />
+
+    <MudPaper Class="pa-4 mt-4" Elevation="1">
+        <MudStack Row Spacing="2" Class="mb-3" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.subtitle1" Class="mr-4">Permissions</MudText>
+            <MudSelect T="string" Label="Ressource" Dense="true" Clearable="true" @bind-Value="resourceFilter" Class="mr-4" ResetValueOnEmptyText="true">
+                @foreach (var res in ResourceOptions)
+                {
+                    <MudSelectItem Value="@res">@res</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect T="string" Label="Action" Dense="true" Clearable="true" @bind-Value="actionFilter" Class="mr-4" ResetValueOnEmptyText="true">
+                @foreach (var act in ActionOptions)
+                {
+                    <MudSelectItem Value="@act">@act</MudSelectItem>
+                }
+            </MudSelect>
+            <MudButton Variant="Variant.Outlined" Disabled="string.IsNullOrEmpty(resourceFilter) && string.IsNullOrEmpty(actionFilter)" OnClick="ClearFilters">Réinitialiser</MudButton>
+            <MudSpacer />
+            <MudChip Color="Color.Primary" Variant="Variant.Outlined">@FilteredPermissions.Count() / @AllPermissions.Length</MudChip>
+        </MudStack>
+        @if (isLoadingPermissions)
+        {
+            <MudProgressCircular Indeterminate="true" />
+        }
+        else
+        {
+            <MudGrid>
+                @if (!FilteredPermissions.Any())
+                {
+                    <MudItem xs="12"><MudText Color="Color.Error">Aucune permission ne correspond aux filtres.</MudText></MudItem>
+                }
+                else
+                {
+                    @foreach (var permission in FilteredPermissions)
+                    {
+                        var isChecked = SelectedPermissions.Contains(permission);
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudCheckBox T="bool" Checked="@isChecked" CheckedChanged="@(val => TogglePermission(permission, val))" Label="@permission" />
+                        </MudItem>
+                    }
+                }
+            </MudGrid>
+            <MudText Class="mt-2" Color="Color.Secondary">@GetMultiSelectionText(SelectedPermissions)</MudText>
+        }
+        <MudDivider Class="my-4" />
+        <MudStack Row Justify="Justify.FlexEnd">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Save" Disabled="isProcessing || isLoadingPermissions" id="saveRoleButton">@ButtonText</MudButton>
+        </MudStack>
+    </MudPaper>
+</MudForm>
+
+@code {
+    [Parameter] public RoleDetailsModel Role { get; set; } = default!;
+    [Parameter] public EventCallback OnSaved { get; set; }
+    [Parameter] public bool IsEdit { get; set; } = false;
+
+    private MudForm form = default!;
+    private bool isProcessing = false;
+    private string ButtonText => IsEdit ? "Enregistrer" : "Créer";
+
+    private HashSet<string> SelectedPermissions { get; set; } = new();
+    private string[] AllPermissions = Array.Empty<string>();
+    private bool isLoadingPermissions = true;
+    private bool authSubscribed;
+
+    private string resourceFilter;
+    private string actionFilter;
+
+    private IEnumerable<string> ResourceOptions => AllPermissions.Select(p => p.Contains(':') ? p.Split(':')[0] : p).Distinct().OrderBy(x => x);
+    private IEnumerable<string> ActionOptions => AllPermissions.Where(p => p.Contains(':')).Select(p => p.Split(':')[1]).Distinct().OrderBy(x => x);
+    private IEnumerable<string> FilteredPermissions => AllPermissions.Where(p => FilterByResource(p) && FilterByAction(p));
+
+    private bool FilterByResource(string permission)
+    {
+        if (string.IsNullOrEmpty(resourceFilter)) return true;
+        var res = permission.Contains(':') ? permission.Split(':')[0] : permission;
+        return res.Equals(resourceFilter, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool FilterByAction(string permission)
+    {
+        if (string.IsNullOrEmpty(actionFilter)) return true;
+        if (!permission.Contains(':')) return false;
+        var act = permission.Split(':')[1];
+        return act.Equals(actionFilter, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void ClearFilters()
+    {
+        resourceFilter = null;
+        actionFilter = null;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Role?.Actions != null && Role.Actions.Any())
+        {
+            SelectedPermissions = Role.Actions.ToHashSet();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await EnsurePermissionsLoadedAsync();
+    }
+
+    private async Task EnsurePermissionsLoadedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity?.IsAuthenticated == true)
+        {
+            await LoadPermissions();
+        }
+        else if (!authSubscribed)
+        {
+            AuthStateProvider.AuthenticationStateChanged += OnAuthStateChanged;
+            authSubscribed = true;
+        }
+    }
+
+    private async void OnAuthStateChanged(Task<AuthenticationState> task)
+    {
+        var state = await task;
+        if (state.User.Identity?.IsAuthenticated == true)
+        {
+            AuthStateProvider.AuthenticationStateChanged -= OnAuthStateChanged;
+            authSubscribed = false;
+            await LoadPermissions();
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadPermissions()
+    {
+        try
+        {
+            isLoadingPermissions = true;
+            AllPermissions = (await RoleClientService.GetPermissions()).Select(x => x.AsString()).ToArray();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erreur chargement permissions : {ex.Message}", Severity.Error);
+            AllPermissions = Array.Empty<string>();
+        }
+        finally
+        {
+            isLoadingPermissions = false;
+            StateHasChanged();
+        }
+    }
+
+    private void TogglePermission(string permission, bool val)
+    {
+        if (val)
+            _ = SelectedPermissions.Add(permission);
+        else
+            _ = SelectedPermissions.Remove(permission);
+    }
+
+    private string GetMultiSelectionText(IEnumerable<string> selectedValues)
+        => $"{selectedValues.Count()} permission{(selectedValues.Count() > 1 ? "s sélectionnées" : " sélectionnée")}";
+
+    private async Task Save()
+    {
+        isProcessing = true;
+        await form.Validate();
+        if (!form.IsValid)
+        {
+            Snackbar.Add("Erreur de validation", Severity.Error);
+            isProcessing = false;
+            return;
+        }
+        try
+        {
+            Role.Actions = SelectedPermissions.ToList();
+            if (IsEdit)
+                await RoleClientService.UpdateRole(Role);
+            else
+                await RoleClientService.CreateRole(Role);
+
+            await OnSaved.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erreur : {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (authSubscribed)
+        {
+            AuthStateProvider.AuthenticationStateChanged -= OnAuthStateChanged;
+            authSubscribed = false;
+        }
+    }
+}

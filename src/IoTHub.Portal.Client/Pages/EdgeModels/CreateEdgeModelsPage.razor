@@ -267,10 +267,10 @@
     private MudForm form = default!;
     private bool isProcessing;
 
-    private IoTEdgeModel Model = new IoTEdgeModel()
-        {
-            ModelId = Guid.NewGuid().ToString()
-        };
+    private IoTEdgeModel Model = new()
+    {
+        ModelId = Guid.NewGuid().ToString()
+    };
 
     // Used to manage the picture
     private string? imageData = default!;

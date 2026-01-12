@@ -110,9 +110,9 @@
 
     public PatternMask maskThumbprint = new("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
     {
-            MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
-            CleanDelimiters = false,
-            Transformation = AllUpperCase
+        MaskChars = new[] { new MaskChar('X', "[0-9a-fA-F]") },
+        CleanDelimiters = false,
+        Transformation = AllUpperCase
     };
 
     protected override async Task OnInitializedAsync()

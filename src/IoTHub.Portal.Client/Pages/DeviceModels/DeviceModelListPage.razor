@@ -144,18 +144,18 @@
             }
 
             var result = await DeviceModelsClientService.GetDeviceModelsAsync(new DeviceModelFilter
-                {
-                    SearchText = this.deviceModelSearchInfo.SearchText!,
-                    PageNumber = state.Page,
-                    PageSize = state.PageSize,
-                    OrderBy = new string[] { orderBy }
-                });
+            {
+                SearchText = this.deviceModelSearchInfo.SearchText!,
+                PageNumber = state.Page,
+                PageSize = state.PageSize,
+                OrderBy = new string[] { orderBy }
+            });
 
             return new TableData<DeviceModelDto>
-                {
-                    Items = result.Items,
-                    TotalItems = result.TotalItems
-                };
+            {
+                Items = result.Items,
+                TotalItems = result.TotalItems
+            };
         }
         catch (ProblemDetailsException exception)
         {

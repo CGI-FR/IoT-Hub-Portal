@@ -72,10 +72,10 @@
                             </HeaderContent>
                             <RowTemplate Context="ContextSchedule">
                                 <MudTd DataLabel="Start" Style="word-break: break-all;">
-                                    <MudTextField @bind-Value="@ContextSchedule.Start" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start )" Variant="Variant.Outlined" Required="true" Disabled="@(scheduleList.IndexOf(ContextSchedule)==0)"></MudTextField>
+                                    <MudTextField @bind-Value="@ContextSchedule.Start" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start)" Variant="Variant.Outlined" Required="true" Disabled="@(scheduleList.IndexOf(ContextSchedule) == 0)"></MudTextField>
                                 </MudTd>
                                 <MudTd DataLabel="End" Style="word-break: break-all;">
-                                    <MudTextField @bind-Value="@ContextSchedule.End" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                    <MudTextField @bind-Value="@ContextSchedule.End" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                 </MudTd>
                                 <MudTd DataLabel="Command" Style="text-align: center;">
                                     <MudSelect @bind-Value="@ContextSchedule.CommandId" Label="Command" Margin="Margin.Dense" Variant="Variant.Outlined">
@@ -146,10 +146,10 @@
                             </HeaderContent>
                             <RowTemplate Context="ContextSchedule">
                                 <MudTd DataLabel="Start" Style="word-break: break-all;">
-                                    <MudTextField Margin="Margin.Dense" Label="From 00:00" For="@(() => ContextSchedule.Start )" Variant="Variant.Outlined" Disabled="true"></MudTextField>
+                                    <MudTextField Margin="Margin.Dense" Label="From 00:00" For="@(() => ContextSchedule.Start)" Variant="Variant.Outlined" Disabled="true"></MudTextField>
                                 </MudTd>
                                 <MudTd DataLabel="End" Style="word-break: break-all;">
-                                    <MudTextField Margin="Margin.Dense" Label="To 24:00" For="@(() => ContextSchedule.End )" Variant="Variant.Outlined" Disabled="true" />
+                                    <MudTextField Margin="Margin.Dense" Label="To 24:00" For="@(() => ContextSchedule.End)" Variant="Variant.Outlined" Disabled="true" />
                                 </MudTd>
                                 <MudTd DataLabel="Command" Style="text-align: center;">
                                     <MudSelect @bind-Value="@planning.CommandId" Label="Command" Margin="Margin.Dense" Variant="Variant.Outlined">
@@ -159,9 +159,12 @@
                                         }
                                     </MudSelect>
                                 </MudTd>
-                                <MudTd DataLabel="Delete" Style="text-align: center">
-                                    <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="( () => DeleteSchedule(ContextSchedule))" Icon="@Icons.Material.Outlined.Delete" Size="Size.Medium"></MudIconButton>
-                                </MudTd>
+                                @if (CanWrite)
+                                {
+                                    <MudTd DataLabel="Delete" Style="text-align: center">
+                                        <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="(() => DeleteSchedule(ContextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                    </MudTd>
+                                }
                             </RowTemplate>
                         </MudTable>
                         <div>
@@ -170,7 +173,11 @@
                             {
                                 if (day != DaysEnumFlag.DaysOfWeek.None)
                                 {
-                                    <MudButton id="editPlanningChangeOffDayLayers" Style=@((planning.DayOff & day) == day ? "text-decoration: underline;" : "") Size="Size.Medium" OnClick="() => ChangeOffDay(day)" Color="@((planning.DayOff & day) == day ? Color.Success : Color.Error)">@day</MudButton>
+                                    <MudButton id="editPlanningChangeOffDayLayers"
+                                               Style=@((planning.DayOff & day) == day ? "text-decoration: underline;" : "")
+                                               Size="Size.Medium"
+                                               OnClick="() => ChangeOffDay(day)"
+                                               Color="@((planning.DayOff & day) == day ? Color.Success : Color.Error)">@day</MudButton>
                                 }
                             }
                         </div>
