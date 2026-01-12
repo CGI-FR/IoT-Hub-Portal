@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
 {
+    using Shared.Security;
+
     [TestFixture]
     public class EditLoraDeviceTests : BlazorUnitTest
     {
@@ -19,6 +21,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite, PortalPermissions.DeviceExecute });
         }
 
         [Test]

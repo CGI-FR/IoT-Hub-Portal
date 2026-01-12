@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
+    using Portal.Shared.Helpers;
+
     [TestFixture]
     public class NavMenuTests : BlazorUnitTest
     {
@@ -16,6 +18,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             _ = Services.AddScoped<ILayoutService, LayoutService>();
 
             _ = TestContext?.AddTestAuthorization().SetAuthorized(Guid.NewGuid().ToString());
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(PortalPermissionsHelper.GetAllPermissions());
 
         }
 

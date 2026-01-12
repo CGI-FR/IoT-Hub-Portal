@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class ConcentratorDetailPageTests : BlazorUnitTest
     {
@@ -19,10 +21,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockLoRaWanConcentratorsClientService = MockRepository.Create<ILoRaWanConcentratorClientService>();
+            this.mockPermissionsService = MockRepository.Create<IPermissionsService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanConcentratorsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.ConcentratorRead, PortalPermissions.ConcentratorWrite });
+
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
@@ -123,7 +130,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
                 .ReturnsAsync(new[]
                 {
-                                new FrequencyPlan()
+                    new FrequencyPlan()
                 });
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(mockConcentrator.DeviceId))

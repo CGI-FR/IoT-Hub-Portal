@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 {
+    using Shared.Security;
     using ConnectionStringDialog = Portal.Client.Dialogs.Devices.ConnectionStringDialog;
 
     [TestFixture]
@@ -41,6 +42,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite, PortalPermissions.DeviceExecute });
         }
 
         [Test]

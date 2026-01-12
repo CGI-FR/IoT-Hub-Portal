@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class CreateEdgeDevicePageTest : BlazorUnitTest
     {
@@ -31,6 +33,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
 
             _ = Services.AddSingleton<IEdgeDeviceLayoutService, EdgeDeviceLayoutService>();
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.EdgeDeviceRead, PortalPermissions.EdgeDeviceWrite, PortalPermissions.EdgeDeviceExecute });
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }

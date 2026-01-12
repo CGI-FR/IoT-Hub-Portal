@@ -29,6 +29,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         private Mock<IUserRepository> mockUserRepository;
         private Mock<IPrincipalRepository> mockPrincipalRepository;
         private Mock<IMapper> mockMapper;
+        private Mock<IAccessControlRepository> mockAccessControlRepository;
+        private Mock<IRoleRepository> mockRoleRepository;
         private IUserManagementService userService;
 
         [SetUp]
@@ -44,11 +46,15 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockUnitOfWork = new Mock<IUnitOfWork>();
             this.mockUserRepository = new Mock<IUserRepository>();
             this.mockPrincipalRepository = new Mock<IPrincipalRepository>();
+            this.mockAccessControlRepository = new Mock<IAccessControlRepository>();
+            this.mockRoleRepository = new Mock<IRoleRepository>();
             this.mockMapper = new Mock<IMapper>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockUserRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockPrincipalRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockAccessControlRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockRoleRepository.Object);
             _ = ServiceCollection.AddSingleton<IUserManagementService, UserService>();
             _ = ServiceCollection.AddSingleton<IMapper>(this.mockMapper.Object);
 

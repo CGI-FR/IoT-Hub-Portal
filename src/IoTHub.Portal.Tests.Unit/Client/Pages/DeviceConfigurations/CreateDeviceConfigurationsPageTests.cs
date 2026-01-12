@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class CreateDeviceConfigurationsPageTests : BlazorUnitTest
     {
@@ -10,6 +12,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         private Mock<IDeviceConfigurationsClientService> mockDeviceConfigurationsClientService;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
         private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
+
 
         public override void Setup()
         {
@@ -24,6 +27,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = Services.AddSingleton(this.mockDeviceConfigurationsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.DeviceConfigurationRead, PortalPermissions.DeviceConfigurationWrite });
         }
 
         [Test]

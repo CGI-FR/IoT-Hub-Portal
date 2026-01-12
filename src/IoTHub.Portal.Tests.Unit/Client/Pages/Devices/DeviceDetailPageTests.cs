@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class DeviceDetailPageTests : BlazorUnitTest
     {
@@ -43,6 +45,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite, PortalPermissions.DeviceExecute });
         }
 
         [Test]

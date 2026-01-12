@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class CreateDevicePageTests : BlazorUnitTest
     {
@@ -30,6 +32,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
         }

@@ -7,6 +7,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
     using IoTHub.Portal.Client.Dialogs.Planning;
     using Moq;
     using MudBlazor;
+    using Shared.Security;
 
     internal class EditPlanningTest : BlazorUnitTest
     {
@@ -38,6 +39,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             _ = Services.AddSingleton(this.mockDialogService.Object);
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.PlanningRead, PortalPermissions.PlanningWrite });
         }
 
         [Test]
