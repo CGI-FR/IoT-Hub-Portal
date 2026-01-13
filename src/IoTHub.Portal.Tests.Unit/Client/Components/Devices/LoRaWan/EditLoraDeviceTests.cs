@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
 {
-    using Shared.Security;
-
     [TestFixture]
     public class EditLoraDeviceTests : BlazorUnitTest
     {
@@ -43,7 +41,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -77,7 +75,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -113,7 +111,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -185,7 +183,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             };
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -222,7 +220,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             };
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -266,7 +264,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 .Returns((Snackbar)null);
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -305,7 +303,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -343,7 +341,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var popoverProvider = RenderComponent<MudPopoverProvider>();
@@ -387,7 +385,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(new LoRaGatewayIDList()
+                .ReturnsAsync(new LoRaGatewayIdList()
                 {
                     GatewayIds = new List<string>()
                     {

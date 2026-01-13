@@ -26,17 +26,17 @@ namespace IoTHub.Portal.Infrastructure
 
         public override string AzureIoTHubEventHubConsumerGroup => this.config.GetValue(AzureIoTHubEventHubConsumerGroupKey, "iothub-portal")!;
 
-        public override string AzureDPSConnectionString => this.config.GetConnectionString(AzureDPSConnectionStringKey)!;
+        public override string AzureDPSConnectionString => this.config.GetConnectionString(AzureDpsConnectionStringKey)!;
 
-        public override string AzureDPSEndpoint => this.config[AzureDPSServiceEndpointKey]!;
+        public override string AzureDPSEndpoint => this.config[AzureDpsServiceEndpointKey]!;
 
-        public override string AzureDPSScopeID => this.config[AzureDPSIDScopeKey]!;
+        public override string AzureDPSScopeID => this.config[AzureDpsIdScopeKey]!;
 
         public override string AzureStorageAccountConnectionString => this.config.GetConnectionString(AzureStorageAccountConnectionStringKey)!;
 
-        public override string PostgreSQLConnectionString => this.config.GetConnectionString(PostgreSQLConnectionStringKey)!;
+        public override string PostgreSQLConnectionString => this.config.GetConnectionString(PostgreSqlConnectionStringKey)!;
 
-        public override string MySQLConnectionString => this.config.GetConnectionString(MySQLConnectionStringKey)!;
+        public override string MySQLConnectionString => this.config.GetConnectionString(MySqlConnectionStringKey)!;
 
         public override string DbProvider => this.config.GetValue(DbProviderKey, DbProviders.PostgreSQL)!;
 
@@ -44,27 +44,27 @@ namespace IoTHub.Portal.Infrastructure
 
         public override bool UseSecurityHeaders => this.config.GetValue(UseSecurityHeadersKey, true);
 
-        public override string OIDCScope => this.config[OIDCScopeKey]!;
+        public override string OIDCScope => this.config[OidcScopeKey]!;
 
-        public override string OIDCAuthority => this.config[OIDCAuthorityKey]!;
+        public override string OIDCAuthority => this.config[OidcAuthorityKey]!;
 
-        public override string OIDCMetadataUrl => this.config[OIDCMetadataUrlKey]!;
+        public override string OIDCMetadataUrl => this.config[OidcMetadataUrlKey]!;
 
-        public override string OIDCClientId => this.config[OIDCClientIdKey]!;
+        public override string OIDCClientId => this.config[OidcClientIdKey]!;
 
-        public override string OIDCApiClientId => this.config[OIDCApiClientIdKey]!;
+        public override string OIDCApiClientId => this.config[OidcApiClientIdKey]!;
 
-        public override bool OIDCValidateIssuer => this.config.GetValue(OIDCValidateIssuerKey, true);
+        public override bool OIDCValidateIssuer => this.config.GetValue(OidcValidateIssuerKey, true);
 
-        public override bool OIDCValidateAudience => this.config.GetValue(OIDCValidateAudienceKey, true);
+        public override bool OIDCValidateAudience => this.config.GetValue(OidcValidateAudienceKey, true);
 
-        public override bool OIDCValidateLifetime => this.config.GetValue(OIDCValidateLifetimeKey, true);
+        public override bool OIDCValidateLifetime => this.config.GetValue(OidcValidateLifetimeKey, true);
 
-        public override bool OIDCValidateIssuerSigningKey => this.config.GetValue(OIDCValidateIssuerSigningKeyKey, true);
+        public override bool OIDCValidateIssuerSigningKey => this.config.GetValue(OidcValidateIssuerSigningKeyKey, true);
 
-        public override bool OIDCValidateActor => this.config.GetValue(OIDCValidateActorKey, false);
+        public override bool OIDCValidateActor => this.config.GetValue(OidcValidateActorKey, false);
 
-        public override bool OIDCValidateTokenReplay => this.config.GetValue(OIDCValidateTokenReplayKey, false);
+        public override bool OIDCValidateTokenReplay => this.config.GetValue(OidcValidateTokenReplayKey, false);
 
         public override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "false");
 

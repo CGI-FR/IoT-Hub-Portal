@@ -17,7 +17,6 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
         private readonly IDeviceModelRepository deviceModelRepository;
         private readonly IEdgeDeviceModelRepository edgeDeviceModelRepository;
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
-        private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonIotData amazonIoTDataClient;
         private readonly IAmazonGreengrassV2 amazonGreenGrass;
         private readonly IExternalDeviceService externalDeviceService;
@@ -31,7 +30,6 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             IDeviceModelRepository deviceModelRepository,
             IEdgeDeviceModelRepository edgeDeviceModelRepository,
             IDeviceTagValueRepository deviceTagValueRepository,
-            IAmazonIoT amazonIoTClient,
             IAmazonIotData amazonIoTDataClient,
             IAmazonGreengrassV2 amazonGreenGrass,
             IExternalDeviceService externalDeviceService)
@@ -43,14 +41,12 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             this.deviceModelRepository = deviceModelRepository;
             this.edgeDeviceModelRepository = edgeDeviceModelRepository;
             this.deviceTagValueRepository = deviceTagValueRepository;
-            this.amazonIoTClient = amazonIoTClient;
             this.amazonIoTDataClient = amazonIoTDataClient;
             this.amazonGreenGrass = amazonGreenGrass;
             this.logger = logger;
             this.externalDeviceService = externalDeviceService;
         }
-
-
+        
         public async Task Execute(IJobExecutionContext context)
         {
             try

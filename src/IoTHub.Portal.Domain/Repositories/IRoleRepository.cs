@@ -4,7 +4,7 @@
 namespace IoTHub.Portal.Domain.Repositories
 {
     using System.Linq.Expressions;
-    using IoTHub.Portal.Domain.Entities;
+    using Entities;
 
     public interface IRoleRepository : IRepository<Role>
     {

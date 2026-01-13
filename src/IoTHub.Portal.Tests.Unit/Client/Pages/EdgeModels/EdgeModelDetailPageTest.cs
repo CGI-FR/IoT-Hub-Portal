@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 {
-    using Portal.Shared.Security;
-
     [TestFixture]
     public class EdgeModelDetailPageTest : BlazorUnitTest
     {

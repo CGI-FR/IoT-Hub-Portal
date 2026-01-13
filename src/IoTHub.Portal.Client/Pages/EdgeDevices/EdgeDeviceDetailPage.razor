@@ -278,7 +278,7 @@
     private void Return() => NavigationManager.NavigateTo("edge/devices");
 
     private IoTEdgeDevice edgeDevice = default!;
-    private IoTEdgeModel edgeModel = new IoTEdgeModel();
+    private IoTEdgeModel edgeModel = new();
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
 
@@ -443,7 +443,7 @@
 
     public async Task ShowConnectionString()
     {
-        var parameters = new DialogParameters { { nameof(ConnectionStringDialog.deviceId), this.deviceId } };
+        var parameters = new DialogParameters { { nameof(ConnectionStringDialog.deviceId), deviceId } };
 
         _ = await DialogService.Show<ConnectionStringDialog>("Connect Edge device", parameters).Result;
     }

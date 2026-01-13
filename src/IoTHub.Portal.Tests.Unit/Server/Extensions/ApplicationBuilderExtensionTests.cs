@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Extensions
             var elseConditionResult = "";
             var expectedElseConditionResult = Guid.NewGuid().ToString();
 
-            bool predicate(HttpContext s) => true;
+            static bool predicate(HttpContext s) => true;
 
             void ifCondition(IApplicationBuilder condition) => ifConditionResult = expectedIfConditionResult;
 

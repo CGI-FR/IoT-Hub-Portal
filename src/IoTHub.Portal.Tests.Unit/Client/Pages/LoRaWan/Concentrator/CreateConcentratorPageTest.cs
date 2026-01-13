@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 {
-    using Portal.Shared.Security;
-
     [TestFixture]
     public class CreateConcentratorPageTest : BlazorUnitTest
     {

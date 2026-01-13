@@ -145,7 +145,7 @@
 
             var result = await DeviceModelsClientService.GetDeviceModelsAsync(new DeviceModelFilter
             {
-                SearchText = this.deviceModelSearchInfo.SearchText!,
+                SearchText = deviceModelSearchInfo.SearchText!,
                 PageNumber = state.Page,
                 PageSize = state.PageSize,
                 OrderBy = new string[] { orderBy }

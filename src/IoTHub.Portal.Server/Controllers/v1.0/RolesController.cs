@@ -1,6 +1,6 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-namespace IoTHub.Portal.Server.Controllers.V10
+namespace IoTHub.Portal.Server.Controllers.v10
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -59,13 +59,13 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                var paginedResult = await roleManagementService.GetRolePage(
+                var paginedResult = await this.roleManagementService.GetRolePage(
                 searchKeyword,
                 pageSize,
                 pageNumber,
                 orderBy
                 );
-                logger.LogInformation("Roles fetched successfully. Total Role fetched : {Count}", paginedResult.TotalCount);
+                this.logger.LogInformation("Roles fetched successfully. Total Role fetched : {Count}", paginedResult.TotalCount);
                 var nextPage = string.Empty;
                 if (paginedResult.HasNextPage)
                 {
@@ -84,7 +84,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching roles. : {ex}");
+                this.logger.LogError($"Error fetching roles. : {ex}");
                 throw;
                 // Rethrowing the exception (preserves the stack trace)
             }
@@ -102,18 +102,18 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                var role = await roleManagementService.GetRoleDetailsAsync(id);
+                var role = await this.roleManagementService.GetRoleDetailsAsync(id);
                 if (role == null)
                 {
-                    logger.LogWarning("Role with ID {RoleId} not found", id);
+                    this.logger.LogWarning("Role with ID {RoleId} not found", id);
                     return NotFound();
                 }
-                logger.LogInformation("Details retrieved for role with ID {RoleId}", id);
+                this.logger.LogInformation("Details retrieved for role with ID {RoleId}", id);
                 return Ok(role);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to get details for role with ID {RoleId}", id);
+                this.logger.LogError(ex, "Failed to get details for role with ID {RoleId}", id);
                 throw;
             }
         }
@@ -132,12 +132,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
             try
             {
                 var result = await this.roleManagementService.CreateRole(role);
-                logger.LogInformation("Role created successfully with ID {RoleId}", result.Id);
+                this.logger.LogInformation("Role created successfully with ID {RoleId}", result.Id);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                logger.LogError($"Failed to create role. : {ex}");
+                this.logger.LogError($"Failed to create role. : {ex}");
                 return BadRequest(ex);
             }
         }
@@ -156,12 +156,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
             try
             {
                 var result = await this.roleManagementService.UpdateRole(id, roleDetails);
-                logger.LogInformation("Role with ID {RoleId} updated successfully", id);
+                this.logger.LogInformation("Role with ID {RoleId} updated successfully", id);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to update role with ID {RoleId}", id);
+                this.logger.LogError(ex, "Failed to update role with ID {RoleId}", id);
                 throw;
             }
         }
@@ -180,18 +180,18 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                var result = await roleManagementService.DeleteRole(id);
+                var result = await this.roleManagementService.DeleteRole(id);
                 if (!result)
                 {
-                    logger.LogWarning("Role with ID {RoleId} not found", id);
+                    this.logger.LogWarning("Role with ID {RoleId} not found", id);
                     return NotFound("Role not found.");
                 }
-                logger.LogInformation("Role with ID {RoleId} deleted successfully", id);
+                this.logger.LogInformation("Role with ID {RoleId} deleted successfully", id);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to delete role with ID {RoleId}", id);
+                this.logger.LogError(ex, "Failed to delete role with ID {RoleId}", id);
                 throw;
             }
         }

@@ -4,7 +4,7 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using IoTHub.Portal.Domain.Base;
+    using Base;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;

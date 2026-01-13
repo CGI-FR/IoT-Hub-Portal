@@ -110,7 +110,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetGatewayIdListShouldReturnGatewayIdList()
         {
             // Arrange
-            var expectedLoRaGatewayIDList = Fixture.Create<LoRaGatewayIDList>();
+            var expectedLoRaGatewayIDList = Fixture.Create<LoRaGatewayIdList>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/devices/gateways")
                 .RespondJson(expectedLoRaGatewayIDList);

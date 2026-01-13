@@ -41,7 +41,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Helpers
             // Assert
             _ = result.Should().BeEquivalentTo(expectedHash);
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
     }
 }

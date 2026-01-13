@@ -14,13 +14,10 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<SyncEdgeDeviceJob> logger;
 
-        private readonly IEdgeDevicesService edgeDevicesService;
-
         private const string ModelId = "modelId";
 
         public SyncEdgeDeviceJob(IExternalDeviceService externalDeviceService,
             IEdgeDeviceModelRepository edgeDeviceModelRepository,
-            IEdgeDevicesService edgeDevicesService,
             IEdgeDeviceRepository edgeDeviceRepository,
             IDeviceTagValueRepository deviceTagValueRepository,
             IMapper mapper,
@@ -34,7 +31,6 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.logger = logger;
-            this.edgeDevicesService = edgeDevicesService;
         }
 
         public async Task Execute(IJobExecutionContext context)

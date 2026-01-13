@@ -31,7 +31,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
             var healthCheckContext = new HealthCheckContext();
             var token = new CancellationToken(canceled:false);
 
-            var mockHttpMessage = this.mockRepository.Create<HttpResponseMessage>(System.Net.HttpStatusCode.OK);
+            var mockHttpMessage = this.mockRepository.Create<HttpResponseMessage>(HttpStatusCode.OK);
 
             _ = this.mockLoRaWanManagementService
                 .Setup(c => c.CheckAzureFunctionReturn(It.IsAny<CancellationToken>()))
@@ -58,7 +58,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
             };
             var token = new CancellationToken(canceled:false);
 
-            var mockHttpMessage = this.mockRepository.Create<HttpResponseMessage>(System.Net.HttpStatusCode.BadRequest);
+            var mockHttpMessage = this.mockRepository.Create<HttpResponseMessage>(HttpStatusCode.BadRequest);
 
             _ = this.mockLoRaWanManagementService
                 .Setup(c => c.CheckAzureFunctionReturn(It.IsAny<CancellationToken>()))

@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using IoTHub.Portal.Domain.Base;
+    using Base;
 
     public class AccessControl : EntityBase
     {

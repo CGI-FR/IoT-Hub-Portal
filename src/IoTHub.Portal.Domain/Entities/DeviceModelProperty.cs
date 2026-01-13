@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
+    using Portal.Shared.Models;
+
     public class DeviceModelProperty : EntityBase
     {
         /// <summary>

@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
+    using Shared;
     using ResourceAlreadyExistsException = Portal.Domain.Exceptions.ResourceAlreadyExistsException;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 

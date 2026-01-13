@@ -19,11 +19,8 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             var modelId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.ModelId));
 
             var customTags = new Dictionary<string, string>();
-            if (tags != null)
-            {
-                foreach (var tag in tags)
-                    customTags.Add(tag, DeviceHelper.RetrieveTagValue(twin, tag)!);
-            }
+            foreach (var tag in tags)
+                customTags.Add(tag, DeviceHelper.RetrieveTagValue(twin, tag)!);
 
             var result = new LoRaDeviceDetails
             {

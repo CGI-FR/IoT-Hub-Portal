@@ -1,5 +1,6 @@
 ﻿@page "/edge/models/{ModelID}"
 @inherits AuthorizedComponentBase
+@using IoTHub.Portal.Client.Validators
 @using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
@@ -261,17 +262,19 @@
                                                                 <MudTh Style="text-align: center">Delete</MudTh>
                                                             }
                                                         </HeaderContent>
-                                                        <RowTemplate Context="moduleContext">
+                                                        <RowTemplate Context="AwsModuleContext">
                                                             <MudTd DataLabel="module Name" Style="word-break: break-all;">
-                                                                @moduleContext.ModuleName
+                                                                @AwsModuleContext.ModuleName
                                                             </MudTd>
                                                             <MudTd DataLabel="See detail" Style="text-align: center;">
-                                                                <MudButton Variant="Variant.Filled" id="edit-edge-module" Disabled="@(!string.IsNullOrEmpty(moduleContext.Id))" OnClick="@(async () => await ShowEditEdgeModuleDialog(moduleContext))">Detail</MudButton>
+                                                                <MudButton Variant="Variant.Filled" id="edit-edge-module"
+                                                                           Disabled="@(!string.IsNullOrEmpty(AwsModuleContext.Id))"
+                                                                           OnClick="@(async () => await ShowEditEdgeModuleDialog(AwsModuleContext))">Detail</MudButton>
                                                             </MudTd>
                                                             @if (canWrite)
                                                             {
                                                                 <MudTd DataLabel="Delete" Style="text-align: center">
-                                                                    <MudIconButton Class="deleteModuleButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteModule(moduleContext))"></MudIconButton>
+                                                                    <MudIconButton Class="deleteModuleButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteModule(AwsModuleContext))"></MudIconButton>
                                                                 </MudTd>
                                                             }
                                                         </RowTemplate>
@@ -346,7 +349,7 @@
             EdgeModel = new IoTEdgeModel();
 
             await loadModel();
-            this.imageData = await this.EdgeModelService.GetAvatar(this.ModelID);
+            imageData = await EdgeModelService.GetAvatar(ModelID);
 
             // Check if user has write permission for conditional UI elements
             canWrite = await HasPermissionAsync(PortalPermissions.EdgeModelWrite);
@@ -363,7 +366,7 @@
 
     private async Task loadModel()
     {
-        this.EdgeModel = await this.EdgeModelService.GetIoTEdgeModel(this.ModelID);
+        EdgeModel = await EdgeModelService.GetIoTEdgeModel(ModelID);
     }
 
     private void DeleteAvatar()
@@ -389,7 +392,7 @@
             // Displays validation error message for each field
             await form.Validate();
 
-            if (!edgeModelValidator.Validate(this.EdgeModel).IsValid)
+            if (!edgeModelValidator.Validate(EdgeModel).IsValid)
             {
                 Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
@@ -398,7 +401,7 @@
                 return;
             }
 
-            if (this.EdgeModel.EdgeModules.Any() && !edgeModuleValidator.Validate(this.EdgeModel.EdgeModules).IsValid)
+            if (EdgeModel.EdgeModules.Any() && !edgeModuleValidator.Validate(EdgeModel.EdgeModules).IsValid)
             {
                 Snackbar.Add("One or more validation errors occurred with the modules.", Severity.Error);
 
@@ -407,7 +410,7 @@
                 return;
             }
 
-            if (this.EdgeModel.EdgeRoutes.Any() && !edgeRouteValidator.Validate(this.EdgeModel.EdgeRoutes).IsValid)
+            if (EdgeModel.EdgeRoutes.Any() && !edgeRouteValidator.Validate(EdgeModel.EdgeRoutes).IsValid)
             {
 
                 Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
@@ -417,12 +420,12 @@
                 return;
             }
 
-            await this.EdgeModelService.UpdateIoTEdgeModel(this.EdgeModel);
+            await EdgeModelService.UpdateIoTEdgeModel(EdgeModel);
 
             if (imageData is not null)
             {
                 var imageContent = new StringContent(imageData);
-                await this.EdgeModelService.ChangeAvatar(this.EdgeModel.ModelId, imageContent);
+                await EdgeModelService.ChangeAvatar(EdgeModel.ModelId, imageContent);
             }
 
             Snackbar.Add("Edge model successfully updated.", Severity.Success);
@@ -503,7 +506,7 @@
         parameters.Add("deviceModelID", EdgeModel.ModelId);
         parameters.Add("deviceModelName", EdgeModel.Name);
 
-        var result = await this.DialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
+        var result = await DialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
 
         IsLoading = false;
 
@@ -512,7 +515,7 @@
             return;
         }
 
-        this.NavigationManager.NavigateTo("/edge/models");
+        NavigationManager.NavigateTo("/edge/models");
     }
 
     private void DeleteRoute(IoTEdgeRoute route)

@@ -29,11 +29,11 @@ namespace IoTHub.Portal.Tests.E2E.Pages
 
             WebDriverFactory.Default.FindElement(By.Id("ModelId")).Click();
 
-            System.Threading.Thread.Sleep(2000);
+            Thread.Sleep(2000);
 
             WebDriverFactory.Default.FindElement(By.Id("ModelId")).SendKeys(model + Keys.Enter);
 
-            System.Threading.Thread.Sleep(2000);
+            Thread.Sleep(2000);
 
             // driver.FindElement(By.Id("ModelId")).SendKeys(Keys.Enter);
 
@@ -43,7 +43,7 @@ namespace IoTHub.Portal.Tests.E2E.Pages
             WebDriverFactory.Default.FindElement(By.Id("DeviceName")).SendKeys(name);
 
 
-            System.Threading.Thread.Sleep(2000);
+            Thread.Sleep(2000);
 
 
             // Find the "Save" button
@@ -55,7 +55,7 @@ namespace IoTHub.Portal.Tests.E2E.Pages
             // Click the element
             saveButton.Click();
 
-            System.Threading.Thread.Sleep(5000);
+            Thread.Sleep(5000);
 
             _ = wait.Until(d => d.FindElement(By.ClassName("mud-snackbar-content-message")).Displayed);
 
@@ -92,7 +92,7 @@ namespace IoTHub.Portal.Tests.E2E.Pages
             _ = wait.Until(d => d.FindElement(By.ClassName("outline-none")).Displayed);
 
             WebDriverFactory.Default.FindElement(By.CssSelector(".mud-button-text-primary > .mud-button-label")).Click();
-            System.Threading.Thread.Sleep(5000);
+            Thread.Sleep(5000);
 
 
             _ = wait.Until(d => d.FindElement(By.ClassName("mud-snackbar-content-message")).Displayed);

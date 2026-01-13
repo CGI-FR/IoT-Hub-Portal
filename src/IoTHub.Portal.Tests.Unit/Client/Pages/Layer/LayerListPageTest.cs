@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
 {
-    using Portal.Shared.Security;
-
     internal class LayerListPageTest : BlazorUnitTest
     {
         private Mock<ILayerClientService> mockLayerClientService;

@@ -5,21 +5,18 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
-    public class AWSDevicePropertyService : IDevicePropertyService
+    public class AwsDevicePropertyService : IDevicePropertyService
     {
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
         private readonly IDeviceRepository deviceRepository;
-        private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonIotData amazonIotDataClient;
 
-        public AWSDevicePropertyService(IDeviceModelPropertiesService deviceModelPropertiesService
+        public AwsDevicePropertyService(IDeviceModelPropertiesService deviceModelPropertiesService
             , IDeviceRepository deviceRepository
-            , IAmazonIoT amazonIoTClient
             , IAmazonIotData amazonIotDataClient)
         {
             this.deviceModelPropertiesService = deviceModelPropertiesService;
             this.deviceRepository = deviceRepository;
-            this.amazonIoTClient = amazonIoTClient;
             this.amazonIotDataClient = amazonIotDataClient;
         }
 
@@ -113,6 +110,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             }
 
             var desiredState = new Dictionary<string, string?>();
+            var propertyValues = devicePropertyValues.ToList();
             foreach (var item in items)
             {
                 if (!item.IsWritable)
@@ -120,7 +118,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     continue;
                 }
 
-                desiredState[item.Name] = devicePropertyValues.FirstOrDefault(x => x.Name == item.Name)?.Value;
+                desiredState[item.Name] = propertyValues.FirstOrDefault(x => x.Name == item.Name)?.Value;
             }
 
             var payload  = new

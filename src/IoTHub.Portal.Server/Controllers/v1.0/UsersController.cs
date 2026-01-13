@@ -1,6 +1,6 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-namespace IoTHub.Portal.Server.Controllers.V10
+namespace IoTHub.Portal.Server.Controllers.v10
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -45,14 +45,14 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                var paginedResult = await userManagementService.GetUserPage(
+                var paginedResult = await this.userManagementService.GetUserPage(
                 searchName,
                 searchEmail,
                 pageSize,
                 pageNumber,
                 orderBy
                 );
-                logger.LogInformation("Users fetched successfully. Total users fetched: {Count}", paginedResult.TotalCount);
+                this.logger.LogInformation("Users fetched successfully. Total users fetched: {Count}", paginedResult.TotalCount);
                 var nextPage = string.Empty;
                 if (paginedResult.HasNextPage)
                 {
@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error fetching users.");
+                this.logger.LogError(ex, "Error fetching users.");
                 throw;
             }
         }
@@ -84,10 +84,10 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                var userDetails = await userManagementService.GetUserDetailsAsync(id);
+                var userDetails = await this.userManagementService.GetUserDetailsAsync(id);
                 if (userDetails == null)
                 {
-                    logger.LogWarning("User with ID {UserId} not found", id);
+                    this.logger.LogWarning("User with ID {UserId} not found", id);
                     return NotFound();
                 }
                 //var accessControls = await accessControlService.GetAccessControlPage(null,100, 0,null, userDetails.PrincipalId);
@@ -98,12 +98,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 //        userDetails.AccessControls.Add(ac);
                 //    }
                 //}
-                logger.LogInformation("Details retrieved for user with ID {UserId}", id);
+                this.logger.LogInformation("Details retrieved for user with ID {UserId}", id);
                 return Ok(userDetails);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to get details for user with ID {UserId}", id);
+                this.logger.LogError(ex, "Failed to get details for user with ID {UserId}", id);
                 throw;
             }
         }
@@ -117,12 +117,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
             try
             {
                 var result = await this.userManagementService.CreateUserAsync(user);
-                logger.LogInformation("User created successfully with ID {UserId}", result.Id);
+                this.logger.LogInformation("User created successfully with ID {UserId}", result.Id);
                 return CreatedAtAction(nameof(GetUserDetails), new { id = result.Id }, result);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to create user.");
+                this.logger.LogError(ex, "Failed to create user.");
                 return BadRequest();
             }
         }
@@ -135,12 +135,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
             try
             {
                 var result = await this.userManagementService.UpdateUser(id, user);
-                logger.LogInformation("User with ID {UserId} updated successfully", id);
+                this.logger.LogInformation("User with ID {UserId} updated successfully", id);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to update user with ID {UserId}", id);
+                this.logger.LogError(ex, "Failed to update user with ID {UserId}", id);
                 throw;
             }
         }
@@ -159,18 +159,18 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                var result = await userManagementService.DeleteUser(id);
+                var result = await this.userManagementService.DeleteUser(id);
                 if (!result)
                 {
-                    logger.LogWarning("User with ID {UserId} not found", id);
+                    this.logger.LogWarning("User with ID {UserId} not found", id);
                     return NotFound("User not found.");
                 }
-                logger.LogInformation("User with ID {UserId} deleted successfully", id);
+                this.logger.LogInformation("User with ID {UserId} deleted successfully", id);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to delete user with ID {UserId}", id);
+                this.logger.LogError(ex, "Failed to delete user with ID {UserId}", id);
                 throw;
             }
         }

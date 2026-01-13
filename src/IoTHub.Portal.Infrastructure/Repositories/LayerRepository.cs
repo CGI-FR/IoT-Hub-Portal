@@ -10,7 +10,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
         }
         public async Task<Layer?> GetByNameAsync(string layerId)
         {
-            return await this.context.Set<Layer>()
+            return await this.Context.Set<Layer>()
                              .FirstOrDefaultAsync(layer => layer.Id == layerId);
         }
     }

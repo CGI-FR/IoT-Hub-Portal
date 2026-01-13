@@ -98,9 +98,9 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    public PlanningDto Planning { get; set; } = new PlanningDto();
+    public PlanningDto Planning { get; set; } = new();
 
-    public List<PlanningDto> Plannings = new List<PlanningDto>();
+    public List<PlanningDto> Plannings = new();
 
     public readonly int[] pageSizeOptions = { 10, 5, 3 };
 
@@ -151,7 +151,7 @@
         parameters.Add("planningID", item.Id);
         parameters.Add("planningName", item.Name);
 
-        var result = await DialogService.Show<Dialogs.Planning.DeletePlanningDialog>("Confirm Deletion", parameters).Result;
+        var result = await DialogService.Show<DeletePlanningDialog>("Confirm Deletion", parameters).Result;
 
         if (result.Canceled)
         {

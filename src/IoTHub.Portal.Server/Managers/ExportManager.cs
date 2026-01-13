@@ -215,7 +215,7 @@ namespace IoTHub.Portal.Server.Managers
 
         private static bool TryReadMandatoryFields(CsvReader reader, int lineNumber, ref string deviceId, ref string deviceName, ref string modelId, ref List<ImportResultLine> report)
         {
-            if (!reader.TryGetField<string>("Id", out deviceId) || string.IsNullOrEmpty(deviceId))
+            if (!reader.TryGetField("Id", out deviceId) || string.IsNullOrEmpty(deviceId))
             {
                 report.Add(new ImportResultLine
                 {
@@ -229,7 +229,7 @@ namespace IoTHub.Portal.Server.Managers
                 return false;
             }
 
-            if (!reader.TryGetField<string>("Name", out deviceName) || string.IsNullOrEmpty(deviceName))
+            if (!reader.TryGetField("Name", out deviceName) || string.IsNullOrEmpty(deviceName))
             {
                 report.Add(new ImportResultLine
                 {
@@ -243,7 +243,7 @@ namespace IoTHub.Portal.Server.Managers
                 return false;
             }
 
-            if (!reader.TryGetField<string>("ModelId", out modelId) || string.IsNullOrEmpty(modelId))
+            if (!reader.TryGetField("ModelId", out modelId) || string.IsNullOrEmpty(modelId))
             {
                 report.Add(new ImportResultLine
                 {

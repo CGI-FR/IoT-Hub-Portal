@@ -12,8 +12,8 @@
     // Specify which permissions are required for this page
     protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.PlanningWrite };
 
-    public List<ScheduleDto> ScheduleList { get; set; } = new List<ScheduleDto> { };
-    public PlanningDto Planning { get; set; } = new PlanningDto();
+    public List<ScheduleDto> ScheduleList { get; set; } = new() { };
+    public PlanningDto Planning { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {

@@ -23,6 +23,7 @@ global using IoTHub.Portal.Domain.Entities;
 global using IoTHub.Portal.Domain.Shared;
 global using IoTHub.Portal.Models.v10;
 global using IoTHub.Portal.Models.v10.LoRaWAN;
+global using IoTHub.Portal.Shared;
 global using IoTHub.Portal.Shared.Models;
 global using IoTHub.Portal.Shared.Models.v10;
 global using IoTHub.Portal.Shared.Models.v10.Filters;

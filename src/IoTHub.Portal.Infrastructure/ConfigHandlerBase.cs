@@ -9,25 +9,25 @@ namespace IoTHub.Portal.Infrastructure
         public const string AzureIoTHubConnectionStringKey = "Azure:IoTHub:ConnectionString";
         public const string AzureIoTHubEventHubEndpointKey = "Azure:IoTHub:EventHub:Endpoint";
         public const string AzureIoTHubEventHubConsumerGroupKey = "Azure:IoTHub:EventHub:ConsumerGroup";
-        public const string AzureDPSConnectionStringKey = "Azure:IoTDPS:ConnectionString";
-        public const string AzureDPSServiceEndpointKey = "Azure:IoTDPS:ServiceEndpoint";
-        public const string AzureDPSIDScopeKey = "Azure:IoTDPS:IDScope";
+        public const string AzureDpsConnectionStringKey = "Azure:IoTDPS:ConnectionString";
+        public const string AzureDpsServiceEndpointKey = "Azure:IoTDPS:ServiceEndpoint";
+        public const string AzureDpsIdScopeKey = "Azure:IoTDPS:IDScope";
         public const string UseSecurityHeadersKey = "UseSecurityHeaders";
-        public const string PostgreSQLConnectionStringKey = "PostgreSQL:ConnectionString";
-        public const string MySQLConnectionStringKey = "MySQL:ConnectionString";
+        public const string PostgreSqlConnectionStringKey = "PostgreSQL:ConnectionString";
+        public const string MySqlConnectionStringKey = "MySQL:ConnectionString";
         public const string DbProviderKey = "DbProvider";
 
-        public const string OIDCScopeKey = "OIDC:Scope";
-        public const string OIDCAuthorityKey = "OIDC:Authority";
-        public const string OIDCMetadataUrlKey = "OIDC:MetadataUrl";
-        public const string OIDCClientIdKey = "OIDC:ClientId";
-        public const string OIDCApiClientIdKey = "OIDC:ApiClientId";
-        public const string OIDCValidateIssuerKey = "OIDC:ValidateIssuer";
-        public const string OIDCValidateAudienceKey = "OIDC:ValidateAudience";
-        public const string OIDCValidateLifetimeKey = "OIDC:ValidateLifetime";
-        public const string OIDCValidateIssuerSigningKeyKey = "OIDC:ValidateIssuerSigningKey";
-        public const string OIDCValidateActorKey = "OIDC:ValidateActor";
-        public const string OIDCValidateTokenReplayKey = "OIDC:ValidateTokenReplay";
+        public const string OidcScopeKey = "OIDC:Scope";
+        public const string OidcAuthorityKey = "OIDC:Authority";
+        public const string OidcMetadataUrlKey = "OIDC:MetadataUrl";
+        public const string OidcClientIdKey = "OIDC:ClientId";
+        public const string OidcApiClientIdKey = "OIDC:ApiClientId";
+        public const string OidcValidateIssuerKey = "OIDC:ValidateIssuer";
+        public const string OidcValidateAudienceKey = "OIDC:ValidateAudience";
+        public const string OidcValidateLifetimeKey = "OIDC:ValidateLifetime";
+        public const string OidcValidateIssuerSigningKeyKey = "OIDC:ValidateIssuerSigningKey";
+        public const string OidcValidateActorKey = "OIDC:ValidateActor";
+        public const string OidcValidateTokenReplayKey = "OIDC:ValidateTokenReplay";
 
         public const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
@@ -51,13 +51,13 @@ namespace IoTHub.Portal.Infrastructure
 
         public const string CloudProviderKey = "CloudProvider";
 
-        public const string AWSAccessKey = "AWS:Access";
-        public const string AWSAccessSecretKey = "AWS:AccessSecret";
-        public const string AWSRegionKey = "AWS:Region";
-        public const string AWSS3StorageConnectionStringKey = "AWS:S3Storage:ConnectionString";
-        public const string AWSBucketNameKey = "AWS:BucketName";
-        public const string AWSAccountIdKey = "AWS:AccountId";
-        public const string AWSGreengrassRequiredRolesKey = "AWS:GreengrassRequiredRoles";
-        public const string AWSGreengrassCoreTokenExchangeRoleAliasNameKey = "AWS:GreengrassCoreTokenExchangeRoleAliasName";
+        public const string AwsAccessKey = "AWS:Access";
+        public const string AwsAccessSecretKey = "AWS:AccessSecret";
+        public const string AwsRegionKey = "AWS:Region";
+        public const string Awss3StorageConnectionStringKey = "AWS:S3Storage:ConnectionString";
+        public const string AwsBucketNameKey = "AWS:BucketName";
+        public const string AwsAccountIdKey = "AWS:AccountId";
+        public const string AwsGreengrassRequiredRolesKey = "AWS:GreengrassRequiredRoles";
+        public const string AwsGreengrassCoreTokenExchangeRoleAliasNameKey = "AWS:GreengrassCoreTokenExchangeRoleAliasName";
     }
 }

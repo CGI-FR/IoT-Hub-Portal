@@ -30,7 +30,7 @@
     public List<IoTEdgeModule> EdgeModules { get; set; } = default!;
 
     private List<IoTEdgeModule> publicComponents = new();
-    private HashSet<IoTEdgeModule> selectedPublicComponents = new HashSet<IoTEdgeModule>();
+    private HashSet<IoTEdgeModule> selectedPublicComponents = new();
 
     protected async override Task OnInitializedAsync()
     {

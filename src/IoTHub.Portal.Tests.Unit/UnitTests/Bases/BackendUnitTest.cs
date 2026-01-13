@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
 
         protected virtual MockHttpMessageHandler MockHttpClient { get; set; }
 
-        protected virtual AutoFixture.Fixture Fixture { get; } = new();
+        protected virtual Fixture Fixture { get; } = new();
 
         protected virtual IMapper Mapper { get; set; }
 

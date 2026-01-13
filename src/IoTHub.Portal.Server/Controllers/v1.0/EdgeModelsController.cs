@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.v1._0
+namespace IoTHub.Portal.Server.Controllers.v10
 {
     [Authorize]
     [Route("api/edge/models")]

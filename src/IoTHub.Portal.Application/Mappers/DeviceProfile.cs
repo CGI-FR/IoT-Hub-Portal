@@ -35,8 +35,8 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.Tags["modelId"]))
                 .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.Tags.Contains("layerId") ? src.Tags["layerId"] : null))
                 .ForMember(dest => dest.Version, opts => opts.MapFrom(src => src.Version))
-                .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == Microsoft.Azure.Devices.DeviceConnectionState.Connected))
-                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
+                .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == DeviceConnectionState.Connected))
+                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == DeviceStatus.Enabled))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => GetTags(src)));
 
             _ = CreateMap<LorawanDevice, LorawanDevice>();
@@ -65,8 +65,8 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.Tags["modelId"]))
                 .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.Tags.Contains("layerId") ? src.Tags["layerId"] : null))
                 .ForMember(dest => dest.Version, opts => opts.MapFrom(src => src.Version))
-                .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == Microsoft.Azure.Devices.DeviceConnectionState.Connected))
-                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
+                .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == DeviceConnectionState.Connected))
+                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == DeviceStatus.Enabled))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => GetTags(src)))
                 .ForMember(dest => dest.UseOTAA, opts => opts.MapFrom(src => !string.IsNullOrEmpty(DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.AppEUI)))))
                 .ForMember(dest => dest.AppKey, opts => opts.MapFrom(src => DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.AppKey))))

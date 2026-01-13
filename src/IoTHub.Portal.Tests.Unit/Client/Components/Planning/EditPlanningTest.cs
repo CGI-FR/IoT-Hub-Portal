@@ -4,10 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
 {
     using Bunit;
-    using IoTHub.Portal.Client.Dialogs.Planning;
-    using Moq;
     using MudBlazor;
-    using Shared.Security;
 
     internal class EditPlanningTest : BlazorUnitTest
     {

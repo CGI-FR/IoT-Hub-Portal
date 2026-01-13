@@ -41,7 +41,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton(this.mockGreenGrass.Object);
-            _ = ServiceCollection.AddSingleton<IDevicePropertyService, AWSDevicePropertyService>();
+            _ = ServiceCollection.AddSingleton<IDevicePropertyService, AwsDevicePropertyService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 

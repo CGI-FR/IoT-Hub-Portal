@@ -149,10 +149,10 @@ namespace IoTHub.Portal.Infrastructure.Startup
                                 .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                                 .RepeatForever()));
 
-                    _ = q.AddJob<SyncGatewayIDJob>(j => j.WithIdentity(nameof(SyncGatewayIDJob)))
+                    _ = q.AddJob<SyncGatewayIdJob>(j => j.WithIdentity(nameof(SyncGatewayIdJob)))
                        .AddTrigger(t => t
-                           .WithIdentity($"{nameof(SyncGatewayIDJob)}")
-                           .ForJob(nameof(SyncGatewayIDJob))
+                           .WithIdentity($"{nameof(SyncGatewayIdJob)}")
+                           .ForJob(nameof(SyncGatewayIdJob))
                            .WithSimpleSchedule(s => s
                                .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                            .RepeatForever()));

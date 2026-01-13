@@ -128,7 +128,7 @@
                     break;
             }
 
-            var uri = $"api/lorawan/concentrators?pageNumber={state.Page}&pageSize={state.PageSize}&orderBy={orderBy}&searchText={this.concentratorSearchInfo.SearchText}&status={this.concentratorSearchInfo.Status}&state={this.concentratorSearchInfo.State}";
+            var uri = $"api/lorawan/concentrators?pageNumber={state.Page}&pageSize={state.PageSize}&orderBy={orderBy}&searchText={concentratorSearchInfo.SearchText}&status={concentratorSearchInfo.Status}&state={concentratorSearchInfo.State}";
 
             var result = await LoRaWanConcentratorsClientService.GetConcentrators(uri);
 

@@ -161,7 +161,7 @@ namespace IoTHub.Portal.Server.Services
                 // 
                 if (modObject.TryGetValue("routes", out var routes))
                 {
-                    foreach (var newRoute in routes.Values<JProperty>().Select(route => ConfigHelper.CreateIoTEdgeRouteFromJProperty(route)))
+                    foreach (var newRoute in routes.Values<JProperty>().Select(ConfigHelper.CreateIoTEdgeRouteFromJProperty))
                     {
                         routeList.Add(newRoute);
                     }

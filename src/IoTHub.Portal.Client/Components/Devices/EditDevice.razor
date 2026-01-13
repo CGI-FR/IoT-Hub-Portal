@@ -1,4 +1,5 @@
-﻿@using ConnectionStringDialog = IoTHub.Portal.Client.Dialogs.Devices.ConnectionStringDialog
+﻿@using IoTHub.Portal.Client.Validators
+@using ConnectionStringDialog = IoTHub.Portal.Client.Dialogs.Devices.ConnectionStringDialog
 @implements IDisposable
 
 @inject ISnackbar Snackbar
@@ -78,7 +79,7 @@
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red" : "")>
+                <MudTabPanel Text="General" Style=@(CheckGeneralValidation() ? "color: red" : "")>
                     <MudExpansionPanels MultiExpansion="true">
                         <MudGrid>
                             <MudItem xs="12">
@@ -101,7 +102,7 @@
                                                                          SearchFunc="@Search"
                                                                          Label="Model*"
                                                                          Dense=true
-                                                                         For=@(() => this.DeviceModel)
+                                                                         For=@(() => DeviceModel)
                                                                          Variant="Variant.Outlined"
                                                                          ToStringFunc="@(x => x?.Name)"
                                                                          ResetValueOnEmptyText=true
@@ -322,7 +323,7 @@
                 {
                     if (IsLoRa)
                     {
-                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red" : "")>
+                        <MudTabPanel Text="LoRaWAN" Style=@(CheckLoRaValidation() ? "color: red" : "")>
                             <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraModelDto="@(LoRaDeviceModelDto)" LoraValidator="@(loraValidator)" />
                         </MudTabPanel>
                     }
@@ -331,7 +332,7 @@
                 {
                     if (IsLoRa && Device != null && Commands != null)
                     {
-                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red" : "")>
+                        <MudTabPanel Text="LoRaWAN" Style=@(CheckLoRaValidation() ? "color: red" : "")>
                             <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" CanWrite="@CanWrite" CanExec="@CanExec"/>
                         </MudTabPanel>
                     }
@@ -357,13 +358,13 @@
     private MudForm form = default!;
 
     private DeviceDetailsValidator standardValidator;
-    private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
+    private LoRaDeviceDetailsValidator loraValidator = new();
 
     private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; } = default!;
 
     private IDeviceDetails Device { get; set; } = new DeviceDetails();
 
-    public PatternMask maskLoRaDeviceID = new PatternMask("XXXXXXXXXXXXXXXX")
+    public PatternMask maskLoRaDeviceID = new("XXXXXXXXXXXXXXXX")
     {
         MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
         CleanDelimiters = false,
@@ -394,7 +395,7 @@
     }
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
-    private List<DevicePropertyValue> Properties = new List<DevicePropertyValue>();
+    private List<DevicePropertyValue> Properties = new();
 
     private bool displayValidationErrorMessages;
 
@@ -460,8 +461,8 @@
             if (context.Equals(CreateEditMode.Create))
             {
                 DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
-                Device = DeviceLayoutService.GetSharedDevice() ?? this.Device;
-                DeviceModel = DeviceLayoutService.GetSharedDeviceModel() ?? this.DeviceModel;
+                Device = DeviceLayoutService.GetSharedDevice() ?? Device;
+                DeviceModel = DeviceLayoutService.GetSharedDeviceModel() ?? DeviceModel;
 
                 // Enable device by default
                 Device.IsEnabled = true;
@@ -607,7 +608,7 @@
     public async Task ShowConnectionString()
     {
         var parameters = new DialogParameters();
-        parameters.Add(nameof(ConnectionStringDialog.deviceId), this.DeviceID);
+        parameters.Add(nameof(ConnectionStringDialog.deviceId), DeviceID);
 
         _ = await DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters).Result;
     }
@@ -658,9 +659,9 @@
             return false;
         }
 
-        if (this.Device is LoRaDeviceDetails loRaDeviceDetails)
+        if (Device is LoRaDeviceDetails loRaDeviceDetails)
         {
-            return !this.loraValidator.Validate(loRaDeviceDetails).IsValid;
+            return !loraValidator.Validate(loRaDeviceDetails).IsValid;
         }
 
         return true;
@@ -668,9 +669,9 @@
 
     private bool CheckGeneralValidation()
     {
-        if (!IsLoRa && this.Device is DeviceDetails deviceDetails)
+        if (!IsLoRa && Device is DeviceDetails deviceDetails)
         {
-            return !this.standardValidator.Validate(deviceDetails).IsValid;
+            return !standardValidator.Validate(deviceDetails).IsValid;
         }
 
         return CheckLoRaValidation();
@@ -771,14 +772,14 @@
             {
                 var loRaDeviceModelResult = await LoRaWanDeviceModelsClientService.GetDeviceModel(model.ModelId);
 
-                this.Device = new LoRaDeviceDetails
+                Device = new LoRaDeviceDetails
                 {
-                    DeviceID = this.Device.DeviceID,
+                    DeviceID = Device.DeviceID,
                     ModelId = model.ModelId,
                     Image = model.Image,
-                    DeviceName = this.Device.DeviceName,
-                    IsEnabled = this.Device.IsEnabled,
-                    Tags = this.Device.Tags,
+                    DeviceName = Device.DeviceName,
+                    IsEnabled = Device.IsEnabled,
+                    Tags = Device.Tags,
                     SensorDecoder = loRaDeviceModelResult.SensorDecoder,
                     UseOTAA = loRaDeviceModelResult.UseOTAA
                 };

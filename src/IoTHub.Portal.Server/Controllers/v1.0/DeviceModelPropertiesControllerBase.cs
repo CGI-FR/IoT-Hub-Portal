@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.V10
+namespace IoTHub.Portal.Server.Controllers.v10
 {
     using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
 
@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
             }
             catch (ResourceNotFoundException e)
             {
-                return this.NotFound(e.Message);
+                return NotFound(e.Message);
             }
         }
 
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
             }
             catch (ResourceNotFoundException e)
             {
-                return this.NotFound(e.Message);
+                return NotFound(e.Message);
             }
         }
     }

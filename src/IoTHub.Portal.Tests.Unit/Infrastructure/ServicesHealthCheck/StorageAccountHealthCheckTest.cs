@@ -36,8 +36,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
             var token = new CancellationToken(canceled:false);
 
             var blobContainerClient = this.mockRepository.Create<BlobContainerClient>();
-            var responseContainerExist = this.mockRepository.Create<Azure.Response<bool>>();
-            var responseGetPropertiesAsync = this.mockRepository.Create<Azure.Response<BlobContainerProperties>>();
+            var responseContainerExist = this.mockRepository.Create<Response<bool>>();
+            var responseGetPropertiesAsync = this.mockRepository.Create<Response<BlobContainerProperties>>();
 
             _ = responseContainerExist
                 .SetupGet(c => c.Value)
@@ -79,8 +79,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
             var token = new CancellationToken(canceled:false);
 
             var blobContainerClient = this.mockRepository.Create<BlobContainerClient>();
-            var responseContainerExist = this.mockRepository.Create<Azure.Response<bool>>();
-            var responseGetPropertiesAsync = this.mockRepository.Create<Azure.Response<BlobContainerProperties>>();
+            var responseContainerExist = this.mockRepository.Create<Response<bool>>();
+            var responseGetPropertiesAsync = this.mockRepository.Create<Response<BlobContainerProperties>>();
 
             _ = responseContainerExist
                 .SetupGet(c => c.Value)

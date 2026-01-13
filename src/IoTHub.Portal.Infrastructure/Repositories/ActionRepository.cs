@@ -3,8 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
+    using Action = Domain.Entities.Action;
 
     public class ActionRepository : GenericRepository<Action>, IActionRepository
     {

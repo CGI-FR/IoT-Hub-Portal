@@ -16,13 +16,13 @@ namespace IoTHub.Portal.Infrastructure.Mappers
         {
             return new IoTEdgeListItem()
             {
-                DeviceId = deviceTwin?.DeviceId,
-                DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.DeviceName)),
-                Status = deviceTwin?.Status.ToString(),
-                NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin!),
+                DeviceId = deviceTwin.DeviceId,
+                DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.DeviceName)),
+                Status = deviceTwin.Status.ToString(),
+                NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin),
                 Image = this.deviceModelImageManager
                     .GetDeviceModelImageAsync(
-                        DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!).Result
+                        DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId))!).Result
             };
         }
 
@@ -39,29 +39,26 @@ namespace IoTHub.Portal.Infrastructure.Mappers
         {
             var customTags = new Dictionary<string, string>();
 
-            if (tags != null)
+            foreach (var tag in tags)
             {
-                foreach (var tag in tags)
-                {
-                    customTags.Add(tag, DeviceHelper.RetrieveTagValue(deviceTwin, tag)!);
-                }
+                customTags.Add(tag, DeviceHelper.RetrieveTagValue(deviceTwin, tag)!);
             }
 
             return new IoTEdgeDevice()
             {
-                DeviceId = deviceTwin?.DeviceId,
-                Status = deviceTwin?.Status?.ToString(),
-                Scope = deviceTwin?.DeviceScope,
-                ConnectionState = deviceTwin?.ConnectionState?.ToString(),
-                ModelId = DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId)),
-                DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.DeviceName)),
+                DeviceId = deviceTwin.DeviceId,
+                Status = deviceTwin.Status?.ToString(),
+                Scope = deviceTwin.DeviceScope,
+                ConnectionState = deviceTwin.ConnectionState?.ToString(),
+                ModelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId)),
+                DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.DeviceName)),
                 NbDevices = nbConnectedDevice,
-                NbModules = DeviceHelper.RetrieveNbModuleCount(deviceTwinWithModules, deviceTwin?.DeviceId!),
+                NbModules = DeviceHelper.RetrieveNbModuleCount(deviceTwinWithModules, deviceTwin.DeviceId!),
                 RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceTwinWithModules),
                 Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules),
                 LastDeployment = lastConfiguration,
                 Tags = customTags,
-                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!).Result,
+                Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId))!).Result,
             };
         }
     }

@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Domain.Entities
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Domain.Base;
+    using Base;
 
     public class Role : EntityBase
     {

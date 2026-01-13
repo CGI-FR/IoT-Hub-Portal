@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
-    using Portal.Shared.Security;
     using ConnectionStringDialog = Portal.Client.Dialogs.EdgeDevices.ConnectionStringDialog;
 
     [TestFixture]
@@ -622,9 +621,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                         {
                             ModuleName = "moduleTest",
                             Image = Guid.NewGuid().ToString(),
-                            Commands = new List<Portal.Shared.Models.v10.IoTEdgeModuleCommand>()
+                            Commands = new List<IoTEdgeModuleCommand>()
                             {
-                                new Portal.Shared.Models.v10.IoTEdgeModuleCommand(){ Name = "commandTest"}
+                                new IoTEdgeModuleCommand(){ Name = "commandTest"}
                             }
                         }
                     }

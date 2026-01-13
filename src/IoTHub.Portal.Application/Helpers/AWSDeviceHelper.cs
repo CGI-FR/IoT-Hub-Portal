@@ -9,7 +9,7 @@ namespace IoTHub.Portal.Application.Helpers
         {
             ArgumentNullException.ThrowIfNull(shadow, nameof(shadow));
 
-            var payloadString = System.Text.Encoding.UTF8.GetString(shadow.Payload.ToArray());
+            var payloadString = Encoding.UTF8.GetString(shadow.Payload.ToArray());
             var jsonObject = JObject.Parse(payloadString);
 
             var stateNode = jsonObject["state"] as JObject;
@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Application.Helpers
         {
             ArgumentNullException.ThrowIfNull(shadow, nameof(shadow));
 
-            var payloadString = System.Text.Encoding.UTF8.GetString(shadow.Payload.ToArray());
+            var payloadString = Encoding.UTF8.GetString(shadow.Payload.ToArray());
             var jsonObject = JObject.Parse(payloadString);
 
             var stateNode = jsonObject["state"] as JObject;

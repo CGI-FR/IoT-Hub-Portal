@@ -1,9 +1,9 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Infrastructure.Services
+namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
-    public class AWSEdgeDevicesService : EdgeDevicesServiceBase, IEdgeDevicesService
+    public class AwsEdgeDevicesService : EdgeDevicesServiceBase, IEdgeDevicesService
     {
         /// <summary>
         /// The device idevice service.
@@ -18,8 +18,8 @@ namespace IoTHub.Portal.Infrastructure.Services
         private readonly IMapper mapper;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonGreengrassV2 amazonGreengrass;
-        private readonly ILogger<AWSEdgeDevicesService> logger;
-        public AWSEdgeDevicesService(
+        private readonly ILogger<AwsEdgeDevicesService> logger;
+        public AwsEdgeDevicesService(
             ConfigHandler configHandler,
             IEdgeEnrollementHelper edgeEnrollementHelper,
             IExternalDeviceService externalDeviceService,
@@ -34,7 +34,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             IDeviceModelImageManager deviceModelImageManager,
             IAmazonIoT amazonIoTClient,
             IAmazonGreengrassV2 amazonGreengrass,
-            ILogger<AWSEdgeDevicesService> logger)
+            ILogger<AwsEdgeDevicesService> logger)
             : base(deviceTagService, edgeDeviceRepository, mapper, deviceModelImageManager, deviceTagValueRepository, labelRepository)
         {
             this.configHandler = configHandler;
@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <returns>the result of the operation.</returns>
         public async Task<IoTEdgeDevice> CreateEdgeDevice(IoTEdgeDevice edgeDevice)
         {
-            ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
+            ArgumentNullException.ThrowIfNull(edgeDevice);
 
             //Retrieve Device Model
             var model = await this.deviceModelRepository.GetByIdAsync(edgeDevice.ModelId);
@@ -79,7 +79,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 edgeDevice.DeviceId = thingResponse.ThingId;
 
                 //Create EdgeDevice in DB
-                var result = await base.CreateEdgeDeviceInDatabase(edgeDevice);
+                var result = await CreateEdgeDeviceInDatabase(edgeDevice);
                 await this.unitOfWork.SaveAsync();
 
                 return result;
@@ -100,7 +100,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <returns>device twin updated.</returns>
         public async Task<IoTEdgeDevice> UpdateEdgeDevice(IoTEdgeDevice edgeDevice)
         {
-            ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
+            ArgumentNullException.ThrowIfNull(edgeDevice);
 
             try
             {
@@ -161,7 +161,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var model = await this.deviceModelRepository.GetByIdAsync(deviceDto.ModelId);
 
             deviceDto.Modules = await this.configService.GetConfigModuleList(model.ExternalIdentifier!);
-            deviceDto.NbDevices = await this.GetEdgeDeviceNbDevices(deviceDto);
+            deviceDto.NbDevices = await GetEdgeDeviceNbDevices(deviceDto);
             deviceDto.NbModules = deviceDto.Modules.Count;
             deviceDto.ConnectionState = deviceDto.RuntimeResponse == CoreDeviceStatus.HEALTHY ? "Connected" : "Disconnected";
 
@@ -195,9 +195,9 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public async Task<string> GetEdgeDeviceEnrollementScript(string deviceId, string templateName)
         {
-            var template = edgeEnrollementHelper.GetEdgeEnrollementTemplate($"{configHandler.CloudProvider}.{templateName}");
+            var template = this.edgeEnrollementHelper.GetEdgeEnrollementTemplate($"{this.configHandler.CloudProvider}.{templateName}");
 
-            var device = await this.GetEdgeDevice(deviceId);
+            var device = await GetEdgeDevice(deviceId);
 
             return await this.externalDeviceService.CreateEnrollementScript(template, device);
         }
@@ -207,7 +207,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             try
             {
                 var listClientDevices = await this.amazonGreengrass.ListClientDevicesAssociatedWithCoreDeviceAsync(
-                new Amazon.GreengrassV2.Model.ListClientDevicesAssociatedWithCoreDeviceRequest
+                new ListClientDevicesAssociatedWithCoreDeviceRequest
                 {
                     CoreDeviceThingName = device.DeviceName
                 });

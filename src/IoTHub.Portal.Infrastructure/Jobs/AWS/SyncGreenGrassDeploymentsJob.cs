@@ -90,7 +90,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                             var thinggroupName = matches.Groups[1].Value;
                             try
                             {
-                                var s = await this.amazonIoTClient.DescribeThingGroupAsync(new Amazon.IoT.Model.DescribeThingGroupRequest { ThingGroupName = thinggroupName });
+                                var s = await this.amazonIoTClient.DescribeThingGroupAsync(new DescribeThingGroupRequest { ThingGroupName = thinggroupName });
                                 if (s.QueryString != null)
                                 {
                                     var iotEdgeModel = new IoTEdgeModel
@@ -104,7 +104,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                             }
                             catch (AmazonIoTException e)
                             {
-                                throw new Domain.Exceptions.InternalServerErrorException("Unable to Describe The thing group due to an error in the Amazon IoT API.", e);
+                                throw new InternalServerErrorException("Unable to Describe The thing group due to an error in the Amazon IoT API.", e);
                             }
                         }
                     }
@@ -112,7 +112,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                 }
                 catch (AmazonGreengrassV2Exception e)
                 {
-                    throw new Domain.Exceptions.InternalServerErrorException("Unable to List The deployments due to an error in the Amazon IoT API.", e);
+                    throw new InternalServerErrorException("Unable to List The deployments due to an error in the Amazon IoT API.", e);
                 }
             }
             while (!string.IsNullOrEmpty(nextToken));

@@ -30,13 +30,13 @@ namespace IoTHub.Portal.Tests.E2E
 
             var tagName = new string(
                 fixture.CreateMany<char>(4)
-                    .Where(c => char.IsLetterOrDigit(c))
+                    .Where(char.IsLetterOrDigit)
                     .ToArray()
             );
 
             var tagLabel = new string(
                 fixture.CreateMany<char>(4)
-                    .Where(c => char.IsLetterOrDigit(c))
+                    .Where(char.IsLetterOrDigit)
                     .ToArray()
             );
 

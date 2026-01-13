@@ -18,9 +18,9 @@
     protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.PlanningRead };
     private bool canWrite;
 
-    public List<ScheduleDto> ScheduleList { get; } = new List<ScheduleDto> { };
-    public PlanningDto Planning { get; set; } = new PlanningDto();
-    public DeviceModelDto DeviceModel { get; } = new DeviceModelDto();
+    public List<ScheduleDto> ScheduleList { get; } = new() { };
+    public PlanningDto Planning { get; set; } = new();
+    public DeviceModelDto DeviceModel { get; } = new();
 
     [Parameter]
     public string PlanningId { get; set; } = default!;

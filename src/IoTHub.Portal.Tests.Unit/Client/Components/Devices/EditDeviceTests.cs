@@ -710,7 +710,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .ReturnsAsync(new LoRaDeviceModelDto());
 
             _ = this.mockLoRaWanDeviceClientService.Setup(service => service.GetGatewayIdList())
-                .ReturnsAsync(new LoRaGatewayIDList());
+                .ReturnsAsync(new LoRaGatewayIdList());
 
             var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Create));
 

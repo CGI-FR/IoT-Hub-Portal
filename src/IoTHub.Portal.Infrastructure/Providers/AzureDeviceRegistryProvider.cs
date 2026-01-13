@@ -41,7 +41,7 @@ namespace IoTHub.Portal.Infrastructure.Providers
             {
                 enrollmentGroup = await this.dps.GetEnrollmentGroupAsync(enrollmentGroupName);
             }
-            catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+            catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound)
             {
                 var enrollmentGroupPrimaryKey = GenerateKey();
                 var enrollmentGroupSecondaryKey = GenerateKey();
@@ -79,7 +79,7 @@ namespace IoTHub.Portal.Infrastructure.Providers
                 enrollmentGroup = await this.dps.GetEnrollmentGroupAsync(enrollmentGroupName);
             }
             catch (HttpRequestException e)
-                when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                when (e.StatusCode == HttpStatusCode.NotFound)
             {
                 // Nothing to do, the enrollement group does not exist.
                 return;
@@ -109,7 +109,7 @@ namespace IoTHub.Portal.Infrastructure.Providers
             }
             catch (HttpRequestException e)
             {
-                if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                if (e.StatusCode == HttpStatusCode.NotFound)
                 {
                     _ = await CreateEnrollmentGroupAsync(modelId);
                     attestation = await GetAttestation(modelId);

@@ -28,8 +28,8 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommandDto commandDto)
         {
-            ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
-            ArgumentNullException.ThrowIfNull(commandDto, nameof(commandDto));
+            ArgumentNullException.ThrowIfNull(deviceId);
+            ArgumentNullException.ThrowIfNull(commandDto);
 
             // Convert the hex frame to a byte array
             var hexFrame = Enumerable.Range(0, commandDto.Frame.Length / 2)

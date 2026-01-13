@@ -12,7 +12,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
         /// <returns>The device model comamnd.</returns>
         public DeviceModelCommandDto GetDeviceModelCommand(TableEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
             return new DeviceModelCommandDto
             {
@@ -31,8 +31,8 @@ namespace IoTHub.Portal.Infrastructure.Mappers
         /// <param name="element">The element.</param>
         public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommandDto element)
         {
-            ArgumentNullException.ThrowIfNull(commandEntity, nameof(commandEntity));
-            ArgumentNullException.ThrowIfNull(element, nameof(element));
+            ArgumentNullException.ThrowIfNull(commandEntity);
+            ArgumentNullException.ThrowIfNull(element);
 
             commandEntity[nameof(DeviceModelCommandDto.Frame)] = element.Frame;
             commandEntity[nameof(DeviceModelCommandDto.Port)] = element.Port;

@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using System.Linq.Expressions;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
-    using Microsoft.EntityFrameworkCore;
-
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
         public UserRepository(PortalDbContext context) : base(context)
@@ -16,7 +11,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 
         public async Task<User?> GetByNameAsync(string userName, params Expression<Func<User, object>>[] includeProperties)
         {
-            IQueryable<User> query = context.Users;
+            IQueryable<User> query = this.Context.Users;
             foreach (var includeProperty in includeProperties)
             {
                 query = query.Include(includeProperty);

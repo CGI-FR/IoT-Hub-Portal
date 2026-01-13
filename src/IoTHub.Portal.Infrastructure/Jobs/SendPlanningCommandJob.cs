@@ -5,33 +5,33 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 {
     public class PlanningCommand
     {
-        public string planningId { get; set; } = default!;
-        public Collection<string> listDeviceId { get; } = new Collection<string>();
-        public Dictionary<DaysEnumFlag.DaysOfWeek, List<PayloadCommand>> commands { get; } = new Dictionary<DaysEnumFlag.DaysOfWeek, List<PayloadCommand>>();
+        public string PlanningId { get; }
+        public Collection<string> ListDeviceId { get; } = new Collection<string>();
+        public Dictionary<DaysEnumFlag.DaysOfWeek, List<PayloadCommand>> Commands { get; } = new Dictionary<DaysEnumFlag.DaysOfWeek, List<PayloadCommand>>();
 
         public PlanningCommand(string listDeviceId, string planningId)
         {
-            this.planningId = planningId;
-            this.listDeviceId.Add(listDeviceId);
+            PlanningId = planningId;
+            ListDeviceId.Add(listDeviceId);
 
             foreach (DaysEnumFlag.DaysOfWeek day in Enum.GetValues(typeof(DaysEnumFlag.DaysOfWeek)))
             {
-                commands.Add(day, new List<PayloadCommand>());
+                Commands.Add(day, new List<PayloadCommand>());
             }
         }
     }
 
     public class PayloadCommand
     {
-        public string payloadId { get; set; } = default!;
-        public TimeSpan start { get; set; } = default!;
-        public TimeSpan end { get; set; } = default!;
+        public string PayloadId { get; set; }
+        public TimeSpan Start { get; set; }
+        public TimeSpan End { get; set; }
 
         public PayloadCommand(TimeSpan start, TimeSpan end, string payloadId)
         {
-            this.payloadId = payloadId;
-            this.start = start;
-            this.end = end;
+            PayloadId = payloadId;
+            Start = start;
+            End = end;
         }
     }
 
@@ -42,22 +42,22 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         private readonly ILayerService layerService;
         private readonly IPlanningService planningService;
         private readonly IScheduleService scheduleService;
-        private readonly ILoRaWANCommandService loRaWANCommandService;
+        private readonly ILoRaWANCommandService loRaWanCommandService;
 
         private readonly CancellationTokenSource cancellationTokenSource;
 
         private readonly List<PlanningCommand> planningCommands = new List<PlanningCommand>();
-        public PaginatedResult<DeviceListItem> devices { get; set; } = new PaginatedResult<DeviceListItem>();
-        public IEnumerable<LayerDto> layers { get; set; } = new List<LayerDto>();
-        public IEnumerable<PlanningDto> plannings { get; set; } = new List<PlanningDto>();
-        public IEnumerable<ScheduleDto> schedules { get; set; } = new List<ScheduleDto>();
+        public PaginatedResult<DeviceListItem> Devices { get; set; } = new PaginatedResult<DeviceListItem>();
+        public IEnumerable<LayerDto> Layers { get; set; } = new List<LayerDto>();
+        public IEnumerable<PlanningDto> Plannings { get; set; } = new List<PlanningDto>();
+        public IEnumerable<ScheduleDto> Schedules { get; set; } = new List<ScheduleDto>();
         private readonly ILogger<SendPlanningCommandJob> logger;
 
         public SendPlanningCommandJob(IDeviceService<DeviceDetails> deviceService,
             ILayerService layerService,
             IPlanningService planningService,
             IScheduleService scheduleService,
-            ILoRaWANCommandService loRaWANCommandService,
+            ILoRaWANCommandService loRaWanCommandService,
             ILogger<SendPlanningCommandJob> logger)
         {
             this.logger = logger;
@@ -66,7 +66,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             this.layerService = layerService;
             this.planningService = planningService;
             this.scheduleService = scheduleService;
-            this.loRaWANCommandService = loRaWANCommandService;
+            this.loRaWanCommandService = loRaWanCommandService;
 
             this.cancellationTokenSource = new CancellationTokenSource();
         }
@@ -97,7 +97,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             try
             {
                 this.planningCommands.Clear();
-                await UpdateAPI();
+                await UpdateApi();
                 UpdateDatabase();
 
                 await SendCommand();
@@ -108,14 +108,14 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             }
         }
 
-        public async Task UpdateAPI()
+        public async Task UpdateApi()
         {
             try
             {
-                devices = await this.deviceService.GetDevices(pageSize: 10000);
-                layers = await this.layerService.GetLayers();
-                plannings = await this.planningService.GetPlannings();
-                schedules = await this.scheduleService.GetSchedules();
+                Devices = await this.deviceService.GetDevices(pageSize: 10000);
+                Layers = await this.layerService.GetLayers();
+                Plannings = await this.planningService.GetPlannings();
+                Schedules = await this.scheduleService.GetSchedules();
             }
             catch (Exception e)
             {
@@ -125,7 +125,9 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public void UpdateDatabase()
         {
-            foreach (var device in this.devices.Data)
+            if (Devices.Data == null) return;
+
+            foreach (var device in Devices.Data)
             {
                 if (!string.IsNullOrWhiteSpace(device.LayerId)) AddNewDevice(device);
             }
@@ -133,14 +135,14 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public void AddNewDevice(DeviceListItem device)
         {
-            var layer = layers.FirstOrDefault(layer => layer.Id == device.LayerId);
+            var layer = Layers.FirstOrDefault(layer => layer.Id == device.LayerId);
 
             if (layer?.Planning is not null and not "None")
             {
                 // If the layer linked to a device already has a planning, add the device to the planning list
-                foreach (var planning in this.planningCommands.Where(planning => planning.planningId == layer.Planning))
+                foreach (var planning in this.planningCommands.Where(planning => planning.PlanningId == layer.Planning))
                 {
-                    planning.listDeviceId.Add(device.DeviceID);
+                    planning.ListDeviceId.Add(device.DeviceID);
                     return;
                 }
 
@@ -153,19 +155,19 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public void AddCommand(PlanningCommand planningCommand)
         {
-            var planningData = plannings.FirstOrDefault(planning => planning.Id == planningCommand.planningId);
+            var planningData = Plannings.FirstOrDefault(planning => planning.Id == planningCommand.PlanningId);
 
             // If planning is active
             if (planningData != null && IsPlanningActive(planningData))
             {
                 // Connect off days command to the planning
-                addPlanningSchedule(planningData, planningCommand);
+                AddPlanningSchedule(planningData, planningCommand);
 
 
-                foreach (var schedule in schedules)
+                foreach (var schedule in Schedules)
                 {
                     // Add schedules to the planning
-                    if (schedule.PlanningId == planningCommand.planningId) addSchedule(schedule, planningCommand);
+                    if (schedule.PlanningId == planningCommand.PlanningId) AddSchedule(schedule, planningCommand);
                 }
             }
         }
@@ -181,46 +183,43 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         // Include Planning Commands used for off days in the command dictionary.
         // "Sa" represents Saturday and serves as a dictionary key.
         // planning.commands[Sa] contains a list of PayloadCommand Values.
-        public void addPlanningSchedule(PlanningDto planningData, PlanningCommand planning)
-        {
-            if (planningData != null)
+        public void AddPlanningSchedule(PlanningDto planningData, PlanningCommand planning)
+        {   
+            foreach (var key in planning.Commands.Keys)
             {
-                foreach (var key in planning.commands.Keys)
+                if ((planningData.DayOff & key) == planningData.DayOff)
                 {
-                    if ((planningData.DayOff & key) == planningData.DayOff)
-                    {
-                        var newPayload = new PayloadCommand(getTimeSpan("0:00"), getTimeSpan("24:00"), planningData.CommandId);
-                        planning.commands[key].Add(newPayload);
-                    }
+                    var newPayload = new PayloadCommand(GetTimeSpan("0:00"), GetTimeSpan("24:00"), planningData.CommandId);
+                    planning.Commands[key].Add(newPayload);
                 }
             }
         }
 
-        public void addSchedule(ScheduleDto schedule, PlanningCommand planning)
+        public void AddSchedule(ScheduleDto schedule, PlanningCommand planning)
         {
             // Convert a string into TimeSpan format
-            var start = getTimeSpan(schedule.Start);
-            var end = getTimeSpan(schedule.End);
+            var start = GetTimeSpan(schedule.Start);
+            var end = GetTimeSpan(schedule.End);
 
-            foreach (var key in planning.commands.Keys)
+            foreach (var key in planning.Commands.Keys)
             {
-                if (planning.commands[key].Count == 0)
+                if (planning.Commands[key].Count == 0)
                 {
                     var newPayload = new PayloadCommand(start, end, schedule.CommandId);
-                    planning.commands[key].Add(newPayload);
+                    planning.Commands[key].Add(newPayload);
                 }
                 // The if condition is utilized to skip day off schedules.
-                else if (planning.commands[key][0].start != getTimeSpan("00:00") || planning.commands[key][0].end != getTimeSpan("24:00"))
+                else if (planning.Commands[key][0].Start != GetTimeSpan("00:00") || planning.Commands[key][0].End != GetTimeSpan("24:00"))
                 {
                     var newPayload = new PayloadCommand(start, end, schedule.CommandId);
-                    planning.commands[key].Add(newPayload);
+                    planning.Commands[key].Add(newPayload);
                 }
             }
         }
 
-        public TimeSpan getTimeSpan(string time)
+        public static TimeSpan GetTimeSpan(string? time)
         {
-            var tabTime = time != null ? time.Split(':') : ("0:0").Split(':');
+            var tabTime = time?.Split(':') ?? ("0:0").Split(':');
 
             var hour = int.Parse(tabTime[0], CultureInfo.InvariantCulture);
             var minute = int.Parse(tabTime[1], CultureInfo.InvariantCulture);
@@ -240,11 +239,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             // Search for the appropriate command at the correct time from each plan.
             foreach (var planning in this.planningCommands)
             {
-                foreach (var schedule in planning.commands[DayConverter.Convert(currentDay)])
+                foreach (var schedule in planning.Commands[DayConverter.Convert(currentDay)])
                 {
-                    if (schedule.start < currentHour && schedule.end > currentHour)
+                    if (schedule.Start < currentHour && schedule.End > currentHour)
                     {
-                        await SendDevicesCommand(planning.listDeviceId, schedule.payloadId);
+                        await SendDevicesCommand(planning.ListDeviceId, schedule.PayloadId);
                     }
                 }
             }
@@ -252,7 +251,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public async Task SendDevicesCommand(Collection<string> devices, string command)
         {
-            foreach (var device in devices) await loRaWANCommandService.ExecuteLoRaWANCommand(device, command);
+            foreach (var device in devices) await this.loRaWanCommandService.ExecuteLoRaWANCommand(device, command);
         }
     }
 }

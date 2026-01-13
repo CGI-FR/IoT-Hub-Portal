@@ -7,18 +7,15 @@ namespace IoTHub.Portal.Infrastructure.Managers
     {
         private readonly ILogger<AwsDeviceModelImageManager> logger;
         private readonly ConfigHandler configHandler;
-        private readonly IOptions<DeviceModelImageOptions> imageOptions;
         private readonly IAmazonS3 s3Client;
 
         public AwsDeviceModelImageManager(
             ILogger<AwsDeviceModelImageManager> logger,
             ConfigHandler configHandler,
-            IOptions<DeviceModelImageOptions> options,
             IAmazonS3 s3Client)
         {
             this.logger = logger;
             this.configHandler = configHandler;
-            this.imageOptions = options;
             this.s3Client = s3Client;
         }
 

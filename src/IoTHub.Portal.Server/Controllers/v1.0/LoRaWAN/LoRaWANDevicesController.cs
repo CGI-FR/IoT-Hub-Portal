@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.V10
+namespace IoTHub.Portal.Server.Controllers.v10
 {
     [Authorize]
     [ApiController]
@@ -12,14 +12,14 @@ namespace IoTHub.Portal.Server.Controllers.V10
     public class LoRaWANDevicesController : DevicesControllerBase<LoRaDeviceDetails>
     {
         private readonly ILoRaWANCommandService loRaWanCommandService;
-        private readonly LoRaGatewayIDList gatewayIdList;
+        private readonly LoRaGatewayIdList gatewayIdList;
         private readonly IDeviceService<LoRaDeviceDetails> deviceService;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
             ILoRaWANCommandService loRaWanCommandService,
             IDeviceService<LoRaDeviceDetails> deviceService,
-            LoRaGatewayIDList gatewayIdList)
+            LoRaGatewayIdList gatewayIdList)
             : base(logger, deviceService)
         {
             this.loRaWanCommandService = loRaWanCommandService;
@@ -54,12 +54,12 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the specified device.
         /// </summary>
-        /// <param name="deviceID">The device identifier.</param>
-        [HttpGet("{deviceID}", Name = "GET LoRaWAN device details")]
+        /// <param name="deviceId">The device identifier.</param>
+        [HttpGet("{deviceId}", Name = "GET LoRaWAN device details")]
         [Authorize("device:read")]
-        public override Task<LoRaDeviceDetails> GetItem(string deviceID)
+        public override Task<LoRaDeviceDetails> GetItem(string deviceId)
         {
-            return base.GetItem(deviceID);
+            return base.GetItem(deviceId);
         }
 
         /// <summary>
@@ -88,11 +88,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Deletes the specified device.
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
-        [HttpDelete("{deviceID}", Name = "DELETE Remove LoRaWAN device")]
+        [HttpDelete("{deviceId}", Name = "DELETE Remove LoRaWAN device")]
         [Authorize("device:write")]
-        public override Task<IActionResult> Delete(string deviceID)
+        public override Task<IActionResult> Delete(string deviceId)
         {
-            return base.Delete(deviceID);
+            return base.Delete(deviceId);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
 
         [HttpGet("gateways", Name = "Get Gateways")]
         [Authorize("device:read")]
-        public ActionResult<LoRaGatewayIDList> GetGateways()
+        public ActionResult<LoRaGatewayIdList> GetGateways()
         {
             return Ok(this.gatewayIdList);
         }

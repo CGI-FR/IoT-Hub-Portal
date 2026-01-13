@@ -1,6 +1,6 @@
 ﻿@page "/lorawan/concentrators/new"
+@using IoTHub.Portal.Client.Validators
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -104,7 +104,7 @@
     private MudForm form = default!;
     private ConcentratorValidator concentratorValidator = new();
 
-    private List<FrequencyPlan> FrequencyPlans = new List<FrequencyPlan>();
+    private List<FrequencyPlan> FrequencyPlans = new();
 
     private bool isProcessing;
 
@@ -119,7 +119,7 @@
     {
         await base.OnInitializedAsync();
 
-        this.FrequencyPlans.AddRange(await this.LoRaWanConcentratorsClientService.GetFrequencyPlans());
+        FrequencyPlans.AddRange(await LoRaWanConcentratorsClientService.GetFrequencyPlans());
     }
 
     private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
@@ -134,7 +134,7 @@
         try
         {
             await form.Validate();
-            if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
+            if (!concentratorValidator.Validate(concentrator).IsValid)
             {
                 Snackbar.Add("One or more validation errors occurred", Severity.Error);
 

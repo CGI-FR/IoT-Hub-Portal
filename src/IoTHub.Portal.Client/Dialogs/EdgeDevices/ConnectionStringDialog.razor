@@ -103,7 +103,7 @@
 
     [Parameter] public string deviceId { get; set; } = default!;
 
-    private DeviceCredentials Credentials = new DeviceCredentials();
+    private DeviceCredentials Credentials = new();
 
     public string EnrollementScriptCommand { get; set; } = default!;
 

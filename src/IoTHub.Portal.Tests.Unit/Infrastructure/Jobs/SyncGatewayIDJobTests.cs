@@ -3,27 +3,27 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
-    public class SyncGatewayIDJobTests : BackendUnitTest
+    public class SyncGatewayIdJobTests : BackendUnitTest
     {
-        private IJob syncGatewayIDJob;
-        private Mock<ILogger<SyncGatewayIDJob>> mockLogger;
+        private IJob syncGatewayIdJob;
+        private Mock<ILogger<SyncGatewayIdJob>> mockLogger;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
-        private LoRaGatewayIDList loRaGatewayIDList;
+        private LoRaGatewayIdList loRaGatewayIdList;
 
         public override void Setup()
         {
             base.Setup();
 
             this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
-            this.mockLogger = MockRepository.Create<ILogger<SyncGatewayIDJob>>();
-            this.loRaGatewayIDList = new LoRaGatewayIDList();
+            this.mockLogger = MockRepository.Create<ILogger<SyncGatewayIdJob>>();
+            this.loRaGatewayIdList = new LoRaGatewayIdList();
 
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
-            _ = ServiceCollection.AddSingleton<IJob, SyncGatewayIDJob>();
+            _ = ServiceCollection.AddSingleton<IJob, SyncGatewayIdJob>();
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.syncGatewayIDJob = new SyncGatewayIDJob(this.mockExternalDeviceService.Object, this.loRaGatewayIDList, this.mockLogger.Object);
+            this.syncGatewayIdJob = new SyncGatewayIdJob(this.mockExternalDeviceService.Object, this.loRaGatewayIdList, this.mockLogger.Object);
         }
 
         [Test]
@@ -36,11 +36,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
                     .ReturnsAsync(new List<string>() { "GatewayID01", "GatewayID02" });
 
             // Act
-            _ = this.syncGatewayIDJob.Execute(null);
+            _ = this.syncGatewayIdJob.Execute(null);
 
             // Assert
-            Assert.AreEqual(2, this.loRaGatewayIDList.GatewayIds.Count);
-            Assert.AreEqual("GatewayID01", this.loRaGatewayIDList.GatewayIds[0]);
+            Assert.AreEqual(2, this.loRaGatewayIdList.GatewayIds.Count);
+            Assert.AreEqual("GatewayID01", this.loRaGatewayIdList.GatewayIds[0]);
             MockRepository.VerifyAll();
         }
 
@@ -54,10 +54,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
                     .Throws(new Exception());
 
             // Act
-            _ = this.syncGatewayIDJob.Execute(null);
+            _ = this.syncGatewayIdJob.Execute(null);
 
             // Assert
-            Assert.IsEmpty(this.loRaGatewayIDList.GatewayIds);
+            Assert.IsEmpty(this.loRaGatewayIdList.GatewayIds);
             MockRepository.VerifyAll();
         }
     }

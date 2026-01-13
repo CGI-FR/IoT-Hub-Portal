@@ -4,7 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
     using ProblemDetailsException = Hellang.Middleware.ProblemDetails.ProblemDetailsException;
-    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
     public class DeviceModelPropertiesControllerTests

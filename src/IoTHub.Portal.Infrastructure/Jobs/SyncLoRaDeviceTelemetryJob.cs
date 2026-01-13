@@ -10,7 +10,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         private readonly BlobServiceClient blobServiceClient;
         private readonly IDeviceService<LoRaDeviceDetails> deviceService;
 
-        private const string CHECKPOINTS_BLOBSTORAGE_NAME = "iothub-portal-events-checkpoints";
+        private const string CheckpointsBlobstorageName = "iothub-portal-events-checkpoints";
 
         public SyncLoRaDeviceTelemetryJob(
             ILogger<SyncLoRaDeviceTelemetryJob> logger,
@@ -26,7 +26,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var storageClient = this.blobServiceClient.GetBlobContainerClient(CHECKPOINTS_BLOBSTORAGE_NAME);
+            var storageClient = this.blobServiceClient.GetBlobContainerClient(CheckpointsBlobstorageName);
 
             _ = await storageClient.CreateIfNotExistsAsync();
 

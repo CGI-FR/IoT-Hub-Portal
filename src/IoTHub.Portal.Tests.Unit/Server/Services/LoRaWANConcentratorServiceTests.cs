@@ -23,12 +23,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         {
             base.Setup();
 
-            this.mockLogger = this.MockRepository.Create<ILogger<LoRaWANConcentratorService>>();
-            this.mockExternalDeviceService = this.MockRepository.Create<IExternalDeviceService>();
-            this.mockLloRaWanManagementService = this.MockRepository.Create<ILoRaWanManagementService>();
-            this.mockConcentratorTwinMapper = this.MockRepository.Create<IConcentratorTwinMapper>();
-            this.mockConcentratorRepository = this.MockRepository.Create<IConcentratorRepository>();
-            this.mockUnitOfWork = this.MockRepository.Create<IUnitOfWork>();
+            this.mockLogger = MockRepository.Create<ILogger<LoRaWANConcentratorService>>();
+            this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
+            this.mockLloRaWanManagementService = MockRepository.Create<ILoRaWanManagementService>();
+            this.mockConcentratorTwinMapper = MockRepository.Create<IConcentratorTwinMapper>();
+            this.mockConcentratorRepository = MockRepository.Create<IConcentratorRepository>();
+            this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
 
             _ = ServiceCollection.AddSingleton(this.mockLogger.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);

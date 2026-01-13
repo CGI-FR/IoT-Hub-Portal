@@ -128,7 +128,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 }
                 catch (AmazonIoTException e)
                 {
-                    throw new Domain.Exceptions.InternalServerErrorException($"Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
+                    throw new InternalServerErrorException($"Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
                 }
 
             }
@@ -138,7 +138,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException($"Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to delete the device model {deviceModel.Name}: {e.Message}", e);
             }
         }
 
@@ -182,7 +182,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                             }
                             catch (AmazonIoTException e)
                             {
-                                throw new Domain.Exceptions.InternalServerErrorException($"Unable to list tags thing type {deviceModel.Name}: {e.Message}", e);
+                                throw new InternalServerErrorException($"Unable to list tags thing type {deviceModel.Name}: {e.Message}", e);
 
                             }
                         }
@@ -193,13 +193,13 @@ namespace IoTHub.Portal.Infrastructure.Services
                 }
                 catch (AmazonIoTException e)
                 {
-                    throw new Domain.Exceptions.InternalServerErrorException($"Unable to list tags thing type {deviceModel.Name}: {e.Message}", e);
+                    throw new InternalServerErrorException($"Unable to list tags thing type {deviceModel.Name}: {e.Message}", e);
 
                 }
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException($"Unable to describe the the thing type {deviceModel.Name}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to describe the the thing type {deviceModel.Name}: {e.Message}", e);
 
             }
 
@@ -255,7 +255,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 }
                 catch (AmazonIoTException e)
                 {
-                    throw new Domain.Exceptions.InternalServerErrorException($"Unable to list thing types : {e.Message}", e);
+                    throw new InternalServerErrorException($"Unable to list thing types : {e.Message}", e);
                 }
             }
             while (!string.IsNullOrEmpty(marker));
@@ -296,7 +296,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonGreengrassV2Exception e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException($"Unable to List Core Devices due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException($"Unable to List Core Devices due to an error in the Amazon IoT API.", e);
             }
         }
 
@@ -324,7 +324,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var deviceCount = 0;
             var edgeDeviceCount = 0;
 
-            var devices = await this.GetAllThing();
+            var devices = await GetAllThing();
             var dico = new Dictionary<string, int>();
 
             bool? isEdge;
@@ -333,7 +333,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 try
                 {
-                    isEdge = await this.IsEdgeDeviceModel(this.mapper.Map<ExternalDeviceModelDto>(device));
+                    isEdge = await IsEdgeDeviceModel(this.mapper.Map<ExternalDeviceModelDto>(device));
                 }
                 catch (AmazonIoTException e)
                 {
@@ -529,12 +529,12 @@ namespace IoTHub.Portal.Infrastructure.Services
                 }
                 catch (AmazonIoTException e)
                 {
-                    throw new Domain.Exceptions.InternalServerErrorException("Unable to Attach Thing Principal due to an error in the Amazon IoT API.", e);
+                    throw new InternalServerErrorException("Unable to Attach Thing Principal due to an error in the Amazon IoT API.", e);
                 }
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to Create Keys and Certificate due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to Create Keys and Certificate due to an error in the Amazon IoT API.", e);
             }
         }
 
@@ -546,7 +546,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to Attach Thing Principal due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to Attach Thing Principal due to an error in the Amazon IoT API.", e);
             }
         }
 
@@ -564,7 +564,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonSecretsManagerException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to Create Private Secret due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to Create Private Secret due to an error in the Amazon IoT API.", e);
             }
         }
 
@@ -582,7 +582,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonSecretsManagerException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to Create Public Secret due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to Create Public Secret due to an error in the Amazon IoT API.", e);
             }
         }
 
@@ -600,7 +600,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonSecretsManagerException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to Create Certificate due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to Create Certificate due to an error in the Amazon IoT API.", e);
 
             }
         }
@@ -645,7 +645,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     EndpointType = "iot:CredentialProvider"
                 });
 
-                var credentials = await this.GetEdgeDeviceCredentials(device);
+                var credentials = await GetEdgeDeviceCredentials(device);
 
                 return template.Replace("%DATA_ENDPOINT%", iotDataEndpointResponse!.EndpointAddress, StringComparison.OrdinalIgnoreCase)
                    .Replace("%CREDENTIALS_ENDPOINT%", credentialProviderEndpointResponse.EndpointAddress, StringComparison.OrdinalIgnoreCase)
@@ -658,7 +658,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to Describe Endpoint due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to Describe Endpoint due to an error in the Amazon IoT API.", e);
             }
         }
 
@@ -722,7 +722,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 }
                 catch (AmazonIoTException e)
                 {
-                    throw new Domain.Exceptions.InternalServerErrorException("Unable to attach policy due to an error in the Amazon IoT API.", e);
+                    throw new InternalServerErrorException("Unable to attach policy due to an error in the Amazon IoT API.", e);
                 }
             }
 
@@ -733,7 +733,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to detach thing Principal due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to detach thing Principal due to an error in the Amazon IoT API.", e);
 
             }
 
@@ -759,7 +759,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to update certificate due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to update certificate due to an error in the Amazon IoT API.", e);
             }
             try
             {
@@ -767,7 +767,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonIoTException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to delete certificate due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to delete certificate due to an error in the Amazon IoT API.", e);
             }
         }
 
@@ -783,7 +783,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             catch (AmazonSecretsManagerException e)
             {
-                throw new Domain.Exceptions.InternalServerErrorException("Unable to delete secret due to an error in the Amazon IoT API.", e);
+                throw new InternalServerErrorException("Unable to delete secret due to an error in the Amazon IoT API.", e);
             }
         }
     }

@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using IoTHub.Portal.Client.Dialogs.Layer;
 
     public class LinkDeviceLayerDialogTest : BlazorUnitTest

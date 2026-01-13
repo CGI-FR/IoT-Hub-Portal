@@ -3,11 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Planning
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Dialogs.Planning;
-
     [TestFixture]
     public class DeletePlanningDialogTest : BlazorUnitTest
     {

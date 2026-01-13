@@ -16,20 +16,20 @@
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Edge Device</MudText>
-    <MudForm Model="@EdgeDevice" @ref="form">
+    <MudForm Model="@edgeDevice" @ref="form">
         <MudGrid>
             <MudItem xs="12" sm="4" md="3">
                 <MudCard>
                     <MudCardHeader Class="DeviceCardHeader">
                         <CardHeaderContent>
-                            <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModel.Name)>Model: <b>@edgeModel?.Name</b></MudText>
-                            <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(EdgeDevice?.DeviceName) ? EdgeDevice?.DeviceId : EdgeDevice?.DeviceName)</MudText>
+                            <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModel.Name)>Model: <b>@EdgeModel?.Name</b></MudText>
+                            <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(edgeDevice?.DeviceName) ? edgeDevice?.DeviceId : edgeDevice?.DeviceName)</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
                         <div class="d-flex justify-center mb-4">
                             <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                                <MudImage Src="@edgeModel?.Image?.ToString()" id="@(nameof(IoTEdgeDevice.Image))" />
+                                <MudImage Src="@EdgeModel?.Image?.ToString()" id="@(nameof(IoTEdgeDevice.Image))" />
                             </MudAvatar>
                         </div>
                     </MudCardContent>
@@ -64,11 +64,11 @@
                                                     {
                                                         <MudAutocomplete T="IoTEdgeModel"
                                                                          id="@nameof(IoTEdgeModel.ModelId)"
-                                                                         @bind-Value="edgeModel"
+                                                                         @bind-Value="EdgeModel"
                                                                          SearchFunc="@Search"
                                                                          Label="Model*"
                                                                          Dense=true
-                                                                         For=@(() => this.edgeModel)
+                                                                         For=@(() => EdgeModel)
                                                                          Variant="Variant.Outlined"
                                                                          ToStringFunc="@(x => x?.Name)"
                                                                          ResetValueOnEmptyText=true
@@ -83,7 +83,7 @@
                                                                 </MudText>
                                                             </ItemTemplate>
                                                         </MudAutocomplete>
-                                                        @if (EdgeDevice.ModelId == null && displayValidationErrorMessages)
+                                                        @if (edgeDevice.ModelId == null && displayValidationErrorMessages)
                                                         {
                                                             <p class="validation-error-message">The Model is required.</p>
                                                         }
@@ -93,11 +93,11 @@
                                                 <MudItem xs="12" md="6">
                                                     @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
                                                     {
-                                                        <MudTextField @bind-Value="@EdgeDevice.DeviceId"
+                                                        <MudTextField @bind-Value="@edgeDevice.DeviceId"
                                                                       id=@nameof(IoTEdgeDevice.DeviceId)
                                                                       Label="Device ID"
                                                                       Variant="Variant.Outlined"
-                                                                      For="@(() => EdgeDevice.DeviceId)"
+                                                                      For="@(() => edgeDevice.DeviceId)"
                                                                       HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
 
                                                     }
@@ -106,11 +106,11 @@
                                                     <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
                                                 </MudItem>
                                                 <MudItem xs="12">
-                                                    <MudTextField @bind-Value="@EdgeDevice.DeviceName"
+                                                    <MudTextField @bind-Value="@edgeDevice.DeviceName"
                                                                   id="@nameof(IoTEdgeDevice.DeviceName)"
                                                                   Label="Device name"
                                                                   Variant="Variant.Outlined"
-                                                                  For="@(() => EdgeDevice.DeviceName)"
+                                                                  For="@(() => edgeDevice.DeviceName)"
                                                                   Required="true" />
                                                 </MudItem>
 
@@ -120,7 +120,7 @@
                                                         <MudText>
                                                             <b>Status</b>
                                                         </MudText>
-                                                        <MudRadioGroup @bind-SelectedOption="@EdgeDevice.IsEnabled">
+                                                        <MudRadioGroup @bind-SelectedOption="@edgeDevice.IsEnabled">
                                                             <MudRadio Option=@(true) Color="Color.Primary">
                                                                 Enabled
                                                                 <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
@@ -147,7 +147,7 @@
                                                 @foreach (DeviceTagDto tag in TagList)
                                                 {
                                                     <MudItem xs="12" md="6">
-                                                        <MudTextField @bind-Value="EdgeDevice.Tags[tag.Name]" id="@tag.Name" Label="@tag.Label"
+                                                        <MudTextField @bind-Value="edgeDevice.Tags[tag.Name]" id="@tag.Name" Label="@tag.Label"
                                                                       Required="@tag.Required"
                                                                       Variant="Variant.Outlined" />
                                                     </MudItem>
@@ -163,7 +163,7 @@
                                     <MudExpansionPanel Text="Labels">
                                         <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
                                         <ChildContent>
-                                            <LabelsEditor ReadOnlyLabels="edgeModel?.Labels" Labels="EdgeDevice.Labels" />
+                                            <LabelsEditor ReadOnlyLabels="EdgeModel?.Labels" Labels="edgeDevice.Labels" />
                                         </ChildContent>
                                     </MudExpansionPanel>
                                 </MudItem>
@@ -179,19 +179,20 @@
 
 @code {
     protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.EdgeDeviceWrite };
+    
+    private MudForm form;
+
+    private IoTEdgeDevice edgeDevice = new();
+    private IEnumerable<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
+    private IoTEdgeModel edgeModel;
 
     [CascadingParameter]
-    public Error Error { get; set; } = default!;
+    public Error Error { get; set; }
 
-    private MudForm form = default!;
-
-    private IoTEdgeDevice EdgeDevice = new IoTEdgeDevice();
-
-    private IEnumerable<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
-    private IoTEdgeModel _edgeModel = default!;
-    private IoTEdgeModel edgeModel
+    private IoTEdgeModel EdgeModel
     {
-        get => _edgeModel;
+        get => edgeModel;
+
         set
         {
             Task.Run(async () => await ChangeModel(value));
@@ -215,16 +216,16 @@
         try
         {
             EdgeDeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
-            EdgeDevice = EdgeDeviceLayoutService.GetSharedDevice() ?? this.EdgeDevice;
-            edgeModel = EdgeDeviceLayoutService.GetSharedDeviceModel() ?? this.edgeModel;
+            edgeDevice = EdgeDeviceLayoutService.GetSharedDevice() ?? edgeDevice;
+            EdgeModel = EdgeDeviceLayoutService.GetSharedDeviceModel() ?? EdgeModel;
 
-            this.edgeModelList = await this.EdgeModelClientService.GetIoTEdgeModelList();
+            edgeModelList = await EdgeModelClientService.GetIoTEdgeModelList();
 
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();
 
             foreach (var tag in TagList)
             {
-                EdgeDevice.Tags.TryAdd(tag.Name, string.Empty);
+                edgeDevice.Tags.TryAdd(tag.Name, string.Empty);
             }
         }
         catch (ProblemDetailsException exception)
@@ -260,11 +261,11 @@
                 return;
             }
 
-            this.EdgeDevice.ModelId = this.edgeModel.ModelId;
+            edgeDevice.ModelId = EdgeModel.ModelId;
 
-            await this.EdgeDeviceClientService.CreateDevice(EdgeDevice);
+            await EdgeDeviceClientService.CreateDevice(edgeDevice);
 
-            Snackbar.Add($"Device {EdgeDevice.DeviceId} has been successfully created!", Severity.Success);
+            Snackbar.Add($"Device {edgeDevice.DeviceId} has been successfully created!", Severity.Success);
 
             ProcessPostDeviceCreation();
         }
@@ -285,7 +286,7 @@
 
         foreach (DeviceTagDto tag in TagList)
         {
-            if (tag.Required && string.IsNullOrEmpty(EdgeDevice.Tags[tag.Name]))
+            if (tag.Required && string.IsNullOrEmpty(edgeDevice.Tags[tag.Name]))
             {
                 tagValidationError = true;
             }
@@ -301,12 +302,12 @@
                 NavigationManager.NavigateTo("/edge/devices");
                 break;
             case DeviceSaveAction.SaveAndAddNew:
-                EdgeDevice = EdgeDeviceLayoutService.ResetSharedDevice(TagList.ToList());
-                edgeModel = EdgeDeviceLayoutService.ResetSharedDeviceModel();
+                edgeDevice = EdgeDeviceLayoutService.ResetSharedDevice(TagList.ToList());
+                EdgeModel = EdgeDeviceLayoutService.ResetSharedDeviceModel();
                 break;
             case DeviceSaveAction.SaveAndDuplicate:
-                EdgeDevice = EdgeDeviceLayoutService.DuplicateSharedDevice(EdgeDevice);
-                edgeModel = EdgeDeviceLayoutService.DuplicateSharedDeviceModel(edgeModel);
+                edgeDevice = EdgeDeviceLayoutService.DuplicateSharedDevice(edgeDevice);
+                EdgeModel = EdgeDeviceLayoutService.DuplicateSharedDeviceModel(EdgeModel);
                 break;
         }
     }
@@ -343,16 +344,16 @@
     {
         try
         {
-            this._edgeModel = await this.EdgeModelClientService.GetIoTEdgeModel(edgeModel.ModelId);
+            this.edgeModel = await EdgeModelClientService.GetIoTEdgeModel(edgeModel.ModelId);
 
-            this.EdgeDevice = new IoTEdgeDevice()
+            edgeDevice = new IoTEdgeDevice()
             {
-                DeviceId = this.EdgeDevice.DeviceId,
-                DeviceName = this.EdgeDevice.DeviceName,
+                DeviceId = edgeDevice.DeviceId,
+                DeviceName = edgeDevice.DeviceName,
                 ModelId = edgeModel?.ModelId!,
                 Image = edgeModel?.Image!,
-                Tags = this.EdgeDevice.Tags,
-                IsEnabled = this.EdgeDevice.IsEnabled
+                Tags = edgeDevice.Tags,
+                IsEnabled = edgeDevice.IsEnabled
             };
 
             if (edgeModel == null || string.IsNullOrWhiteSpace(edgeModel.ModelId))
@@ -385,8 +386,8 @@
 
     private void DeviceServiceOnRefreshDeviceOccurred(object sender, EventArgs e)
     {
-        EdgeDevice = EdgeDeviceLayoutService.GetSharedDevice();
-        edgeModel = EdgeDeviceLayoutService.GetSharedDeviceModel();
+        edgeDevice = EdgeDeviceLayoutService.GetSharedDevice();
+        EdgeModel = EdgeDeviceLayoutService.GetSharedDeviceModel();
         StateHasChanged();
     }
 }

@@ -30,13 +30,13 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             var deviceModelMapper = CreateDeviceModelMapper();
             var entity = new TableEntity
             {
-                RowKey = "000-000-001"
+                RowKey = "000-000-001",
+                ["Name"] = "DeviceModelName",
+                ["Description"] = "aaa",
+                ["AppEUI"] = "AppEUI",
+                ["SensorDecoderURL"] = "SensorDecoderURL",
+                ["Image"] = DeviceModelImageOptions.DefaultImage
             };
-            entity["Name"] = "DeviceModelName";
-            entity["Description"] = "aaa";
-            entity["AppEUI"] = "AppEUI";
-            entity["SensorDecoderURL"] = "SensorDecoderURL";
-            entity["Image"] = DeviceModelImageOptions.DefaultImage;
 
             // Act
             var result = deviceModelMapper.CreateDeviceModel(entity);

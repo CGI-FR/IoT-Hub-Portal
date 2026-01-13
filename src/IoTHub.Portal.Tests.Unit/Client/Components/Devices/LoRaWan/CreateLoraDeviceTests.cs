@@ -31,7 +31,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(new LoRaGatewayIDList());
+                .ReturnsAsync(new LoRaGatewayIdList());
 
             // Act
 
@@ -59,7 +59,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(new LoRaGatewayIDList());
+                .ReturnsAsync(new LoRaGatewayIdList());
 
             // Act
             var cut = RenderComponent<CreateLoraDevice>(
@@ -88,7 +88,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var cut = RenderComponent<CreateLoraDevice>(
@@ -143,7 +143,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
+                .ReturnsAsync(Fixture.Create<LoRaGatewayIdList>);
 
             // Act
             var popoverProvider = RenderComponent<MudPopoverProvider>();
@@ -178,7 +178,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var validator = new LoRaDeviceDetailsValidator();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
-                .ReturnsAsync(new LoRaGatewayIDList()
+                .ReturnsAsync(new LoRaGatewayIdList()
                 {
                     GatewayIds = new List<string>()
                     {

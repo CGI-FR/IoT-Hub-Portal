@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
     {
         public ConcentratorDto CreateDeviceDetails(Twin twin)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             return new ConcentratorDto
             {
@@ -24,8 +24,8 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
         public void UpdateTwin(Twin twin, ConcentratorDto item)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
-            ArgumentNullException.ThrowIfNull(item, nameof(item));
+            ArgumentNullException.ThrowIfNull(twin);
+            ArgumentNullException.ThrowIfNull(item);
 
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);

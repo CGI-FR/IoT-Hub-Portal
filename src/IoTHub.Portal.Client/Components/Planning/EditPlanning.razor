@@ -251,29 +251,29 @@
     [Parameter]
     public string mode { get; set; } = default!;
     [Parameter]
-    public List<ScheduleDto> scheduleList { get; set; } = new List<ScheduleDto> { };
+    public List<ScheduleDto> scheduleList { get; set; } = new() { };
     [Parameter]
-    public List<ScheduleDto> initScheduleList { get; set; } = new List<ScheduleDto> { };
+    public List<ScheduleDto> initScheduleList { get; set; } = new() { };
     [Parameter]
-    public PlanningDto planning { get; set; } = new PlanningDto();
+    public PlanningDto planning { get; set; } = new();
     [Parameter]
     public string SelectedModel { get; set; } = "";
 
     [Parameter]
     public bool CanWrite { get; set; }
 
-    public List<ScheduleDto> scheduleOffList { get; set; } = new List<ScheduleDto> { new ScheduleDto() };
+    public List<ScheduleDto> scheduleOffList { get; set; } = new() { new ScheduleDto() };
 
     public IEnumerable<string> AvailableMonth { get; set; } = new List<string>() { "January", "February", "March", "April", "Mai", "June", "July", "August", "September", "October", "Novembre", "December" };
 
     public string defaultDeviceModel { get; set; } = "Choose a Device Model";
 
     public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
-    Dictionary<string, List<DeviceModelCommandDto>> CommandDictionary = new Dictionary<string, List<DeviceModelCommandDto>>();
+    Dictionary<string, List<DeviceModelCommandDto>> CommandDictionary = new();
 
     private bool isProcessing;
 
-    public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
+    public HashSet<LayerHash> Layers { get; set; } = new() { };
 
     protected override async Task OnInitializedAsync()
     {

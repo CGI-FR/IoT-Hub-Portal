@@ -20,17 +20,17 @@ namespace IoTHub.Portal.Shared.Constants
     }
     public static class DayConverter
     {
-        public static DaysEnumFlag.DaysOfWeek Convert(System.DayOfWeek day)
+        public static DaysEnumFlag.DaysOfWeek Convert(DayOfWeek day)
         {
             return day switch
             {
-                System.DayOfWeek.Monday => DaysEnumFlag.DaysOfWeek.Monday,
-                System.DayOfWeek.Tuesday => DaysEnumFlag.DaysOfWeek.Tuesday,
-                System.DayOfWeek.Wednesday => DaysEnumFlag.DaysOfWeek.Wednesday,
-                System.DayOfWeek.Thursday => DaysEnumFlag.DaysOfWeek.Thursday,
-                System.DayOfWeek.Friday => DaysEnumFlag.DaysOfWeek.Friday,
-                System.DayOfWeek.Saturday => DaysEnumFlag.DaysOfWeek.Saturday,
-                System.DayOfWeek.Sunday => DaysEnumFlag.DaysOfWeek.Sunday,
+                DayOfWeek.Monday => DaysEnumFlag.DaysOfWeek.Monday,
+                DayOfWeek.Tuesday => DaysEnumFlag.DaysOfWeek.Tuesday,
+                DayOfWeek.Wednesday => DaysEnumFlag.DaysOfWeek.Wednesday,
+                DayOfWeek.Thursday => DaysEnumFlag.DaysOfWeek.Thursday,
+                DayOfWeek.Friday => DaysEnumFlag.DaysOfWeek.Friday,
+                DayOfWeek.Saturday => DaysEnumFlag.DaysOfWeek.Saturday,
+                DayOfWeek.Sunday => DaysEnumFlag.DaysOfWeek.Sunday,
                 _ => DaysEnumFlag.DaysOfWeek.None,
             };
         }

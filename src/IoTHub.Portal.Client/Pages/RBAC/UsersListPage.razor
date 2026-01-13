@@ -68,7 +68,7 @@
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Failed to load users: {ex.Message}", MudBlazor.Severity.Error);
+            Snackbar.Add($"Failed to load users: {ex.Message}", Severity.Error);
             return new TableData<UserModel> { Items = Array.Empty<UserModel>(), TotalItems = 0 };
         }
     }

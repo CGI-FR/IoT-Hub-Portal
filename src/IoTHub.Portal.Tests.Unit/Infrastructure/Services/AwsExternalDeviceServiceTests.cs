@@ -88,7 +88,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             var act = () => this.externalDeviceService.CreateDeviceModel(externalDeviceModelDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<Portal.Domain.Exceptions.ResourceAlreadyExistsException>();
+            _ = await act.Should().ThrowAsync<ResourceAlreadyExistsException>();
             MockRepository.VerifyAll();
         }
 
@@ -144,7 +144,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             await this.externalDeviceService.DeleteDevice(deviceId);
 
             // Assert
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -163,7 +163,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             await this.externalDeviceService.DeleteDevice(deviceId);
 
             // Assert
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -183,7 +183,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             // Assert
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 
             // Assert
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -332,9 +332,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = this.mockAmazonIot.Setup(client => client.ListTagsForResourceAsync(It.IsAny<ListTagsForResourceRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ListTagsForResourceResponse()
                 {
-                    Tags = new List<Amazon.IoT.Model.Tag>()
+                    Tags = new List<Tag>()
                     {
-                        new Amazon.IoT.Model.Tag()
+                        new Tag()
                         {
                             Key = "iotEdge",
                             Value = "False"
@@ -413,9 +413,9 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = this.mockAmazonIot.Setup(client => client.ListTagsForResourceAsync(It.IsAny<ListTagsForResourceRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ListTagsForResourceResponse()
                 {
-                    Tags = new List<Amazon.IoT.Model.Tag>()
+                    Tags = new List<Tag>()
                     {
-                        new Amazon.IoT.Model.Tag()
+                        new Tag()
                         {
                             Key = "iotEdge",
                             Value = "True"
@@ -652,7 +652,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 });
 
             //Act
-            var result = await this.externalDeviceService.IsEdgeDeviceModel(this.Mapper.Map<ExternalDeviceModelDto>(thingType));
+            var result = await this.externalDeviceService.IsEdgeDeviceModel(Mapper.Map<ExternalDeviceModelDto>(thingType));
 
             //Assert
             _ = result.Should().BeTrue();
@@ -695,7 +695,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 });
 
             //Act
-            var result = await this.externalDeviceService.IsEdgeDeviceModel(this.Mapper.Map<ExternalDeviceModelDto>(thingType));
+            var result = await this.externalDeviceService.IsEdgeDeviceModel(Mapper.Map<ExternalDeviceModelDto>(thingType));
 
             //Assert
             _ = result.Should().BeFalse();
@@ -727,7 +727,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .ReturnsAsync((ListTagsForResourceResponse)null);
 
             //Act
-            var result = await this.externalDeviceService.IsEdgeDeviceModel(this.Mapper.Map<ExternalDeviceModelDto>(thingType));
+            var result = await this.externalDeviceService.IsEdgeDeviceModel(Mapper.Map<ExternalDeviceModelDto>(thingType));
 
             //Assert
             _ = result.Should().BeNull();
@@ -770,7 +770,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 });
 
             //Act
-            var result = await this.externalDeviceService.IsEdgeDeviceModel(this.Mapper.Map<ExternalDeviceModelDto>(thingType));
+            var result = await this.externalDeviceService.IsEdgeDeviceModel(Mapper.Map<ExternalDeviceModelDto>(thingType));
 
             //Assert
             _ = result.Should().BeNull();

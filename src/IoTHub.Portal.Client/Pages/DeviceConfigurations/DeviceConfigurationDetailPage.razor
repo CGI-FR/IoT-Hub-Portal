@@ -160,7 +160,7 @@
                                             <MudGrid id="@($"property-{item}")">
                                                 <MudItem xs="8" md="10">
                                                     @{
-                                                        var property = this.AvailableProperties.Single(x => x.Name == item);
+                                                        var property = AvailableProperties.Single(x => x.Name == item);
                                                     }
                                                     @switch (property.PropertyType)
                                                     {

@@ -630,7 +630,7 @@ namespace IoTHub.Portal.Server.Services
 
         public async Task<Twin> CreateNewTwinFromDeviceId(string deviceId)
         {
-            var existingDevice = await this.GetDevice(deviceId);
+            var existingDevice = await GetDevice(deviceId);
             if (existingDevice != null)
             {
                 throw new DeviceAlreadyExistsException($"The Device with ID {deviceId} already exists");

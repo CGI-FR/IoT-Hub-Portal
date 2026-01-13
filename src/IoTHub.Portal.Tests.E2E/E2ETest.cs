@@ -11,12 +11,12 @@ namespace IoTHub.Portal.Tests.E2E
                 .AddEnvironmentVariables()
                 .Build();
 
-        protected virtual AutoFixture.Fixture Fixture { get; } = new();
+        protected virtual Fixture Fixture { get; } = new();
 
         [TearDown]
         public virtual void TearDown()
         {
-            this.AddBorwserLogs();
+            AddBorwserLogs();
 
             WebDriverFactory.Quit();
         }

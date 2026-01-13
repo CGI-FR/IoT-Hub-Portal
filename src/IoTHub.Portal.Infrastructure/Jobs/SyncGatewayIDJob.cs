@@ -4,17 +4,17 @@
 namespace IoTHub.Portal.Infrastructure.Jobs
 {
     [DisallowConcurrentExecution]
-    public class SyncGatewayIDJob : IJob
+    public class SyncGatewayIdJob : IJob
     {
         private readonly IExternalDeviceService externalDeviceService;
-        private readonly LoRaGatewayIDList gatewayIdList;
+        private readonly LoRaGatewayIdList gatewayIdList;
 
-        private readonly ILogger<SyncGatewayIDJob> logger;
+        private readonly ILogger<SyncGatewayIdJob> logger;
 
-        public SyncGatewayIDJob(
+        public SyncGatewayIdJob(
             IExternalDeviceService externalDeviceService,
-            LoRaGatewayIDList gatewayIdList,
-            ILogger<SyncGatewayIDJob> logger)
+            LoRaGatewayIdList gatewayIdList,
+            ILogger<SyncGatewayIdJob> logger)
         {
             this.externalDeviceService = externalDeviceService;
             this.gatewayIdList = gatewayIdList;
@@ -27,7 +27,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             {
                 this.logger.LogInformation("Start of sync GatewayID job");
 
-                await SyncGatewayID();
+                await SyncGatewayId();
 
                 this.logger.LogInformation("End of sync GatewayID job");
             }
@@ -37,7 +37,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             }
         }
 
-        private async Task SyncGatewayID()
+        private async Task SyncGatewayId()
         {
             this.gatewayIdList.GatewayIds = await this.externalDeviceService.GetAllGatewayID();
         }

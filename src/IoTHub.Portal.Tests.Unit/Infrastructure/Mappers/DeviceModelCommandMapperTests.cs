@@ -26,11 +26,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             var deviceModelCommandMapper = CreateDeviceModelCommandMapper();
             var entity = new TableEntity
             {
-                RowKey = "000-000-001"
+                RowKey = "000-000-001",
+                ["Frame"] = "ExpectedFrame",
+                ["Port"] = 10
             };
-
-            entity["Frame"] = "ExpectedFrame";
-            entity["Port"] = 10;
 
             // Act
             var result = deviceModelCommandMapper.GetDeviceModelCommand(entity);

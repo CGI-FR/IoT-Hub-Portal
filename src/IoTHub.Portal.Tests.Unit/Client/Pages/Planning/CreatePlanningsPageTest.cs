@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
 {
-    using Portal.Shared.Security;
-
     [TestFixture]
     internal class CreatePlanningsPageTest : BlazorUnitTest
     {

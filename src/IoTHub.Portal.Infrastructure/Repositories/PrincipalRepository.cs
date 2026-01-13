@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
-
     public class PrincipalRepository : GenericRepository<Principal>, IPrincipalRepository
     {
         public PrincipalRepository(PortalDbContext context) : base(context)

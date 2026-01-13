@@ -65,7 +65,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             var result = ConfigHandlerFactory.Create(this.mockHostEnvironment.Object, this.mockConfiguration.Object);
 
             // Assert
-            Assert.IsAssignableFrom<ProductionAWSConfigHandler>(result);
+            Assert.IsAssignableFrom<ProductionAwsConfigHandler>(result);
         }
 
         [Test]

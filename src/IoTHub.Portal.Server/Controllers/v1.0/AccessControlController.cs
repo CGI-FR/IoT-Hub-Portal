@@ -4,14 +4,11 @@
 namespace IoTHub.Portal.Server.Controllers.v10
 {
     using System.Threading.Tasks;
-    using IoTHub.Portal.Application.Services;
-    using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.AspNetCore.Mvc.Routing;
-    using System;
 
     [Authorize]
     [ApiVersion("1.0")]
@@ -42,14 +39,14 @@ namespace IoTHub.Portal.Server.Controllers.v10
         {
             try
             {
-                var paginedResult = await service.GetAccessControlPage(
+                var paginedResult = await this.service.GetAccessControlPage(
                 searchKeyword,
                 pageSize,
                 pageNumber,
                 orderBy,
                 principalId
                 );
-                logger.LogInformation("AccessControls fetched successfully. Total AccessControl fetched : {Count}", paginedResult.TotalCount);
+                this.logger.LogInformation("AccessControls fetched successfully. Total AccessControl fetched : {Count}", paginedResult.TotalCount);
                 var nextPage = string.Empty;
                 if (paginedResult.HasNextPage)
                 {
@@ -68,7 +65,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error fetching accessControls.");
+                this.logger.LogError(ex, "Error fetching accessControls.");
                 throw;
             }
         }
@@ -80,18 +77,18 @@ namespace IoTHub.Portal.Server.Controllers.v10
         {
             try
             {
-                var ac = await service.GetAccessControlAsync(id);
+                var ac = await this.service.GetAccessControlAsync(id);
                 if (ac is null)
                 {
-                    logger.LogWarning("AccessControl with ID {AcId} not found", id);
+                    this.logger.LogWarning("AccessControl with ID {AcId} not found", id);
                     return NotFound();
                 }
-                logger.LogInformation("Details retrieved for accessControl with ID {AcId}", id);
+                this.logger.LogInformation("Details retrieved for accessControl with ID {AcId}", id);
                 return Ok(ac);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to get details for accessControl with ID {AcId}", id);
+                this.logger.LogError(ex, "Failed to get details for accessControl with ID {AcId}", id);
                 throw;
             }
 
@@ -111,12 +108,12 @@ namespace IoTHub.Portal.Server.Controllers.v10
             try
             {
                 var result = await this.service.CreateAccessControl(accessControl);
-                logger.LogInformation("AccessControl created successfully with ID {AcId}", result.Id);
+                this.logger.LogInformation("AccessControl created successfully with ID {AcId}", result.Id);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                logger.LogError($"Failed to create accessControl. : {ex}");
+                this.logger.LogError($"Failed to create accessControl. : {ex}");
                 return BadRequest(ex);
             }
         }
@@ -135,12 +132,12 @@ namespace IoTHub.Portal.Server.Controllers.v10
             try
             {
                 var result = await this.service.UpdateAccessControl(id, accessControl);
-                logger.LogInformation("AccessControl with ID {AcId} updated successfully", id);
+                this.logger.LogInformation("AccessControl with ID {AcId} updated successfully", id);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to update AccessControl with ID {AcId}", id);
+                this.logger.LogError(ex, "Failed to update AccessControl with ID {AcId}", id);
                 throw;
             }
         }
@@ -159,18 +156,18 @@ namespace IoTHub.Portal.Server.Controllers.v10
         {
             try
             {
-                var result = await service.DeleteAccessControl(id);
+                var result = await this.service.DeleteAccessControl(id);
                 if (!result)
                 {
-                    logger.LogWarning("AccessControl with ID {AcId} not found", id);
+                    this.logger.LogWarning("AccessControl with ID {AcId} not found", id);
                     return NotFound("AccessControl not found.");
                 }
-                logger.LogInformation("AccessControl with ID {AcId} deleted successfully", id);
+                this.logger.LogInformation("AccessControl with ID {AcId} deleted successfully", id);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to delete AccessControl with ID {AcId}", id);
+                this.logger.LogError(ex, "Failed to delete AccessControl with ID {AcId}", id);
                 throw;
             }
         }

@@ -5,6 +5,6 @@ namespace IoTHub.Portal.Infrastructure.Helpers
 {
     public interface IEdgeEnrollementHelper
     {
-        string GetEdgeEnrollementTemplate(string templateName);
+        string? GetEdgeEnrollementTemplate(string templateName);
     }
 }

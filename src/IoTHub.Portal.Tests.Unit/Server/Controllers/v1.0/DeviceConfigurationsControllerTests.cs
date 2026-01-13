@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
+    using ConfigurationMetrics = Shared.Models.v10.ConfigurationMetrics;
+
     [TestFixture]
     public class DeviceConfigurationsControllerTests
     {
@@ -93,7 +95,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 
             _ = this.mockDeviceConfigurationsService
                 .Setup(x => x.GetConfigurationMetricsAsync(It.Is<string>(c => c.Equals(configId, StringComparison.Ordinal))))
-                .ReturnsAsync(new Shared.Models.v10.ConfigurationMetrics() { CreationDate = DateTime.Now });
+                .ReturnsAsync(new ConfigurationMetrics { CreationDate = DateTime.Now });
 
             // Act
             var result = await deviceConfigController.GetConfigurationMetrics(configId);

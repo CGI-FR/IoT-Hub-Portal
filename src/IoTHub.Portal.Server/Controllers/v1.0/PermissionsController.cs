@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Server.Controllers.V10
+namespace IoTHub.Portal.Server.Controllers.v10
 {
     using System.Security.Claims;
     using Microsoft.AspNetCore.Authorization;
@@ -40,7 +40,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PortalPermissions[]))]
         public ActionResult<PortalPermissions[]> Get()
         {
-            logger.LogDebug("Returning {Count} portal permissions", PortalPermissionsHelper.GetAllPermissions().Length);
+            this.logger.LogDebug("Returning {Count} portal permissions", PortalPermissionsHelper.GetAllPermissions().Length);
             return Ok(PortalPermissionsHelper.GetAllPermissions());
         }
 
@@ -64,11 +64,11 @@ namespace IoTHub.Portal.Server.Controllers.V10
 
             this.logger.LogDebug("Getting permissions for current user");
 
-            var user = await userManagementService.GetOrCreateUserByEmailAsync(emailClaim, User);
+            var user = await this.userManagementService.GetOrCreateUserByEmailAsync(emailClaim, User);
 
             foreach (var permission in PortalPermissionsHelper.GetAllPermissions())
             {
-                var hasPermission = await accessControlService.UserHasPermissionAsync(user.PrincipalId, permission.AsString());
+                var hasPermission = await this.accessControlService.UserHasPermissionAsync(user.PrincipalId, permission.AsString());
                 if (hasPermission)
                 {
                     userPermissions.Add(permission);

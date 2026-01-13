@@ -11,29 +11,31 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 
         public async Task<IEnumerable<DeviceModelProperty>> GetModelProperties(string modelId)
         {
-            return await this.context.Set<DeviceModelProperty>()
+            return await this.Context.Set<DeviceModelProperty>()
                         .Where(x => x.ModelId == modelId)
                         .ToArrayAsync();
         }
 
         public async Task SavePropertiesForModel(string modelId, IEnumerable<DeviceModelProperty> items)
         {
-            ArgumentNullException.ThrowIfNull(items, nameof(items));
+            ArgumentNullException.ThrowIfNull(items);
 
-            var modelItems = this.context.Set<DeviceModelProperty>().Where(c => c.ModelId == modelId);
+            var modelItems = this.Context.Set<DeviceModelProperty>().Where(c => c.ModelId == modelId);
+
+            var deviceModelProperties = items.ToList();
 
             foreach (var item in modelItems)
             {
-                if (items.Any(c => c.Id == item.Id))
+                if (deviceModelProperties.Any(c => c.Id == item.Id))
                 {
-                    _ = this.context.Update(item);
+                    _ = this.Context.Update(item);
                     continue;
                 }
 
-                _ = this.context.Remove(item);
+                _ = this.Context.Remove(item);
             }
 
-            foreach (var item in items)
+            foreach (var item in deviceModelProperties)
             {
                 if (modelItems.Any(c => c.Id == item.Id))
                 {
@@ -42,7 +44,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 
                 item.ModelId = modelId;
 
-                _ = await this.context.AddAsync(item);
+                _ = await this.Context.AddAsync(item);
             }
         }
     }

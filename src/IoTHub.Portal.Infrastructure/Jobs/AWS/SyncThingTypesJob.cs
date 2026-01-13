@@ -75,7 +75,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
         }
 
 
-        private async Task<List<DescribeThingTypeResponse>> Remove5mnDeprecatedThingTypes(List<DescribeThingTypeResponse> thingTypes)
+        private async Task<List<DescribeThingTypeResponse>> Remove5MnDeprecatedThingTypes(List<DescribeThingTypeResponse> thingTypes)
         {
             var awsThingTypes = new List< DescribeThingTypeResponse>();
 
@@ -98,7 +98,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                     }
                     catch (AmazonIoTException e)
                     {
-                        throw new Domain.Exceptions.InternalServerErrorException("Unable to Delete The thing type due to an error in the Amazon IoT API.", e);
+                        throw new InternalServerErrorException("Unable to Delete The thing type due to an error in the Amazon IoT API.", e);
                     }
                 }
                 else
@@ -139,7 +139,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                         }
                         catch (AmazonIoTException e)
                         {
-                            throw new Domain.Exceptions.InternalServerErrorException("Unable to Describe The thing type due to an error in the Amazon IoT API.", e);
+                            throw new InternalServerErrorException("Unable to Describe The thing type due to an error in the Amazon IoT API.", e);
                         }
                     }
 
@@ -147,12 +147,12 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
                 }
                 catch (AmazonIoTException e)
                 {
-                    throw new Domain.Exceptions.InternalServerErrorException("Unable to list Thing types due to an error in the Amazon IoT API.", e);
+                    throw new InternalServerErrorException("Unable to list Thing types due to an error in the Amazon IoT API.", e);
                 }
             }
             while (!string.IsNullOrEmpty(nextToken));
 
-            thingTypes = await Remove5mnDeprecatedThingTypes(thingTypes);
+            thingTypes = await Remove5MnDeprecatedThingTypes(thingTypes);
 
             return thingTypes;
         }

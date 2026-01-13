@@ -43,14 +43,21 @@
                         <MudItem md="6" xs=12>
                             <MudGrid>
                                 <MudItem xs="12">
-                                    <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoder)" Variant="Variant.Outlined"></MudTextField>
+                                    <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoder"
+                                                  For="@(() => LoRaDeviceModel.SensorDecoder)"
+                                                  Label="Sensor Decoder URL"
+                                                  Variant="Variant.Outlined" />
                                 </MudItem>
                             </MudGrid>
                         </MudItem>
                         <MudItem sm="6" xs=12>
                             <MudGrid>
                                 <MudItem lg="6" xs="12">
-                                    <MudNumericField @bind-Value="@LoRaDeviceModel.KeepAliveTimeout" For="@(() => LoRaDeviceModel.KeepAliveTimeout)" Min=1 Label="Device Connection Timeout" Variant="Variant.Outlined"></MudNumericField>
+                                    <MudNumericField @bind-Value="@LoRaDeviceModel.KeepAliveTimeout"
+                                                     For="@(() => (int)LoRaDeviceModel.KeepAliveTimeout!)"
+                                                     Min=1
+                                                     Label="Device Connection Timeout"
+                                                     Variant="Variant.Outlined" />
                                 </MudItem>
 
                             </MudGrid>
@@ -86,13 +93,23 @@
                                         </MudSelect>
                                     </MudItem>
                                     <MudItem xs="12" md="6">
-                                        <MudNumericField @bind-Value="@LoRaDeviceModel.RXDelay" For="@(() => LoRaDeviceModel.RXDelay)" Min=1 Label="RX Delay" Variant="Variant.Outlined"></MudNumericField>
+                                        <MudNumericField @bind-Value="@LoRaDeviceModel.RXDelay"
+                                                         For="@(() => (int)LoRaDeviceModel.RXDelay!)"
+                                                         Min=1
+                                                         Label="RX Delay"
+                                                         Variant="Variant.Outlined" />
                                     </MudItem>
                                     <MudItem xs="12" md="6">
-                                        <MudNumericField @bind-Value="@LoRaDeviceModel.RX1DROffset" For="@(() => LoRaDeviceModel.RX1DROffset)" Label="RX1 Datarate Offset" Variant="Variant.Outlined"></MudNumericField>
+                                        <MudNumericField @bind-Value="@LoRaDeviceModel.RX1DROffset"
+                                                         For="@(() => LoRaDeviceModel.RX1DROffset)"
+                                                         Label="RX1 Datarate Offset"
+                                                         Variant="Variant.Outlined" />
                                     </MudItem>
                                     <MudItem xs="12" md="6">
-                                        <MudNumericField @bind-Value="@LoRaDeviceModel.RX2DataRate" For="@(() => LoRaDeviceModel.RX2DataRate)" Label="RX2 Datarate" Variant="Variant.Outlined"></MudNumericField>
+                                        <MudNumericField @bind-Value="@LoRaDeviceModel.RX2DataRate"
+                                                         For="@(() => LoRaDeviceModel.RX2DataRate)"
+                                                         Label="RX2 Datarate"
+                                                         Variant="Variant.Outlined" />
                                     </MudItem>
                                 }
                             </MudGrid>
@@ -104,15 +121,27 @@
                                     <MudCheckBox id="@nameof(LoRaDeviceModel.Supports32BitFCnt)" @bind-Checked="@LoRaDeviceModel.Supports32BitFCnt" For="@(() => LoRaDeviceModel.Supports32BitFCnt)" Label="32bit counter support" Color="Color.Primary"></MudCheckBox>
                                 </MudItem>
                                 <MudItem xs="12" md="6">
-                                    <MudNumericField @bind-Value="@LoRaDeviceModel.FCntUpStart" For="@(() => LoRaDeviceModel.FCntUpStart)" Min=0 Label="Frame counter up start value" Variant="Variant.Outlined"></MudNumericField>
+                                    <MudNumericField @bind-Value="@LoRaDeviceModel.FCntUpStart"
+                                                     For="@(() => (int)LoRaDeviceModel.FCntUpStart!)"
+                                                     Min=0
+                                                     Label="Frame counter up start value"
+                                                     Variant="Variant.Outlined" />
                                 </MudItem>
                                 @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
                                 {
                                     <MudItem xs="12" md="6">
-                                        <MudNumericField @bind-Value="@LoRaDeviceModel.FCntDownStart" For="@(() => LoRaDeviceModel.FCntDownStart)" Min=0 Label="Frame counter down start value" Variant="Variant.Outlined"></MudNumericField>
+                                        <MudNumericField @bind-Value="@LoRaDeviceModel.FCntDownStart"
+                                                         For="@(() => (int)LoRaDeviceModel.FCntDownStart!)"
+                                                         Min=0
+                                                         Label="Frame counter down start value"
+                                                         Variant="Variant.Outlined" />
                                     </MudItem>
                                     <MudItem xs="12" md="6">
-                                        <MudNumericField @bind-Value="@LoRaDeviceModel.FCntResetCounter" For="@(() => LoRaDeviceModel.FCntResetCounter)" Min=0 Label="Frame counter reset counter value" Variant="Variant.Outlined"></MudNumericField>
+                                        <MudNumericField @bind-Value="@LoRaDeviceModel.FCntResetCounter"
+                                                         For="@(() => (int)LoRaDeviceModel.FCntResetCounter!)"
+                                                         Min=0
+                                                         Label="Frame counter reset counter value"
+                                                         Variant="Variant.Outlined" />
                                     </MudItem>
                                 }
                             </MudGrid>
@@ -182,7 +211,7 @@
     [Parameter]
     public IList<DeviceModelCommandDto> Commands { get; set; } = default!;
 
-    private DeviceModelCommandDto DeviceModelCommandDto { get; set; } = new DeviceModelCommandDto();
+    private DeviceModelCommandDto DeviceModelCommandDto { get; set; } = new();
 
     protected override Task OnInitializedAsync()
     {

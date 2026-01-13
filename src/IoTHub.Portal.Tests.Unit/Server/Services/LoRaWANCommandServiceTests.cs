@@ -1,9 +1,9 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit.Domain.Services
+namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
-    using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
     public class LoRaWANCommandServiceTests : BackendUnitTest

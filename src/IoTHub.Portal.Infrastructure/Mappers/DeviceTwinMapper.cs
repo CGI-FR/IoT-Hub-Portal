@@ -19,12 +19,9 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             var modelId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
             var customTags = new Dictionary<string, string>();
 
-            if (tags != null)
+            foreach (var tag in tags)
             {
-                foreach (var tag in tags)
-                {
-                    customTags.Add(tag, DeviceHelper.RetrieveTagValue(twin, tag)!);
-                }
+                customTags.Add(tag, DeviceHelper.RetrieveTagValue(twin, tag)!);
             }
 
             var result = new DeviceDetails

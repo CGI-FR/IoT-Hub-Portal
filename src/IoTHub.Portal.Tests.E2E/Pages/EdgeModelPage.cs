@@ -85,7 +85,7 @@ namespace IoTHub.Portal.Tests.E2E.Pages
             _ = wait.Until(d => d.FindElement(By.ClassName("outline-none")).Displayed);
 
             WebDriverFactory.Default.FindElement(By.CssSelector(".mud-button-text-primary > .mud-button-label")).Click();
-            System.Threading.Thread.Sleep(5000);
+            Thread.Sleep(5000);
 
 
             _ = wait.Until(d => d.FindElement(By.ClassName("mud-snackbar-content-message")).Displayed);

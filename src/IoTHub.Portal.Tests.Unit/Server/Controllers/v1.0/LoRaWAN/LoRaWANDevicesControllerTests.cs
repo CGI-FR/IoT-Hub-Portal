@@ -29,7 +29,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
 
         private LoRaWANDevicesController CreateLoRaWANDevicesController()
         {
-            var loRaGatewayIDList = new LoRaGatewayIDList
+            var loRaGatewayIDList = new LoRaGatewayIdList
             {
                 GatewayIds = new List<string>(){ "GatewayId1", "GatewayId2" }
             };
@@ -264,7 +264,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
             // Arrange
             var devicesController = CreateLoRaWANDevicesController();
 
-            var loRaGatewayIDList = new LoRaGatewayIDList
+            var loRaGatewayIDList = new LoRaGatewayIdList
             {
                 GatewayIds = new List<string>(){ "GatewayId1", "GatewayId2" }
             };
@@ -280,7 +280,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(okObjectResult.Value);
 
-            Assert.IsAssignableFrom<LoRaGatewayIDList>(okObjectResult.Value);
+            Assert.IsAssignableFrom<LoRaGatewayIdList>(okObjectResult.Value);
             _ = okObjectResult.Value.Should().BeEquivalentTo(loRaGatewayIDList);
 
             this.mockRepository.VerifyAll();

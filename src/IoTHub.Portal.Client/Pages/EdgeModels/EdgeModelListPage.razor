@@ -88,7 +88,7 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    private List<IoTEdgeModelListItem> EdgeModelList = new List<IoTEdgeModelListItem>();
+    private List<IoTEdgeModelListItem> EdgeModelList = new();
 
     private readonly int[] pageSizeOptions = { 3, 5, 10 };
 
@@ -148,7 +148,7 @@
             return;
         }
 
-        await this.LoadEdgeModels();
+        await LoadEdgeModels();
     }
 
     private void GoToDetails(IoTEdgeModelListItem item)

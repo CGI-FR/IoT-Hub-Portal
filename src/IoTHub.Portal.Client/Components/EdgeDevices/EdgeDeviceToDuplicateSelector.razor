@@ -54,8 +54,8 @@
     {
         try
         {
-            var edgeDevice = await this.EdgeDeviceClientService.GetDevice(deviceToDuplicate.DeviceId);
-            var edgeModel = await this.EdgeModelClientService.GetIoTEdgeModel(edgeDevice.ModelId);
+            var edgeDevice = await EdgeDeviceClientService.GetDevice(deviceToDuplicate.DeviceId);
+            var edgeModel = await EdgeModelClientService.GetIoTEdgeModel(edgeDevice.ModelId);
 
             EdgeDeviceLayoutService.DuplicateSharedDevice(edgeDevice);
             EdgeDeviceLayoutService.DuplicateSharedDeviceModel(edgeModel);

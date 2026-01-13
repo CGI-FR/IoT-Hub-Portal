@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Server.Services
 
             _ = await this.externalDevicesService.CreateDeviceWithTwin(edgeDevice.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
 
-            var result = await base.CreateEdgeDeviceInDatabase(edgeDevice);
+            var result = await CreateEdgeDeviceInDatabase(edgeDevice);
 
             await this.unitOfWork.SaveAsync();
 

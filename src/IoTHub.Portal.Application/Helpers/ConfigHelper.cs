@@ -333,8 +333,8 @@ namespace IoTHub.Portal.Application.Helpers
                 var routeContent = new
                 {
                     route = route.Value,
-                    priority = route.Priority != null ? route.Priority : 0,
-                    timeToLiveSecs = route.TimeToLive != null ? route.TimeToLive : (uint)edgeHubPropertiesDesired.StoreAndForwardConfiguration.TimeToLiveSecs
+                    priority = route.Priority ?? 0,
+                    timeToLiveSecs = route.TimeToLive ?? (uint)edgeHubPropertiesDesired.StoreAndForwardConfiguration.TimeToLiveSecs
                 };
                 edgeHubPropertiesDesired.Routes.Add(route.Name, routeContent);
             }

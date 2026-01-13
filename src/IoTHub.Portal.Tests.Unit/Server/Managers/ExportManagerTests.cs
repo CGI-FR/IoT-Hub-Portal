@@ -220,12 +220,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                     new DeviceModelProperty()
                     {
                         Name = "Property1",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                     new DeviceModelProperty()
                     {
                         Name = "Property2",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                 });
 
@@ -280,12 +280,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                     new DeviceModelProperty()
                     {
                         Name = "Property1",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                     new DeviceModelProperty()
                     {
                         Name = "Property2",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                 });
 
@@ -389,12 +389,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                     new DeviceModelProperty()
                     {
                         Name = "Property1",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                     new DeviceModelProperty()
                     {
                         Name = "Property2",
-                        PropertyType = Models.DevicePropertyType.String
+                        PropertyType = DevicePropertyType.String
                     },
                 });
 

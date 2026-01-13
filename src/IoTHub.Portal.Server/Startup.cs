@@ -3,7 +3,8 @@
 
 namespace IoTHub.Portal.Server
 {
-    using Server.Security;
+    using Security;
+
     public class Startup
     {
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
@@ -49,7 +50,7 @@ namespace IoTHub.Portal.Server
 
             //Common configurations
             _ = services.AddSingleton(new PortalMetric());
-            _ = services.AddSingleton(new LoRaGatewayIDList());
+            _ = services.AddSingleton(new LoRaGatewayIdList());
 
             _ = services.AddRazorPages();
             _ = services.AddMudServices();
@@ -293,7 +294,7 @@ namespace IoTHub.Portal.Server
 
         private static void ConfigureServicesAws(IServiceCollection services)
         {
-            _ = services.AddTransient<IEdgeDevicesService, AWSEdgeDevicesService>();
+            _ = services.AddTransient<IEdgeDevicesService, AwsEdgeDevicesService>();
         }
 
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
@@ -340,10 +341,7 @@ namespace IoTHub.Portal.Server
                 });
 
             // Centralized authorization policy registration
-            _ = services.AddAuthorization(options =>
-            {
-                PortalPermissions.AddPolicies(options);
-            });
+            _ = services.AddAuthorization(PortalPermissions.AddPolicies);
 
             // Register the RBACAuthorizationHandler
             _ = services.AddScoped<IAuthorizationHandler, RBACAuthorizationHandler>();

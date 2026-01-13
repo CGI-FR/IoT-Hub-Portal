@@ -30,13 +30,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var ideaRequest = Fixture.Create<IdeaRequest>();
             var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
 
-            ideasController.ControllerContext = new ControllerContext
+            this.ideasController.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
-            ideasController.ControllerContext.HttpContext.Request.Headers["idea"] = "test";
+            this.ideasController.ControllerContext.HttpContext.Request.Headers["idea"] = "test";
 
-            var UA = ideasController.ControllerContext.HttpContext.Request.Headers.UserAgent.ToString();
+            var UA = this.ideasController.ControllerContext.HttpContext.Request.Headers.UserAgent.ToString();
 
             _ = this.mockIdeaService.Setup(service => service.SubmitIdea(ideaRequest, UA))
                 .ReturnsAsync(expectedIdeaResponse);

@@ -16,7 +16,7 @@ namespace IoTHub.Portal.Client.Handlers
             this.navigationManager = navigationManager;
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var response = await base.SendAsync(request, cancellationToken);
 

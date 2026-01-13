@@ -11,27 +11,18 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
         private readonly IAmazonGreengrassV2 greengrass;
         private readonly IAmazonIoT iotClient;
 
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IEdgeDeviceModelRepository edgeModelRepository;
         private readonly ConfigHandler config;
-        private readonly IMapper mapper;
 
         private readonly ILogger<AwsConfigService> logger;
 
         public AwsConfigService(
             IAmazonGreengrassV2 greengrass,
             IAmazonIoT iot,
-            IMapper mapper,
-            IUnitOfWork unitOfWork,
-            IEdgeDeviceModelRepository edgeModelRepository,
             ILogger<AwsConfigService> logger,
             ConfigHandler config)
         {
             this.greengrass = greengrass;
             this.iotClient = iot;
-            this.mapper = mapper;
-            this.unitOfWork = unitOfWork;
-            this.edgeModelRepository = edgeModelRepository;
             this.logger = logger;
             this.config = config;
         }
@@ -41,9 +32,9 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
             var createDeploymentRequest = new CreateDeploymentRequest
             {
-                DeploymentName = edgeModel?.Name,
-                Components = await CreateGreenGrassComponents(edgeModel!),
-                TargetArn = await GetThingGroupArn(edgeModel!)
+                DeploymentName = edgeModel.Name,
+                Components = await CreateGreenGrassComponents(edgeModel),
+                TargetArn = await GetThingGroupArn(edgeModel)
             };
 
             try
@@ -62,11 +53,11 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
         private async Task<string> GetThingGroupArn(IoTEdgeModel edgeModel)
         {
-            await CreateThingTypeIfNotExists(edgeModel!.Name);
+            await CreateThingTypeIfNotExists(edgeModel.Name);
 
             var dynamicThingGroup = new DescribeThingGroupRequest
             {
-                ThingGroupName = edgeModel?.Name
+                ThingGroupName = edgeModel.Name
             };
 
             try
@@ -81,8 +72,8 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 {
                     var createThingGroupResponse = await this.iotClient.CreateDynamicThingGroupAsync(new CreateDynamicThingGroupRequest
                     {
-                        ThingGroupName = edgeModel!.Name,
-                        QueryString = $"thingTypeName: {edgeModel!.Name}"
+                        ThingGroupName = edgeModel.Name,
+                        QueryString = $"thingTypeName: {edgeModel.Name}"
                     });
 
                     return createThingGroupResponse.ThingGroupArn;
@@ -213,7 +204,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             {
                 modules = await GetConfigModuleList(modelId);
             }
-            catch (InternalServerErrorException e)
+            catch (InternalServerErrorException)
             {
                 this.logger.LogError($"Failed to get model modules when deleting. Some resources might persist in AWS for model {modelId}.");
             }
@@ -274,7 +265,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                         ThingTypeName = deployment.DeploymentName
                     });
                 }
-                catch (Amazon.IoT.Model.ResourceNotFoundException e)
+                catch (Amazon.IoT.Model.ResourceNotFoundException)
                 {
                     this.logger.LogWarning($"Failed to depreciate thing type {deployment.DeploymentName} since it does'nt exist.");
                 }
@@ -332,7 +323,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 foreach (var compoenent in response.Components)
                 {
                     var componentId = string.Empty;
-                    var jsonRecipe = string.Empty;
+                    string jsonRecipe;
 
                     try
                     {

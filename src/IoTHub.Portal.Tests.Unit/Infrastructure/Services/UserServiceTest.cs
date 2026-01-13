@@ -3,25 +3,14 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
-    using System;
-    using System.Linq;
     using System.Linq.Expressions;
     using System.Security.Claims;
     using System.Threading;
-    using System.Threading.Tasks;
-    using AutoFixture;
     using AutoMapper;
-    using FluentAssertions;
-    using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using NUnit.Framework;
 
     public class UserServiceTest : BackendUnitTest
     {

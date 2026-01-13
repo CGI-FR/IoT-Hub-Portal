@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Client.Models
     public class LayerHash
     {
         public LayerDto LayerData { get; set; }
-        public HashSet<LayerHash> Children { get; set; } = new HashSet<LayerHash>();
+        public HashSet<LayerHash> Children { get; set; } = new();
         public int Level { get; set; }
         public bool IsExpanded { get; set; }
 

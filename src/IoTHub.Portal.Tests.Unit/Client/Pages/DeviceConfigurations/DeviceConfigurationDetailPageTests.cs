@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 {
-    using Portal.Shared.Security;
     using ConfigurationMetrics = Portal.Shared.Models.v10.ConfigurationMetrics;
 
     [TestFixture]

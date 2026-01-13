@@ -1,5 +1,6 @@
 ﻿@page "/lorawan/concentrators/{DeviceID}"
 @inherits AuthorizedComponentBase
+@using IoTHub.Portal.Client.Validators
 @using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
@@ -159,7 +160,7 @@
 
     private void Return() => NavigationManager.NavigateTo("/lorawan/concentrators");
 
-    public PatternMask maskThumbprint = new PatternMask("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
+    public PatternMask maskThumbprint = new("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
     {
         MaskChars = new[] { new MaskChar('X', "[0-9a-fA-F]") },
         CleanDelimiters = false,
@@ -179,7 +180,7 @@
         try
         {
             await form.Validate();
-            if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
+            if (!concentratorValidator.Validate(concentrator).IsValid)
             {
                 Snackbar.Add($"One or more validation errors occurred", Severity.Error);
 

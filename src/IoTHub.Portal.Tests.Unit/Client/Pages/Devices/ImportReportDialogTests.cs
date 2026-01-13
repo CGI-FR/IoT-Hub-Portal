@@ -51,7 +51,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             shouldWait = false;
             cut.WaitForState(() => !cut.HasComponent<MudProgressCircular>());
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = alerts[0].Instance.Severity.Should().Be(Severity.Success);
             _ = alerts[0].Markup.Should().Contain("Devices have been imported successfully!");
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -112,7 +112,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .And.BeOfType<Task<DialogResult>>()
                 .Subject.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -174,7 +174,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ContainSingle()
                 .Subject.Markup.Should().Contain("Other devices have been imported successfully!");
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -212,7 +212,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .And.BeOfType<Task<DialogResult>>()
                 .Subject.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
     }
 }

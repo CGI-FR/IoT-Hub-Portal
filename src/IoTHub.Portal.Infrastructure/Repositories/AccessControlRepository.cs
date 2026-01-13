@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Repositories
 {
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
     public class AccessControlRepository : GenericRepository<AccessControl>, IAccessControlRepository
     {
         public AccessControlRepository(PortalDbContext context) : base(context) { }

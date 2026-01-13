@@ -24,29 +24,29 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
         }
 
         [TestCase(ConfigHandlerBase.PortalNameKey, nameof(ConfigHandlerBase.PortalName))]
-        [TestCase(ConfigHandlerBase.AzureDPSServiceEndpointKey, nameof(ConfigHandlerBase.AzureDPSEndpoint))]
-        [TestCase(ConfigHandlerBase.AzureDPSIDScopeKey, nameof(ConfigHandlerBase.AzureDPSScopeID))]
-        [TestCase(ConfigHandlerBase.OIDCScopeKey, nameof(ConfigHandlerBase.OIDCScope))]
-        [TestCase(ConfigHandlerBase.OIDCAuthorityKey, nameof(ConfigHandlerBase.OIDCAuthority))]
-        [TestCase(ConfigHandlerBase.OIDCMetadataUrlKey, nameof(ConfigHandlerBase.OIDCMetadataUrl))]
-        [TestCase(ConfigHandlerBase.OIDCClientIdKey, nameof(ConfigHandlerBase.OIDCClientId))]
-        [TestCase(ConfigHandlerBase.OIDCApiClientIdKey, nameof(ConfigHandlerBase.OIDCApiClientId))]
+        [TestCase(ConfigHandlerBase.AzureDpsServiceEndpointKey, nameof(ConfigHandlerBase.AzureDPSEndpoint))]
+        [TestCase(ConfigHandlerBase.AzureDpsIdScopeKey, nameof(ConfigHandlerBase.AzureDPSScopeID))]
+        [TestCase(ConfigHandlerBase.OidcScopeKey, nameof(ConfigHandlerBase.OIDCScope))]
+        [TestCase(ConfigHandlerBase.OidcAuthorityKey, nameof(ConfigHandlerBase.OIDCAuthority))]
+        [TestCase(ConfigHandlerBase.OidcMetadataUrlKey, nameof(ConfigHandlerBase.OIDCMetadataUrl))]
+        [TestCase(ConfigHandlerBase.OidcClientIdKey, nameof(ConfigHandlerBase.OIDCClientId))]
+        [TestCase(ConfigHandlerBase.OidcApiClientIdKey, nameof(ConfigHandlerBase.OIDCApiClientId))]
         [TestCase(ConfigHandlerBase.AzureLoRaKeyManagementUrlKey, nameof(ConfigHandlerBase.AzureLoRaKeyManagementUrl))]
         [TestCase(ConfigHandlerBase.AzureLoRaKeyManagementCodeKey, nameof(ConfigHandlerBase.AzureLoRaKeyManagementCode))]
         [TestCase(ConfigHandlerBase.AzureLoRaKeyManagementApiVersionKey, nameof(ConfigHandlerBase.AzureLoRaKeyManagementApiVersion))]
         [TestCase(ConfigHandlerBase.AzureIoTHubConnectionStringKey, nameof(ConfigHandlerBase.AzureIoTHubConnectionString))]
-        [TestCase(ConfigHandlerBase.AzureDPSConnectionStringKey, nameof(ConfigHandlerBase.AzureDPSConnectionString))]
+        [TestCase(ConfigHandlerBase.AzureDpsConnectionStringKey, nameof(ConfigHandlerBase.AzureDPSConnectionString))]
         [TestCase(ConfigHandlerBase.AzureStorageAccountConnectionStringKey, nameof(ConfigHandlerBase.AzureStorageAccountConnectionString))]
-        [TestCase(ConfigHandlerBase.PostgreSQLConnectionStringKey, nameof(ConfigHandlerBase.PostgreSQLConnectionString))]
-        [TestCase(ConfigHandlerBase.MySQLConnectionStringKey, nameof(ConfigHandlerBase.MySQLConnectionString))]
-        [TestCase(ConfigHandlerBase.AWSAccessKey, nameof(ConfigHandlerBase.AWSAccess))]
-        [TestCase(ConfigHandlerBase.AWSAccessSecretKey, nameof(ConfigHandlerBase.AWSAccessSecret))]
-        [TestCase(ConfigHandlerBase.AWSRegionKey, nameof(ConfigHandlerBase.AWSRegion))]
-        [TestCase(ConfigHandlerBase.AWSS3StorageConnectionStringKey, nameof(ConfigHandlerBase.AWSS3StorageConnectionString))]
+        [TestCase(ConfigHandlerBase.PostgreSqlConnectionStringKey, nameof(ConfigHandlerBase.PostgreSQLConnectionString))]
+        [TestCase(ConfigHandlerBase.MySqlConnectionStringKey, nameof(ConfigHandlerBase.MySQLConnectionString))]
+        [TestCase(ConfigHandlerBase.AwsAccessKey, nameof(ConfigHandlerBase.AWSAccess))]
+        [TestCase(ConfigHandlerBase.AwsAccessSecretKey, nameof(ConfigHandlerBase.AWSAccessSecret))]
+        [TestCase(ConfigHandlerBase.AwsRegionKey, nameof(ConfigHandlerBase.AWSRegion))]
+        [TestCase(ConfigHandlerBase.Awss3StorageConnectionStringKey, nameof(ConfigHandlerBase.AWSS3StorageConnectionString))]
         [TestCase(ConfigHandlerBase.CloudProviderKey, nameof(ConfigHandlerBase.CloudProvider))]
-        [TestCase(ConfigHandlerBase.AWSBucketNameKey, nameof(ConfigHandlerBase.AWSBucketName))]
-        [TestCase(ConfigHandlerBase.AWSAccountIdKey, nameof(ConfigHandlerBase.AWSAccountId))]
-        [TestCase(ConfigHandlerBase.AWSGreengrassCoreTokenExchangeRoleAliasNameKey, nameof(ConfigHandlerBase.AWSGreengrassCoreTokenExchangeRoleAliasName))]
+        [TestCase(ConfigHandlerBase.AwsBucketNameKey, nameof(ConfigHandlerBase.AWSBucketName))]
+        [TestCase(ConfigHandlerBase.AwsAccountIdKey, nameof(ConfigHandlerBase.AWSAccountId))]
+        [TestCase(ConfigHandlerBase.AwsGreengrassCoreTokenExchangeRoleAliasNameKey, nameof(ConfigHandlerBase.AWSGreengrassCoreTokenExchangeRoleAliasName))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -67,7 +67,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             this.mockRepository.VerifyAll();
         }
 
-        [TestCase(ConfigHandlerBase.AWSGreengrassRequiredRolesKey, nameof(ConfigHandlerBase.AWSGreengrassRequiredRoles))]
+        [TestCase(ConfigHandlerBase.AwsGreengrassRequiredRolesKey, nameof(ConfigHandlerBase.AWSGreengrassRequiredRoles))]
         public void SettingsShouldGetSectionFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -97,10 +97,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             this.mockRepository.VerifyAll();
         }
 
-        [TestCase(ConfigHandlerBase.OIDCValidateAudienceKey, nameof(ConfigHandlerBase.OIDCValidateAudience))]
-        [TestCase(ConfigHandlerBase.OIDCValidateIssuerKey, nameof(ConfigHandlerBase.OIDCValidateIssuer))]
-        [TestCase(ConfigHandlerBase.OIDCValidateIssuerSigningKeyKey, nameof(ConfigHandlerBase.OIDCValidateIssuerSigningKey))]
-        [TestCase(ConfigHandlerBase.OIDCValidateLifetimeKey, nameof(ConfigHandlerBase.OIDCValidateLifetime))]
+        [TestCase(ConfigHandlerBase.OidcValidateAudienceKey, nameof(ConfigHandlerBase.OIDCValidateAudience))]
+        [TestCase(ConfigHandlerBase.OidcValidateIssuerKey, nameof(ConfigHandlerBase.OIDCValidateIssuer))]
+        [TestCase(ConfigHandlerBase.OidcValidateIssuerSigningKeyKey, nameof(ConfigHandlerBase.OIDCValidateIssuerSigningKey))]
+        [TestCase(ConfigHandlerBase.OidcValidateLifetimeKey, nameof(ConfigHandlerBase.OIDCValidateLifetime))]
         [TestCase(ConfigHandlerBase.UseSecurityHeadersKey, nameof(ConfigHandlerBase.UseSecurityHeaders))]
         public void SecuritySwitchesShouldBeEnabledByDefault(string configKey, string configPropertyName)
         {
@@ -127,8 +127,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             Assert.IsTrue(result);
         }
 
-        [TestCase(ConfigHandlerBase.OIDCValidateActorKey, nameof(ConfigHandlerBase.OIDCValidateActor))]
-        [TestCase(ConfigHandlerBase.OIDCValidateTokenReplayKey, nameof(ConfigHandlerBase.OIDCValidateTokenReplay))]
+        [TestCase(ConfigHandlerBase.OidcValidateActorKey, nameof(ConfigHandlerBase.OIDCValidateActor))]
+        [TestCase(ConfigHandlerBase.OidcValidateTokenReplayKey, nameof(ConfigHandlerBase.OIDCValidateTokenReplay))]
         public void SecuritySwitchesShouldBeDisabledByDefault(string configKey, string configPropertyName)
         {
             // Arrange

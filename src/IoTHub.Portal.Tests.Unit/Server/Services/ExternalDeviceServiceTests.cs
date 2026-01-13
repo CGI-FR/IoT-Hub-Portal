@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IDeviceRegistryProvider> mockRegistryProvider;
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
 
-        private AutoFixture.Fixture Fixture { get; } = new();
+        private Fixture Fixture { get; } = new();
 
         [SetUp]
         public void SetUp()
@@ -409,7 +409,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var deviceId = Guid.NewGuid().ToString();
 
             // Act
-            var result = () => service.GetDeviceTwinWithModule(deviceId);
+            var result = service.GetDeviceTwinWithModule(deviceId).Result;
 
             // Assert
             Assert.IsNotNull(result);
@@ -821,7 +821,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(mockCountQuery.Object);
 
             // Act
-            var result = await service.GetAllDevice(searchTags: new System.Collections.Generic.Dictionary<string, string>
+            var result = await service.GetAllDevice(searchTags: new Dictionary<string, string>
             {
                 { "testKey", "testValue" }
             });

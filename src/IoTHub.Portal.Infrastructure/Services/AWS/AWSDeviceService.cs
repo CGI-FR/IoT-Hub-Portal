@@ -5,16 +5,16 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 {
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
-    public class AWSDeviceService : DeviceService
+    public class AwsDeviceService : DeviceService
     {
         private readonly IMapper mapper;
         private readonly IDeviceRepository deviceRepository;
         private readonly IAmazonIoT amazonIoTClient;
         private readonly IAmazonIotData amazonIotDataClient;
-        private readonly ILogger<AWSDeviceService> logger;
+        private readonly ILogger<AwsDeviceService> logger;
 
 
-        public AWSDeviceService(PortalDbContext portalDbContext,
+        public AwsDeviceService(PortalDbContext portalDbContext,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IDeviceRepository deviceRepository,
@@ -25,7 +25,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             IAmazonIoT amazonIoTClient,
             IAmazonIotData amazonIotDataClient,
             IExternalDeviceService externalDeviceService,
-            ILogger<AWSDeviceService> logger)
+            ILogger<AwsDeviceService> logger)
             : base(mapper, unitOfWork, deviceRepository, deviceTagValueRepository, labelRepository, externalDeviceService, deviceTagService, deviceModelImageManager, null!, portalDbContext, logger)
         {
             this.mapper = mapper;
@@ -46,7 +46,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 try
                 {
                     //Create Thing Shadow
-                    var shadowResponse = await this.amazonIotDataClient.UpdateThingShadowAsync(this.mapper.Map<UpdateThingShadowRequest>(device));
+                    await this.amazonIotDataClient.UpdateThingShadowAsync(this.mapper.Map<UpdateThingShadowRequest>(device));
 
                     //Create Thing in DB
                     return await CreateDeviceInDatabase(device);
@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             try
             {
                 //Update Thing
-                var thingResponse = await this.amazonIoTClient.UpdateThingAsync(this.mapper.Map<UpdateThingRequest>(device));
+                await this.amazonIoTClient.UpdateThingAsync(this.mapper.Map<UpdateThingRequest>(device));
 
                 //Update Thing in DB
                 return await UpdateDeviceInDatabase(device);

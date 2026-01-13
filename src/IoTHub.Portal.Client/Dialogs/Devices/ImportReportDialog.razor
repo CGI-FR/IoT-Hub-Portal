@@ -58,7 +58,7 @@
 
         try
         {
-            ErrorReport = await this.DeviceClientService.ImportDeviceList(Content);
+            ErrorReport = await DeviceClientService.ImportDeviceList(Content);
         }
         catch (ProblemDetailsException exception)
         {

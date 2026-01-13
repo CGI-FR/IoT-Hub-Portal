@@ -28,7 +28,7 @@
     {
         try
         {
-            await this.LayerService.DeleteLayer(layerId);
+            await LayerService.DeleteLayer(layerId);
 
             Snackbar.Add($"Device model {layerName} has been successfully deleted!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));

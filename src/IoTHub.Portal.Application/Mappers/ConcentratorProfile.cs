@@ -21,8 +21,8 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
                 .ForMember(dest => dest.Version, opts => opts.MapFrom(src => src.Version))
-                .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == Microsoft.Azure.Devices.DeviceConnectionState.Connected))
-                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
+                .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == DeviceConnectionState.Connected))
+                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == DeviceStatus.Enabled))
                 .ForMember(dest => dest.ClientThumbprint, opts => opts.MapFrom(src => DeviceHelper.RetrieveClientThumbprintValue(src)))
                 .ForMember(dest => dest.LoraRegion, opts => opts.MapFrom(src => src.Tags["loraRegion"]))
                 .ForMember(dest => dest.DeviceType, opts => opts.MapFrom(src => src.Tags["deviceType"]));

@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Domain.Repositories
 {
-    using IoTHub.Portal.Domain.Entities;
+    using Entities;
 
     public interface IActionRepository : IRepository<Action>
     {

@@ -5,25 +5,25 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IRepository<T> where T : EntityBase
     {
-        protected readonly PortalDbContext context;
+        protected readonly PortalDbContext Context;
 
         public GenericRepository(PortalDbContext context)
         {
-            this.context = context;
+            this.Context = context;
         }
 
         public IEnumerable<T> GetAll(params Expression<Func<T, object>>[] includes)
         {
-            IQueryable<T> query = this.context.Set<T>();
+            IQueryable<T> query = this.Context.Set<T>();
 
             query = includes.Aggregate(query, (current, include) => current.Include(include));
 
-            return query.ToList<T>();
+            return query.ToList();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes)
         {
-            IQueryable<T> query = this.context.Set<T>();
+            IQueryable<T> query = this.Context.Set<T>();
             query = includes.Aggregate(query, (current, include) => current.Include(include));
             if (expression != null) query = query.Where(expression);
 
@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 
         public virtual async Task<T?> GetByIdAsync(object id, params Expression<Func<T, object>>[] includes)
         {
-            IQueryable<T> query = this.context.Set<T>();
+            IQueryable<T> query = this.Context.Set<T>();
 
             query = query.Where(entity => entity.Id.Equals(id));
 
@@ -43,23 +43,23 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 
         public async Task InsertAsync(T obj)
         {
-            _ = await this.context.Set<T>()
+            _ = await this.Context.Set<T>()
                 .AddAsync(obj);
         }
 
         public void Update(T obj)
         {
-            _ = this.context.Set<T>().Attach(obj);
-            this.context.Entry(obj).State = EntityState.Modified;
+            _ = this.Context.Set<T>().Attach(obj);
+            this.Context.Entry(obj).State = EntityState.Modified;
         }
 
         public void Delete(object id)
         {
-            var existing = this.context
+            var existing = this.Context
                     .Set<T>()
                     .Find(id);
 
-            _ = this.context.Set<T>().Remove(existing!);
+            _ = this.Context.Set<T>().Remove(existing!);
         }
 
         public async Task<PaginatedResult<T>> GetPaginatedListAsync(
@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
             CancellationToken cancellationToken = default,
             params Expression<Func<T, object>>[] includes)
         {
-            IQueryable<T> query = this.context.Set<T>();
+            IQueryable<T> query = this.Context.Set<T>();
 
             query = includes.Aggregate(query, (current, include) => current.Include(include));
 
@@ -94,7 +94,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 
         public async Task<int> CountAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default)
         {
-            IQueryable<T> query = this.context.Set<T>();
+            IQueryable<T> query = this.Context.Set<T>();
             if (expression != null) query = query.Where(expression);
 
             return await query
@@ -104,7 +104,7 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 
         public async Task<bool> ExistsAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return await this.context.Set<T>().AnyAsync(expression, cancellationToken: cancellationToken);
+            return await this.Context.Set<T>().AnyAsync(expression, cancellationToken: cancellationToken);
         }
     }
 }

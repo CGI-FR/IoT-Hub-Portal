@@ -9,19 +9,14 @@ namespace IoTHub.Portal.Infrastructure.Managers
         private readonly ILogger<DeviceModelImageManager> logger;
         private readonly ConfigHandler configHandler;
 
-        private readonly IOptions<DeviceModelImageOptions> deviceModelImageOptions;
-
         public DeviceModelImageManager(
             ILogger<DeviceModelImageManager> logger,
             BlobServiceClient blobService,
-            ConfigHandler configHandler,
-            IOptions<DeviceModelImageOptions> BaseImageOption)
+            ConfigHandler configHandler)
         {
             this.logger = logger;
             this.blobService = blobService;
             this.configHandler = configHandler;
-
-            this.deviceModelImageOptions = BaseImageOption;
         }
 
         public async Task<string> GetDeviceModelImageAsync(string deviceModelId)
@@ -41,7 +36,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Name}\n");
 
-            _ = await blobClient.UploadAsync(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(file)), true);
+            _ = await blobClient.UploadAsync(new MemoryStream(Encoding.UTF8.GetBytes(file)), true);
             _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
 
             return file;

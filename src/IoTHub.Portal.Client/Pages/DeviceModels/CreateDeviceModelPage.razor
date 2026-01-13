@@ -1,5 +1,6 @@
 ﻿@page "/device-models/new"
 @inherits AuthorizedComponentBase
+@using IoTHub.Portal.Client.Validators
 @using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
@@ -41,7 +42,7 @@
             </MudItem>
             <MudItem xs="12" sm="8" md="9">
                 <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content" id="tabs">
-                    <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red" : "")>
+                    <MudTabPanel Text="General" Style=@(CheckGeneralValidation() ? "color: red" : "")>
                         <MudExpansionPanels MultiExpansion="true" id="general">
                             <MudGrid>
                                 <MudItem xs="12">
@@ -87,7 +88,7 @@
                                                         <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() { Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
                                                     </MudItem>
                                                     <MudItem xs="12">
-                                                        @foreach (var item in this.Properties.OrderBy(x => x.Order))
+                                                        @foreach (var item in Properties.OrderBy(x => x.Order))
                                                         {
                                                             <MudGrid id="@($"property-{item.Name}")">
                                                                 <MudItem md="4" xs="12">
@@ -159,7 +160,7 @@
                     </MudTabPanel>
                     @if (IsLoRa)
                     {
-                        <MudTabPanel Class="LoRaWANTab" Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red" : "")>
+                        <MudTabPanel Class="LoRaWANTab" Text="LoRaWAN" Style=@(CheckLoRaValidation() ? "color: red" : "")>
                             <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModelDto)"
                                                    Commands="Commands" />
                         </MudTabPanel>
@@ -178,13 +179,13 @@
 
     private MudForm form = default!;
 
-    private DeviceModelValidator standardValidator = new DeviceModelValidator();
-    private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
-    private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
+    private DeviceModelValidator standardValidator = new();
+    private LoRaDeviceModelValidator loraValidator = new();
+    private DevicePropertyValidator propertiesValidator = new();
     private List<DeviceModelCommandDto> Commands { get; set; } = new();
-    private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
+    private List<DeviceProperty> Properties { get; set; } = new();
 
-    private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
+    private LoRaDeviceModelCommandValidator CommandValidator = new();
 
     private bool isProcessing;
 
@@ -192,13 +193,13 @@
     {
         get
         {
-            return this.Model is LoRaDeviceModelDto;
+            return Model is LoRaDeviceModelDto;
         }
         set
         {
             if (value)
             {
-                this.SetLoRaDeviceModel();
+                SetLoRaDeviceModel();
                 return;
             }
 
@@ -233,9 +234,9 @@
 
     private bool CheckLoRaValidation()
     {
-        if (IsLoRa && this.Model is LoRaDeviceModelDto loRaDeviceModel)
+        if (IsLoRa && Model is LoRaDeviceModelDto loRaDeviceModel)
         {
-            return !this.loraValidator.Validate(loRaDeviceModel).IsValid;
+            return !loraValidator.Validate(loRaDeviceModel).IsValid;
         }
 
         return true;
@@ -243,9 +244,9 @@
 
     private bool CheckGeneralValidation()
     {
-        if (!IsLoRa && this.Model is DeviceModelDto deviceModel)
+        if (!IsLoRa && Model is DeviceModelDto deviceModel)
         {
-            return !this.standardValidator.Validate(deviceModel).IsValid;
+            return !standardValidator.Validate(deviceModel).IsValid;
         }
 
         return CheckLoRaValidation();
@@ -299,7 +300,7 @@
         }
 
         if (!IsLoRa ? !standardValidator.Validate((Model as DeviceModelDto)!).IsValid :
-            (!this.loraValidator.Validate((this.Model as LoRaDeviceModelDto)!).IsValid
+            (!loraValidator.Validate((Model as LoRaDeviceModelDto)!).IsValid
             || duplicated
             || cmdValidationError))
         {

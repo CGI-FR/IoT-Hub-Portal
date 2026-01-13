@@ -5,7 +5,7 @@
 namespace IoTHub.Portal.Domain.Entities
 {
     using System.ComponentModel.DataAnnotations;
-    using IoTHub.Portal.Domain.Base;
+    using Base;
 
     public class User : EntityBase
     {

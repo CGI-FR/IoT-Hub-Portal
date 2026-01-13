@@ -5,11 +5,11 @@ namespace IoTHub.Portal.Infrastructure.Helpers
 {
     public static class DatabaseHelper
     {
-        public static ServerVersion GetMySqlServerVersion(string mySQLConnectionString)
+        public static ServerVersion GetMySqlServerVersion(string mySqlConnectionString)
         {
             try
             {
-                return ServerVersion.AutoDetect(mySQLConnectionString);
+                return ServerVersion.AutoDetect(mySqlConnectionString);
             }
             catch (ArgumentException ex)
             {

@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
-    using Portal.Shared.Security;
-
     [TestFixture]
     public class EdgeDeviceListPageTests : BlazorUnitTest
     {

@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Client.Services
 
         Task ExecuteCommand(string deviceId, string commandId);
 
-        Task<LoRaGatewayIDList> GetGatewayIdList();
+        Task<LoRaGatewayIdList> GetGatewayIdList();
 
         Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
     }

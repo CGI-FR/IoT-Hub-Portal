@@ -55,7 +55,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             Assert.NotNull(result);
             Assert.AreEqual(1, result.Count());
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             await this.deviceModelPropertiesService.SavePropertiesForModel(entity.Id, properties);
 
             // Assert
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             _ = result.Should().BeEquivalentTo(expectedPropertyNames);
 
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         private DeviceModel SetupMockEntity()

@@ -51,7 +51,7 @@
                                              SearchFunc="@Search"
                                              Label="Model"
                                              Dense=true
-                                             For=@(() => this.Model)
+                                             For=@(() => Model)
                                              Variant="Variant.Outlined"
                                              ToStringFunc="@(x => x?.Name)"
                                              ResetValueOnEmptyText=true
@@ -310,7 +310,7 @@
                     break;
             }
 
-            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}&orderBy={orderBy}&modelId={this.Model?.ModelId}";
+            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}&orderBy={orderBy}&modelId={Model?.ModelId}";
 
             foreach (var searchTag in searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
             {
@@ -423,7 +423,7 @@
     {
         menuIsOpen = false;
 
-        var export = await this.DeviceClientService.ExportDeviceList();
+        var export = await DeviceClientService.ExportDeviceList();
         var fileName = export?.Headers?.ContentDisposition?.Parameters.Single(c => c.Name == "filename").Value;
 
         using var streamRef = new DotNetStreamReference(stream: await export?.ReadAsStreamAsync()!);
@@ -434,7 +434,7 @@
     {
         menuIsOpen = false;
 
-        var export = await this.DeviceClientService.ExportTemplateFile();
+        var export = await DeviceClientService.ExportTemplateFile();
         var fileName = export?.Headers?.ContentDisposition?.Parameters.Single(c => c.Name == "filename").Value;
 
         using var streamRef = new DotNetStreamReference(stream: await (export?.ReadAsStreamAsync())!);

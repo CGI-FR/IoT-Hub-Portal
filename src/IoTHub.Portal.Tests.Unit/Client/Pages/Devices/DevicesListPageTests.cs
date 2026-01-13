@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
-    using Portal.Shared.Security;
-
     [TestFixture]
     public class DevicesListPageTests : BlazorUnitTest
     {

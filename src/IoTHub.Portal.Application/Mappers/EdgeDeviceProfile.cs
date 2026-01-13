@@ -15,7 +15,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.ConnectionState, opts => opts.MapFrom(src => src.ConnectionState.ToString()))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.Tags["modelId"]))
                 .ForMember(dest => dest.Version, opts => opts.MapFrom(src => src.Version))
-                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
+                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == DeviceStatus.Enabled))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => GetTags(src)))
                 .ForMember(dest => dest.Scope, opts => opts.MapFrom(src => src.DeviceScope))
                 .ForMember(dest => dest.NbDevices, opts => opts.MapFrom((src, _, _, context) => GetNbConnectedDevice((Twin)context.Items["TwinClient"])))

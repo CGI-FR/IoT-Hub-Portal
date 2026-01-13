@@ -39,7 +39,7 @@
                                              SearchFunc="@Search"
                                              Label="Model"
                                              Dense=true
-                                             For=@(() => this.edgeModel)
+                                             For=@(() => edgeModel)
                                              Variant="Variant.Outlined"
                                              ToStringFunc="@(x => x?.Name)"
                                              ResetValueOnEmptyText=true
@@ -178,11 +178,11 @@
     private MudTable<IoTEdgeListItem> table = default!;
     private SearchModel searchModel = new();
 
-    private List<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
-    private IoTEdgeModelListItem _edgeModel = default!;
-    public IoTEdgeModelListItem edgeModel
+    private List<IoTEdgeModelListItem> edgeModelList = new();
+    private IoTEdgeModelListItem edgeModel = default!;
+    public IoTEdgeModelListItem EdgeModel
     {
-        get => _edgeModel;
+        get => edgeModel;
         set
         {
             Task.Run(async () => await ChangeModel(value));
@@ -236,7 +236,7 @@
                     break;
             }
 
-            var uri = $"api/edge/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&orderBy={orderBy}&modelId={this.edgeModel?.ModelId}";
+            var uri = $"api/edge/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&orderBy={orderBy}&modelId={edgeModel?.ModelId}";
 
             foreach (var label in selectedLabels)
             {
@@ -314,7 +314,7 @@
     public async Task ChangeModel(IoTEdgeModelListItem edgeModel)
     {
 
-        this._edgeModel = edgeModel;
+        this.edgeModel = edgeModel;
 
         if (edgeModel == null || string.IsNullOrWhiteSpace(edgeModel.ModelId))
         {

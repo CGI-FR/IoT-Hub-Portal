@@ -19,7 +19,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
             var awsIoTClient = new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion));
             _ = services.AddSingleton<IAmazonIoT>(awsIoTClient);
 
-            var endPoint = await awsIoTClient.DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
+            var endPoint = await awsIoTClient.DescribeEndpointAsync(new DescribeEndpointRequest
             {
                 EndpointType = "iot:Data-ATS"
             });
@@ -42,11 +42,11 @@ namespace IoTHub.Portal.Infrastructure.Startup
             return services
                 .AddTransient<IExternalDeviceService, AwsExternalDeviceService>()
                 .AddTransient(typeof(IDeviceModelService<,>), typeof(AwsDeviceModelService<,>))
-                .AddTransient<IDeviceService<DeviceDetails>, AWSDeviceService>()
-                .AddTransient<IDevicePropertyService, AWSDevicePropertyService>()
+                .AddTransient<IDeviceService<DeviceDetails>, AwsDeviceService>()
+                .AddTransient<IDevicePropertyService, AwsDevicePropertyService>()
                 .AddTransient<IConfigService, AwsConfigService>()
                 .AddTransient<IEdgeModelService, EdgeModelService>()
-                .AddTransient<IEdgeDevicesService, AWSEdgeDevicesService>();
+                .AddTransient<IEdgeDevicesService, AwsEdgeDevicesService>();
 
         }
 

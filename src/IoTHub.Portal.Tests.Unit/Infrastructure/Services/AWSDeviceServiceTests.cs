@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = ServiceCollection.AddSingleton(this.mockConfiguration.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
-            _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, AWSDeviceService>();
+            _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, AwsDeviceService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 

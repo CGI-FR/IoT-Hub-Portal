@@ -7,8 +7,8 @@ namespace IoTHub.Portal.Infrastructure
     {
         public static ConfigHandler Create(IHostEnvironment env, IConfiguration config)
         {
-            ArgumentNullException.ThrowIfNull(env, nameof(env));
-            ArgumentNullException.ThrowIfNull(config, nameof(config));
+            ArgumentNullException.ThrowIfNull(env);
+            ArgumentNullException.ThrowIfNull(config);
 
             if (config[ConfigHandlerBase.CloudProviderKey] == null)
             {
@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Infrastructure
                 return config[ConfigHandlerBase.CloudProviderKey] switch
                 {
                     CloudProviders.Azure => new ProductionAzureConfigHandler(config),
-                    CloudProviders.AWS => new ProductionAWSConfigHandler(config),
+                    CloudProviders.AWS => new ProductionAwsConfigHandler(config),
                     _ => throw new InvalidCloudProviderException(ErrorTitles.InvalidCloudProviderIncorrect),
                 };
             }

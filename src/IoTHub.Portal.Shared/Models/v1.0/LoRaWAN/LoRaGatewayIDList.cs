@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Shared.Models.v10
 {
-    public class LoRaGatewayIDList
+    public class LoRaGatewayIdList
     {
         public List<string> GatewayIds { get; set; } = new List<string>();
     }

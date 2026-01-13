@@ -1,5 +1,6 @@
 ﻿@page "/edge/models/new"
 @inherits AuthorizedComponentBase
+@using IoTHub.Portal.Client.Validators
 @using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
@@ -394,7 +395,7 @@
 
         try
         {
-            this.Model.EdgeModules = edgeModules;
+            Model.EdgeModules = edgeModules;
 
             await EdgeModelService.CreateIoTEdgeModel(Model);
 
@@ -404,8 +405,8 @@
                 await EdgeModelService.ChangeAvatar(Model.ModelId, imageContent);
             }
 
-            this.Snackbar.Add("Device model successfully created.", Severity.Success);
-            this.NavigationManager.NavigateTo("/edge/models");
+            Snackbar.Add("Device model successfully created.", Severity.Success);
+            NavigationManager.NavigateTo("/edge/models");
         }
         catch (ProblemDetailsException exception)
         {

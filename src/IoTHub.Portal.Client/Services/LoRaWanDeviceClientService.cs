@@ -37,9 +37,9 @@ namespace IoTHub.Portal.Client.Services
             return this.http.PostAsJsonAsync($"api/lorawan/devices/{deviceId}/_command/{commandId}", string.Empty);
         }
 
-        public Task<LoRaGatewayIDList> GetGatewayIdList()
+        public Task<LoRaGatewayIdList> GetGatewayIdList()
         {
-            return this.http.GetFromJsonAsync<LoRaGatewayIDList>($"api/lorawan/devices/gateways")!;
+            return this.http.GetFromJsonAsync<LoRaGatewayIdList>($"api/lorawan/devices/gateways")!;
         }
 
         public async Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
