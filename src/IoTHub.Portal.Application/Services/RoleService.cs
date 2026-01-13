@@ -141,21 +141,25 @@ namespace IoTHub.Portal.Application.Services
             {
                 throw new ResourceNotFoundException($"The role with id {id} doesn't exist");
             }
+            // Only throw if another role (different id) already uses the target name
             var roleWithName = await this.roleRepository.GetByNameAsync(role.Name);
-            if (roleWithName is not null)
+            if (roleWithName is not null && roleWithName.Id != id)
             {
                 throw new ResourceAlreadyExistsException($"The role with the name {role.Name} already exist, a role name should be unique !");
             }
+            // Update scalar properties (allow keeping same name while changing permissions)
             roleEntity.Name = role.Name;
             roleEntity.Description = role.Description;
+            roleEntity.Color = role.Color;
 
+            // Sync actions: remove those not present anymore
             var actionsToRemove = roleEntity.Actions.Where(a => !role.Actions.Any(na => na == a.Name)).ToList();
             foreach (var action in actionsToRemove)
             {
                 _ = roleEntity.Actions.Remove(action);
                 this.actionRepository.Delete(action.Id);
             }
-
+            // Add new ones
             foreach (var actionName in role.Actions)
             {
                 var action = roleEntity.Actions.FirstOrDefault(a => a.Name == actionName);
@@ -168,7 +172,7 @@ namespace IoTHub.Portal.Application.Services
             this.roleRepository.Update(roleEntity);
             await this.unitOfWork.SaveAsync();
 
-            var updatedRole = await this.roleRepository.GetByIdAsync(roleEntity.Id);
+            var updatedRole = await this.roleRepository.GetByIdAsync(roleEntity.Id, r => r.Actions);
             var updatedRoleDto = this.mapper.Map<RoleDetailsModel>(updatedRole);
 
             return updatedRoleDto;

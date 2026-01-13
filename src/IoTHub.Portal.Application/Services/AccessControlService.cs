@@ -12,6 +12,8 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Shared.Models.v10.Filters;
     using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Crosscutting;
+    using System.Linq; // for Select
+    using System.Linq.Expressions; // for includes expressions
 
     public class AccessControlService : IAccessControlManagementService
     {
@@ -67,11 +69,13 @@ namespace IoTHub.Portal.Application.Services
                 acPredicate = acPredicate.And(ac => ac.PrincipalId == principalId);
             }
 
+            // Include Role so that Role.Name is populated for UI display
             var paginatedAc = await this.accessControlRepository.GetPaginatedListAsync(
                 pageNumber,
                 pageSize,
                 orderBy,
-                acPredicate
+                acPredicate,
+                includes: new Expression<System.Func<AccessControl, object>>[] { ac => ac.Role }
             );
 
             var paginatedAcDto = new PaginatedResult<AccessControlModel>
@@ -150,6 +154,36 @@ namespace IoTHub.Portal.Application.Services
             accessControlRepository.Delete(id);
             await this.unitOfWork.SaveAsync();
             return true;
+        }
+
+        /// <summary>
+        /// Verify if the principal (user) has the specified permission.
+        /// For this, we retrieve all access controls related to the principal including the role and its actions,
+        /// then we check if one of the role's actions matches (case insensitive) the requested permission.
+        /// </summary>
+        /// <param name="permission">Permission name (e.g. "group:read").</param>
+        /// <param name="principalId">Principal identifier of the user (trying to reach the request) </param>
+        /// <returns> True if the permission is found, else False </returns>
+        public async Task<bool> UserHasPermissionAsync(string principalId, string permission)
+        {
+            // We retrieve the access controls of the principal including the role and its list of actions.
+            var accessControls = await this.accessControlRepository.GetAllAsync(
+                ac => ac.PrincipalId == principalId,
+                CancellationToken.None,
+                ac => ac.Role,
+                ac => ac.Role.Actions
+            );
+
+            // For each access control, check if the associated role contains an action matching the requested permission.
+            foreach (var ac in accessControls)
+            {
+                if (ac.Role?.Actions != null &&
+                    ac.Role.Actions.Any(a => string.Equals(a.Name, permission, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

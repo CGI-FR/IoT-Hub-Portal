@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     internal class PlanningDetailsPageTest : BlazorUnitTest
     {
@@ -27,6 +29,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.PlanningRead, PortalPermissions.PlanningWrite });
         }
 
         [Test]

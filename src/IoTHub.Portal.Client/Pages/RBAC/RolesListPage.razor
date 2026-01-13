@@ -1,0 +1,146 @@
+﻿@page "/roles"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
+
+@using IoTHub.Portal.Client.Dialogs.RBAC
+
+@attribute [Authorize]
+
+@inject IRoleClientService RoleClientService
+@inject IDialogService dialogService
+@inject NavigationManager NavigationManager
+
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudTable T="RoleModel" ServerData="ServerReload" Dense="true" Hover="true" @ref="table">
+        <ColGroup>
+            <col style="width: 5%;" />
+            <col style="width: 15%;" />
+            <col style="width: 45%;" />
+            <col style="width: 5%;" />
+            @if (canWrite)
+            {
+                <col style="width: 5%;" />
+            }
+        </ColGroup>
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Roles</MudText>
+            <MudSpacer />
+            <MudTooltip Text="Refresh list">
+                <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="HandleRefresh" Class="ma-2"></MudIconButton>
+            </MudTooltip>
+            <MudTooltip Text="Add a group">
+                <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="RedirectToCreatePage" Size="Size.Medium" id="addAGrp" />
+            </MudTooltip>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<RoleDetailsModel, object>(x => x.Name)" id="NameLabel">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<RoleDetailsModel, object>(x => x.Description)" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
+            <MudTh Style="text-align: center">Details</MudTh>
+            @if (canWrite)
+            {
+                <MudTh Style="text-align: center">Delete</MudTh>
+            }
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd Style="text-align: center">
+                <MudAvatar Style="@($"background-color: {context.Color}; color: white;")" Size="Size.Medium" Class="mr-2">
+                    @if (!string.IsNullOrEmpty(context.Name))
+                    {
+                        @context.Name[0].ToString().ToUpper()
+                    }
+                </MudAvatar>
+            </MudTd>
+            <MudTd DataLabel="Name">
+                <MudItem>
+                    <MudText Typo="Typo.body1" Inline="true" Style="@($"color: {context.Color};")">
+                        @context.Name
+                    </MudText>
+                </MudItem>
+            </MudTd>
+            <MudTd DataLabel="Description" Style="word-break: break-all; ">
+                @context.Description
+            </MudTd>
+            <MudTd DataLabel="Details" Style="text-align: center">
+                <MudTooltip Text="Go to the detail">
+                    <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                </MudTooltip>
+            </MudTd>
+            @if (canWrite)
+            {
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudTooltip Text="Delete group">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" OnClick="@(async () => await DeleteRole(context))" Size="Size.Medium" id="deleteButton"></MudIconButton>
+                    </MudTooltip>
+                </MudTd>
+            }
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+        </PagerContent>
+    </MudTable>
+</AuthorizedContent>
+
+@code {
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.RoleRead };
+    private bool canWrite;
+
+    private IEnumerable<RoleModel> pagedData;
+    private MudTable<RoleModel> table;
+
+    private int totalItems;
+
+    private readonly int[] pageSizeOptions = { 3, 5, 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // Check if user has write permission for conditional UI elements
+        canWrite = await HasPermissionAsync(PortalPermissions.RoleWrite);
+    }
+
+    private async Task<TableData<RoleModel>> ServerReload(TableState state)
+    {
+        var query = await RoleClientService.GetRoles($"api/roles?pageNumber={state.Page}&pageSize={state.PageSize}");
+        IEnumerable<RoleModel> data = query.Items;
+        totalItems = query.TotalItems;
+        return new TableData<RoleModel> { TotalItems = totalItems, Items = data };
+    }
+
+    private void HandleRefresh()
+    {
+        table.ReloadServerData();
+    }
+
+    private async Task DeleteRole(RoleModel item)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("roleId", item.Id);
+        var result = await dialogService.Show<RoleDeleteConfirm>("Confirm Deletion", parameters).Result;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        this.HandleRefresh();
+    }
+
+    private void GoToDetails(RoleModel item)
+    {
+        NavigationManager.NavigateTo($"/roles/{item.Id}");
+    }
+
+    public void RedirectToCreatePage()
+    {
+        NavigationManager.NavigateTo("/roles/new");
+    }
+}

@@ -48,7 +48,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="pageNumber">page number</param>
         /// <param name="orderBy">Critera order</param>
         [HttpGet(Name = "GetRoles")]
-        [AllowAnonymous]
+        [Authorize("role:read")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<RoleModel>))]
         public async Task<PaginationResult<RoleModel>> Get(
             [FromQuery] string searchKeyword = null,
@@ -96,7 +96,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="id">Role id</param>
         /// <returns>HTTP Get response</returns>
         [HttpGet("{id}", Name = "GetRole")]
-        [AllowAnonymous]
+        [Authorize("role:read")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleDetailsModel))]
         public async Task<IActionResult> GetRoleDetails(string id)
         {
@@ -124,7 +124,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="roleDetails">Role details</param>
         /// <returns>HTTP Post response</returns>
         [HttpPost(Name = "POST Create a Role")]
-        [AllowAnonymous]
+        [Authorize("role:write")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(RoleDetailsModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateRoleAsync(RoleDetailsModel role)
@@ -149,7 +149,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="id">Role id</param>
         /// <returns>HTTP Put response, updated role</returns>
         [HttpPut("{id}", Name = "PUT Edit Role")]
-        [AllowAnonymous]
+        [Authorize("role:write")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EditRoleAsync(string id, RoleDetailsModel roleDetails)
         {
@@ -173,7 +173,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="id">Role id that we want to delete</param>
         /// <returns></returns>
         [HttpDelete("{id}", Name = "DELETE Role")]
-        [AllowAnonymous]
+        [Authorize("role:write")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteRole(string id)

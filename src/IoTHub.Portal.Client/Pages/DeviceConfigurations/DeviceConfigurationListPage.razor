@@ -1,79 +1,86 @@
 ﻿@page "/device-configurations"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 @inject NavigationManager navigationManager
 @inject IDeviceConfigurationsClientService DeviceConfigurationsClientService
 
-<MudGrid>
-    <MudItem xs="12">
-        <MudTable T="ConfigListItem" id="device-configurations-listing" Items=@result Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
-            <ColGroup>
-                <col style="width: 20%;" />
-                <col style="width: 20%;" />
-                <col style="width: 12%;" />
-                <col style="width: 18%;" />
-                <col style="width: 4%;" />
-                <col style="width: 4%;" />
-                <col style="width: 4%;" />
-            </ColGroup>
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">Device configurations</MudText>
-                <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick=LoadConfigurations Size="Size.Medium" id="tableRefreshButton" Class="ma-2"></MudIconButton>
-                <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" />
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh>ID</MudTh>
-                <MudTh Style="text-align: center">Conditions</MudTh>
-                <MudTh Style="text-align: center">System Metrics</MudTh>
-                <MudTh Style="text-align: center">Device Metrics</MudTh>
-                <MudTh Style="text-align: center">Priority</MudTh>
-                <MudTh Style="text-align: center">Creation date</MudTh>
-                <MudTh Style="text-align: center">Detail</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="ID">
-                    @context.ConfigurationID
-                </MudTd>
-                <MudTd DataLabel="Conditions" Style="word-break: break-all; ">
-                    @context.Conditions
-                </MudTd>
-                <MudTd DataLabel="System Metrics" Style="text-align: center;">
-                    @context.MetricsTargeted targeted<br />
-                    @context.MetricsApplied applied <br />
-                </MudTd>
-                <MudTd DataLabel="Device Metrics" Style="text-align: center;">
-                    @context.MetricsSuccess reporting success <br />
-                    @context.MetricsFailure reporting failure <br />
-                </MudTd>
-                <MudTd DataLabel="Priority" Style="text-align: center">@context.Priority</MudTd>
-                <MudTd DataLabel="Creation date" Style="text-align: center;">@context.CreationDate</MudTd>
-                <MudTd DataLabel="Details" Style="text-align: center">
-                    <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
-                </MudTd>
-            </RowTemplate>
-            <NoRecordsContent>
-                <MudText>No matching records found</MudText>
-            </NoRecordsContent>
-            <LoadingContent>
-                <MudText>Loading...</MudText>
-            </LoadingContent>
-            <PagerContent>
-                <MudTablePager HideRowsPerPage=true />
-            </PagerContent>
-        </MudTable>
-    </MudItem>
-</MudGrid>
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudTable T="ConfigListItem" id="device-configurations-listing" Items=@result Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+                <ColGroup>
+                    <col style="width: 20%;" />
+                    <col style="width: 20%;" />
+                    <col style="width: 12%;" />
+                    <col style="width: 18%;" />
+                    <col style="width: 4%;" />
+                    <col style="width: 4%;" />
+                    <col style="width: 4%;" />
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Device configurations</MudText>
+                    <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick=LoadConfigurations Size="Size.Medium" id="tableRefreshButton" Class="ma-2"></MudIconButton>
+                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" />
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh Style="text-align: center">Conditions</MudTh>
+                    <MudTh Style="text-align: center">System Metrics</MudTh>
+                    <MudTh Style="text-align: center">Device Metrics</MudTh>
+                    <MudTh Style="text-align: center">Priority</MudTh>
+                    <MudTh Style="text-align: center">Creation date</MudTh>
+                    <MudTh Style="text-align: center">Detail</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID">
+                        @context.ConfigurationID
+                    </MudTd>
+                    <MudTd DataLabel="Conditions" Style="word-break: break-all; ">
+                        @context.Conditions
+                    </MudTd>
+                    <MudTd DataLabel="System Metrics" Style="text-align: center;">
+                        @context.MetricsTargeted targeted<br />
+                        @context.MetricsApplied applied <br />
+                    </MudTd>
+                    <MudTd DataLabel="Device Metrics" Style="text-align: center;">
+                        @context.MetricsSuccess reporting success <br />
+                        @context.MetricsFailure reporting failure <br />
+                    </MudTd>
+                    <MudTd DataLabel="Priority" Style="text-align: center">@context.Priority</MudTd>
+                    <MudTd DataLabel="Creation date" Style="text-align: center;">@context.CreationDate</MudTd>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                    </MudTd>
+                </RowTemplate>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+                <PagerContent>
+                    <MudTablePager HideRowsPerPage=true />
+                </PagerContent>
+            </MudTable>
+        </MudItem>
+    </MudGrid>
+</AuthorizedContent>
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.DeviceConfigurationRead };
+
     [CascadingParameter]
     public Error Error { get; set; } = default!;
-    
+
     private readonly List<ConfigListItem> result = new();
-    private bool IsLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         await LoadConfigurations();
     }
 

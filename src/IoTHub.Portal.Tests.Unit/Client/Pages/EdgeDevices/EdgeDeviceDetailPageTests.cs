@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
+    using Portal.Shared.Security;
     using ConnectionStringDialog = Portal.Client.Dialogs.EdgeDevices.ConnectionStringDialog;
 
     [TestFixture]
@@ -40,6 +41,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.EdgeDeviceRead, PortalPermissions.EdgeDeviceWrite, PortalPermissions.EdgeDeviceExecute });
         }
 
         [Test]

@@ -4,8 +4,6 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
     using IoTHub.Portal.Domain.Base;
 
@@ -18,8 +16,6 @@ namespace IoTHub.Portal.Domain.Entities
         public string? Name { get; set; } = default!;
         public string? FamilyName { get; set; } = default!;
         public string? Avatar { get; set; } = default!;
-        public virtual ICollection<Group> Groups { get; set; } = new Collection<Group>();
         public string PrincipalId { get; set; }
-        public virtual Principal Principal { get; set; } = new Principal();
     }
 }

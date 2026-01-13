@@ -6,10 +6,10 @@ namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
     public abstract class BlazorUnitTest : TestContextWrapper, IDisposable
     {
         protected virtual MockRepository MockRepository { get; set; }
-
         protected virtual MockHttpMessageHandler MockHttpClient { get; set; }
-
         protected virtual AutoFixture.Fixture Fixture { get; } = new();
+        protected Mock<IPermissionsService> mockPermissionsService;
+        protected TestAuthorizationContext authContext;
 
         [SetUp]
         public virtual void Setup()
@@ -24,6 +24,14 @@ namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
 
             // Add Mock Http Client
             MockHttpClient = Services.AddMockHttpClient();
+
+            // Add authentication context
+            this.authContext = TestContext?.AddTestAuthorization();
+            _ = this.authContext?.SetAuthorized(Guid.NewGuid().ToString());
+
+            // Setup mock Permissions service
+            this.mockPermissionsService = MockRepository.Create<IPermissionsService>();
+            _ = Services.AddSingleton(this.mockPermissionsService.Object);
 
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;

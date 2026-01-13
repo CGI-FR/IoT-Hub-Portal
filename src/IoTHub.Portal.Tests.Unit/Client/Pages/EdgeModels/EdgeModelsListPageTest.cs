@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class EdgeModelsListPageTest : BlazorUnitTest
     {
@@ -18,6 +20,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             _ = Services.AddSingleton(this.mockEdgeModelServiceClient.Object);
             _ = Services.AddSingleton(this.mockDialogService.Object);
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.EdgeModelRead, PortalPermissions.EdgeModelWrite });
         }
 
         [Test]

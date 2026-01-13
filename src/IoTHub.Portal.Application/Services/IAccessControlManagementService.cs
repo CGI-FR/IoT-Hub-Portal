@@ -19,5 +19,7 @@ namespace IoTHub.Portal.Application.Services
         Task<AccessControlModel> CreateAccessControl(AccessControlModel role);
         Task<AccessControlModel?> UpdateAccessControl(string id, AccessControlModel accessControl);
         Task<bool> DeleteAccessControl(string id);
+
+        Task<bool> UserHasPermissionAsync(string principalId, string permission);
     }
 }

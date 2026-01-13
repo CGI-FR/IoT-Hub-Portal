@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class CreateConcentratorPageTest : BlazorUnitTest
     {
@@ -24,6 +26,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanConcentratorsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.ConcentratorRead, PortalPermissions.ConcentratorWrite });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 

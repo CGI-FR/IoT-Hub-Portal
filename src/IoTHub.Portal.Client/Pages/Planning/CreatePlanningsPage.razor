@@ -1,13 +1,24 @@
 ﻿@page "/planning/new"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
-<EditPlanning planning=@Planning scheduleList=@ScheduleList mode="New" />
+@attribute [Authorize]
+
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <EditPlanning planning=@Planning scheduleList=@ScheduleList mode="New" />
+</AuthorizedContent>
 
 @code {
-    public List<ScheduleDto> ScheduleList { get; set; } = new List<ScheduleDto> {};
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.PlanningWrite };
+
+    public List<ScheduleDto> ScheduleList { get; set; } = new List<ScheduleDto> { };
     public PlanningDto Planning { get; set; } = new PlanningDto();
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         Planning.DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday;
         ScheduleList.Add(new ScheduleDto { Start = "00:00" });
     }

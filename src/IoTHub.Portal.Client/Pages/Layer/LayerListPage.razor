@@ -1,4 +1,6 @@
 ﻿@page "/layer"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -6,36 +8,40 @@
 @inject IDeviceClientService DeviceClientService
 @inject IDialogService DialogService
 
-<MudGrid>
-    <MudItem xs="12">
-        <MudExpansionPanel Text="Layer" IsInitiallyExpanded="true">
-            <TitleContent><MudText Typo="Typo.h6">Layer</MudText></TitleContent>
-            <ChildContent>
-                <MudTreeView Items="@Layers" Hover="true" Width="100%" ExpandOnClick="true">
-                    <ItemTemplate Context="item">
-                        <MudTreeViewItem Items="@item.Children" @bind-Expanded="@item.IsExpanded">
-                            <BodyContent>
-                                <div id="editLayerElement" style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%" @onmouseover="() => PrintDetails = item.LayerData.Id">
-                                    <MudText>@item.LayerData.Name</MudText>
-                                    <div style="justify-self: end;">
-                                        @if (PrintDetails == item.LayerData.Id)
-                                        {
-                                            <MudIconButton id="editLayerDeleteLayer" Icon="@(item.LayerData.Father != null ? Icons.Material.Filled.Delete : @Icons.Material.Outlined.Delete)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => DeleteLayer(item, Layers)" />
-                                            <MudIconButton id="editLayerAddLayer" Icon="@Icons.Material.Filled.AddBox" Size="Size.Medium" Color="Color.Inherit" @onclick="() => AddLayer(item)" />
-                                        }
-                                        <MudIconButton id="editLayerDevice" Icon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Inherit" @onclick="() => OpenDevices(item.LayerData)" />
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="Layer" IsInitiallyExpanded="true">
+                <TitleContent><MudText Typo="Typo.h6">Layer</MudText></TitleContent>
+                <ChildContent>
+                    <MudTreeView Items="@Layers" Hover="true" Width="100%" ExpandOnClick="true">
+                        <ItemTemplate Context="item">
+                            <MudTreeViewItem Items="@item.Children" @bind-Expanded="@item.IsExpanded">
+                                <BodyContent>
+                                    <div id="editLayerElement" style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%" @onmouseover="() => PrintDetails = item.LayerData.Id">
+                                        <MudText>@item.LayerData.Name</MudText>
+                                        <div style="justify-self: end;">
+                                            @if (PrintDetails == item.LayerData.Id)
+                                            {
+                                                <MudIconButton id="editLayerDeleteLayer" Icon="@(item.LayerData.Father != null ? Icons.Material.Filled.Delete : @Icons.Material.Outlined.Delete)" Size="Size.Medium" Color="Color.Inherit" @onclick="() => DeleteLayer(item, Layers)" />
+                                                <MudIconButton id="editLayerAddLayer" Icon="@Icons.Material.Filled.AddBox" Size="Size.Medium" Color="Color.Inherit" @onclick="() => AddLayer(item)" />
+                                            }
+                                            <MudIconButton id="editLayerDevice" Icon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Inherit" @onclick="() => OpenDevices(item.LayerData)" />
+                                        </div>
                                     </div>
-                                </div>
-                            </BodyContent>
-                        </MudTreeViewItem>
-                    </ItemTemplate>
-                </MudTreeView>
-            </ChildContent>
-        </MudExpansionPanel>
-    </MudItem>
-</MudGrid>
+                                </BodyContent>
+                            </MudTreeViewItem>
+                        </ItemTemplate>
+                    </MudTreeView>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+</AuthorizedContent>
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.LayerRead };
+
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
@@ -47,7 +53,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        List<LayerDto> listLayers = await LayerClientService.GetLayers();
+        await base.OnInitializedAsync();
+
+        var listLayers = await LayerClientService.GetLayers();
         var result = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
         Devices = result.Items;
 
@@ -56,11 +64,11 @@
             try
             {
                 LayerDto newLayer = new LayerDto
-                    {
-                        Name = "Main Layer",
-                        Father = null,
-                        Planning = "None"
-                    };
+                {
+                    Name = "Main Layer",
+                    Father = null,
+                    Planning = "None"
+                };
                 newLayer.Id = await LayerClientService.CreateLayer(newLayer);
                 Layers.Add(new LayerHash(newLayer, 0, false));
             }
@@ -77,11 +85,11 @@
         try
         {
             LayerDto newLayer = new LayerDto
-                {
-                    Name = "New Layer",
-                    Father = layer.LayerData.Id,
-                    Planning = layer.LayerData.Planning != null ? layer.LayerData.Planning : "None"
-                };
+            {
+                Name = "New Layer",
+                Father = layer.LayerData.Id,
+                Planning = layer.LayerData.Planning != null ? layer.LayerData.Planning : "None"
+            };
             newLayer.Id = await LayerClientService.CreateLayer(newLayer);
 
             layer.Children.Add(new LayerHash(newLayer, layer.Level + 1, false));

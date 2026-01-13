@@ -18,7 +18,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpGet("metrics", Name = "Get Portal Metrics")]
-        [AllowAnonymous]
+        [Authorize("dashboard:read")]
         public ActionResult<PortalMetric> GetPortalMetrics()
         {
             return this.portalMetric;

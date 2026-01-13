@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Server
 {
+    using Server.Security;
     public class Startup
     {
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
@@ -273,7 +274,6 @@ namespace IoTHub.Portal.Server
         private static void ConfigureServicesRBAC(IServiceCollection services)
         {
             _ = services.AddTransient<IRoleManagementService, RoleService>();
-            _ = services.AddTransient<IGroupManagementService, GroupService>();
             _ = services.AddTransient<IUserManagementService, UserService>();
             _ = services.AddTransient<IAccessControlManagementService, AccessControlService>();
         }
@@ -338,6 +338,16 @@ namespace IoTHub.Portal.Server
                     opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
                     opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
                 });
+
+            // Centralized authorization policy registration
+            _ = services.AddAuthorization(options =>
+            {
+                PortalPermissions.AddPolicies(options);
+            });
+
+            // Register the RBACAuthorizationHandler
+            _ = services.AddScoped<IAuthorizationHandler, RBACAuthorizationHandler>();
+
             ConfigureServicesRBAC(services);
 
         }

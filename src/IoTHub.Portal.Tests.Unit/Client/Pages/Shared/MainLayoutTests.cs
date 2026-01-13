@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
+    using Portal.Shared.Helpers;
+
     [TestFixture]
     public class MainLayoutTests : BlazorUnitTest
     {
@@ -22,6 +24,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
                 IsLoRaSupported = false,
                 CloudProvider = "Azure"
             });
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(PortalPermissionsHelper.GetAllPermissions());
         }
 
         [Test]

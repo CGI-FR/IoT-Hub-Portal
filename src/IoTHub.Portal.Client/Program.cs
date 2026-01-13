@@ -58,8 +58,9 @@ _ = builder.Services.AddScoped<ILayoutService, LayoutService>();
 _ = builder.Services.AddScoped<IDashboardLayoutService, DashboardLayoutService>();
 _ = builder.Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 _ = builder.Services.AddSingleton<IEdgeDeviceLayoutService, EdgeDeviceLayoutService>();
-_ = builder.Services.AddScoped<IGroupsClientService, GroupsClientService>();
 _ = builder.Services.AddScoped<IRoleClientService, RoleClientService>();
+_ = builder.Services.AddScoped<IUserClientService, UserClientService>();
+_ = builder.Services.AddScoped<IAccessControlClientService, AccessControlClientService>();
 _ = builder.Services.AddScoped<IEdgeModelClientService, EdgeModelClientService>();
 _ = builder.Services.AddScoped<IEdgeModelClientService, EdgeModelClientService>();
 _ = builder.Services.AddScoped<IEdgeDeviceClientService, EdgeDeviceClientService>();
@@ -76,6 +77,7 @@ _ = builder.Services.AddScoped<IPlanningClientService, PlanningClientService>();
 _ = builder.Services.AddScoped<IScheduleClientService, ScheduleClientService>();
 _ = builder.Services.AddScoped<IEdgeDeviceConfigurationsClientService, EdgeDeviceConfigurationsClientService>();
 _ = builder.Services.AddScoped<IIdeaClientService, IdeaClientService>();
+_ = builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 _ = builder.Services.AddScoped<ClipboardService>();
 
 

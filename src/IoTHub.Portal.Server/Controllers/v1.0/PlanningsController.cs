@@ -21,6 +21,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Creates the planning.
         /// </summary>
         /// <param name="planning">The planning.</param>
+        [Authorize("planning:write")]
         [HttpPost(Name = "POST Create planning")]
         public async Task<IActionResult> CreatePlanningAsync(PlanningDto planning)
         {
@@ -36,6 +37,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="Planning">The planning.</param>
         /// <returns>The action result.</returns>
+        [Authorize("planning:write")]
         [HttpPut(Name = "PUT Update the planning")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdatePlanning(PlanningDto Planning)
@@ -51,6 +53,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="planningId">the planning id.</param>
         /// <returns>Http response</returns>
         /// <exception cref="InternalServerErrorException"></exception>
+        [Authorize("planning:write")]
         [HttpDelete("{planningId}", Name = "DELETE Remove the planning")]
         public async Task<IActionResult> DeletePlanning(string planningId)
         {
@@ -63,6 +66,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the specified planning.
         /// </summary>
         /// <param name="planningId">The planning identifier.</param>
+        [Authorize("planning:read")]
         [HttpGet("{planningId}", Name = "GET Planning")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlanningDto))]
         public async Task<IActionResult> GetPlanning(string planningId)
@@ -81,6 +85,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the planning list.
         /// </summary>
         /// <returns>An array representing the plannings.</returns>
+        [Authorize("planning:read")]
         [HttpGet(Name = "GET Planning list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<PlanningDto>>> GetPlannings()
