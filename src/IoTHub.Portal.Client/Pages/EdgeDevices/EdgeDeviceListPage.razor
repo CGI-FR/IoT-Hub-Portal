@@ -1,162 +1,177 @@
 ﻿@page "/edge/devices"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
-@inject PortalSettings Portal
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @inject IEdgeDeviceClientService EdgeDeviceClientService
 @inject IEdgeModelClientService EdgeModelClientService
 
-<MudGrid>
-    <MudItem xs="12">
-        <MudExpansionPanels>
-            <MudExpansionPanel Text="Search panel">
-                <MudGrid>
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="searchModel.DeviceId" Placeholder="Name"></MudTextField>
-                    </MudItem>
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanels>
+                <MudExpansionPanel Text="Search panel">
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="searchModel.DeviceId" Placeholder="Name"></MudTextField>
+                        </MudItem>
 
-                    <MudItem xs="12" md="6">
-                        <MudSelect T="LabelDto" Label="Labels" MultiSelection="true" @bind-SelectedValues="selectedLabels"
-                                   MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
-                                   Variant="Variant.Outlined">
-                            @foreach (var label in labels)
-                            {
-                                <MudSelectItem T="LabelDto" Value="@label">
-                                    <MudChip Text="@label.Name" Color="Color.Primary" Style="@($"background-color: {label.Color};")" />
-                                </MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudSelect T="LabelDto" Label="Labels" MultiSelection="true" @bind-SelectedValues="selectedLabels"
+                                       MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
+                                       Variant="Variant.Outlined">
+                                @foreach (var label in labels)
+                                {
+                                    <MudSelectItem T="LabelDto" Value="@label">
+                                        <MudChip Text="@label.Name" Color="Color.Primary" Style="@($"background-color: {label.Color};")" />
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
 
-                    <MudItem xs="12" md="6">
-                        <MudAutocomplete T="IoTEdgeModelListItem"
-                                         id="@nameof(IoTEdgeModelListItem.ModelId)"
-                                         @bind-Value="edgeModel"
-                                         SearchFunc="@Search"
-                                         Label="Model"
-                                         Dense=true
-                                         For=@(() => this.edgeModel)
-                                         Variant="Variant.Outlined"
-                                         ToStringFunc="@(x => x?.Name)"
-                                         ResetValueOnEmptyText=true
-                                         Immediate=true
-                                         Clearable=true
-                                         CoerceText=true
-                                         CoerceValue=false>
-                            <ItemTemplate>
-                                @context.Name
-                                <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-                                    @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
-                                </MudText>
-                            </ItemTemplate>
-                        </MudAutocomplete>
-                    </MudItem>
-                    <MudItem sm="12" md="6">
-                        <MudText>Status</MudText>
-                        <MudRadioGroup @bind-SelectedOption="@searchModel.Status" Style="display:flex;align-items:baseline">
-                            <MudItem md="4" sm="12">
-                                <MudRadio Option=@("true") Color="Color.Primary">Connected</MudRadio>
-                            </MudItem>
-                            <MudItem md="4" sm="12">
-                                <MudRadio Option=@("false") Color="Color.Primary">Disconnected</MudRadio>
-                            </MudItem>
-                            <MudItem md="4" sm="12">
-                                <MudRadio Option=@("true") Color="Color.Secondary">All</MudRadio>
-                            </MudItem>
-                        </MudRadioGroup>
-                    </MudItem>
-                    <MudItem xs="12" Class="pb-4 pl-4">
-                        <MudButton id="searchFilterButton" Variant="Variant.Outlined" Color="Color.Success" Class="ml-auto" OnClick="Search">Search</MudButton>
-                        <MudButton id="reset" Variant="Variant.Outlined" Color="Color.Primary" Class="ml-4" OnClick="ResetFilter">Reset</MudButton>
-                    </MudItem>
-                </MudGrid>
-            </MudExpansionPanel>
-        </MudExpansionPanels>
-    </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudAutocomplete T="IoTEdgeModelListItem"
+                                             id="@nameof(IoTEdgeModelListItem.ModelId)"
+                                             @bind-Value="edgeModel"
+                                             SearchFunc="@Search"
+                                             Label="Model"
+                                             Dense=true
+                                             For=@(() => this.edgeModel)
+                                             Variant="Variant.Outlined"
+                                             ToStringFunc="@(x => x?.Name)"
+                                             ResetValueOnEmptyText=true
+                                             Immediate=true
+                                             Clearable=true
+                                             CoerceText=true
+                                             CoerceValue=false>
+                                <ItemTemplate>
+                                    @context.Name
+                                    <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                        @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                    </MudText>
+                                </ItemTemplate>
+                            </MudAutocomplete>
+                        </MudItem>
+                        <MudItem sm="12" md="6">
+                            <MudText>Status</MudText>
+                            <MudRadioGroup @bind-SelectedOption="@searchModel.Status" Style="display:flex;align-items:baseline">
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option=@("true") Color="Color.Primary">Connected</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option=@("false") Color="Color.Primary">Disconnected</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option=@("true") Color="Color.Secondary">All</MudRadio>
+                                </MudItem>
+                            </MudRadioGroup>
+                        </MudItem>
+                        <MudItem xs="12" Class="pb-4 pl-4">
+                            <MudButton id="searchFilterButton" Variant="Variant.Outlined" Color="Color.Success" Class="ml-auto" OnClick="Search">Search</MudButton>
+                            <MudButton id="reset" Variant="Variant.Outlined" Color="Color.Primary" Class="ml-4" OnClick="ResetFilter">Reset</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </MudItem>
 
-    <MudItem xs="12">
-        <MudTable T="IoTEdgeListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
-            <ColGroup>
-                <col style="width: 5%;" />
-                <col style="width: 40%;" />
-                <col style="width: 10%;" />
-                <col style="width: 10%;" />
-                <col style="width: 10%;" />
-                <col style="width: 10%;" />
-            </ColGroup>
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">Edge Devices</MudText>
-                <MudSpacer />
-                <MudTooltip Text="Refresh list">
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" id="tableRefreshButton" Class="ma-2"></MudIconButton>
-                </MudTooltip>
-                <MudTooltip Text="Add device">
-                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="RedirectToCreatePage" />
-                </MudTooltip>
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh></MudTh>
-                <MudTh><MudTableSortLabel SortLabel="Id" T="IoTEdgeListItem" id="sortDeviceId">Device ID</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="IoTEdgeListItem">Connected</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="NbDevices" T="IoTEdgeListItem">Connected leaf devices</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center">See details</MudTh>
-                <MudTh Style="text-align: center">Delete</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd Style="text-align: center">
-                    <img height="25" src="@context.Image" />
-                </MudTd>
-                <MudTd DataLabel="Device">
-                    <MudItem>
-                        <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText>
-                        <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceId</MudText>
-                    </MudItem>
-                    <MudItem>
-                        <Labels Items="@context.Labels" SearchedLabels="@labels" />
-                    </MudItem>
-                </MudTd>
-                <MudTd DataLabel="Status" Style="text-align: center">
-                    @if (context.Status == "Connected")
+        <MudItem xs="12">
+            <MudTable T="IoTEdgeListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+                <ColGroup>
+                    <col style="width: 5%;" />
+                    <col style="width: 40%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                    @if (canWrite)
                     {
-                        <MudTooltip Text="Device is connected">
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
-                        </MudTooltip>
+                        <col style="width: 10%;" />
                     }
-                    else
-                    {
-                        <MudTooltip Text="Device is disconnected">
-                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Default" />
-                        </MudTooltip>
-                    }
-                </MudTd>
-                <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
-                <MudTd DataLabel="Details" Style="text-align: center">
-                        <MudTooltip Text="See device details">
-                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
-                        </MudTooltip>
-                </MudTd>
-                <MudTd DataLabel="Delete" Style="text-align: center">
-                    <MudTooltip Text="Delete device">
-                        <MudIconButton id="@($"delete_{context.DeviceId}")" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Edge Devices</MudText>
+                    <MudSpacer />
+                    <MudTooltip Text="Refresh list">
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" id="tableRefreshButton" Class="ma-2"></MudIconButton>
                     </MudTooltip>
-                </MudTd>
-            </RowTemplate>
-            <NoRecordsContent>
-                <MudText>No matching records found</MudText>
-            </NoRecordsContent>
-            <LoadingContent>
-                <MudText>Loading...</MudText>
-            </LoadingContent>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-        </MudTable>
-    </MudItem>
-</MudGrid>
+                    <MudTooltip Text="Add device">
+                        <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="RedirectToCreatePage" />
+                    </MudTooltip>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh></MudTh>
+                    <MudTh><MudTableSortLabel SortLabel="Id" T="IoTEdgeListItem" id="sortDeviceId">Device ID</MudTableSortLabel></MudTh>
+                    <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="IoTEdgeListItem">Connected</MudTableSortLabel></MudTh>
+                    <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="NbDevices" T="IoTEdgeListItem">Connected leaf devices</MudTableSortLabel></MudTh>
+                    <MudTh Style="text-align: center">See details</MudTh>
+                    @if (canWrite)
+                    {
+                        <MudTh Style="text-align: center">Delete</MudTh>
+                    }
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd Style="text-align: center">
+                        <img height="25" src="@context.Image" />
+                    </MudTd>
+                    <MudTd DataLabel="Device">
+                        <MudItem>
+                            <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText>
+                            <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceId</MudText>
+                        </MudItem>
+                        <MudItem>
+                            <Labels Items="@context.Labels" SearchedLabels="@labels" />
+                        </MudItem>
+                    </MudTd>
+                    <MudTd DataLabel="Status" Style="text-align: center">
+                        @if (context.Status == "Connected")
+                        {
+                            <MudTooltip Text="Device is connected">
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                            </MudTooltip>
+                        }
+                        else
+                        {
+                            <MudTooltip Text="Device is disconnected">
+                                <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Default" />
+                            </MudTooltip>
+                        }
+                    </MudTd>
+                    <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <MudTooltip Text="See device details">
+                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                        </MudTooltip>
+                    </MudTd>
+                    @if (canWrite)
+                    {
+                        <MudTd DataLabel="Delete" Style="text-align: center">
+                            <MudTooltip Text="Delete device">
+                                <MudIconButton id="@($"delete_{context.DeviceId}")" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
+                            </MudTooltip>
+                        </MudTd>
+                    }
+                </RowTemplate>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        </MudItem>
+    </MudGrid>
+</AuthorizedContent>
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.EdgeDeviceRead };
+    private bool canWrite;
+
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
@@ -174,19 +189,20 @@
         }
     }
 
-    readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
-
-    private bool IsLoading { get; set; } = true;
-
     private IEnumerable<LabelDto> labels = new List<LabelDto>();
     private IEnumerable<LabelDto> selectedLabels = new List<LabelDto>();
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         try
         {
-            this.edgeModelList = await EdgeModelClientService.GetIoTEdgeModelList();
+            edgeModelList = await EdgeModelClientService.GetIoTEdgeModelList();
             labels = await EdgeDeviceClientService.GetAvailableLabels();
+
+            // Check if user has write permission for conditional UI elements
+            canWrite = await HasPermissionAsync(PortalPermissions.EdgeDeviceWrite);
         }
         catch (ProblemDetailsException exception)
         {
@@ -222,7 +238,7 @@
 
             var uri = $"api/edge/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&orderBy={orderBy}&modelId={this.edgeModel?.ModelId}";
 
-            foreach(var label in selectedLabels)
+            foreach (var label in selectedLabels)
             {
                 uri += $"&labels={label.Name}";
             }
@@ -230,10 +246,10 @@
             var result = await EdgeDeviceClientService.GetDevices(uri);
 
             return new TableData<IoTEdgeListItem>
-                {
-                    Items = result.Items,
-                    TotalItems = result.TotalItems
-                };
+            {
+                Items = result.Items,
+                TotalItems = result.TotalItems
+            };
         }
         catch (ProblemDetailsException exception)
         {

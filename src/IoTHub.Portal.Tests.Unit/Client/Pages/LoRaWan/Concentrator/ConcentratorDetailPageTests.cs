@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class ConcentratorDetailPageTests : BlazorUnitTest
     {
@@ -27,6 +29,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.ConcentratorRead, PortalPermissions.ConcentratorWrite });
         }
 
         [Test]
@@ -123,7 +128,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
                 .ReturnsAsync(new[]
                 {
-                                new FrequencyPlan()
+                    new FrequencyPlan()
                 });
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(mockConcentrator.DeviceId))

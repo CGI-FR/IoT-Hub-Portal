@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 {
+    using Portal.Shared.Helpers;
+
     [TestFixture]
     public class NavMenuTests : BlazorUnitTest
     {
@@ -16,6 +18,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             _ = Services.AddScoped<ILayoutService, LayoutService>();
 
             _ = TestContext?.AddTestAuthorization().SetAuthorized(Guid.NewGuid().ToString());
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(PortalPermissionsHelper.GetAllPermissions());
 
         }
 
@@ -167,7 +172,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
             // Assert
             var navGroups = cut.FindComponents<MudNavGroup>();
 
-            _ = navGroups.Count.Should().Be(6);
+            _ = navGroups.Count.Should().Be(5);
             _ = navGroups.Should().OnlyContain(navGroup => navGroup.Instance.Expanded);
 
             var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>(LocalStorageKey.CollapsibleNavMenu);

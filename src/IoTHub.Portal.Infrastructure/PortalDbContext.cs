@@ -25,7 +25,6 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<Label> Labels { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Domain.Entities.Group> Groups { get; set; }
         public DbSet<AccessControl> AccessControls { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Domain.Entities.Action> Actions { get; set; }
@@ -80,11 +79,6 @@ namespace IoTHub.Portal.Infrastructure
             _ = modelBuilder.Entity<User>()
                 .HasIndex(u => u.GivenName)
                 .IsUnique();
-
-            _ = modelBuilder.Entity<Domain.Entities.Group>()
-                .HasIndex(g => g.Name)
-                .IsUnique();
-
 
             _ = modelBuilder.Entity<EdgeDevice>()
                 .HasMany(c => c.Tags)

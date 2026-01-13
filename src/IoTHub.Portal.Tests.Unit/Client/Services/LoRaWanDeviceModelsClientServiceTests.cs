@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
+    using Shared.Security;
+
     [TestFixture]
     public class LoRaWanDeviceModelsClientServiceTests : BlazorUnitTest
     {
@@ -15,6 +17,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             _ = Services.AddSingleton<ILoRaWanDeviceModelsClientService, LoRaWanDeviceModelsClientService>();
 
             this.loRaWanDeviceModelsClientService = Services.GetRequiredService<ILoRaWanDeviceModelsClientService>();
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.ModelRead, PortalPermissions.ModelWrite });
         }
 
         [Test]
@@ -76,7 +81,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
                 ModelId = Fixture.Create<string>()
             };
 
-            _ = MockHttpClient.When(HttpMethod.Put, $"/api/lorawan/models/{expectedDeviceModel.ModelId}")
+            _ = MockHttpClient.When(HttpMethod.Put, $"/api/lorawan/models")
                 .With(m =>
                 {
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceModelDto>>();

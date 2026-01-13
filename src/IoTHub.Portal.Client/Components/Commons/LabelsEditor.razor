@@ -21,10 +21,10 @@
         </MudItem>
         <MudGrid>
             <MudItem xs="6">
-                <MudTextField T="string" @bind-Value="labelNameValue" Label="Name" Required="true" Variant="Variant.Text" />
+                <MudTextField T="string" @bind-Value="labelNameValue" Label="Name" Required="true" Variant="Variant.Text" Disabled="@(!CanWrite)" />
             </MudItem>
             <MudItem xs="5">
-                <MudColorPicker @bind-Text="labelColorValue" Label="Label color" DisableToolbar="false" PickerVariant="PickerVariant.Inline" Required="true" />
+                <MudColorPicker @bind-Text="labelColorValue" Label="Label color" DisableToolbar="false" PickerVariant="PickerVariant.Inline" Required="true" Disabled="@(!CanWrite)" />
             </MudItem>
             <MudItem xs="1">
                 <MudIconButton id="add-label" Icon="@Icons.Material.Filled.Add" aria-label="add-label" OnClick="@AddLabel" />
@@ -49,6 +49,9 @@
 
     [Parameter]
     public List<LabelDto> Labels { get; set; } = new();
+
+    [Parameter]
+    public bool CanWrite { get; set; }
 
     private string labelNameValue = default!;
     private string labelColorValue = default!;

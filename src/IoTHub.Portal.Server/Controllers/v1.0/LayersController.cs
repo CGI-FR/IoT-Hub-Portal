@@ -21,6 +21,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Creates the level.
         /// </summary>
         /// <param name="level">The level.</param>
+        [Authorize("layer:write")]
         [HttpPost(Name = "POST Create level")]
         public async Task<IActionResult> CreateLayerAsync(LayerDto level)
         {
@@ -36,6 +37,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="Layer">The level.</param>
         /// <returns>The action result.</returns>
+        [Authorize("layer:write")]
         [HttpPut(Name = "PUT Update the level")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateLayer(LayerDto Layer)
@@ -51,6 +53,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="levelId">the level id.</param>
         /// <returns>Http response</returns>
         /// <exception cref="InternalServerErrorException"></exception>
+        [Authorize("layer:write")]
         [HttpDelete("{levelId}", Name = "DELETE Remove the level")]
         public async Task<IActionResult> DeleteLayer(string levelId)
         {
@@ -63,6 +66,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the specified level.
         /// </summary>
         /// <param name="levelId">The level identifier.</param>
+        [Authorize("layer:read")]
         [HttpGet("{levelId}", Name = "GET Layer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LayerDto))]
         public async Task<IActionResult> GetLayer(string levelId)
@@ -81,6 +85,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Gets the level list.
         /// </summary>
         /// <returns>An array representing the levels.</returns>
+        [Authorize("layer:read")]
         [HttpGet(Name = "GET Layer list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<LayerDto>>> GetLayers()

@@ -1,4 +1,6 @@
 ﻿@page "/device-models"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 @inject NavigationManager navigationManager
@@ -6,79 +8,95 @@
 @inject IDialogService dialogService
 @inject IDeviceModelsClientService DeviceModelsClientService
 
-<MudGrid>
-    <MudItem xs="12">
-        <DeviceModelSearch OnSearch=@(async args => await Search(args)) />
-    </MudItem>
-    <MudItem xs="12">
-        <MudTable T="DeviceModelDto" ServerData=@LoadDeviceModels Loading="@IsLoading" @ref="table" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
-            <ColGroup>
-                <col style="width: 5%;" />
-                <col style="width: 30%;" />
-                <col style="width: 30%;" />
-                <col style="width: 5%;" />
-                <col style="width: 5%;" />
-            </ColGroup>
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">Device Models</MudText>
-                <MudSpacer />
-                <MudTooltip Text="Refresh list">
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" Class="ma-2" id="tableRefreshButton"></MudIconButton>
-                </MudTooltip>
-                <MudTooltip Text="Add device model">
-                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton" />
-                </MudTooltip>
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh></MudTh>
-                <MudTh><MudTableSortLabel SortLabel="Name" T="DeviceModelDto" id="NameLabel">Name</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="Description" T="DeviceModelDto" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center">Details</MudTh>
-                <MudTh Style="text-align: center">Delete</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd Style="text-align: center">
-                    <img height="25" src="@context.Image" />
-                </MudTd>
-                <MudTd DataLabel="Name">
-                    <MudItem>
-                        <MudText Typo="Typo.body1" Inline="true">
-                            @context.Name
-                        </MudText>
-                    </MudItem>
-                    <MudItem>
-                        <Labels Items="@context.Labels" />
-                    </MudItem>
-                </MudTd>
-                <MudTd DataLabel="Description" Style="word-break: break-all; ">
-                    @context.Description
-                </MudTd>
-                <MudTd DataLabel="Details" Style="text-align: center">
-                    <MudTooltip Text="See device model details">
-                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudGrid>
+        <MudItem xs="12">
+            <DeviceModelSearch OnSearch=@(async args => await Search(args)) />
+        </MudItem>
+        <MudItem xs="12">
+            <MudTable T="DeviceModelDto" ServerData=@LoadDeviceModels Loading="@IsLoading" @ref="table" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+                <ColGroup>
+                    <col style="width: 5%;" />
+                    <col style="width: 30%;" />
+                    <col style="width: 30%;" />
+                    <col style="width: 5%;" />
+                    @if (canWrite)
+                    {
+                        <col style="width: 5%;" />
+                    }
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Device Models</MudText>
+                    <MudSpacer />
+                    <MudTooltip Text="Refresh list">
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" Class="ma-2" id="tableRefreshButton"></MudIconButton>
                     </MudTooltip>
-                </MudTd>
-                <MudTd DataLabel="Delete" Style="text-align: center">
-                    <MudTooltip Text="Delete device model">
-                        <MudIconButton Color="Color.Default" Disabled="context.IsBuiltin" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))" id="deleteButton"></MudIconButton>
-                    </MudTooltip>
-                </MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-            <NoRecordsContent>
-                <MudText>No matching records found</MudText>
-            </NoRecordsContent>
-            <LoadingContent>
-                <MudText>Loading...</MudText>
-            </LoadingContent>
-        </MudTable>
-    </MudItem>
-
-</MudGrid>
+                    @if (canWrite)
+                    {
+                        <MudTooltip Text="Add device model">
+                            <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton" />
+                        </MudTooltip>
+                    }
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh></MudTh>
+                    <MudTh><MudTableSortLabel SortLabel="Name" T="DeviceModelDto" id="NameLabel">Name</MudTableSortLabel></MudTh>
+                    <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="Description" T="DeviceModelDto" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
+                    <MudTh Style="text-align: center">Details</MudTh>
+                    @if (canWrite)
+                    {
+                        <MudTh Style="text-align: center">Delete</MudTh>
+                    }
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd Style="text-align: center">
+                        <img height="25" src="@context.Image" />
+                    </MudTd>
+                    <MudTd DataLabel="Name">
+                        <MudItem>
+                            <MudText Typo="Typo.body1" Inline="true">
+                                @context.Name
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <Labels Items="@context.Labels" />
+                        </MudItem>
+                    </MudTd>
+                    <MudTd DataLabel="Description" Style="word-break: break-all; ">
+                        @context.Description
+                    </MudTd>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <MudTooltip Text="See device model details">
+                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                        </MudTooltip>
+                    </MudTd>
+                    @if (canWrite)
+                    {
+                        <MudTd DataLabel="Delete" Style="text-align: center">
+                            <MudTooltip Text="Delete device model">
+                                <MudIconButton Color="Color.Default" Disabled="context.IsBuiltin" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))" id="deleteButton"></MudIconButton>
+                            </MudTooltip>
+                        </MudTd>
+                    }
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+            </MudTable>
+        </MudItem>
+    </MudGrid>
+</AuthorizedContent>
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.ModelRead };
+    private bool canWrite;
+
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
@@ -88,14 +106,15 @@
 
     //private List<DeviceModelDto> DeviceModelList = new List<DeviceModelDto>();
 
-    private bool IsLoading = true;
-
     private DeviceModelSearchInfo deviceModelSearchInfo = new();
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    table.ReloadServerData();
-    //}
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // Check if user has write permission for conditional UI elements
+        canWrite = await HasPermissionAsync(PortalPermissions.ModelWrite);
+    }
 
     private void AddDeviceModel()
     {
@@ -125,18 +144,18 @@
             }
 
             var result = await DeviceModelsClientService.GetDeviceModelsAsync(new DeviceModelFilter
-                {
-                    SearchText = this.deviceModelSearchInfo.SearchText!,
-                    PageNumber = state.Page,
-                    PageSize = state.PageSize,
-                    OrderBy = new string[] { orderBy }
-                });
+            {
+                SearchText = this.deviceModelSearchInfo.SearchText!,
+                PageNumber = state.Page,
+                PageSize = state.PageSize,
+                OrderBy = new string[] { orderBy }
+            });
 
             return new TableData<DeviceModelDto>
-                {
-                    Items = result.Items,
-                    TotalItems = result.TotalItems
-                };
+            {
+                Items = result.Items,
+                TotalItems = result.TotalItems
+            };
         }
         catch (ProblemDetailsException exception)
         {

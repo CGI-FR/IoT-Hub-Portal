@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class EdgeDeviceListPageTests : BlazorUnitTest
     {
@@ -23,6 +25,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
             _ = Services.AddSingleton<ClipboardService>();
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.EdgeDeviceRead, PortalPermissions.EdgeDeviceWrite, PortalPermissions.EdgeDeviceExecute });
         }
 
         [Test]

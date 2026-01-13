@@ -32,7 +32,7 @@
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
                         <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                            <MudImage Src="@Device.Image?.ToString()" />
+                            <MudImage Src="@Device.Image" />
                         </MudAvatar>
                     </div>
                 </MudCardContent>
@@ -46,36 +46,39 @@
                     </MudCardActions>
                 }
             </MudCard>
-            @if (context.Equals(CreateEditMode.Create))
+            @if (CanWrite)
             {
-                <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                        <MudButton id="SaveButton" OnClick="Save" Disabled="isProcessing">@saveButtonText</MudButton>
-                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
-                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
-                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.SaveAndAddNew)">Save and add new</MudMenuItem>
-                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.SaveAndDuplicate)">Save and duplicate</MudMenuItem>
-                        </MudMenu>
-                    </MudButtonGroup>
-                </MudItem>
-            }
-            else if (context.Equals(CreateEditMode.Edit))
-            {
-                <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton" Disabled="isProcessing">Delete device</MudButton>
-                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                        <MudButton id="saveButton" OnClick="ProcessActionOnDevice" Disabled="isProcessing">@saveButtonText</MudButton>
-                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
-                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
-                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Duplicate)">Duplicate</MudMenuItem>
-                        </MudMenu>
-                    </MudButtonGroup>
-                </MudItem>
+                @if (context.Equals(CreateEditMode.Create))
+                {
+                    <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+                        <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                            <MudButton id="SaveButton" OnClick="Save" Disabled="isProcessing">@saveButtonText</MudButton>
+                            <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                                <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
+                                <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.SaveAndAddNew)">Save and add new</MudMenuItem>
+                                <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.SaveAndDuplicate)">Save and duplicate</MudMenuItem>
+                            </MudMenu>
+                        </MudButtonGroup>
+                    </MudItem>
+                }
+                else if (context.Equals(CreateEditMode.Edit))
+                {
+                    <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
+                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton" Disabled="isProcessing">Delete device</MudButton>
+                        <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                            <MudButton id="SaveButton" OnClick="ProcessActionOnDevice" Disabled="isProcessing">@saveButtonText</MudButton>
+                            <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                                <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
+                                <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Duplicate)">Duplicate</MudMenuItem>
+                            </MudMenu>
+                        </MudButtonGroup>
+                    </MudItem>
+                }
             }
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
+                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red" : "")>
                     <MudExpansionPanels MultiExpansion="true">
                         <MudGrid>
                             <MudItem xs="12">
@@ -94,7 +97,7 @@
                                                     {
                                                         <MudAutocomplete T="IDeviceModel"
                                                                          id="@nameof(DeviceDetails.ModelId)"
-                                                        @bind-Value="DeviceModel"
+                                                                         @bind-Value="DeviceModel"
                                                                          SearchFunc="@Search"
                                                                          Label="Model*"
                                                                          Dense=true
@@ -130,9 +133,10 @@
                                                                   Label="Device ID / DevEUI"
                                                                   Variant="Variant.Outlined"
                                                                   Validation=@(loraValidator.ValidateValue)
-                                                                  For="@(()=> Device.DeviceID)"
+                                                                  For="@(() => Device.DeviceID)"
                                                                   Mask="@maskLoRaDeviceID"
-                                                                  HelperText="Device EUI must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                                                  HelperText="Device EUI must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)"
+                                                                  Disabled="@(!CanWrite)"/>
                                                 }
                                                 else
                                                 {
@@ -144,7 +148,7 @@
                                                                       Label="Device ID"
                                                                       Variant="Variant.Outlined"
                                                                       Validation=@(standardValidator.ValidateValue)
-                                                                      For="@(()=> Device.DeviceID)"
+                                                                      For="@(() => Device.DeviceID)"
                                                                       HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
                                                     }
                                                 }
@@ -162,8 +166,9 @@
                                                               id="@nameof(DeviceDetails.DeviceName)"
                                                               Label="Device name"
                                                               Variant="Variant.Outlined"
-                                                              For="@(()=> Device.DeviceName)"
-                                                              Required="true" />
+                                                              For="@(() => Device.DeviceName)"
+                                                              Required="true"
+                                                              Disabled="@(!CanWrite)"/>
                                             </MudItem>
 
                                             @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
@@ -172,7 +177,7 @@
                                                     <MudText>
                                                         <b>Status</b>
                                                     </MudText>
-                                                    <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
+                                                    <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled" Disabled="@(!CanWrite)">
                                                         <MudRadio Option=@(true) Color="Color.Primary">
                                                             Enabled
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
@@ -214,7 +219,8 @@
                                                         }
                                                         <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
                                                                       Required="@tag.Required"
-                                                                      Variant="Variant.Outlined" />
+                                                                      Variant="Variant.Outlined"
+                                                                      Disabled="@(!CanWrite)"/>
                                                     </MudItem>
                                                 }
                                             }
@@ -236,9 +242,8 @@
                                         }
                                         else if (context.Equals(CreateEditMode.Edit))
                                         {
-                                            <LabelsEditor ReadOnlyLabels="DeviceModel.Labels" Labels="Device.Labels" />
+                                            <LabelsEditor ReadOnlyLabels="DeviceModel.Labels" Labels="Device.Labels" CanWrite="@CanWrite" />
                                         }
-
                                     </ChildContent>
                                 </MudExpansionPanel>
                             </MudItem>
@@ -317,7 +322,7 @@
                 {
                     if (IsLoRa)
                     {
-                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
+                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red" : "")>
                             <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraModelDto="@(LoRaDeviceModelDto)" LoraValidator="@(loraValidator)" />
                         </MudTabPanel>
                     }
@@ -326,8 +331,8 @@
                 {
                     if (IsLoRa && Device != null && Commands != null)
                     {
-                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
-                            <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" />
+                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red" : "")>
+                            <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" CanWrite="@CanWrite" CanExec="@CanExec"/>
                         </MudTabPanel>
                     }
                 }
@@ -339,6 +344,12 @@
 @code {
     [Parameter]
     public CreateEditMode context { get; set; }
+
+    [Parameter]
+    public bool CanWrite { get; set; }
+
+    [Parameter]
+    public bool CanExec { get; set; }
 
     [CascadingParameter]
     public Error Error { get; set; } = default!;
@@ -353,11 +364,11 @@
     private IDeviceDetails Device { get; set; } = new DeviceDetails();
 
     public PatternMask maskLoRaDeviceID = new PatternMask("XXXXXXXXXXXXXXXX")
-        {
-            MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
-            CleanDelimiters = false,
-            Transformation = AllUpperCase
-        };
+    {
+        MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
+        CleanDelimiters = false,
+        Transformation = AllUpperCase
+    };
 
     private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 
@@ -696,15 +707,15 @@
     private async Task<IEnumerable<IDeviceModel>> Search(string value)
     {
         var filter = new DeviceModelFilter
-            {
-                SearchText = value,
-                PageNumber = 0,
-                PageSize = 100,
-                OrderBy = new string[]
+        {
+            SearchText = value,
+            PageNumber = 0,
+            PageSize = 100,
+            OrderBy = new string[]
                             {
                     string.Empty
                             }
-            };
+        };
         return (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
     }
 
@@ -742,14 +753,14 @@
             _deviceModel = model;
 
             Device = new DeviceDetails
-                {
-                    DeviceID = Device.DeviceID,
-                    ModelId = model?.ModelId,
-                    Image = model?.Image,
-                    DeviceName = Device.DeviceName,
-                    IsEnabled = Device.IsEnabled,
-                    Tags = Device.Tags
-                };
+            {
+                DeviceID = Device.DeviceID,
+                ModelId = model?.ModelId,
+                Image = model?.Image,
+                DeviceName = Device.DeviceName,
+                IsEnabled = Device.IsEnabled,
+                Tags = Device.Tags
+            };
 
             if (model == null || string.IsNullOrWhiteSpace(model.ModelId))
             {
@@ -761,16 +772,16 @@
                 var loRaDeviceModelResult = await LoRaWanDeviceModelsClientService.GetDeviceModel(model.ModelId);
 
                 this.Device = new LoRaDeviceDetails
-                    {
-                        DeviceID = this.Device.DeviceID,
-                        ModelId = model.ModelId,
-                        Image = model.Image,
-                        DeviceName = this.Device.DeviceName,
-                        IsEnabled = this.Device.IsEnabled,
-                        Tags = this.Device.Tags,
-                        SensorDecoder = loRaDeviceModelResult.SensorDecoder,
-                        UseOTAA = loRaDeviceModelResult.UseOTAA
-                    };
+                {
+                    DeviceID = this.Device.DeviceID,
+                    ModelId = model.ModelId,
+                    Image = model.Image,
+                    DeviceName = this.Device.DeviceName,
+                    IsEnabled = this.Device.IsEnabled,
+                    Tags = this.Device.Tags,
+                    SensorDecoder = loRaDeviceModelResult.SensorDecoder,
+                    UseOTAA = loRaDeviceModelResult.UseOTAA
+                };
 
                 LoRaDeviceModelDto = loRaDeviceModelResult;
 
@@ -781,13 +792,13 @@
                 var properties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
 
                 Properties.AddRange(properties.Select(x => new DevicePropertyValue
-                    {
-                        DisplayName = x.DisplayName,
-                        IsWritable = x.IsWritable,
-                        Name = x.Name,
-                        Order = x.Order,
-                        PropertyType = x.PropertyType
-                    }));
+                {
+                    DisplayName = x.DisplayName,
+                    IsWritable = x.IsWritable,
+                    Name = x.Name,
+                    Order = x.Order,
+                    PropertyType = x.PropertyType
+                }));
 
                 IsLoRa = false;
             }

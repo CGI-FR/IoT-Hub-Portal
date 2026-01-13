@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
 {
+    using Portal.Shared.Security;
+
     internal class LayerListPageTest : BlazorUnitTest
     {
         private Mock<ILayerClientService> mockLayerClientService;
@@ -21,6 +23,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.LayerRead, PortalPermissions.LayerWrite });
         }
 
         [Test]

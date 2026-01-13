@@ -8,22 +8,31 @@ FROM docker.artifactory.michelin.com/dotnet/sdk:8.0 AS build
 ARG BUILD_VERSION=1.2.3
 ARG GITHUB_RUN_NUMBER=4
 WORKDIR /src
-RUN ls
+
 COPY nuget.config .
+COPY ["IoTHub.Portal.Application/IoTHub.Portal.Application.csproj", "IoTHub.Portal.Application/"]
+COPY ["IoTHub.Portal.Client/IoTHub.Portal.Client.csproj", "IoTHub.Portal.Client/"]
+COPY ["IoTHub.Portal.Crosscutting/IoTHub.Portal.Crosscutting.csproj", "IoTHub.Portal.Crosscutting/"]
+COPY ["IoTHub.Portal.Domain/IoTHub.Portal.Domain.csproj", "IoTHub.Portal.Domain/"]
+COPY ["IoTHub.Portal.Infrastructure/IoTHub.Portal.Infrastructure.csproj", "IoTHub.Portal.Infrastructure/"]
+COPY ["IoTHub.Portal.MySql/IoTHub.Portal.MySql.csproj", "IoTHub.Portal.MySql/"]
+COPY ["IoTHub.Portal.Postgres/IoTHub.Portal.Postgres.csproj", "IoTHub.Portal.Postgres/"]
 COPY ["IoTHub.Portal.Server/IoTHub.Portal.Server.csproj", "IoTHub.Portal.Server/"]
 COPY ["IoTHub.Portal.Shared/IoTHub.Portal.Shared.csproj", "IoTHub.Portal.Shared/"]
-COPY ["IoTHub.Portal.Client/IoTHub.Portal.Client.csproj", "IoTHub.Portal.Client/"]
+
+RUN dotnet restore "IoTHub.Portal.Application/IoTHub.Portal.Application.csproj"
+RUN dotnet restore "IoTHub.Portal.Client/IoTHub.Portal.Client.csproj"
+RUN dotnet restore "IoTHub.Portal.Crosscutting/IoTHub.Portal.Crosscutting.csproj"
+RUN dotnet restore "IoTHub.Portal.Domain/IoTHub.Portal.Domain.csproj"
 RUN dotnet restore "IoTHub.Portal.Server/IoTHub.Portal.Server.csproj"
+RUN dotnet restore "IoTHub.Portal.Shared/IoTHub.Portal.Shared.csproj"
+
 COPY . .
 WORKDIR "/src/IoTHub.Portal.Server"
-RUN dotnet build "IoTHub.Portal.Server.csproj" -c Debug -o /app/build -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}"
 
-FROM build AS publish
-ARG BUILD_VERSION=1.2.3
-ARG GITHUB_RUN_NUMBER=4
 RUN dotnet publish "IoTHub.Portal.Server.csproj" -c Debug -o /app/publish  -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}"
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "IoTHub.Portal.Server.dll"]

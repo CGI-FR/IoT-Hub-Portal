@@ -18,7 +18,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize("edge-model:read")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<IoTEdgeModelListItem>>> GetEdgeModelList([FromQuery] EdgeModelFilter edgeModelFilter)
         {
@@ -26,7 +26,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpGet("{edgeModelId}")]
-        [AllowAnonymous]
+        [Authorize("edge-model:read")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IoTEdgeModel>> GetEdgeDeviceModel(string edgeModelId)
         {
@@ -34,7 +34,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize("edge-model:write")]
         public async Task<IActionResult> CreateEdgeModel(IoTEdgeModel EdgeModel)
         {
             await this.edgeModelService.CreateEdgeModel(EdgeModel);
@@ -43,7 +43,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         }
 
         [HttpPut]
-        [AllowAnonymous]
+        [Authorize("edge-model:write")]
         public async Task<IActionResult> UpdateEdgeModel(IoTEdgeModel EdgeModel)
         {
             await this.edgeModelService.UpdateEdgeModel(EdgeModel);
@@ -58,7 +58,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <returns>Http response</returns>
         /// <exception cref="InternalServerErrorException"></exception>
         [HttpDelete("{edgeModelId}")]
-        [AllowAnonymous]
+        [Authorize("edge-model:write")]
         public async Task<IActionResult> DeleteModelAsync(string edgeModelId)
         {
             await this.edgeModelService.DeleteEdgeModel(edgeModelId);
@@ -72,7 +72,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="edgeModelId">The model identifier.</param>
         /// <returns>The avatar.</returns>
         [HttpGet("{edgeModelId}/avatar", Name = "GET edge Device model avatar URL")]
-        [AllowAnonymous]
+        [Authorize("edge-model:read")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<ActionResult<string>> GetAvatar(string edgeModelId)
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="avatar"></param>
         /// <returns>The avatar.</returns>
         [HttpPost("{edgeModelId}/avatar", Name = "POST Update the edge device model avatar")]
-        [AllowAnonymous]
+        [Authorize("edge-model:write")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, string avatar)
@@ -100,7 +100,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// </summary>
         /// <param name="edgeModelId">The model identifier.</param>
         [HttpDelete("{edgeModelId}/avatar", Name = "DELETE Remove the edge device model avatar")]
-        [AllowAnonymous]
+        [Authorize("edge-model:write")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<IActionResult> DeleteAvatar(string edgeModelId)
@@ -114,7 +114,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// </summary>
         /// <returns>Public edge modules</returns>
         [HttpGet("public-modules", Name = "GET edge public modules")]
-        [AllowAnonymous]
+        [Authorize("edge-model:read")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<ActionResult<IEnumerable<IoTEdgeModel>>> GetPublicEdgeModules()

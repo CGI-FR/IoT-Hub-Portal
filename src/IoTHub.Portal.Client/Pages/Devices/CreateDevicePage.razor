@@ -1,8 +1,13 @@
 ﻿@page "/devices/new"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
+<AuthorizedContent IsAuthorized="@IsAuthorized" IsLoading="@IsLoading">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
 
-<EditDevice context="CreateEditMode.Create" />
+    <EditDevice context="CreateEditMode.Create" CanWrite="true"/>
+</AuthorizedContent>
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.DeviceWrite };
 }

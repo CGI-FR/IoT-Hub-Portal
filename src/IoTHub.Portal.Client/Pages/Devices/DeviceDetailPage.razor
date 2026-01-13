@@ -1,4 +1,6 @@
 ﻿@page "/devices/{DeviceID}"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @inject NavigationManager NavManager
 
@@ -8,9 +10,13 @@
 <MudTooltip Placement="Placement.Top">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Details</MudText>
 </MudTooltip>
-<EditDevice context="CreateEditMode.Edit" IsLoRa="@IsLoRa" DeviceID="@DeviceID" />
+<EditDevice context="CreateEditMode.Edit" IsLoRa="@IsLoRa" DeviceID="@DeviceID" CanWrite="@canWrite" CanExec="@canExec" />
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.DeviceRead };
+    private bool canWrite;
+    private bool canExec;
+
     [Parameter]
     [SupplyParameterFromQuery]
     public bool IsLoRa
@@ -21,6 +27,15 @@
 
     [Parameter]
     public string DeviceID { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // Check if user has write permission for conditional UI elements
+        canWrite = await HasPermissionAsync(PortalPermissions.DeviceWrite);
+        canExec = await HasPermissionAsync(PortalPermissions.DeviceExecute);
+    }
 
     private void Return() => NavManager.NavigateTo("devices");
 }

@@ -1,95 +1,102 @@
 ﻿@page "/lorawan/concentrators/new"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
+
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 @inject IDialogService DialogService
 @inject ILoRaWanConcentratorClientService LoRaWanConcentratorsClientService
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">LoRaWAN Concentrator</MudText>
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">LoRaWAN Concentrator</MudText>
 
-<MudForm Model="@concentrator" @ref="form">
-    <MudGrid>
-        <MudItem xs="12" sm="4" md="3">
-            <MudCard>
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(concentrator.DeviceName) ? concentrator.DeviceId : concentrator.DeviceName)</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-            </MudCard>
-            <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveDevice" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+    <MudForm Model="@concentrator" @ref="form">
+        <MudGrid>
+            <MudItem xs="12" sm="4" md="3">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(concentrator.DeviceName) ? concentrator.DeviceId : concentrator.DeviceName)</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                </MudCard>
+                <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveDevice" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+                </MudItem>
             </MudItem>
-        </MudItem>
-        <MudItem xs="12" sm="8" md="9">
-            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General">
-                    <MudExpansionPanels MultiExpansion="true">
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
-                                    <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
-                                    <ChildContent>
-                                        <MudGrid>
-                                            <MudItem xs="12">
-                                                <MudTextField @bind-Value="@concentrator.DeviceId"
-                                                              id="@nameof(ConcentratorDto.DeviceId)"
-                                                              Label="Device Id"
-                                                              Variant="Variant.Outlined"
-                                                              For="@(()=> concentrator.DeviceId)"
-                                                              Required="true"
-                                                              HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
-                                            </MudItem>
-                                            <MudItem xs="12">
-                                                <MudTextField @bind-Value="@concentrator.DeviceName"
-                                                              id="@nameof(ConcentratorDto.DeviceName)"
-                                                              For="@(()=> concentrator.DeviceName)"
-                                                              Label="Device name" Variant="Variant.Outlined" Required="true" />
-                                            </MudItem>
-                                            <MudItem xs="12" md="6">
-                                                <MudTextField For="@(()=> concentrator.ClientThumbprint)"
-                                                              Mask="@maskThumbprint"
-                                                              HelperText="ClientThumbprint must contain 40 hexadecimal characters"
-                                                              @bind-Value="@concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
-                                            </MudItem>
-                                            <MudItem xs="12" md="6">
-                                                <MudSelect T="string" For="@(()=> concentrator.LoraRegion)" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true" id="@nameof(ConcentratorDto.LoraRegion)">
-                                                    @foreach (var frequencyPlan in FrequencyPlans.OrderBy(c => c.Name))
-                                                    {
-                                                        <MudSelectItem Value="@(frequencyPlan.FrequencyPlanID)">@frequencyPlan.Name</MudSelectItem>
-                                                    }
-                                                </MudSelect>
-                                            </MudItem>
-                                            <MudItem xs="12">
-                                                <MudText>
-                                                    <b>Status</b>
-                                                </MudText>
-                                                <MudRadioGroup @bind-SelectedOption="@concentrator.IsEnabled">
-                                                    <MudRadio Option=@(true) Color="Color.Primary">
-                                                        Enabled
-                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
-                                                    </MudRadio>
-                                                    <MudRadio Option=@(false) Color="Color.Primary">
-                                                        Disabled
-                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
-                                                    </MudRadio>
-                                                </MudRadioGroup>
-                                            </MudItem>
-                                        </MudGrid>
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
-                    </MudExpansionPanels>
-                </MudTabPanel>
-            </MudTabs>
-        </MudItem>
-    </MudGrid>
-</MudForm>
+            <MudItem xs="12" sm="8" md="9">
+                <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
+                    <MudTabPanel Text="General">
+                        <MudExpansionPanels MultiExpansion="true">
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudGrid>
+                                                <MudItem xs="12">
+                                                    <MudTextField @bind-Value="@concentrator.DeviceId"
+                                                                  id="@nameof(ConcentratorDto.DeviceId)"
+                                                                  Label="Device Id"
+                                                                  Variant="Variant.Outlined"
+                                                                  For="@(() => concentrator.DeviceId)"
+                                                                  Required="true"
+                                                                  HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                                </MudItem>
+                                                <MudItem xs="12">
+                                                    <MudTextField @bind-Value="@concentrator.DeviceName"
+                                                                  id="@nameof(ConcentratorDto.DeviceName)"
+                                                                  For="@(() => concentrator.DeviceName)"
+                                                                  Label="Device name" Variant="Variant.Outlined" Required="true" />
+                                                </MudItem>
+                                                <MudItem xs="12" md="6">
+                                                    <MudTextField For="@(() => concentrator.ClientThumbprint)"
+                                                                  Mask="@maskThumbprint"
+                                                                  HelperText="ClientThumbprint must contain 40 hexadecimal characters"
+                                                                  @bind-Value="@concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
+                                                </MudItem>
+                                                <MudItem xs="12" md="6">
+                                                    <MudSelect T="string" For="@(() => concentrator.LoraRegion)" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true" id="@nameof(ConcentratorDto.LoraRegion)">
+                                                        @foreach (var frequencyPlan in FrequencyPlans.OrderBy(c => c.Name))
+                                                        {
+                                                            <MudSelectItem Value="@(frequencyPlan.FrequencyPlanID)">@frequencyPlan.Name</MudSelectItem>
+                                                        }
+                                                    </MudSelect>
+                                                </MudItem>
+                                                <MudItem xs="12">
+                                                    <MudText>
+                                                        <b>Status</b>
+                                                    </MudText>
+                                                    <MudRadioGroup @bind-SelectedOption="@concentrator.IsEnabled">
+                                                        <MudRadio Option=@(true) Color="Color.Primary">
+                                                            Enabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                        <MudRadio Option=@(false) Color="Color.Primary">
+                                                            Disabled
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                        </MudRadio>
+                                                    </MudRadioGroup>
+                                                </MudItem>
+                                            </MudGrid>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                        </MudExpansionPanels>
+                    </MudTabPanel>
+                </MudTabs>
+            </MudItem>
+        </MudGrid>
+    </MudForm>
+</AuthorizedContent>
 
+@code {
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.ConcentratorWrite };
 
-    @code {
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
@@ -103,9 +110,9 @@
 
     public PatternMask maskThumbprint = new("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
     {
-            MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
-            CleanDelimiters = false,
-            Transformation = AllUpperCase
+        MaskChars = new[] { new MaskChar('X', "[0-9a-fA-F]") },
+        CleanDelimiters = false,
+        Transformation = AllUpperCase
     };
 
     protected override async Task OnInitializedAsync()
@@ -123,7 +130,7 @@
     public async void SaveDevice()
     {
         isProcessing = true;
-        
+
         try
         {
             await form.Validate();

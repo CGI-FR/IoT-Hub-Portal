@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class EdgeModelDetailPageTest : BlazorUnitTest
     {
@@ -24,6 +26,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = "Azure" });
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.EdgeModelRead, PortalPermissions.EdgeModelWrite });
         }
 
         [Test]

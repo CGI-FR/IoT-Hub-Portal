@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 {
+    using Portal.Shared.Security;
     using ConfigurationMetrics = Portal.Shared.Models.v10.ConfigurationMetrics;
 
     [TestFixture]
@@ -26,6 +27,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = Services.AddSingleton(this.mockDeviceConfigurationsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.DeviceConfigurationRead, PortalPermissions.DeviceConfigurationWrite });
         }
 
         [Test]
@@ -193,6 +197,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Act
+            // Wait for authorization to complete before accessing elements
+            cut.WaitForAssertion(() => cut.FindAll("div").Count.Should().BeGreaterThan(0));
+
             cut.WaitForElement("#delete-device-configuration").Click();
 
             // Assert

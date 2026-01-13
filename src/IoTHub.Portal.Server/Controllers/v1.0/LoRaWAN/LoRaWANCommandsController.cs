@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0.LoRaWAN
         /// <param name="commands">The commands.</param>
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Set device model commands")]
-        [AllowAnonymous]
+        [Authorize("model:write")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Post(string id, DeviceModelCommandDto[] commands)
         {
@@ -50,7 +50,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0.LoRaWAN
         /// <param name="id">The model identifier.</param>
         /// <returns>The action result.</returns>
         [HttpGet(Name = "GET Device model commands")]
-        [AllowAnonymous]
+        [Authorize("model:read")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DeviceModelCommandDto[]>> Get(string id)
         {

@@ -22,21 +22,6 @@ namespace IoTHub.Portal.Postgres.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GroupUser", b =>
-                {
-                    b.Property<string>("GroupsId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("MembersId")
-                        .HasColumnType("text");
-
-                    b.HasKey("GroupsId", "MembersId");
-
-                    b.HasIndex("MembersId");
-
-                    b.ToTable("GroupUser");
-                });
-
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
                 {
                     b.Property<string>("Id")
@@ -400,37 +385,6 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.ToTable("EdgeDeviceModelCommands");
                 });
 
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Group", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PrincipalId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.HasIndex("PrincipalId")
-                        .IsUnique();
-
-                    b.ToTable("Groups");
-                });
-
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Label", b =>
                 {
                     b.Property<string>("Id")
@@ -759,21 +713,6 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.ToTable("LorawanDevices", (string)null);
                 });
 
-            modelBuilder.Entity("GroupUser", b =>
-                {
-                    b.HasOne("IoTHub.Portal.Domain.Entities.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IoTHub.Portal.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.AccessControl", b =>
                 {
                     b.HasOne("IoTHub.Portal.Domain.Entities.Principal", "Principal")
@@ -833,17 +772,6 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .IsRequired();
 
                     b.Navigation("DeviceModel");
-                });
-
-            modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Group", b =>
-                {
-                    b.HasOne("IoTHub.Portal.Domain.Entities.Principal", "Principal")
-                        .WithOne("Group")
-                        .HasForeignKey("IoTHub.Portal.Domain.Entities.Group", "PrincipalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Principal");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Label", b =>
@@ -933,8 +861,6 @@ namespace IoTHub.Portal.Postgres.Migrations
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.Principal", b =>
                 {
                     b.Navigation("AccessControls");
-
-                    b.Navigation("Group");
 
                     b.Navigation("User");
                 });

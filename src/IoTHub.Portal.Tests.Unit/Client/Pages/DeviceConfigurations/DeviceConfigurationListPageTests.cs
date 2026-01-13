@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class DeviceConfigurationListPageTests : BlazorUnitTest
     {
@@ -16,6 +18,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = Services.AddSingleton(this.mockDeviceConfigurationsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.DeviceConfigurationRead, PortalPermissions.DeviceConfigurationWrite });
         }
 
         [Test]

@@ -7,6 +7,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
     using IoTHub.Portal.Client.Dialogs.Planning;
     using Moq;
     using MudBlazor;
+    using Shared.Security;
 
     internal class EditPlanningTest : BlazorUnitTest
     {
@@ -123,7 +124,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var cut = RenderComponent<EditPlanning>(
                 ComponentParameter.CreateParameter("mode", "New"),
                 ComponentParameter.CreateParameter("planning", planning),
-                ComponentParameter.CreateParameter("scheduleList", scheduleList )
+                ComponentParameter.CreateParameter("scheduleList", scheduleList ),
+                ComponentParameter.CreateParameter("CanWrite", true)
             );
 
             var editPlanningAddSchedule = cut.WaitForElement("#addScheduleButton");
@@ -171,7 +173,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var cut = RenderComponent<EditPlanning>(
                 ComponentParameter.CreateParameter("mode", "New"),
                 ComponentParameter.CreateParameter("planning", planning),
-                ComponentParameter.CreateParameter("scheduleList", scheduleList )
+                ComponentParameter.CreateParameter("scheduleList", scheduleList ),
+                ComponentParameter.CreateParameter("CanWrite", true)
             );
 
             var endField = cut.FindComponents<MudTextField<string>>()[2];
@@ -222,7 +225,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var cut = RenderComponent<EditPlanning>(
                 ComponentParameter.CreateParameter("mode", "New"),
                 ComponentParameter.CreateParameter("planning", planning),
-                ComponentParameter.CreateParameter("scheduleList", scheduleList )
+                ComponentParameter.CreateParameter("scheduleList", scheduleList ),
+                ComponentParameter.CreateParameter("CanWrite", true)
             );
 
             var endField = cut.FindComponents<MudTextField<string>>()[2];
@@ -308,7 +312,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var cut = RenderComponent<EditPlanning>(
                 ComponentParameter.CreateParameter("mode", "New"),
                 ComponentParameter.CreateParameter("planning", planning),
-                ComponentParameter.CreateParameter("scheduleList", scheduleList )
+                ComponentParameter.CreateParameter("scheduleList", scheduleList ),
+                ComponentParameter.CreateParameter("CanWrite", true)
             );
 
             var editPlanningChangeOnDayLayers = cut.FindAll("#editPlanningChangeOnDayLayers")[0];
@@ -528,10 +533,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
                 .Returns(mockDialogReference.Object);
 
             var cut = RenderComponent<EditPlanning>(parameters => parameters.Add(p => p.mode, "Edit")
-                                                                            .Add(p => p.planning, mockPlanning)
-                                                                            .Add(p => p.scheduleList, mockScheduleList)
-                                                                            .Add(p => p.initScheduleList, new List<ScheduleDto>(mockScheduleList))
-                                                                            .Add(p => p.SelectedModel, mockDeviceModel.Name));
+                .Add(p => p.planning, mockPlanning)
+                .Add(p => p.scheduleList, mockScheduleList)
+                .Add(p => p.initScheduleList, new List<ScheduleDto>(mockScheduleList))
+                .Add(p => p.SelectedModel, mockDeviceModel.Name)
+                .Add(p => p.CanWrite, true));
 
             var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();
@@ -589,11 +595,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             _ = this.mockDialogService.Setup(c => c.Show<DeletePlanningDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
-            var cut = RenderComponent<EditPlanning>(parameters => parameters.Add(p => p.mode, "Edit")
-                                                                            .Add(p => p.planning, mockPlanning)
-                                                                            .Add(p => p.scheduleList, mockScheduleList)
-                                                                            .Add(p => p.initScheduleList, new List<ScheduleDto>(mockScheduleList))
-                                                                            .Add(p => p.SelectedModel, mockDeviceModel[0].Name));
+            var cut = RenderComponent<EditPlanning>(parameters => parameters
+                .Add(p => p.mode, "Edit")
+                .Add(p => p.planning, mockPlanning)
+                .Add(p => p.scheduleList, mockScheduleList)
+                .Add(p => p.initScheduleList, new List<ScheduleDto>(mockScheduleList))
+                .Add(p => p.SelectedModel, mockDeviceModel[0].Name)
+                .Add(p => p.CanWrite, true));
 
             var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();

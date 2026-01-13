@@ -1,228 +1,256 @@
 ﻿@page "/devices"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
 @inject IDialogService DialogService
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
 @inject PortalSettings Portal
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
 @inject IJSRuntime JS
 @inject IDeviceModelsClientService DeviceModelsClientService
 
-<MudGrid>
-    <MudItem xs="12">
-        <MudExpansionPanels>
-            <MudExpansionPanel Text="Search panel">
-                <MudGrid>
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="searchID" Placeholder="DeviceID / DeviceName" id="searchID"></MudTextField>
-                    </MudItem>
-                    @foreach (DeviceTagDto tag in TagList)
-                    {
-                        if (tag.Searchable)
-                        {
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="searchTags[tag.Name]" Placeholder="@tag.Label"></MudTextField>
-                            </MudItem>
-                        }
-                    }
-
-                    <MudItem xs="12" md="6">
-                        <MudSelect T="LabelDto" Label="Labels" MultiSelection="true" @bind-SelectedValues="selectedLabels"
-                                   MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
-                                   Variant="Variant.Outlined">
-                            @foreach (var label in labels)
-                            {
-                                <MudSelectItem T="LabelDto" Value="@label">
-                                    <MudChip Text="@label.Name" Color="Color.Primary" Style="@($"background-color: {label.Color};")" />
-                                </MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-
-                    <MudItem xs="12" md="6">
-                        <MudAutocomplete T="DeviceModelDto"
-                                         id="@nameof(DeviceModelDto.ModelId)"
-                                         @bind-Value="Model"
-                                         SearchFunc="@Search"
-                                         Label="Model"
-                                         Dense=true
-                                         For=@(() => this.Model)
-                                         Variant="Variant.Outlined"
-                                         ToStringFunc="@(x => x?.Name)"
-                                         ResetValueOnEmptyText=true
-                                         Immediate=true
-                                         Clearable=true
-                                         CoerceText=true
-                                         CoerceValue=false>
-                            <ItemTemplate>
-                                @context.Name
-                                <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-                                    @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
-                                </MudText>
-                            </ItemTemplate>
-                        </MudAutocomplete>
-                    </MudItem>
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanels>
+                <MudExpansionPanel Text="Search panel">
                     <MudGrid>
-                        <MudItem sm="12" md="6">
-                            <MudText>Status</MudText>
-                            <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
-                                <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("true") Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
-                                </MudItem>
-                                <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("false") Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
-                                </MudItem>
-                                <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("") Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
-                                </MudItem>
-                            </MudRadioGroup>
-
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="searchID" Placeholder="DeviceID / DeviceName" id="searchID"></MudTextField>
                         </MudItem>
+                        @foreach (DeviceTagDto tag in TagList)
+                        {
+                            if (tag.Searchable)
+                            {
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="searchTags[tag.Name]" Placeholder="@tag.Label"></MudTextField>
+                                </MudItem>
+                            }
+                        }
+
+                        <MudItem xs="12" md="6">
+                            <MudSelect T="LabelDto" Label="Labels" MultiSelection="true" @bind-SelectedValues="selectedLabels"
+                                       MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
+                                       Variant="Variant.Outlined">
+                                @foreach (var label in labels)
+                                {
+                                    <MudSelectItem T="LabelDto" Value="@label">
+                                        <MudChip Text="@label.Name" Color="Color.Primary" Style="@($"background-color: {label.Color};")" />
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudAutocomplete T="DeviceModelDto"
+                                             id="@nameof(DeviceModelDto.ModelId)"
+                                             @bind-Value="Model"
+                                             SearchFunc="@Search"
+                                             Label="Model"
+                                             Dense=true
+                                             For=@(() => this.Model)
+                                             Variant="Variant.Outlined"
+                                             ToStringFunc="@(x => x?.Name)"
+                                             ResetValueOnEmptyText=true
+                                             Immediate=true
+                                             Clearable=true
+                                             CoerceText=true
+                                             CoerceValue=false>
+                                <ItemTemplate>
+                                    @context.Name
+                                    <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                        @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                    </MudText>
+                                </ItemTemplate>
+                            </MudAutocomplete>
+                        </MudItem>
+                        <MudGrid>
+                            <MudItem sm="12" md="6">
+                                <MudText>Status</MudText>
+                                <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
+                                    <MudItem md="4" sm="12">
+                                        <MudRadio Option=@("true") Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
+                                    </MudItem>
+                                    <MudItem md="4" sm="12">
+                                        <MudRadio Option=@("false") Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
+                                    </MudItem>
+                                    <MudItem md="4" sm="12">
+                                        <MudRadio Option=@("") Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
+                                    </MudItem>
+                                </MudRadioGroup>
+
+                            </MudItem>
+                        </MudGrid>
+
+                        <MudItem xs="12">
+                            <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton" OnClick=Search>Search</MudButton>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset" id="resetSearch">Reset</MudButton>
+                        </MudItem>
+
                     </MudGrid>
 
-                    <MudItem xs="12">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton" OnClick=Search>Search</MudButton>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset" id="resetSearch">Reset</MudButton>
-                    </MudItem>
-
-                </MudGrid>
-
-            </MudExpansionPanel>
-        </MudExpansionPanels>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
-            <ColGroup>
-                <col style="width: 5%;" />
-                <col style="width: 40%;" />
-                <col style="width: 10%;" />
-                <col style="width: 10%;" />
-                <col style="width: 15%;" />
-                @if (Portal.IsLoRaSupported)
-                {
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </MudItem>
+        <MudItem xs="12">
+            <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+                <ColGroup>
+                    <col style="width: 5%;" />
+                    <col style="width: 40%;" />
                     <col style="width: 10%;" />
-                }
-                <col style="width: 10%;" />
-                <col style="width: 10%;" />
-            </ColGroup>
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">Devices</MudText>
-                <MudSpacer />
-                <MudTooltip Text="Refresh list">
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="@Refresh" Size="Size.Medium" id="tableRefreshButton" Class="ma-1"></MudIconButton>
-                </MudTooltip>
-                <MudTooltip Text="Add device">
-                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" Class="ma-1" />
-                </MudTooltip>
-
-                <MudButton id="manageDevicesButtonToggle" Variant="Variant.Filled" Color="Color.Primary" OnClick="@ToggleOpen">
-                    Manage devices
-                    <MudPopover Open="@menuIsOpen" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.TopRight">
-                        <MudItem>
-                            <MudButton id="exportDevicesButton" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.Download" OnClick="ExportDeviceList">Export device list</MudButton>
-                        </MudItem>
-                        <MudItem>
-                            <MudButton id="exportTemplateButton" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportTemplateFile">Download template file</MudButton>
-                        </MudItem>
-                        <MudItem>
-                            <MudFileUpload T="IBrowserFile" FilesChanged="ImportDeviceList">
-                                <ButtonTemplate>
-                                    <MudButton id="importDevicesButton" Variant="Variant.Text"
-                                               HtmlTag="label"
-                                               Color="Color.Primary"
-                                               StartIcon="@Icons.Material.Outlined.Upload"
-                                               for="@context">
-                                        Import device list
-                                    </MudButton>
-                                </ButtonTemplate>
-                            </MudFileUpload>
-                        </MudItem>
-                    </MudPopover>
-                </MudButton>
-
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh></MudTh>
-                <MudTh><MudTableSortLabel id="sortDeviceId" SortLabel="Id" T="DeviceListItem">Device</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="LastActivityTime" T="DeviceListItem">Last activity time</MudTableSortLabel></MudTh>
-                @if (Portal.IsLoRaSupported)
-                {
-                    <MudTh Style="text-align: center">Telemetry</MudTh>
-                }
-                <MudTh Style="text-align: center">See details</MudTh>
-                <MudTh Style="text-align: center">Delete</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd Style="text-align: center">
-                    <img height="25" src="@context.Image" />
-                </MudTd>
-                <MudTd DataLabel="Device">
-                    <MudItem>
-                        <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText>
-                        <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceID</MudText>
-                    </MudItem>
-                    <MudItem>
-                        <Labels Items="@context.Labels" SearchedLabels="@labels" />
-                    </MudItem>
-                </MudTd>
-
-                <MudTd DataLabel="Allowed" Style="text-align: center">
-                    @if (context.IsEnabled)
+                    <col style="width: 10%;" />
+                    <col style="width: 15%;" />
+                    @if (Portal.IsLoRaSupported)
                     {
-                        <MudTooltip Text="Device can connect">
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                        <col style="width: 10%;" />
+                    }
+                    @if (canWrite)
+                    {
+                        <col style="width: 10%;" />
+                    }
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Devices</MudText>
+                    <MudSpacer />
+                    <MudTooltip Text="Refresh list">
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="@Refresh" Size="Size.Medium" id="tableRefreshButton" Class="ma-1"></MudIconButton>
+                    </MudTooltip>
+                    @if (canWrite)
+                    {
+                        <MudTooltip Text="Add device">
+                            <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" Class="ma-1" />
                         </MudTooltip>
                     }
-                    else
+
+                    <MudButton id="manageDevicesButtonToggle" Variant="Variant.Filled" Color="Color.Primary" OnClick="@ToggleOpen">
+                        Manage devices
+                        <MudPopover Open="@menuIsOpen" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.TopRight">
+                            <MudItem>
+                                <MudButton id="exportTemplateButton" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportTemplateFile">Download template file</MudButton>
+                            </MudItem>
+                            @if (canImport)
+                            {
+                                <MudItem>
+                                    <MudFileUpload T="IBrowserFile" FilesChanged="ImportDeviceList">
+                                        <ButtonTemplate>
+                                            <MudButton id="importDevicesButton" Variant="Variant.Text"
+                                                       HtmlTag="label"
+                                                       Color="Color.Primary"
+                                                       StartIcon="@Icons.Material.Outlined.Upload"
+                                                       for="@context">
+                                                Import device list
+                                            </MudButton>
+                                        </ButtonTemplate>
+                                    </MudFileUpload>
+                                </MudItem>
+                            }
+                            @if (canExport)
+                            {
+                                <MudItem>
+                                    <MudButton id="exportDevicesButton" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.Download" OnClick="ExportDeviceList">Export device list</MudButton>
+                                </MudItem>
+                            }
+                        </MudPopover>
+                    </MudButton>
+
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh></MudTh>
+                    <MudTh><MudTableSortLabel id="sortDeviceId" SortLabel="Id" T="DeviceListItem">Device</MudTableSortLabel></MudTh>
+                    <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
+                    <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="LastActivityTime" T="DeviceListItem">Last activity time</MudTableSortLabel></MudTh>
+                    @if (Portal.IsLoRaSupported)
                     {
-                        <MudTooltip Text="Device cannot connect">
-                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Default" />
-                        </MudTooltip>
+                        <MudTh Style="text-align: center">Telemetry</MudTh>
                     }
-                </MudTd>
+                    <MudTh Style="text-align: center">See details</MudTh>
+                    @if (canWrite)
+                    {
+                        <MudTh Style="text-align: center">Delete</MudTh>
+                    }
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd Style="text-align: center">
+                        <img height="25" src="@context.Image" />
+                    </MudTd>
+                    <MudTd DataLabel="Device">
+                        <MudItem>
+                            <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText>
+                            <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceID</MudText>
+                        </MudItem>
+                        <MudItem>
+                            <Labels Items="@context.Labels" SearchedLabels="@labels" />
+                        </MudItem>
+                    </MudTd>
 
-                <MudTd DataLabel="LSU" Style="text-align: center">@context.LastActivityTime</MudTd>
-
-                @if (Portal.IsLoRaSupported)
-                {
-                    <MudTd DataLabel="Telemetry" Style="text-align: center">
-                        @if (context.HasLoRaTelemetry)
+                    <MudTd DataLabel="Allowed" Style="text-align: center">
+                        @if (context.IsEnabled)
                         {
-                            <MudTooltip Text="See device telemetries">
-                                <MudIconButton id="@($"show-device-telemetry-{@context.DeviceID}")" Icon="@Icons.Material.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetry(context))" />
+                            <MudTooltip Text="Device can connect">
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                            </MudTooltip>
+                        }
+                        else
+                        {
+                            <MudTooltip Text="Device cannot connect">
+                                <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Default" />
                             </MudTooltip>
                         }
                     </MudTd>
-                }
 
-                <MudTd DataLabel="Details" Style="text-align: center">
-                    <MudTooltip Text="See device details">
-                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
-                    </MudTooltip>
-                </MudTd>
-                <MudTd DataLabel="Delete" Style="text-align: center">
-                    <MudTooltip Text="Delete device">
-                        <MudIconButton id="@($"delete-device-{@context.DeviceID}")"  Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
-                    </MudTooltip>
-                </MudTd>
-            </RowTemplate>
-            <NoRecordsContent>
-                <MudText>No matching records found</MudText>
-            </NoRecordsContent>
-            <LoadingContent>
-                <MudText>Loading...</MudText>
-            </LoadingContent>
-            <PagerContent>
-                <MudTablePager HideRowsPerPage=true />
-            </PagerContent>
-        </MudTable>
-    </MudItem>
-</MudGrid>
+                    <MudTd DataLabel="LSU" Style="text-align: center">@context.LastActivityTime</MudTd>
+
+                    @if (Portal.IsLoRaSupported)
+                    {
+                        <MudTd DataLabel="Telemetry" Style="text-align: center">
+                            @if (context.HasLoRaTelemetry)
+                            {
+                                <MudTooltip Text="See device telemetries">
+                                    <MudIconButton id="@($"show-device-telemetry-{@context.DeviceID}")" Icon="@Icons.Material.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetry(context))" />
+                                </MudTooltip>
+                            }
+                        </MudTd>
+                    }
+
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <MudTooltip Text="See device details">
+                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                        </MudTooltip>
+                    </MudTd>
+                    @if (canWrite)
+                    {
+                        <MudTd DataLabel="Delete" Style="text-align: center">
+                            <MudTooltip Text="Delete device">
+                                <MudIconButton id="@($"delete-device-{@context.DeviceID}")" Color="Color.Default"
+                                               Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"
+                                               OnClick="@(e => DeleteDevice(context))" />
+                            </MudTooltip>
+                        </MudTd>
+                    }
+                </RowTemplate>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+                <PagerContent>
+                    <MudTablePager HideRowsPerPage=true />
+                </PagerContent>
+            </MudTable>
+        </MudItem>
+    </MudGrid>
+</AuthorizedContent>
 
 @code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.DeviceRead };
+    private bool canWrite;
+    private bool canImport;
+    private bool canExport;
+
     [CascadingParameter]
     public Error? Error { get; set; }
 
@@ -233,8 +261,6 @@
     private MudTable<DeviceListItem>? table;
     private Dictionary<string, string> searchTags = new();
 
-    private bool IsLoading { get; set; } = true;   
-
     private DeviceModelDto Model { get; set; } = default!;
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = new List<DeviceTagDto>();
@@ -242,10 +268,10 @@
     private IEnumerable<LabelDto> labels = new List<LabelDto>();
     private IEnumerable<LabelDto> selectedLabels = new List<LabelDto>();
 
-    private int[] pageSizeOptions = new int[] { 2, 5, 10 };
-
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         try
         {
             // Gets the custom tags that can be searched via the panel
@@ -256,6 +282,11 @@
                     searchTags.Add(tag.Name, "");
             }
             labels = await DeviceClientService.GetAvailableLabels();
+
+            // Check if user has write permission for conditional UI elements
+            canWrite = await HasPermissionAsync(PortalPermissions.DeviceWrite);
+            canImport = await HasPermissionAsync(PortalPermissions.DeviceImport);
+            canExport = await HasPermissionAsync(PortalPermissions.DeviceExport);
         }
         catch (ProblemDetailsException exception)
         {
@@ -294,10 +325,10 @@
             var result = await DeviceClientService.GetDevices(uri);
 
             return new TableData<DeviceListItem>
-                {
-                    Items = result.Items,
-                    TotalItems = result.TotalItems
-                };
+            {
+                Items = result.Items,
+                TotalItems = result.TotalItems
+            };
         }
         catch (ProblemDetailsException exception)
         {
@@ -313,7 +344,7 @@
 
     private void AddDevice()
     {
-        navigationManager.NavigateTo("devices/new");
+        NavigationManager.NavigateTo("devices/new");
     }
 
     /// <summary>
@@ -365,8 +396,8 @@
 
     private void GoToDetails(DeviceListItem item)
     {
-        navigationManager.NavigateTo($"devices/{item.DeviceID}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
-    }    
+        NavigationManager.NavigateTo($"devices/{item.DeviceID}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
+    }
 
     /// <summary>
     /// Allows to autocomplete the Device Model field in the form.

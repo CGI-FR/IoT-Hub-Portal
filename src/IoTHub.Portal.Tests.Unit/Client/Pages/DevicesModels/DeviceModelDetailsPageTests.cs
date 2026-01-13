@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class DeviceModelDetailsPageTests : BlazorUnitTest
     {
@@ -28,6 +30,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.ModelRead, PortalPermissions.ModelWrite });
         }
 
         [Test]

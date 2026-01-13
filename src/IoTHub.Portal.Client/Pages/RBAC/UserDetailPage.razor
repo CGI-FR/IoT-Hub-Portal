@@ -1,0 +1,182 @@
+@page "/users/{UserId}"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
+
+@attribute [Authorize]
+
+@inject IUserClientService UserClientService
+@inject IAccessControlClientService AccessControlClientService
+@inject IRoleClientService RoleClientService
+@inject ISnackbar Snackbar
+@inject NavigationManager Nav
+
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">User Detail</MudText>
+    <MudPaper Class="pa-4" Elevation="1">
+        <MudGrid>
+            <MudItem xs="12" md="4">
+                <MudTextField Label="Given Name" Value="@user.GivenName" Disabled="true" />
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudTextField Label="Family Name" Value="@user.FamilyName" Disabled="true" />
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudTextField Label="Email" Value="@user.Email" Disabled="true" />
+            </MudItem>
+        </MudGrid>
+        <MudDivider Class="my-4" />
+        <MudStack Row Spacing="2" AlignItems="AlignItems.Center" Class="mb-2">
+            <MudText Typo="Typo.subtitle1">Roles</MudText>
+            <MudSpacer />
+            <MudSelect T="string" Label="Role" @bind-Value="newRoleId" Dense="true" Style="min-width:200px" Disabled="isSaving || allRoles.Count == 0 || !canWrite">
+                @foreach (var r in allRoles)
+                {
+                    <MudSelectItem Value="@r.Id">@r.Name</MudSelectItem>
+                }
+            </MudSelect>
+            <MudTextField Label="Scope" Value="@allScopeDisplay" Disabled="true" Style="width:100px" />
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="string.IsNullOrEmpty(newRoleId) || isSaving" OnClick="AddRole" StartIcon="@Icons.Material.Filled.Add" id="addUserRoleButton">Add</MudButton>
+        </MudStack>
+        <MudTable Items="accessControls" Dense="true" Hover="true">
+            <HeaderContent>
+                <MudTh>Role</MudTh>
+                <MudTh>Scope</MudTh>
+                @if (canWrite)
+                {
+                    <MudTh Style="text-align:center">Actions</MudTh>
+                }
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Role">@context.Role?.Name</MudTd>
+                <MudTd DataLabel="Scope">@allScopeDisplay</MudTd>
+                @if (canWrite)
+                {
+                    <MudTd DataLabel="Actions" Style="text-align:center">
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => RemoveAccessControl(context)" Disabled="isSaving" />
+                    </MudTd>
+                }
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No roles assigned.</MudText>
+            </NoRecordsContent>
+        </MudTable>
+    </MudPaper>
+</AuthorizedContent>
+
+@code {
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.UserRead };
+    private bool canWrite;
+
+    [Parameter] public string UserId { get; set; } = string.Empty;
+
+    private UserDetailsModel user;
+    private List<RoleModel> allRoles = new();
+    private List<AccessControlModel> accessControls = new();
+    private string newRoleId;
+    private bool isSaving;
+    private bool loadError;
+    private string errorMessage = string.Empty;
+    private const string allScopeDisplay = "ALL";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        try
+        {
+            user = await SafeApiCall(() => UserClientService.GetUser(UserId));
+            if (user == null)
+            {
+                IsLoading = false;
+                return;
+            }
+            await LoadRoles();
+            if (!string.IsNullOrEmpty(user.PrincipalId))
+            {
+                await LoadAccessControls();
+            }
+
+            // Check if user has write permission for conditional UI elements
+            canWrite = await HasPermissionAsync(PortalPermissions.UserWrite);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task<T> SafeApiCall<T>(Func<Task<T>> func)
+    {
+        try
+        {
+            return await func();
+        }
+        catch (Exception ex)
+        {
+            loadError = true;
+            errorMessage = ex.Message;
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            return default;
+        }
+    }
+
+    private async Task LoadRoles()
+    {
+        var rolesPage = await SafeApiCall(() => RoleClientService.GetRoles("api/roles?pageNumber=0&pageSize=1000"));
+        if (rolesPage != null)
+            allRoles = rolesPage.Items.ToList();
+    }
+
+    private async Task LoadAccessControls()
+    {
+        var acPage = await SafeApiCall(() => AccessControlClientService.GetAccessControls($"api/access-controls?principalId={user.PrincipalId}&pageSize=1000&pageNumber=0"));
+        if (acPage != null)
+            accessControls = acPage.Items.ToList();
+    }
+
+    private async Task AddRole()
+    {
+        if (string.IsNullOrEmpty(newRoleId) || user == null) return;
+        isSaving = true;
+        try
+        {
+            var role = allRoles.FirstOrDefault(r => r.Id == newRoleId);
+            if (role == null) return;
+            var created = await AccessControlClientService.Create(new AccessControlModel
+            {
+                PrincipalId = user.PrincipalId,
+                Role = role,
+                Scope = "*"
+            });
+            accessControls.Add(created);
+            newRoleId = null;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to add role: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private async Task RemoveAccessControl(AccessControlModel ac)
+    {
+        isSaving = true;
+        try
+        {
+            await AccessControlClientService.Delete(ac.Id);
+            accessControls.Remove(ac);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to remove role: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+}

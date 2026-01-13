@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using IoTHub.Portal.Shared.Models.v10;
+    using System.Security.Claims;
     using IoTHub.Portal.Shared.Models.v10;
 
     public interface IUserManagementService
@@ -19,6 +19,6 @@ namespace IoTHub.Portal.Application.Services
         Task<UserDetailsModel> CreateUserAsync(UserDetailsModel userCreateModel);
         Task<UserDetailsModel?> UpdateUser(string id, UserDetailsModel user);
         Task<bool> DeleteUser(string userId);
-
+        Task<UserDetailsModel> GetOrCreateUserByEmailAsync(string email, ClaimsPrincipal principal);
     }
 }

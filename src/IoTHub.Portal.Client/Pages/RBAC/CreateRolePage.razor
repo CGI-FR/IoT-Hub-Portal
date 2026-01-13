@@ -1,73 +1,225 @@
 ﻿@page "/roles/new"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Extensions
+@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
+
 @inject IRoleClientService RoleClientService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create a Role :</MudText>
-<MudForm Model="@role">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General">
-                    <MudExpansionPanels MultiExpansion="true">
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
-                                    <TitleContent><MudText Typo="Typo.h6">Détails</MudText></TitleContent>
-                                    <ChildContent>
-                                        <MudGrid>
-                                            <MudItem xs="12" md="6">
-                                                <MudAvatar Style="@($"background-color: {role.Color}; color: white;")" Size="Size.Large" Class="mr-2">
-                                                    @if (!string.IsNullOrEmpty(role.Name))
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create a Role :</MudText>
+    <MudForm Model="@role">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
+                    <MudTabPanel Text="General">
+                        <MudExpansionPanels MultiExpansion="true">
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Détails</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudGrid>
+                                                <MudItem xs="12" md="6">
+                                                    <MudAvatar Style="@($"background-color: {role.Color}; color: white;")" Size="Size.Large" Class="mr-2">
+                                                        @if (!string.IsNullOrEmpty(role.Name))
+                                                        {
+                                                            @role.Name[0].ToString().ToUpper()
+                                                        }
+                                                    </MudAvatar>
+                                                </MudItem>
+                                                <MudItem xs="12" md="6">
+                                                    <MudTextField T="string" Label="Name" @bind-Value="role.Name" Required="true" />
+                                                </MudItem>
+                                                <MudItem xs="12" md="6">
+                                                    <MudTextField T="string" Label="Description" @bind-Value="role.Description" />
+                                                </MudItem>
+                                                <MudItem xs="12" md="6">
+                                                    <MudColorPicker Label="Color" @bind-Text="role.Color" Style="@($"color: {role.Color};")" Placeholder="Select Color" />
+                                                </MudItem>
+                                            </MudGrid>
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudItem>
+                            </MudGrid>
+                            <MudGrid>
+                                <MudItem xs="12" md="12">
+                                    <MudPaper Class="pa-4" Elevation="1">
+                                        <MudStack Row Spacing="2" Class="mb-3" AlignItems="AlignItems.Center">
+                                            <MudText Typo="Typo.subtitle1" Class="mr-4">Permissions</MudText>
+                                            <MudSelect T="string" Label="Resource" Dense="true" Clearable="true" @bind-Value="resourceFilter" Class="mr-4" ResetValueOnEmptyText="true">
+                                                @foreach (var res in ResourceOptions)
+                                                {
+                                                    <MudSelectItem Value="@res">@res</MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                            <MudSelect T="string" Label="Action" Dense="true" Clearable="true" @bind-Value="actionFilter" Class="mr-4" ResetValueOnEmptyText="true">
+                                                @foreach (var act in ActionOptions)
+                                                {
+                                                    <MudSelectItem Value="@act">@act</MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                            <MudButton Variant="Variant.Outlined" Disabled="string.IsNullOrEmpty(resourceFilter) && string.IsNullOrEmpty(actionFilter)" OnClick="ClearFilters">Clear</MudButton>
+                                            <MudButton Variant="Variant.Filled" OnClick="SelectAllPermissions">Select All</MudButton>
+                                            <MudSpacer />
+                                            <MudChip Color="Color.Primary" Variant="Variant.Outlined">@FilteredPermissions.Count() / @AllPermissions.Length</MudChip>
+                                        </MudStack>
+                                        @if (IsLoading)
+                                        {
+                                            <MudProgressCircular Indeterminate="true" />
+                                        }
+                                        else
+                                        {
+                                            <MudGrid>
+                                                @if (!FilteredPermissions.Any())
+                                                {
+                                                    <MudItem xs="12"><MudText Color="Color.Error">No permissions match current filters.</MudText></MudItem>
+                                                }
+                                                else
+                                                {
+                                                    @foreach (var permission in FilteredPermissions)
                                                     {
-                                                        @role.Name[0].ToString().ToUpper()
+                                                        var isChecked = SelectedPermissions.Contains(permission);
+                                                        <MudItem xs="12" sm="6" md="4">
+                                                            <MudCheckBox T="bool" Checked="@isChecked" CheckedChanged="@(val => TogglePermission(permission, val))" Label="@permission" />
+                                                        </MudItem>
                                                     }
-                                                </MudAvatar>
-                                            </MudItem>
-                                            <MudItem xs="12" md="6">
-                                                <MudTextField T="string" Label="Name" @bind-Value="role.Name" Required="true" />
-                                            </MudItem>
-                                            <MudItem xs="12" md="6">
-                                                <MudTextField T="string" Label="Description" @bind-Value="role.Description" />
-                                            </MudItem>
-                                            <MudItem xs="12" md="6">
-                                                <MudColorPicker Label="Color" @bind-Text="role.Color" Style="@($"color: {role.Color};")" Placeholder="Select Color" />
-                                            </MudItem>
-                                        </MudGrid>
-                                    </ChildContent>
-                                </MudExpansionPanel>
-                            </MudItem>
-                        </MudGrid>
-                        <MudSelect T="string" MultiSelection="true" SelectAll="true" SelectAllText="Select all roles" HelperText="@value" @bind-Value="value" @bind-SelectedValues="options" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))" Label="Roles" AdornmentIcon="@Icons.Material.Filled.Search">
-                            @foreach (var action in actions)
-                            {
-                                <MudSelectItem T="string" Value="@action">@action</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudExpansionPanels>
-                </MudTabPanel>
-            </MudTabs>
-        </MudItem>
-        <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-            <MudButtonRole Color="Color.Primary" Variant="Variant.Filled">
-                <MudButton id="SaveButton" OnClick="Save" Disabled="isProcessing">@SaveButtonText</MudButton>
-            </MudButtonRole>
-        </MudItem>
-    </MudGrid>
-</MudForm>
+                                                }
+                                            </MudGrid>
+                                            <MudText Class="mt-2" Color="Color.Secondary">@GetMultiSelectionText(SelectedPermissions)</MudText>
+                                        }
+                                        <MudDivider Class="my-4" />
+                                        <MudStack Row Justify="Justify.FlexEnd">
+                                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Save" Disabled="IsLoading" id="createRoleButton">Save</MudButton>
+                                        </MudStack>
+                                    </MudPaper>
+                                </MudItem>
+                            </MudGrid>
+                        </MudExpansionPanels>
+                    </MudTabPanel>
+                </MudTabs>
+            </MudItem>
+        </MudGrid>
+    </MudForm>
+</AuthorizedContent>
 
 @code {
+    // Specify which permissions are required for this page
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.RoleWrite };
+
     private readonly RoleDetailsModel role = new();
-    private bool isProcessing;
-    private const string SaveButtonText = "Save";
+
+    private HashSet<string> SelectedPermissions { get; set; } = new();
+    private string[] AllPermissions = Array.Empty<string>();
+    private bool authSubscribed;
+
+    private string resourceFilter;
+    private string actionFilter;
+
+    private IEnumerable<string> ResourceOptions => AllPermissions.Select(p => p.Contains(':') ? p.Split(':')[0] : p).Distinct().OrderBy(x => x);
+    private IEnumerable<string> ActionOptions => AllPermissions.Where(p => p.Contains(':')).Select(p => p.Split(':')[1]).Distinct().OrderBy(x => x);
+    private IEnumerable<string> FilteredPermissions => AllPermissions.Where(p => FilterByResource(p) && FilterByAction(p));
+
+    private bool FilterByResource(string permission)
+    {
+        if (string.IsNullOrEmpty(resourceFilter)) return true;
+        var res = permission.Contains(':') ? permission.Split(':')[0] : permission;
+        return res.Equals(resourceFilter, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool FilterByAction(string permission)
+    {
+        if (string.IsNullOrEmpty(actionFilter)) return true;
+        if (!permission.Contains(':')) return false;
+        var act = permission.Split(':')[1];
+        return act.Equals(actionFilter, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void ClearFilters()
+    {
+        resourceFilter = null;
+        actionFilter = null;
+    }
+
+    private void SelectAllPermissions()
+    {
+        foreach (var permission in FilteredPermissions)
+        {
+            _ = SelectedPermissions.Add(permission);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await EnsurePermissionsLoadedAsync();
+    }
+
+    private async Task EnsurePermissionsLoadedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity?.IsAuthenticated == true)
+        {
+            await LoadPermissions();
+        }
+        else if (!authSubscribed)
+        {
+            AuthStateProvider.AuthenticationStateChanged += OnAuthStateChanged;
+            authSubscribed = true;
+        }
+    }
+
+    private async void OnAuthStateChanged(Task<AuthenticationState> task)
+    {
+        var state = await task;
+        if (state.User.Identity?.IsAuthenticated == true)
+        {
+            AuthStateProvider.AuthenticationStateChanged -= OnAuthStateChanged;
+            authSubscribed = false;
+
+            await LoadPermissions();
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadPermissions()
+    {
+        try
+        {
+            IsLoading = true;
+            AllPermissions = (await RoleClientService.GetPermissions()).Select(x => x.AsString()).ToArray();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to load permissions : {ex.Message}", Severity.Error);
+            AllPermissions = Array.Empty<string>();
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void TogglePermission(string permission, bool val)
+    {
+        if (val)
+            _ = SelectedPermissions.Add(permission);
+        else
+            _ = SelectedPermissions.Remove(permission);
+    }
 
     private async Task Save()
     {
-        isProcessing = true;
+        IsLoading = true;
         try
         {
+            role.Actions = SelectedPermissions.ToList();
             await RoleClientService.CreateRole(role);
             Snackbar.Add($"Role {role.Name} has been successfully created !", Severity.Success);
             NavigationManager.NavigateTo("/roles");
@@ -78,21 +230,19 @@
         }
         finally
         {
-            isProcessing = false;
+            IsLoading = false;
         }
     }
 
+    private string GetMultiSelectionText(IEnumerable<string> selectedValues)
+        => $"{selectedValues.Count()} permission{(selectedValues.Count() > 1 ? "s have" : " has")} been selected";
 
-    private string value { get; set; } = "Nothing selected";
-    private IEnumerable<string> options { get; set; } = new HashSet<string>() { "CreateEdgeDevice" };
-
-    private string[] actions =
+    public void Dispose()
     {
-        "RemoveEdgeDevice", "CreateEdgeDevice", "CreateGroup", "EditRole", "RemoveUser", "CreateUser", "RemoveLora"
-    };
-
-    private string GetMultiSelectionText(List<string> selectedValues)
-    {
-        return $"{selectedValues.Count} role{(selectedValues.Count > 1 ? "s have" : " has")} been selected";
+        if (authSubscribed)
+        {
+            AuthStateProvider.AuthenticationStateChanged -= OnAuthStateChanged;
+            authSubscribed = false;
+        }
     }
 }
