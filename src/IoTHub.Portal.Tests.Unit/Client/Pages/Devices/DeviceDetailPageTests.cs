@@ -83,7 +83,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", deviceId));
 
             // Assert
-            cut.WaitForAssertion(() => cut.Find("#saveButton").TextContent.Should().Be("Save"));
+            cut.WaitForAssertion(() => cut.Find("#SaveButton").TextContent.Should().Be("Save"));
         }
     }
 }

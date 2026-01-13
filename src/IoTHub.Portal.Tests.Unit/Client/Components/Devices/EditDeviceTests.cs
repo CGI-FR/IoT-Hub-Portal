@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 {
-    using Shared.Security;
     using ConnectionStringDialog = Portal.Client.Dialogs.Devices.ConnectionStringDialog;
 
     [TestFixture]
@@ -42,9 +41,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
-
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
-                .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite });
         }
 
         [Test]
@@ -377,7 +373,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Add(p => p.DeviceID, expectedDeviceDetails.DeviceID)
                 .Add(p => p.CanWrite, true)
                 .Add(p => p.CanExec, true));
-            var saveButton = cut.WaitForElement("#saveButton");
+            var saveButton = cut.WaitForElement("#SaveButton");
 
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
@@ -875,7 +871,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Add(p => p.CanWrite, true)
                 .Add(p => p.CanExec, true));
 
-            var saveButton = cut.WaitForElement("#saveButton");
+            var saveButton = cut.WaitForElement("#SaveButton");
             saveButton.Click();
 
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("devices"));
@@ -1125,7 +1121,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Add(p => p.CanExec, true));
             cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModelDto.Name)}").InnerHtml.Should().NotBeEmpty());
 
-            var saveButton = cut.WaitForElement("#saveButton");
+            var saveButton = cut.WaitForElement("#SaveButton");
 
             var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
 
