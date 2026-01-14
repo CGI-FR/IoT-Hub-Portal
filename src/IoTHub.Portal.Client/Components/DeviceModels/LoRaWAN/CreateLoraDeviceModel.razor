@@ -8,7 +8,10 @@
                         <MudItem xs="12">
                             <MudGrid>
                                 <MudItem md="6" xs="12">
-                                    <MudSwitch id="@nameof(LoRaDeviceModel.UseOtaa)" @bind-Value="@LoRaDeviceModel.UseOtaa" Color="Color.Primary" Label="Support OTAA/ABP setting" />
+                                    <MudSwitch id="@nameof(LoRaDeviceModel.UseOtaa)" 
+                                               @bind-Value="@LoRaDeviceModel.UseOtaa" 
+                                               Color="Color.Primary" 
+                                               Label="Support OTAA/ABP setting" />
                                     <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">@(LoRaDeviceModel.UseOtaa ? "OTAA setting" : "ABP setting") <b>is</b> used</MudText>
                                 </MudItem>
                                 <MudItem md="6" xs="12">
@@ -91,13 +94,13 @@
                                                For="@(() => LoRaDeviceModel.Downlink)"
                                                Label="Support downstream messages"
                                                Color="Color.Primary" />
-                                    @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
+                                    @if (LoRaDeviceModel.Downlink ?? true)
                                     {
                                         <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">Downstream messages <b>is</b> enabled.</MudText>
 
                                     }
                                 </MudItem>
-                                @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
+                                @if (LoRaDeviceModel.Downlink ?? true)
                                 {
                                     <MudItem xs="12" md="6">
                                         <MudNumericField id="@nameof(LoRaDeviceModel.PreferredWindow)"
@@ -151,7 +154,7 @@
                                                      Label="Frame counter up start value"
                                                      Variant="Variant.Outlined" />
                                 </MudItem>
-                                @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
+                                @if (LoRaDeviceModel.Downlink ?? true)
                                 {
                                     <MudItem xs="12" md="6">
                                         <MudNumericField id="@nameof(LoRaDeviceModel.FCntDownStart)"
@@ -178,7 +181,7 @@
         </MudItem>
     </MudGrid>
 
-    @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
+    @if (LoRaDeviceModel.Downlink ?? true)
     {
         <MudGrid>
             <MudItem xs="12">
