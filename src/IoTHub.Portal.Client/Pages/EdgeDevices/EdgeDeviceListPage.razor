@@ -1,6 +1,5 @@
 ﻿@page "/edge/devices"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -57,15 +56,16 @@
                         </MudItem>
                         <MudItem sm="12" md="6">
                             <MudText>Status</MudText>
-                            <MudRadioGroup @bind-SelectedOption="@searchModel.Status" Style="display:flex;align-items:baseline">
+                            <MudRadioGroup @bind-SelectedValue="@searchModel.Status" T="string"
+                                           Style="display:flex;align-items:baseline">
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("true") Color="Color.Primary">Connected</MudRadio>
+                                    <MudRadio Value=@("true") Color="Color.Primary">Connected</MudRadio>
                                 </MudItem>
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("false") Color="Color.Primary">Disconnected</MudRadio>
+                                    <MudRadio Value=@("false") Color="Color.Primary">Disconnected</MudRadio>
                                 </MudItem>
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("true") Color="Color.Secondary">All</MudRadio>
+                                    <MudRadio Value=@("true") Color="Color.Secondary">All</MudRadio>
                                 </MudItem>
                             </MudRadioGroup>
                         </MudItem>

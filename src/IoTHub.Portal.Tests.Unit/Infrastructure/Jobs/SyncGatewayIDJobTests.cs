@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = this.mockExternalDeviceService.Setup(service => service.GetAllGatewayID())
+            _ = this.mockExternalDeviceService.Setup(service => service.GetAllGatewayId())
                     .ReturnsAsync(new List<string>() { "GatewayID01", "GatewayID02" });
 
             // Act
@@ -50,7 +50,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
             _ = this.mockLogger.Setup(x => x.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-            _ = this.mockExternalDeviceService.Setup(service => service.GetAllGatewayID())
+            _ = this.mockExternalDeviceService.Setup(service => service.GetAllGatewayId())
                     .Throws(new Exception());
 
             // Act

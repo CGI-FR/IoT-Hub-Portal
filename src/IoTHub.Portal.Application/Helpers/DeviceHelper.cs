@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>The device symmetric key.</returns>
         public static string RetrieveSymmetricKey(string deviceId, SymmetricKeyAttestation attestation)
         {
-            ArgumentNullException.ThrowIfNull(attestation, nameof(attestation));
+            ArgumentNullException.ThrowIfNull(attestation);
 
             using var hmac = new HMACSHA256();
             hmac.Key = Convert.FromBase64String(attestation.PrimaryKey);
@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>The corresponding tag value, or null if it doesn't exist.</returns>
         public static string? RetrieveTagValue(Twin item, string tagName)
         {
-            ArgumentNullException.ThrowIfNull(item, nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 
             var camelCasedTagName = tagName.ToCamelCase();
 
@@ -50,8 +50,8 @@ namespace IoTHub.Portal.Application.Helpers
         /// <param name="value">The tag value.</param>
         public static void SetTagValue(Twin item, string tagName, string value)
         {
-            ArgumentNullException.ThrowIfNull(item, nameof(item));
-            ArgumentNullException.ThrowIfNull(tagName, nameof(tagName));
+            ArgumentNullException.ThrowIfNull(item);
+            ArgumentNullException.ThrowIfNull(tagName);
 
             var camelCasedTagName = tagName.ToCamelCase();
 
@@ -67,7 +67,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>The corresponding property value, or null if it doesn't exist.</returns>
         public static string? RetrieveDesiredPropertyValue(Twin twin, string propertyName)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             return twin.Properties.Desired.Contains(propertyName) ?
                 twin.Properties.Desired[propertyName].ToString() : null;
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <param name="value">Property value.</param>
         public static void SetDesiredProperty(Twin twin, string propertyName, object? value)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             twin.Properties.Desired[propertyName] = value;
         }
@@ -95,7 +95,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>Corresponding property value, or null if it doesn't exist.</returns>
         public static string? RetrieveReportedPropertyValue(Twin twin, string propertyName)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             return twin.Properties.Reported.Contains(propertyName) ?
                 twin.Properties.Reported[propertyName] : null;
@@ -109,7 +109,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>the number of connected device.</returns>
         public static int RetrieveConnectedDeviceCount(Twin twin)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             return twin.Properties.Reported.Contains("clients") ?
                 twin.Properties.Reported["clients"].Count : 0;
@@ -124,8 +124,8 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>int.</returns>
         public static int RetrieveNbModuleCount(Twin twin, string deviceId)
         {
-            ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(deviceId);
+            ArgumentNullException.ThrowIfNull(twin);
 
             return twin.Properties.Desired.Contains("modules") && twin.DeviceId == deviceId
                 ? twin.Properties.Desired["modules"].Count : 0;
@@ -139,7 +139,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>string.</returns>
         public static string? RetrieveRuntimeResponse(Twin twin)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             var reportedProperties = JObject.Parse(twin.Properties.Reported.ToJson());
 
@@ -160,7 +160,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns> List of GatewayModule.</returns>
         public static IReadOnlyCollection<IoTEdgeModule> RetrieveModuleList(Twin twin)
         {
-            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(twin);
 
             var list = new List<IoTEdgeModule>();
             var reportedProperties = JObject.Parse(twin.Properties.Reported.ToJson());

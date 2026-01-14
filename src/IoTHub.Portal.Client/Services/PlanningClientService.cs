@@ -13,13 +13,13 @@ namespace IoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public async Task<string> CreatePlanning(PlanningDto Planning)
+        public async Task<string> CreatePlanning(PlanningDto planning)
         {
-            var response = await this.http.PostAsJsonAsync(this.apiUrlBase, Planning);
+            var response = await this.http.PostAsJsonAsync(this.apiUrlBase, planning);
 
-            if (Planning.Id != null)
+            if (planning.Id != null)
             {
-                return Planning.Id;
+                return planning.Id;
             }
 
             //Retrieve Planning ID
@@ -29,19 +29,19 @@ namespace IoTHub.Portal.Client.Services
             return updatedPlanning.Id.ToString();
         }
 
-        public Task UpdatePlanning(PlanningDto Planning)
+        public Task UpdatePlanning(PlanningDto planning)
         {
-            return this.http.PutAsJsonAsync(this.apiUrlBase, Planning);
+            return this.http.PutAsJsonAsync(this.apiUrlBase, planning);
         }
 
-        public Task DeletePlanning(string PlanningId)
+        public Task DeletePlanning(string planningId)
         {
-            return this.http.DeleteAsync($"{this.apiUrlBase}/{PlanningId}");
+            return this.http.DeleteAsync($"{this.apiUrlBase}/{planningId}");
         }
 
-        public Task<PlanningDto> GetPlanning(string PlanningId)
+        public Task<PlanningDto> GetPlanning(string planningId)
         {
-            return this.http.GetFromJsonAsync<PlanningDto>($"{this.apiUrlBase}/{PlanningId}")!;
+            return this.http.GetFromJsonAsync<PlanningDto>($"{this.apiUrlBase}/{planningId}")!;
         }
 
         public async Task<List<PlanningDto>> GetPlannings()

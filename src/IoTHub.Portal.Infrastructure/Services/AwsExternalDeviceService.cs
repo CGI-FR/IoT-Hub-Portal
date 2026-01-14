@@ -168,7 +168,8 @@ namespace IoTHub.Portal.Infrastructure.Services
 
                         var iotEdgeTag = response.Tags.Where(c => c.Key.Equals("iotEdge", StringComparison.OrdinalIgnoreCase));
 
-                        if (!iotEdgeTag.Any())
+                        var edgeTags = iotEdgeTag.ToList();
+                        if (!edgeTags.Any())
                         {
                             try
                             {
@@ -187,7 +188,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                             }
                         }
 
-                        return bool.TryParse(iotEdgeTag.Single().Value, out var result) ? result : null;
+                        return bool.TryParse(edgeTags.Single().Value, out var result) ? result : null;
 
                     } while (true);
                 }
@@ -245,9 +246,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                         }
                         catch (AmazonIoTException e)
                         {
-                            this.logger.LogWarning($"Cannot import device '{requestDescribeThing.ThingName}' due to an error in the Amazon IoT API.", e);
-
-                            continue;
+                            this.logger.LogWarning(e, "Cannot import device '{ThingName}' due to an error in the Amazon IoT API.", requestDescribeThing.ThingName);
                         }
                     }
 
@@ -268,7 +267,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<string>> GetAllGatewayID()
+        public Task<List<string>> GetAllGatewayId()
         {
             throw new NotImplementedException();
         }
@@ -412,7 +411,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 var createCertificateTuple = await GenerateCertificate(device.DeviceName);
 
-                foreach (var item in this.configHandler.AWSGreengrassRequiredRoles)
+                foreach (var item in this.configHandler.AwsGreengrassRequiredRoles)
                 {
                     _ = await this.amazonIoTClient.AttachPolicyAsync(new AttachPolicyRequest
                     {
@@ -651,8 +650,8 @@ namespace IoTHub.Portal.Infrastructure.Services
                    .Replace("%CREDENTIALS_ENDPOINT%", credentialProviderEndpointResponse.EndpointAddress, StringComparison.OrdinalIgnoreCase)
                    .Replace("%CERTIFICATE%", credentials.CertificateCredentials.CertificatePem, StringComparison.OrdinalIgnoreCase)
                    .Replace("%PRIVATE_KEY%", credentials.CertificateCredentials.PrivateKey, StringComparison.OrdinalIgnoreCase)
-                   .Replace("%REGION%", this.configHandler.AWSRegion, StringComparison.OrdinalIgnoreCase)
-                   .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", this.configHandler.AWSGreengrassCoreTokenExchangeRoleAliasName, StringComparison.OrdinalIgnoreCase)
+                   .Replace("%REGION%", this.configHandler.AwsRegion, StringComparison.OrdinalIgnoreCase)
+                   .Replace("%GREENGRASSCORETOKENEXCHANGEROLEALIAS%", this.configHandler.AwsGreengrassCoreTokenExchangeRoleAliasName, StringComparison.OrdinalIgnoreCase)
                    .Replace("%THING_NAME%", device.DeviceName, StringComparison.OrdinalIgnoreCase)
                    .ReplaceLineEndings();
             }
@@ -710,7 +709,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         private async Task RemoveGreengrassCertificateFromPrincipal(IoTEdgeDevice device, string principalId)
         {
-            foreach (var item in this.configHandler.AWSGreengrassRequiredRoles)
+            foreach (var item in this.configHandler.AwsGreengrassRequiredRoles)
             {
                 try
                 {

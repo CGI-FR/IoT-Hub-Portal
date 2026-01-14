@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using IoTHub.Portal.Shared.Security;
-
     public interface IPermissionsService
     {
         Task<PortalPermissions[]> GetUserPermissions();

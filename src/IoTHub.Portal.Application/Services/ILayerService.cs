@@ -6,10 +6,10 @@ namespace IoTHub.Portal.Application.Services
 
     public interface ILayerService
     {
-        Task<LayerDto> CreateLayer(LayerDto level);
-        Task UpdateLayer(LayerDto level);
-        Task DeleteLayer(string levelId);
-        Task<Layer> GetLayer(string levelId);
+        Task<LayerDto> CreateLayer(LayerDto layer);
+        Task UpdateLayer(LayerDto layer);
+        Task DeleteLayer(string layerId);
+        Task<Layer> GetLayer(string layerId);
         Task<IEnumerable<LayerDto>> GetLayers();
     }
 }

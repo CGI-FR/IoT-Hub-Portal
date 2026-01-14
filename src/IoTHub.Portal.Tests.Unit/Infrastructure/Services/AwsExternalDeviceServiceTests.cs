@@ -270,7 +270,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         public async Task GetAllGatewayIDShouldThrowNotImplementedException()
         {
             // Act
-            var act = () => this.externalDeviceService.GetAllGatewayID();
+            var act = () => this.externalDeviceService.GetAllGatewayId();
 
             // Assert
             _ = await act.Should().ThrowAsync<NotImplementedException>();

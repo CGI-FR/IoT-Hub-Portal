@@ -1,6 +1,5 @@
 ﻿<MudGrid>
-
-    @if (ReadOnlyLabels != null && ReadOnlyLabels.Any())
+    @if (ReadOnlyLabels.Any())
     {
         <MudItem xs="12">
             <MudText Typo="Typo.h6">Mandatory labels</MudText>
@@ -14,7 +13,6 @@
             </MudChipSet>
         </MudItem>
     }
-
     <MudItem xs="12">
         <MudItem xs="12">
             <MudText Typo="Typo.h6">Edit labels</MudText>
@@ -53,15 +51,15 @@
     [Parameter]
     public bool CanWrite { get; set; }
 
-    private string labelNameValue = default!;
-    private string labelColorValue = default!;
+    private string labelNameValue = string.Empty;
+    private string labelColorValue = string.Empty;
 
     public void AddLabel()
     {
         if (string.IsNullOrWhiteSpace(labelNameValue) ||
             string.IsNullOrEmpty(labelColorValue) ||
             Labels.Any(dto => dto.Name.Equals(labelNameValue)) ||
-            (ReadOnlyLabels?.Any(label => label.Name.Equals(labelNameValue)) ?? false)) return;
+            ReadOnlyLabels.Any(label => label.Name.Equals(labelNameValue))) return;
 
         var labelToAdd = new LabelDto
         {

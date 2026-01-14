@@ -1,6 +1,5 @@
-﻿@page "/devices/{DeviceID}"
+﻿@page "/devices/{DeviceId}"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @inject NavigationManager NavManager
 
@@ -10,7 +9,7 @@
 <MudTooltip Placement="Placement.Top">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Details</MudText>
 </MudTooltip>
-<EditDevice context="CreateEditMode.Edit" IsLoRa="@IsLoRa" DeviceID="@DeviceID" CanWrite="@canWrite" CanExec="@canExec" />
+<EditDevice Context="CreateEditMode.Edit" IsLoRa="@IsLoRa" DeviceId="@DeviceId" CanWrite="@canWrite" CanExec="@canExec" />
 
 @code {
     protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.DeviceRead };
@@ -26,7 +25,7 @@
     }
 
     [Parameter]
-    public string DeviceID { get; set; } = default!;
+    public string DeviceId { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {

@@ -134,7 +134,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(twin.DeviceId, result.DeviceID);
+            Assert.AreEqual(twin.DeviceId, result.DeviceId);
             Assert.AreEqual(DeviceModelImageOptions.DefaultImage, result.Image);
             Assert.IsFalse(result.IsConnected);
             Assert.IsFalse(result.IsEnabled);

@@ -11,7 +11,7 @@ namespace IoTHub.Portal.Client.Validators
                 .NotEmpty()
                 .WithMessage("DeviceId is required.")
                 .Matches("(?i)^[A-F0-9]{16}$")
-                .WithMessage("DeviceID must contain 16 hexadecimal characters.");
+                .WithMessage("DeviceId must contain 16 hexadecimal characters.");
 
             _ = RuleFor(x => x.DeviceName)
                 .NotEmpty()

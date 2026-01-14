@@ -1,11 +1,9 @@
 ﻿@page "/device-configurations/new"
 @inherits AuthorizedComponentBase
 
-@using IoTHub.Portal.Shared.Security
-
 @attribute [Authorize]
 @inject ISnackbar Snackbar
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
 @inject IDeviceConfigurationsClientService DeviceConfigurationsClientService
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
@@ -136,7 +134,7 @@
                                                        HelperTextOnFocus="false"
                                                        Margin="Margin.Dense"
                                                        Variant="Variant.Outlined">
-                                                @foreach (var prop in AvailableProperties
+                                                @foreach (var prop in availableProperties
                                                                                                 .Where(x => x.IsWritable)
                                                                                                 .Where(x => !Configuration.Properties.ContainsKey(x.Name)))
                                                 {
@@ -160,12 +158,12 @@
                                             <MudGrid id="@($"property-{item}")">
                                                 <MudItem xs="8" md="10">
                                                     @{
-                                                        var property = AvailableProperties.Single(x => x.Name == item);
+                                                        var property = availableProperties.Single(x => x.Name == item);
                                                     }
                                                     @switch (property.PropertyType)
                                                     {
                                                         case DevicePropertyType.Boolean:
-                                                            <MudCheckBox @bind-Checked="@Configuration.Properties[item]"
+                                                            <MudCheckBox @bind-Value="@Configuration.Properties[item]"
                                                                          Label="@property.DisplayName" Color="@Color.Primary"
                                                                          Converter="@(new StringToBoolConverter())"
                                                                          TriState="true" />
@@ -232,8 +230,8 @@
     public DeviceConfig Configuration { get; set; } = new();
 
     IEnumerable<DeviceTagDto> AvailableTags { get; set; } = Array.Empty<DeviceTagDto>();
-    IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
-    IEnumerable<DeviceModelDto> AvailableModels = Array.Empty<DeviceModelDto>();
+    IEnumerable<DeviceProperty> availableProperties = Array.Empty<DeviceProperty>();
+    IEnumerable<DeviceModelDto> availableModels = Array.Empty<DeviceModelDto>();
 
     public string SelectedTag { get; set; } = default!;
     public string SelectedProperty { get; set; } = default!;
@@ -256,7 +254,7 @@
 
             var models = await DeviceModelsClientService.GetDeviceModelsAsync(filter);
 
-            AvailableModels = models.Items.Where(c => !c.SupportLoRaFeatures).ToArray();
+            availableModels = models.Items.Where(c => !c.SupportLoRaFeatures).ToArray();
 
             AvailableTags = await DeviceTagSettingsClientService.GetDeviceTags();
         }
@@ -281,7 +279,7 @@
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"{Configuration.ConfigurationId} has been successfully created!", Severity.Success);
 
-            navigationManager.NavigateTo("/device-configurations");
+            NavigationManager.NavigateTo("/device-configurations");
         }
         catch (ProblemDetailsException exception)
         {
@@ -303,7 +301,7 @@
         try
         {
             Configuration.ModelId = model.ModelId;
-            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
+            availableProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
         }
         catch (ProblemDetailsException exception)
         {
@@ -323,9 +321,9 @@
 
         // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
-            return AvailableModels;
+            return availableModels;
 
-        return AvailableModels
+        return availableModels
             .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
     }
 

@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    public interface ILoRaWANConcentratorService
+    public interface ILoRaWanConcentratorService
     {
         Task<PaginatedResult<ConcentratorDto>> GetAllDeviceConcentrator(ConcentratorFilter concentratorFilter);
         Task<ConcentratorDto> GetConcentrator(string deviceId);

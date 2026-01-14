@@ -61,13 +61,13 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         [Required(ErrorMessage = "The device should have a unique identifier.")]
         [MaxLength(ErrorMessage = "The device identifier should be up to 128 characters long.")]
         [RegularExpression("^[A-Z0-9]{16}$", ErrorMessage = "The device identifier must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")]
-        public string DeviceID { get; set; } = default!;
+        public string DeviceId { get; set; } = default!;
 
         /// <summary>
         /// A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP
         /// </summary>
         [DefaultValue(true)]
-        public bool UseOTAA { get; set; }
+        public bool UseOtaa { get; set; }
 
         /// <summary>
         /// The OTAA App Key.
@@ -79,7 +79,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// The device OTAA Application EUI.
         /// </summary>
         // [Required(ErrorMessage = "The OTAA App EUI is required.")]
-        public string AppEUI { get; set; } = default!;
+        public string AppEui { get; set; } = default!;
 
         /// <summary>
         ///  The ABP AppSKey.
@@ -124,22 +124,22 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The Device Current Rx2Datarate.
         /// </summary>
-        public string ReportedRX2DataRate { get; set; } = default!;
+        public string ReportedRx2DataRate { get; set; } = default!;
 
         /// <summary>
         /// The Device Current RX1DROffset.
         /// </summary>
-        public string ReportedRX1DROffset { get; set; } = default!;
+        public string ReportedRx1DrOffset { get; set; } = default!;
 
         /// <summary>
         /// The Device Current RXDelay.
         /// </summary>
-        public string ReportedRXDelay { get; set; } = default!;
+        public string ReportedRxDelay { get; set; } = default!;
 
         /// <summary>
         /// The GatewayID of the device.
         /// </summary>
-        public string GatewayID { get; set; } = default!;
+        public string GatewayId { get; set; } = default!;
 
         /// <summary>
         /// The LayerId of the device.
@@ -168,7 +168,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
             Downlink = true;
             PreferredWindow = 1;
             Deduplication = DeduplicationMode.None;
-            ABPRelaxMode = true;
+            AbpRelaxMode = true;
         }
     }
 }

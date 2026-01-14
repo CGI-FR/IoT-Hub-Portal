@@ -3,20 +3,20 @@
 
 namespace IoTHub.Portal.Infrastructure.Startup
 {
-    public static class AWSServiceCollectionExtension
+    public static class AwsServiceCollectionExtension
     {
-        public static IServiceCollection AddAWSInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
+        public static IServiceCollection AddAwsInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
         {
             return services
-                .ConfigureAWSClient(configuration).Result
-                .ConfigureAWSServices()
-                .ConfigureAWSDeviceModelImages()
-                .ConfigureAWSSyncJobs(configuration)
-                .ConfigureAWSSendingCommands(configuration);
+                .ConfigureAwsClient(configuration).Result
+                .ConfigureAwsServices()
+                .ConfigureAwsDeviceModelImages()
+                .ConfigureAwsSyncJobs(configuration)
+                .ConfigureAwsSendingCommands(configuration);
         }
-        private static async Task<IServiceCollection> ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
+        private static async Task<IServiceCollection> ConfigureAwsClient(this IServiceCollection services, ConfigHandler configuration)
         {
-            var awsIoTClient = new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion));
+            var awsIoTClient = new AmazonIoTClient(configuration.AwsAccess, configuration.AwsAccessSecret, RegionEndpoint.GetBySystemName(configuration.AwsRegion));
             _ = services.AddSingleton<IAmazonIoT>(awsIoTClient);
 
             var endPoint = await awsIoTClient.DescribeEndpointAsync(new DescribeEndpointRequest
@@ -24,20 +24,20 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 EndpointType = "iot:Data-ATS"
             });
 
-            _ = services.AddSingleton<IAmazonIotData>(new AmazonIotDataClient(configuration.AWSAccess, configuration.AWSAccessSecret, new AmazonIotDataConfig
+            _ = services.AddSingleton<IAmazonIotData>(new AmazonIotDataClient(configuration.AwsAccess, configuration.AwsAccessSecret, new AmazonIotDataConfig
             {
                 ServiceURL = $"https://{endPoint.EndpointAddress}"
             }));
 
-            _ = services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+            _ = services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(configuration.AwsAccess, configuration.AwsAccessSecret, RegionEndpoint.GetBySystemName(configuration.AwsRegion)));
 
-            _ = services.AddSingleton<IAmazonS3>(new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
-            _ = services.AddSingleton<IAmazonGreengrassV2>(new AmazonGreengrassV2Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+            _ = services.AddSingleton<IAmazonS3>(new AmazonS3Client(configuration.AwsAccess, configuration.AwsAccessSecret, RegionEndpoint.GetBySystemName(configuration.AwsRegion)));
+            _ = services.AddSingleton<IAmazonGreengrassV2>(new AmazonGreengrassV2Client(configuration.AwsAccess, configuration.AwsAccessSecret, RegionEndpoint.GetBySystemName(configuration.AwsRegion)));
 
             return services;
         }
 
-        private static IServiceCollection ConfigureAWSServices(this IServiceCollection services)
+        private static IServiceCollection ConfigureAwsServices(this IServiceCollection services)
         {
             return services
                 .AddTransient<IExternalDeviceService, AwsExternalDeviceService>()
@@ -50,14 +50,14 @@ namespace IoTHub.Portal.Infrastructure.Startup
 
         }
 
-        private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)
+        private static IServiceCollection ConfigureAwsDeviceModelImages(this IServiceCollection services)
         {
             _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
 
             return services;
         }
 
-        private static IServiceCollection ConfigureAWSSyncJobs(this IServiceCollection services, ConfigHandler configuration)
+        private static IServiceCollection ConfigureAwsSyncJobs(this IServiceCollection services, ConfigHandler configuration)
         {
             return services.AddQuartz(q =>
             {
@@ -111,7 +111,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
             });
         }
 
-        private static IServiceCollection ConfigureAWSSendingCommands(this IServiceCollection services, ConfigHandler configuration)
+        private static IServiceCollection ConfigureAwsSendingCommands(this IServiceCollection services, ConfigHandler configuration)
         {
             return services.AddQuartz(q =>
             {

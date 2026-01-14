@@ -16,7 +16,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString(),
-                DeviceID = Guid.NewGuid().ToString(),
+                DeviceId = Guid.NewGuid().ToString(),
             };
 
             // Act
@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         {
 
             // Arrange
-            var standardValidator = new DeviceDetailsValidator(CloudProviders.AWS);
+            var standardValidator = new DeviceDetailsValidator(CloudProviders.Aws);
             var device = new DeviceDetails()
             {
                 DeviceName = Guid.NewGuid().ToString(),
@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
 
         [TestCase("DeviceName", "", "ModelIdValue", "DeviceIDValue")]
         [TestCase("ModelId", "DeviceNameValue", "", "DeviceIDValue")]
-        [TestCase("DeviceID", "DeviceNameValue", "ModelIdValue", "")]
+        [TestCase("DeviceId", "DeviceNameValue", "ModelIdValue", "")]
         public void ValidateMissingFieldShouldReturnError(
             string testedValue,
             string DeviceNameValue,
@@ -62,7 +62,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             {
                 DeviceName = DeviceNameValue,
                 ModelId =ModelIdValue,
-                DeviceID = DeviceIDValue,
+                DeviceId = DeviceIDValue,
             };
 
             // Act
@@ -83,12 +83,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             string DeviceIDValue)
         {
             // Arrange
-            var standardValidator = new DeviceDetailsValidator(CloudProviders.AWS);
+            var standardValidator = new DeviceDetailsValidator(CloudProviders.Aws);
             var device = new DeviceDetails()
             {
                 DeviceName = DeviceNameValue,
                 ModelId =ModelIdValue,
-                DeviceID = DeviceIDValue,
+                DeviceId = DeviceIDValue,
             };
 
             // Act
@@ -119,7 +119,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
         public void AWSValidateAllFieldsEmptyShouldReturnError()
         {
             // Arrange
-            var standardValidator = new DeviceDetailsValidator(CloudProviders.AWS);
+            var standardValidator = new DeviceDetailsValidator(CloudProviders.Aws);
             var device = new DeviceDetails();
 
             // Act

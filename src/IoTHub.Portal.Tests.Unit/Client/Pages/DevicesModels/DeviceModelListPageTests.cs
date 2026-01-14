@@ -19,7 +19,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.ModelRead, PortalPermissions.ModelWrite });
         }
 

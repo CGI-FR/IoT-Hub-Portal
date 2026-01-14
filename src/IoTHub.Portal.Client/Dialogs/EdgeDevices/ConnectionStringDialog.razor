@@ -1,4 +1,4 @@
-﻿@inject IJSRuntime JS
+﻿@inject IJSRuntime Js
 @inject ClipboardService ClipboardService
 @inject IEdgeDeviceClientService EdgeDeviceClientService
 @inject PortalSettings Portal
@@ -8,43 +8,43 @@
         <MudCard Outlined="true">
             <MudCardContent>
                 <MudGrid>
-                    @if (Credentials.AuthenticationMode != null && AuthenticationMode.SymmetricKey.Equals(Credentials.AuthenticationMode))
+                    @if (credentials.AuthenticationMode != null && AuthenticationMode.SymmetricKey.Equals(credentials.AuthenticationMode))
                     {
-                        @if (Credentials.SymmetricCredentials != null)
+                        @if (credentials.SymmetricCredentials != null)
                         {
                             <MudItem xs="12">
                                 <MudText Style="text-decoration:underline"><b>Service Endpoint</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.ProvisioningEndpoint))" />
+                                <MudTextField @bind-Value="@credentials.SymmetricCredentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.SymmetricCredentials.ProvisioningEndpoint))" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Registration Id</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.RegistrationID))" />
+                                <MudTextField @bind-Value="@credentials.SymmetricCredentials.RegistrationId" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.SymmetricCredentials.RegistrationId))" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Scope Id</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.ScopeID))" />
+                                <MudTextField @bind-Value="@credentials.SymmetricCredentials.ScopeId" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.SymmetricCredentials.ScopeId))" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Symmetric Key</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.SymmetricCredentials.SymmetricKey" Variant="Variant.Text" InputType="InputType.Password" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricCredentials.SymmetricKey))" />
+                                <MudTextField @bind-Value="@credentials.SymmetricCredentials.SymmetricKey" Variant="Variant.Text" InputType="InputType.Password" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.SymmetricCredentials.SymmetricKey))" />
                             </MudItem>
                         }
                     }
                     else
                     {
-                        @if (Credentials.CertificateCredentials != null && string.IsNullOrEmpty(EnrollementScriptCommand))
+                        @if (credentials.CertificateCredentials != null && string.IsNullOrEmpty(EnrollementScriptCommand))
                         {
                             <MudItem xs="12">
                                 <MudText Style="text-decoration:underline"><b>Certificate Pem</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.CertificateCredentials.CertificatePem" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPemFile" />
+                                <MudTextField @bind-Value="@credentials.CertificateCredentials.CertificatePem" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPemFile" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Public Key</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.CertificateCredentials.PublicKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPublicKeyFile" />
+                                <MudTextField @bind-Value="@credentials.CertificateCredentials.PublicKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPublicKeyFile" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Private Key</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.CertificateCredentials.PrivateKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPrivateKeyFile" />
+                                <MudTextField @bind-Value="@credentials.CertificateCredentials.PrivateKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Download" OnAdornmentClick="DownloadPrivateKeyFile" />
                             </MudItem>
  
                             <div style="border-bottom:1px solid var(--mud-palette-lines-default);width: 90%;text-align: center;margin: auto;">
@@ -69,7 +69,7 @@
                             <br />
 
                             <MudText Style="text-decoration:underline"><b>Operating system</b></MudText>
-                            <MudSelect T="string" @bind-Value="@templateName" Text="Operating system" SelectedValuesChanged="GetEnrollmentScriptCommand">
+                            <MudSelect T="string" @bind-Value="@TemplateName" Text="Operating system" SelectedValuesChanged="GetEnrollmentScriptCommand">
                                 <MudSelectItem Value="@("debian_11_bullseye")">Debian 11 (Bulleseye)</MudSelectItem>
                             </MudSelect>
                             <br />
@@ -101,20 +101,20 @@
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
-    [Parameter] public string deviceId { get; set; } = default!;
+    [Parameter] public string DeviceId { get; set; } = default!;
 
-    private DeviceCredentials Credentials = new();
+    private DeviceCredentials credentials = new();
 
     public string EnrollementScriptCommand { get; set; } = default!;
 
-    public string templateName { get; set; } = "debian_11_bullseye";
+    public string TemplateName { get; set; } = "debian_11_bullseye";
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             await base.OnInitializedAsync();
-            Credentials = await EdgeDeviceClientService.GetEnrollmentCredentials(deviceId);
+            credentials = await EdgeDeviceClientService.GetEnrollmentCredentials(DeviceId);
         }
         catch (ProblemDetailsException exception)
         {
@@ -125,7 +125,7 @@
 
     private async Task GetEnrollmentScriptCommand()
     {
-        var url = await EdgeDeviceClientService.GetEnrollmentScriptUrl(deviceId, templateName);
+        var url = await EdgeDeviceClientService.GetEnrollmentScriptUrl(DeviceId, TemplateName);
 
         EnrollementScriptCommand = $"curl -s {url} | bash";
     }
@@ -133,22 +133,22 @@
     private async Task DownloadPemFile()
     {
         var stream = new DotNetStreamReference(stream: new MemoryStream(
-            Encoding.UTF8.GetBytes(Credentials.CertificateCredentials.CertificatePem)));
-        await JS.InvokeVoidAsync("downloadFileFromStream", "certificate.pem", stream);
+            Encoding.UTF8.GetBytes(credentials.CertificateCredentials.CertificatePem)));
+        await Js.InvokeVoidAsync("downloadFileFromStream", "certificate.pem", stream);
     }
 
     private async Task DownloadPublicKeyFile()
     {
         var stream = new DotNetStreamReference(stream: new MemoryStream(
-            Encoding.UTF8.GetBytes(Credentials.CertificateCredentials.PublicKey)));
-        await JS.InvokeVoidAsync("downloadFileFromStream", "key.pub", stream);
+            Encoding.UTF8.GetBytes(credentials.CertificateCredentials.PublicKey)));
+        await Js.InvokeVoidAsync("downloadFileFromStream", "key.pub", stream);
     }
 
     private async Task DownloadPrivateKeyFile()
     {
         var stream = new DotNetStreamReference(stream: new MemoryStream(
-            Encoding.UTF8.GetBytes(Credentials.CertificateCredentials.PrivateKey)));
-        await JS.InvokeVoidAsync("downloadFileFromStream", "key", stream);
+            Encoding.UTF8.GetBytes(credentials.CertificateCredentials.PrivateKey)));
+        await Js.InvokeVoidAsync("downloadFileFromStream", "key", stream);
     }
 
     void Close() => MudDialog.Cancel();

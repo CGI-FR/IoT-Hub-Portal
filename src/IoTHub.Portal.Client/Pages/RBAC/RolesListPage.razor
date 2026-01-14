@@ -1,13 +1,12 @@
 ﻿@page "/roles"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @using IoTHub.Portal.Client.Dialogs.RBAC
 
 @attribute [Authorize]
 
 @inject IRoleClientService RoleClientService
-@inject IDialogService dialogService
+@inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
@@ -124,7 +123,7 @@
     {
         var parameters = new DialogParameters();
         parameters.Add("roleId", item.Id);
-        var result = await dialogService.Show<RoleDeleteConfirm>("Confirm Deletion", parameters).Result;
+        var result = await DialogService.Show<RoleDeleteConfirm>("Confirm Deletion", parameters).Result;
 
         if (result.Canceled)
         {

@@ -35,14 +35,14 @@ namespace IoTHub.Portal.Server.Controllers.v10
         /// <summary>
         /// Updates the specified level.
         /// </summary>
-        /// <param name="Layer">The level.</param>
+        /// <param name="layer">The level.</param>
         /// <returns>The action result.</returns>
         [Authorize("layer:write")]
         [HttpPut(Name = "PUT Update the level")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateLayer(LayerDto Layer)
+        public async Task<IActionResult> UpdateLayer(LayerDto layer)
         {
-            await this.levelService.UpdateLayer(Layer);
+            await this.levelService.UpdateLayer(layer);
 
             return Ok();
         }

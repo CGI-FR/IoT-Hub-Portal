@@ -1,7 +1,6 @@
-﻿@page "/lorawan/concentrators/{DeviceID}"
+﻿@page "/lorawan/concentrators/{DeviceId}"
 @inherits AuthorizedComponentBase
 @using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -18,16 +17,16 @@
 </MudTooltip>
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
-    <MudForm Model="@concentrator" @ref="form">
+    <MudForm Model="@Concentrator" @ref="form">
         <MudGrid>
             <MudItem xs="12" sm="4" md="3">
                 <MudCard>
                     <MudCardHeader Class="DeviceCardHeader">
                         <CardHeaderContent>
-                            <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(concentrator.DeviceName) ? concentrator.DeviceId : concentrator.DeviceName)</MudText>
+                            <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(Concentrator.DeviceName) ? Concentrator.DeviceId : Concentrator.DeviceName)</MudText>
                         </CardHeaderContent>
                         <CardHeaderAvatar>
-                            @if (concentrator.IsConnected)
+                            @if (Concentrator.IsConnected)
                             {
                                 <MudTooltip Text="Concentrator is connected">
                                     <MudIcon Icon="@Icons.Material.Filled.Wifi" Color="Color.Success" />
@@ -61,34 +60,34 @@
                                         <ChildContent>
                                             <MudGrid>
                                                 <MudItem xs="12" md="6">
-                                                    <MudTextField @bind-Value="@concentrator.DeviceId"
+                                                    <MudTextField @bind-Value="@Concentrator.DeviceId"
                                                                   Label="Device ID"
                                                                   Variant="Variant.Outlined"
                                                                   Required="true"
                                                                   Disabled="true" />
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
-                                                    <MudTextField @bind-Value="@concentrator.DeviceName"
+                                                    <MudTextField @bind-Value="@Concentrator.DeviceName"
                                                                   Label="Device name"
                                                                   Variant="Variant.Outlined"
                                                                   Required="true"
                                                                   Disabled="@(!canWrite)" />
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
-                                                    <MudTextField For="@(() => concentrator.ClientThumbprint)"
-                                                                  Mask="@maskThumbprint"
+                                                    <MudTextField For="@(() => Concentrator.ClientThumbprint)"
+                                                                  Mask="@MaskThumbprint"
                                                                   HelperText="ClientThumbprint must contain 40 hexadecimal characters"
-                                                                  @bind-Value="@concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined"
+                                                                  @bind-Value="@Concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined"
                                                                   Disabled="@(!canWrite)" />
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
                                                     <MudSelect T="string" Label="Region" Variant="Variant.Outlined"
-                                                               @bind-Value="@concentrator.LoraRegion"
+                                                               @bind-Value="@Concentrator.LoraRegion"
                                                                Required="true"
                                                                Disabled="@(!canWrite)">
-                                                        @foreach (var frequencyPlan in FrequencyPlans.OrderBy(c => c.Name))
+                                                        @foreach (var frequencyPlan in frequencyPlans.OrderBy(c => c.Name))
                                                         {
-                                                            <MudSelectItem Value="@(frequencyPlan.FrequencyPlanID)">@frequencyPlan.Name</MudSelectItem>
+                                                            <MudSelectItem Value="@(frequencyPlan.FrequencyPlanId)">@frequencyPlan.Name</MudSelectItem>
                                                         }
                                                     </MudSelect>
                                                 </MudItem>
@@ -96,12 +95,15 @@
                                                     <MudText>
                                                         <b>Status</b>
                                                     </MudText>
-                                                    <MudRadioGroup @bind-SelectedOption="@concentrator.IsEnabled" Disabled="@(!canWrite)">
-                                                        <MudRadio Option=@(true) Color="Color.Primary">
+                                                    <MudRadioGroup @bind-SelectedValue="@Concentrator.IsEnabled" T="bool"
+                                                                   Disabled="@(!canWrite)">
+                                                        <MudRadio Value=@(true)
+                                                                  Color="Color.Primary">
                                                             Enabled
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
                                                         </MudRadio>
-                                                        <MudRadio Option=@(false) Color="Color.Primary">
+                                                        <MudRadio Value=@(false)
+                                                                  Color="Color.Primary">
                                                             Disabled
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
                                                         </MudRadio>
@@ -128,12 +130,12 @@
     public Error? Error { get; set; } = default!;
 
     [Parameter]
-    public string DeviceID { get; set; } = default!;
+    public string DeviceId { get; set; } = default!;
 
-    private ConcentratorDto concentrator { get; set; } = new();
+    private ConcentratorDto Concentrator { get; set; } = new();
     private MudForm form = default!;
     private ConcentratorValidator concentratorValidator = new();
-    private List<FrequencyPlan> FrequencyPlans = new();
+    private List<FrequencyPlan> frequencyPlans = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,8 +144,8 @@
         try
         {
             IsLoading = true;
-            FrequencyPlans.AddRange(await LoRaWanConcentratorsClientService.GetFrequencyPlans());
-            concentrator = await LoRaWanConcentratorsClientService.GetConcentrator(DeviceID);
+            frequencyPlans.AddRange(await LoRaWanConcentratorsClientService.GetFrequencyPlans());
+            Concentrator = await LoRaWanConcentratorsClientService.GetConcentrator(DeviceId);
 
             // Check if user has write permission for conditional UI elements
             canWrite = await HasPermissionAsync(PortalPermissions.ConcentratorWrite);
@@ -160,7 +162,7 @@
 
     private void Return() => NavigationManager.NavigateTo("/lorawan/concentrators");
 
-    public PatternMask maskThumbprint = new("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
+    public PatternMask MaskThumbprint = new("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
     {
         MaskChars = new[] { new MaskChar('X', "[0-9a-fA-F]") },
         CleanDelimiters = false,
@@ -180,7 +182,7 @@
         try
         {
             await form.Validate();
-            if (!concentratorValidator.Validate(concentrator).IsValid)
+            if (!concentratorValidator.Validate(Concentrator).IsValid)
             {
                 Snackbar.Add($"One or more validation errors occurred", Severity.Error);
 
@@ -189,10 +191,10 @@
                 return;
             }
 
-            await LoRaWanConcentratorsClientService.UpdateConcentrator(concentrator);
+            await LoRaWanConcentratorsClientService.UpdateConcentrator(Concentrator);
 
             // Prompts a snack bar to inform the action was successful
-            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
+            Snackbar.Add($"Device {Concentrator.DeviceId} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
 
             // Go back to the list of device
             NavigationManager.NavigateTo("lorawan/concentrators");
@@ -215,7 +217,7 @@
     {
         IsLoading = true;
 
-        var parameters = new DialogParameters { { "deviceId", concentrator.DeviceId } };
+        var parameters = new DialogParameters { { "deviceId", Concentrator.DeviceId } };
         var result = await DialogService.Show<DeleteConcentratorPage>("Confirm Deletion", parameters).Result;
 
         IsLoading = false;

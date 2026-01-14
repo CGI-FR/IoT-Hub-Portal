@@ -55,10 +55,10 @@ namespace IoTHub.Portal.Domain.Entities
         public string Rawdata { get; set; } = default!;
 
         [JsonPropertyName("eui")]
-        public string DeviceEUI { get; set; } = default!;
+        public string DeviceEui { get; set; } = default!;
 
         [JsonPropertyName("gatewayid")]
-        public string GatewayID { get; set; } = default!;
+        public string GatewayId { get; set; } = default!;
 
         [JsonPropertyName("stationeui")]
         public string StationEui { get; set; } = default!;

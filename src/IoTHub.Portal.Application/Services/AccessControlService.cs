@@ -3,17 +3,7 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Crosscutting;
-    using System.Linq; // for Select
-    using System.Linq.Expressions; // for includes expressions
+    using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class AccessControlService : IAccessControlManagementService
     {
@@ -32,12 +22,12 @@ namespace IoTHub.Portal.Application.Services
             this.principalRepository = principalRepository;
         }
 
-        public async Task<AccessControlModel> GetAccessControlAsync(string Id)
+        public async Task<AccessControlModel> GetAccessControlAsync(string id)
         {
-            var acEntity = await this.accessControlRepository.GetByIdAsync(Id, ac => ac.Role);
+            var acEntity = await this.accessControlRepository.GetByIdAsync(id, ac => ac.Role);
             if (acEntity is null)
             {
-                throw new ResourceNotFoundException($"The AccessControl with the id {Id} doesn't exist");
+                throw new ResourceNotFoundException($"The AccessControl with the id {id} doesn't exist");
             }
             var acModel = this.mapper.Map<AccessControlModel>(acEntity);
             return acModel;
@@ -177,8 +167,7 @@ namespace IoTHub.Portal.Application.Services
             // For each access control, check if the associated role contains an action matching the requested permission.
             foreach (var ac in accessControls)
             {
-                if (ac.Role?.Actions != null &&
-                    ac.Role.Actions.Any(a => string.Equals(a.Name, permission, StringComparison.OrdinalIgnoreCase)))
+                if (ac.Role.Actions.Any(a => string.Equals(a.Name, permission, StringComparison.OrdinalIgnoreCase)))
                 {
                     return true;
                 }

@@ -53,7 +53,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                     {
                         new()
                         {
-                            DeviceID = Fixture.Create<string>()
+                            DeviceId = Fixture.Create<string>()
                         }
                     }
                 });
@@ -85,13 +85,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             var expectedDevice = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>(),
+                DeviceId = Fixture.Create<string>(),
                 ModelId = expectedDeviceModel.ModelId
             };
 
             var expectedDeviceItem = new DeviceListItem
             {
-                DeviceID = expectedDevice.DeviceID,
+                DeviceId = expectedDevice.DeviceId,
             };
 
             var url = $"api/devices?pageSize=10&searchText={query}";
@@ -104,7 +104,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                     }
                 });
 
-            _ = this.mockDeviceClientService.Setup(service => service.GetDevice(expectedDevice.DeviceID))
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevice(expectedDevice.DeviceId))
                 .ReturnsAsync(expectedDevice);
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(expectedDevice.ModelId))
@@ -140,13 +140,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             var expectedDevice = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>(),
+                DeviceId = Fixture.Create<string>(),
                 ModelId = expectedDeviceModel.ModelId
             };
 
             var expectedDeviceItem = new DeviceListItem
             {
-                DeviceID = expectedDevice.DeviceID,
+                DeviceId = expectedDevice.DeviceId,
             };
 
             var url = $"api/devices?pageSize=10&searchText={query}";
@@ -159,7 +159,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                     }
                 });
 
-            _ = this.mockDeviceClientService.Setup(service => service.GetDevice(expectedDevice.DeviceID))
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevice(expectedDevice.DeviceId))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
@@ -192,13 +192,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             var expectedDevice = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>(),
+                DeviceId = Fixture.Create<string>(),
                 ModelId = expectedDeviceModel.ModelId
             };
 
             var expectedDeviceItem = new DeviceListItem
             {
-                DeviceID = expectedDevice.DeviceID,
+                DeviceId = expectedDevice.DeviceId,
                 SupportLoRaFeatures = true
             };
 
@@ -212,7 +212,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                     }
                 });
 
-            _ = this.mockLoRaWanDeviceClientService.Setup(service => service.GetDevice(expectedDevice.DeviceID))
+            _ = this.mockLoRaWanDeviceClientService.Setup(service => service.GetDevice(expectedDevice.DeviceId))
                 .ReturnsAsync(expectedDevice);
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModel(expectedDevice.ModelId))

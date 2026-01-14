@@ -182,7 +182,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var expectedDeviceDto = Mapper.Map<DeviceDetails>(expectedDevice);
             expectedDeviceDto.Image = expectedImage;
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(expectedDevice);
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
@@ -192,7 +192,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(expectedDevice.Tags.Select(tag => tag.Name));
 
             // Act
-            var result = await this.deviceService.GetDevice(expectedDeviceDto.DeviceID);
+            var result = await this.deviceService.GetDevice(expectedDeviceDto.DeviceId);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceDto);
@@ -222,10 +222,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -233,7 +233,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service =>
-                    service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
+                    service.CreateDeviceWithTwin(deviceDto.DeviceId, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
                 .ReturnsAsync(new BulkRegistryOperationResult());
 
             _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
@@ -256,10 +256,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -267,7 +267,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service =>
-                    service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
+                    service.CreateDeviceWithTwin(deviceDto.DeviceId, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
                 .ReturnsAsync(new BulkRegistryOperationResult());
 
             _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
@@ -290,16 +290,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceId))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -309,7 +309,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new Device
                 {
                     Tags = new List<DeviceTagValue>
@@ -348,16 +348,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceId))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -367,7 +367,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync((Device)null);
 
             // Act
@@ -384,16 +384,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceId))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -403,7 +403,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new Device
                 {
                     Tags = new List<DeviceTagValue>(),
@@ -430,13 +430,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new Device
                 {
                     Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList(),
@@ -449,14 +449,14 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
-            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.deviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.deviceService.DeleteDevice(deviceDto.DeviceId);
 
             // Assert
             MockRepository.VerifyAll();
@@ -468,17 +468,17 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync((Device)null);
 
             // Act
-            await this.deviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.deviceService.DeleteDevice(deviceDto.DeviceId);
 
             // Assert
             MockRepository.VerifyAll();
@@ -490,27 +490,27 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new Device
                 {
                     Tags = new List<DeviceTagValue>(),
                     Labels = new List<Label>()
                 });
 
-            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .ThrowsAsync(new DbUpdateException());
 
             // Act
-            var act = () => this.deviceService.DeleteDevice(deviceDto.DeviceID);
+            var act = () => this.deviceService.DeleteDevice(deviceDto.DeviceId);
 
             // Assert
             _ = await act.Should().ThrowAsync<DbUpdateException>();
@@ -523,7 +523,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
             var expectedEnrollmentCredentials = Fixture.Create<DeviceCredentials>();
@@ -545,13 +545,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
             var expectedTelemetry = Array.Empty<LoRaDeviceTelemetryDto>();
 
             // Act
-            var result = await this.deviceService.GetDeviceTelemetry(deviceDto.DeviceID);
+            var result = await this.deviceService.GetDeviceTelemetry(deviceDto.DeviceId);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedTelemetry);
@@ -636,27 +636,27 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new DeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
-                .ThrowsAsync(new DeviceNotFoundException(deviceDto.DeviceID));
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
+                .ThrowsAsync(new DeviceNotFoundException(deviceDto.DeviceId));
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new Device
                 {
                     Tags = new List<DeviceTagValue>(),
                     Labels = new List<Label>()
                 });
 
-            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.deviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.deviceService.DeleteDevice(deviceDto.DeviceId);
 
             // Assert
             MockRepository.VerifyAll();

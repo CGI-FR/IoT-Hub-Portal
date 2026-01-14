@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    public class LoRaWANConcentratorService : ILoRaWANConcentratorService
+    public class LoRaWANConcentratorService : ILoRaWanConcentratorService
     {
         /// <summary>
         /// The device Idevice service.

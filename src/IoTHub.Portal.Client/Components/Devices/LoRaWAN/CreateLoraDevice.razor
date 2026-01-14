@@ -8,14 +8,14 @@
                 <TitleContent><MudText Typo="Typo.h6">LoraWAN</MudText></TitleContent>
                 <ChildContent>
                     <MudGrid>
-                        @if (LoraModelDto.UseOTAA)
+                        @if (LoraModelDto.UseOtaa)
                         {
                             <MudItem xs="12" md="6">
-                                <MudTextField id="@nameof(LoRaDevice.AppEUI)"
-                                          @bind-Value="@LoRaDevice.AppEUI"
+                                <MudTextField id="@nameof(LoRaDevice.AppEui)"
+                                          @bind-Value="@LoRaDevice.AppEui"
                                           Label="OTAA AppEUI"
                                           Variant="Variant.Outlined"
-                                          For="@(()=> LoRaDevice.AppEUI)"
+                                          For="@(()=> LoRaDevice.AppEui)"
                                           Required="true" />
                             </MudItem>
                             <MudItem xs="12" md="6">
@@ -41,12 +41,12 @@
                         }
                         <MudItem xs="12" md="6">
                             <MudAutocomplete T="string"
-                                             id="@nameof(LoRaDevice.GatewayID)"
-                                             @bind-Value="LoRaDevice.GatewayID"
-                                             SearchFunc="@SearchGatewayID"
+                                             id="@nameof(LoRaDevice.GatewayId)"
+                                             @bind-Value="LoRaDevice.GatewayId"
+                                             SearchFunc="@SearchGatewayId"
                                              Label="GatewayID"
                                              Dense=true
-                                             For="@(() => LoRaDevice.GatewayID)"
+                                             For="@(() => LoRaDevice.GatewayId)"
                                              Variant="Variant.Outlined"
                                              ResetValueOnEmptyText=true
                                              Immediate=true
@@ -64,16 +64,16 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; } = default!;
+    public Error? Error { get; set; }
 
     [Parameter]
-    public LoRaDeviceDetails LoRaDevice { get; set; } = default!;
+    public required LoRaDeviceDetails LoRaDevice { get; set; }
 
     [Parameter]
-    public LoRaDeviceDetailsValidator LoraValidator { get; set; } = default!;
+    public required LoRaDeviceDetailsValidator LoraValidator { get; set; }
 
     [Parameter]
-    public LoRaDeviceModelDto LoraModelDto { get; set; } = default!;
+    public required LoRaDeviceModelDto LoraModelDto { get; set; }
 
     public List<string> GatewayIdList = new();
 
@@ -89,7 +89,7 @@
         }
     }
 
-    private async Task<IEnumerable<string>> SearchGatewayID(string value)
+    private async Task<IEnumerable<string>> SearchGatewayId(string value)
     {
         await Task.Delay(50);
 

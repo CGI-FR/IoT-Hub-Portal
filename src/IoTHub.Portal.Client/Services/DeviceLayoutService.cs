@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Client.Services
         public TDevice DuplicateSharedDevice<TDevice>(TDevice deviceToDuplicate)
             where TDevice : IDeviceDetails
         {
-            deviceToDuplicate.DeviceID = string.Empty;
+            deviceToDuplicate.DeviceId = string.Empty;
             deviceToDuplicate.DeviceName = $"{deviceToDuplicate.DeviceName} - copy";
 
             if (deviceToDuplicate is LoRaDeviceDetails loRaDevice)

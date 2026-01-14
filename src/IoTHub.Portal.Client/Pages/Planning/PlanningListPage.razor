@@ -1,10 +1,9 @@
 ﻿@page "/planning"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
 @inject IPlanningClientService PlanningClientService
 @inject IDialogService DialogService
 
@@ -73,7 +72,7 @@
                         }
                     </RowTemplate>
                     <PagerContent>
-                        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                        <MudTablePager PageSizeOptions="@PageSizeOptions"></MudTablePager>
                     </PagerContent>
                     <NoRecordsContent>
                         <MudText>No matching records found</MudText>
@@ -93,7 +92,7 @@
     private bool canWrite;
 
     [Parameter]
-    public CreateEditMode context { get; set; }
+    public CreateEditMode Context { get; set; }
 
     [CascadingParameter]
     public Error Error { get; set; } = default!;
@@ -102,7 +101,7 @@
 
     public List<PlanningDto> Plannings = new();
 
-    public readonly int[] pageSizeOptions = { 10, 5, 3 };
+    public readonly int[] PageSizeOptions = { 10, 5, 3 };
 
     protected override async Task OnInitializedAsync()
     {
@@ -133,12 +132,12 @@
 
     private void GoToDetails(PlanningDto item)
     {
-        navigationManager.NavigateTo($"/planning/{item.Id}");
+        NavigationManager.NavigateTo($"/planning/{item.Id}");
     }
 
     private void AddPlanning()
     {
-        navigationManager.NavigateTo($"/planning/new");
+        NavigationManager.NavigateTo($"/planning/new");
     }
 
     /// <summary>

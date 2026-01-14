@@ -7,7 +7,7 @@
         <MudGrid>
             <MudItem xs=12>
                 <MudText>
-                    Delete @planningName ?
+                    Delete @PlanningName ?
                 </MudText>
             </MudItem>
             <MudItem xs=12>
@@ -26,8 +26,8 @@
     public Error Error { get; set; } = default!;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public string planningID { get; set; } = default!;
-    [Parameter] public string planningName { get; set; } = default!;
+    [Parameter] public string PlanningId { get; set; } = default!;
+    [Parameter] public string PlanningName { get; set; } = default!;
 
     List<LayerDto> Layers { get; set; } = new();
 
@@ -43,10 +43,10 @@
     {
         try
         {
-            await DeletePlanningOnLayer(planningID);
-            await PlanningClientService.DeletePlanning(planningID);
+            await DeletePlanningOnLayer(PlanningId);
+            await PlanningClientService.DeletePlanning(PlanningId);
 
-            Snackbar.Add($"Planning {planningName} has been successfully deleted!", Severity.Success);
+            Snackbar.Add($"Planning {PlanningName} has been successfully deleted!", Severity.Success);
         }
         catch (ProblemDetailsException exception)
         {
@@ -80,7 +80,7 @@
         layerDto.Name = layer.Name;
         layerDto.Father = layer.Father;
         layerDto.Planning = layer.Planning;
-        layerDto.hasSub = layer.hasSub;
+        layerDto.HasSub = layer.HasSub;
 
         return layerDto;
     }

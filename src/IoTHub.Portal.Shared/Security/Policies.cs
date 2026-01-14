@@ -139,7 +139,7 @@ namespace IoTHub.Portal.Shared.Security
         GetAllDeviceTagSettings,
         CreateOrUpdateDeviceTag,
         DeleteDeviceTagByName,
-        GetOIDCSettings,
+        GetOidcSettings,
         GetPortalSettings
     }
 }

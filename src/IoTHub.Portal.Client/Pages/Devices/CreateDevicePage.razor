@@ -1,11 +1,10 @@
 ﻿@page "/devices/new"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 <AuthorizedContent IsAuthorized="@IsAuthorized" IsLoading="@IsLoading">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
 
-    <EditDevice context="CreateEditMode.Create" CanWrite="true"/>
+    <EditDevice Context="CreateEditMode.Create" CanWrite="true"/>
 </AuthorizedContent>
 
 @code {

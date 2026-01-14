@@ -34,7 +34,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 //Portal must be able to upload images to Amazon S3
                 var putObjectRequest = new PutObjectRequest
                 {
-                    BucketName = this.configHandler.AWSBucketName,
+                    BucketName = this.configHandler.AwsBucketName,
                     Key = deviceModelId,
                     ContentBody = file,
                     ContentType = "image/*",
@@ -48,7 +48,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                     //Images on S3 are publicly accessible and read-only 
                     var putAclRequest = new PutACLRequest
                     {
-                        BucketName = this.configHandler.AWSBucketName,
+                        BucketName = this.configHandler.AwsBucketName,
                         Key = deviceModelId,
                         CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
                     };
@@ -72,7 +72,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public Uri ComputeImageUri(string deviceModelId)
         {
-            var url = $"https://{this.configHandler.AWSBucketName}.s3.{this.configHandler.AWSRegion}.amazonaws.com/{deviceModelId}";
+            var url = $"https://{this.configHandler.AwsBucketName}.s3.{this.configHandler.AwsRegion}.amazonaws.com/{deviceModelId}";
             return new Uri(url);
         }
 
@@ -85,7 +85,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
             {
                 var deleteImageObject = new DeleteObjectRequest
                 {
-                    BucketName = this.configHandler.AWSBucketName,
+                    BucketName = this.configHandler.AwsBucketName,
                     Key = deviceModelId
                 };
 
@@ -112,7 +112,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                 //Portal must be able to upload images to Amazon S3
                 var putObjectRequest = new PutObjectRequest
                 {
-                    BucketName = this.configHandler.AWSBucketName,
+                    BucketName = this.configHandler.AwsBucketName,
                     Key = deviceModelId,
                     InputStream = defaultImageStream,
                     ContentType = "image/*", // image content type
@@ -127,7 +127,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                     //Images on S3 are publicly accessible and read-only 
                     var putAclRequest = new PutACLRequest
                     {
-                        BucketName = this.configHandler.AWSBucketName,
+                        BucketName = this.configHandler.AwsBucketName,
                         Key = deviceModelId,
                         CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
                     };
@@ -161,7 +161,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
             {
                 var putObjectRequest = new PutObjectRequest
                 {
-                    BucketName = this.configHandler.AWSBucketName,
+                    BucketName = this.configHandler.AwsBucketName,
                     Key = DeviceModelImageOptions.DefaultImageName,
                     InputStream = defaultImageStream,
                     ContentType = "image/*", // image content type
@@ -176,7 +176,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
                     //Images on S3 are publicly accessible and read-only 
                     var putAclRequest = new PutACLRequest
                     {
-                        BucketName = this.configHandler.AWSBucketName,
+                        BucketName = this.configHandler.AwsBucketName,
                         Key = DeviceModelImageOptions.DefaultImageName,
                         CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
                     };

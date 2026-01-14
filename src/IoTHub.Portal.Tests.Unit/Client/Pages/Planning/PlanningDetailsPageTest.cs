@@ -28,7 +28,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.PlanningRead, PortalPermissions.PlanningWrite });
         }
 

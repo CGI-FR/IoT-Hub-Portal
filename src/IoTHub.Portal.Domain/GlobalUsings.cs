@@ -13,8 +13,6 @@ global using System.Threading.Tasks;
 global using IoTHub.Portal.Domain.Base;
 global using IoTHub.Portal.Domain.Entities;
 global using IoTHub.Portal.Domain.Shared.Constants;
-global using IoTHub.Portal.Models;
-global using IoTHub.Portal.Models.v10;
 global using IoTHub.Portal.Models.v10.LoRaWAN;
 global using IoTHub.Portal.Shared.Constants;
 global using IoTHub.Portal.Shared.Models.v10;

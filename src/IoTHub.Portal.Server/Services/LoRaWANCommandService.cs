@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Server.Services
 {
-    public class LoRaWANCommandService : ILoRaWANCommandService
+    public class LoRaWANCommandService : ILoRaWanCommandService
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
@@ -62,7 +62,7 @@ namespace IoTHub.Portal.Server.Services
                 .ToArray());
         }
 
-        public async Task ExecuteLoRaWANCommand(string deviceId, string commandId)
+        public async Task ExecuteLoRaWanCommand(string deviceId, string commandId)
         {
             var commandEntity = await this.deviceModelCommandRepository.GetByIdAsync(commandId);
 

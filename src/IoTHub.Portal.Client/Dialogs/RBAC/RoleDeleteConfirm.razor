@@ -6,7 +6,7 @@
         <MudGrid>
             <MudItem xs=12>
                 <MudText>
-                    Delete @roleId ?
+                    Delete @RoleId ?
                 </MudText>
             </MudItem>
             <MudItem xs=12>
@@ -25,7 +25,7 @@
     public Error Error { get; set; } = default!;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public string roleId { get; set; } = default!;
+    [Parameter] public string RoleId { get; set; } = default!;
 
     void Cancel() => MudDialog.Cancel();
 
@@ -33,9 +33,9 @@
     {
         try
         {
-            await RoleClientService.DeleteRole(roleId);
+            await RoleClientService.DeleteRole(RoleId);
 
-            Snackbar.Add($"Role with id : {roleId} has been successfully deleted!", Severity.Success);
+            Snackbar.Add($"Role with id : {RoleId} has been successfully deleted!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (ProblemDetailsException exception)

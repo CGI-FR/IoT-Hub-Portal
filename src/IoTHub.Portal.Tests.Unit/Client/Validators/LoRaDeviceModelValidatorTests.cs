@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             var loraModelValidator = new LoRaDeviceModelValidator();
             var loraModel = new LoRaDeviceModelDto()
             {
-                UseOTAA = true,
+                UseOtaa = true,
                 //AppEUI = Guid.NewGuid().ToString(),
             };
 

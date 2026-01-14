@@ -79,8 +79,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
                 ComponentParameter.CreateParameter("SelectedModel", expectedDeviceModelDto.Name)
             );
 
-            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.planning.DayOff);
-            Assert.AreEqual("00:00", cut.Instance.scheduleList[0].Start);
+            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.Planning.DayOff);
+            Assert.AreEqual("00:00", cut.Instance.ScheduleList[0].Start);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -128,7 +128,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var editPlanningAddSchedule = cut.WaitForElement("#addScheduleButton");
             editPlanningAddSchedule.Click();
 
-            Assert.AreEqual(1, cut.Instance.scheduleList.Count);
+            Assert.AreEqual(1, cut.Instance.ScheduleList.Count);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -180,7 +180,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var editPlanningAddSchedule = cut.WaitForElement("#addScheduleButton");
             editPlanningAddSchedule.Click();
 
-            Assert.AreEqual(2, cut.Instance.scheduleList.Count);
+            Assert.AreEqual(2, cut.Instance.ScheduleList.Count);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -235,7 +235,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var editPlanningDeleteSchedule = cut.FindAll("#deleteScheduleButton")[1];
             editPlanningDeleteSchedule.Click();
 
-            Assert.AreEqual(1, cut.Instance.scheduleList.Count);
+            Assert.AreEqual(1, cut.Instance.ScheduleList.Count);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -316,7 +316,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var editPlanningChangeOnDayLayers = cut.FindAll("#editPlanningChangeOnDayLayers")[0];
             editPlanningChangeOnDayLayers.Click();
 
-            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Monday | DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.planning.DayOff);
+            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Monday | DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.Planning.DayOff);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -363,7 +363,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             var editPlanningChangeOffDayLayers = cut.FindAll("#editPlanningChangeOffDayLayers")[5];
             editPlanningChangeOffDayLayers.Click();
 
-            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.planning.DayOff);
+            Assert.AreEqual(DaysEnumFlag.DaysOfWeek.Sunday, cut.Instance.Planning.DayOff);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -529,10 +529,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             _ = this.mockDialogService.Setup(c => c.Show<DeletePlanningDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
-            var cut = RenderComponent<EditPlanning>(parameters => parameters.Add(p => p.mode, "Edit")
-                .Add(p => p.planning, mockPlanning)
-                .Add(p => p.scheduleList, mockScheduleList)
-                .Add(p => p.initScheduleList, new List<ScheduleDto>(mockScheduleList))
+            var cut = RenderComponent<EditPlanning>(parameters => parameters.Add(p => p.Mode, "Edit")
+                .Add(p => p.Planning, mockPlanning)
+                .Add(p => p.ScheduleList, mockScheduleList)
+                .Add(p => p.InitScheduleList, new List<ScheduleDto>(mockScheduleList))
                 .Add(p => p.SelectedModel, mockDeviceModel.Name)
                 .Add(p => p.CanWrite, true));
 
@@ -593,10 +593,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
                 .Returns(mockDialogReference.Object);
 
             var cut = RenderComponent<EditPlanning>(parameters => parameters
-                .Add(p => p.mode, "Edit")
-                .Add(p => p.planning, mockPlanning)
-                .Add(p => p.scheduleList, mockScheduleList)
-                .Add(p => p.initScheduleList, new List<ScheduleDto>(mockScheduleList))
+                .Add(p => p.Mode, "Edit")
+                .Add(p => p.Planning, mockPlanning)
+                .Add(p => p.ScheduleList, mockScheduleList)
+                .Add(p => p.InitScheduleList, new List<ScheduleDto>(mockScheduleList))
                 .Add(p => p.SelectedModel, mockDeviceModel[0].Name)
                 .Add(p => p.CanWrite, true));
 
@@ -663,10 +663,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
                     Items = new List<DeviceModelDto>()
                 });
 
-            var cut = RenderComponent<EditPlanning>(parameters => parameters.Add(p => p.mode, "Edit")
-                                                                            .Add(p => p.planning, mockPlanning)
-                                                                            .Add(p => p.scheduleList, mockScheduleList)
-                                                                            .Add(p => p.initScheduleList, new List<ScheduleDto>(mockScheduleList))
+            var cut = RenderComponent<EditPlanning>(parameters => parameters.Add(p => p.Mode, "Edit")
+                                                                            .Add(p => p.Planning, mockPlanning)
+                                                                            .Add(p => p.ScheduleList, mockScheduleList)
+                                                                            .Add(p => p.InitScheduleList, new List<ScheduleDto>(mockScheduleList))
                                                                             .Add(p => p.SelectedModel, mockDeviceModel.Name));
 
             var tooltips = cut.FindComponents<MudTooltip>();

@@ -3,13 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Shared.Models.v10;
-    using Portal.Shared.Security;
-
-
     public class RoleClientService : IRoleClientService
     {
         private readonly HttpClient http;

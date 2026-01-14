@@ -3,7 +3,7 @@
 
 <MudDialog>
     <DialogContent>
-        <p>Delete LoRaWAN Concentrator @deviceId ?</p>
+        <p>Delete LoRaWAN Concentrator @DeviceId ?</p>
         <br />
         <p><i>Warning : this cannot  be undone.</i></p>
     </DialogContent>
@@ -18,7 +18,7 @@
     public Error Error { get; set; } = default!;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public string deviceId { get; set; } = default!;
+    [Parameter] public string DeviceId { get; set; } = default!;
 
     void Cancel() => MudDialog.Cancel();
 
@@ -30,9 +30,9 @@
     {
         try
         {
-            await LoRaWanConcentratorsClientService.DeleteConcentrator(deviceId);
+            await LoRaWanConcentratorsClientService.DeleteConcentrator(DeviceId);
 
-            Snackbar.Add($"Device {deviceId} has been successfully deleted!", Severity.Success);
+            Snackbar.Add($"Device {DeviceId} has been successfully deleted!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (ProblemDetailsException exception)

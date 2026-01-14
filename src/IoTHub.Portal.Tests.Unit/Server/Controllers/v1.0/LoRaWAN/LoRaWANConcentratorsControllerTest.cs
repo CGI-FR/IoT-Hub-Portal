@@ -12,7 +12,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
 
         private Mock<ILogger<LoRaWANConcentratorsController>> mockLogger;
         private Mock<IUrlHelper> mockUrlHelper;
-        private Mock<ILoRaWANConcentratorService> mockLoRaWANConcentratorService;
+        private Mock<ILoRaWanConcentratorService> mockLoRaWANConcentratorService;
 
         [SetUp]
         public void SetUp()
@@ -21,7 +21,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
 
             this.mockLogger = this.MockRepository.Create<ILogger<LoRaWANConcentratorsController>>();
             this.mockUrlHelper = this.MockRepository.Create<IUrlHelper>();
-            this.mockLoRaWANConcentratorService = this.MockRepository.Create<ILoRaWANConcentratorService>();
+            this.mockLoRaWANConcentratorService = this.MockRepository.Create<ILoRaWanConcentratorService>();
 
             _ = ServiceCollection.AddSingleton(this.mockLogger.Object);
             _ = ServiceCollection.AddSingleton(this.mockUrlHelper.Object);

@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
             var result = new LoRaDeviceDetails
             {
-                DeviceID = twin.DeviceId,
+                DeviceId = twin.DeviceId,
                 ModelId = modelId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
                 AlreadyLoggedInOnce = DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
@@ -34,12 +34,12 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
                 LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId)),
-                GatewayID = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.GatewayID)),
+                GatewayId = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.GatewayId)),
                 SensorDecoder =
                     DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.SensorDecoder)),
-                UseOTAA = !string.IsNullOrEmpty(
-                    DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEUI))),
-                AppEUI = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEUI)),
+                UseOtaa = !string.IsNullOrEmpty(
+                    DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEui))),
+                AppEui = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEui)),
                 AppKey = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppKey)),
                 DevAddr = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.DevAddr)),
                 AppSKey = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppSKey)),
@@ -67,9 +67,9 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                         out var boolResult)
                         ? boolResult
                         : null,
-                ABPRelaxMode =
+                AbpRelaxMode =
                     bool.TryParse(
-                        DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.ABPRelaxMode)),
+                        DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AbpRelaxMode)),
                         out boolResult)
                         ? boolResult
                         : null,
@@ -100,29 +100,29 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                         out var fcntUpStart)
                         ? fcntUpStart
                         : null,
-                RX1DROffset =
-                    int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RX1DROffset)),
+                Rx1DrOffset =
+                    int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Rx1DrOffset)),
                         out var rx1DataOffset)
                         ? rx1DataOffset
                         : null,
-                RX2DataRate =
-                    int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RX2DataRate)),
+                Rx2DataRate =
+                    int.TryParse(DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Rx2DataRate)),
                         out var rx2DataRate)
                         ? rx2DataRate
                         : null,
-                RXDelay = int.TryParse(
-                    DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RXDelay)), out var rxDelay)
+                RxDelay = int.TryParse(
+                    DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.RxDelay)), out var rxDelay)
                     ? rxDelay
                     : null,
                 DataRate = DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.DataRate)),
                 TxPower = DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.TxPower)),
                 NbRep = DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.NbRep)),
-                ReportedRX1DROffset =
-                    DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRX1DROffset)),
-                ReportedRX2DataRate =
-                    DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRX2DataRate)),
-                ReportedRXDelay =
-                    DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRXDelay))
+                ReportedRx1DrOffset =
+                    DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRx1DrOffset)),
+                ReportedRx2DataRate =
+                    DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRx2DataRate)),
+                ReportedRxDelay =
+                    DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRxDelay))
             };
 
             foreach (var item in customTags)
@@ -139,7 +139,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
             return new DeviceListItem
             {
-                DeviceID = twin.DeviceId,
+                DeviceId = twin.DeviceId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
                 Image = this.deviceModelImageManager
                     .GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!)
@@ -168,7 +168,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             DeviceHelper.SetTagValue(twin, nameof(item.LayerId), item.LayerId ?? string.Empty);
 
             // Update OTAA settings
-            DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI);
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEui), item.AppEui);
             DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey);
 
             // Update ABP settings
@@ -176,7 +176,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             DeviceHelper.SetDesiredProperty(twin, nameof(item.AppSKey), item.AppSKey);
             DeviceHelper.SetDesiredProperty(twin, nameof(item.DevAddr), item.DevAddr);
 
-            DeviceHelper.SetDesiredProperty(twin, nameof(item.GatewayID), item.GatewayID);
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.GatewayId), item.GatewayId);
 
             if (item.Tags != null)
             {

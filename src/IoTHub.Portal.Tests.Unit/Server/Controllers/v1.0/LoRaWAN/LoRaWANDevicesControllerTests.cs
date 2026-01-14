@@ -12,7 +12,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
         private MockRepository mockRepository;
 
         private Mock<ILogger<LoRaWANDevicesController>> mockLogger;
-        private Mock<ILoRaWANCommandService> mockLoRaWANCommandService;
+        private Mock<ILoRaWanCommandService> mockLoRaWANCommandService;
         private Mock<IDeviceService<LoRaDeviceDetails>> mockDeviceService;
         private Mock<IUrlHelper> mockUrlHelper;
 
@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANDevicesController>>();
-            this.mockLoRaWANCommandService = this.mockRepository.Create<ILoRaWANCommandService>();
+            this.mockLoRaWANCommandService = this.mockRepository.Create<ILoRaWanCommandService>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService<LoRaDeviceDetails>>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
         }
@@ -52,7 +52,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
             var deviceId = Guid.NewGuid().ToString();
             var commandId = Guid.NewGuid().ToString();
 
-            this.mockLoRaWANCommandService.Setup(c => c.ExecuteLoRaWANCommand(deviceId, commandId))
+            this.mockLoRaWANCommandService.Setup(c => c.ExecuteLoRaWanCommand(deviceId, commandId))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
@@ -90,7 +90,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
             {
                 Data = Enumerable.Range(0, 100).Select(x => new DeviceListItem
                 {
-                    DeviceID = FormattableString.Invariant($"{x}")
+                    DeviceId = FormattableString.Invariant($"{x}")
                 }).ToList(),
                 TotalCount = 100
             };
@@ -124,18 +124,18 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
 
             var device = new LoRaDeviceDetails
             {
-                DeviceID = "aaa",
+                DeviceId = "aaa",
             };
 
-            _ = this.mockDeviceService.Setup(service => service.GetDevice(device.DeviceID))
+            _ = this.mockDeviceService.Setup(service => service.GetDevice(device.DeviceId))
                 .ReturnsAsync(device);
 
             // Act
-            var result = await devicesController.GetItem(device.DeviceID);
+            var result = await devicesController.GetItem(device.DeviceId);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(device.DeviceID, result.DeviceID);
+            Assert.AreEqual(device.DeviceId, result.DeviceId);
             this.mockRepository.VerifyAll();
         }
 
@@ -146,7 +146,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
             var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
-                DeviceID = "AF441BB83C90E946",
+                DeviceId = "AF441BB83C90E946",
             };
 
             _ = this.mockDeviceService.Setup(service => service.CreateDevice(device))
@@ -168,7 +168,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
             var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
-                DeviceID = "aaa",
+                DeviceId = "aaa",
             };
 
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");
@@ -188,7 +188,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
             var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
-                DeviceID = "AF441BB83C90E946"
+                DeviceId = "AF441BB83C90E946"
             };
 
             _ = this.mockDeviceService.Setup(service => service.UpdateDevice(device))
@@ -210,7 +210,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
             var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
-                DeviceID = "aaa"
+                DeviceId = "aaa"
             };
 
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");

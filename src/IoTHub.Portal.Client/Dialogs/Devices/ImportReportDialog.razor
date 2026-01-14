@@ -1,19 +1,19 @@
 ﻿<MudDialog>
     <DialogContent>
         <MudContainer Style="max-height: 600px; overflow-y: scroll">
-            @if (Loading)
+            @if (loading)
             {
                 <MudProgressCircular Indeterminate="true"></MudProgressCircular>
             }
             else
             {
-                if (ErrorReport.Length == 0)
+                if (errorReport.Length == 0)
                 {
                     <MudAlert Severity="Severity.Success">Devices have been imported successfully!</MudAlert>
                 }
                 else
                 {
-                    foreach (var importError in ErrorReport)
+                    foreach (var importError in errorReport)
                     {
                         <MudAlert Severity="@(importError.IsErrorMessage ? Severity.Error : Severity.Info)" Dense="true">
                             @if (importError.IsErrorMessage)
@@ -46,19 +46,19 @@
     [Parameter]
     public MultipartFormDataContent Content { get; set; } = default!;
 
-    private bool Loading = false;
-    private ImportResultLine[] ErrorReport = default!;
+    private bool loading = false;
+    private ImportResultLine[] errorReport = default!;
 
     void Close() => MudDialog.Close();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Loading = true;
+        loading = true;
 
         try
         {
-            ErrorReport = await DeviceClientService.ImportDeviceList(Content);
+            errorReport = await DeviceClientService.ImportDeviceList(Content);
         }
         catch (ProblemDetailsException exception)
         {
@@ -66,6 +66,6 @@
             MudDialog.Close();
         }
 
-        Loading = false;
+        loading = false;
     }
 }

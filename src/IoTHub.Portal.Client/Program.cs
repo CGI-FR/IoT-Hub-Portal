@@ -20,11 +20,11 @@ _ = builder.Services.AddHttpClient("api", (sp, client) =>
 _ = builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
 
 using var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("api/settings/oidc");
+var settings = await httpClient.GetFromJsonAsync<OidcSettings>("api/settings/oidc");
 
 if (settings != null)
 {
-    _ = builder.Services.Configure<OIDCSettings>(opts =>
+    _ = builder.Services.Configure<OidcSettings>(opts =>
     {
         opts.ClientId = settings.ClientId;
         opts.MetadataUrl = settings.MetadataUrl;

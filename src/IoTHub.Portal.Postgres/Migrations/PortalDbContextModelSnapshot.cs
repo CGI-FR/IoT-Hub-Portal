@@ -146,7 +146,7 @@ namespace IoTHub.Portal.Postgres.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<bool?>("ABPRelaxMode")
+                    b.Property<bool?>("AbpRelaxMode")
                         .HasColumnType("boolean");
 
                     b.Property<string>("AppEUI")
@@ -626,7 +626,7 @@ namespace IoTHub.Portal.Postgres.Migrations
                 {
                     b.HasBaseType("IoTHub.Portal.Domain.Entities.Device");
 
-                    b.Property<bool?>("ABPRelaxMode")
+                    b.Property<bool?>("AbpRelaxMode")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("AlreadyLoggedInOnce")

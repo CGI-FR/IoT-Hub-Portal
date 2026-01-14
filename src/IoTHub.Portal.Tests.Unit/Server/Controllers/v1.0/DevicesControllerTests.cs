@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             {
                 Data = Enumerable.Range(0, 100).Select(x => new DeviceListItem
                 {
-                    DeviceID = FormattableString.Invariant($"{x}")
+                    DeviceId = FormattableString.Invariant($"{x}")
                 }).ToList(),
                 TotalCount = 100
             };
@@ -104,18 +104,18 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var devicesController = CreateDevicesController();
             var device = new DeviceDetails
             {
-                DeviceID = "aaa",
+                DeviceId = "aaa",
             };
 
-            _ = this.mockDeviceService.Setup(service => service.GetDevice(device.DeviceID))
+            _ = this.mockDeviceService.Setup(service => service.GetDevice(device.DeviceId))
                 .ReturnsAsync(device);
 
             // Act
-            var result = await devicesController.GetItem(device.DeviceID);
+            var result = await devicesController.GetItem(device.DeviceId);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(device.DeviceID, result.DeviceID);
+            Assert.AreEqual(device.DeviceId, result.DeviceId);
             this.mockRepository.VerifyAll();
         }
 
@@ -126,7 +126,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var devicesController = CreateDevicesController();
             var device = new DeviceDetails
             {
-                DeviceID = "aaa",
+                DeviceId = "aaa",
             };
 
             _ = this.mockDeviceService.Setup(service => service.CreateDevice(device))
@@ -148,7 +148,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var devicesController = CreateDevicesController();
             var device = new DeviceDetails
             {
-                DeviceID = "aaa",
+                DeviceId = "aaa",
             };
 
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");
@@ -168,7 +168,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var devicesController = CreateDevicesController();
             var device = new DeviceDetails
             {
-                DeviceID = "aaa"
+                DeviceId = "aaa"
             };
 
             _ = this.mockDeviceService.Setup(service => service.UpdateDevice(device))
@@ -190,7 +190,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var devicesController = CreateDevicesController();
             var device = new DeviceDetails
             {
-                DeviceID = "aaa"
+                DeviceId = "aaa"
             };
 
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");
@@ -237,18 +237,18 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 AuthenticationMode = AuthenticationMode.SymmetricKey,
                 SymmetricCredentials = new SymmetricCredentials
                 {
-                    RegistrationID = "aaa",
+                    RegistrationId = "aaa",
                     SymmetricKey = "dfhjkfdgh"
                 }
             };
 
             _ = this.mockDeviceService.Setup(service => service.GetCredentials(deviceDetails))
                 .ReturnsAsync(expectedEnrollmentCredentials);
-            _ = this.mockDeviceService.Setup(service => service.GetDevice(deviceDetails.DeviceID))
+            _ = this.mockDeviceService.Setup(service => service.GetDevice(deviceDetails.DeviceId))
                 .ReturnsAsync(deviceDetails);
 
             // Act
-            var response = await devicesController.GetCredentials(deviceDetails.DeviceID);
+            var response = await devicesController.GetCredentials(deviceDetails.DeviceId);
 
             // Assert
             Assert.IsNotNull(response);

@@ -38,7 +38,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             twin.Tags["locationCode"] = Guid.NewGuid().ToString();
             var tagsNames = new List<string>() { "assetId", "locationCode" };
 
-            twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)] = Guid.NewGuid().ToString();
+            twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEui)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
@@ -52,7 +52,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(twin.DeviceId, result.DeviceID);
+            Assert.AreEqual(twin.DeviceId, result.DeviceId);
             Assert.AreEqual(modelId, result.ModelId);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
@@ -63,7 +63,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.AreEqual(modelImage, result.Image);
 
-            Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString(), result.AppEUI);
+            Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEui)].ToString(), result.AppEui);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString(), result.AppKey);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)].ToString(), result.SensorDecoder);
 
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
 
-            twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)] = Guid.NewGuid().ToString();
+            twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEui)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
@@ -95,7 +95,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(twin.DeviceId, result.DeviceID);
+            Assert.AreEqual(twin.DeviceId, result.DeviceId);
             Assert.AreEqual(modelId, result.ModelId);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
@@ -103,7 +103,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             Assert.AreEqual(modelImage, result.Image);
 
-            Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString(), result.AppEUI);
+            Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEui)].ToString(), result.AppEui);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString(), result.AppKey);
             Assert.AreEqual(twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)].ToString(), result.SensorDecoder);
 
@@ -131,7 +131,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(twin.DeviceId, result.DeviceID);
+            Assert.AreEqual(twin.DeviceId, result.DeviceId);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
             Assert.AreEqual(modelImage, result.Image);
@@ -153,19 +153,19 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             twin.Tags["locationCode"] = Guid.NewGuid().ToString();
             var tagsNames = new List<string>() { "assetId", "locationCode" };
 
-            twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)] = Guid.NewGuid().ToString();
+            twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEui)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
             var item = new LoRaDeviceDetails
             {
-                DeviceID = twin.DeviceId,
+                DeviceId = twin.DeviceId,
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString(),
-                AppEUI = Guid.NewGuid().ToString(),
+                AppEui = Guid.NewGuid().ToString(),
                 AppKey = Guid.NewGuid().ToString(),
                 SensorDecoder = Guid.NewGuid().ToString(),
-                UseOTAA = true,
+                UseOtaa = true,
             };
 
             item.Tags.Add("assetId", Guid.NewGuid().ToString());
@@ -175,7 +175,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             loRaDeviceTwinMapper.UpdateTwin(twin, item);
 
             // Assert
-            Assert.AreEqual(item.DeviceID, twin.DeviceId);
+            Assert.AreEqual(item.DeviceId, twin.DeviceId);
             Assert.AreEqual(item.ModelId, DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.ModelId)));
             Assert.AreEqual(item.DeviceName, DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)));
 
@@ -184,7 +184,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
                 Assert.AreEqual(item.Tags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
             }
 
-            Assert.AreEqual(item.AppEUI, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString());
+            Assert.AreEqual(item.AppEui, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEui)].ToString());
             Assert.AreEqual(item.AppKey, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString());
 
             this.mockRepository.VerifyAll();
@@ -207,20 +207,20 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             twin.Properties.Desired[nameof(LoRaDeviceDetails.NwkSKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppSKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.DevAddr)] = Guid.NewGuid().ToString();
-            twin.Properties.Desired[nameof(LoRaDeviceDetails.GatewayID)] = Guid.NewGuid().ToString();
+            twin.Properties.Desired[nameof(LoRaDeviceDetails.GatewayId)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
             var item = new LoRaDeviceDetails
             {
-                DeviceID = twin.DeviceId,
+                DeviceId = twin.DeviceId,
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = Guid.NewGuid().ToString(),
                 AppSKey = Guid.NewGuid().ToString(),
                 NwkSKey = Guid.NewGuid().ToString(),
                 DevAddr = Guid.NewGuid().ToString(),
-                GatewayID = Guid.NewGuid().ToString(),
+                GatewayId = Guid.NewGuid().ToString(),
                 SensorDecoder = Guid.NewGuid().ToString(),
-                UseOTAA = false,
+                UseOtaa = false,
             };
 
             item.Tags.Add("assetId", Guid.NewGuid().ToString());
@@ -230,7 +230,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             loRaDeviceTwinMapper.UpdateTwin(twin, item);
 
             // Assert
-            Assert.AreEqual(item.DeviceID, twin.DeviceId);
+            Assert.AreEqual(item.DeviceId, twin.DeviceId);
             Assert.AreEqual(item.ModelId, DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.ModelId)));
             Assert.AreEqual(item.DeviceName, DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)));
 
@@ -242,7 +242,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             Assert.AreEqual(item.NwkSKey, twin.Properties.Desired[nameof(LoRaDeviceDetails.NwkSKey)].ToString());
             Assert.AreEqual(item.AppSKey, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppSKey)].ToString());
             Assert.AreEqual(item.DevAddr, twin.Properties.Desired[nameof(LoRaDeviceDetails.DevAddr)].ToString());
-            Assert.AreEqual(item.GatewayID, twin.Properties.Desired[nameof(LoRaDeviceDetails.GatewayID)].ToString());
+            Assert.AreEqual(item.GatewayId, twin.Properties.Desired[nameof(LoRaDeviceDetails.GatewayId)].ToString());
 
             this.mockRepository.VerifyAll();
         }

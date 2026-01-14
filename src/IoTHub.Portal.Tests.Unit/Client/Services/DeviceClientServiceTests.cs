@@ -51,7 +51,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
 
             var expectedDevice = new DeviceDetails
             {
-                DeviceID = deviceId
+                DeviceId = deviceId
             };
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}")
@@ -72,7 +72,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var device = new DeviceDetails()
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
             _ = MockHttpClient.When(HttpMethod.Post, "/api/devices")

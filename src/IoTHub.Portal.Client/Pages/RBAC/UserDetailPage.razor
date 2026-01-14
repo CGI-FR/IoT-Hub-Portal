@@ -1,6 +1,5 @@
 @page "/users/{UserId}"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -34,7 +33,7 @@
                     <MudSelectItem Value="@r.Id">@r.Name</MudSelectItem>
                 }
             </MudSelect>
-            <MudTextField Label="Scope" Value="@allScopeDisplay" Disabled="true" Style="width:100px" />
+            <MudTextField Label="Scope" Value="@AllScopeDisplay" Disabled="true" Style="width:100px" />
             <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="string.IsNullOrEmpty(newRoleId) || isSaving" OnClick="AddRole" StartIcon="@Icons.Material.Filled.Add" id="addUserRoleButton">Add</MudButton>
         </MudStack>
         <MudTable Items="accessControls" Dense="true" Hover="true">
@@ -48,7 +47,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Role">@context.Role?.Name</MudTd>
-                <MudTd DataLabel="Scope">@allScopeDisplay</MudTd>
+                <MudTd DataLabel="Scope">@AllScopeDisplay</MudTd>
                 @if (canWrite)
                 {
                     <MudTd DataLabel="Actions" Style="text-align:center">
@@ -77,7 +76,7 @@
     private bool isSaving;
     private bool loadError;
     private string errorMessage = string.Empty;
-    private const string allScopeDisplay = "ALL";
+    private const string AllScopeDisplay = "ALL";
 
     protected override async Task OnInitializedAsync()
     {

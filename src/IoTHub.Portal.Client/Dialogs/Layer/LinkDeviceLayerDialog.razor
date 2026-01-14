@@ -23,7 +23,7 @@
                         <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Search" id="saveButton">Search</MudButton>
                     </div>
                 }
-                <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="_table" Loading="@IsLoading" RowStyle="cursor: pointer;">
+                <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" RowStyle="cursor: pointer;">
                     <ColGroup>
                         <col style="width: 10%;" />
                         <col style="width: 70%;" />
@@ -44,7 +44,7 @@
                             </MudItem>
                         </MudTd>
                         <MudTd DataLabel="Delete" Style="text-align: center">
-                            @if ((context.LayerId != null && context.LayerId == InitLayer.Id) || DeviceList.Contains(context.DeviceID))
+                            @if ((context.LayerId != null && context.LayerId == InitLayer.Id) || DeviceList.Contains(context.DeviceId))
                             {
                                 <MudTooltip Text="Already registered">
                                     <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.CheckBox" Size="Size.Medium" @onclick="() => UpdateChecked(context)"></MudIconButton>
@@ -95,9 +95,9 @@
     public string LayerName { get; set; } = default!;
 
     private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
-    private MudTable<DeviceListItem>? _table;
+    private MudTable<DeviceListItem>? table;
 
-    private readonly string? _searchId = "";
+    private readonly string? searchId = "";
 
     public IDeviceModel SelectedModel = new DeviceModelDto();
     public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
@@ -134,14 +134,14 @@
     private void Search()
     {
         ModelIdLoad = true;
-        _table?.ReloadServerData();
+        table?.ReloadServerData();
     }
 
     private async Task<TableData<DeviceListItem>> LoadItems(TableState state)
     {
         try
         {
-            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(_searchId)}";
+            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchId)}";
             if (ModelIdLoad) uri += $"&modelId={SelectedModel.ModelId}";
 
             var result = await DeviceClientService.GetDevices(uri);
@@ -169,18 +169,18 @@
     {
         if (device.LayerId != null && device.LayerId == InitLayer.Id)
         {
-            if (DeviceRemoveList.Contains(device.DeviceID)) DeviceRemoveList.Remove(device.DeviceID);
+            if (DeviceRemoveList.Contains(device.DeviceId)) DeviceRemoveList.Remove(device.DeviceId);
             else
             {
-                DeviceList.Remove(device.DeviceID);
-                DeviceRemoveList.Add(device.DeviceID);
+                DeviceList.Remove(device.DeviceId);
+                DeviceRemoveList.Add(device.DeviceId);
                 device.LayerId = null;
             }
         }
         else
         {
-            if (DeviceList.Contains(device.DeviceID)) DeviceList.Remove(device.DeviceID);
-            else DeviceList.Add(device.DeviceID);
+            if (DeviceList.Contains(device.DeviceId)) DeviceList.Remove(device.DeviceId);
+            else DeviceList.Add(device.DeviceId);
         }
     }
 
@@ -215,13 +215,13 @@
 
     private DeviceDetails FindDevice(string deviceId)
     {
-        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceId);
+        var device = Devices.FirstOrDefault(device => device.DeviceId == deviceId);
 
         var deviceDetails = new DeviceDetails();
 
         if (device == null) return deviceDetails;
 
-        deviceDetails.DeviceID = device.DeviceID;
+        deviceDetails.DeviceId = device.DeviceId;
         deviceDetails.DeviceName = device.DeviceName;
         deviceDetails.ModelId = device.DeviceModelId;
         deviceDetails.Image = device.Image;

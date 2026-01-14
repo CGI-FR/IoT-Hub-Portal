@@ -6,7 +6,7 @@ namespace IoTHub.Portal.Shared.Settings
     /// <summary>
     /// Open ID Connect Settings.
     /// </summary>
-    public class OIDCSettings
+    public class OidcSettings
     {
         /// <summary>
         /// The OIDC Authority.

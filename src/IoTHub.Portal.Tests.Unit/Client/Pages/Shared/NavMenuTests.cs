@@ -19,7 +19,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 
             _ = TestContext?.AddTestAuthorization().SetAuthorized(Guid.NewGuid().ToString());
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(PortalPermissionsHelper.GetAllPermissions());
 
         }

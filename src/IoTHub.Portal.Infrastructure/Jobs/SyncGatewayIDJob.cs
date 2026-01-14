@@ -39,7 +39,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         private async Task SyncGatewayId()
         {
-            this.gatewayIdList.GatewayIds = await this.externalDeviceService.GetAllGatewayID();
+            this.gatewayIdList.GatewayIds = await this.externalDeviceService.GetAllGatewayId();
         }
     }
 }

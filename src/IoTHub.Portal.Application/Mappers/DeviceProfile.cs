@@ -12,7 +12,7 @@ namespace IoTHub.Portal.Application.Mappers
             _ = CreateMap<Device, Device>();
 
             _ = CreateMap<DeviceDetails, Device>()
-                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceID))
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
                 .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.LayerId))
@@ -23,7 +23,7 @@ namespace IoTHub.Portal.Application.Mappers
                 })));
 
             _ = CreateMap<Device, DeviceDetails>()
-                .ForMember(dest => dest.DeviceID, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DeviceId, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ModelId, opts => opts.MapFrom(src => src.DeviceModelId))
                 .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.LayerId))
@@ -42,7 +42,7 @@ namespace IoTHub.Portal.Application.Mappers
             _ = CreateMap<LorawanDevice, LorawanDevice>();
 
             _ = CreateMap<LoRaDeviceDetails, LorawanDevice>()
-                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceID))
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
                 .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.LayerId))
@@ -53,7 +53,7 @@ namespace IoTHub.Portal.Application.Mappers
                 })));
 
             _ = CreateMap<LorawanDevice, LoRaDeviceDetails>()
-                .ForMember(dest => dest.DeviceID, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DeviceId, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ModelId, opts => opts.MapFrom(src => src.DeviceModelId))
                 .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.LayerId))
@@ -68,9 +68,9 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == DeviceConnectionState.Connected))
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == DeviceStatus.Enabled))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => GetTags(src)))
-                .ForMember(dest => dest.UseOTAA, opts => opts.MapFrom(src => !string.IsNullOrEmpty(DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.AppEUI)))))
+                .ForMember(dest => dest.UseOTAA, opts => opts.MapFrom(src => !string.IsNullOrEmpty(DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.AppEui)))))
                 .ForMember(dest => dest.AppKey, opts => opts.MapFrom(src => DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.AppKey))))
-                .ForMember(dest => dest.AppEUI, opts => opts.MapFrom(src => DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.AppEUI))))
+                .ForMember(dest => dest.AppEUI, opts => opts.MapFrom(src => DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.AppEui))))
                 .ForMember(dest => dest.AppSKey, opts => opts.MapFrom(src => DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.AppSKey))))
                 .ForMember(dest => dest.NwkSKey, opts => opts.MapFrom(src => DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.NwkSKey))))
                 .ForMember(dest => dest.DevAddr, opts => opts.MapFrom(src => DeviceHelper.RetrieveDesiredPropertyValue(src, nameof(LoRaDeviceDetails.DevAddr))))
@@ -78,15 +78,15 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.DataRate, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.DataRate))))
                 .ForMember(dest => dest.TxPower, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.TxPower))))
                 .ForMember(dest => dest.NbRep, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.NbRep))))
-                .ForMember(dest => dest.ReportedRX2DataRate, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.ReportedRX2DataRate))))
-                .ForMember(dest => dest.ReportedRX1DROffset, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.ReportedRX1DROffset))))
-                .ForMember(dest => dest.ReportedRXDelay, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.ReportedRXDelay))))
-                .ForMember(dest => dest.GatewayID, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.GatewayID))))
+                .ForMember(dest => dest.ReportedRX2DataRate, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.ReportedRx2DataRate))))
+                .ForMember(dest => dest.ReportedRX1DROffset, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.ReportedRx1DrOffset))))
+                .ForMember(dest => dest.ReportedRXDelay, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.ReportedRxDelay))))
+                .ForMember(dest => dest.GatewayID, opts => opts.MapFrom(src => DeviceHelper.RetrieveReportedPropertyValue(src, nameof(LoRaDeviceDetails.GatewayId))))
                 .ForMember(dest => dest.Downlink, opts => opts.MapFrom(src => GetDesiredPropertyAsBooleanValue(src, nameof(LoRaDeviceDetails.Downlink))))
-                .ForMember(dest => dest.RX1DROffset, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.RX1DROffset))))
-                .ForMember(dest => dest.RX2DataRate, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.RX2DataRate))))
-                .ForMember(dest => dest.RXDelay, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.RXDelay))))
-                .ForMember(dest => dest.ABPRelaxMode, opts => opts.MapFrom(src => GetDesiredPropertyAsBooleanValue(src, nameof(LoRaDeviceDetails.ABPRelaxMode))))
+                .ForMember(dest => dest.RX1DROffset, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.Rx1DrOffset))))
+                .ForMember(dest => dest.RX2DataRate, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.Rx2DataRate))))
+                .ForMember(dest => dest.RXDelay, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.RxDelay))))
+                .ForMember(dest => dest.ABPRelaxMode, opts => opts.MapFrom(src => GetDesiredPropertyAsBooleanValue(src, nameof(LoRaDeviceDetails.AbpRelaxMode))))
                 .ForMember(dest => dest.FCntUpStart, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.FCntUpStart))))
                 .ForMember(dest => dest.FCntDownStart, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.FCntDownStart))))
                 .ForMember(dest => dest.FCntResetCounter, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.FCntResetCounter))))

@@ -1,13 +1,10 @@
 ﻿
-@if (displayedLabels != null)
-{
-    <MudChipSet ReadOnly="true">
-        @foreach (var label in displayedLabels)
-        {
-            <MudChip Text="@label.Name" Color="Color.Primary" Size="Size.Small" Style="@($"background-color: {label.Color};")" />
-        }
-    </MudChipSet>
-}
+<MudChipSet ReadOnly="true">
+    @foreach (var label in displayedLabels)
+    {
+        <MudChip Text="@label.Name" Color="Color.Primary" Size="Size.Small" Style="@($"background-color: {label.Color};")" />
+    }
+</MudChipSet>
 
 @code {
 
@@ -24,13 +21,7 @@
 
     protected override void OnInitialized()
     {
-        if (Items == null)
-        {
-            displayedLabels = Array.Empty<LabelDto>();
-            return;
-        }
-
-        if (SearchedLabels != null)
+        if (SearchedLabels.Any())
         {
             displayedLabels = SearchedLabels.Where(x => Items.Any(c => c.Name == x.Name))
                                                     .UnionBy(Items, x => x.Name);

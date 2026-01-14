@@ -59,7 +59,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             _ = this.mockHostEnvironment.Setup(c => c.EnvironmentName)
                     .Returns(Environments.Production);
             _ = this.mockConfiguration.Setup(cnf => cnf[ConfigHandlerBase.CloudProviderKey])
-                    .Returns(CloudProviders.AWS);
+                    .Returns(CloudProviders.Aws);
 
             // Act
             var result = ConfigHandlerFactory.Create(this.mockHostEnvironment.Object, this.mockConfiguration.Object);

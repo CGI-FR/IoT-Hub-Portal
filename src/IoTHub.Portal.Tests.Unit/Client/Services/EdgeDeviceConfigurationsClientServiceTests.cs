@@ -41,11 +41,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var expectedConfiguration = Fixture.Create<ConfigListItem>();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/configurations/{expectedConfiguration.ConfigurationID}")
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/configurations/{expectedConfiguration.ConfigurationId}")
                 .RespondJson(expectedConfiguration);
 
             // Act
-            var result = await this.edgeDeviceConfigurationsClientService.GetDeviceConfiguration(expectedConfiguration.ConfigurationID);
+            var result = await this.edgeDeviceConfigurationsClientService.GetDeviceConfiguration(expectedConfiguration.ConfigurationId);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedConfiguration);

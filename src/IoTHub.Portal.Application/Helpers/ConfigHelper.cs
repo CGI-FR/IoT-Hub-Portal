@@ -16,7 +16,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>Corresponding metric value, or 0 if it doesn't exist.</returns>
         public static long RetrieveMetricValue(Configuration item, string metricName)
         {
-            ArgumentNullException.ThrowIfNull(item, nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 
             if (item.SystemMetrics.Results.TryGetValue(metricName, out var result))
             {
@@ -34,12 +34,12 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>A configuration converted to a ConfigListItem.</returns>
         public static ConfigListItem CreateConfigListItem(Configuration config, IReadOnlyCollection<IoTEdgeModule> moduleList)
         {
-            ArgumentNullException.ThrowIfNull(config, nameof(config));
-            ArgumentNullException.ThrowIfNull(moduleList, nameof(moduleList));
+            ArgumentNullException.ThrowIfNull(config);
+            ArgumentNullException.ThrowIfNull(moduleList);
 
             return new ConfigListItem
             {
-                ConfigurationID = config.Id,
+                ConfigurationId = config.Id,
                 Conditions = config.TargetCondition,
                 MetricsTargeted = RetrieveMetricValue(config, "targetedCount"),
                 MetricsApplied = RetrieveMetricValue(config, "appliedCount"),
@@ -58,11 +58,11 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>A configuration converted to a ConfigListItem.</returns>
         public static ConfigListItem CreateConfigListItem(Configuration config)
         {
-            ArgumentNullException.ThrowIfNull(config, nameof(config));
+            ArgumentNullException.ThrowIfNull(config);
 
             return new ConfigListItem
             {
-                ConfigurationID = config.Id,
+                ConfigurationId = config.Id,
                 Conditions = config.TargetCondition,
                 MetricsTargeted = RetrieveMetricValue(config, "targetedCount"),
                 MetricsApplied = RetrieveMetricValue(config, "appliedCount"),
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Application.Helpers
         /// <exception cref="InvalidOperationException"></exception>
         public static DeviceConfig CreateDeviceConfig(Configuration config)
         {
-            ArgumentNullException.ThrowIfNull(config, nameof(config));
+            ArgumentNullException.ThrowIfNull(config);
 
             // Define a regular expression for repeated words.
             var rx = new Regex(@"tags[.](?<tagName>\w*)[ ]?[=][ ]?\'(?<tagValue>[\w-]*)\'", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -134,8 +134,8 @@ namespace IoTHub.Portal.Application.Helpers
         /// <returns>A module with all its details as a GatewayModule object.</returns>
         public static IoTEdgeModule CreateGatewayModule(Configuration config, JProperty module)
         {
-            ArgumentNullException.ThrowIfNull(config, nameof(config));
-            ArgumentNullException.ThrowIfNull(module, nameof(module));
+            ArgumentNullException.ThrowIfNull(config);
+            ArgumentNullException.ThrowIfNull(module);
 
             var edgeModule = new IoTEdgeModule
             {
@@ -323,7 +323,7 @@ namespace IoTHub.Portal.Application.Helpers
 
         public static EdgeHubPropertiesDesired GenerateRoutesContent(List<IoTEdgeRoute> edgeRoutes)
         {
-            ArgumentNullException.ThrowIfNull(edgeRoutes, nameof(edgeRoutes));
+            ArgumentNullException.ThrowIfNull(edgeRoutes);
 
             var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
 
@@ -343,7 +343,7 @@ namespace IoTHub.Portal.Application.Helpers
 
         public static IoTEdgeRoute CreateIoTEdgeRouteFromJProperty(JProperty route)
         {
-            ArgumentNullException.ThrowIfNull(route, nameof(route));
+            ArgumentNullException.ThrowIfNull(route);
 
             return new IoTEdgeRoute
             {

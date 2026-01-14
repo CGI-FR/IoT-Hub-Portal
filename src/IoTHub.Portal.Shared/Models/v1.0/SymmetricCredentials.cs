@@ -12,7 +12,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The registration identifier.
         /// </summary>
-        public string RegistrationID { get; set; } = default!;
+        public string RegistrationId { get; set; } = default!;
 
         /// <summary>
         /// The symmetric key.
@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The scope identifier.
         /// </summary>
-        public string ScopeID { get; set; } = default!;
+        public string ScopeId { get; set; } = default!;
 
         /// <summary>
         /// The provisioning endpoint.

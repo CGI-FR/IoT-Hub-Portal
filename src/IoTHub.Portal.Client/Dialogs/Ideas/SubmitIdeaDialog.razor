@@ -29,7 +29,7 @@
                           HelperTextOnFocus="true"
                           Lines="10"
                           Placeholder="Please do not include any confidential or personal information in your comment"/>
-            <MudCheckBox id="idea-consent" T="bool" @bind-Checked="@ideaRequest.ConsentToCollectTechnicalDetails" Color="Color.Primary" Label="I consent to the collection of operating information from this site" Variant="Variant.Outlined"></MudCheckBox>
+            <MudCheckBox id="idea-consent" T="bool" @bind-Value="@ideaRequest.ConsentToCollectTechnicalDetails" Color="Color.Primary" Label="I consent to the collection of operating information from this site" Variant="Variant.Outlined" />
 
         <MudText Typo="Typo.caption" Class="mt-12">By clicking on submit, your idea will be published to <MudLink Href="https://github.com/CGI-FR/IoT-Hub-Portal/discussions/categories/ideas" Target="_blank" Underline="Underline.Always">Iot Hub Portal Discussions</MudLink> and will be viewed publicly by the community</MudText>
         </MudForm> 

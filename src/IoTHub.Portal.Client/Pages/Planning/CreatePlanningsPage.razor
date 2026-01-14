@@ -1,11 +1,10 @@
 ﻿@page "/planning/new"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
-    <EditPlanning planning=@Planning scheduleList=@ScheduleList mode="New" />
+    <EditPlanning Planning=@Planning ScheduleList=@ScheduleList Mode="New" />
 </AuthorizedContent>
 
 @code {

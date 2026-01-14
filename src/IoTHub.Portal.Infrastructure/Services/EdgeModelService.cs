@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task CreateEdgeModel(IoTEdgeModel edgeModel)
         {
-            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
+            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel.ModelId);
 
             if (edgeModelEntity == null)
             {
@@ -96,10 +96,10 @@ namespace IoTHub.Portal.Infrastructure.Services
             }
             else
             {
-                throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
+                throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel.ModelId} already exists");
             }
 
-            _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel?.ModelId);
+            _ = await this.deviceModelImageManager.SetDefaultImageToModel(edgeModel.ModelId);
 
 
             if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
@@ -156,7 +156,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 throw new ResourceNotFoundException($"The edge model with id {modelId} doesn't exist");
             }
-            if (config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.OrdinalIgnoreCase))
+            if (this.config.CloudProvider.Equals(CloudProviders.Azure, StringComparison.OrdinalIgnoreCase))
             {
                 return await GetAzureEdgeModel(edgeModelEntity);
             }
@@ -228,10 +228,10 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task UpdateEdgeModel(IoTEdgeModel edgeModel)
         {
-            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId, m => m.Labels);
+            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel.ModelId, m => m.Labels);
             if (edgeModelEntity == null)
             {
-                throw new ResourceNotFoundException($"The edge model with id {edgeModel?.ModelId} doesn't exist");
+                throw new ResourceNotFoundException($"The edge model with id {edgeModel.ModelId} doesn't exist");
             }
 
             foreach (var labelEntity in edgeModelEntity.Labels)

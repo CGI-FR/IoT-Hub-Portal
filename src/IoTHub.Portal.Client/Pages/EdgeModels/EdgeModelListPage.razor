@@ -1,11 +1,10 @@
 ﻿@page "/edge/models"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
 @inject IEdgeModelClientService EdgeModelService
-@inject IDialogService dialogService
+@inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
@@ -14,7 +13,7 @@
             <EdgeModelSearch OnSearch=@Search />
         </MudItem>
         <MudItem xs="12">
-            <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
+            <MudTable T="IoTEdgeModelListItem" Items="@edgeModelList" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 30%;" />
@@ -88,7 +87,7 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    private List<IoTEdgeModelListItem> EdgeModelList = new();
+    private List<IoTEdgeModelListItem> edgeModelList = new();
 
     private readonly int[] pageSizeOptions = { 3, 5, 10 };
 
@@ -109,7 +108,7 @@
         try
         {
             IsLoading = true;
-            EdgeModelList = await EdgeModelService.GetIoTEdgeModelList(new EdgeModelFilter
+            edgeModelList = await EdgeModelService.GetIoTEdgeModelList(new EdgeModelFilter
             {
                 Keyword = searchKeyword
             });
@@ -141,7 +140,7 @@
         var parameters = new DialogParameters();
         parameters.Add("deviceModelID", ioTEdgeModel.ModelId);
         parameters.Add("deviceModelName", ioTEdgeModel.Name);
-        var result = await dialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
+        var result = await DialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
 
         if (result.Canceled)
         {

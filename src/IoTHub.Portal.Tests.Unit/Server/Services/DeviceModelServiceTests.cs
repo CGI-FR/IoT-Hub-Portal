@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IDeviceModelMapper<DeviceModelDto, DeviceModelDto>> mockDeviceModelMapper;
 
-        private IDeviceModelService<DeviceModelDto, DeviceModelDto> deviceModelService;
+        private IDeviceModelService<DeviceModelDto,DeviceModelDto> deviceModelService;
 
         public override void Setup()
         {

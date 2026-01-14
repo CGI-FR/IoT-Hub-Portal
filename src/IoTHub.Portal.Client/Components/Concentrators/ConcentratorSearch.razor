@@ -2,20 +2,20 @@
     <MudExpansionPanel Text="Search panel">
         <MudGrid>
             <MudItem xs="12" md="6">
-                <MudTextField @bind-Value="searchKeyword" Placeholder="DeviceID / DeviceName" id="searchKeyword"></MudTextField>
+                <MudTextField @bind-Value="searchKeyword" Placeholder="DeviceId / DeviceName" id="searchKeyword"></MudTextField>
             </MudItem>
             <MudGrid>
                 <MudItem sm="12" md="6">
                     <MudText>Status</MudText>
-                    <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
+                    <MudRadioGroup @bind-Value="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
                         <MudItem md="4" sm="12">
-                            <MudRadio Option=@("true") Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
+                            <MudRadio Value=@("true") Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
                         </MudItem>
                         <MudItem md="4" sm="12">
-                            <MudRadio Option=@("false") Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
+                            <MudRadio Value=@("false") Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
                         </MudItem>
                         <MudItem md="4" sm="12">
-                            <MudRadio Option=@("") Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
+                            <MudRadio Value=@("") Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
                         </MudItem>
                     </MudRadioGroup>
 

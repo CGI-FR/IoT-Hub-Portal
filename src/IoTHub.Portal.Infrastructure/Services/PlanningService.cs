@@ -101,7 +101,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <returns>IEnumerable PlanningDto.</returns>
         public async Task<IEnumerable<PlanningDto>> GetPlannings()
         {
-            var planningPredicate = PredicateBuilder.True<PlanningDto>();
+            _ = PredicateBuilder.True<PlanningDto>();
 
             var plannings = await this.planningRepository.GetAllAsync();
 

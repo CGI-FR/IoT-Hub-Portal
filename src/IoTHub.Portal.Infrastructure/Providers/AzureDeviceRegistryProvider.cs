@@ -128,9 +128,9 @@ namespace IoTHub.Portal.Infrastructure.Providers
                 SymmetricCredentials = new SymmetricCredentials
                 {
                     SymmetricKey = symmetricKey,
-                    RegistrationID = deviceId,
-                    ScopeID = this.config.AzureDPSScopeID,
-                    ProvisioningEndpoint = $"https://{this.config.AzureDPSEndpoint}"
+                    RegistrationId = deviceId,
+                    ScopeId = this.config.AzureDpsScopeId,
+                    ProvisioningEndpoint = $"https://{this.config.AzureDpsEndpoint}"
                 }
             };
         }

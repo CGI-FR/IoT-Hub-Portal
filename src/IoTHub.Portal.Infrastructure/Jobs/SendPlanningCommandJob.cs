@@ -42,7 +42,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         private readonly ILayerService layerService;
         private readonly IPlanningService planningService;
         private readonly IScheduleService scheduleService;
-        private readonly ILoRaWANCommandService loRaWanCommandService;
+        private readonly ILoRaWanCommandService loRaWanCommandService;
 
         private readonly CancellationTokenSource cancellationTokenSource;
 
@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             ILayerService layerService,
             IPlanningService planningService,
             IScheduleService scheduleService,
-            ILoRaWANCommandService loRaWanCommandService,
+            ILoRaWanCommandService loRaWanCommandService,
             ILogger<SendPlanningCommandJob> logger)
         {
             this.logger = logger;
@@ -142,12 +142,12 @@ namespace IoTHub.Portal.Infrastructure.Jobs
                 // If the layer linked to a device already has a planning, add the device to the planning list
                 foreach (var planning in this.planningCommands.Where(planning => planning.PlanningId == layer.Planning))
                 {
-                    planning.ListDeviceId.Add(device.DeviceID);
+                    planning.ListDeviceId.Add(device.DeviceId);
                     return;
                 }
 
                 // Else create the planning
-                var newPlanning = new PlanningCommand(device.DeviceID, layer.Planning);
+                var newPlanning = new PlanningCommand(device.DeviceId, layer.Planning);
                 AddCommand(newPlanning);
                 this.planningCommands.Add(newPlanning);
             }
@@ -184,7 +184,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         // "Sa" represents Saturday and serves as a dictionary key.
         // planning.commands[Sa] contains a list of PayloadCommand Values.
         public void AddPlanningSchedule(PlanningDto planningData, PlanningCommand planning)
-        {   
+        {
             foreach (var key in planning.Commands.Keys)
             {
                 if ((planningData.DayOff & key) == planningData.DayOff)
@@ -251,7 +251,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public async Task SendDevicesCommand(Collection<string> devices, string command)
         {
-            foreach (var device in devices) await this.loRaWanCommandService.ExecuteLoRaWANCommand(device, command);
+            foreach (var device in devices) await this.loRaWanCommandService.ExecuteLoRaWanCommand(device, command);
         }
     }
 }

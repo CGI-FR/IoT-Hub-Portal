@@ -14,7 +14,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// The device identifier.
         /// </summary>
         [Required]
-        [RegularExpression("^[A-F0-9]{16}$", ErrorMessage = "DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")]
+        [RegularExpression("^[A-F0-9]{16}$", ErrorMessage = "DeviceId must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")]
         public string DeviceId { get; set; } = default!;
 
         /// <summary>

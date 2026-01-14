@@ -82,7 +82,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var expectedDeviceDto = Mapper.Map<LoRaDeviceDetails>(expectedDevice);
             expectedDeviceDto.Image = expectedImage;
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(expectedDevice);
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.GetDeviceModelImageAsync(It.IsAny<string>()).Result)
@@ -92,7 +92,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(expectedDevice.Tags.Select(tag => tag.Name));
 
             // Act
-            var result = await this.lorawanDeviceService.GetDevice(expectedDeviceDto.DeviceID);
+            var result = await this.lorawanDeviceService.GetDevice(expectedDeviceDto.DeviceId);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceDto);
@@ -122,10 +122,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -133,7 +133,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service =>
-                    service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
+                    service.CreateDeviceWithTwin(deviceDto.DeviceId, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
                 .ReturnsAsync(new BulkRegistryOperationResult());
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<LorawanDevice>()))
@@ -156,10 +156,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -167,7 +167,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service =>
-                    service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
+                    service.CreateDeviceWithTwin(deviceDto.DeviceId, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
                 .ReturnsAsync(new BulkRegistryOperationResult());
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<LorawanDevice>()))
@@ -190,16 +190,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceId))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -209,7 +209,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice
                 {
                     Tags = new List<DeviceTagValue>
@@ -248,16 +248,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceId))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -267,7 +267,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync((LorawanDevice)null);
 
             // Act
@@ -284,16 +284,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceId))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
                 .ReturnsAsync(new Microsoft.Azure.Devices.Device());
 
-            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceId))
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
@@ -303,7 +303,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice
                 {
                     Tags = new List<DeviceTagValue>(),
@@ -330,13 +330,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice
                 {
                     Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList(),
@@ -349,14 +349,14 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
-            this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceId);
 
             // Assert
             MockRepository.VerifyAll();
@@ -368,17 +368,17 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync((LorawanDevice)null);
 
             // Act
-            await this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceId);
 
             // Assert
             MockRepository.VerifyAll();
@@ -390,27 +390,27 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
-            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice
                 {
                     Tags = new List<DeviceTagValue>(),
                     Labels = new List<Label>()
                 });
 
-            this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .ThrowsAsync(new ReferenceConstraintException());
 
             // Act
-            var act = () => this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
+            var act = () => this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceId);
 
             // Assert
             _ = await act.Should().ThrowAsync<ReferenceConstraintException>();
@@ -423,22 +423,22 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
             var deviceEntity = new LorawanDevice
             {
-                Id = deviceDto.DeviceID,
+                Id = deviceDto.DeviceId,
                 Telemetry = Fixture.CreateMany<LoRaDeviceTelemetry>(1).ToList()
             };
 
             var expectedTelemetry = Mapper.Map<ICollection<LoRaDeviceTelemetry>, IEnumerable<LoRaDeviceTelemetryDto>>(deviceEntity.Telemetry);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Telemetry))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Telemetry))
                .ReturnsAsync(deviceEntity);
 
             // Act
-            var result = await this.lorawanDeviceService.GetDeviceTelemetry(deviceDto.DeviceID);
+            var result = await this.lorawanDeviceService.GetDeviceTelemetry(deviceDto.DeviceId);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedTelemetry);
@@ -451,16 +451,16 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceDto = new LoRaDeviceDetails
             {
-                DeviceID = Fixture.Create<string>()
+                DeviceId = Fixture.Create<string>()
             };
 
             var expectedTelemetry = Array.Empty<LoRaDeviceTelemetryDto>();
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Telemetry))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Telemetry))
                .ReturnsAsync((LorawanDevice)null);
 
             // Act
-            var result = await this.lorawanDeviceService.GetDeviceTelemetry(deviceDto.DeviceID);
+            var result = await this.lorawanDeviceService.GetDeviceTelemetry(deviceDto.DeviceId);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedTelemetry);
@@ -552,18 +552,18 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var lorawanDevice = new LorawanDevice
             {
-                Id = telemeryMessage.DeviceEUI
+                Id = telemeryMessage.DeviceEui
             };
 
             var systemProperties = new Dictionary<string, object>
             {
-                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                { "iothub-connection-device-id", telemeryMessage.DeviceEui },
                 {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
             }.AsReadOnly();
 
             var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEui, d => d.Telemetry))
                .ReturnsAsync(lorawanDevice);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
@@ -586,18 +586,18 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var lorawanDevice = new LorawanDevice
             {
-                Id = telemeryMessage.DeviceEUI
+                Id = telemeryMessage.DeviceEui
             };
 
             var systemProperties = new Dictionary<string, object>
             {
-                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                { "iothub-connection-device-id", telemeryMessage.DeviceEui },
                 {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
             }.AsReadOnly();
 
             var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEui, d => d.Telemetry))
                .ReturnsAsync(lorawanDevice);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
@@ -636,7 +636,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var lorawanDevice = new LorawanDevice
             {
-                Id = telemeryMessage.DeviceEUI,
+                Id = telemeryMessage.DeviceEui,
                 Telemetry = new List<LoRaDeviceTelemetry>()
                 {
                     new()
@@ -650,13 +650,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var systemProperties = new Dictionary<string, object>
             {
-                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                { "iothub-connection-device-id", telemeryMessage.DeviceEui },
                 {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
             }.AsReadOnly();
 
             var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEui, d => d.Telemetry))
                .ReturnsAsync(lorawanDevice);
 
             // Act
@@ -676,13 +676,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var systemProperties = new Dictionary<string, object>
             {
-                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                { "iothub-connection-device-id", telemeryMessage.DeviceEui },
                 {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
             }.AsReadOnly();
 
             var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEui, d => d.Telemetry))
                .ReturnsAsync((LorawanDevice)null);
 
             // Act
@@ -702,19 +702,19 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             var lorawanDevice = new LorawanDevice
             {
-                Id = telemeryMessage.DeviceEUI,
+                Id = telemeryMessage.DeviceEui,
                 Telemetry = Fixture.CreateMany<LoRaDeviceTelemetry>(100).ToList()
             };
 
             var systemProperties = new Dictionary<string, object>
             {
-                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                { "iothub-connection-device-id", telemeryMessage.DeviceEui },
                 { "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
             }.AsReadOnly();
 
             var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEui, d => d.Telemetry))
                .ReturnsAsync(lorawanDevice);
 
             this.mockLoRaDeviceTelemetryRepository.Setup(repository => repository.Delete(It.IsAny<string>()))

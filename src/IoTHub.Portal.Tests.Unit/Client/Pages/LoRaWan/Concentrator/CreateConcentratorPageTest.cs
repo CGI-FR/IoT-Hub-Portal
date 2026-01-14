@@ -25,7 +25,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = Services.AddSingleton(this.mockLoRaWanConcentratorsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.ConcentratorRead, PortalPermissions.ConcentratorWrite });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));

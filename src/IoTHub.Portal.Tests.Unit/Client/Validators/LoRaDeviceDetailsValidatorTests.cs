@@ -15,10 +15,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             var loraDevice = new LoRaDeviceDetails()
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = true,
-                AppEUI = Guid.NewGuid().ToString(),
+                UseOtaa = true,
+                AppEui = Guid.NewGuid().ToString(),
                 AppKey = Guid.NewGuid().ToString(),
-                DeviceID = "0533AEC287B6E96B"
+                DeviceId = "0533AEC287B6E96B"
             };
 
             // Act
@@ -38,11 +38,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             var loraDevice = new LoRaDeviceDetails()
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = false,
+                UseOtaa = false,
                 AppSKey = Guid.NewGuid().ToString(),
                 NwkSKey = Guid.NewGuid().ToString(),
                 DevAddr = Guid.NewGuid().ToString(),
-                DeviceID = "0533AEC287B6E96B"
+                DeviceId = "0533AEC287B6E96B"
             };
 
             // Act
@@ -60,11 +60,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             var loraValidator = new LoRaDeviceDetailsValidator();
             var loraDevice = new LoRaDeviceDetails()
             {
-                UseOTAA = false,
+                UseOtaa = false,
                 AppSKey = Guid.NewGuid().ToString(),
                 NwkSKey = Guid.NewGuid().ToString(),
                 DevAddr = Guid.NewGuid().ToString(),
-                DeviceID = "0533AEC287B6E96B"
+                DeviceId = "0533AEC287B6E96B"
             };
 
             // Act
@@ -90,7 +90,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             var loraDevice = new LoRaDeviceDetails()
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = false,
+                UseOtaa = false,
                 AppSKey = AppSkeyValue,
                 NwkSKey = NwkSKeyValue,
                 DevAddr = DevAddrValue
@@ -117,8 +117,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             var loraDevice = new LoRaDeviceDetails()
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = true,
-                AppEUI = AppEUIValue,
+                UseOtaa = true,
+                AppEui = AppEUIValue,
                 AppKey = AppKeyValue
             };
 

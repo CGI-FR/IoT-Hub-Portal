@@ -1,7 +1,6 @@
 ﻿@page "/edge/models/new"
 @inherits AuthorizedComponentBase
 @using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -14,7 +13,7 @@
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Edge Device Model</MudText>
 
-    <MudForm Model="@Model" @ref="form" id="form">
+    <MudForm Model="@model" @ref="form" id="form">
         <MudGrid>
             <MudItem xs="12" sm="4" md="3">
                 <MudCard>
@@ -52,10 +51,10 @@
                                         <ChildContent>
                                             <MudGrid>
                                                 <MudItem xs="12" md="6">
-                                                    <MudTextField id="@nameof(Model.Name)" @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
+                                                    <MudTextField id="@nameof(model.Name)" @bind-Value="@model.Name" For="@(() => model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
-                                                    <MudTextField id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
+                                                    <MudTextField id="@nameof(model.Description)" @bind-Value="@model.Description" For="@(() => model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
                                                 </MudItem>
 
                                             </MudGrid>
@@ -72,7 +71,7 @@
                                             <TitleContent><MudText Typo="Typo.h6">System Modules</MudText></TitleContent>
                                             <ChildContent>
                                                 <MudItem xs="12">
-                                                    <MudTable Items="Model.SystemModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <MudTable Items="model.SystemModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                         <ColGroup>
                                                             <col style="width: 15%;" />
                                                             <col style="width: 50%;" />
@@ -108,7 +107,7 @@
                                             <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
                                             <ChildContent>
                                                 <MudItem xs="12">
-                                                    <MudTable Items="@edgeModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <MudTable Items="@EdgeModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                         <ColGroup>
                                                             <col style="width: 30%;" />
                                                             <col style="width: 40%;" />
@@ -150,7 +149,7 @@
                                             <TitleContent><MudText Typo="Typo.h6">Routes</MudText></TitleContent>
                                             <ChildContent>
                                                 <MudItem xs="12">
-                                                    <MudTable Items="@Model.EdgeRoutes" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <MudTable Items="@model.EdgeRoutes" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                         <ColGroup>
                                                             <col style="width: 20%;" />
                                                             <col style="width: 20%;" />
@@ -165,21 +164,21 @@
                                                             <MudTh Style="text-align: center">Time To Live (Secs)</MudTh>
                                                             <MudTh Style="text-align: center">Delete</MudTh>
                                                         </HeaderContent>
-                                                        <RowTemplate Context="RouteContext">
+                                                        <RowTemplate Context="routeContext">
                                                             <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                                                <MudTextField id="@(nameof(IoTEdgeRoute.Name))" @bind-Value="@RouteContext.Name" Margin="Margin.Dense" Label="Name" For="@(() => RouteContext.Name)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                                <MudTextField id="@(nameof(IoTEdgeRoute.Name))" @bind-Value="@routeContext.Name" Margin="Margin.Dense" Label="Name" For="@(() => routeContext.Name)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                                             </MudTd>
                                                             <MudTd DataLabel="Value" Style="word-break: break-all;">
-                                                                <MudTextField id="@(nameof(IoTEdgeRoute.Value))" @bind-Value="@RouteContext.Value" Margin="Margin.Dense" Label="Value" For="@(() => RouteContext.Value)" Variant="Variant.Outlined" Required="true" />
+                                                                <MudTextField id="@(nameof(IoTEdgeRoute.Value))" @bind-Value="@routeContext.Value" Margin="Margin.Dense" Label="Value" For="@(() => routeContext.Value)" Variant="Variant.Outlined" Required="true" />
                                                             </MudTd>
                                                             <MudTd DataLabel="Priority" Style="text-align: center;">
-                                                                <MudNumericField @bind-Value="@RouteContext.Priority" Label="Priority" For="@(() => RouteContext.Priority)" Variant="Variant.Outlined"></MudNumericField>
+                                                                <MudNumericField @bind-Value="@routeContext.Priority" Label="Priority" For="@(() => routeContext.Priority)" Variant="Variant.Outlined"></MudNumericField>
                                                             </MudTd>
                                                             <MudTd DataLabel="Time To Live (Secs)" Style="text-align: center;">
-                                                                <MudNumericField @bind-Value="@RouteContext.TimeToLive" Label="TTL" For="@(() => RouteContext.TimeToLive)" Variant="Variant.Outlined"></MudNumericField>
+                                                                <MudNumericField @bind-Value="@routeContext.TimeToLive" Label="TTL" For="@(() => routeContext.TimeToLive)" Variant="Variant.Outlined"></MudNumericField>
                                                             </MudTd>
                                                             <MudTd DataLabel="Delete" Style="text-align: center">
-                                                                <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="(() => DeleteRoute(RouteContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                                                <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="(() => DeleteRoute(routeContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
                                                             </MudTd>
                                                         </RowTemplate>
                                                         <FooterContent>
@@ -192,7 +191,7 @@
                                     </MudItem>
                                 </MudGrid>
                             }
-                            @if (Portal.CloudProvider.Equals(CloudProviders.AWS))
+                            @if (Portal.CloudProvider.Equals(CloudProviders.Aws))
                             {
                                 <MudGrid>
                                     <MudItem xs="12">
@@ -200,7 +199,7 @@
                                             <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
                                             <ChildContent>
                                                 <MudItem xs="12">
-                                                    <MudTable Items="@edgeModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                    <MudTable Items="@EdgeModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                         <ColGroup>
                                                             <col style="width: 70%;" />
                                                             <col style="width: 10%;" />
@@ -238,7 +237,7 @@
                                     <MudExpansionPanel Text="Labels">
                                         <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
                                         <ChildContent>
-                                            <LabelsEditor Labels="Model.Labels" />
+                                            <LabelsEditor Labels="model.Labels" />
                                         </ChildContent>
                                     </MudExpansionPanel>
                                 </MudItem>
@@ -259,16 +258,16 @@
     [CascadingParameter]
     public Error Error { get; set; } = default!;
 
-    public List<IoTEdgeModule> edgeModules { get; } = new();
+    public List<IoTEdgeModule> EdgeModules { get; } = new();
 
-    public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
-    public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
-    public IoTEdgeRouteValidator edgeRouteValidator = new IoTEdgeRouteValidator();
+    public EdgeModelValidator EdgeModelValidator = new EdgeModelValidator();
+    public IoTEdgeModuleValidator EdgeModuleValidator = new IoTEdgeModuleValidator();
+    public IoTEdgeRouteValidator EdgeRouteValidator = new IoTEdgeRouteValidator();
 
     private MudForm form = default!;
     private bool isProcessing;
 
-    private IoTEdgeModel Model = new()
+    private IoTEdgeModel model = new()
     {
         ModelId = Guid.NewGuid().ToString()
     };
@@ -292,13 +291,13 @@
 
     private void AddModule()
     {
-        edgeModules.Add(new IoTEdgeModule());
+        EdgeModules.Add(new IoTEdgeModule());
     }
 
     private async Task ShowAddEdgePublicModulesDialog()
     {
         var parameters = new DialogParameters();
-        parameters.Add("EdgeModules", edgeModules);
+        parameters.Add("EdgeModules", EdgeModules);
 
         DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
@@ -338,7 +337,7 @@
         DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
         parameters.Add("Context", Context.Create);
-        parameters.Add("EdgeModules", edgeModules);
+        parameters.Add("EdgeModules", EdgeModules);
 
         await DialogService.Show<AwsGreengrassComponentDialog>(string.Empty, parameters, options).Result;
     }
@@ -365,7 +364,7 @@
         // Displays validation error message for each field
         await form.Validate();
 
-        if (!edgeModelValidator.Validate(Model).IsValid)
+        if (!EdgeModelValidator.Validate(model).IsValid)
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
@@ -374,7 +373,7 @@
             return;
         }
 
-        if (edgeModules.Any() && !edgeModuleValidator.Validate(edgeModules).IsValid)
+        if (EdgeModules.Any() && !EdgeModuleValidator.Validate(EdgeModules).IsValid)
         {
             Snackbar.Add("One or more validation errors occurred with the module.", Severity.Error);
 
@@ -383,7 +382,7 @@
             return;
         }
 
-        if (Model.EdgeRoutes.Any() && !edgeRouteValidator.Validate(Model.EdgeRoutes).IsValid)
+        if (model.EdgeRoutes.Any() && !EdgeRouteValidator.Validate(model.EdgeRoutes).IsValid)
         {
 
             Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
@@ -395,14 +394,14 @@
 
         try
         {
-            Model.EdgeModules = edgeModules;
+            model.EdgeModules = EdgeModules;
 
-            await EdgeModelService.CreateIoTEdgeModel(Model);
+            await EdgeModelService.CreateIoTEdgeModel(model);
 
             if (imageData is not null)
             {
                 var imageContent = new StringContent(imageData);
-                await EdgeModelService.ChangeAvatar(Model.ModelId, imageContent);
+                await EdgeModelService.ChangeAvatar(model.ModelId, imageContent);
             }
 
             Snackbar.Add("Device model successfully created.", Severity.Success);
@@ -420,21 +419,21 @@
 
     private void DeleteModule(IoTEdgeModule module)
     {
-        edgeModules.Remove(module);
+        EdgeModules.Remove(module);
     }
 
     private void DeleteRoute(IoTEdgeRoute route)
     {
-        Model.EdgeRoutes.Remove(route);
+        model.EdgeRoutes.Remove(route);
     }
 
     private void AddRoute()
     {
-        var last = Model.EdgeRoutes.LastOrDefault();
+        var last = model.EdgeRoutes.LastOrDefault();
 
-        if (Model.EdgeRoutes.Count == 0 || (last?.Name is not null && last?.Value is not null))
+        if (model.EdgeRoutes.Count == 0 || (last?.Name is not null && last?.Value is not null))
         {
-            Model.EdgeRoutes.Add(new IoTEdgeRoute());
+            model.EdgeRoutes.Add(new IoTEdgeRoute());
         }
     }
 }

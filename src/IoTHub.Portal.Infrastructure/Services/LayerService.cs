@@ -101,7 +101,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <returns>IEnumerable LayerDto.</returns>
         public async Task<IEnumerable<LayerDto>> GetLayers()
         {
-            var layerPredicate = PredicateBuilder.True<LayerDto>();
+            _ = PredicateBuilder.True<LayerDto>();
 
             var layers = await this.layerRepository.GetAllAsync();
 

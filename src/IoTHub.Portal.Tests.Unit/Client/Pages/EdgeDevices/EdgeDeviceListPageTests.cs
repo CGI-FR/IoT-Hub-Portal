@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
             _ = Services.AddSingleton<ClipboardService>();
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.EdgeDeviceRead, PortalPermissions.EdgeDeviceWrite, PortalPermissions.EdgeDeviceExecute });
         }
 

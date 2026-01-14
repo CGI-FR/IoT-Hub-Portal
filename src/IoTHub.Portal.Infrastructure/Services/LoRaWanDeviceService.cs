@@ -77,11 +77,11 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         protected override async Task<LoRaDeviceDetails> UpdateDeviceInDatabase(LoRaDeviceDetails device)
         {
-            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags, d => d.Labels);
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.DeviceId, d => d.Tags, d => d.Labels);
 
             if (deviceEntity == null)
             {
-                throw new ResourceNotFoundException($"The LoRaWAN device {device.DeviceID} doesn't exist");
+                throw new ResourceNotFoundException($"The LoRaWAN device {device.DeviceId} doesn't exist");
             }
 
             foreach (var deviceTagEntity in deviceEntity.Tags)
@@ -137,10 +137,6 @@ namespace IoTHub.Portal.Infrastructure.Services
         {
             try
             {
-                if (eventMessage == null) return;
-
-                LoRaDeviceTelemetry deviceTelemetry;
-
                 if (!eventMessage.SystemProperties.TryGetValue("iothub-connection-auth-method", out var authMethod))
                 {
                     this.logger.LogWarning($"Unable read 'iothub-connection-auth-method' property of the message. Please verify that the event is comming from an IoT Device.");
@@ -175,7 +171,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     return;
                 }
 
-                deviceTelemetry = new LoRaDeviceTelemetry
+                var deviceTelemetry = new LoRaDeviceTelemetry
                 {
                     Id = eventMessage.SequenceNumber.ToString(CultureInfo.InvariantCulture),
                     EnqueuedTime = eventMessage.EnqueuedTime.UtcDateTime,
@@ -197,8 +193,6 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 this.logger.LogError(e, $"Unable to store the LoRa telemetry message with sequence number {eventMessage.SequenceNumber}");
             }
-
-            return;
         }
 
         private void KeepOnlyLatestTelemetry(LorawanDevice loRaWanDevice, int numberOfMessages = 100)

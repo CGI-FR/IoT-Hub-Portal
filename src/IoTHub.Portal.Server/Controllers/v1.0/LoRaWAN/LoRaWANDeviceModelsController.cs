@@ -11,7 +11,7 @@ namespace IoTHub.Portal.Server.Controllers.v10.LoRaWAN
     [LoRaFeatureActiveFilter]
     public class LoRaWANDeviceModelsController : DeviceModelsControllerBase<DeviceModelDto, LoRaDeviceModelDto>
     {
-        private readonly IDeviceModelService<DeviceModelDto, LoRaDeviceModelDto> deviceModelService;
+        private readonly IDeviceModelService<DeviceModelDto,LoRaDeviceModelDto> deviceModelService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoRaWANDeviceModelsController"/> class.

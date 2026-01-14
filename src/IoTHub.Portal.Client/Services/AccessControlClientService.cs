@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
-
     public class AccessControlClientService : IAccessControlClientService
     {
         private readonly HttpClient http;

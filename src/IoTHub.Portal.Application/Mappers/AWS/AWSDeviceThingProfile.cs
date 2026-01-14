@@ -5,9 +5,9 @@ namespace IoTHub.Portal.Application.Mappers.AWS
 {
     using Device = Domain.Entities.Device;
 
-    public class AWSDeviceThingProfile : Profile
+    public class AwsDeviceThingProfile : Profile
     {
-        public AWSDeviceThingProfile()
+        public AwsDeviceThingProfile()
         {
             _ = CreateMap<DeviceDetails, CreateThingRequest>()
                 .ForMember(dest => dest.ThingName, opts => opts.MapFrom(src => src.DeviceName))

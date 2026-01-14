@@ -3,11 +3,11 @@
 
 namespace IoTHub.Portal.Application.Helpers
 {
-    public static class AWSDeviceHelper
+    public static class AwsDeviceHelper
     {
         public static JObject RetrieveDesiredProperties(GetThingShadowResponse shadow)
         {
-            ArgumentNullException.ThrowIfNull(shadow, nameof(shadow));
+            ArgumentNullException.ThrowIfNull(shadow);
 
             var payloadString = Encoding.UTF8.GetString(shadow.Payload.ToArray());
             var jsonObject = JObject.Parse(payloadString);
@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Application.Helpers
 
         public static JObject RetrieveReportedProperties(GetThingShadowResponse shadow)
         {
-            ArgumentNullException.ThrowIfNull(shadow, nameof(shadow));
+            ArgumentNullException.ThrowIfNull(shadow);
 
             var payloadString = Encoding.UTF8.GetString(shadow.Payload.ToArray());
             var jsonObject = JObject.Parse(payloadString);

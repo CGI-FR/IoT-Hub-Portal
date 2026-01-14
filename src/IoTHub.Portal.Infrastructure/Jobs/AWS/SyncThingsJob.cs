@@ -46,7 +46,7 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
             this.logger = logger;
             this.externalDeviceService = externalDeviceService;
         }
-        
+
         public async Task Execute(IJobExecutionContext context)
         {
             try

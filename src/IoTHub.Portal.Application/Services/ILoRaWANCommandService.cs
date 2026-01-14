@@ -3,10 +3,10 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    public interface ILoRaWANCommandService
+    public interface ILoRaWanCommandService
     {
         Task<DeviceModelCommandDto[]> GetDeviceModelCommandsFromModel(string id);
         Task PostDeviceModelCommands(string id, DeviceModelCommandDto[] commands);
-        Task ExecuteLoRaWANCommand(string deviceId, string commandId);
+        Task ExecuteLoRaWanCommand(string deviceId, string commandId);
     }
 }

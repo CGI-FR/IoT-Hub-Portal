@@ -28,7 +28,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.ConcentratorRead, PortalPermissions.ConcentratorWrite });
         }
 
@@ -45,7 +45,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
                     new FrequencyPlan()
                 });
 
-            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", this.mockDeviceId));
+            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceId", this.mockDeviceId));
             cut.WaitForAssertion(() => cut.Find("#returnButton"));
 
             // Act
@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
                 });
 
             // Act
-            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", this.mockDeviceId));
+            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceId", this.mockDeviceId));
             cut.WaitForAssertion(() => cut.Find("#returnButton"));
 
             // Assert
@@ -101,7 +101,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
                 .Setup(service => service.UpdateConcentrator(mockConcentrator))
                 .Returns(Task.CompletedTask);
 
-            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockConcentrator.DeviceId));
+            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceId", mockConcentrator.DeviceId));
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
             // Act
@@ -132,7 +132,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(mockConcentrator.DeviceId))
                 .ReturnsAsync(mockConcentrator);
 
-            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockConcentrator.DeviceId));
+            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceId", mockConcentrator.DeviceId));
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
             // Act
@@ -166,7 +166,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
                 .Setup(service => service.UpdateConcentrator(mockConcentrator))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
-            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockConcentrator.DeviceId));
+            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceId", mockConcentrator.DeviceId));
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
             // Act

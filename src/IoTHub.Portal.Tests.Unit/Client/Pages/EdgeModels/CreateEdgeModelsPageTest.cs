@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockEdgeModelClientService.Object);
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.EdgeModelRead, PortalPermissions.EdgeModelWrite });
         }
 

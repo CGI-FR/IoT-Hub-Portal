@@ -3,17 +3,6 @@
 
 namespace IoTHub.Portal.Client.Components.Commons
 {
-    using System;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Services;
-    using IoTHub.Portal.Shared.Security;
-    using Microsoft.AspNetCore.Components;
-    using Microsoft.AspNetCore.Components.Authorization;
-    using Microsoft.Extensions.Logging;
-
     public abstract class AuthorizedComponentBase : ComponentBase
     {
         [Inject]

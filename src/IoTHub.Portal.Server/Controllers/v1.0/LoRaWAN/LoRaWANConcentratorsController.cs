@@ -16,7 +16,7 @@ namespace IoTHub.Portal.Server.Controllers.v10.LoRaWAN
         /// <summary>
         /// The LoRaWAN concentrator service.
         /// </summary>
-        private readonly ILoRaWANConcentratorService loRaWANConcentratorService;
+        private readonly ILoRaWanConcentratorService loRaWANConcentratorService;
 
         /// <summary>
         /// The device Lora wan concentrators controller.
@@ -30,7 +30,7 @@ namespace IoTHub.Portal.Server.Controllers.v10.LoRaWAN
         /// <param name="loRaWANConcentratorService">The device Lora wan concentrators controller.</param>
         public LoRaWANConcentratorsController(
             ILogger<LoRaWANConcentratorsController> logger,
-            ILoRaWANConcentratorService loRaWANConcentratorService)
+            ILoRaWanConcentratorService loRaWANConcentratorService)
         {
             this.logger = logger;
             this.loRaWANConcentratorService = loRaWANConcentratorService;

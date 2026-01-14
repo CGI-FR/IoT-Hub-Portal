@@ -10,7 +10,6 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
         /// </summary>
         private readonly IExternalDeviceService externalDeviceService;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IEdgeDeviceRepository edgeDeviceRepository;
         private readonly IEdgeEnrollementHelper edgeEnrollementHelper;
         private readonly IEdgeDeviceModelRepository deviceModelRepository;
         private readonly IConfigService configService;
@@ -44,7 +43,6 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             this.deviceModelRepository = deviceModelRepository;
 
             this.unitOfWork = unitOfWork;
-            this.edgeDeviceRepository = edgeDeviceRepository;
 
             this.mapper = mapper;
 

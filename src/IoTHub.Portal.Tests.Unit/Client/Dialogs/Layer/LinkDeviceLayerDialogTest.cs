@@ -37,8 +37,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true },
-                                    new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true }}
+                    Items = new[] { new DeviceListItem { DeviceId = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true },
+                                    new DeviceListItem { DeviceId = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true }}
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
@@ -82,15 +82,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = mockDeviceModel.ModelId },
-                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = Guid.NewGuid().ToString() }}
+                    Items = new[] { new DeviceListItem { DeviceId = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = mockDeviceModel.ModelId },
+                        new DeviceListItem { DeviceId = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = Guid.NewGuid().ToString() }}
                 });
 
             _ = this.mockDeviceClientService.Setup(service =>
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText=&modelId={mockDeviceModel.ModelId}"))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = mockDeviceModel.ModelId } }
+                    Items = new[] { new DeviceListItem { DeviceId = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = mockDeviceModel.ModelId } }
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
@@ -138,8 +138,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = mockDeviceModel.ModelId },
-                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = Guid.NewGuid().ToString() }}
+                    Items = new[] { new DeviceListItem { DeviceId = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = mockDeviceModel.ModelId },
+                        new DeviceListItem { DeviceId = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = Guid.NewGuid().ToString() }}
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))

@@ -75,7 +75,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
                 }
             }
 
-            this.logger.LogInformation("User with principal ID {PrincipalId} has {Count} permissions", user.PrincipalId, userPermissions.Count);
+            this.logger.LogDebug("User with principal ID {PrincipalId} has {Count} permissions", user.PrincipalId, userPermissions.Count);
 
             return Ok(userPermissions.ToArray());
         }

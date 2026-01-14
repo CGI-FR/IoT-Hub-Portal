@@ -19,7 +19,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The IoT Edge configuration identifier.
         /// </summary>
-        public string ConfigurationID { get; set; } = default!;
+        public string ConfigurationId { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge configuration target conditions.

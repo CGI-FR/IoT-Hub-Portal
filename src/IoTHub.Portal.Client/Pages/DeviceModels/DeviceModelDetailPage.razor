@@ -1,7 +1,6 @@
 ﻿@page "/device-models/{ModelID}"
 @inherits AuthorizedComponentBase
 @using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -124,7 +123,7 @@
                                                                 </MudSelect>
                                                             </MudItem>
                                                             <MudItem md="1" xs="3">
-                                                                <MudSwitch id="@nameof(item.IsWritable)" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
+                                                                <MudSwitch id="@nameof(item.IsWritable)" @bind-Value="@item.IsWritable" Color="Color.Secondary" />
                                                                 <MudInputLabel>Writable</MudInputLabel>
                                                             </MudItem>
                                                             @if (canWrite)
@@ -176,7 +175,7 @@
     public Error Error { get; set; } = default!;
 
     [Parameter]
-    public string ModelID { get; set; } = default!;
+    public string ModelId { get; set; } = default!;
 
     private bool isProcessing;
 
@@ -189,7 +188,7 @@
     private List<DeviceModelCommandDto> Commands { get; set; } = new();
     private List<DeviceProperty> Properties { get; set; } = new();
 
-    private LoRaDeviceModelCommandValidator CommandValidator = new();
+    private LoRaDeviceModelCommandValidator commandValidator = new();
 
     [Parameter]
     [SupplyParameterFromQuery]
@@ -223,15 +222,15 @@
 
             if (IsLoRa)
             {
-                Model = await LoRaWanDeviceModelsClientService.GetDeviceModel(ModelID);
-                Commands.AddRange(await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(ModelID));
-                imageData = await LoRaWanDeviceModelsClientService.GetAvatar(ModelID);
+                Model = await LoRaWanDeviceModelsClientService.GetDeviceModel(ModelId);
+                Commands.AddRange(await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(ModelId));
+                imageData = await LoRaWanDeviceModelsClientService.GetAvatar(ModelId);
             }
             else
             {
-                Model = await DeviceModelsClientService.GetDeviceModel(ModelID);
-                Properties.AddRange(await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(ModelID));
-                imageData = await DeviceModelsClientService.GetAvatar(ModelID);
+                Model = await DeviceModelsClientService.GetDeviceModel(ModelId);
+                Properties.AddRange(await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(ModelId));
+                imageData = await DeviceModelsClientService.GetAvatar(ModelId);
             }
 
             // Check if user has write permission for conditional UI elements
@@ -323,7 +322,7 @@
             // Check validation error in commands
             foreach (var cmd in Commands)
             {
-                if (!CommandValidator.Validate(cmd).IsValid)
+                if (!commandValidator.Validate(cmd).IsValid)
                     cmdValidationError = true;
             }
         }

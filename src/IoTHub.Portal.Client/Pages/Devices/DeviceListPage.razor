@@ -1,6 +1,5 @@
 ﻿@page "/devices"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -9,7 +8,7 @@
 @inject PortalSettings Portal
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
-@inject IJSRuntime JS
+@inject IJSRuntime Js
 @inject IDeviceModelsClientService DeviceModelsClientService
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
@@ -19,7 +18,7 @@
                 <MudExpansionPanel Text="Search panel">
                     <MudGrid>
                         <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="searchID" Placeholder="DeviceID / DeviceName" id="searchID"></MudTextField>
+                            <MudTextField @bind-Value="searchId" Placeholder="DeviceId / DeviceName" id="searchID"></MudTextField>
                         </MudItem>
                         @foreach (DeviceTagDto tag in TagList)
                         {
@@ -70,15 +69,21 @@
                         <MudGrid>
                             <MudItem sm="12" md="6">
                                 <MudText>Status</MudText>
-                                <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
+                                <MudRadioGroup @bind-SelectedValue="@searchStatus" T="string" Style="display:flex;align-items:baseline" id="searchStatus">
                                     <MudItem md="4" sm="12">
-                                        <MudRadio Option=@("true") Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
+                                        <MudRadio Value=@("true") 
+                                                  Color="Color.Primary" 
+                                                  id="searchStatusEnabled">Enabled</MudRadio>
                                     </MudItem>
                                     <MudItem md="4" sm="12">
-                                        <MudRadio Option=@("false") Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
+                                        <MudRadio Value=@("false")
+                                                  Color="Color.Primary" 
+                                                  id="searchDisabled">Disabled</MudRadio>
                                     </MudItem>
                                     <MudItem md="4" sm="12">
-                                        <MudRadio Option=@("") Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
+                                        <MudRadio Value=@("")
+                                                  Color="Color.Secondary" 
+                                                  id="searchStatusAll">All</MudRadio>
                                     </MudItem>
                                 </MudRadioGroup>
 
@@ -127,7 +132,7 @@
 
                     <MudButton id="manageDevicesButtonToggle" Variant="Variant.Filled" Color="Color.Primary" OnClick="@ToggleOpen">
                         Manage devices
-                        <MudPopover Open="@menuIsOpen" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.TopRight">
+                        <MudPopover Open="@MenuIsOpen" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.TopRight">
                             <MudItem>
                                 <MudButton id="exportTemplateButton" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportTemplateFile">Download template file</MudButton>
                             </MudItem>
@@ -179,7 +184,7 @@
                     <MudTd DataLabel="Device">
                         <MudItem>
                             <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText>
-                            <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceID</MudText>
+                            <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceId</MudText>
                         </MudItem>
                         <MudItem>
                             <Labels Items="@context.Labels" SearchedLabels="@labels" />
@@ -209,7 +214,7 @@
                             @if (context.HasLoRaTelemetry)
                             {
                                 <MudTooltip Text="See device telemetries">
-                                    <MudIconButton id="@($"show-device-telemetry-{@context.DeviceID}")" Icon="@Icons.Material.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetry(context))" />
+                                    <MudIconButton id="@($"show-device-telemetry-{@context.DeviceId}")" Icon="@Icons.Material.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetry(context))" />
                                 </MudTooltip>
                             }
                         </MudTd>
@@ -224,7 +229,7 @@
                     {
                         <MudTd DataLabel="Delete" Style="text-align: center">
                             <MudTooltip Text="Delete device">
-                                <MudIconButton id="@($"delete-device-{@context.DeviceID}")" Color="Color.Default"
+                                <MudIconButton id="@($"delete-device-{@context.DeviceId}")" Color="Color.Default"
                                                Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"
                                                OnClick="@(e => DeleteDevice(context))" />
                             </MudTooltip>
@@ -254,7 +259,7 @@
     [CascadingParameter]
     public Error? Error { get; set; }
 
-    private string? searchID = "";
+    private string? searchId = "";
     private string? searchStatus;
     private string? searchState;
 
@@ -310,7 +315,7 @@
                     break;
             }
 
-            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}&orderBy={orderBy}&modelId={Model?.ModelId}";
+            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchId)}&searchStatus={searchStatus}&searchState={searchState}&orderBy={orderBy}&modelId={Model?.ModelId}";
 
             foreach (var searchTag in searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
             {
@@ -353,7 +358,7 @@
     /// <returns></returns>
     private void Reset()
     {
-        searchID = "";
+        searchId = "";
         searchStatus = "";
         searchState = "";
         searchTags = searchTags.ToDictionary(tag => tag.Key, tag => "");
@@ -380,7 +385,7 @@
     private async Task DeleteDevice(DeviceListItem device)
     {
         var parameters = new DialogParameters();
-        parameters.Add("deviceID", device.DeviceID);
+        parameters.Add("deviceID", device.DeviceId);
         parameters.Add("deviceName", device.DeviceName);
         parameters.Add("IsLoRaWan", device.SupportLoRaFeatures);
 
@@ -396,7 +401,7 @@
 
     private void GoToDetails(DeviceListItem item)
     {
-        NavigationManager.NavigateTo($"devices/{item.DeviceID}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
+        NavigationManager.NavigateTo($"devices/{item.DeviceId}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
     }
 
     /// <summary>
@@ -421,29 +426,29 @@
 
     private async Task ExportDeviceList()
     {
-        menuIsOpen = false;
+        MenuIsOpen = false;
 
         var export = await DeviceClientService.ExportDeviceList();
         var fileName = export?.Headers?.ContentDisposition?.Parameters.Single(c => c.Name == "filename").Value;
 
         using var streamRef = new DotNetStreamReference(stream: await export?.ReadAsStreamAsync()!);
-        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        await Js.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
     private async Task ExportTemplateFile()
     {
-        menuIsOpen = false;
+        MenuIsOpen = false;
 
         var export = await DeviceClientService.ExportTemplateFile();
         var fileName = export?.Headers?.ContentDisposition?.Parameters.Single(c => c.Name == "filename").Value;
 
         using var streamRef = new DotNetStreamReference(stream: await (export?.ReadAsStreamAsync())!);
-        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        await Js.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
     private async Task ShowDeviceTelemetry(DeviceListItem device)
     {
-        var parameters = new DialogParameters { { "DeviceID", device.DeviceID } };
+        var parameters = new DialogParameters { { "DeviceId", device.DeviceId } };
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
         await DialogService.Show<LoRaDeviceTelemetryDialog>(string.Empty, parameters, options).Result;
@@ -451,7 +456,7 @@
 
     private async Task ImportDeviceList(IBrowserFile file)
     {
-        menuIsOpen = false;
+        MenuIsOpen = false;
 
         var fileContent = new StreamContent(file.OpenReadStream());
         fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
@@ -466,11 +471,11 @@
         await DialogService.Show<ImportReportDialog>("Import summary", parameters, options).Result;
     }
 
-    public bool menuIsOpen;
+    public bool MenuIsOpen;
 
     public void ToggleOpen()
     {
-        menuIsOpen = !menuIsOpen;
+        MenuIsOpen = !MenuIsOpen;
     }
 
     private string GetMultiSelectionText(List<string> selectedValues)

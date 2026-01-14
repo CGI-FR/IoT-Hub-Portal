@@ -3,16 +3,7 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using AutoMapper;
-    using IoTHub.Portal.Crosscutting;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
 
     public class UserService : IUserManagementService
     {
@@ -67,7 +58,7 @@ namespace IoTHub.Portal.Application.Services
             string? searchEmail,
             int pageSize,
             int pageNumber,
-            string[] orderBy
+            string[]? orderBy
             )
         {
             var userFilter = new UserFilter

@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
             return configuration.CloudProvider switch
             {
                 CloudProviders.Azure => services.AddAzureInfrastructureLayer(configuration),
-                CloudProviders.AWS => services.AddAWSInfrastructureLayer(configuration),
+                CloudProviders.Aws => services.AddAwsInfrastructureLayer(configuration),
                 _ => services
             };
         }
@@ -28,29 +28,29 @@ namespace IoTHub.Portal.Infrastructure.Startup
 
             switch (configuration.DbProvider)
             {
-                case DbProviders.PostgreSQL:
-                    if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
+                case DbProviders.PostgreSql:
+                    if (string.IsNullOrEmpty(configuration.PostgreSqlConnectionString))
                     {
                         return services;
                     }
                     _ = services.AddDbContextPool<PortalDbContext>(opts =>
                     {
-                        _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("IoTHub.Portal.Postgres"));
+                        _ = opts.UseNpgsql(configuration.PostgreSqlConnectionString, x => x.MigrationsAssembly("IoTHub.Portal.Postgres"));
                         _ = opts.UseExceptionProcessor();
                     });
-                    _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("IoTHub.Portal.Postgres"));
+                    _ = dbContextOptions.UseNpgsql(configuration.PostgreSqlConnectionString, x => x.MigrationsAssembly("IoTHub.Portal.Postgres"));
                     break;
-                case DbProviders.MySQL:
-                    if (string.IsNullOrEmpty(configuration.MySQLConnectionString))
+                case DbProviders.MySql:
+                    if (string.IsNullOrEmpty(configuration.MySqlConnectionString))
                     {
                         return services;
                     }
                     _ = services.AddDbContextPool<PortalDbContext>(opts =>
                     {
-                        _ = opts.UseMySql(configuration.MySQLConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySQLConnectionString), x => x.MigrationsAssembly("IoTHub.Portal.MySql"));
+                        _ = opts.UseMySql(configuration.MySqlConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySqlConnectionString), x => x.MigrationsAssembly("IoTHub.Portal.MySql"));
                         _ = opts.UseExceptionProcessor();
                     });
-                    _ = dbContextOptions.UseMySql(configuration.MySQLConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySQLConnectionString), x => x.MigrationsAssembly("IoTHub.Portal.MySql"));
+                    _ = dbContextOptions.UseMySql(configuration.MySqlConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySqlConnectionString), x => x.MigrationsAssembly("IoTHub.Portal.MySql"));
                     break;
                 default:
                     return services;

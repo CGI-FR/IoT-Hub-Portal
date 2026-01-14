@@ -11,13 +11,13 @@ namespace IoTHub.Portal.Server.Controllers.v10
     [LoRaFeatureActiveFilter]
     public class LoRaWANDevicesController : DevicesControllerBase<LoRaDeviceDetails>
     {
-        private readonly ILoRaWANCommandService loRaWanCommandService;
+        private readonly ILoRaWanCommandService loRaWanCommandService;
         private readonly LoRaGatewayIdList gatewayIdList;
         private readonly IDeviceService<LoRaDeviceDetails> deviceService;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
-            ILoRaWANCommandService loRaWanCommandService,
+            ILoRaWanCommandService loRaWanCommandService,
             IDeviceService<LoRaDeviceDetails> deviceService,
             LoRaGatewayIdList gatewayIdList)
             : base(logger, deviceService)
@@ -105,7 +105,7 @@ namespace IoTHub.Portal.Server.Controllers.v10
         [Authorize("device:execute")]
         public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
-            await this.loRaWanCommandService.ExecuteLoRaWANCommand(deviceId, commandId);
+            await this.loRaWanCommandService.ExecuteLoRaWanCommand(deviceId, commandId);
 
             return Ok();
         }

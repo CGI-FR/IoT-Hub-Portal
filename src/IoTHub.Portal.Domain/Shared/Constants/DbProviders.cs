@@ -6,8 +6,8 @@ namespace IoTHub.Portal.Domain.Shared.Constants
 
     public static class DbProviders
     {
-        public const string PostgreSQL = "PostgreSQL";
+        public const string PostgreSql = "PostgreSQL";
 
-        public const string MySQL = "MySQL";
+        public const string MySql = "MySQL";
     }
 }

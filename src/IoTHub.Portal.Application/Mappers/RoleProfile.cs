@@ -3,9 +3,7 @@
 
 namespace IoTHub.Portal.Application.Mappers
 {
-    using AutoMapper;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Shared.Models.v10;
+    using Action = Domain.Entities.Action;
 
     public class RoleProfile : Profile
     {

@@ -28,6 +28,6 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// The planning has a subLayer.
         /// </summary>
-        public bool hasSub { get; set; }
+        public bool HasSub { get; set; }
     }
 }

@@ -41,12 +41,12 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             try
             {
                 var thingResponse = await this.amazonIoTClient.CreateThingAsync(this.mapper.Map<CreateThingRequest>(device));
-                device.DeviceID = thingResponse.ThingId;
+                device.DeviceId = thingResponse.ThingId;
 
                 try
                 {
                     //Create Thing Shadow
-                    await this.amazonIotDataClient.UpdateThingShadowAsync(this.mapper.Map<UpdateThingShadowRequest>(device));
+                    _ = await this.amazonIotDataClient.UpdateThingShadowAsync(this.mapper.Map<UpdateThingShadowRequest>(device));
 
                     //Create Thing in DB
                     return await CreateDeviceInDatabase(device);
@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
             try
             {
                 //Update Thing
-                await this.amazonIoTClient.UpdateThingAsync(this.mapper.Map<UpdateThingRequest>(device));
+                _ = await this.amazonIoTClient.UpdateThingAsync(this.mapper.Map<UpdateThingRequest>(device));
 
                 //Update Thing in DB
                 return await UpdateDeviceInDatabase(device);

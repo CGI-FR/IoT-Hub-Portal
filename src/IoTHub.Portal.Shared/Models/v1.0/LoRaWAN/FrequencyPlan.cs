@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Shared.Models.v10.LoRaWAN
 {
     public class FrequencyPlan
     {
-        public string FrequencyPlanID { get; set; } = default!;
+        public string FrequencyPlanId { get; set; } = default!;
 
         public string Name { get; set; } = default!;
     }

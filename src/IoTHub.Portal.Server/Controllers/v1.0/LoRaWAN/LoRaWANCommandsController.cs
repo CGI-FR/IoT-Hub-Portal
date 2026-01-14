@@ -14,13 +14,13 @@ namespace IoTHub.Portal.Server.Controllers.v10.LoRaWAN
         /// <summary>
         /// The LoRaWAN commands service.
         /// </summary>
-        private readonly ILoRaWANCommandService loRaWANCommandService;
+        private readonly ILoRaWanCommandService loRaWANCommandService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoRaWANCommandsController"/> class.
         /// </summary>
         /// <param name="loRaWANCommandService">The LoRaWAN command service</param>
-        public LoRaWANCommandsController(ILoRaWANCommandService loRaWANCommandService)
+        public LoRaWANCommandsController(ILoRaWanCommandService loRaWANCommandService)
         {
             this.loRaWANCommandService = loRaWANCommandService;
         }

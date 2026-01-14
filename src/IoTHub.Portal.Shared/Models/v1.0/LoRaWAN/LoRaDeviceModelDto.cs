@@ -44,7 +44,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// Default is true.
         /// </summary>
         [DefaultValue(true)]
-        public bool UseOTAA { get; set; }
+        public bool UseOtaa { get; set; }
 
         /// <summary>
         /// Allows disabling the downstream (cloud to device) for a device.
@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
             Description = from.Description;
             IsBuiltin = from.IsBuiltin;
             Image = from.Image;
-            UseOTAA = true;
+            UseOtaa = true;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
             Downlink = true;
             PreferredWindow = 1;
             Deduplication = DeduplicationMode.None;
-            ABPRelaxMode = true;
+            AbpRelaxMode = true;
         }
     }
 }

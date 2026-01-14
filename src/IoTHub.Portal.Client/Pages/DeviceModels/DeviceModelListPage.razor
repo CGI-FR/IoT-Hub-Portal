@@ -1,11 +1,10 @@
 ﻿@page "/device-models"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
 @inject PortalSettings Portal
-@inject IDialogService dialogService
+@inject IDialogService DialogService
 @inject IDeviceModelsClientService DeviceModelsClientService
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
@@ -118,7 +117,7 @@
 
     private void AddDeviceModel()
     {
-        navigationManager.NavigateTo("/device-models/new");
+        NavigationManager.NavigateTo("/device-models/new");
     }
 
     /// <summary>
@@ -173,7 +172,7 @@
         var parameters = new DialogParameters();
         parameters.Add("deviceModelID", deviceModel.ModelId);
         parameters.Add("deviceModelName", deviceModel.Name);
-        var result = await dialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
+        var result = await DialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
 
         if (result.Canceled)
         {
@@ -187,7 +186,7 @@
 
     private void GoToDetails(DeviceModelDto item)
     {
-        navigationManager.NavigateTo($"/device-models/{item.ModelId}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
+        NavigationManager.NavigateTo($"/device-models/{item.ModelId}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
     }
 
     private async Task Search(DeviceModelSearchInfo? deviceModelSearchInfo = null)

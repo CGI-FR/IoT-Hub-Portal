@@ -54,8 +54,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
 
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
 
@@ -92,8 +92,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var bucketName = "invalid bucket Name for example";
             var region = Fixture.Create<string>();
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
 
@@ -121,8 +121,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var bucketName = "invalid bucket Name for example";
             var region = Fixture.Create<string>();
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
 
@@ -153,7 +153,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var deviceModelId = Fixture.Create<string>();
             var bucketName = Fixture.Create<string>();
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
 
             _ = this.s3ClientMock.Setup(s3 => s3.DeleteObjectAsync(It.IsAny<DeleteObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new AmazonS3Exception("Unable to delete the image from S3 storage due to an error in Amazon S3 API."));
@@ -173,7 +173,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var deviceModelId = Fixture.Create<string>();
             var bucketName = Fixture.Create<string>();
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
 
             _ = this.s3ClientMock.Setup(s3 => s3.DeleteObjectAsync(It.IsAny<DeleteObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DeleteObjectResponse());
@@ -195,8 +195,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var bucketName = Fixture.Create<string>();
             var region = Fixture.Create<string>();
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
 
@@ -232,8 +232,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var bucketName = "invalid bucket Name for example";
             var region = Fixture.Create<string>();
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
 
@@ -259,8 +259,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var bucketName = "invalid bucket Name for example";
             var region = Fixture.Create<string>();
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
 
@@ -292,7 +292,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             // Arrange
             var bucketName = Fixture.Create<string>();
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
@@ -321,7 +321,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             // Arrange
             var bucketName = "invalid bucket Name for example";
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
@@ -344,7 +344,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             // Arrange
             var bucketName = "invalid bucket Name for example";
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsBucketName).Returns(bucketName);
             _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))

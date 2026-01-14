@@ -1778,7 +1778,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 AuthenticationMode = AuthenticationMode.SymmetricKey,
                 SymmetricCredentials = new SymmetricCredentials
                 {
-                    RegistrationID = "aaa",
+                    RegistrationId = "aaa",
                     SymmetricKey = "dfhjkfdgh"
                 }
             };
@@ -1786,7 +1786,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockDeviceModelRepository.Setup(c => c.GetByIdAsync(device.ModelId))
                 .ReturnsAsync(model);
 
-            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(device.DeviceID, model.Id))
+            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(device.DeviceId, model.Id))
                 .ReturnsAsync(mockRegistrationCredentials);
 
             // Act
@@ -1811,7 +1811,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockDeviceModelRepository.Setup(c => c.GetByIdAsync(model.Id))
                 .ReturnsAsync(model);
 
-            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(device.DeviceID, model.Id))
+            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(device.DeviceId, model.Id))
                 .Throws(new RequestFailedException("test"));
 
             // Act
@@ -1924,11 +1924,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 });
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == $"SELECT DeviceID FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'")))
+                It.Is<string>(x => x == $"SELECT DeviceId FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'")))
                 .Returns(mockQuery.Object);
 
             // Act
-            var result = await service.GetAllGatewayID();
+            var result = await service.GetAllGatewayId();
 
             // Assert
             Assert.IsNotNull(result);
@@ -1950,11 +1950,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == $"SELECT DeviceID FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'")))
+                It.Is<string>(x => x == $"SELECT DeviceId FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'")))
                 .Returns(mockQuery.Object);
 
             // Act
-            var act = () => service.GetAllGatewayID();
+            var act = () => service.GetAllGatewayId();
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();

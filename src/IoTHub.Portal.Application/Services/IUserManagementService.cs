@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System.Security.Claims;
-    using IoTHub.Portal.Shared.Models.v10;
-
     public interface IUserManagementService
     {
         Task<PaginatedResult<UserModel>> GetUserPage(
@@ -13,7 +10,7 @@ namespace IoTHub.Portal.Application.Services
             string? searchEmail = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null
+            string[]? orderBy = null
         );
         Task<UserDetailsModel> GetUserDetailsAsync(string userId);
         Task<UserDetailsModel> CreateUserAsync(UserDetailsModel userCreateModel);

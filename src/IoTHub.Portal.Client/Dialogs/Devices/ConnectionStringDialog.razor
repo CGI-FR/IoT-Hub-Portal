@@ -1,6 +1,6 @@
 ﻿@inject ClipboardService ClipboardService
 @inject IDeviceClientService DeviceClientService
-@inject IJSRuntime JS
+@inject IJSRuntime Js
 
 <div class="ConnectionString-dialog">
     <MudDialog>
@@ -18,11 +18,11 @@
                                 </MudItem>
                                 <MudItem Class="mt-0" xs="12">
                                     <MudText Style="text-decoration:underline"><b>Registration Id</b></MudText>
-                                    <MudTextField @bind-Value="@credentials.SymmetricCredentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.SymmetricCredentials.RegistrationID))"/>
+                                    <MudTextField @bind-Value="@credentials.SymmetricCredentials.RegistrationId" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.SymmetricCredentials.RegistrationId))"/>
                                 </MudItem>
                                 <MudItem Class="mt-0" xs="12">
                                     <MudText Style="text-decoration:underline"><b>Scope Id</b></MudText>
-                                    <MudTextField @bind-Value="@credentials.SymmetricCredentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.SymmetricCredentials.ScopeID))"/>
+                                    <MudTextField @bind-Value="@credentials.SymmetricCredentials.ScopeId" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(credentials.SymmetricCredentials.ScopeId))"/>
                                 </MudItem>
                                 <MudItem Class="mt-0" xs="12">
                                     <MudText Style="text-decoration:underline"><b>Symmetric Key</b></MudText>
@@ -63,7 +63,7 @@
     public Error Error { get; set; } = default!;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public string deviceId { get; set; } = default!;
+    [Parameter] public string DeviceId { get; set; } = default!;
     private DeviceCredentials credentials = new();
 
     protected override async Task OnInitializedAsync()
@@ -72,7 +72,7 @@
         {
             await base.OnInitializedAsync();
 
-            credentials = await DeviceClientService.GetEnrollmentCredentials(deviceId);
+            credentials = await DeviceClientService.GetEnrollmentCredentials(DeviceId);
         }
         catch (ProblemDetailsException exception)
         {
@@ -85,21 +85,21 @@
     {
         var stream = new DotNetStreamReference(stream: new MemoryStream(
             Encoding.UTF8.GetBytes(credentials.CertificateCredentials.CertificatePem)));
-        await JS.InvokeVoidAsync("downloadFileFromStream", "certificate.pem", stream);
+        await Js.InvokeVoidAsync("downloadFileFromStream", "certificate.pem", stream);
     }
 
     private async Task DownloadPublicKeyFile()
     {
         var stream = new DotNetStreamReference(stream: new MemoryStream(
             Encoding.UTF8.GetBytes(credentials.CertificateCredentials.PublicKey)));
-        await JS.InvokeVoidAsync("downloadFileFromStream", "key.pub", stream);
+        await Js.InvokeVoidAsync("downloadFileFromStream", "key.pub", stream);
     }
 
     private async Task DownloadPrivateKeyFile()
     {
         var stream = new DotNetStreamReference(stream: new MemoryStream(
             Encoding.UTF8.GetBytes(credentials.CertificateCredentials.PrivateKey)));
-        await JS.InvokeVoidAsync("downloadFileFromStream", "key", stream);
+        await Js.InvokeVoidAsync("downloadFileFromStream", "key", stream);
     }
 
 

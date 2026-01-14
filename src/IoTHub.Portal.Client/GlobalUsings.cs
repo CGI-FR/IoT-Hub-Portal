@@ -1,6 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+global using System;
+global using System.Linq;
 global using System.Net.Http;
 global using System.Net.Http.Json;
 global using Blazored.LocalStorage;
@@ -33,5 +35,9 @@ global using System.Text;
 global using System.Text.Json;
 
 global using System.Net;
+global using System.Threading.Tasks;
+global using IoTHub.Portal.Shared.Security;
 global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Authorization;
 global using Microsoft.AspNetCore.WebUtilities;
+global using Microsoft.Extensions.Logging;

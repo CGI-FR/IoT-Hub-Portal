@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.LayerRead, PortalPermissions.LayerWrite });
         }
 

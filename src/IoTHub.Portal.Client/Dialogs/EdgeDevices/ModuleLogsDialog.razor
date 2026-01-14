@@ -55,8 +55,8 @@
     public Error Error { get; set; } = default!;
     
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public string deviceId { get; set; } = default!;
-    [Parameter] public IoTEdgeModule edgeModule { get; set; } = default!;
+    [Parameter] public string DeviceId { get; set; } = default!;
+    [Parameter] public IoTEdgeModule EdgeModule { get; set; } = default!;
     
     private int[] pageSizeOptions = new int[] { 3, 5 , 10};
     private List<IoTEdgeDeviceLog> logs = new();
@@ -74,7 +74,7 @@
     {
         try
         {
-            logs = await EdgeDeviceClientService.GetEdgeDeviceLogs(deviceId, edgeModule);
+            logs = await EdgeDeviceClientService.GetEdgeDeviceLogs(DeviceId, EdgeModule);
         }
         catch (ProblemDetailsException exception)
         {

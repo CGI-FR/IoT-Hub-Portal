@@ -99,7 +99,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 .Take(deviceListFilter.PageSize)
                 .Select(device => new DeviceListItem
                 {
-                    DeviceID = device.Id,
+                    DeviceId = device.Id,
                     DeviceName = device.Name,
                     IsEnabled = device.IsEnabled,
                     IsConnected = device.IsConnected,
@@ -134,12 +134,12 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public virtual async Task<TDto> CreateDevice(TDto device)
         {
-            var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(device.DeviceID);
+            var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(device.DeviceId);
 
             this.deviceTwinMapper.UpdateTwin(newTwin, device);
             var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-            _ = await this.externalDevicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
+            _ = await this.externalDevicesService.CreateDeviceWithTwin(device.DeviceId, false, newTwin, status);
 
             return await CreateDeviceInDatabase(device);
         }
@@ -149,13 +149,13 @@ namespace IoTHub.Portal.Infrastructure.Services
         public virtual async Task<TDto> UpdateDevice(TDto device)
         {
             // Device status (enabled/disabled) has to be dealt with afterwards
-            var currentDevice = await this.externalDevicesService.GetDevice(device.DeviceID);
+            var currentDevice = await this.externalDevicesService.GetDevice(device.DeviceId);
             currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
             _ = await this.externalDevicesService.UpdateDevice(currentDevice);
 
             // Get the current twin from the hub, based on the device ID
-            var currentTwin = await this.externalDevicesService.GetDeviceTwin(device.DeviceID);
+            var currentTwin = await this.externalDevicesService.GetDeviceTwin(device.DeviceId);
 
             // Update the twin properties
             this.deviceTwinMapper.UpdateTwin(currentTwin, device);

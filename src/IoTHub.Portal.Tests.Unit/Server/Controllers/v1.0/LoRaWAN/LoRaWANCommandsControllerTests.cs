@@ -8,14 +8,14 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10.LoRaWAN
     {
         private MockRepository mockRepository;
 
-        private Mock<ILoRaWANCommandService> mockLoRaWANCommandService ;
+        private Mock<ILoRaWanCommandService> mockLoRaWANCommandService ;
 
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLoRaWANCommandService = this.mockRepository.Create<ILoRaWANCommandService>();
+            this.mockLoRaWANCommandService = this.mockRepository.Create<ILoRaWanCommandService>();
         }
 
         [Test]

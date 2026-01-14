@@ -41,11 +41,11 @@ namespace IoTHub.Portal.Server
                 case CloudProviders.Azure:
                     ConfigureServicesAzure(services);
                     break;
-                case CloudProviders.AWS:
+                case CloudProviders.Aws:
                     ConfigureServicesAws(services);
                     break;
                 default:
-                    throw new InvalidOperationException($"Invalid CloudProvider setting: '{configuration.CloudProvider}'. Only '{CloudProviders.Azure}' and '{CloudProviders.AWS}' are supported.");
+                    throw new InvalidOperationException($"Invalid CloudProvider setting: '{configuration.CloudProvider}'. Only '{CloudProviders.Azure}' and '{CloudProviders.Aws}' are supported.");
             }
 
             //Common configurations
@@ -231,13 +231,13 @@ namespace IoTHub.Portal.Server
 
                     switch (configuration.DbProvider)
                     {
-                        case DbProviders.PostgreSQL:
+                        case DbProviders.PostgreSql:
                             opts.UsePostgres(c =>
                             {
-                                c.ConnectionString = configuration.PostgreSQLConnectionString;
+                                c.ConnectionString = configuration.PostgreSqlConnectionString;
                             });
                             break;
-                        case DbProviders.MySQL:
+                        case DbProviders.MySql:
                             DbProvider.RegisterDbMetadata("IotHubPortalQuartzMySqlConnector", new DbMetadata()
                             {
                                 ProductName = "MySQL, MySqlConnector provider",
@@ -256,7 +256,7 @@ namespace IoTHub.Portal.Server
 
                             opts.UseGenericDatabase("IotHubPortalQuartzMySqlConnector", c =>
                             {
-                                c.ConnectionString = configuration.MySQLConnectionString;
+                                c.ConnectionString = configuration.MySqlConnectionString;
                             });
                             break;
                         default:
@@ -282,9 +282,9 @@ namespace IoTHub.Portal.Server
         {
             _ = services.AddTransient<IExportManager, ExportManager>();
             _ = services.AddTransient<IConfigService, ConfigService>();
-            _ = services.AddTransient<ILoRaWANCommandService, LoRaWANCommandService>();
+            _ = services.AddTransient<ILoRaWanCommandService, LoRaWANCommandService>();
             _ = services.AddTransient<IEdgeModelService, EdgeModelService>();
-            _ = services.AddTransient<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
+            _ = services.AddTransient<ILoRaWanConcentratorService, LoRaWANConcentratorService>();
             _ = services.AddTransient<IEdgeDevicesService, AzureEdgeDevicesService>();
             _ = services.AddTransient<IExternalDeviceService, ExternalDeviceService>();
             _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
@@ -314,10 +314,10 @@ namespace IoTHub.Portal.Server
         {
             _ = services.Configure<ClientApiIndentityOptions>(opts =>
             {
-                opts.MetadataUrl = new Uri(configuration.OIDCMetadataUrl);
-                opts.ClientId = configuration.OIDCClientId;
-                opts.Scope = configuration.OIDCScope;
-                opts.Authority = configuration.OIDCAuthority;
+                opts.MetadataUrl = new Uri(configuration.OidcMetadataUrl);
+                opts.ClientId = configuration.OidcClientId;
+                opts.Scope = configuration.OidcScope;
+                opts.Authority = configuration.OidcAuthority;
             });
 
             _ = services
@@ -328,16 +328,16 @@ namespace IoTHub.Portal.Server
                 })
                 .AddJwtBearer(opts =>
                 {
-                    opts.Authority = configuration.OIDCAuthority;
-                    opts.MetadataAddress = configuration.OIDCMetadataUrl;
-                    opts.Audience = configuration.OIDCApiClientId;
+                    opts.Authority = configuration.OidcAuthority;
+                    opts.MetadataAddress = configuration.OidcMetadataUrl;
+                    opts.Audience = configuration.OidcApiClientId;
 
-                    opts.TokenValidationParameters.ValidateIssuer = configuration.OIDCValidateIssuer;
-                    opts.TokenValidationParameters.ValidateAudience = configuration.OIDCValidateAudience;
-                    opts.TokenValidationParameters.ValidateLifetime = configuration.OIDCValidateLifetime;
-                    opts.TokenValidationParameters.ValidateIssuerSigningKey = configuration.OIDCValidateIssuerSigningKey;
-                    opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
-                    opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
+                    opts.TokenValidationParameters.ValidateIssuer = configuration.OidcValidateIssuer;
+                    opts.TokenValidationParameters.ValidateAudience = configuration.OidcValidateAudience;
+                    opts.TokenValidationParameters.ValidateLifetime = configuration.OidcValidateLifetime;
+                    opts.TokenValidationParameters.ValidateIssuerSigningKey = configuration.OidcValidateIssuerSigningKey;
+                    opts.TokenValidationParameters.ValidateActor = configuration.OidcValidateActor;
+                    opts.TokenValidationParameters.ValidateTokenReplay = configuration.OidcValidateTokenReplay;
                 });
 
             // Centralized authorization policy registration
@@ -374,7 +374,7 @@ namespace IoTHub.Portal.Server
                     {
                         _ = csp.AddFrameAncestors()
                             .Self()
-                            .From(configuration.OIDCMetadataUrl);
+                            .From(configuration.OidcMetadataUrl);
                     });
                 });
             }
@@ -435,7 +435,7 @@ namespace IoTHub.Portal.Server
                 case CloudProviders.Azure:
                     await ConfigureAzureAsync(app);
                     break;
-                case CloudProviders.AWS:
+                case CloudProviders.Aws:
                     await ConfigureAwsAsync(app);
                     break;
                 default:

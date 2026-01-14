@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Domain.Options
 {
-    public class LoRaWANOptions
+    public class LoRaWanOptions
     {
         public bool Enabled { get; set; }
 

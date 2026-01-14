@@ -11,11 +11,11 @@
                     <MudGrid>
                         <MudItem xs="12">
                             <MudGrid>
-                                @if (LoRaDeviceModelDto.UseOTAA)
+                                @if (LoRaDeviceModelDto.UseOtaa)
                                 {
                                     <MudItem xs="12" md="6">
-                                        <MudTextField id="@nameof(LoRaDevice.AppEUI)" @bind-Value="@LoRaDevice.AppEUI"
-                                                      Label="OTAA App EUI" For="@(() => LoRaDevice.AppEUI)"
+                                        <MudTextField id="@nameof(LoRaDevice.AppEui)" @bind-Value="@LoRaDevice.AppEui"
+                                                      Label="OTAA App EUI" For="@(() => LoRaDevice.AppEui)"
                                                       Variant="Variant.Outlined"
                                                       Required="true" Disabled="@(!CanWrite)"></MudTextField>
                                     </MudItem>
@@ -81,12 +81,12 @@
                                 </MudItem>
                                 <MudItem xs="12" md="6">
                                     <MudAutocomplete T="string"
-                                                     id="@nameof(LoRaDevice.GatewayID)"
-                                                     @bind-Value="LoRaDevice.GatewayID"
-                                                     SearchFunc="@SearchGatewayID"
+                                                     id="@nameof(LoRaDevice.GatewayId)"
+                                                     @bind-Value="LoRaDevice.GatewayId"
+                                                     SearchFunc="@SearchGatewayId"
                                                      Label="GatewayID"
                                                      Dense=true
-                                                     For="@(() => LoRaDevice.GatewayID)"
+                                                     For="@(() => LoRaDevice.GatewayId)"
                                                      Variant="Variant.Outlined"
                                                      ResetValueOnEmptyText=true
                                                      Immediate=true
@@ -134,17 +134,17 @@
                             <MudText Typo=Typo.subtitle1 Class="mb-4">Receive Windows</MudText>
                             <MudGrid>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRX1DROffset)" @bind-Text="@LoRaDevice.ReportedRX1DROffset"
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRx1DrOffset)" @bind-Text="@LoRaDevice.ReportedRx1DrOffset"
                                                   Label="Device Current RX1DROffset" Variant="Variant.Text"
                                                   Disabled="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRX2DataRate)" @bind-Text="@LoRaDevice.ReportedRX2DataRate"
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRx2DataRate)" @bind-Text="@LoRaDevice.ReportedRx2DataRate"
                                                   Label="Device Current Rx2Datarate" Variant="Variant.Text"
                                                   Disabled="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRXDelay)" @bind-Text="@LoRaDevice.ReportedRXDelay"
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRxDelay)" @bind-Text="@LoRaDevice.ReportedRxDelay"
                                                   Label="Device Current RXDelay" Variant="Variant.Text"
                                                   Disabled="true" />
                                 </MudItem>
@@ -176,15 +176,15 @@
                             <MudTh>Name</MudTh>
                             <MudTh Style="text-align: center">Execute</MudTh>
                         </HeaderContent>
-                        <RowTemplate Context="CommandContext">
+                        <RowTemplate Context="commandContext">
                             <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                @CommandContext.Name
+                                @commandContext.Name
                             </MudTd>
                             <MudTd Style="text-align: center">
                                 <MudTooltip Text="Send command">
                                     <MudIconButton id="ExecuteCommand" Title="Execute" Color="Color.Default"
                                                    Icon="@Icons.Material.Filled.Send" Size="Size.Medium"
-                                                   OnClick="@(() => ExecuteMethod(CommandContext))"
+                                                   OnClick="@(() => ExecuteMethod(commandContext))"
                                                    Disabled="@(!LoRaDevice.AlreadyLoggedInOnce || isProcessing || !CanExec)"></MudIconButton>
                                 </MudTooltip>
                             </MudTd>
@@ -235,7 +235,7 @@
         }
     }
 
-    private async Task<IEnumerable<string>> SearchGatewayID(string value)
+    private async Task<IEnumerable<string>> SearchGatewayId(string value)
     {
         await Task.Delay(50);
 
@@ -253,7 +253,7 @@
         {
             isProcessing = true;
 
-            await LoRaWanDeviceClientService.ExecuteCommand(LoRaDevice.DeviceID, method.Id);
+            await LoRaWanDeviceClientService.ExecuteCommand(LoRaDevice.DeviceId, method.Id);
 
             Snackbar.Add($"{method.Name} has been successfully executed!", Severity.Success);
         }

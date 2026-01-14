@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = Services.AddSingleton<IEdgeDeviceLayoutService, EdgeDeviceLayoutService>();
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.EdgeDeviceRead, PortalPermissions.EdgeDeviceWrite, PortalPermissions.EdgeDeviceExecute });
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();

@@ -1,6 +1,5 @@
 ﻿@page "/layer"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -137,7 +136,7 @@
     {
         foreach (var device in Devices.Where(device => device.LayerId == delLayerId))
         {
-            var updatedDevice = FindDevice(device.DeviceID);
+            var updatedDevice = FindDevice(device.DeviceId);
             updatedDevice.LayerId = null;
             await DeviceClientService.UpdateDevice(updatedDevice);
         }
@@ -145,13 +144,13 @@
 
     private DeviceDetails FindDevice(string deviceId)
     {
-        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceId);
+        var device = Devices.FirstOrDefault(device => device.DeviceId == deviceId);
 
         var deviceDetails = new DeviceDetails();
 
         if (device == null) return deviceDetails;
 
-        deviceDetails.DeviceID = device.DeviceID;
+        deviceDetails.DeviceId = device.DeviceId;
         deviceDetails.DeviceName = device.DeviceName;
         deviceDetails.ModelId = device.DeviceModelId;
         deviceDetails.Image = device.Image;

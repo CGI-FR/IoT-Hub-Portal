@@ -43,7 +43,7 @@
                                                                   Variant="Variant.Outlined"
                                                                   For="@(() => concentrator.DeviceId)"
                                                                   Required="true"
-                                                                  HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                                                  HelperText="DeviceId must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
                                                 </MudItem>
                                                 <MudItem xs="12">
                                                     <MudTextField @bind-Value="@concentrator.DeviceName"
@@ -53,15 +53,15 @@
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
                                                     <MudTextField For="@(() => concentrator.ClientThumbprint)"
-                                                                  Mask="@maskThumbprint"
+                                                                  Mask="@MaskThumbprint"
                                                                   HelperText="ClientThumbprint must contain 40 hexadecimal characters"
                                                                   @bind-Value="@concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
                                                     <MudSelect T="string" For="@(() => concentrator.LoraRegion)" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true" id="@nameof(ConcentratorDto.LoraRegion)">
-                                                        @foreach (var frequencyPlan in FrequencyPlans.OrderBy(c => c.Name))
+                                                        @foreach (var frequencyPlan in frequencyPlans.OrderBy(c => c.Name))
                                                         {
-                                                            <MudSelectItem Value="@(frequencyPlan.FrequencyPlanID)">@frequencyPlan.Name</MudSelectItem>
+                                                            <MudSelectItem Value="@(frequencyPlan.FrequencyPlanId)">@frequencyPlan.Name</MudSelectItem>
                                                         }
                                                     </MudSelect>
                                                 </MudItem>
@@ -69,12 +69,14 @@
                                                     <MudText>
                                                         <b>Status</b>
                                                     </MudText>
-                                                    <MudRadioGroup @bind-SelectedOption="@concentrator.IsEnabled">
-                                                        <MudRadio Option=@(true) Color="Color.Primary">
+                                                    <MudRadioGroup @bind-SelectedValue="@concentrator.IsEnabled" T="bool">
+                                                        <MudRadio Value=@(true)
+                                                                  Color="Color.Primary">
                                                             Enabled
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
                                                         </MudRadio>
-                                                        <MudRadio Option=@(false) Color="Color.Primary">
+                                                        <MudRadio Value=@(false)
+                                                                  Color="Color.Primary">
                                                             Disabled
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
                                                         </MudRadio>
@@ -104,11 +106,11 @@
     private MudForm form = default!;
     private ConcentratorValidator concentratorValidator = new();
 
-    private List<FrequencyPlan> FrequencyPlans = new();
+    private List<FrequencyPlan> frequencyPlans = new();
 
     private bool isProcessing;
 
-    public PatternMask maskThumbprint = new("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
+    public PatternMask MaskThumbprint = new("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
     {
         MaskChars = new[] { new MaskChar('X', "[0-9a-fA-F]") },
         CleanDelimiters = false,
@@ -119,7 +121,7 @@
     {
         await base.OnInitializedAsync();
 
-        FrequencyPlans.AddRange(await LoRaWanConcentratorsClientService.GetFrequencyPlans());
+        frequencyPlans.AddRange(await LoRaWanConcentratorsClientService.GetFrequencyPlans());
     }
 
     private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];

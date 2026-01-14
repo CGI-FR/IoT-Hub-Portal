@@ -45,12 +45,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Act
             var result = this.deviceLayoutService.DuplicateSharedDevice(new DeviceDetails
             {
-                DeviceID = deviceId,
+                DeviceId = deviceId,
                 DeviceName = deviceName
             });
 
             // Assert
-            _ = result.DeviceID.Should().BeEmpty();
+            _ = result.DeviceId.Should().BeEmpty();
             _ = result.DeviceName.Should().Be($"{deviceName} - copy");
         }
 
@@ -65,13 +65,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             // Act
             var loraWanDevice = this.deviceLayoutService.DuplicateSharedDevice(new LoRaDeviceDetails
             {
-                DeviceID = deviceId,
+                DeviceId = deviceId,
                 DeviceName = deviceName,
                 AppKey = appKey
             });
 
             // Assert
-            _ = loraWanDevice.DeviceID.Should().BeEmpty();
+            _ = loraWanDevice.DeviceId.Should().BeEmpty();
             _ = loraWanDevice.DeviceName.Should().Be($"{deviceName} - copy");
             _ = loraWanDevice.AppKey.Should().BeEmpty();
         }

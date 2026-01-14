@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
         private Mock<ILayerService> mockLayerService;
         private Mock<IPlanningService> mockPlanningService;
         private Mock<IScheduleService> mockScheduleService;
-        private Mock<ILoRaWANCommandService> mockLoraWANCommandService;
+        private Mock<ILoRaWanCommandService> mockLoraWANCommandService;
         private Mock<ILogger<SendPlanningCommandJob>> mockLogger;
 
         [SetUp]
@@ -26,7 +26,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 
             this.mockPlanningService = this.MockRepository.Create<IPlanningService>();
             this.mockScheduleService = this.MockRepository.Create<IScheduleService>();
-            this.mockLoraWANCommandService = this.MockRepository.Create<ILoRaWANCommandService>();
+            this.mockLoraWANCommandService = this.MockRepository.Create<ILoRaWanCommandService>();
 
             this.mockLogger = this.mockRepository.Create<ILogger<SendPlanningCommandJob>>();
 
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 
             var device = new DeviceListItem
             {
-                DeviceID = Guid.NewGuid().ToString(),
+                DeviceId = Guid.NewGuid().ToString(),
                 LayerId = layers.Single().Id
             };
 
@@ -165,7 +165,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 
             var device = new DeviceListItem
             {
-                DeviceID = Guid.NewGuid().ToString(),
+                DeviceId = Guid.NewGuid().ToString(),
                 LayerId = layers.Single().Id
             };
 

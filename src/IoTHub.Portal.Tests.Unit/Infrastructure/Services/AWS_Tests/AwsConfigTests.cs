@@ -49,8 +49,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             // Arrange
             var deploymentId = Fixture.Create<string>();
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns("eu-west-1");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsAccountId).Returns("00000000");
 
             var edge = Fixture.Create<IoTEdgeModel>();
             // Simulate a custom/private component
@@ -96,8 +96,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         {
             // Arrange
             var deploymentId = Fixture.Create<string>();
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns("eu-west-1");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsAccountId).Returns("00000000");
 
             var edge = Fixture.Create<IoTEdgeModel>();
             // Simulate a custom/private component
@@ -139,8 +139,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         public async Task CreateDeploymentWithNonExistingComponentsAndNonExistingThingGroupAndThingTypeShouldCreateThingGroupAndThingTypeAndTheDeployment()
         {
             // Arrange
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns("eu-west-1");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsAccountId).Returns("00000000");
 
             var edge = Fixture.Create<IoTEdgeModel>();
             // Simulate a custom/private component
@@ -188,8 +188,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             var edge = Fixture.Create<IoTEdgeModel>();
             using var recipeAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<JObject>().ToString()));
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns("eu-west-1");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsAccountId).Returns("00000000");
 
             _ = this.mockGreengrasClient.Setup(s3 => s3.GetDeploymentAsync(It.IsAny<GetDeploymentRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetDeploymentResponse
@@ -224,8 +224,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             var edge = Fixture.Create<IoTEdgeModel>();
             using var recipeAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<JObject>().ToString()));
 
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns("eu-west-1");
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSAccountId).Returns("00000000");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsRegion).Returns("eu-west-1");
+            _ = this.mockConfigHandler.Setup(handler => handler.AwsAccountId).Returns("00000000");
 
             _ = this.mockGreengrasClient.Setup(s3 => s3.GetDeploymentAsync(It.IsAny<GetDeploymentRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetDeploymentResponse

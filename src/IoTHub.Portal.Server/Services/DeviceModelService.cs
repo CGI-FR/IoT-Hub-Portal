@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Server.Services
             {
                 Data = paginatedDeviceModels.Data.Select(x =>
                 {
-                    var item = this.mapper.Map<DeviceModelDto>(x, opts => { });
+                    var item = this.mapper.Map<DeviceModelDto>(x, _ => { });
                     item.Image = this.deviceModelImageManager.GetDeviceModelImageAsync(x.Id).Result;
 
                     return item;

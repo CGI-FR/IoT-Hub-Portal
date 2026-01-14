@@ -1,6 +1,5 @@
 ﻿@page "/planning/{PlanningId}"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -10,7 +9,7 @@
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
-    <EditPlanning planning=@Planning scheduleList=@ScheduleList initScheduleList=@(new List<ScheduleDto>(ScheduleList)) mode="Edit" SelectedModel="@DeviceModel.Name" CanWrite="@canWrite"/>
+    <EditPlanning Planning=@Planning ScheduleList=@ScheduleList InitScheduleList=@(new List<ScheduleDto>(ScheduleList)) Mode="Edit" SelectedModel="@DeviceModel.Name" CanWrite="@canWrite"/>
 </AuthorizedContent>
 
 @code {

@@ -41,7 +41,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.EdgeDeviceRead, PortalPermissions.EdgeDeviceWrite, PortalPermissions.EdgeDeviceExecute });
         }
 

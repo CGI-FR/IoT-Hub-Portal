@@ -26,11 +26,11 @@ namespace IoTHub.Portal.Infrastructure
 
         public override string AzureIoTHubEventHubConsumerGroup => this.config.GetValue(AzureIoTHubEventHubConsumerGroupKey, "iothub-portal")!;
 
-        public override string AzureDPSConnectionString => this.config[AzureDpsConnectionStringKey]!;
+        public override string AzureDpsConnectionString => this.config[AzureDpsConnectionStringKey]!;
 
-        public override string AzureDPSEndpoint => this.config[AzureDpsServiceEndpointKey]!;
+        public override string AzureDpsEndpoint => this.config[AzureDpsServiceEndpointKey]!;
 
-        public override string AzureDPSScopeID => this.config[AzureDpsIdScopeKey]!;
+        public override string AzureDpsScopeId => this.config[AzureDpsIdScopeKey]!;
 
         public override string AzureStorageAccountConnectionString => this.config[AzureStorageAccountConnectionStringKey]!;
 
@@ -38,27 +38,27 @@ namespace IoTHub.Portal.Infrastructure
 
         public override bool UseSecurityHeaders => this.config.GetValue(UseSecurityHeadersKey, true);
 
-        public override string OIDCScope => this.config[OidcScopeKey]!;
+        public override string OidcScope => this.config[OidcScopeKey]!;
 
-        public override string OIDCAuthority => this.config[OidcAuthorityKey]!;
+        public override string OidcAuthority => this.config[OidcAuthorityKey]!;
 
-        public override string OIDCMetadataUrl => this.config[OidcMetadataUrlKey]!;
+        public override string OidcMetadataUrl => this.config[OidcMetadataUrlKey]!;
 
-        public override string OIDCClientId => this.config[OidcClientIdKey]!;
+        public override string OidcClientId => this.config[OidcClientIdKey]!;
 
-        public override string OIDCApiClientId => this.config[OidcApiClientIdKey]!;
+        public override string OidcApiClientId => this.config[OidcApiClientIdKey]!;
 
-        public override bool OIDCValidateIssuer => this.config.GetValue(OidcValidateIssuerKey, true);
+        public override bool OidcValidateIssuer => this.config.GetValue(OidcValidateIssuerKey, true);
 
-        public override bool OIDCValidateAudience => this.config.GetValue(OidcValidateAudienceKey, true);
+        public override bool OidcValidateAudience => this.config.GetValue(OidcValidateAudienceKey, true);
 
-        public override bool OIDCValidateLifetime => this.config.GetValue(OidcValidateLifetimeKey, true);
+        public override bool OidcValidateLifetime => this.config.GetValue(OidcValidateLifetimeKey, true);
 
-        public override bool OIDCValidateIssuerSigningKey => this.config.GetValue(OidcValidateIssuerSigningKeyKey, true);
+        public override bool OidcValidateIssuerSigningKey => this.config.GetValue(OidcValidateIssuerSigningKeyKey, true);
 
-        public override bool OIDCValidateActor => this.config.GetValue(OidcValidateActorKey, false);
+        public override bool OidcValidateActor => this.config.GetValue(OidcValidateActorKey, false);
 
-        public override bool OIDCValidateTokenReplay => this.config.GetValue(OidcValidateTokenReplayKey, false);
+        public override bool OidcValidateTokenReplay => this.config.GetValue(OidcValidateTokenReplayKey, false);
 
         public override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "false");
 
@@ -73,22 +73,22 @@ namespace IoTHub.Portal.Infrastructure
         public override string IdeasAuthenticationHeader => this.config.GetValue(IdeasAuthenticationHeaderKey, "Ocp-Apim-Subscription-Key")!;
         public override string IdeasAuthenticationToken => this.config.GetValue(IdeasAuthenticationTokenKey, string.Empty)!;
 
-        public override string PostgreSQLConnectionString => this.config[PostgreSqlConnectionStringKey]!;
+        public override string PostgreSqlConnectionString => this.config[PostgreSqlConnectionStringKey]!;
 
-        public override string MySQLConnectionString => this.config[MySqlConnectionStringKey]!;
+        public override string MySqlConnectionString => this.config[MySqlConnectionStringKey]!;
 
-        public override string DbProvider => this.config.GetValue(DbProviderKey, DbProviders.PostgreSQL)!;
+        public override string DbProvider => this.config.GetValue(DbProviderKey, DbProviders.PostgreSql)!;
 
         public override string CloudProvider => this.config[CloudProviderKey]!;
 
-        public override string AWSAccess => this.config[AwsAccessKey]!;
-        public override string AWSAccessSecret => this.config[AwsAccessSecretKey]!;
-        public override string AWSRegion => this.config[AwsRegionKey]!;
-        public override string AWSS3StorageConnectionString => this.config[Awss3StorageConnectionStringKey]!;
-        public override string AWSBucketName => this.config[AwsBucketNameKey]!;
-        public override string AWSAccountId => this.config[AwsAccountIdKey]!;
-        public override IEnumerable<string> AWSGreengrassRequiredRoles => this.config.GetSection(AwsGreengrassRequiredRolesKey).Get<string[]>()!;
-        public override string AWSGreengrassCoreTokenExchangeRoleAliasName => this.config[AwsGreengrassCoreTokenExchangeRoleAliasNameKey]!;
+        public override string AwsAccess => this.config[AwsAccessKey]!;
+        public override string AwsAccessSecret => this.config[AwsAccessSecretKey]!;
+        public override string AwsRegion => this.config[AwsRegionKey]!;
+        public override string Awss3StorageConnectionString => this.config[Awss3StorageConnectionStringKey]!;
+        public override string AwsBucketName => this.config[AwsBucketNameKey]!;
+        public override string AwsAccountId => this.config[AwsAccountIdKey]!;
+        public override IEnumerable<string> AwsGreengrassRequiredRoles => this.config.GetSection(AwsGreengrassRequiredRolesKey).Get<string[]>()!;
+        public override string AwsGreengrassCoreTokenExchangeRoleAliasName => this.config[AwsGreengrassCoreTokenExchangeRoleAliasNameKey]!;
 
         public override int SendCommandsToDevicesIntervalInMinutes => this.config.GetValue(SendCommandsToDevicesIntervalKey, 10);
     }

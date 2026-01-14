@@ -8,7 +8,7 @@
                  T="DeviceListItem"
                  Label="Search a device to duplicate"
                  SearchFunc="@SearchDevicesToDuplicate"
-                 ToStringFunc="@(x => x?.DeviceName)"
+                 ToStringFunc="@(x => x.DeviceName)"
                  DebounceInterval="300"
                  ValueChanged="OnDeviceSelected"
                  Dense=true
@@ -20,7 +20,7 @@
     <ItemTemplate>
         @context.DeviceName
         <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-            Id: @context.DeviceID
+            Id: @context.DeviceId
         </MudText>
         <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
             LoRaWAN: @(@context.SupportLoRaFeatures ? "Yes" : "No")
@@ -35,7 +35,7 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; } = default!;
+    public Error? Error { get; set; }
 
     private async Task<IEnumerable<DeviceListItem>> SearchDevicesToDuplicate(string query)
     {
@@ -65,12 +65,12 @@
 
             if (deviceToDuplicate.SupportLoRaFeatures)
             {
-                device = await LoRaWanDeviceClientService.GetDevice(deviceToDuplicate.DeviceID);
+                device = await LoRaWanDeviceClientService.GetDevice(deviceToDuplicate.DeviceId);
                 deviceModel = await LoRaWanDeviceModelsClientService.GetDeviceModel(device.ModelId);
             }
             else
             {
-                device = await DeviceClientService.GetDevice(deviceToDuplicate.DeviceID);
+                device = await DeviceClientService.GetDevice(deviceToDuplicate.DeviceId);
                 deviceModel = await DeviceModelsClientService.GetDeviceModel(device.ModelId);
             }
             DeviceLayoutService.DuplicateSharedDevice(device);

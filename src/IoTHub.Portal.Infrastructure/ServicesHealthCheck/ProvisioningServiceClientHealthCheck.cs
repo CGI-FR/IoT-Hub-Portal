@@ -20,8 +20,8 @@ namespace IoTHub.Portal.Infrastructure.ServicesHealthCheck
                 var attestation = new SymmetricKeyAttestation(GenerateKey(), GenerateKey());
                 var enrollmentGroup = new EnrollmentGroup(enrollemntId, attestation);
 
-                await ExecuteDPSWriteCheckAsync(enrollmentGroup);
-                await ExecuteDPSReadCheck(enrollmentGroup);
+                await ExecuteDpsWriteCheckAsync(enrollmentGroup);
+                await ExecuteDpsReadCheck(enrollmentGroup);
 
                 await this.provisioningServiceClient.DeleteEnrollmentGroupAsync(enrollmentGroup, cancellationToken);
 
@@ -33,12 +33,12 @@ namespace IoTHub.Portal.Infrastructure.ServicesHealthCheck
             }
         }
 
-        private async Task ExecuteDPSWriteCheckAsync(EnrollmentGroup enrollmentGroup)
+        private async Task ExecuteDpsWriteCheckAsync(EnrollmentGroup enrollmentGroup)
         {
             _ = await this.provisioningServiceClient.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup);
         }
 
-        private async Task ExecuteDPSReadCheck(EnrollmentGroup enrollmentGroup)
+        private async Task ExecuteDpsReadCheck(EnrollmentGroup enrollmentGroup)
         {
             _ = await this.provisioningServiceClient.GetEnrollmentGroupAsync(enrollmentGroup.EnrollmentGroupId);
         }

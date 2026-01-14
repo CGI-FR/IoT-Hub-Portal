@@ -6,7 +6,7 @@
         <MudGrid>
             <MudItem xs=12>
                 <MudText>
-                    Delete configuration @configurationName ?
+                    Delete configuration @ConfigurationName ?
                 </MudText>
             </MudItem>
             <MudItem xs=12>
@@ -25,8 +25,8 @@
     public Error Error { get; set; } = default!;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public string configurationName { get; set; } = default!;
-    [Parameter] public string configurationId { get; set; } = default!;
+    [Parameter] public string ConfigurationName { get; set; } = default!;
+    [Parameter] public string ConfigurationId { get; set; } = default!;
     
     void Cancel() => MudDialog.Cancel();
 
@@ -38,9 +38,9 @@
     {
         try
         {
-            await DeviceConfigurationsClientService.DeleteDeviceConfiguration(configurationId);
+            await DeviceConfigurationsClientService.DeleteDeviceConfiguration(ConfigurationId);
 
-            Snackbar.Add($"Device configuration {configurationName} has been successfully deleted!", Severity.Success);
+            Snackbar.Add($"Device configuration {ConfigurationName} has been successfully deleted!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (ProblemDetailsException exception)

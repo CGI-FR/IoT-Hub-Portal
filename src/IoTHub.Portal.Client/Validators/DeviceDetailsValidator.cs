@@ -17,21 +17,21 @@ namespace IoTHub.Portal.Client.Validators
 
             _ = When(x => x.IsLoraWan, () =>
             {
-                _ = RuleFor(x => x.DeviceID)
+                _ = RuleFor(x => x.DeviceId)
                 .NotEmpty()
                 .Length(1, 128)
                 .Matches("[A-Z0-9]{16}")
-                .WithMessage("DeviceID is required. It should be a 16 bit hex string.");
+                .WithMessage("DeviceId is required. It should be a 16 bit hex string.");
             });
 
             if (cloudProvider != null && cloudProvider.Equals(CloudProviders.Azure, StringComparison.Ordinal))
             {
-                _ = RuleFor(x => x.DeviceID)
+                _ = RuleFor(x => x.DeviceId)
                 .NotEmpty()
-                .WithMessage("DeviceID is required.")
+                .WithMessage("DeviceId is required.")
                 .Length(1, 128)
                 .Matches("[a-zA-Z0-9\\-.+%_#*?!(),:=@$']")
-                .WithMessage("DeviceID is required. It should be a case-sensitive string (up to 128 characters long) of ASCII 7-bit alphanumeric characters plus certain special characters: - . + % _ # * ? ! ( ) , : = @ $ '.");
+                .WithMessage("DeviceId is required. It should be a case-sensitive string (up to 128 characters long) of ASCII 7-bit alphanumeric characters plus certain special characters: - . + % _ # * ? ! ( ) , : = @ $ '.");
             }
         }
 

@@ -32,36 +32,36 @@
                 <MudTh Style="text-align: center">Delete</MudTh>
                 <MudTh Style="text-align: center">Validate</MudTh>
             </HeaderContent>
-            <RowTemplate Context="TagContexte">
+            <RowTemplate Context="tagContexte">
                 <MudTd DataLabel="Name" Style="word-break: break-all;">
-                    <MudForm @ref="FormName" Model="TagContexte">
-                        <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
-                                      Disabled="@(!TagContexte.IsNewTag)"
+                    <MudForm @ref="FormName" Model="tagContexte">
+                        <MudTextField @bind-Value="@tagContexte.Name" Label="Name"
+                                      Disabled="@(!tagContexte.IsNewTag)"
                                       HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
-                                      For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                      For="@(() => tagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                     </MudForm>
                 </MudTd>
                 <MudTd DataLabel="Label" Style="word-break: break-all; ">
-                    <MudForm @ref="FormLabel" Model="TagContexte">
-                        <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
+                    <MudForm @ref="FormLabel" Model="tagContexte">
+                        <MudTextField @bind-Value="@tagContexte.Label" Label="Label"
                                       HelperText="The label shown to the user" HelperTextOnFocus="true"
-                                      For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                      For="@(() => tagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                     </MudForm>
                 </MudTd>
                 <MudTd DataLabel="Required" Style="text-align: center;">
-                    <MudCheckBox @bind-Checked="@TagContexte.Required"></MudCheckBox>
+                    <MudCheckBox @bind-Value="@tagContexte.Required" />
                 </MudTd>
                 <MudTd DataLabel="Searchable" Style="text-align: center;">
-                    <MudCheckBox @bind-Checked="@TagContexte.Searchable"></MudCheckBox>
+                    <MudCheckBox @bind-Value="@tagContexte.Searchable" />
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudTooltip Text="Delete device">
-                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))" id="deleteButton"></MudIconButton>
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(tagContexte))" id="deleteButton"></MudIconButton>
                     </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Validate" Style="text-align: center;">
                     <MudTooltip Text="Validate device">
-                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Medium" OnClick="@(() => Save(TagContexte))" id="saveButton" Disabled="isProcessing">Save Changes></MudIconButton>
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Medium" OnClick="@(() => Save(tagContexte))" id="saveButton" Disabled="isProcessing">Save Changes></MudIconButton>
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>

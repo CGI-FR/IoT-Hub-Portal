@@ -69,7 +69,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             Assert.IsFalse(concentratorValidation.IsValid);
             Assert.AreEqual(2, concentratorValidation.Errors.Count);
             Assert.AreEqual(concentratorValidation.Errors[0].ErrorMessage, $"DeviceId is required.");
-            Assert.AreEqual(concentratorValidation.Errors[1].ErrorMessage, $"DeviceID must contain 16 hexadecimal characters.");
+            Assert.AreEqual(concentratorValidation.Errors[1].ErrorMessage, $"DeviceId must contain 16 hexadecimal characters.");
 
         }
 
@@ -91,7 +91,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Validators
             // Assert
             Assert.IsFalse(concentratorValidation.IsValid);
             Assert.AreEqual(1, concentratorValidation.Errors.Count);
-            Assert.AreEqual(concentratorValidation.Errors[0].ErrorMessage, $"DeviceID must contain 16 hexadecimal characters.");
+            Assert.AreEqual(concentratorValidation.Errors[0].ErrorMessage, $"DeviceId must contain 16 hexadecimal characters.");
         }
 
         [Test]

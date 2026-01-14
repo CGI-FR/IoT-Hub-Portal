@@ -32,7 +32,7 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// If an invalid value is provided the network server will use default value 0.
         /// </summary>
         [DefaultValue(0)]
-        public int? RX1DROffset { get; set; }
+        public int? Rx1DrOffset { get; set; }
 
         /// <summary>
         /// Allows setting a custom Datarate for second receive windows.
@@ -40,19 +40,19 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// If an invalid value is provided the network server will use default value 0 (DR0).
         /// </summary>
         [DefaultValue(0)]
-        public int? RX2DataRate { get; set; }
+        public int? Rx2DataRate { get; set; }
 
         /// <summary>
         /// Allows setting a custom wait time between receiving and transmission as specified in the specification.
         /// </summary>
-        public int? RXDelay { get; set; }
+        public int? RxDelay { get; set; }
 
         /// <summary>
         /// Allows to disable the relax mode when using ABP.
         /// By default relaxed mode is enabled.
         /// </summary>
         [DefaultValue(true)]
-        public bool? ABPRelaxMode { get; set; }
+        public bool? AbpRelaxMode { get; set; }
 
         /// <summary>
         /// Allows to explicitly specify a frame counter up start value.

@@ -18,7 +18,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == DeviceStatus.Enabled))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => GetTags(src)))
                 .ForMember(dest => dest.Scope, opts => opts.MapFrom(src => src.DeviceScope))
-                .ForMember(dest => dest.NbDevices, opts => opts.MapFrom((src, _, _, context) => GetNbConnectedDevice((Twin)context.Items["TwinClient"])))
+                .ForMember(dest => dest.NbDevices, opts => opts.MapFrom((_, _, _, context) => GetNbConnectedDevice((Twin)context.Items["TwinClient"])))
                 .ForMember(dest => dest.NbModules, opts => opts.MapFrom((src, _, _, context) => DeviceHelper.RetrieveNbModuleCount((Twin)context.Items["TwinModules"], src.DeviceId)));
 
             _ = CreateMap<EdgeDevice, IoTEdgeDevice>()
@@ -51,7 +51,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.DeviceId, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.NbDevices, opts => opts.MapFrom(src => src.NbDevices))
-                .ForMember(dest => dest.Image, opts => opts.MapFrom((src, _, _, context) => context.Items["image"]))
+                .ForMember(dest => dest.Image, opts => opts.MapFrom((_, _, _, context) => context.Items["image"]))
                 .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.ConnectionState))
                 .ForMember(dest => dest.Labels, opts => opts.MapFrom(src => src.Labels.Union(src.DeviceModel.Labels)));
         }

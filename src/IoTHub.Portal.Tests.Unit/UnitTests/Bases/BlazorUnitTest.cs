@@ -8,8 +8,8 @@ namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
         protected virtual MockRepository MockRepository { get; set; }
         protected virtual MockHttpMessageHandler MockHttpClient { get; set; }
         protected virtual Fixture Fixture { get; } = new();
-        protected Mock<IPermissionsService> mockPermissionsService;
-        protected TestAuthorizationContext authContext;
+        protected Mock<IPermissionsService> MockPermissionsService;
+        protected TestAuthorizationContext AuthContext;
 
         [SetUp]
         public virtual void Setup()
@@ -26,12 +26,12 @@ namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
             MockHttpClient = Services.AddMockHttpClient();
 
             // Add authentication context
-            this.authContext = TestContext?.AddTestAuthorization();
-            _ = this.authContext?.SetAuthorized(Guid.NewGuid().ToString());
+            this.AuthContext = TestContext?.AddTestAuthorization();
+            _ = this.AuthContext?.SetAuthorized(Guid.NewGuid().ToString());
 
             // Setup mock Permissions service
-            this.mockPermissionsService = MockRepository.Create<IPermissionsService>();
-            _ = Services.AddSingleton(this.mockPermissionsService.Object);
+            this.MockPermissionsService = MockRepository.Create<IPermissionsService>();
+            _ = Services.AddSingleton(this.MockPermissionsService.Object);
 
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;

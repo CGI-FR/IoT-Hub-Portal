@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 global using System.Reflection;
-global using System.Runtime.CompilerServices;
 global using AutoFixture;
 global using FluentAssertions;
 global using IoTHub.Portal.Tests.E2E.Pages;

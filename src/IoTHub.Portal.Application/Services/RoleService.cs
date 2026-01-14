@@ -3,20 +3,8 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using IoTHub.Portal.Domain;
-    using IoTHub.Portal.Domain.Entities;
-    using IoTHub.Portal.Domain.Repositories;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10.Filters;
     using Action = Domain.Entities.Action;
     using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Crosscutting;
 
     public class RoleService : IRoleManagementService
     {
@@ -59,7 +47,7 @@ namespace IoTHub.Portal.Application.Services
             string? searchKeyword = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null)
+            string[]? orderBy = null)
         {
             var roleFilter = new  RoleFilter
             {

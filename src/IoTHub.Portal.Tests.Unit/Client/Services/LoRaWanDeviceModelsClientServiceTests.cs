@@ -16,7 +16,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
 
             this.loRaWanDeviceModelsClientService = Services.GetRequiredService<ILoRaWanDeviceModelsClientService>();
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.ModelRead, PortalPermissions.ModelWrite });
         }
 

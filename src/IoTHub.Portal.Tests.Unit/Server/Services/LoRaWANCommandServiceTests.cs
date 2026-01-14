@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<ILoRaWanManagementService> loRaWanManagementService;
 
-        private ILoRaWANCommandService loRaWanCommandService;
+        private ILoRaWanCommandService loRaWanCommandService;
 
         public override void Setup()
         {
@@ -30,11 +30,11 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             _ = ServiceCollection.AddSingleton(this.loRaWanManagementService.Object);
 
-            _ = ServiceCollection.AddSingleton<ILoRaWANCommandService, LoRaWANCommandService>();
+            _ = ServiceCollection.AddSingleton<ILoRaWanCommandService, LoRaWANCommandService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.loRaWanCommandService = Services.GetRequiredService<ILoRaWANCommandService>();
+            this.loRaWanCommandService = Services.GetRequiredService<ILoRaWanCommandService>();
             Mapper = Services.GetRequiredService<IMapper>();
         }
 
@@ -172,7 +172,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(success);
 
             // Act
-            await this.loRaWanCommandService.ExecuteLoRaWANCommand(deviceId, commandId);
+            await this.loRaWanCommandService.ExecuteLoRaWanCommand(deviceId, commandId);
 
             // Assert
             MockRepository.VerifyAll();
@@ -200,7 +200,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(response);
 
             // Act
-            var act = () => this.loRaWanCommandService.ExecuteLoRaWANCommand(deviceId, commandId);
+            var act = () => this.loRaWanCommandService.ExecuteLoRaWanCommand(deviceId, commandId);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -218,7 +218,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync((DeviceModelCommand)null);
 
             // Act
-            _ = Assert.ThrowsAsync<ResourceNotFoundException>(async () => await this.loRaWanCommandService.ExecuteLoRaWANCommand(deviceId, commandId));
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(async () => await this.loRaWanCommandService.ExecuteLoRaWanCommand(deviceId, commandId));
 
             // Assert
             MockRepository.VerifyAll();

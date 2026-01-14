@@ -11,7 +11,7 @@ namespace IoTHub.Portal.Models.v10
         /// <summary>
         /// The device Identifier.
         /// </summary>
-        public string DeviceID { get; set; } = default!;
+        public string DeviceId { get; set; } = default!;
 
         /// <summary>
         /// The device friendly name.

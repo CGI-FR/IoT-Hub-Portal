@@ -8,7 +8,7 @@ namespace IoTHub.Portal.Shared.Models
         /// <summary>
         /// The device identifier.
         /// </summary>
-        public string DeviceID { get; set; }
+        public string DeviceId { get; set; }
 
         /// <summary>
         /// The name of the device.

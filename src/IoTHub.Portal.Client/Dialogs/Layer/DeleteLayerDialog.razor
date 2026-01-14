@@ -3,7 +3,7 @@
 
 <MudDialog>
     <DialogContent>
-        <p>Delete @layerName ?</p>
+        <p>Delete @LayerName ?</p>
         <br />
         <p><i>Warning : this cannot  be undone.</i></p>
     </DialogContent>
@@ -18,8 +18,8 @@
     public Error Error { get; set; } = default!;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public string layerId { get; set; } = default!;
-    [Parameter] public string layerName { get; set; } = default!;
+    [Parameter] public string LayerId { get; set; } = default!;
+    [Parameter] public string LayerName { get; set; } = default!;
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
@@ -28,9 +28,9 @@
     {
         try
         {
-            await LayerService.DeleteLayer(layerId);
+            await LayerService.DeleteLayer(LayerId);
 
-            Snackbar.Add($"Device model {layerName} has been successfully deleted!", Severity.Success);
+            Snackbar.Add($"Device model {LayerName} has been successfully deleted!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (ProblemDetailsException exception)

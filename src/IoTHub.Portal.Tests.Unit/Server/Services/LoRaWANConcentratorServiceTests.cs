@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
-    public class LoRaWANConcentratorServiceTests : BackendUnitTest
+    public class LoRaWanConcentratorServiceTests : BackendUnitTest
     {
         private Mock<ILogger<LoRaWANConcentratorService>> mockLogger;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
@@ -16,7 +16,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IConcentratorRepository> mockConcentratorRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
 
-        private ILoRaWANConcentratorService concentratorService;
+        private ILoRaWanConcentratorService concentratorService;
 
         [SetUp]
         public void SetUp()
@@ -37,10 +37,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockConcentratorRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
-            _ = ServiceCollection.AddSingleton<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
+            _ = ServiceCollection.AddSingleton<ILoRaWanConcentratorService, LoRaWANConcentratorService>();
 
             Services = ServiceCollection.BuildServiceProvider();
-            this.concentratorService = Services.GetRequiredService<ILoRaWANConcentratorService>();
+            this.concentratorService = Services.GetRequiredService<ILoRaWanConcentratorService>();
             Mapper = Services.GetRequiredService<IMapper>();
         }
 
@@ -261,7 +261,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task UpdateDeviceAsyncConcentratorNotFoundInDBShouldThrowResourceNotFoundException()
+        public async Task UpdateDeviceAsyncConcentratorNotFoundInDbShouldThrowResourceNotFoundException()
         {
             // Arrange
             var expectedConcentrator = Fixture.Create<Concentrator>();
@@ -365,7 +365,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task DeleteDeviceAsyncConcentratorNotFoundInDBShouldReturn()
+        public async Task DeleteDeviceAsyncConcentratorNotFoundInDbShouldReturn()
         {
             // Arrange
             var expectedConcentrator = Fixture.Create<Concentrator>();

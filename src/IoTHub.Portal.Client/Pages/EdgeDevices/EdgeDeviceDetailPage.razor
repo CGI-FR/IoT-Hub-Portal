@@ -1,6 +1,5 @@
 ﻿@page "/edge/devices/{deviceId}"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @using ConnectionStringDialog = IoTHub.Portal.Client.Dialogs.EdgeDevices.ConnectionStringDialog
 
@@ -78,12 +77,14 @@
                                                         <MudText>
                                                             <b>Status</b>
                                                         </MudText>
-                                                        <MudRadioGroup @bind-SelectedOption="@edgeDevice.Status">
-                                                            <MudRadio Option=@("Enabled") Color="Color.Primary">
+                                                        <MudRadioGroup @bind-SelectedValue="@edgeDevice.Status" T="string">
+                                                            <MudRadio Value=@("Enabled")
+                                                                      Color="Color.Primary">
                                                                 Enabled
                                                                 <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
                                                             </MudRadio>
-                                                            <MudRadio Option=@("Disabled") Color="Color.Primary">
+                                                            <MudRadio Value=@("Disabled")
+                                                                      Color="Color.Primary">
                                                                 Disabled
                                                                 <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
                                                             </MudRadio>
@@ -124,7 +125,7 @@
                                                                   Variant="Variant.Outlined"
                                                                   For="@(() => edgeDevice.DeviceName)"
                                                                   Required="true"
-                                                                  ReadOnly=@(Portal.CloudProvider == CloudProviders.AWS) />
+                                                                  ReadOnly=@(Portal.CloudProvider == CloudProviders.Aws) />
                                                 </MudItem>
                                             </MudGrid>
                                         </ChildContent>
@@ -179,13 +180,13 @@
                                                         <MudTd DataLabel="Device" Style="text-align: center;display:flex;justify-content:space-evenly;">
                                                             <MudButton Variant="Variant.Filled"
                                                                        Class="btn showLogs" Color="Color.Dark"
-                                                                       Disabled="btn_disable"
+                                                                       Disabled="btnDisable"
                                                                        OnClick="@(async () => await ShowEdgeDeviceLogs(context))">logs</MudButton>
-                                                            <MudButton Variant="Variant.Filled" Class="rebootModule" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context.ModuleName, "RestartModule"))">reboot</MudButton>
+                                                            <MudButton Variant="Variant.Filled" Class="rebootModule" Color="Color.Primary" Disabled="btnDisable" OnClick="@(async () => await OnMethod(context.ModuleName, "RestartModule"))">reboot</MudButton>
                                                             @foreach (var command in context.Commands)
                                                             {
                                                                 <MudButton Variant="Variant.Filled" id="@(command.Name)"
-                                                                           Disabled="btn_disable" Color="Color.Success"
+                                                                           Disabled="btnDisable" Color="Color.Success"
                                                                            OnClick="@(async () => await OnMethod(context.ModuleName, command.Name))">@command.Name</MudButton>
                                                             }
                                                         </MudTd>
@@ -272,9 +273,9 @@
     private MudForm form = default!;
 
     [Parameter]
-    public string deviceId { get; set; } = default!;
+    public string DeviceId { get; set; } = default!;
 
-    private bool btn_disable = false;
+    private bool btnDisable = false;
     private void Return() => NavigationManager.NavigateTo("edge/devices");
 
     private IoTEdgeDevice edgeDevice = default!;
@@ -306,11 +307,11 @@
         {
             isProcessing = true;
 
-            edgeDevice = await EdgeDeviceClientService.GetDevice(deviceId);
+            edgeDevice = await EdgeDeviceClientService.GetDevice(DeviceId);
 
             if (edgeDevice.ConnectionState == "Disconnected" || !canExec)
             {
-                btn_disable = true;
+                btnDisable = true;
             }
 
             await LoadModel(edgeDevice.ModelId);
@@ -433,7 +434,7 @@
     {
         var parameter = new DialogParameters
         {
-            {"deviceId", deviceId},
+            {"deviceId", DeviceId},
             {"edgeModule", module}
         };
 
@@ -443,7 +444,7 @@
 
     public async Task ShowConnectionString()
     {
-        var parameters = new DialogParameters { { nameof(ConnectionStringDialog.deviceId), deviceId } };
+        var parameters = new DialogParameters { { nameof(ConnectionStringDialog.DeviceId), DeviceId } };
 
         _ = await DialogService.Show<ConnectionStringDialog>("Connect Edge device", parameters).Result;
     }

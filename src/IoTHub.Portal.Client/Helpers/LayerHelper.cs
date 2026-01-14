@@ -7,32 +7,32 @@ namespace IoTHub.Portal.Client.Helpers
     {
         public static HashSet<LayerHash> GetHashsetLayer(List<LayerDto> listLayers)
         {
-            var Layers = new HashSet<LayerHash> { };
+            var layers = new HashSet<LayerHash> { };
             if (listLayers is null) throw new ArgumentNullException(nameof(listLayers));
 
             foreach (var layer in listLayers)
             {
                 if (layer.Father == null)
                 {
-                    _ = Layers.Add(new LayerHash(layer));
+                    _ = layers.Add(new LayerHash(layer));
                     _ = listLayers.Remove(layer);
-                    listLayers = AddLayers(Layers, listLayers, Layers.First()).ToList();
+                    listLayers = AddLayers(layers, listLayers, layers.First()).ToList();
                     break;
                 }
             }
-            return Layers;
+            return layers;
         }
 
-        private static List<LayerDto> AddLayers(HashSet<LayerHash> Layers, List<LayerDto> layers, LayerHash currentLayer)
+        private static List<LayerDto> AddLayers(HashSet<LayerHash> layers, List<LayerDto> layersDto, LayerHash currentLayer)
         {
-            var listLayers = layers.ToList();
+            var listLayers = layersDto.ToList();
             foreach (var layer in listLayers)
             {
                 if (layer.Father == currentLayer.LayerData.Id)
                 {
                     _ = currentLayer.Children.Add(new LayerHash(layer, currentLayer.Level + 1, false));
-                    _ = layers.Remove(layer);
-                    listLayers = AddLayers(Layers, layers, currentLayer.Children.Last()).ToList();
+                    _ = layersDto.Remove(layer);
+                    listLayers = AddLayers(layers, layersDto, currentLayer.Children.Last()).ToList();
                 }
             }
             return listLayers;

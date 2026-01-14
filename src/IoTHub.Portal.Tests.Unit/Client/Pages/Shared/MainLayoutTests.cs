@@ -25,7 +25,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
                 CloudProvider = "Azure"
             });
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(PortalPermissionsHelper.GetAllPermissions());
         }
 

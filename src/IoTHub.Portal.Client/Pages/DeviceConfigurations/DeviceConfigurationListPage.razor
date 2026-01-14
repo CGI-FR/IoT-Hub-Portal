@@ -1,9 +1,8 @@
 ﻿@page "/device-configurations"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
 @inject IDeviceConfigurationsClientService DeviceConfigurationsClientService
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
@@ -36,7 +35,7 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="ID">
-                        @context.ConfigurationID
+                        @context.ConfigurationId
                     </MudTd>
                     <MudTd DataLabel="Conditions" Style="word-break: break-all; ">
                         @context.Conditions
@@ -106,12 +105,12 @@
 
     private void AddDevice()
     {
-        navigationManager.NavigateTo("/device-configurations/new");
+        NavigationManager.NavigateTo("/device-configurations/new");
     }
 
 
     private void GoToDetails(ConfigListItem item)
     {
-        navigationManager.NavigateTo($"/device-configurations/{item.ConfigurationID}");
+        NavigationManager.NavigateTo($"/device-configurations/{item.ConfigurationId}");
     }
 }

@@ -26,7 +26,7 @@
             <MudButton Variant="Variant.Outlined" Disabled="string.IsNullOrEmpty(resourceFilter) && string.IsNullOrEmpty(actionFilter)" OnClick="ClearFilters">Clear</MudButton>
             <MudButton Variant="Variant.Filled" OnClick="SelectAll">Select All</MudButton>
             <MudSpacer />
-            <MudChip Color="Color.Primary" Variant="Variant.Outlined">@FilteredPermissions.Count() / @AllPermissions.Length</MudChip>
+            <MudChip Color="Color.Primary" Variant="Variant.Outlined">@FilteredPermissions.Count() / @allPermissions.Length</MudChip>
         </MudStack>
         @if (isLoadingPermissions)
         {
@@ -69,16 +69,16 @@
     private string ButtonText => "Save";
 
     private HashSet<string> SelectedPermissions { get; set; } = new();
-    private string[] AllPermissions = Array.Empty<string>();
+    private string[] allPermissions = Array.Empty<string>();
     private bool isLoadingPermissions = true;
     private bool authSubscribed;
 
     private string resourceFilter;
     private string actionFilter;
 
-    private IEnumerable<string> ResourceOptions => AllPermissions.Select(p => p.Contains(':') ? p.Split(':')[0] : p).Distinct().OrderBy(x => x);
-    private IEnumerable<string> ActionOptions => AllPermissions.Where(p => p.Contains(':')).Select(p => p.Split(':')[1]).Distinct().OrderBy(x => x);
-    private IEnumerable<string> FilteredPermissions => AllPermissions.Where(p => FilterByResource(p) && FilterByAction(p));
+    private IEnumerable<string> ResourceOptions => allPermissions.Select(p => p.Contains(':') ? p.Split(':')[0] : p).Distinct().OrderBy(x => x);
+    private IEnumerable<string> ActionOptions => allPermissions.Where(p => p.Contains(':')).Select(p => p.Split(':')[1]).Distinct().OrderBy(x => x);
+    private IEnumerable<string> FilteredPermissions => allPermissions.Where(p => FilterByResource(p) && FilterByAction(p));
 
     private bool FilterByResource(string permission)
     {
@@ -153,12 +153,12 @@
         try
         {
             isLoadingPermissions = true;
-            AllPermissions = (await RoleClientService.GetPermissions()).Select(x => x.AsString()).ToArray();
+            allPermissions = (await RoleClientService.GetPermissions()).Select(x => x.AsString()).ToArray();
         }
         catch (Exception ex)
         {
             Snackbar.Add($"Erreur chargement permissions : {ex.Message}", Severity.Error);
-            AllPermissions = Array.Empty<string>();
+            allPermissions = Array.Empty<string>();
         }
         finally
         {

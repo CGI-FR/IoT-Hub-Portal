@@ -3,15 +3,13 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using IoTHub.Portal.Shared.Models.v10;
-
     public interface IRoleManagementService
     {
         Task<PaginatedResult<RoleModel>> GetRolePage(
             string? searchKeyword = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null
+            string[]? orderBy = null
         );
         Task<RoleDetailsModel> GetRoleDetailsAsync(string id);
         Task<RoleDetailsModel> CreateRole(RoleDetailsModel role);

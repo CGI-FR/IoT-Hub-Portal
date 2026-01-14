@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             Assert.AreEqual(expectedLayerDto.Name, result.Name);
             Assert.AreEqual(expectedLayerDto.Father, result.Father);
             Assert.AreEqual(expectedLayerDto.Planning, result.Planning);
-            Assert.AreEqual(expectedLayerDto.hasSub, result.hasSub);
+            Assert.AreEqual(expectedLayerDto.HasSub, result.HasSub);
 
             MockRepository.VerifyAll();
         }
@@ -124,7 +124,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             Assert.AreEqual(expectedLayerDto.Name, result.Name);
             Assert.AreEqual(expectedLayerDto.Father, result.Father);
             Assert.AreEqual(expectedLayerDto.Planning, result.Planning);
-            Assert.AreEqual(expectedLayerDto.hasSub, result.hasSub);
+            Assert.AreEqual(expectedLayerDto.HasSub, result.hasSub);
 
             MockRepository.VerifyAll();
         }

@@ -71,11 +71,11 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         protected override async Task<DeviceDetails> UpdateDeviceInDatabase(DeviceDetails device)
         {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags, d => d.Labels);
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.DeviceId, d => d.Tags, d => d.Labels);
 
             if (deviceEntity == null)
             {
-                throw new ResourceNotFoundException($"The device {device.DeviceID} doesn't exist");
+                throw new ResourceNotFoundException($"The device {device.DeviceId} doesn't exist");
             }
 
             foreach (var deviceTagEntity in deviceEntity.Tags)

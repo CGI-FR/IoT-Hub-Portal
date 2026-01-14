@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
             try
             {
-                desiredPropertiesAsJson = AWSDeviceHelper.RetrieveDesiredProperties(shadowResponse);
+                desiredPropertiesAsJson = AwsDeviceHelper.RetrieveDesiredProperties(shadowResponse);
             }
             catch (JsonReaderException e)
             {
@@ -66,7 +66,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
 
             try
             {
-                reportedPropertiesAsJson = AWSDeviceHelper.RetrieveReportedProperties(shadowResponse);
+                reportedPropertiesAsJson = AwsDeviceHelper.RetrieveReportedProperties(shadowResponse);
             }
             catch (JsonReaderException e)
             {

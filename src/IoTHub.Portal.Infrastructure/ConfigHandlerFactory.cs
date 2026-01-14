@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Infrastructure
                 return config[ConfigHandlerBase.CloudProviderKey] switch
                 {
                     CloudProviders.Azure => new ProductionAzureConfigHandler(config),
-                    CloudProviders.AWS => new ProductionAwsConfigHandler(config),
+                    CloudProviders.Aws => new ProductionAwsConfigHandler(config),
                     _ => throw new InvalidCloudProviderException(ErrorTitles.InvalidCloudProviderIncorrect),
                 };
             }

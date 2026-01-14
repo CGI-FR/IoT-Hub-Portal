@@ -7,7 +7,7 @@
         <MudGrid>
             <MudItem xs=12>
                 <MudText>
-                    Delete @deviceName ?
+                    Delete @DeviceName ?
                 </MudText>
             </MudItem>
             <MudItem xs=12>
@@ -26,8 +26,8 @@
     public Error Error { get; set; } = default!;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public string deviceID { get; set; } = default!;
-    [Parameter] public string deviceName { get; set; } = default!;
+    [Parameter] public string DeviceId { get; set; } = default!;
+    [Parameter] public string DeviceName { get; set; } = default!;
     [Parameter] public bool IsLoRaWan { get; set; }
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
@@ -43,14 +43,14 @@
         {
             if (IsLoRaWan)
             {
-                await LoRaWanDeviceClientService.DeleteDevice(deviceID);
+                await LoRaWanDeviceClientService.DeleteDevice(DeviceId);
             }
             else
             {
-                await DeviceClientService.DeleteDevice(deviceID);
+                await DeviceClientService.DeleteDevice(DeviceId);
             }
 
-            Snackbar.Add($"Device {deviceName} has been successfully deleted!", Severity.Success);
+            Snackbar.Add($"Device {DeviceName} has been successfully deleted!", Severity.Success);
         }
         catch (ProblemDetailsException exception)
         {

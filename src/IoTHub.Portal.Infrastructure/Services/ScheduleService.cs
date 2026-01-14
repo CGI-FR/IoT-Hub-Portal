@@ -101,7 +101,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <returns>IEnumerable ScheduleDto.</returns>
         public async Task<IEnumerable<ScheduleDto>> GetSchedules()
         {
-            var schedulePredicate = PredicateBuilder.True<ScheduleDto>();
+            _ = PredicateBuilder.True<ScheduleDto>();
 
             var schedules = await this.scheduleRepository.GetAllAsync();
 

@@ -1,6 +1,5 @@
 ﻿@page "/edge/devices/new"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 
@@ -103,7 +102,7 @@
                                                     }
                                                 </MudItem>
                                                 <MudItem xs="12">
-                                                    <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
+                                                    <MudSwitch @bind-Value="@duplicateDevice" Label="Or select a device to copy" />
                                                 </MudItem>
                                                 <MudItem xs="12">
                                                     <MudTextField @bind-Value="@edgeDevice.DeviceName"
@@ -120,12 +119,12 @@
                                                         <MudText>
                                                             <b>Status</b>
                                                         </MudText>
-                                                        <MudRadioGroup @bind-SelectedOption="@edgeDevice.IsEnabled">
-                                                            <MudRadio Option=@(true) Color="Color.Primary">
+                                                        <MudRadioGroup @bind-SelectedValue="@edgeDevice.IsEnabled" T="bool">
+                                                            <MudRadio Value=@(true) Color="Color.Primary">
                                                                 Enabled
                                                                 <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
                                                             </MudRadio>
-                                                            <MudRadio Option=@(false) Color="Color.Primary">
+                                                            <MudRadio Value=@(false) Color="Color.Primary">
                                                                 Disabled
                                                                 <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
                                                             </MudRadio>

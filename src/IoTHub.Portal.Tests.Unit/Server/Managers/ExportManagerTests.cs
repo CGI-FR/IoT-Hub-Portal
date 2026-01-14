@@ -13,7 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelPropertiesService> mockDeviceModelPropertiesService;
         private Mock<IDevicePropertyService> mockDevicePropertyService;
-        private Mock<IOptions<LoRaWANOptions>> mockLoRaWANOptions;
+        private Mock<IOptions<LoRaWanOptions>> mockLoRaWANOptions;
 
         public override void Setup()
         {
@@ -25,7 +25,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
             this.mockDeviceModelPropertiesService = MockRepository.Create<IDeviceModelPropertiesService>();
             this.mockDevicePropertyService = MockRepository.Create<IDevicePropertyService>();
-            this.mockLoRaWANOptions = MockRepository.Create<IOptions<LoRaWANOptions>>();
+            this.mockLoRaWANOptions = MockRepository.Create<IOptions<LoRaWanOptions>>();
 
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceService.Object);
@@ -47,7 +47,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)
-                .Returns(new LoRaWANOptions
+                .Returns(new LoRaWanOptions
                 {
                     Enabled = false
                 });
@@ -87,7 +87,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)
-                .Returns(new LoRaWANOptions
+                .Returns(new LoRaWanOptions
                 {
                     Enabled = true
                 });
@@ -129,7 +129,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)
-                .Returns(new LoRaWANOptions
+                .Returns(new LoRaWanOptions
                 {
                     Enabled = false
                 });
@@ -159,7 +159,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)
-                .Returns(new LoRaWANOptions
+                .Returns(new LoRaWanOptions
                 {
                     Enabled = true
                 });
@@ -206,7 +206,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)
-                .Returns(new LoRaWANOptions
+                .Returns(new LoRaWanOptions
                 {
                     Enabled = true
                 });
@@ -246,7 +246,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
 
             // Correct file format
             var textContent = new StringBuilder();
-            _ = textContent.AppendLine("Id,Name,ModelId,TAG:supportLoRaFeatures,TAG:Tag1,TAG:Tag2,PROPERTY:Property1,PROPERTY:Property2,PROPERTY:AppKey,PROPERTY:AppEUI,PROPERTY:AppSKey,PROPERTY:NwkSKey,PROPERTY:DevAddr,PROPERTY:GatewayID,PROPERTY:Downlink,PROPERTY:ClassType,PROPERTY:PreferredWindow,PROPERTY:Deduplication,PROPERTY:RX1DROffset,PROPERTY:RX2DataRate,PROPERTY:RXDelay,PROPERTY:ABPRelaxMode,PROPERTY:SensorDecoder,PROPERTY:FCntUpStart,PROPERTY:FCntDownStart,PROPERTY:FCntResetCounter,PROPERTY:Supports32BitFCnt,PROPERTY:KeepAliveTimeout");
+            _ = textContent.AppendLine("Id,Name,ModelId,TAG:supportLoRaFeatures,TAG:Tag1,TAG:Tag2,PROPERTY:Property1,PROPERTY:Property2,PROPERTY:AppKey,PROPERTY:AppEUI,PROPERTY:AppSKey,PROPERTY:NwkSKey,PROPERTY:DevAddr,PROPERTY:GatewayID,PROPERTY:Downlink,PROPERTY:ClassType,PROPERTY:PreferredWindow,PROPERTY:Deduplication,PROPERTY:RX1DROffset,PROPERTY:RX2DataRate,PROPERTY:RXDelay,PROPERTY:AbpRelaxMode,PROPERTY:SensorDecoder,PROPERTY:FCntUpStart,PROPERTY:FCntDownStart,PROPERTY:FCntResetCounter,PROPERTY:Supports32BitFCnt,PROPERTY:KeepAliveTimeout");
             _ = textContent.AppendLine("0000000000000001,ImportLoRa,dc1f171b-8e51-4c6d-a1c6-942b4a0f995b,true,Tag1-Value1,Tag2-Value1,,,AppKeyValue,AppEUIValue,,,,,true,C,1,Drop,,,1,,http://sensor-decoder-url/test,,,,,1");
             _ = textContent.AppendLine("0000000000000002,ImportNonLoRa,f8b7a67a-345d-463e-ae0e-eeb0f6d24e38,false,Tag1-Value2,Tag2-Value2,Property1Value,Property1Value,,,,,,,,,,,,,,,,,,,,");
 
@@ -266,7 +266,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)
-                .Returns(new LoRaWANOptions
+                .Returns(new LoRaWanOptions
                 {
                     Enabled = true
                 });
@@ -306,7 +306,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
 
             // Correct file format
             var textContent = new StringBuilder();
-            _ = textContent.AppendLine("Id,Name,ModelId,TAG:supportLoRaFeatures,TAG:Tag1,TAG:Tag2,PROPERTY:Property1,PROPERTY:Property2,PROPERTY:AppKey,PROPERTY:AppEUI,PROPERTY:AppSKey,PROPERTY:NwkSKey,PROPERTY:DevAddr,PROPERTY:GatewayID,PROPERTY:Downlink,PROPERTY:ClassType,PROPERTY:PreferredWindow,PROPERTY:Deduplication,PROPERTY:RX1DROffset,PROPERTY:RX2DataRate,PROPERTY:RXDelay,PROPERTY:ABPRelaxMode,PROPERTY:SensorDecoder,PROPERTY:FCntUpStart,PROPERTY:FCntDownStart,PROPERTY:FCntResetCounter,PROPERTY:Supports32BitFCnt,PROPERTY:KeepAliveTimeout");
+            _ = textContent.AppendLine("Id,Name,ModelId,TAG:supportLoRaFeatures,TAG:Tag1,TAG:Tag2,PROPERTY:Property1,PROPERTY:Property2,PROPERTY:AppKey,PROPERTY:AppEUI,PROPERTY:AppSKey,PROPERTY:NwkSKey,PROPERTY:DevAddr,PROPERTY:GatewayID,PROPERTY:Downlink,PROPERTY:ClassType,PROPERTY:PreferredWindow,PROPERTY:Deduplication,PROPERTY:RX1DROffset,PROPERTY:RX2DataRate,PROPERTY:RXDelay,PROPERTY:AbpRelaxMode,PROPERTY:SensorDecoder,PROPERTY:FCntUpStart,PROPERTY:FCntDownStart,PROPERTY:FCntResetCounter,PROPERTY:Supports32BitFCnt,PROPERTY:KeepAliveTimeout");
             _ = textContent.AppendLine("0000000000000001,ImportLoRa,dc1f171b-8e51-4c6d-a1c6-942b4a0f995b,true,Tag1-Value1,Tag2-Value1,,,AppKeyValue,AppEUIValue,,,,,true,C,1,Drop,,,1,,http://sensor-decoder-url/test,,,,,1");
             _ = textContent.AppendLine("0000000000000002,ImportNonLoRa,f8b7a67a-345d-463e-ae0e-eeb0f6d24e38,false,Tag1-Value2,Tag2-Value2,Property1Value,Property1Value,,,,,,,,,,,,,,,,,,,,");
 
@@ -327,7 +327,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             var textContent = new StringBuilder();
-            _ = textContent.AppendLine("Id,Name,ModelId,TAG:supportLoRaFeatures,TAG:Tag1,TAG:Tag2,PROPERTY:Property1,PROPERTY:Property2,PROPERTY:AppKey,PROPERTY:AppEUI,PROPERTY:AppSKey,PROPERTY:NwkSKey,PROPERTY:DevAddr,PROPERTY:GatewayID,PROPERTY:Downlink,PROPERTY:ClassType,PROPERTY:PreferredWindow,PROPERTY:Deduplication,PROPERTY:RX1DROffset,PROPERTY:RX2DataRate,PROPERTY:RXDelay,PROPERTY:ABPRelaxMode,PROPERTY:SensorDecoder,PROPERTY:FCntUpStart,PROPERTY:FCntDownStart,PROPERTY:FCntResetCounter,PROPERTY:Supports32BitFCnt,PROPERTY:KeepAliveTimeout");
+            _ = textContent.AppendLine("Id,Name,ModelId,TAG:supportLoRaFeatures,TAG:Tag1,TAG:Tag2,PROPERTY:Property1,PROPERTY:Property2,PROPERTY:AppKey,PROPERTY:AppEUI,PROPERTY:AppSKey,PROPERTY:NwkSKey,PROPERTY:DevAddr,PROPERTY:GatewayID,PROPERTY:Downlink,PROPERTY:ClassType,PROPERTY:PreferredWindow,PROPERTY:Deduplication,PROPERTY:RX1DROffset,PROPERTY:RX2DataRate,PROPERTY:RXDelay,PROPERTY:AbpRelaxMode,PROPERTY:SensorDecoder,PROPERTY:FCntUpStart,PROPERTY:FCntDownStart,PROPERTY:FCntResetCounter,PROPERTY:Supports32BitFCnt,PROPERTY:KeepAliveTimeout");
             // Missing DeviceId
             _ = textContent.AppendLine(",ImportLoRa,dc1f171b-8e51-4c6d-a1c6-942b4a0f995b,true,Tag1-Value1,Tag2-Value1,,,AppKeyValue,AppEUIValue,,,,,true,C,1,Drop,,,1,,http://sensor-decoder-url/test,,,,,1");
             // Missing DeviceName
@@ -342,7 +342,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
                 .Returns(new List<string>() { "Tag1", "Tag2" });
 
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)
-                .Returns(new LoRaWANOptions
+                .Returns(new LoRaWanOptions
                 {
                     Enabled = true
                 });
@@ -375,7 +375,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)
-                .Returns(new LoRaWANOptions
+                .Returns(new LoRaWanOptions
                 {
                     Enabled = true
                 });
@@ -412,7 +412,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
 
             // Correct file format
             var textContent = new StringBuilder();
-            _ = textContent.AppendLine("Id,Name,ModelId,TAG:supportLoRaFeatures,TAG:Tag1,TAG:Tag2,PROPERTY:Property1,PROPERTY:Property2,PROPERTY:AppKey,PROPERTY:AppEUI,PROPERTY:AppSKey,PROPERTY:NwkSKey,PROPERTY:DevAddr,PROPERTY:GatewayID,PROPERTY:Downlink,PROPERTY:ClassType,PROPERTY:PreferredWindow,PROPERTY:Deduplication,PROPERTY:RX1DROffset,PROPERTY:RX2DataRate,PROPERTY:RXDelay,PROPERTY:ABPRelaxMode,PROPERTY:SensorDecoder,PROPERTY:FCntUpStart,PROPERTY:FCntDownStart,PROPERTY:FCntResetCounter,PROPERTY:Supports32BitFCnt,PROPERTY:KeepAliveTimeout");
+            _ = textContent.AppendLine("Id,Name,ModelId,TAG:supportLoRaFeatures,TAG:Tag1,TAG:Tag2,PROPERTY:Property1,PROPERTY:Property2,PROPERTY:AppKey,PROPERTY:AppEUI,PROPERTY:AppSKey,PROPERTY:NwkSKey,PROPERTY:DevAddr,PROPERTY:GatewayID,PROPERTY:Downlink,PROPERTY:ClassType,PROPERTY:PreferredWindow,PROPERTY:Deduplication,PROPERTY:RX1DROffset,PROPERTY:RX2DataRate,PROPERTY:RXDelay,PROPERTY:AbpRelaxMode,PROPERTY:SensorDecoder,PROPERTY:FCntUpStart,PROPERTY:FCntDownStart,PROPERTY:FCntResetCounter,PROPERTY:Supports32BitFCnt,PROPERTY:KeepAliveTimeout");
             _ = textContent.AppendLine("0000000000000001,ImportLoRa,dc1f171b-8e51-4c6d-a1c6-942b4a0f995b,true,Tag1-Value1,Tag2-Value1,,,AppKeyValue,AppEUIValue,,,,,true,C,1,Drop,,,1,,http://sensor-decoder-url/test,,,,,1");
             _ = textContent.AppendLine("0000000000000002,ImportNonLoRa,f8b7a67a-345d-463e-ae0e-eeb0f6d24e38,false,Tag1-Value2,Tag2-Value2,Property1Value,Property1Value,,,,,,,,,,,,,,,,,,,,");
 

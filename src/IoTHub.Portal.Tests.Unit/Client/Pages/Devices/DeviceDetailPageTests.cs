@@ -44,7 +44,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite, PortalPermissions.DeviceExecute });
         }
 
@@ -78,7 +78,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new DeviceModelDto());
 
             // Act
-            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", deviceId));
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceId", deviceId));
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("#SaveButton").TextContent.Should().Be("Save"));

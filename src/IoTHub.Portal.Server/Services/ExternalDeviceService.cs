@@ -573,7 +573,7 @@ namespace IoTHub.Portal.Server.Services
             {
                 var model = await this.deviceModelRepository.GetByIdAsync(device.ModelId);
 
-                return await this.deviceRegistryProvider.GetEnrollmentCredentialsAsync(device.DeviceID, model.Id);
+                return await this.deviceRegistryProvider.GetEnrollmentCredentialsAsync(device.DeviceId, model.Id);
             }
             catch (RequestFailedException e)
             {
@@ -643,11 +643,11 @@ namespace IoTHub.Portal.Server.Services
             };
         }
 
-        public async Task<List<string>> GetAllGatewayID()
+        public async Task<List<string>> GetAllGatewayId()
         {
             try
             {
-                var query = this.registryManager.CreateQuery($"SELECT DeviceID FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'");
+                var query = this.registryManager.CreateQuery($"SELECT DeviceId FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'");
                 var list = new List<string>();
 
                 var value = (await query.GetNextAsJsonAsync()).ToList();

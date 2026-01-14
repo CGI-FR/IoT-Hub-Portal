@@ -11,7 +11,7 @@ namespace IoTHub.Portal.Server.Managers
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
         private readonly IDevicePropertyService devicePropertyService;
-        private readonly IOptions<LoRaWANOptions> loRaWANOptions;
+        private readonly IOptions<LoRaWanOptions> loRaWANOptions;
 
         private const string TagPrefix = "TAG";
         private const string PropertyPrefix = "PROPERTY";
@@ -22,7 +22,7 @@ namespace IoTHub.Portal.Server.Managers
             IDeviceTagService deviceTagService,
             IDeviceModelPropertiesService deviceModelPropertiesService,
             IDevicePropertyService devicePropertyService,
-            IOptions<LoRaWANOptions> loRaWANOptions)
+            IOptions<LoRaWanOptions> loRaWANOptions)
         {
             this.externalDevicesService = externalDevicesService;
             this.deviceService = deviceService;
@@ -95,11 +95,11 @@ namespace IoTHub.Portal.Server.Managers
             {
                 properties.AddRange(new[] {
                     nameof(LoRaDeviceDetails.AppKey),
-                    nameof(LoRaDeviceDetails.AppEUI),
+                    nameof(LoRaDeviceDetails.AppEui),
                     nameof(LoRaDeviceDetails.AppSKey),
                     nameof(LoRaDeviceDetails.NwkSKey),
                     nameof(LoRaDeviceDetails.DevAddr),
-                    nameof(LoRaDeviceDetails.GatewayID)
+                    nameof(LoRaDeviceDetails.GatewayId)
                 });
             }
 
@@ -267,7 +267,7 @@ namespace IoTHub.Portal.Server.Managers
         {
             var newDevice = new LoRaDeviceDetails()
             {
-                DeviceID = deviceId,
+                DeviceId = deviceId,
                 DeviceName = deviceName,
                 ModelId = modelId,
                 Tags = deviceTags,
@@ -275,19 +275,19 @@ namespace IoTHub.Portal.Server.Managers
             };
 
             TryReadProperty(csvReader, newDevice, c => c.AppKey, string.Empty);
-            TryReadProperty(csvReader, newDevice, c => c.AppEUI, string.Empty);
-            if (string.IsNullOrEmpty(newDevice.AppKey) && string.IsNullOrEmpty(newDevice.AppEUI))
+            TryReadProperty(csvReader, newDevice, c => c.AppEui, string.Empty);
+            if (string.IsNullOrEmpty(newDevice.AppKey) && string.IsNullOrEmpty(newDevice.AppEui))
             {
                 // ABP Settings
                 TryReadProperty(csvReader, newDevice, c => c.AppSKey, string.Empty);
                 TryReadProperty(csvReader, newDevice, c => c.NwkSKey, string.Empty);
                 TryReadProperty(csvReader, newDevice, c => c.DevAddr, string.Empty);
-                newDevice.AppEUI = null;
+                newDevice.AppEui = null;
                 newDevice.AppKey = null;
             }
-            TryReadProperty(csvReader, newDevice, c => c.GatewayID, string.Empty);
+            TryReadProperty(csvReader, newDevice, c => c.GatewayId, string.Empty);
 
-            _ = await this.loraDeviceService.CheckIfDeviceExists(newDevice.DeviceID)
+            _ = await this.loraDeviceService.CheckIfDeviceExists(newDevice.DeviceId)
                 ? await this.loraDeviceService.UpdateDevice(newDevice)
                 : await this.loraDeviceService.CreateDevice(newDevice);
         }
@@ -311,14 +311,14 @@ namespace IoTHub.Portal.Server.Managers
 
             var newDevice = new DeviceDetails()
             {
-                DeviceID = deviceId,
+                DeviceId = deviceId,
                 DeviceName = deviceName,
                 ModelId = modelId,
                 IsEnabled = true,
                 Tags = deviceTags
             };
 
-            _ = await this.deviceService.CheckIfDeviceExists(newDevice.DeviceID)
+            _ = await this.deviceService.CheckIfDeviceExists(newDevice.DeviceId)
                 ? await this.deviceService.UpdateDevice(newDevice)
                 : await this.deviceService.CreateDevice(newDevice);
 

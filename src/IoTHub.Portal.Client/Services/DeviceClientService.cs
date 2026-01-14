@@ -26,16 +26,16 @@ namespace IoTHub.Portal.Client.Services
         {
             var response = await this.http.PostAsJsonAsync("api/devices", device);
 
-            if (device.DeviceID != null)
+            if (device.DeviceId != null)
             {
-                return device.DeviceID;
+                return device.DeviceId;
             }
 
             //Retrieve Device ID
             var responseJson = await response.Content.ReadAsStringAsync();
             var updatedDevice = Newtonsoft.Json.JsonConvert.DeserializeObject<DeviceDetails>(responseJson);
 
-            return updatedDevice!.DeviceID;
+            return updatedDevice!.DeviceId;
         }
 
         public Task UpdateDevice(DeviceDetails device)

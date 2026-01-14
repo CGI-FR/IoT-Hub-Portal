@@ -1,19 +1,16 @@
 ﻿@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
 
-@if (chartConfig != null)
-{
-    <Chart Config="chartConfig"></Chart>
-}
+<Chart Config="chartConfig"></Chart>
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; } = default!;
+    public Error? Error { get; set; }
 
     [Parameter]
-    public string DeviceId { get; set; } = default!;
+    public required string DeviceId { get; set; }
 
-    private IEnumerable<LoRaDeviceTelemetryDto> Telemetries = new List<LoRaDeviceTelemetryDto>();
-    private LineConfig chartConfig = default!;
+    private IEnumerable<LoRaDeviceTelemetryDto> telemetries = new List<LoRaDeviceTelemetryDto>();
+    private LineConfig chartConfig = null!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -27,7 +24,7 @@
     {
         try
         {
-            Telemetries = (await LoRaWanDeviceClientService.GetDeviceTelemetry(DeviceId))
+            telemetries = (await LoRaWanDeviceClientService.GetDeviceTelemetry(DeviceId))
                 .OrderByDescending(telemetry => telemetry.EnqueuedTime)
                 .ToList();
 
@@ -91,20 +88,20 @@
             }
         };
 
-        foreach (var label in Telemetries.Select(d => d.EnqueuedTime.ToString("o")))
+        foreach (var label in telemetries.Select(d => d.EnqueuedTime.ToString("o")))
         {
             chartConfig.Data.Labels.Add(label);
         }
 
-        var rssiDataset = new LineDataset<TimePoint>(Telemetries.Select(telemetry => new TimePoint(telemetry.EnqueuedTime, telemetry.Telemetry.Rssi)))
-            {
+        var rssiDataset = new LineDataset<TimePoint>(telemetries.Select(telemetry => new TimePoint(telemetry.EnqueuedTime, telemetry.Telemetry.Rssi)))
+        {
             Label = "RSSI",
             BackgroundColor = ColorUtil.ColorHexString(255, 99, 132),
             BorderColor = ColorUtil.ColorHexString(255, 99, 132),
             Fill = FillingMode.Disabled
         };
 
-        var lsnrDataset = new LineDataset<TimePoint>(Telemetries.Select(telemetry => new TimePoint(telemetry.EnqueuedTime, telemetry.Telemetry.Lsnr)))
+        var lsnrDataset = new LineDataset<TimePoint>(telemetries.Select(telemetry => new TimePoint(telemetry.EnqueuedTime, telemetry.Telemetry.Lsnr)))
         {
             Label = "LSNR",
             BackgroundColor = ColorUtil.ColorHexString(54, 162, 235),

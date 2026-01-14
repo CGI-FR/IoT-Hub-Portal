@@ -8,6 +8,6 @@ namespace IoTHub.Portal.Shared.Constants
     {
         public const string Azure = "Azure";
 
-        public const string AWS = "AWS";
+        public const string Aws = "AWS";
     }
 }

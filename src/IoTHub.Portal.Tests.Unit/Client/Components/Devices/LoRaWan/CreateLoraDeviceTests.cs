@@ -24,7 +24,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = true
+                UseOtaa = true
             };
 
             var deviceDetails = new LoRaDeviceDetails();
@@ -42,7 +42,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
 
 
             // Assert
-            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppEUI, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.AppEUI)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppEui, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.AppEui)}").GetAttribute("value")));
             cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppKey, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.AppKey)}").GetAttribute("value")));
         }
 
@@ -52,7 +52,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = false
+                UseOtaa = false
             };
 
             var deviceDetails= new LoRaDeviceDetails();
@@ -81,7 +81,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = false
+                UseOtaa = false
             };
 
             var deviceDetails= new LoRaDeviceDetails();
@@ -108,7 +108,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = false
+                UseOtaa = false
             };
 
             var deviceDetails= new LoRaDeviceDetails();
@@ -136,7 +136,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = false
+                UseOtaa = false
             };
 
             var deviceDetails= new LoRaDeviceDetails();
@@ -171,7 +171,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
             var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
-                UseOTAA = false
+                UseOtaa = false
             };
 
             var deviceDetails= new LoRaDeviceDetails();

@@ -3,9 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using IoTHub.Portal.Shared.Models.v10;
-    using System.Threading.Tasks;
-
     public interface IUserClientService
     {
         Task<PaginationResult<UserModel>> GetUsers(string continuationUri);

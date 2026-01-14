@@ -13,9 +13,9 @@
 @if (CanWrite)
 {
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">
-        @mode Planning
+        @Mode Planning
         <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save</MudButton>
-        @if (mode == "Edit")
+        @if (Mode == "Edit")
         {
             <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeletePlanning" id="deleteButton" Disabled="isProcessing">Delete planning</MudButton>
         }
@@ -30,11 +30,11 @@
                 <ChildContent>
                     <MudGrid>
                         <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="@planning.Name" For="@(() => planning.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
+                            <MudTextField @bind-Value="@Planning.Name" For="@(() => Planning.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
                         </MudItem>
                         <MudTd DataLabel="Command" Style="text-align: center;">
-                            <MudSelect @bind-Value="@SelectedModel" Label=" Device Model" Margin="Margin.Dense" Variant="Variant.Outlined" Disabled="@((mode == "New") ? false : true)">
-                                @foreach (string model in CommandDictionary.Keys.ToList())
+                            <MudSelect @bind-Value="@SelectedModel" Label=" Device Model" Margin="Margin.Dense" Variant="Variant.Outlined" Disabled="@((Mode == "New") ? false : true)">
+                                @foreach (string model in commandDictionary.Keys.ToList())
                                 {
                                     <MudSelectItem Value="@(model)">@model</MudSelectItem>
                                 }
@@ -51,7 +51,7 @@
                 <TitleContent><MudText Typo="Typo.h6">Business Day</MudText></TitleContent>
                 <ChildContent>
                     <MudItem xs="12">
-                        <MudTable Items="@scheduleList" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                        <MudTable Items="@ScheduleList" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                             <ColGroup>
                                 <col style="width: 5%;" />
                                 <col style="width: 5%;" />
@@ -70,16 +70,16 @@
                                     <MudTh Style="text-align: center">Delete</MudTh>
                                 }
                             </HeaderContent>
-                            <RowTemplate Context="ContextSchedule">
+                            <RowTemplate Context="contextSchedule">
                                 <MudTd DataLabel="Start" Style="word-break: break-all;">
-                                    <MudTextField @bind-Value="@ContextSchedule.Start" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start)" Variant="Variant.Outlined" Required="true" Disabled="@(scheduleList.IndexOf(ContextSchedule) == 0)"></MudTextField>
+                                    <MudTextField @bind-Value="@contextSchedule.Start" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => contextSchedule.Start)" Variant="Variant.Outlined" Required="true" Disabled="@(ScheduleList.IndexOf(contextSchedule) == 0)"></MudTextField>
                                 </MudTd>
                                 <MudTd DataLabel="End" Style="word-break: break-all;">
-                                    <MudTextField @bind-Value="@ContextSchedule.End" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                    <MudTextField @bind-Value="@contextSchedule.End" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => contextSchedule.Start)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                 </MudTd>
                                 <MudTd DataLabel="Command" Style="text-align: center;">
-                                    <MudSelect @bind-Value="@ContextSchedule.CommandId" Label="Command" Margin="Margin.Dense" Variant="Variant.Outlined">
-                                        @foreach (var command in CommandDictionary[SelectedModel])
+                                    <MudSelect @bind-Value="@contextSchedule.CommandId" Label="Command" Margin="Margin.Dense" Variant="Variant.Outlined">
+                                        @foreach (var command in commandDictionary[SelectedModel])
                                         {
                                             <MudSelectItem Value="@(@command.Id)">@command.Name</MudSelectItem>
                                         }
@@ -88,7 +88,7 @@
                                 @if (CanWrite)
                                 {
                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                        <MudIconButton Color="Color.Default" Class="deleteRouteButton" id="deleteScheduleButton" OnClick="(() => DeleteSchedule(ContextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                        <MudIconButton Color="Color.Default" Class="deleteRouteButton" id="deleteScheduleButton" OnClick="(() => DeleteSchedule(contextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
                                     </MudTd>
                                 }
                             </RowTemplate>
@@ -107,9 +107,9 @@
                                 if (day != DaysEnumFlag.DaysOfWeek.None)
                                 {
                                     <MudButton id="editPlanningChangeOnDayLayers"
-                                               Style=@((planning.DayOff & day) != day ? "" : "text-decoration: line-through;") Size="Size.Medium"
+                                               Style=@((Planning.DayOff & day) != day ? "" : "text-decoration: line-through;") Size="Size.Medium"
                                                OnClick="() => ChangeOffDay(day)"
-                                               Color="@((planning.DayOff & day) != day ? Color.Success : Color.Error)"
+                                               Color="@((Planning.DayOff & day) != day ? Color.Success : Color.Error)"
                                                Disabled="@(!CanWrite)">@day</MudButton>
                                 }
                             }
@@ -125,7 +125,7 @@
                 <TitleContent><MudText Typo="Typo.h6">Off Day</MudText></TitleContent>
                 <ChildContent>
                     <MudItem xs="12">
-                        <MudTable Items="@scheduleOffList" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                        <MudTable Items="@ScheduleOffList" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                             <ColGroup>
                                 <col style="width: 5%;" />
                                 <col style="width: 5%;" />
@@ -144,16 +144,16 @@
                                     <MudTh Style="text-align: center">Delete</MudTh>
                                 }
                             </HeaderContent>
-                            <RowTemplate Context="ContextSchedule">
+                            <RowTemplate Context="contextSchedule">
                                 <MudTd DataLabel="Start" Style="word-break: break-all;">
-                                    <MudTextField Margin="Margin.Dense" Label="From 00:00" For="@(() => ContextSchedule.Start)" Variant="Variant.Outlined" Disabled="true"></MudTextField>
+                                    <MudTextField Margin="Margin.Dense" Label="From 00:00" For="@(() => contextSchedule.Start)" Variant="Variant.Outlined" Disabled="true"></MudTextField>
                                 </MudTd>
                                 <MudTd DataLabel="End" Style="word-break: break-all;">
-                                    <MudTextField Margin="Margin.Dense" Label="To 24:00" For="@(() => ContextSchedule.End)" Variant="Variant.Outlined" Disabled="true" />
+                                    <MudTextField Margin="Margin.Dense" Label="To 24:00" For="@(() => contextSchedule.End)" Variant="Variant.Outlined" Disabled="true" />
                                 </MudTd>
                                 <MudTd DataLabel="Command" Style="text-align: center;">
-                                    <MudSelect @bind-Value="@planning.CommandId" Label="Command" Margin="Margin.Dense" Variant="Variant.Outlined">
-                                        @foreach (var command in CommandDictionary[SelectedModel])
+                                    <MudSelect @bind-Value="@Planning.CommandId" Label="Command" Margin="Margin.Dense" Variant="Variant.Outlined">
+                                        @foreach (var command in commandDictionary[SelectedModel])
                                         {
                                             <MudSelectItem Value="@(@command.Id)">@command.Name</MudSelectItem>
                                         }
@@ -162,7 +162,7 @@
                                 @if (CanWrite)
                                 {
                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                        <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="(() => DeleteSchedule(ContextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                        <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="(() => DeleteSchedule(contextSchedule))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
                                     </MudTd>
                                 }
                             </RowTemplate>
@@ -174,10 +174,10 @@
                                 if (day != DaysEnumFlag.DaysOfWeek.None)
                                 {
                                     <MudButton id="editPlanningChangeOffDayLayers"
-                                               Style=@((planning.DayOff & day) == day ? "text-decoration: underline;" : "")
+                                               Style=@((Planning.DayOff & day) == day ? "text-decoration: underline;" : "")
                                                Size="Size.Medium"
                                                OnClick="() => ChangeOffDay(day)"
-                                               Color="@((planning.DayOff & day) == day ? Color.Success : Color.Error)">@day</MudButton>
+                                               Color="@((Planning.DayOff & day) == day ? Color.Success : Color.Error)">@day</MudButton>
                                 }
                             }
                         </div>
@@ -192,10 +192,10 @@
                 <TitleContent><MudText Typo="Typo.h6">Date of application of this planning</MudText></TitleContent>
                 <ChildContent>
                     <MudTd DataLabel="From" Style="word-break: break-all;">
-                        <MudTextField @bind-Value="@planning.Start" T="string" Format="yyyy-MM-dd" Label="Start" InputType="InputType.Date" />
+                        <MudTextField @bind-Value="@Planning.Start" T="string" Format="yyyy-MM-dd" Label="Start" InputType="InputType.Date" />
                     </MudTd>
                     <MudTd DataLabel="From" Style="word-break: break-all;">
-                        <MudTextField @bind-Value="@planning.End" T="string" Format="yyyy-MM-dd" Label="End" InputType="InputType.Date" />
+                        <MudTextField @bind-Value="@Planning.End" T="string" Format="yyyy-MM-dd" Label="End" InputType="InputType.Date" />
                     </MudTd>
                 </ChildContent>
             </MudExpansionPanel>
@@ -213,13 +213,13 @@
                                     <Content>
                                         <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@(context.Children.Count() != 0)" />
 
-                                        @if ((context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning == planning.Id))
+                                        @if ((context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning == Planning.Id))
                                         {
                                             <MudTooltip Text="Already registered">
                                                 <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.CheckBox" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
                                             </MudTooltip>
                                         }
-                                        else if (context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning != planning.Id)
+                                        else if (context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning != Planning.Id)
                                         {
                                             <MudTooltip Text="Registered on other planning">
                                                 <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.IndeterminateCheckBox" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
@@ -249,27 +249,27 @@
     public Error Error { get; set; } = default!;
 
     [Parameter]
-    public string mode { get; set; } = default!;
+    public string Mode { get; set; } = default!;
     [Parameter]
-    public List<ScheduleDto> scheduleList { get; set; } = new() { };
+    public List<ScheduleDto> ScheduleList { get; set; } = new() { };
     [Parameter]
-    public List<ScheduleDto> initScheduleList { get; set; } = new() { };
+    public List<ScheduleDto> InitScheduleList { get; set; } = new() { };
     [Parameter]
-    public PlanningDto planning { get; set; } = new();
+    public PlanningDto Planning { get; set; } = new();
     [Parameter]
     public string SelectedModel { get; set; } = "";
 
     [Parameter]
     public bool CanWrite { get; set; }
 
-    public List<ScheduleDto> scheduleOffList { get; set; } = new() { new ScheduleDto() };
+    public List<ScheduleDto> ScheduleOffList { get; set; } = new() { new ScheduleDto() };
 
     public IEnumerable<string> AvailableMonth { get; set; } = new List<string>() { "January", "February", "March", "April", "Mai", "June", "July", "August", "September", "October", "Novembre", "December" };
 
-    public string defaultDeviceModel { get; set; } = "Choose a Device Model";
+    public string DefaultDeviceModel { get; set; } = "Choose a Device Model";
 
     public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
-    Dictionary<string, List<DeviceModelCommandDto>> CommandDictionary = new();
+    Dictionary<string, List<DeviceModelCommandDto>> commandDictionary = new();
 
     private bool isProcessing;
 
@@ -281,8 +281,8 @@
         {
             isProcessing = true;
 
-            if (planning.CommandId == null) SelectedModel = defaultDeviceModel;
-            CommandDictionary.Add(defaultDeviceModel, new List<DeviceModelCommandDto>());
+            if (Planning.CommandId == null) SelectedModel = DefaultDeviceModel;
+            commandDictionary.Add(DefaultDeviceModel, new List<DeviceModelCommandDto>());
 
             //Get all layers that will be link to a planning
             List<LayerDto> listLayers = await LayerClientService.GetLayers();
@@ -303,35 +303,35 @@
 
     private void DeleteSchedule(ScheduleDto schedule)
     {
-        if (scheduleList.Count > 1) scheduleList.Remove(schedule);
+        if (ScheduleList.Count > 1) ScheduleList.Remove(schedule);
     }
 
     private void AddSchedule()
     {
-        var last = scheduleList.LastOrDefault();
+        var last = ScheduleList.LastOrDefault();
 
-        if (scheduleList.Count == 0 || (last?.Start is not null && last?.End is not null && last?.CommandId is not null))
+        if (ScheduleList.Count == 0 || (last?.Start is not null && last?.End is not null && last?.CommandId is not null))
         {
             ScheduleDto newSchedule = new ScheduleDto { Start = last.End };
-            scheduleList.Add(newSchedule);
+            ScheduleList.Add(newSchedule);
         }
     }
 
     private void ChangeOffDay(DaysEnumFlag.DaysOfWeek day)
     {
-        if ((planning.DayOff & day) == day)
+        if ((Planning.DayOff & day) == day)
         {
-            planning.DayOff &= ~day;
+            Planning.DayOff &= ~day;
         }
         else
         {
-            planning.DayOff |= day;
+            Planning.DayOff |= day;
         }
     }
 
     public async void Save()
     {
-        if (!areDataValid()) return;
+        if (!AreDataValid()) return;
         await SavePlanning();
         await SaveLayers(Layers);
         NavigationManager.NavigateTo($"/planning");
@@ -342,15 +342,15 @@
         try
         {
             // Save or update Planning
-            if (mode == "New") await PlanningClientService.CreatePlanning(planning);
-            else await PlanningClientService.UpdatePlanning(planning);
+            if (Mode == "New") await PlanningClientService.CreatePlanning(Planning);
+            else await PlanningClientService.UpdatePlanning(Planning);
 
             // Save or update all Schedule
-            foreach (ScheduleDto schedule in scheduleList)
+            foreach (ScheduleDto schedule in ScheduleList)
             {
-                schedule.PlanningId = planning.Id;
+                schedule.PlanningId = Planning.Id;
 
-                if (initScheduleList.Any(obj => obj.Id == schedule.Id))
+                if (InitScheduleList.Any(obj => obj.Id == schedule.Id))
                 {
                     await ScheduleClientService.UpdateSchedule(schedule);
                 }
@@ -361,7 +361,7 @@
             }
 
             // Remove deleted schedules
-            foreach (ScheduleDto schedule in initScheduleList.Where(schedule => !scheduleList.Contains(schedule)))
+            foreach (ScheduleDto schedule in InitScheduleList.Where(schedule => !ScheduleList.Contains(schedule)))
             {
                 await ScheduleClientService.DeleteSchedule(schedule.Id);
             }
@@ -390,8 +390,8 @@
 
     protected void CheckedChanged(LayerHash item)
     {
-        if (item.LayerData.Planning == planning.Id) item.LayerData.Planning = "None";
-        else item.LayerData.Planning = planning.Id;
+        if (item.LayerData.Planning == Planning.Id) item.LayerData.Planning = "None";
+        else item.LayerData.Planning = Planning.Id;
 
         foreach (LayerHash child in item.Children)
         {
@@ -409,24 +409,24 @@
             IList<DeviceModelCommandDto> commandList = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(deviceModel.ModelId);
 
             if (commandList.Count == 0) continue;
-            CommandDictionary.Add(deviceModel.Name, new List<DeviceModelCommandDto>(commandList));
+            commandDictionary.Add(deviceModel.Name, new List<DeviceModelCommandDto>(commandList));
 
             // Verify if the command is stored in Planning to link this planning to a specific device model
-            var isDeviceSelected = commandList.FirstOrDefault(command => command.Id == planning.CommandId);
+            var isDeviceSelected = commandList.FirstOrDefault(command => command.Id == Planning.CommandId);
             if (isDeviceSelected != null) SelectedModel = deviceModel.Name;
         }
     }
 
-    private bool areDataValid()
+    private bool AreDataValid()
     {
         var errorMessage = "";
-        if (string.IsNullOrEmpty(planning.Name)) errorMessage += " - Name is empty";
-        if (string.IsNullOrEmpty(planning.CommandId)) errorMessage += " - Day off command is empty";
-        if (string.IsNullOrEmpty(planning.Start) || string.IsNullOrEmpty(planning.End)) errorMessage += " - Date of application are empty";
+        if (string.IsNullOrEmpty(Planning.Name)) errorMessage += " - Name is empty";
+        if (string.IsNullOrEmpty(Planning.CommandId)) errorMessage += " - Day off command is empty";
+        if (string.IsNullOrEmpty(Planning.Start) || string.IsNullOrEmpty(Planning.End)) errorMessage += " - Date of application are empty";
 
         var commandMissing = 0;
         var scheduleStartEnd = new List<List<string>>();
-        foreach (var schedule in scheduleList)
+        foreach (var schedule in ScheduleList)
         {
             if (string.IsNullOrEmpty(schedule.CommandId)) commandMissing += 1;
             scheduleStartEnd.Add(new List<string> { schedule.Start, schedule.End });
@@ -475,8 +475,8 @@
 
         var parameters = new DialogParameters
         {
-            {"planningID", planning.Id},
-            {"planningName", planning.Name}
+            {"planningID", Planning.Id},
+            {"planningName", Planning.Name}
         };
         var result = await DialogService.Show<DeletePlanningDialog>("Confirm Deletion", parameters).Result;
 

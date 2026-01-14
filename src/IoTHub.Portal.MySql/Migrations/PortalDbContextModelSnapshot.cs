@@ -161,7 +161,7 @@ namespace IoTHub.Portal.MySql.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<bool?>("ABPRelaxMode")
+                    b.Property<bool?>("AbpRelaxMode")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("AppEUI")
@@ -672,7 +672,7 @@ namespace IoTHub.Portal.MySql.Migrations
                 {
                     b.HasBaseType("IoTHub.Portal.Domain.Entities.Device");
 
-                    b.Property<bool?>("ABPRelaxMode")
+                    b.Property<bool?>("AbpRelaxMode")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("AlreadyLoggedInOnce")

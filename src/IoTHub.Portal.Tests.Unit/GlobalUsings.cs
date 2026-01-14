@@ -108,7 +108,6 @@ global using IoTHub.Portal.Infrastructure.Repositories;
 global using IoTHub.Portal.Infrastructure.Services;
 global using IoTHub.Portal.Infrastructure.Services.AWS;
 global using IoTHub.Portal.Infrastructure.ServicesHealthCheck;
-global using IoTHub.Portal.Models;
 global using IoTHub.Portal.Models.v10;
 global using IoTHub.Portal.Models.v10.LoRaWAN;
 global using IoTHub.Portal.Server;

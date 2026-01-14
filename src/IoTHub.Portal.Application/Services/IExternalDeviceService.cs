@@ -74,7 +74,7 @@ namespace IoTHub.Portal.Application.Services
 
         Task<Twin> CreateNewTwinFromDeviceId(string deviceId);
 
-        Task<List<string>> GetAllGatewayID();
+        Task<List<string>> GetAllGatewayId();
 
         Task<IEnumerable<string>> GetDevicesToExport();
 

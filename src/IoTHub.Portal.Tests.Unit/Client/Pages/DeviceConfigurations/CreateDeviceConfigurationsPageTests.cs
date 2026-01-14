@@ -26,7 +26,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[] { PortalPermissions.DeviceConfigurationRead, PortalPermissions.DeviceConfigurationWrite });
         }
 

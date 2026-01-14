@@ -20,7 +20,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
 
         private static IServiceCollection AddLoRaWanSupport(this IServiceCollection services, ConfigHandler configuration)
         {
-            _ = services.Configure<LoRaWANOptions>(opts =>
+            _ = services.Configure<LoRaWanOptions>(opts =>
             {
                 opts.Enabled = configuration.IsLoRaEnabled;
                 opts.KeyManagementApiVersion = configuration.AzureLoRaKeyManagementApiVersion;
@@ -43,7 +43,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
 
             _ = services.AddHttpClient<ILoRaWanManagementService, LoRaWanManagementService>((sp, client) =>
             {
-                var opts = sp.GetService<IOptions<LoRaWANOptions>>()?.Value;
+                var opts = sp.GetService<IOptions<LoRaWanOptions>>()?.Value;
 
                 client.BaseAddress = new Uri(opts?.KeyManagementUrl!);
                 client.DefaultRequestHeaders.Add("x-functions-key", opts?.KeyManagementCode);
@@ -61,7 +61,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
 
             _ = services.AddScoped(_ => RegistryManager.CreateFromConnectionString(configuration.AzureIoTHubConnectionString));
             _ = services.AddScoped(_ => ServiceClient.CreateFromConnectionString(configuration.AzureIoTHubConnectionString));
-            _ = services.AddScoped(_ => ProvisioningServiceClient.CreateFromConnectionString(configuration.AzureDPSConnectionString));
+            _ = services.AddScoped(_ => ProvisioningServiceClient.CreateFromConnectionString(configuration.AzureDpsConnectionString));
 
             return services;
         }

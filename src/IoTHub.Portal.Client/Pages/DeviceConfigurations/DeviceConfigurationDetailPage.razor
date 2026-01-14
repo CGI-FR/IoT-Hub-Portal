@@ -1,11 +1,10 @@
 @page "/device-configurations/{ConfigId}"
 @inherits AuthorizedComponentBase
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
 @inject IDeviceConfigurationsClientService DeviceConfigurationsClientService
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
@@ -136,7 +135,7 @@
                                                        HelperTextOnFocus="false"
                                                        Margin="Margin.Dense"
                                                        Variant="Variant.Outlined">
-                                                @foreach (var prop in AvailableProperties
+                                                @foreach (var prop in availableProperties
                                                                                                 .Where(x => x.IsWritable)
                                                                                                 .Where(x => !Configuration.Properties.ContainsKey(x.Name)))
                                                 {
@@ -160,12 +159,12 @@
                                             <MudGrid id="@($"property-{item}")">
                                                 <MudItem xs="8" md="10">
                                                     @{
-                                                        var property = AvailableProperties.Single(x => x.Name == item);
+                                                        var property = availableProperties.Single(x => x.Name == item);
                                                     }
                                                     @switch (property.PropertyType)
                                                     {
                                                         case DevicePropertyType.Boolean:
-                                                            <MudCheckBox @bind-Checked="@Configuration.Properties[item]"
+                                                            <MudCheckBox @bind-Value="@Configuration.Properties[item]"
                                                                          Label="@property.DisplayName" Color="@Color.Primary"
                                                                          Converter="@(new StringToBoolConverter())"
                                                                          TriState="true" />
@@ -234,7 +233,7 @@
     public Error? Error { get; set; } = default!;
 
     IEnumerable<DeviceTagDto> AvailableTags { get; set; } = Array.Empty<DeviceTagDto>();
-    IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
+    IEnumerable<DeviceProperty> availableProperties = Array.Empty<DeviceProperty>();
 
     public string SelectedTag { get; set; } = default!;
     public string SelectedProperty { get; set; } = default!;
@@ -245,7 +244,7 @@
     public DeviceConfig Configuration { get; set; } = new();
     public DeviceModelDto DeviceModel { get; set; } = new();
     private ConfigurationMetrics Metrics { get; set; } = new();
-    private void Return() => navigationManager.NavigateTo("/device-configurations");
+    private void Return() => NavigationManager.NavigateTo("/device-configurations");
 
     protected override async Task OnInitializedAsync()
     {
@@ -259,7 +258,7 @@
             Metrics = await DeviceConfigurationsClientService.GetDeviceConfigurationMetrics(ConfigId);
             DeviceModel = await DeviceModelsClientService.GetDeviceModel(Configuration.ModelId);
 
-            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(DeviceModel.ModelId);
+            availableProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(DeviceModel.ModelId);
             AvailableTags = await DeviceTagSettingsClientService.GetDeviceTags();
 
             // Check if user has write permission for conditional UI elements
@@ -306,7 +305,7 @@
             return;
         }
 
-        navigationManager.NavigateTo("/device-configurations");
+        NavigationManager.NavigateTo("/device-configurations");
     }
 
     private async Task Save()
@@ -320,7 +319,7 @@
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"{Configuration.ConfigurationId} has been successfully updated!", Severity.Success);
 
-            navigationManager.NavigateTo("/device-configurations");
+            NavigationManager.NavigateTo("/device-configurations");
         }
         catch (ProblemDetailsException exception)
         {

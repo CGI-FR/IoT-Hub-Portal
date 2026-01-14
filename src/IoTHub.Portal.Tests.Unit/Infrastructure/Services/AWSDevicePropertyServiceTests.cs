@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
-    public class AWSDevicePropertyServiceTests : BackendUnitTest
+    public class AwsDevicePropertyServiceTests : BackendUnitTest
     {
         private Mock<IDeviceRepository> mockDeviceRepository;
         private Mock<IDeviceModelPropertiesService> mockDeviceModelPropertiesService;
@@ -66,7 +66,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public async Task GetPropertiesShouldThrowInternalServerErrorExceptionWhenHttpStatusCodeIsNotOKForGetThingShadow()
+        public async Task GetPropertiesShouldThrowInternalServerErrorExceptionWhenHttpStatusCodeIsNotOkForGetThingShadow()
         {
             // Arrange
             var device = new Device()
@@ -228,7 +228,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         }
 
         [Test]
-        public async Task SetPropertiesShouldThrowInternalServerErrorExceptionWhenHttpStatusIsNotOKForUpdateThingShadow()
+        public async Task SetPropertiesShouldThrowInternalServerErrorExceptionWhenHttpStatusIsNotOkForUpdateThingShadow()
         {
             // Arrange
             var device = new Device()

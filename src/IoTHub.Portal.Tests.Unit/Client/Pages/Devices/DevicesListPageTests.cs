@@ -28,7 +28,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+            _ = this.MockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(new[]
                     { PortalPermissions.DeviceRead, PortalPermissions.DeviceWrite, PortalPermissions.DeviceExecute, PortalPermissions.DeviceExport, PortalPermissions.DeviceImport });
         }
@@ -49,7 +49,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true } }
+                    Items = new[] { new DeviceListItem { DeviceId = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true } }
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
@@ -172,7 +172,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = deviceId } }
+                    Items = new[] { new DeviceListItem { DeviceId = deviceId } }
                 });
 
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
@@ -209,7 +209,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                    Items = new[] { new DeviceListItem { DeviceId = deviceId, SupportLoRaFeatures = true } }
                 });
 
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
@@ -302,12 +302,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     {
                         new DeviceListItem()
                         {
-                            DeviceID = Guid.NewGuid().ToString(),
+                            DeviceId = Guid.NewGuid().ToString(),
                             DeviceName = Guid.NewGuid().ToString(),
                         },
                         new DeviceListItem()
                         {
-                            DeviceID = Guid.NewGuid().ToString(),
+                            DeviceId = Guid.NewGuid().ToString(),
                             DeviceName = Guid.NewGuid().ToString(),
                         }
                     }
@@ -358,7 +358,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true, HasLoRaTelemetry = true } }
+                    Items = new[] { new DeviceListItem { DeviceId = deviceId, SupportLoRaFeatures = true, HasLoRaTelemetry = true } }
                 });
 
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
@@ -394,7 +394,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true, HasLoRaTelemetry = true } }
+                    Items = new[] { new DeviceListItem { DeviceId = deviceId, SupportLoRaFeatures = true, HasLoRaTelemetry = true } }
                 });
 
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
@@ -430,7 +430,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                    Items = new[] { new DeviceListItem { DeviceId = deviceId, SupportLoRaFeatures = true } }
                 });
 
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
@@ -469,7 +469,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                    Items = new[] { new DeviceListItem { DeviceId = deviceId, SupportLoRaFeatures = true } }
                 });
 
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
@@ -511,7 +511,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                    Items = new[] { new DeviceListItem { DeviceId = deviceId, SupportLoRaFeatures = true } }
                 });
 
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
@@ -565,7 +565,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                    Items = new[] { new DeviceListItem { DeviceId = deviceId, SupportLoRaFeatures = true } }
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });

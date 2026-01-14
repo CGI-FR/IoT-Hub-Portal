@@ -19,14 +19,14 @@
             <MudCard>
                 <MudCardHeader>
                     <CardHeaderContent>
-                        @if (context.Equals(CreateEditMode.Create))
+                        @if (Context.Equals(CreateEditMode.Create))
                         {
-                            <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
+                            <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceId : Device.DeviceName)</MudText>
                         }
-                        else if (context.Equals(CreateEditMode.Edit))
+                        else if (Context.Equals(CreateEditMode.Edit))
                         {
                             <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(DeviceModel.Name)>Model: <b>@DeviceModel.Name</b></MudText>
-                            <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
+                            <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceId : Device.DeviceName)</MudText>
                         }
                     </CardHeaderContent>
                 </MudCardHeader>
@@ -37,7 +37,7 @@
                         </MudAvatar>
                     </div>
                 </MudCardContent>
-                @if (context.Equals(CreateEditMode.Edit))
+                @if (Context.Equals(CreateEditMode.Edit))
                 {
                     <MudCardActions Class="pb-4 pl-4 justify-center">
                         @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
@@ -49,7 +49,7 @@
             </MudCard>
             @if (CanWrite)
             {
-                @if (context.Equals(CreateEditMode.Create))
+                @if (Context.Equals(CreateEditMode.Create))
                 {
                     <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
                         <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
@@ -62,7 +62,7 @@
                         </MudButtonGroup>
                     </MudItem>
                 }
-                else if (context.Equals(CreateEditMode.Edit))
+                else if (Context.Equals(CreateEditMode.Edit))
                 {
                     <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
                         <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton" Disabled="isProcessing">Delete device</MudButton>
@@ -87,7 +87,7 @@
                                     <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
                                     <ChildContent>
                                         <MudGrid>
-                                            @if (context.Equals(CreateEditMode.Create))
+                                            @if (Context.Equals(CreateEditMode.Create))
                                             {
                                                 <MudItem xs="12" md="6">
                                                     @if (duplicateDevice)
@@ -104,7 +104,7 @@
                                                                          Dense=true
                                                                          For=@(() => DeviceModel)
                                                                          Variant="Variant.Outlined"
-                                                                         ToStringFunc="@(x => x?.Name)"
+                                                                         ToStringFunc="@(x => x.Name)"
                                                                          ResetValueOnEmptyText=true
                                                                          Immediate=true
                                                                          Clearable=true
@@ -128,37 +128,37 @@
                                             <MudItem xs="12" md="6">
                                                 @if (IsLoRa)
                                                 {
-                                                    <MudTextField @bind-Value="@Device.DeviceID"
-                                                                  id=@nameof(LoRaDeviceDetails.DeviceID)
-                                                                  ReadOnly="context.Equals(CreateEditMode.Edit)"
+                                                    <MudTextField @bind-Value="@Device.DeviceId"
+                                                                  id=@nameof(LoRaDeviceDetails.DeviceId)
+                                                                  ReadOnly="Context.Equals(CreateEditMode.Edit)"
                                                                   Label="Device ID / DevEUI"
                                                                   Variant="Variant.Outlined"
                                                                   Validation=@(loraValidator.ValidateValue)
-                                                                  For="@(() => Device.DeviceID)"
-                                                                  Mask="@maskLoRaDeviceID"
+                                                                  For="@(() => Device.DeviceId)"
+                                                                  Mask="@maskLoRaDeviceId"
                                                                   HelperText="Device EUI must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)"
-                                                                  Disabled="@(!CanWrite)"/>
+                                                                  Disabled="@(!CanWrite)" />
                                                 }
                                                 else
                                                 {
                                                     if (Portal.CloudProvider.Equals(CloudProviders.Azure))
                                                     {
-                                                        <MudTextField @bind-Value="@Device.DeviceID"
-                                                                      id=@nameof(DeviceDetails.DeviceID)
-                                                                      ReadOnly="context.Equals(CreateEditMode.Edit)"
+                                                        <MudTextField @bind-Value="@Device.DeviceId"
+                                                                      id=@nameof(DeviceDetails.DeviceId)
+                                                                      ReadOnly="Context.Equals(CreateEditMode.Edit)"
                                                                       Label="Device ID"
                                                                       Variant="Variant.Outlined"
                                                                       Validation=@(standardValidator.ValidateValue)
-                                                                      For="@(() => Device.DeviceID)"
+                                                                      For="@(() => Device.DeviceId)"
                                                                       HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
                                                     }
                                                 }
                                             </MudItem>
 
-                                            @if (context.Equals(CreateEditMode.Create))
+                                            @if (Context.Equals(CreateEditMode.Create))
                                             {
                                                 <MudItem xs="12">
-                                                    <MudSwitch id="duplicate-device-switch" @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
+                                                    <MudSwitch id="duplicate-device-switch" @bind-Value="@duplicateDevice" Label="Or select a device to copy" />
                                                 </MudItem>
                                             }
 
@@ -169,7 +169,7 @@
                                                               Variant="Variant.Outlined"
                                                               For="@(() => Device.DeviceName)"
                                                               Required="true"
-                                                              Disabled="@(!CanWrite)"/>
+                                                              Disabled="@(!CanWrite)" />
                                             </MudItem>
 
                                             @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
@@ -178,12 +178,13 @@
                                                     <MudText>
                                                         <b>Status</b>
                                                     </MudText>
-                                                    <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled" Disabled="@(!CanWrite)">
-                                                        <MudRadio Option=@(true) Color="Color.Primary">
+                                                    <MudRadioGroup @bind-SelectedValue="@Device.IsEnabled" T="bool" 
+                                                                   Disabled="@(!CanWrite)">
+                                                        <MudRadio Value=@(true) Color="Color.Primary">
                                                             Enabled
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
                                                         </MudRadio>
-                                                        <MudRadio Option=@(false) Color="Color.Primary">
+                                                        <MudRadio Value=@(false) Color="Color.Primary">
                                                             Disabled
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
                                                         </MudRadio>
@@ -203,7 +204,7 @@
                                         <MudGrid>
                                             @foreach (DeviceTagDto tag in TagList)
                                             {
-                                                if (context.Equals(CreateEditMode.Create))
+                                                if (Context.Equals(CreateEditMode.Create))
                                                 {
                                                     <MudItem xs="12" md="6">
                                                         <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
@@ -211,7 +212,7 @@
                                                                       Variant="Variant.Outlined" />
                                                     </MudItem>
                                                 }
-                                                else if (context.Equals(CreateEditMode.Edit))
+                                                else if (Context.Equals(CreateEditMode.Edit))
                                                 {
                                                     <MudItem xs="12" md="6">
                                                         @if (!Device.Tags.ContainsKey(tag.Name))
@@ -221,7 +222,7 @@
                                                         <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
                                                                       Required="@tag.Required"
                                                                       Variant="Variant.Outlined"
-                                                                      Disabled="@(!CanWrite)"/>
+                                                                      Disabled="@(!CanWrite)" />
                                                     </MudItem>
                                                 }
                                             }
@@ -237,11 +238,11 @@
                                     <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
                                     <ChildContent>
 
-                                        @if (context.Equals(CreateEditMode.Create))
+                                        @if (Context.Equals(CreateEditMode.Create))
                                         {
-                                            <LabelsEditor ReadOnlyLabels="DeviceModel?.Labels" Labels="Device.Labels" />
+                                            <LabelsEditor ReadOnlyLabels="DeviceModel.Labels" Labels="Device.Labels" />
                                         }
-                                        else if (context.Equals(CreateEditMode.Edit))
+                                        else if (Context.Equals(CreateEditMode.Edit))
                                         {
                                             <LabelsEditor ReadOnlyLabels="DeviceModel.Labels" Labels="Device.Labels" CanWrite="@CanWrite" />
                                         }
@@ -250,7 +251,7 @@
                             </MudItem>
                         </MudGrid>
 
-                        @if (!IsLoRa && Properties.Any())
+                        @if (!IsLoRa && properties.Any())
                         {
                             <MudGrid>
                                 <MudItem xs="12">
@@ -258,13 +259,13 @@
                                         <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
                                         <ChildContent>
                                             <MudGrid id="device-properties">
-                                                @foreach (var item in Properties.OrderBy(c => c.Order))
+                                                @foreach (var item in properties.OrderBy(c => c.Order))
                                                 {
                                                     switch (item.PropertyType)
                                                     {
                                                         case DevicePropertyType.Boolean:
                                                             <MudItem xs="12" md="4">
-                                                                <MudCheckBox @bind-Checked="item.Value" Label="@item.DisplayName" Color="@Color.Primary" Converter="@(new StringToBoolConverter())" TriState="true" />
+                                                                <MudCheckBox @bind-Value="item.Value" Label="@item.DisplayName" Color="@Color.Primary" Converter="@(new StringToBoolConverter())" TriState="true" />
                                                             </MudItem>
                                                             break;
                                                         case DevicePropertyType.Double:
@@ -272,7 +273,7 @@
                                                                 <MudTextField @bind-Value="item.Value"
                                                                               Label="@item.DisplayName"
                                                                               Variant="Variant.Outlined"
-                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
+                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out _))
                                                                               Clearable="true" />
                                                             </MudItem>
                                                             break;
@@ -281,7 +282,7 @@
                                                                 <MudTextField @bind-Value="item.Value"
                                                                               Label="@item.DisplayName"
                                                                               Variant="Variant.Outlined"
-                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
+                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out _))
                                                                               Clearable="true" />
                                                             </MudItem>
                                                             break;
@@ -290,7 +291,7 @@
                                                                 <MudTextField @bind-Value="item.Value"
                                                                               Label="@item.DisplayName"
                                                                               Variant="Variant.Outlined"
-                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
+                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out _))
                                                                               Clearable="true" />
                                                             </MudItem>
                                                             break;
@@ -299,7 +300,7 @@
                                                                 <MudTextField @bind-Value="item.Value"
                                                                               Label="@item.DisplayName"
                                                                               Variant="Variant.Outlined"
-                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
+                                                                              Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out _))
                                                                               Clearable="true" />
                                                             </MudItem>
                                                             break;
@@ -319,7 +320,7 @@
                     </MudExpansionPanels>
                 </MudTabPanel>
 
-                @if (context.Equals(CreateEditMode.Create))
+                @if (Context.Equals(CreateEditMode.Create))
                 {
                     if (IsLoRa)
                     {
@@ -328,12 +329,12 @@
                         </MudTabPanel>
                     }
                 }
-                else if (context.Equals(CreateEditMode.Edit))
+                else if (Context.Equals(CreateEditMode.Edit))
                 {
-                    if (IsLoRa && Device != null && Commands != null)
+                    if (IsLoRa)
                     {
                         <MudTabPanel Text="LoRaWAN" Style=@(CheckLoRaValidation() ? "color: red" : "")>
-                            <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" CanWrite="@CanWrite" CanExec="@CanExec"/>
+                            <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" CanWrite="@CanWrite" CanExec="@CanExec" />
                         </MudTabPanel>
                     }
                 }
@@ -344,7 +345,7 @@
 
 @code {
     [Parameter]
-    public CreateEditMode context { get; set; }
+    public CreateEditMode Context { get; set; }
 
     [Parameter]
     public bool CanWrite { get; set; }
@@ -353,49 +354,49 @@
     public bool CanExec { get; set; }
 
     [CascadingParameter]
-    public Error Error { get; set; } = default!;
+    public Error? Error { get; set; }
 
-    private MudForm form = default!;
+    private MudForm form;
 
-    private DeviceDetailsValidator standardValidator;
-    private LoRaDeviceDetailsValidator loraValidator = new();
+    private DeviceDetailsValidator standardValidator = new();
+    private readonly LoRaDeviceDetailsValidator loraValidator = new();
 
-    private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; } = default!;
+    private LoRaDeviceModelDto? LoRaDeviceModelDto { get; set; }
 
     private IDeviceDetails Device { get; set; } = new DeviceDetails();
 
-    public PatternMask maskLoRaDeviceID = new("XXXXXXXXXXXXXXXX")
+    private readonly PatternMask maskLoRaDeviceId = new("XXXXXXXXXXXXXXXX")
     {
-        MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
+        MaskChars = [new MaskChar('X', "[0-9a-fA-F]")],
         CleanDelimiters = false,
         Transformation = AllUpperCase
     };
 
     private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 
-    private IDeviceModel _deviceModel = default!;
+    private IDeviceModel deviceModel;
 
     private IDeviceModel DeviceModel
     {
-        get
-        {
-            return _deviceModel;
-        }
+        get => deviceModel;
         set
         {
-            if (context.Equals(CreateEditMode.Create))
+            switch (Context)
             {
-                Task.Run(async () => await ChangeModel(value));
-            }
-            else if (context.Equals(CreateEditMode.Edit))
-            {
-                _deviceModel = value;
+                case CreateEditMode.Create:
+                    Task.Run(async () => await ChangeModel(value));
+                    break;
+                case CreateEditMode.Edit:
+                    deviceModel = value;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
-    private List<DevicePropertyValue> Properties = new();
+    private List<DevicePropertyValue> properties = new();
 
     private bool displayValidationErrorMessages;
 
@@ -405,7 +406,7 @@
     private string saveButtonText = "Save";
 
     [Parameter]
-    public string DeviceID { get; set; } = default!;
+    public required string DeviceId { get; set; }
 
     private bool isLoaded;
 
@@ -413,21 +414,22 @@
 
     private IEnumerable<DeviceModelCommandDto> Commands { get; set; } = Array.Empty<DeviceModelCommandDto>();
 
-    private void setPropertiesWithContext()
+    private void SetPropertiesWithContext()
     {
-        if (context.Equals(CreateEditMode.Create))
+        switch (Context)
         {
-            TagList = new List<DeviceTagDto>();
+            case CreateEditMode.Create:
+                TagList = new List<DeviceTagDto>();
 
-            displayValidationErrorMessages = false;
-        }
-        else if (context.Equals(CreateEditMode.Edit))
-        {
-            DeviceModel = new DeviceModelDto();
+                displayValidationErrorMessages = false;
+                break;
+            case CreateEditMode.Edit:
+                DeviceModel = new DeviceModelDto();
 
-            isLoaded = false;
+                isLoaded = false;
 
-            TagList = Array.Empty<DeviceTagDto>();
+                TagList = Array.Empty<DeviceTagDto>();
+                break;
         }
     }
 
@@ -453,16 +455,16 @@
     {
         standardValidator = new DeviceDetailsValidator(Portal.CloudProvider);
 
-        setPropertiesWithContext();
+        SetPropertiesWithContext();
         //setIsLoRaWithContext();
 
         try
         {
-            if (context.Equals(CreateEditMode.Create))
+            if (Context.Equals(CreateEditMode.Create))
             {
                 DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
-                Device = DeviceLayoutService.GetSharedDevice() ?? Device;
-                DeviceModel = DeviceLayoutService.GetSharedDeviceModel() ?? DeviceModel;
+                Device = DeviceLayoutService.GetSharedDevice();
+                DeviceModel = DeviceLayoutService.GetSharedDeviceModel();
 
                 // Enable device by default
                 Device.IsEnabled = true;
@@ -475,20 +477,20 @@
                     Device.Tags.TryAdd(tag.Name, string.Empty);
                 }
             }
-            else if (context.Equals(CreateEditMode.Edit))
+            else if (Context.Equals(CreateEditMode.Edit))
             {
                 isProcessing = true;
 
                 if (IsLoRa)
                 {
-                    Device = await LoRaWanDeviceClientService.GetDevice(DeviceID);
+                    Device = await LoRaWanDeviceClientService.GetDevice(DeviceId);
                     Commands = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(Device.ModelId);
                     DeviceModel = await LoRaWanDeviceModelsClientService.GetDeviceModel(Device.ModelId);
                 }
                 else
                 {
-                    Device = await DeviceClientService.GetDevice(DeviceID);
-                    Properties = (await DeviceClientService.GetDeviceProperties(DeviceID)).ToList();
+                    Device = await DeviceClientService.GetDevice(DeviceId);
+                    properties = (await DeviceClientService.GetDeviceProperties(DeviceId)).ToList();
                     DeviceModel = await DeviceModelsClientService.GetDeviceModel(Device.ModelId);
                 }
 
@@ -535,7 +537,7 @@
         {
             isProcessing = true;
 
-            if (context.Equals(CreateEditMode.Create))
+            if (Context.Equals(CreateEditMode.Create))
             {
                 await form.Validate();
 
@@ -556,15 +558,15 @@
                 else
                 {
                     await DeviceClientService.CreateDevice((Device as DeviceDetails)!);
-                    await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
+                    await DeviceClientService.SetDeviceProperties(Device.DeviceId, properties);
                 }
 
                 // Prompts a snack bar to inform the action was successful
-                Snackbar.Add($"Device {Device.DeviceID} has been successfully created!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
+                Snackbar.Add($"Device {Device.DeviceId} has been successfully created!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
 
                 ProcessPostDeviceCreation();
             }
-            else if (context.Equals(CreateEditMode.Edit))
+            else if (Context.Equals(CreateEditMode.Edit))
             {
                 await form.Validate();
 
@@ -585,11 +587,11 @@
                 {
                     await DeviceClientService.UpdateDevice((Device as DeviceDetails)!);
 
-                    await DeviceClientService.SetDeviceProperties(DeviceID, Properties.ToList());
+                    await DeviceClientService.SetDeviceProperties(DeviceId, properties.ToList());
                 }
 
                 // Prompts a snack bar to inform the action was successful
-                Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success, null);
+                Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
 
                 NavigationManager.NavigateTo("devices");
             }
@@ -601,14 +603,14 @@
         finally
         {
             isProcessing = false;
-            if (context.Equals(CreateEditMode.Edit)) StateHasChanged();
+            if (Context.Equals(CreateEditMode.Edit)) StateHasChanged();
         }
     }
 
     public async Task ShowConnectionString()
     {
         var parameters = new DialogParameters();
-        parameters.Add(nameof(ConnectionStringDialog.deviceId), DeviceID);
+        parameters.Add(nameof(ConnectionStringDialog.DeviceId), DeviceId);
 
         _ = await DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters).Result;
     }
@@ -680,7 +682,6 @@
     /// <summary>
     /// Prompts a pop-up windows to confirm the device's deletion.
     /// </summary>
-    /// <param name="device">Device to delete from the hub</param>
     /// <returns></returns>
     private async Task DeleteDevice()
     {
@@ -688,18 +689,16 @@
 
         var parameters = new DialogParameters
         {
-            {"deviceID", Device.DeviceID},
+            {"deviceID", Device.DeviceId},
             {"deviceName", Device.DeviceName},
             {"IsLoRaWan", IsLoRa}
         };
-        var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
+        var result = await DialogService.ShowAsync<DeleteDevicePage>("Confirm Deletion", parameters);
 
         isProcessing = false;
 
-        if (result.Canceled)
-        {
+        if (result.Result.IsCanceled)
             return;
-        }
 
         // Go back to the list of devices
         NavigationManager.NavigateTo("devices");
@@ -712,17 +711,17 @@
             SearchText = value,
             PageNumber = 0,
             PageSize = 100,
-            OrderBy = new string[]
-                            {
-                    string.Empty
-                            }
+            OrderBy =
+            [
+                string.Empty
+            ]
         };
         return (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
     }
 
     private void SetSaveButtonText(DeviceSaveAction saveAction)
     {
-        if (context.Equals(CreateEditMode.Create))
+        if (Context.Equals(CreateEditMode.Create))
         {
             deviceSaveAction = saveAction;
             saveButtonText = deviceSaveAction switch
@@ -733,7 +732,7 @@
                 _ => saveButtonText
             };
         }
-        else if (context.Equals(CreateEditMode.Edit))
+        else if (Context.Equals(CreateEditMode.Edit))
         {
             deviceSaveAction = saveAction;
             saveButtonText = deviceSaveAction switch
@@ -749,21 +748,21 @@
     {
         try
         {
-            Properties.Clear();
+            properties.Clear();
 
-            _deviceModel = model;
+            deviceModel = model;
 
             Device = new DeviceDetails
             {
-                DeviceID = Device.DeviceID,
-                ModelId = model?.ModelId,
-                Image = model?.Image,
+                DeviceId = Device.DeviceId,
+                ModelId = model.ModelId,
+                Image = model.Image,
                 DeviceName = Device.DeviceName,
                 IsEnabled = Device.IsEnabled,
                 Tags = Device.Tags
             };
 
-            if (model == null || string.IsNullOrWhiteSpace(model.ModelId))
+            if (string.IsNullOrWhiteSpace(model.ModelId))
             {
                 return;
             }
@@ -774,14 +773,14 @@
 
                 Device = new LoRaDeviceDetails
                 {
-                    DeviceID = Device.DeviceID,
+                    DeviceId = Device.DeviceId,
                     ModelId = model.ModelId,
                     Image = model.Image,
                     DeviceName = Device.DeviceName,
                     IsEnabled = Device.IsEnabled,
                     Tags = Device.Tags,
                     SensorDecoder = loRaDeviceModelResult.SensorDecoder,
-                    UseOTAA = loRaDeviceModelResult.UseOTAA
+                    UseOtaa = loRaDeviceModelResult.UseOtaa
                 };
 
                 LoRaDeviceModelDto = loRaDeviceModelResult;
@@ -790,9 +789,9 @@
             }
             else
             {
-                var properties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
+                var modelProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
 
-                Properties.AddRange(properties.Select(x => new DevicePropertyValue
+                properties.AddRange(modelProperties.Select(x => new DevicePropertyValue
                 {
                     DisplayName = x.DisplayName,
                     IsWritable = x.IsWritable,

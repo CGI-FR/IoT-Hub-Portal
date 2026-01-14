@@ -1,7 +1,6 @@
 ﻿@page "/device-models/new"
 @inherits AuthorizedComponentBase
 @using IoTHub.Portal.Client.Validators
-@using IoTHub.Portal.Shared.Security
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -63,7 +62,7 @@
                                                             <b>LoRa Device</b>
                                                         </MudText>
 
-                                                        <MudSwitch @bind-Checked="@IsLoRa" id="SupportLoRaFeatures" Color="Color.Secondary" Label="Support LoRa"></MudSwitch>
+                                                        <MudSwitch @bind-Value="@IsLoRa" id="SupportLoRaFeatures" Color="Color.Secondary" Label="Support LoRa" />
                                                         @if (IsLoRa)
                                                         {
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>is</b> a LoRa Device.</MudText>
@@ -129,7 +128,7 @@
                                                                     </MudSelect>
                                                                 </MudItem>
                                                                 <MudItem md="1" xs="3">
-                                                                    <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
+                                                                    <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Value="@item.IsWritable" Color="Color.Secondary" />
 
                                                                 </MudItem>
                                                                 <MudItem md="1" xs="3">
@@ -185,7 +184,7 @@
     private List<DeviceModelCommandDto> Commands { get; set; } = new();
     private List<DeviceProperty> Properties { get; set; } = new();
 
-    private LoRaDeviceModelCommandValidator CommandValidator = new();
+    private LoRaDeviceModelCommandValidator commandValidator = new();
 
     private bool isProcessing;
 
@@ -294,7 +293,7 @@
             // Check validation error in commands
             foreach (var cmd in Commands)
             {
-                if (!CommandValidator.Validate(cmd).IsValid)
+                if (!commandValidator.Validate(cmd).IsValid)
                     cmdValidationError = true;
             }
         }

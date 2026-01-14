@@ -3,10 +3,6 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Shared.Models.v10;
-    using IoTHub.Portal.Shared.Security;
-
     public interface IRoleClientService
     {
         Task<PaginationResult<RoleModel>> GetRoles(string continuationUri);

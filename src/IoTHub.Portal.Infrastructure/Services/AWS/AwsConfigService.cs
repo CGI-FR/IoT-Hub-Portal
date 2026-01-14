@@ -129,7 +129,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 {
                     var componentArn = !string.IsNullOrEmpty(component.Id) ?
                         $"{component.Id}:versions:{component.Version}" : // Public greengrass component
-                        $"arn:aws:greengrass:{this.config.AWSRegion}:{this.config.AWSAccountId}:components:{component.ModuleName}:versions:{component.Version}"; // Private greengrass component
+                        $"arn:aws:greengrass:{this.config.AwsRegion}:{this.config.AwsAccountId}:components:{component.ModuleName}:versions:{component.Version}"; // Private greengrass component
 
                     _ = await this.greengrass.DescribeComponentAsync(new DescribeComponentRequest
                     {
@@ -215,7 +215,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                 {
                     _ = await this.greengrass.DeleteComponentAsync(new DeleteComponentRequest
                     {
-                        Arn = $"arn:aws:greengrass:{this.config.AWSRegion}:{this.config.AWSAccountId}:components:{module.ModuleName}:versions:{module.Version}"
+                        Arn = $"arn:aws:greengrass:{this.config.AwsRegion}:{this.config.AwsAccountId}:components:{module.ModuleName}:versions:{module.Version}"
                     });
                 }
                 catch (AmazonGreengrassV2Exception e)
@@ -329,7 +329,7 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     {
                         var responseComponent = await this.greengrass.GetComponentAsync(new GetComponentRequest
                         {
-                            Arn = $"arn:aws:greengrass:{this.config.AWSRegion}:{this.config.AWSAccountId}:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
+                            Arn = $"arn:aws:greengrass:{this.config.AwsRegion}:{this.config.AwsAccountId}:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
                             RecipeOutputFormat = RecipeOutputFormat.JSON
                         });
 
@@ -340,11 +340,11 @@ namespace IoTHub.Portal.Infrastructure.Services.AWS
                     catch (Amazon.GreengrassV2.Model.ResourceNotFoundException)
                     {
                         // If the component is not found, we assume it is a public component
-                        componentId = $"arn:aws:greengrass:{this.config.AWSRegion}:aws:components:{compoenent.Key}";
+                        componentId = $"arn:aws:greengrass:{this.config.AwsRegion}:aws:components:{compoenent.Key}";
 
                         var responseComponent = await this.greengrass.GetComponentAsync(new GetComponentRequest
                         {
-                            Arn = $"arn:aws:greengrass:{this.config.AWSRegion}:aws:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
+                            Arn = $"arn:aws:greengrass:{this.config.AwsRegion}:aws:components:{compoenent.Key}:versions:{compoenent.Value.ComponentVersion}",
                             RecipeOutputFormat = RecipeOutputFormat.JSON
                         });
 

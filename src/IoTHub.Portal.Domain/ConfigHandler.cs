@@ -11,11 +11,11 @@ namespace IoTHub.Portal.Domain
 
         public abstract string AzureIoTHubEventHubConsumerGroup { get; }
 
-        public abstract string AzureDPSConnectionString { get; }
+        public abstract string AzureDpsConnectionString { get; }
 
-        public abstract string AzureDPSEndpoint { get; }
+        public abstract string AzureDpsEndpoint { get; }
 
-        public abstract string AzureDPSScopeID { get; }
+        public abstract string AzureDpsScopeId { get; }
 
         public abstract string AzureStorageAccountConnectionString { get; }
 
@@ -23,27 +23,27 @@ namespace IoTHub.Portal.Domain
 
         public abstract bool UseSecurityHeaders { get; }
 
-        public abstract string OIDCScope { get; }
+        public abstract string OidcScope { get; }
 
-        public abstract string OIDCApiClientId { get; }
+        public abstract string OidcApiClientId { get; }
 
-        public abstract string OIDCClientId { get; }
+        public abstract string OidcClientId { get; }
 
-        public abstract string OIDCMetadataUrl { get; }
+        public abstract string OidcMetadataUrl { get; }
 
-        public abstract string OIDCAuthority { get; }
+        public abstract string OidcAuthority { get; }
 
-        public abstract bool OIDCValidateIssuer { get; }
+        public abstract bool OidcValidateIssuer { get; }
 
-        public abstract bool OIDCValidateAudience { get; }
+        public abstract bool OidcValidateAudience { get; }
 
-        public abstract bool OIDCValidateLifetime { get; }
+        public abstract bool OidcValidateLifetime { get; }
 
-        public abstract bool OIDCValidateIssuerSigningKey { get; }
+        public abstract bool OidcValidateIssuerSigningKey { get; }
 
-        public abstract bool OIDCValidateActor { get; }
+        public abstract bool OidcValidateActor { get; }
 
-        public abstract bool OIDCValidateTokenReplay { get; }
+        public abstract bool OidcValidateTokenReplay { get; }
 
         public abstract bool IsLoRaEnabled { get; }
 
@@ -69,20 +69,20 @@ namespace IoTHub.Portal.Domain
 
         public abstract string IdeasAuthenticationToken { get; }
 
-        public abstract string PostgreSQLConnectionString { get; }
+        public abstract string PostgreSqlConnectionString { get; }
 
-        public abstract string MySQLConnectionString { get; }
+        public abstract string MySqlConnectionString { get; }
 
         public abstract string DbProvider { get; }
         public abstract string CloudProvider { get; }
-        public abstract string AWSAccess { get; }
-        public abstract string AWSAccessSecret { get; }
-        public abstract string AWSRegion { get; }
-        public abstract string AWSS3StorageConnectionString { get; }
-        public abstract string AWSBucketName { get; }
-        public abstract string AWSAccountId { get; }
-        public abstract string AWSGreengrassCoreTokenExchangeRoleAliasName { get; }
-        public abstract IEnumerable<string> AWSGreengrassRequiredRoles { get; }
+        public abstract string AwsAccess { get; }
+        public abstract string AwsAccessSecret { get; }
+        public abstract string AwsRegion { get; }
+        public abstract string Awss3StorageConnectionString { get; }
+        public abstract string AwsBucketName { get; }
+        public abstract string AwsAccountId { get; }
+        public abstract string AwsGreengrassCoreTokenExchangeRoleAliasName { get; }
+        public abstract IEnumerable<string> AwsGreengrassRequiredRoles { get; }
 
         public abstract int SendCommandsToDevicesIntervalInMinutes { get; }
     }

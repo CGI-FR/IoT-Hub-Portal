@@ -25,7 +25,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
 
             var expectedDevice = new LoRaDeviceDetails
             {
-                DeviceID = deviceId
+                DeviceId = deviceId
             };
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/devices/{deviceId}")
