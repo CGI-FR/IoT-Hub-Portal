@@ -61,7 +61,7 @@
                                 <ItemTemplate>
                                     @context.Name
                                     <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-                                        @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                        @((!string.IsNullOrEmpty(context.Description) && context.Description.Length > 100) ? context.Description.Substring(0, 100) + "..." : context.Description)
                                     </MudText>
                                 </ItemTemplate>
                             </MudAutocomplete>
@@ -101,7 +101,7 @@
             </MudExpansionPanels>
         </MudItem>
         <MudItem xs="12">
-            <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+            <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@(e => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 40%;" />
@@ -214,7 +214,7 @@
                             @if (context.HasLoRaTelemetry)
                             {
                                 <MudTooltip Text="See device telemetries">
-                                    <MudIconButton id="@($"show-device-telemetry-{@context.DeviceId}")" Icon="@Icons.Material.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetry(context))" />
+                                    <MudIconButton id="@($"show-device-telemetry-{context.DeviceId}")" Icon="@Icons.Material.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetry(context))" />
                                 </MudTooltip>
                             }
                         </MudTd>
@@ -229,7 +229,7 @@
                     {
                         <MudTd DataLabel="Delete" Style="text-align: center">
                             <MudTooltip Text="Delete device">
-                                <MudIconButton id="@($"delete-device-{@context.DeviceId}")" Color="Color.Default"
+                                <MudIconButton id="@($"delete-device-{context.DeviceId}")" Color="Color.Default"
                                                Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"
                                                OnClick="@(e => DeleteDevice(context))" />
                             </MudTooltip>
@@ -416,7 +416,7 @@
             SearchText = value,
             PageNumber = 0,
             PageSize = 10,
-            OrderBy = new string[]
+            OrderBy = new[]
             {
                 string.Empty
             }

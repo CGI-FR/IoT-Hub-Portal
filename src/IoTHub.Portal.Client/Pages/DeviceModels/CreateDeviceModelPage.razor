@@ -1,6 +1,6 @@
 ﻿@page "/device-models/new"
-@inherits AuthorizedComponentBase
 @using IoTHub.Portal.Client.Validators
+@inherits AuthorizedComponentBase
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -84,7 +84,7 @@
                                             <ChildContent>
                                                 <MudGrid>
                                                     <MudItem xs="12">
-                                                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() { Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty { Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
                                                     </MudItem>
                                                     <MudItem xs="12">
                                                         @foreach (var item in Properties.OrderBy(x => x.Order))
@@ -180,7 +180,6 @@
 
     private DeviceModelValidator standardValidator = new();
     private LoRaDeviceModelValidator loraValidator = new();
-    private DevicePropertyValidator propertiesValidator = new();
     private List<DeviceModelCommandDto> Commands { get; set; } = new();
     private List<DeviceProperty> Properties { get; set; } = new();
 
@@ -229,7 +228,7 @@
     };
 
     // Used to manage the picture
-    private string? imageData = default!;
+    private string? imageData;
 
     private bool CheckLoRaValidation()
     {

@@ -13,7 +13,7 @@
             <DeviceModelSearch OnSearch=@(async args => await Search(args)) />
         </MudItem>
         <MudItem xs="12">
-            <MudTable T="DeviceModelDto" ServerData=@LoadDeviceModels Loading="@IsLoading" @ref="table" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+            <MudTable T="DeviceModelDto" ServerData=@LoadDeviceModels Loading="@IsLoading" @ref="table" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@(e => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 30%;" />
@@ -147,7 +147,7 @@
                 SearchText = deviceModelSearchInfo.SearchText!,
                 PageNumber = state.Page,
                 PageSize = state.PageSize,
-                OrderBy = new string[] { orderBy }
+                OrderBy = new[] { orderBy }
             });
 
             return new TableData<DeviceModelDto>

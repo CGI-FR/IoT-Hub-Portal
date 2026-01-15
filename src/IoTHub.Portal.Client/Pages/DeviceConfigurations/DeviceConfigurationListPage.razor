@@ -8,7 +8,7 @@
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
     <MudGrid>
         <MudItem xs="12">
-            <MudTable T="ConfigListItem" id="device-configurations-listing" Items=@result Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+            <MudTable T="ConfigListItem" id="device-configurations-listing" Items=@result Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@(e => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
                 <ColGroup>
                     <col style="width: 20%;" />
                     <col style="width: 20%;" />

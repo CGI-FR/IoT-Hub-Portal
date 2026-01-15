@@ -4,7 +4,7 @@
 namespace IoTHub.Portal.Application.Services
 {
     using Action = Domain.Entities.Action;
-    using IoTHub.Portal.Domain.Exceptions;
+    using Domain.Exceptions;
 
     public class RoleService : IRoleManagementService
     {
@@ -38,8 +38,9 @@ namespace IoTHub.Portal.Application.Services
             {
                 this.actionRepository.Delete(action);
             }
-            roleRepository.Delete(role.Id);
-            await unitOfWork.SaveAsync();
+
+            this.roleRepository.Delete(role.Id);
+            await this.unitOfWork.SaveAsync();
             return true;
         }
 

@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Application.Services
 {
-    using IoTHub.Portal.Domain.Exceptions;
+    using Domain.Exceptions;
 
     public class UserService : IUserManagementService
     {
@@ -27,9 +27,9 @@ namespace IoTHub.Portal.Application.Services
         }
         public async Task<UserDetailsModel> GetUserDetailsAsync(string id)
         {
-            var user = await userRepository.GetByIdAsync(id);// u => u.Groups);
+            var user = await this.userRepository.GetByIdAsync(id);// u => u.Groups);
             if (user == null) throw new ResourceNotFoundException($"The user with the id {id} doesn't exist");
-            return mapper.Map<UserDetailsModel>(user);
+            return this.mapper.Map<UserDetailsModel>(user);
         }
 
         public async Task<UserDetailsModel> CreateUserAsync(UserDetailsModel user)
@@ -44,9 +44,9 @@ namespace IoTHub.Portal.Application.Services
                 throw new ResourceAlreadyExistsException($"The User tis the name {user.Name} already exist !");
             }
             var userEntity = this.mapper.Map<User>(user);
-            await userRepository.InsertAsync(userEntity);
+            await this.userRepository.InsertAsync(userEntity);
 
-            await unitOfWork.SaveAsync();
+            await this.unitOfWork.SaveAsync();
 
             var createdEntity = await this.userRepository.GetByIdAsync(userEntity.Id);
             var createdModel = this.mapper.Map<UserDetailsModel>(createdEntity);
@@ -120,15 +120,15 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<bool> DeleteUser(string id)
         {
-            var user = await userRepository.GetByIdAsync(id);
+            var user = await this.userRepository.GetByIdAsync(id);
             if (user is null)
             {
                 throw new ResourceNotFoundException($"The User with the id {id} that you want to delete doesn't exist !");
             }
 
-            principalRepository.Delete(user.PrincipalId);
-            userRepository.Delete(id);
-            await unitOfWork.SaveAsync();
+            this.principalRepository.Delete(user.PrincipalId);
+            this.userRepository.Delete(id);
+            await this.unitOfWork.SaveAsync();
             return true;
         }
 
@@ -140,7 +140,7 @@ namespace IoTHub.Portal.Application.Services
 
             if (userEntity != null)
             {
-                return mapper.Map<UserDetailsModel>(userEntity);
+                return this.mapper.Map<UserDetailsModel>(userEntity);
             }
 
             // Check if it's the first user in the system, add to administrators role if so
@@ -191,7 +191,7 @@ namespace IoTHub.Portal.Application.Services
                 await this.unitOfWork.SaveAsync();
             }
 
-            return mapper.Map<UserDetailsModel>(newUser);
+            return this.mapper.Map<UserDetailsModel>(newUser);
         }
     }
 }

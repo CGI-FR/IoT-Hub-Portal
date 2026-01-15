@@ -127,7 +127,7 @@ namespace IoTHub.Portal.Application.Services
             acEntity.PrincipalId = accessControl.PrincipalId;
             acEntity.RoleId = accessControl.Role.Id;
             acEntity.Scope = accessControl.Scope;
-            accessControlRepository.Update(acEntity);
+            this.accessControlRepository.Update(acEntity);
             await this.unitOfWork.SaveAsync();
 
             var createdAc = await this.accessControlRepository.GetByIdAsync(id, ac => ac.Role);
@@ -141,7 +141,8 @@ namespace IoTHub.Portal.Application.Services
             {
                 throw new ResourceNotFoundException($"The AccessControl with the id {id} doesn't exist");
             }
-            accessControlRepository.Delete(id);
+
+            this.accessControlRepository.Delete(id);
             await this.unitOfWork.SaveAsync();
             return true;
         }

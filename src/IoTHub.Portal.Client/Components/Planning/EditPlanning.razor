@@ -1,6 +1,5 @@
 ﻿@attribute [Authorize]
 @inject NavigationManager NavigationManager
-@inject PortalSettings Portal
 
 @inject IPlanningClientService PlanningClientService
 @inject IScheduleClientService ScheduleClientService
@@ -438,7 +437,7 @@
 
         if (string.IsNullOrEmpty(errorMessage)) return true;
 
-        Snackbar.Add($"Some data are missing{errorMessage}", Severity.Error, null);
+        Snackbar.Add($"Some data are missing{errorMessage}", Severity.Error);
         return false;
     }
 

@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Client.Helpers
     {
         public static HashSet<LayerHash> GetHashsetLayer(List<LayerDto> listLayers)
         {
-            var layers = new HashSet<LayerHash> { };
+            var layers = new HashSet<LayerHash>();
             if (listLayers is null) throw new ArgumentNullException(nameof(listLayers));
 
             foreach (var layer in listLayers)

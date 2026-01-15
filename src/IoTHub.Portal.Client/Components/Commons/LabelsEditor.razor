@@ -1,5 +1,5 @@
 ﻿<MudGrid>
-    @if (ReadOnlyLabels.Any())
+    @if (ReadOnlyLabels != null && ReadOnlyLabels.Any())
     {
         <MudItem xs="12">
             <MudText Typo="Typo.h6">Mandatory labels</MudText>
@@ -43,7 +43,7 @@
 @code {
 
     [Parameter]
-    public List<LabelDto> ReadOnlyLabels { get; set; } = new();
+    public List<LabelDto>? ReadOnlyLabels { get; set; }
 
     [Parameter]
     public List<LabelDto> Labels { get; set; } = new();

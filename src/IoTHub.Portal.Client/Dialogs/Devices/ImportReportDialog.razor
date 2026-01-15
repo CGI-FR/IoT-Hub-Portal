@@ -46,7 +46,7 @@
     [Parameter]
     public MultipartFormDataContent Content { get; set; } = default!;
 
-    private bool loading = false;
+    private bool loading;
     private ImportResultLine[] errorReport = default!;
 
     void Close() => MudDialog.Close();

@@ -35,7 +35,7 @@
                                                  Variant="Variant.Outlined"
                                                  ToStringFunc="@(x => x?.Name)"
                                                  SearchFunc="@Search"
-                                                 ValueChanged="@(async (model) => await SelectModel(model))"
+                                                 ValueChanged="@(async model => await SelectModel(model))"
                                                  ResetValueOnEmptyText=true
                                                  Immediate=true
                                                  Clearable=true
@@ -44,7 +44,7 @@
                                     <ItemTemplate>
                                         @context.Name
                                         <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-                                            @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                            @((!string.IsNullOrEmpty(context.Description) && context.Description.Length > 100) ? context.Description.Substring(0, 100) + "..." : context.Description)
                                         </MudText>
                                     </ItemTemplate>
                                 </MudAutocomplete>
@@ -172,28 +172,28 @@
                                                             <MudTextField @bind-Value="@Configuration.Properties[item]"
                                                                           Label="@property.DisplayName"
                                                                           Variant="Variant.Outlined"
-                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
+                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out _))
                                                                           Clearable="true" />
                                                             break;
                                                         case DevicePropertyType.Float:
                                                             <MudTextField @bind-Value="@Configuration.Properties[item]"
                                                                           Label="@property.DisplayName"
                                                                           Variant="Variant.Outlined"
-                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
+                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out _))
                                                                           Clearable="true" />
                                                             break;
                                                         case DevicePropertyType.Integer:
                                                             <MudTextField @bind-Value="@Configuration.Properties[item]"
                                                                           Label="@property.DisplayName"
                                                                           Variant="Variant.Outlined"
-                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
+                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out _))
                                                                           Clearable="true" />
                                                             break;
                                                         case DevicePropertyType.Long:
                                                             <MudTextField @bind-Value="@Configuration.Properties[item]"
                                                                           Label="@property.DisplayName"
                                                                           Variant="Variant.Outlined"
-                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
+                                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out _))
                                                                           Clearable="true" />
                                                             break;
                                                         case DevicePropertyType.String:

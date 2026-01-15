@@ -97,7 +97,7 @@
     private bool canWrite;
 
     [CascadingParameter]
-    public Error? Error { get; set; } = default!;
+    public Error? Error { get; set; }
 
     private MudTable<ConcentratorDto> table = default!;
     private ConcentratorSearchInfo concentratorSearchInfo = new();

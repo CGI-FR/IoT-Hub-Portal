@@ -25,7 +25,7 @@ namespace IoTHub.Portal.Tests.Unit.UnitTests.Bases
             // Add Mock Http Client
             MockHttpClient = Services.AddMockHttpClient();
 
-            // Add authentication context
+            // Add authentication Context
             this.AuthContext = TestContext?.AddTestAuthorization();
             _ = this.AuthContext?.SetAuthorized(Guid.NewGuid().ToString());
 

@@ -30,13 +30,26 @@
                         else
                         {
                             <MudItem xs="12" md="6">
-                                <MudTextField id="@nameof(LoRaDevice.AppSKey)" @bind-Value="@LoRaDevice.AppSKey" Label="ABP App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudTextField id="@nameof(LoRaDevice.AppSKey)"
+                                              @bind-Value="@LoRaDevice.AppSKey"
+                                              Label="ABP App SKey"
+                                              For="@(() => LoRaDevice.AppSKey)"
+                                              Variant="Variant.Outlined"
+                                              Required="true" />
                             </MudItem>
                             <MudItem xs="12" md="6">
-                                <MudTextField id="@nameof(LoRaDevice.NwkSKey)" @bind-Value="@LoRaDevice.NwkSKey" Label="ABP Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudTextField id="@nameof(LoRaDevice.NwkSKey)"
+                                              @bind-Value="@LoRaDevice.NwkSKey"
+                                              Label="ABP Nwk SKey" For="@(() => LoRaDevice.NwkSKey)"
+                                              Variant="Variant.Outlined"
+                                              Required="true" />
                             </MudItem>
                             <MudItem xs="12" md="6">
-                                <MudTextField id="@nameof(LoRaDevice.DevAddr)" @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudTextField id="@nameof(LoRaDevice.DevAddr)"
+                                              @bind-Value="@LoRaDevice.DevAddr"
+                                              Label="DevAddr" For="@(() => LoRaDevice.DevAddr)"
+                                              Variant="Variant.Outlined"
+                                              Required="true" />
                             </MudItem>
                         }
                         <MudItem xs="12" md="6">

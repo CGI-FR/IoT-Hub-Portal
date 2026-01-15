@@ -3,7 +3,9 @@
 
 namespace IoTHub.Portal.Client.Models
 {
-    public class ProblemDetailsWithExceptionDetails : Microsoft.AspNetCore.Mvc.ProblemDetails
+    using Microsoft.AspNetCore.Mvc;
+
+    public class ProblemDetailsWithExceptionDetails : ProblemDetails
     {
         public string TraceId { get; set; } = default!;
 

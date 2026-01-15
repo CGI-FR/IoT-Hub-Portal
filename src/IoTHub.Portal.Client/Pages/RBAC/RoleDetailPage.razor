@@ -1,9 +1,8 @@
 @page "/roles/{RoleId}"
+@using IoTHub.Portal.Client.Components.Roles
 @inherits AuthorizedComponentBase
 
 @attribute [Authorize]
-
-@using IoTHub.Portal.Client.Components.Roles
 
 @inject IRoleClientService RoleClientService
 @inject NavigationManager NavigationManager

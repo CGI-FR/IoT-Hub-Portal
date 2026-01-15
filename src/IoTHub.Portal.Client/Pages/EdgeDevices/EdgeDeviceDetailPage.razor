@@ -275,7 +275,7 @@
     [Parameter]
     public string DeviceId { get; set; } = default!;
 
-    private bool btnDisable = false;
+    private bool btnDisable;
     private void Return() => NavigationManager.NavigateTo("edge/devices");
 
     private IoTEdgeDevice edgeDevice = default!;
@@ -283,7 +283,7 @@
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
 
-    private bool isLoaded = false;
+    private bool isLoaded;
     private bool isProcessing;
 
     private DeviceSaveAction deviceSaveAction = DeviceSaveAction.Save;

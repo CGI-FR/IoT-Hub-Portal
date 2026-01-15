@@ -1,6 +1,6 @@
 ﻿@using IoTHub.Portal.Client.Validators
-@using ConnectionStringDialog = IoTHub.Portal.Client.Dialogs.Devices.ConnectionStringDialog
 @implements IDisposable
+﻿@using ConnectionStringDialog = IoTHub.Portal.Client.Dialogs.Devices.ConnectionStringDialog
 
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
@@ -104,7 +104,7 @@
                                                                          Dense=true
                                                                          For=@(() => DeviceModel)
                                                                          Variant="Variant.Outlined"
-                                                                         ToStringFunc="@(x => x.Name)"
+                                                                         ToStringFunc="@(x => x?.Name)"
                                                                          ResetValueOnEmptyText=true
                                                                          Immediate=true
                                                                          Clearable=true
@@ -135,7 +135,7 @@
                                                                   Variant="Variant.Outlined"
                                                                   Validation=@(loraValidator.ValidateValue)
                                                                   For="@(() => Device.DeviceId)"
-                                                                  Mask="@maskLoRaDeviceId"
+                                                                  Mask="@MaskLoRaDeviceId"
                                                                   HelperText="Device EUI must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)"
                                                                   Disabled="@(!CanWrite)" />
                                                 }
@@ -178,8 +178,7 @@
                                                     <MudText>
                                                         <b>Status</b>
                                                     </MudText>
-                                                    <MudRadioGroup @bind-SelectedValue="@Device.IsEnabled" T="bool" 
-                                                                   Disabled="@(!CanWrite)">
+                                                    <MudRadioGroup @bind-Value="@Device.IsEnabled" Disabled="@(!CanWrite)">
                                                         <MudRadio Value=@(true) Color="Color.Primary">
                                                             Enabled
                                                             <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
@@ -240,7 +239,7 @@
 
                                         @if (Context.Equals(CreateEditMode.Create))
                                         {
-                                            <LabelsEditor ReadOnlyLabels="DeviceModel.Labels" Labels="Device.Labels" />
+                                            <LabelsEditor ReadOnlyLabels="DeviceModel?.Labels" Labels="Device.Labels" CanWrite="@CanWrite" />
                                         }
                                         else if (Context.Equals(CreateEditMode.Edit))
                                         {
@@ -331,7 +330,7 @@
                 }
                 else if (Context.Equals(CreateEditMode.Edit))
                 {
-                    if (IsLoRa)
+                    if (IsLoRa && Device != null && Commands != null)
                     {
                         <MudTabPanel Text="LoRaWAN" Style=@(CheckLoRaValidation() ? "color: red" : "")>
                             <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" CanWrite="@CanWrite" CanExec="@CanExec" />
@@ -354,49 +353,49 @@
     public bool CanExec { get; set; }
 
     [CascadingParameter]
-    public Error? Error { get; set; }
+    public Error Error { get; set; } = default!;
 
-    private MudForm form;
+    private MudForm form = default!;
 
-    private DeviceDetailsValidator standardValidator = new();
-    private readonly LoRaDeviceDetailsValidator loraValidator = new();
+    private DeviceDetailsValidator standardValidator;
+    private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
 
-    private LoRaDeviceModelDto? LoRaDeviceModelDto { get; set; }
+    private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; } = default!;
 
     private IDeviceDetails Device { get; set; } = new DeviceDetails();
 
-    private readonly PatternMask maskLoRaDeviceId = new("XXXXXXXXXXXXXXXX")
+    public PatternMask MaskLoRaDeviceId = new("XXXXXXXXXXXXXXXX")
     {
-        MaskChars = [new MaskChar('X', "[0-9a-fA-F]")],
+        MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
         CleanDelimiters = false,
         Transformation = AllUpperCase
     };
 
     private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 
-    private IDeviceModel deviceModel;
+    private IDeviceModel deviceModel = default!;
 
     private IDeviceModel DeviceModel
     {
-        get => deviceModel;
+        get
+        {
+            return deviceModel;
+        }
         set
         {
-            switch (Context)
+            if (Context.Equals(CreateEditMode.Create))
             {
-                case CreateEditMode.Create:
-                    Task.Run(async () => await ChangeModel(value));
-                    break;
-                case CreateEditMode.Edit:
-                    deviceModel = value;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                Task.Run(async () => await ChangeModel(value));
+            }
+            else if (Context.Equals(CreateEditMode.Edit))
+            {
+                deviceModel = value;
             }
         }
     }
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
-    private List<DevicePropertyValue> properties = new();
+    private List<DevicePropertyValue> properties = new List<DevicePropertyValue>();
 
     private bool displayValidationErrorMessages;
 
@@ -406,7 +405,7 @@
     private string saveButtonText = "Save";
 
     [Parameter]
-    public required string DeviceId { get; set; }
+    public string DeviceId { get; set; } = default!;
 
     private bool isLoaded;
 
@@ -416,20 +415,19 @@
 
     private void SetPropertiesWithContext()
     {
-        switch (Context)
+        if (Context.Equals(CreateEditMode.Create))
         {
-            case CreateEditMode.Create:
-                TagList = new List<DeviceTagDto>();
+            TagList = new List<DeviceTagDto>();
 
-                displayValidationErrorMessages = false;
-                break;
-            case CreateEditMode.Edit:
-                DeviceModel = new DeviceModelDto();
+            displayValidationErrorMessages = false;
+        }
+        else if (Context.Equals(CreateEditMode.Edit))
+        {
+            DeviceModel = new DeviceModelDto();
 
-                isLoaded = false;
+            isLoaded = false;
 
-                TagList = Array.Empty<DeviceTagDto>();
-                break;
+            TagList = Array.Empty<DeviceTagDto>();
         }
     }
 
@@ -439,11 +437,11 @@
 
     //private void setIsLoRaWithContext()
     //{
-    //    if (context.Equals(CreateEditMode.Create))
+    //    if (Context.Equals(CreateEditMode.Create))
     //    {
     //        IsLoRa = Device is LoRaDeviceDetails;
     //    }
-    //    else if (context.Equals(CreateEditMode.Edit))
+    //    else if (Context.Equals(CreateEditMode.Edit))
     //    {
     //        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
 
@@ -463,8 +461,8 @@
             if (Context.Equals(CreateEditMode.Create))
             {
                 DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
-                Device = DeviceLayoutService.GetSharedDevice();
-                DeviceModel = DeviceLayoutService.GetSharedDeviceModel();
+                Device = DeviceLayoutService.GetSharedDevice() ?? Device;
+                DeviceModel = DeviceLayoutService.GetSharedDeviceModel() ?? DeviceModel;
 
                 // Enable device by default
                 Device.IsEnabled = true;
@@ -693,12 +691,14 @@
             {"deviceName", Device.DeviceName},
             {"IsLoRaWan", IsLoRa}
         };
-        var result = await DialogService.ShowAsync<DeleteDevicePage>("Confirm Deletion", parameters);
+        var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
 
         isProcessing = false;
 
-        if (result.Result.IsCanceled)
+        if (result.Canceled)
+        {
             return;
+        }
 
         // Go back to the list of devices
         NavigationManager.NavigateTo("devices");
@@ -711,10 +711,10 @@
             SearchText = value,
             PageNumber = 0,
             PageSize = 100,
-            OrderBy =
-            [
+            OrderBy = new[]
+            {
                 string.Empty
-            ]
+            }
         };
         return (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
     }
@@ -755,14 +755,14 @@
             Device = new DeviceDetails
             {
                 DeviceId = Device.DeviceId,
-                ModelId = model.ModelId,
-                Image = model.Image,
+                ModelId = model?.ModelId,
+                Image = model?.Image,
                 DeviceName = Device.DeviceName,
                 IsEnabled = Device.IsEnabled,
                 Tags = Device.Tags
             };
 
-            if (string.IsNullOrWhiteSpace(model.ModelId))
+            if (model == null || string.IsNullOrWhiteSpace(model.ModelId))
             {
                 return;
             }
@@ -789,9 +789,9 @@
             }
             else
             {
-                var modelProperties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
+                var properties = await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(model.ModelId);
 
-                properties.AddRange(modelProperties.Select(x => new DevicePropertyValue
+                this.properties.AddRange(properties.Select(x => new DevicePropertyValue
                 {
                     DisplayName = x.DisplayName,
                     IsWritable = x.IsWritable,

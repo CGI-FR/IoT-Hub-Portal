@@ -24,7 +24,8 @@ namespace IoTHub.Portal.Client.Handlers
             {
                 return response;
             }
-            else if (response.StatusCode.Equals(HttpStatusCode.Unauthorized))
+
+            if (response.StatusCode.Equals(HttpStatusCode.Unauthorized))
             {
                 _ = this.snackbar.Add("You are not authorized", Severity.Error, config =>
                 {

@@ -1,6 +1,6 @@
 ﻿@page "/device-models/{ModelID}"
-@inherits AuthorizedComponentBase
 @using IoTHub.Portal.Client.Validators
+@inherits AuthorizedComponentBase
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -267,7 +267,7 @@
     };
 
     // Used to manage the picture
-    private string? imageData = default!;
+    private string? imageData;
 
     private bool CheckLoRaValidation()
     {
