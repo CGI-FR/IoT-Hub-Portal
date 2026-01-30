@@ -163,8 +163,10 @@ namespace IoTHub.Portal.Infrastructure.Jobs
                 if (twin.Properties.Desired.Contains(nameof(LoRaDeviceDetails.DevAddr)))
                     lorawanDeviceEntity.DevAddr = lorawanDevice.DevAddr;
                 
-                // Update UseOTAA based on AppEUI presence
-                lorawanDeviceEntity.UseOTAA = lorawanDevice.UseOTAA;
+                // Update UseOTAA based on AppEUI presence in Twin
+                // Only update if AppEUI exists in Twin to avoid overwriting database value
+                if (twin.Properties.Desired.Contains(nameof(LoRaDeviceDetails.AppEUI)))
+                    lorawanDeviceEntity.UseOTAA = lorawanDevice.UseOTAA;
 
                 // Other LoRaWAN configuration properties (only update if present in Twin)
                 if (twin.Properties.Desired.Contains(nameof(LoRaDeviceDetails.SensorDecoder)))
@@ -209,8 +211,10 @@ namespace IoTHub.Portal.Infrastructure.Jobs
                 if (twin.Properties.Desired.Contains(nameof(LoRaDeviceDetails.Downlink)))
                     lorawanDeviceEntity.Downlink = lorawanDevice.Downlink;
 
-                // Update reported properties (always updated from Twin as they come from the device)
-                lorawanDeviceEntity.AlreadyLoggedInOnce = lorawanDevice.AlreadyLoggedInOnce;
+                // Update reported properties only if they exist in Twin (as they come from the device)
+                // AlreadyLoggedInOnce is set based on DevAddr presence in reported properties
+                if (twin.Properties.Reported.Contains("DevAddr"))
+                    lorawanDeviceEntity.AlreadyLoggedInOnce = lorawanDevice.AlreadyLoggedInOnce;
                 
                 if (twin.Properties.Reported.Contains(nameof(LoRaDeviceDetails.GatewayID)))
                     lorawanDeviceEntity.GatewayID = lorawanDevice.GatewayID;

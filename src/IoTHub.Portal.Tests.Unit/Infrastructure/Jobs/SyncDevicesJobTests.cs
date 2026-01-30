@@ -482,12 +482,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
                 Version = 1,
                 AppKey = "OldAppKey",
                 AppEUI = "OldAppEUI",
+                UseOTAA = false,                           // Should be updated when AppEUI is in Twin
+                AlreadyLoggedInOnce = true,                // Should be preserved (DevAddr not in reported properties)
                 SensorDecoder = "ExistingSensorDecoder",  // Should be preserved
                 ClassType = ClassType.C,                   // Should be preserved
                 Deduplication = DeduplicationMode.Mark,    // Should be preserved
                 RX1DROffset = 5,                           // Should be preserved
                 KeepAliveTimeout = 120,                    // Should be preserved
-                GatewayID = "ExistingGatewayID",          // Should be preserved (reported property)
+                GatewayID = "ExistingGatewayID",          // Should be preserved (not in reported properties)
                 Tags = new List<DeviceTagValue>
                 {
                     new()
@@ -535,13 +537,15 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
                 // Verify Twin properties are updated
                 d.AppKey == "NewAppKey" &&
                 d.AppEUI == "NewAppEUI" &&
+                d.UseOTAA == true &&  // Updated because AppEUI is in Twin
                 // Verify database-only properties are preserved
                 d.SensorDecoder == "ExistingSensorDecoder" &&
                 d.ClassType == ClassType.C &&
                 d.Deduplication == DeduplicationMode.Mark &&
                 d.RX1DROffset == 5 &&
                 d.KeepAliveTimeout == 120 &&
-                d.GatewayID == "ExistingGatewayID"
+                d.GatewayID == "ExistingGatewayID" &&
+                d.AlreadyLoggedInOnce == true  // Preserved because DevAddr not in reported properties
             )))
                 .Verifiable();
 
