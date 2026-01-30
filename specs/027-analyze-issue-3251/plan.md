@@ -1,37 +1,72 @@
-# Implementation Plan: [FEATURE]
+# Implementation Plan: Fix Device Import Data Overwrite Bug
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**Branch**: `copilot/analyze-issue-3251` | **Date**: 2026-01-30 | **Spec**: [Issue #3251](https://github.com/CGI-FR/IoT-Hub-Portal/issues/3251)
+**Input**: GitHub Issue #3251 - Bug: Import device - data overwritten
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-[Extract from feature spec: primary requirement + technical approach from research]
+Fix critical data loss bug where imported LoRaWAN device data is overwritten during synchronization. When devices are imported via CSV, only a subset of fields (Id, Name, ModelId, assetId, locationCode, supportLoRaFeatures, AppKey, AppEUI, AppSKey, NwkSKey, DevAddr, GatewayID) are retained. Other CSV-provided data is lost because:
+1. Import process doesn't push all fields to Azure IoT Hub
+2. Synchronization job then overwrites database with incomplete data from IoT Hub
+3. Some fields inherit unwanted device model defaults
+
+Technical approach: Modify import flow to properly persist all CSV fields to IoT Hub desired properties, and refine synchronization mapping to preserve explicitly imported values while avoiding model default overrides.
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
+**Language/Version**: C# / .NET 8.0  
+**Primary Dependencies**: 
+- ASP.NET Core (Backend API)
+- Blazor WebAssembly (Frontend)
+- AutoMapper (Object mapping)
+- Azure IoT Hub SDK (Device management)
+- CsvHelper (CSV import/export)
+- Entity Framework Core (Database ORM)
+- Quartz.NET (Job scheduling for sync operations)
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Storage**: PostgreSQL or MySQL (configurable via Entity Framework)  
+**Testing**: xUnit with Moq for unit tests  
+**Target Platform**: Linux/Windows server (containerized via Docker), Web browser for frontend  
+**Project Type**: Web application (separate backend/frontend)  
+**Performance Goals**: Handle CSV imports with 1000+ devices, sync job completion within 5 minutes for typical deployments  
+**Constraints**: 
+- Must maintain Azure IoT Hub as source of truth for device state
+- Cannot break existing CSV import/export format for backward compatibility
+- Synchronization runs on scheduled intervals (via Quartz job)
+- Must handle both OTAA and ABP LoRaWAN authentication modes
+
+**Scale/Scope**: 
+- IoT Hub Portal manages thousands of IoT devices
+- Bug affects LoRaWAN device import specifically
+- Impacts ~30 LoRaWAN-specific properties in LoRaDeviceBase class
+- Core files: ExportManager.cs, SyncDevicesJob.cs, DeviceProfile.cs (AutoMapper), LoRaWanDeviceService.cs
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**Initial Status (Pre-Phase 0)**: ✅ PASS (Constitution template is empty/unconfigured for this project)
+
+**Post-Phase 1 Status**: ✅ PASS (Constitution template remains empty/unconfigured)
+
+The project constitution file exists but contains only placeholder templates without concrete principles or constraints. Since no enforceable rules are defined, there are no violations to justify. 
+
+**Design Review**:
+- ✅ No new architectural layers introduced
+- ✅ No new dependencies added
+- ✅ Follows existing patterns (AutoMapper, CsvHelper, LoRaWAN service layer)
+- ✅ Backward compatible (old CSV files work with defaults)
+- ✅ No breaking API changes
+- ✅ Maintains Azure IoT Hub as source of truth
+- ✅ Unit tests follow existing xUnit + Moq patterns
+
+This implementation will:
+- Follow existing codebase patterns and conventions
+- Maintain backward compatibility with CSV format
+- Preserve Azure IoT Hub as source of truth architecture
+- Add appropriate unit tests following xUnit patterns already in use
 
 ## Project Structure
 
@@ -56,49 +91,149 @@ specs/[###-feature]/
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+# Web application structure (Blazor WebAssembly + ASP.NET Core Backend)
+backend/src/
+├── IoTHub.Portal.Server/           # ASP.NET Core API
+│   ├── Controllers/v1.0/           # REST API endpoints
+│   │   ├── AdminController.cs      # Contains device import endpoint
+│   │   └── LoRaWAN/               
+│   │       └── LoRaWANDevicesController.cs
+│   └── Managers/
+│       └── ExportManager.cs        # CSV import/export logic (PRIMARY FIX LOCATION)
+├── IoTHub.Portal.Infrastructure/   # Data access & external services
+│   ├── Services/
+│   │   └── LoRaWanDeviceService.cs # Device CRUD operations
+│   └── Jobs/
+│       └── SyncDevicesJob.cs       # Scheduled sync job (SECONDARY FIX LOCATION)
+├── IoTHub.Portal.Application/      # Business logic layer
+│   ├── Managers/
+│   │   └── IExportManager.cs       # Import/export interface
+│   └── Mappers/
+│       └── DeviceProfile.cs        # AutoMapper profiles (TERTIARY FIX LOCATION)
+├── IoTHub.Portal.Domain/           # Domain entities
+│   └── Entities/
+│       └── LorawanDevice.cs        # LoRaWAN device entity
+└── IoTHub.Portal.Shared/           # Shared DTOs
+    └── Models/v1.0/LoRaWAN/
+        ├── LoRaDeviceDetails.cs    # DTO for device details
+        └── LoRaDeviceBase.cs       # Base class with LoRaWAN properties
+
+frontend/src/IoTHub.Portal.Client/  # Blazor WebAssembly
+├── Pages/Devices/
+│   └── ImportReportDialog.razor    # UI for import results
+└── Services/
+    └── DeviceClientService.cs      # API client
 
 tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+├── IoTHub.Portal.Tests.Unit/
+│   ├── Server/Managers/
+│   │   └── ExportManagerTests.cs   # Tests for import/export (NEEDS UPDATE)
+│   └── Infrastructure/Jobs/
+│       └── SyncDevicesJobTests.cs  # Tests for sync job (NEEDS UPDATE)
+└── IoTHub.Portal.Tests.E2E/        # End-to-end tests
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**Structure Decision**: Standard ASP.NET Core layered architecture with:
+- **Server**: REST API controllers and managers
+- **Infrastructure**: Data access, external services (Azure IoT Hub), and scheduled jobs
+- **Application**: Business logic and cross-cutting concerns (mappers)
+- **Domain**: Core entities and business rules
+- **Shared**: DTOs shared between client and server
+- **Client**: Blazor WebAssembly frontend
+
+Bug fix requires changes primarily in Infrastructure and Server layers, with test updates.
 
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+No violations detected. Constitution is not yet configured with concrete principles.
+
+---
+
+## Phase 2: Task Generation Planning
+
+**Status**: Ready for `/speckit.tasks` command
+
+### Implementation Scope
+
+**Primary Changes**:
+1. **ExportManager.cs** - Add 14 property reads in `ImportLoRaDevice()` method
+2. **ExportManagerTests.cs** - Add/update unit tests for complete property import
+
+**Secondary Review** (No changes expected, but verify):
+3. **DeviceProfile.cs** - Confirm AutoMapper correctly maps all properties (already done)
+4. **SyncDevicesJob.cs** - Confirm sync logic preserves data (already correct)
+
+### Estimated Complexity
+
+**Size**: Small (single method modification + tests)  
+**Risk**: Low (localized change, backward compatible)  
+**Testing**: Unit + manual verification  
+**Estimated effort**: 2-4 hours development + 2 hours testing
+
+### Task Breakdown Preview
+
+Expected tasks for `/speckit.tasks`:
+1. Add LoRaWAN configuration property reads to CSV import
+2. Update unit tests for complete property coverage
+3. Add backward compatibility test for minimal CSV
+4. Manual verification: Import → IoT Hub → Sync → Database
+5. Update documentation if needed
+
+### Dependencies
+
+- ✅ Phase 0 (Research) - Complete
+- ✅ Phase 1 (Design) - Complete
+- ✅ Agent context - Updated
+- ⏭️ Next: Run `/speckit.tasks` to generate actionable tasks
+
+### Success Criteria
+
+Fix is successful when:
+- [ ] All 14 LoRaWAN configuration properties are read from CSV
+- [ ] Properties are persisted to Azure IoT Hub desired properties
+- [ ] Sync job retrieves complete data from IoT Hub
+- [ ] Database retains all imported values after sync
+- [ ] Unit tests achieve >95% coverage on modified methods
+- [ ] Backward compatibility maintained for old CSV files
+- [ ] Export → Import → Export roundtrip is lossless
+
+---
+
+## Completion Summary
+
+**Planning Phase Complete**: 2026-01-30
+
+### Artifacts Generated
+
+✅ **Phase 0 Outputs**:
+- `research.md` - Root cause analysis and technical decisions
+
+✅ **Phase 1 Outputs**:
+- `data-model.md` - Data structures and flow documentation
+- `contracts/device-import-api.md` - API contract specification
+- `quickstart.md` - Implementation guide
+- `.github/agents/copilot-instructions.md` - Updated agent context
+
+✅ **Planning Artifacts**:
+- `plan.md` - This comprehensive implementation plan (updated)
+
+### Next Steps
+
+1. **Run task generation**: Execute `/speckit.tasks` command to break down implementation into actionable tasks
+2. **Implementation**: Use generated `tasks.md` for step-by-step implementation
+3. **Testing**: Follow test plans in `quickstart.md` and `research.md`
+4. **Verification**: Ensure success criteria met before closing issue
+
+### Key Insights
+
+**Root Cause**: Import writes only 5 authentication properties to IoT Hub; sync overwrites database with incomplete data.
+
+**Solution**: Expand import to write all 14 LoRaWAN configuration properties to IoT Hub.
+
+**Impact**: Zero breaking changes, backward compatible, minimal code footprint (14 lines + tests).
+
+**Branch**: `copilot/analyze-issue-3251`  
+**Issue**: [#3251](https://github.com/CGI-FR/IoT-Hub-Portal/issues/3251)  
+**Milestone**: v6.0
