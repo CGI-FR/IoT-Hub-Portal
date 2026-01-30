@@ -450,5 +450,127 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             // Assert
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task Execute_ExistingLorawanDeviceWithMissingTwinProperties_DatabaseValuesPreserved()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+
+            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            expectedDeviceModel.SupportLoRaFeatures = true;
+
+            // Twin with only core properties and AppKey/AppEUI (OTAA)
+            var expectedTwinDevice = new Twin
+            {
+                DeviceId = Fixture.Create<string>(),
+                Tags = new TwinCollection
+                {
+                    ["modelId"] = expectedDeviceModel.Id,
+                    ["deviceName"] = "UpdatedDeviceName"
+                },
+                Version = 2
+            };
+            expectedTwinDevice.Properties.Desired["AppKey"] = "NewAppKey";
+            expectedTwinDevice.Properties.Desired["AppEUI"] = "NewAppEUI";
+
+            // Existing device with additional LoRaWAN properties that should be preserved
+            var existingLorawanDevice = new LorawanDevice
+            {
+                Id = expectedTwinDevice.DeviceId,
+                Name = "OldDeviceName",
+                Version = 1,
+                AppKey = "OldAppKey",
+                AppEUI = "OldAppEUI",
+                SensorDecoder = "ExistingSensorDecoder",  // Should be preserved
+                ClassType = ClassType.C,                   // Should be preserved
+                Deduplication = DeduplicationMode.Mark,    // Should be preserved
+                RX1DROffset = 5,                           // Should be preserved
+                KeepAliveTimeout = 120,                    // Should be preserved
+                GatewayID = "ExistingGatewayID",          // Should be preserved (reported property)
+                Tags = new List<DeviceTagValue>
+                {
+                    new()
+                    {
+                        Id = Fixture.Create<string>(),
+                        Name = "existingTag",
+                        Value = "existingValue"
+                    }
+                }
+            };
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetAllDevice(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.Is<string>(x => x == "LoRa Concentrator"),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.Is<int>(x => x == 100)))
+                .ReturnsAsync(new PaginationResult<Twin>
+                {
+                    Items = new List<Twin>
+                    {
+                        expectedTwinDevice
+                    },
+                    TotalItems = 1
+                });
+
+            _ = this.mockDeviceModelRepository
+                .Setup(x => x.GetByIdAsync(expectedDeviceModel.Id))
+                .ReturnsAsync(expectedDeviceModel);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId, d => d.Tags))
+                .ReturnsAsync(existingLorawanDevice);
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.Is<LorawanDevice>(d =>
+                // Verify core properties are updated
+                d.Name == "UpdatedDeviceName" &&
+                d.Version == 2 &&
+                // Verify Twin properties are updated
+                d.AppKey == "NewAppKey" &&
+                d.AppEUI == "NewAppEUI" &&
+                // Verify database-only properties are preserved
+                d.SensorDecoder == "ExistingSensorDecoder" &&
+                d.ClassType == ClassType.C &&
+                d.Deduplication == DeduplicationMode.Mark &&
+                d.RX1DROffset == 5 &&
+                d.KeepAliveTimeout == 120 &&
+                d.GatewayID == "ExistingGatewayID"
+            )))
+                .Verifiable();
+
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Device>
+                {
+                    new Device
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    }
+                });
+
+            _ = this.mockLorawanDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<LorawanDevice, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<LorawanDevice>
+                {
+                    new LorawanDevice
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    }
+                });
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.syncDevicesJob.Execute(mockJobExecutionContext.Object);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
     }
 }
