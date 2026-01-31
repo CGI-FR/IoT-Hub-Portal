@@ -21,10 +21,10 @@
                  </MudItem>
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="@currentImage"
-                                  id=@nameof(EdgeModelSystemModule.Image)
+                                  id=@nameof(EdgeModelSystemModule.ImageUri)
                                   Label="Image URI"
                                   Variant="Variant.Outlined"
-                                  For="@(()=> Module.Image)"
+                                  For="@(()=> Module.ImageUri)"
                                   Required="true" />
                 </MudItem>
                 <MudItem xs="12">
@@ -74,7 +74,7 @@
         IsLoading = true;
 
         currentModuleName = Module.Name;
-        currentImage = Module.Image;
+        currentImage = Module.ImageUri;
         currentContainerCreateOptions = Module.ContainerCreateOptions;
         currentStartupOrder = Module.StartupOrder;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
@@ -85,7 +85,7 @@
     public void Submit()
     {
         Module.Name = currentModuleName;
-        Module.Image = currentImage;
+        Module.ImageUri = currentImage;
         Module.ContainerCreateOptions = currentContainerCreateOptions;
         Module.StartupOrder = currentStartupOrder;
         Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());

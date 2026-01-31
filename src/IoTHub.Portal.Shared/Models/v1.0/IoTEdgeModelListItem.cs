@@ -21,7 +21,7 @@ namespace IoTHub.Portal.Models.v10
         /// </summary>
         public string Description { get; set; } = default!;
 
-        public string Image { get; set; } = default!;
+        public string ImageUri { get; set; } = default!;
 
         /// <summary>
         /// The aws deployment ID.
