@@ -128,9 +128,14 @@
                 var planning = await PlanningClientService.GetPlanning(InitLayer.Planning);
                 PlanningDeviceModelId = planning.DeviceModelId;
             }
-            catch
+            catch (KeyNotFoundException)
             {
                 // Planning might not exist anymore, ignore the error
+            }
+            catch (Exception ex)
+            {
+                // Unexpected error retrieving planning: report via shared error handler
+                Error?.ProcessError(ex);
             }
         }
 
