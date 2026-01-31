@@ -244,13 +244,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             checkboxButton.Click();
 
             // Assert - after clicking, the checkbox should visually update
-            // The LayerId is set to null, so the condition should no longer match "Already registered"
-            // and should show either the "Add device" state or intermediate state
+            // The LayerId is set to null and the device is added to DeviceRemoveList,
+            // so the condition (context.LayerId == InitLayer.Id) no longer matches.
+            // This should trigger the else branch showing the unchecked state (CheckBoxOutlineBlank icon).
             cut.WaitForAssertion(() =>
             {
                 var updatedButton = cut.Find("table tbody tr td:last-child button");
-                // After unselecting, the button should not show the CheckBox icon anymore
-                // It should show CheckBoxOutlineBlank (unselected state)
+                // After unselecting, the button should show CheckBoxOutlineBlank icon (unchecked state)
                 updatedButton.OuterHtml.Should().Contain("CheckBoxOutlineBlank");
             });
         }
