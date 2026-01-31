@@ -220,9 +220,9 @@ namespace IoTHub.Portal.Application.Helpers
         {
             var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
 
-            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").Image))
+            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri))
             {
-                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").Image;
+                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri;
             }
 
             if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ContainerCreateOptions))
@@ -235,9 +235,9 @@ namespace IoTHub.Portal.Application.Helpers
                 edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.StartupOrder = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").StartupOrder;
             }
 
-            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").Image))
+            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ImageUri))
             {
-                edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").Image;
+                edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ImageUri;
             }
 
             var edgeHubPropertiesDesired = GenerateRoutesContent(edgeModel.EdgeRoutes);

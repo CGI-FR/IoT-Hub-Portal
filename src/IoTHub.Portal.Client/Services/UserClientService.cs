@@ -4,10 +4,10 @@
 namespace IoTHub.Portal.Client.Services
 {
     using System.Net;
-    using System.Net.Http.Json;
-    using IoTHub.Portal.Shared.Models.v10;
-    using System.Threading.Tasks;
     using System.Net.Http;
+    using System.Net.Http.Json;
+    using System.Threading.Tasks;
+    using IoTHub.Portal.Shared.Models.v10;
 
     public class UserClientService : IUserClientService
     {

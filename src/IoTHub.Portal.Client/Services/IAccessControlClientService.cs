@@ -3,8 +3,8 @@
 
 namespace IoTHub.Portal.Client.Services
 {
-    using IoTHub.Portal.Shared.Models.v10;
     using System.Threading.Tasks;
+    using IoTHub.Portal.Shared.Models.v10;
 
     public interface IAccessControlClientService
     {

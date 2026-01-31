@@ -2,16 +2,16 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace IoTHub.Portal.Server.Controllers.V10
 {
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
-    using Microsoft.AspNetCore.Http;
     using IoTHub.Portal.Shared.Models.v10;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.Logging;
-    using System;
 
     [Authorize]
     [ApiController]

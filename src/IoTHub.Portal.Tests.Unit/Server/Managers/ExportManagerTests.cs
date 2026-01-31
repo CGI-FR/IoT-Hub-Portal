@@ -462,7 +462,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             // Assert - Verify header is comma-separated by parsing it
             var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             var headerFields = lines[0].Split(',');
-            
+
             // Should be able to parse the header with comma delimiter
             _ = headerFields.Length.Should().BeGreaterThan(1, "CSV header should have multiple comma-separated fields");
             _ = headerFields.Should().Contain("Id");
@@ -498,7 +498,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             // Assert - Verify header is comma-separated by parsing it
             var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             var headerFields = lines[0].Split(',');
-            
+
             // Should be able to parse the header with comma delimiter
             _ = headerFields.Length.Should().BeGreaterThan(1, "CSV template header should have multiple comma-separated fields");
             _ = headerFields.Should().Contain("Id");

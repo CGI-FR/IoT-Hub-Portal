@@ -5,12 +5,12 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using AutoFixture;
+    using FluentAssertions;
     using IoTHub.Portal.Domain.Entities;
     using IoTHub.Portal.Infrastructure.Repositories;
     using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
-    using FluentAssertions;
     using NUnit.Framework;
-    using AutoFixture;
 
     public class UserRepositoryTest : BackendUnitTest
     {

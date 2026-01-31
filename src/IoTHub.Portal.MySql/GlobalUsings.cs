@@ -3,7 +3,6 @@
 
 global using System;
 global using System.Reflection;
-global using System.Runtime.CompilerServices;
 global using IoTHub.Portal.Infrastructure;
 global using IoTHub.Portal.Infrastructure.Helpers;
 global using Microsoft.EntityFrameworkCore;

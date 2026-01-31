@@ -3,11 +3,11 @@
 
 namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
+    using Device = Portal.Domain.Entities.Device;
     using ListTagsForResourceRequest = Amazon.IoT.Model.ListTagsForResourceRequest;
     using ListTagsForResourceResponse = Amazon.IoT.Model.ListTagsForResourceResponse;
-    using Tag = Amazon.IoT.Model.Tag;
-    using Device = Portal.Domain.Entities.Device;
     using ResourceAlreadyExistsException = Portal.Domain.Exceptions.ResourceAlreadyExistsException;
+    using Tag = Amazon.IoT.Model.Tag;
 
     [TestFixture]
     public class AwsExternalDeviceServiceTests : BackendUnitTest

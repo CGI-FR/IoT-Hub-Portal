@@ -562,7 +562,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task ProcessTelemetryEvent_AnyEventData_NothingIsDone()
         {
             // Arrange
-            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(Fixture.Create<string>()));
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(Fixture.Create<string>()), offset: 0);
 
             // Act
             await this.deviceService.ProcessTelemetryEvent(eventMessage);

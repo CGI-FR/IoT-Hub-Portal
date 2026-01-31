@@ -3,17 +3,17 @@
 
 namespace IoTHub.Portal.Application.Services
 {
+    using System.Linq; // for Select
+    using System.Linq.Expressions; // for includes expressions
     using System.Threading.Tasks;
     using AutoMapper;
+    using IoTHub.Portal.Crosscutting;
     using IoTHub.Portal.Domain;
     using IoTHub.Portal.Domain.Entities;
+    using IoTHub.Portal.Domain.Exceptions;
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
-    using IoTHub.Portal.Domain.Exceptions;
-    using IoTHub.Portal.Crosscutting;
-    using System.Linq; // for Select
-    using System.Linq.Expressions; // for includes expressions
 
     public class AccessControlService : IAccessControlManagementService
     {

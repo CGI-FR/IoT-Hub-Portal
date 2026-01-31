@@ -97,7 +97,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                Image = expectedImage,
+                ImageUri = expectedImage,
                 Description = Guid.NewGuid().ToString(),
                 EdgeModules = expectedModules,
                 EdgeRoutes = expectedRoutes,
@@ -161,7 +161,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                Image = expectedImage,
+                ImageUri = expectedImage,
                 Description = Guid.NewGuid().ToString(),
                 EdgeModules = expectedModules
             };
