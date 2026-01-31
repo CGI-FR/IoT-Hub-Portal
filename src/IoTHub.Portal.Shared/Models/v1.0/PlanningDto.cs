@@ -39,5 +39,10 @@ namespace IoTHub.Portal.Shared.Models.v10
         /// Day off command.
         /// </summary>
         public string CommandId { get; set; }
+
+        /// <summary>
+        /// The device model identifier associated with this planning.
+        /// </summary>
+        public string? DeviceModelId { get; set; }
     }
 }

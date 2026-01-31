@@ -36,6 +36,11 @@ namespace IoTHub.Portal.Domain.Entities
         public string CommandId { get; set; } = default!;
 
         /// <summary>
+        /// The device model identifier associated with this planning.
+        /// </summary>
+        public string? DeviceModelId { get; set; }
+
+        /// <summary>
         /// Gets or sets the schedules.
         /// </summary>
         public ICollection<Schedule> Schedules { get; set; } = new Collection<Schedule>();
