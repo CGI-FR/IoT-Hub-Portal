@@ -5,7 +5,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 {
     public interface IDeviceTagMapper
     {
-        public DeviceTagDto GetDeviceTag(TableEntity entity);
-        public void UpdateTableEntity(TableEntity tagEntity, DeviceTagDto element);
+        DeviceTagDto GetDeviceTag(TableEntity entity);
+        void UpdateTableEntity(TableEntity tagEntity, DeviceTagDto element);
     }
 }

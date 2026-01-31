@@ -7,10 +7,10 @@ namespace IoTHub.Portal.Infrastructure.Mappers
         where TListItem : class, IDeviceModel
         where TModel : class, IDeviceModel
     {
-        public TListItem CreateDeviceModelListItem(TableEntity entity);
+        TListItem CreateDeviceModelListItem(TableEntity entity);
 
-        public TModel CreateDeviceModel(TableEntity entity);
+        TModel CreateDeviceModel(TableEntity entity);
 
-        public Dictionary<string, object> BuildDeviceModelDesiredProperties(TModel model);
+        Dictionary<string, object> BuildDeviceModelDesiredProperties(TModel model);
     }
 }

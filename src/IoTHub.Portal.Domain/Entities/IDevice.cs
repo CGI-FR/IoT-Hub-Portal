@@ -8,46 +8,46 @@ namespace IoTHub.Portal.Domain.Entities
         /// <summary>
         /// The device Identifier.
         /// </summary>
-        public string Id { get; set; }
+        string Id { get; set; }
 
         /// <summary>
         /// The device friendly name.
         /// </summary>
-        public string Name { get; set; }
+        string Name { get; set; }
 
         /// <summary>
         /// The device Model Identifier.
         /// </summary>
-        public string DeviceModelId { get; set; }
+        string DeviceModelId { get; set; }
 
         /// <summary>
         /// A value indicating whether the device is currently connected.
         /// </summary>
-        public bool IsConnected { get; set; }
+        bool IsConnected { get; set; }
 
         /// <summary>
         /// A value indicating whether the device is enabled on the platform.
         /// </summary>
-        public bool IsEnabled { get; set; }
+        bool IsEnabled { get; set; }
 
         /// <summary>
         /// The device last status updated time.
         /// </summary>
-        public DateTime StatusUpdatedTime { get; set; }
+        DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
         /// Gets or sets the last activity time.
         /// </summary>
-        public DateTime LastActivityTime { get; set; }
+        DateTime LastActivityTime { get; set; }
 
         /// <summary>
         /// The device labels.
         /// </summary>
-        public ICollection<Label> Labels { get; set; }
+        ICollection<Label> Labels { get; set; }
 
         /// <summary>
         /// The LayerId of the device.
         /// </summary>
-        public string? LayerId { get; set; }
+        string? LayerId { get; set; }
     }
 }

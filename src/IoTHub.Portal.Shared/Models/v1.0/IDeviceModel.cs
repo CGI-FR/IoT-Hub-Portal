@@ -8,37 +8,37 @@ namespace IoTHub.Portal.Shared.Models
         /// <summary>
         /// The device model identifier.
         /// </summary>
-        public string ModelId { get; set; }
+        string ModelId { get; set; }
 
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public string Image { get; set; }
+        string Image { get; set; }
 
         /// <summary>
         /// The device model name.
         /// </summary>
         [Required(ErrorMessage = "The device model name is required.")]
-        public string Name { get; set; }
+        string Name { get; set; }
 
         /// <summary>
         /// The device model description.
         /// </summary>
-        public string Description { get; set; }
+        string Description { get; set; }
 
         /// <summary>
         /// A value indicating whether this instance is builtin.
         /// </summary>
-        public bool IsBuiltin { get; set; }
+        bool IsBuiltin { get; set; }
 
         /// <summary>
         /// A value indicating whether the device model supports LoRa features.
         /// </summary>
-        public bool SupportLoRaFeatures { get; }
+        bool SupportLoRaFeatures { get; }
 
         /// <summary>
         /// Labels
         /// </summary>
-        public List<LabelDto> Labels { get; set; }
+        List<LabelDto> Labels { get; set; }
     }
 }

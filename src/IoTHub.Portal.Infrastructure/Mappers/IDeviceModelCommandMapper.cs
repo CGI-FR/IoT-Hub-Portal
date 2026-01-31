@@ -5,8 +5,8 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 {
     public interface IDeviceModelCommandMapper
     {
-        public DeviceModelCommandDto GetDeviceModelCommand(TableEntity entity);
+        DeviceModelCommandDto GetDeviceModelCommand(TableEntity entity);
 
-        public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommandDto element);
+        void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommandDto element);
     }
 }
