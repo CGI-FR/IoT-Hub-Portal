@@ -275,7 +275,6 @@
     private bool isProcessing;
 
     public HashSet<LayerHash> Layers { get; set; } = new HashSet<LayerHash> { };
-    private IEnumerable<DeviceListItem> AllDevices { get; set; } = new List<DeviceListItem>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -289,10 +288,6 @@
             //Get all layers that will be link to a planning
             List<LayerDto> listLayers = await LayerClientService.GetLayers();
             Layers = LayerHelper.GetHashsetLayer(listLayers);
-
-            //Get all devices
-            var result = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
-            AllDevices = result.Items;
 
             //Get all Device Models & Commands
             await LoadCommands();
@@ -411,39 +406,8 @@
         // If trying to link this layer to the planning
         if (item.LayerData.Planning != planning.Id)
         {
-            // Check if this planning has a device model defined
-            if (!string.IsNullOrEmpty(planning.DeviceModelId))
-            {
-                // Get all devices linked to this layer
-                var devicesInLayer = GetDevicesInLayer(item);
-                
-                // Check if any device has a different DeviceModelId
-                var hasIncompatibleDevices = devicesInLayer.Any(d => d.DeviceModelId != planning.DeviceModelId);
-                
-                if (hasIncompatibleDevices)
-                {
-                    Snackbar.Add($"Cannot link layer '{item.LayerData.Name}' to this planning. The layer contains devices with a different device model.", Severity.Warning);
-                    return;
-                }
-            }
-            // If no device model is set yet but a device model is selected, validate based on the selected model
-            else if (SelectedModel != defaultDeviceModel)
-            {
-                // Get the device model ID for the selected model
-                var selectedDeviceModel = DeviceModels.FirstOrDefault(dm => dm.Name == SelectedModel);
-                if (selectedDeviceModel != null)
-                {
-                    var devicesInLayer = GetDevicesInLayer(item);
-                    var hasIncompatibleDevices = devicesInLayer.Any(d => d.DeviceModelId != selectedDeviceModel.ModelId);
-                    
-                    if (hasIncompatibleDevices)
-                    {
-                        Snackbar.Add($"Cannot link layer '{item.LayerData.Name}' to this planning. The layer contains devices with a different device model.", Severity.Warning);
-                        return;
-                    }
-                }
-            }
-            
+            // Note: Device model compatibility will be validated server-side when saving
+            // This provides better performance by avoiding loading all devices client-side
             item.LayerData.Planning = planning.Id;
         }
         else
@@ -455,22 +419,6 @@
         {
             CheckedChanged(child);
         }
-    }
-
-    private List<DeviceListItem> GetDevicesInLayer(LayerHash layer)
-    {
-        var devices = new List<DeviceListItem>();
-        
-        // Get devices directly in this layer
-        devices.AddRange(AllDevices.Where(d => d.LayerId == layer.LayerData.Id));
-        
-        // Recursively get devices from child layers
-        foreach (var child in layer.Children)
-        {
-            devices.AddRange(GetDevicesInLayer(child));
-        }
-        
-        return devices;
     }
 
     private async Task LoadCommands()
