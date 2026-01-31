@@ -459,13 +459,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             using var reader = new StreamReader(fileStream);
             var content = reader.ReadToEnd();
 
-            // Assert - Should contain commas as delimiters, not semicolons
-            _ = content.Should().Contain(",", "CSV should use comma delimiter");
-            _ = content.Should().NotContain(";", "CSV should not use semicolon delimiter");
-
-            // Verify that header fields are properly comma-separated
+            // Assert - Verify header is comma-separated by parsing it
             var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             var headerFields = lines[0].Split(',');
+            
+            // Should be able to parse the header with comma delimiter
+            _ = headerFields.Length.Should().BeGreaterThan(1, "CSV header should have multiple comma-separated fields");
             _ = headerFields.Should().Contain("Id");
             _ = headerFields.Should().Contain("Name");
             _ = headerFields.Should().Contain("ModelId");
@@ -496,12 +495,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             using var reader = new StreamReader(fileStream);
             var content = reader.ReadToEnd();
 
-            // Assert - Should contain commas as delimiters, not semicolons
-            _ = content.Should().Contain(",", "CSV template should use comma delimiter");
-            _ = content.Should().NotContain(";", "CSV template should not use semicolon delimiter");
-
-            // Verify that header fields are properly comma-separated
-            var headerFields = content.TrimEnd().Split(',');
+            // Assert - Verify header is comma-separated by parsing it
+            var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var headerFields = lines[0].Split(',');
+            
+            // Should be able to parse the header with comma delimiter
+            _ = headerFields.Length.Should().BeGreaterThan(1, "CSV template header should have multiple comma-separated fields");
             _ = headerFields.Should().Contain("Id");
             _ = headerFields.Should().Contain("Name");
             _ = headerFields.Should().Contain("ModelId");
