@@ -426,5 +426,85 @@ namespace IoTHub.Portal.Tests.Unit.Server.Managers
             _ = result.Should().HaveCount(2);
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public void ExportDeviceListShouldUseCommaDelimiterNotSemicolon()
+        {
+            // Arrange
+            _ = this.mockLoRaWANOptions.Setup(x => x.Value)
+                .Returns(new LoRaWANOptions
+                {
+                    Enabled = false
+                });
+
+            using var fileStream = new MemoryStream();
+
+            _ = this.mockExternalDeviceService.Setup(x => x.GetDevicesToExport())
+            .ReturnsAsync(new List<string>()
+                {
+                    /*lang=json*/
+                    "{ \"deviceId\": \"000001\", \"tags\": { \"deviceName\": \"DeviceExport01\", \"supportLoRaFeatures\": \"true\", \"modelId\": \"01a440ca-9a67-4334-84a8-0f39995612a4\", \"Tag1\": \"Tag1-1\"}, \"desired\": { \"Property1\": \"123\", \"Property2\": \"456\" }}"
+                });
+
+            _ = this.mockDeviceTagService.Setup(x => x.GetAllTagsNames())
+                .Returns(new List<string>() { "Tag1", "Tag2" });
+
+            _ = this.mockDeviceModelPropertiesService.Setup(x => x.GetAllPropertiesNames())
+                .Returns(new List<string>() { "Property1", "Property2" });
+
+            // Act
+            _ = this.exportManager.ExportDeviceList(fileStream);
+            fileStream.Position = 0;
+
+            using var reader = new StreamReader(fileStream);
+            var content = reader.ReadToEnd();
+
+            // Assert - Should contain commas as delimiters, not semicolons
+            _ = content.Should().Contain(",", "CSV should use comma delimiter");
+            _ = content.Should().NotContain(";", "CSV should not use semicolon delimiter");
+
+            // Verify that header fields are properly comma-separated
+            var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var headerFields = lines[0].Split(',');
+            _ = headerFields.Should().Contain("Id");
+            _ = headerFields.Should().Contain("Name");
+            _ = headerFields.Should().Contain("ModelId");
+        }
+
+        [Test]
+        public void ExportTemplateFileShouldUseCommaDelimiterNotSemicolon()
+        {
+            // Arrange
+            _ = this.mockLoRaWANOptions.Setup(x => x.Value)
+                .Returns(new LoRaWANOptions
+                {
+                    Enabled = false
+                });
+
+            using var fileStream = new MemoryStream();
+
+            _ = this.mockDeviceTagService.Setup(x => x.GetAllTagsNames())
+                .Returns(new List<string>() { "Tag1", "Tag2" });
+
+            _ = this.mockDeviceModelPropertiesService.Setup(x => x.GetAllPropertiesNames())
+                .Returns(new List<string>() { "Property1", "Property2" });
+
+            // Act
+            _ = this.exportManager.ExportTemplateFile(fileStream);
+            fileStream.Position = 0;
+
+            using var reader = new StreamReader(fileStream);
+            var content = reader.ReadToEnd();
+
+            // Assert - Should contain commas as delimiters, not semicolons
+            _ = content.Should().Contain(",", "CSV template should use comma delimiter");
+            _ = content.Should().NotContain(";", "CSV template should not use semicolon delimiter");
+
+            // Verify that header fields are properly comma-separated
+            var headerFields = content.TrimEnd().Split(',');
+            _ = headerFields.Should().Contain("Id");
+            _ = headerFields.Should().Contain("Name");
+            _ = headerFields.Should().Contain("ModelId");
+        }
     }
 }

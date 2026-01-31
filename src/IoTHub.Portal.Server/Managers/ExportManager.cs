@@ -41,7 +41,12 @@ namespace IoTHub.Portal.Server.Managers
 
             using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
 
-            using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture, leaveOpen: true);
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ","
+            };
+
+            using var csvWriter = new CsvWriter(writer, config, leaveOpen: true);
 
             WriteHeader(tags, properties, csvWriter);
 
@@ -80,7 +85,12 @@ namespace IoTHub.Portal.Server.Managers
 
             using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
 
-            using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture, leaveOpen: true);
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ","
+            };
+
+            using var csvWriter = new CsvWriter(writer, config, leaveOpen: true);
 
             WriteHeader(tags, properties, csvWriter);
 
@@ -141,6 +151,7 @@ namespace IoTHub.Portal.Server.Managers
 
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
+                Delimiter = ",",
                 MissingFieldFound = null
             };
 
