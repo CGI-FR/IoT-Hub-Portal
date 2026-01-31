@@ -537,16 +537,15 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Jobs
                 // Verify Twin properties are updated
                 d.AppKey == "NewAppKey" &&
                 d.AppEUI == "NewAppEUI" &&
-                d.UseOTAA == true &&  // Updated because AppEUI is in Twin
-                // Verify database-only properties are preserved
+                d.UseOTAA &&  // Updated because AppEUI is in Twin
+                              // Verify database-only properties are preserved
                 d.SensorDecoder == "ExistingSensorDecoder" &&
                 d.ClassType == ClassType.C &&
                 d.Deduplication == DeduplicationMode.Mark &&
                 d.RX1DROffset == 5 &&
                 d.KeepAliveTimeout == 120 &&
                 d.GatewayID == "ExistingGatewayID" &&
-                d.AlreadyLoggedInOnce == true  // Preserved because DevAddr not in reported properties
-            )))
+                d.AlreadyLoggedInOnce)))
                 .Verifiable();
 
             _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>()))

@@ -29,7 +29,7 @@
                     <MudCardContent>
                         <div class="d-flex justify-center mb-4">
                             <MudAvatar Style="height:100px; width: auto; border-radius: 0; background: transparent">
-                                <MudImage Src="@edgeModel?.Image?.ToString()" id="@(nameof(IoTEdgeDevice.Image))" />
+                                <MudImage Src="@edgeModel?.ImageUri?.ToString()" id="@(nameof(IoTEdgeDevice.Image))" />
                             </MudAvatar>
                         </div>
                     </MudCardContent>
@@ -350,7 +350,7 @@
                 DeviceId = this.EdgeDevice.DeviceId,
                 DeviceName = this.EdgeDevice.DeviceName,
                 ModelId = edgeModel?.ModelId!,
-                Image = edgeModel?.Image!,
+                Image = edgeModel?.ImageUri!,
                 Tags = this.EdgeDevice.Tags,
                 IsEnabled = this.EdgeDevice.IsEnabled
             };

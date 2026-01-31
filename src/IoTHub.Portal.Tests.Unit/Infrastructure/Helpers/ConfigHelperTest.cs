@@ -175,7 +175,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                 {
                     new EdgeModelSystemModule("edgeAgent")
                     {
-                        Image = "image",
+                        ImageUri = "image",
                         ContainerCreateOptions = Guid.NewGuid().ToString(),
                         StartupOrder = 100,
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
@@ -185,7 +185,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
                     },
                     new EdgeModelSystemModule("edgeHub")
                     {
-                        Image = "image",
+                        ImageUri = "image",
                         ContainerCreateOptions = Guid.NewGuid().ToString(),
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {

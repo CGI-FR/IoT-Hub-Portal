@@ -4,10 +4,10 @@
 
 namespace IoTHub.Portal.Domain.Entities
 {
-    using IoTHub.Portal.Domain.Base;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
+    using IoTHub.Portal.Domain.Base;
 
     public class Principal : EntityBase
     {

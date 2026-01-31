@@ -3,21 +3,19 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using IoTHub.Portal.Application.Services;
     using IoTHub.Portal.Server.Controllers.V10;
     using IoTHub.Portal.Shared.Models.v10;
-    using Microsoft.Extensions.Logging;
-    using Moq;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using NUnit.Framework;
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Mvc;
-    using IoTHub.Portal.Models.v10;
-    using IoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Mvc.Routing;
-    using System.Linq;
-    using System;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using NUnit.Framework;
 
     [TestFixture]
     public class RolesControllerTests

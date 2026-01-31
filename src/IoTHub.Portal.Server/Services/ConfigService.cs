@@ -122,7 +122,7 @@ namespace IoTHub.Portal.Server.Services
                     {
                         moduleList.Add(new EdgeModelSystemModule(newModule.ModuleName)
                         {
-                            Image = newModule.Image,
+                            ImageUri = newModule.Image,
                             EnvironmentVariables = newModule.EnvironmentVariables,
                             ContainerCreateOptions = newModule.ContainerCreateOptions,
                             StartupOrder = newModule.StartupOrder

@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Application.Services
 {
+    using System.Security.Claims;
+    using System.Threading.Tasks;
     using AutoMapper;
     using IoTHub.Portal.Crosscutting;
     using IoTHub.Portal.Domain;
@@ -11,8 +13,6 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
 
     public class UserService : IUserManagementService
     {

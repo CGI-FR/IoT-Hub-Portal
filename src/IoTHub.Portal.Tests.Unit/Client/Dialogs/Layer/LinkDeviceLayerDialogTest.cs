@@ -236,7 +236,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
 
             // Find the checkbox button (should be checked with success color initially)
             var checkboxButton = cut.Find("table tbody tr td:last-child button");
-            
+
             // Verify initial state - should be checked (CheckBox icon, success color)
             cut.WaitForAssertion(() => checkboxButton.OuterHtml.Should().Contain("CheckBox"));
 
@@ -251,7 +251,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             {
                 var updatedButton = cut.Find("table tbody tr td:last-child button");
                 // After unselecting, the button should show CheckBoxOutlineBlank icon (unchecked state)
-                updatedButton.OuterHtml.Should().Contain("CheckBoxOutlineBlank");
+                _ = updatedButton.OuterHtml.Should().Contain("CheckBoxOutlineBlank");
             });
         }
 

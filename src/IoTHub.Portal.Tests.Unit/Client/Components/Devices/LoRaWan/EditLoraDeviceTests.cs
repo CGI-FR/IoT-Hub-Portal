@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
 {
-    using Shared.Security;
-
     [TestFixture]
     public class EditLoraDeviceTests : BlazorUnitTest
     {
