@@ -109,6 +109,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>()
                 .AddTransient<IDeviceTagService, DeviceTagService>()
                 .AddTransient<ILayerService, LayerService>()
+                .AddTransient<IMenuEntryService, MenuEntryService>()
                 .AddTransient<IScheduleService, ScheduleService>()
                 .AddTransient<IPlanningService, PlanningService>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
