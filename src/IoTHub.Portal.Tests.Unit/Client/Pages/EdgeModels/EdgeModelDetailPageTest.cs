@@ -360,14 +360,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             cut.WaitForAssertion(() => Assert.IsFalse(string.IsNullOrEmpty(cut.Find($"#model-image").Attributes["src"]?.Value)));
 
-            var avatar = cut.WaitForElement($"#{nameof(IoTEdgeModel.ImageUri)}");
+            var avatar = cut.WaitForElement("#model-image");
             Assert.IsNotNull(avatar);
 
             var deleteAvatarBtn = cut.WaitForElement("#deleteAvatarButton");
             deleteAvatarBtn.Click();
 
             // Assert
-            cut.WaitForAssertion(() => Assert.IsTrue(string.IsNullOrEmpty(cut.Find($"#{nameof(IoTEdgeModel.ImageUri)}").Attributes["src"]?.Value)));
+            cut.WaitForAssertion(() => Assert.IsTrue(string.IsNullOrEmpty(cut.Find("#model-image").Attributes["src"]?.Value)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 

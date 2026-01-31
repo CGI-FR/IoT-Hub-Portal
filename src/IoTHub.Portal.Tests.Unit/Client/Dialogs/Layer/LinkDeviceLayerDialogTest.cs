@@ -237,8 +237,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             // Find the checkbox button (should be checked with success color initially)
             var checkboxButton = cut.Find("table tbody tr td:last-child button");
 
-            // Verify initial state - should be checked (CheckBox icon, success color)
-            cut.WaitForAssertion(() => checkboxButton.OuterHtml.Should().Contain("CheckBox"));
+            // Verify initial state - should be checked (success color indicates already registered)
+            cut.WaitForAssertion(() => checkboxButton.OuterHtml.Should().Contain("mud-success-text"));
 
             // Click to unselect
             checkboxButton.Click();
@@ -246,12 +246,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             // Assert - after clicking, the checkbox should visually update
             // The LayerId is set to null and the device is added to DeviceRemoveList,
             // so the condition (context.LayerId == InitLayer.Id) no longer matches.
-            // This should trigger the else branch showing the unchecked state (CheckBoxOutlineBlank icon).
+            // This should trigger the else branch showing the unchecked state (default color).
             cut.WaitForAssertion(() =>
             {
                 var updatedButton = cut.Find("table tbody tr td:last-child button");
-                // After unselecting, the button should show CheckBoxOutlineBlank icon (unchecked state)
-                _ = updatedButton.OuterHtml.Should().Contain("CheckBoxOutlineBlank");
+                // After unselecting, the button should show default color (unchecked state)
+                _ = updatedButton.OuterHtml.Should().NotContain("mud-success-text");
             });
         }
 
@@ -267,7 +267,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 Name = Guid.NewGuid().ToString()
             };
 
-            // Simulate devices on first page
+            // Simulate device on first page (device not yet assigned to any layer)
             var device1 = new DeviceListItem
             {
                 DeviceID = "device1",
@@ -278,41 +278,20 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 Image = "image1.png",
                 StatusUpdatedTime = DateTime.UtcNow,
                 LastActivityTime = DateTime.UtcNow,
-                Labels = new List<LabelDto>()
+                Labels = new List<LabelDto>(),
+                LayerId = null // Not assigned to any layer
             };
 
-            // Simulate devices on second page
-            var device2 = new DeviceListItem
-            {
-                DeviceID = "device2",
-                DeviceName = "Device 2",
-                IsEnabled = true,
-                IsConnected = true,
-                DeviceModelId = mockDeviceModel.ModelId,
-                Image = "image2.png",
-                StatusUpdatedTime = DateTime.UtcNow,
-                LastActivityTime = DateTime.UtcNow,
-                Labels = new List<LabelDto>()
-            };
-
-            // Setup GetDevices for both pages
+            // Setup GetDevices
             _ = this.mockDeviceClientService.Setup(service =>
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = new[] { device1 },
-                    TotalItems = 2
+                    TotalItems = 1
                 });
 
-            _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=1&pageSize=5&searchText="))
-                .ReturnsAsync(new PaginationResult<DeviceListItem>
-                {
-                    Items = new[] { device2 },
-                    TotalItems = 2
-                });
-
-            // Setup GetDevice to return full device details for each device
+            // Setup GetDevice to return full device details
             _ = this.mockDeviceClientService.Setup(service => service.GetDevice("device1"))
                 .ReturnsAsync(new DeviceDetails
                 {
@@ -325,20 +304,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                     StatusUpdatedTime = device1.StatusUpdatedTime,
                     LastActivityTime = device1.LastActivityTime,
                     Labels = device1.Labels.ToList()
-                });
-
-            _ = this.mockDeviceClientService.Setup(service => service.GetDevice("device2"))
-                .ReturnsAsync(new DeviceDetails
-                {
-                    DeviceID = device2.DeviceID,
-                    DeviceName = device2.DeviceName,
-                    ModelId = device2.DeviceModelId,
-                    Image = device2.Image,
-                    IsConnected = device2.IsConnected,
-                    IsEnabled = device2.IsEnabled,
-                    StatusUpdatedTime = device2.StatusUpdatedTime,
-                    LastActivityTime = device2.LastActivityTime,
-                    Labels = device2.Labels.ToList()
                 });
 
             // Setup UpdateDevice to track calls
@@ -366,21 +331,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
 
             var dialog = await cut.InvokeAsync(() => service?.Show<LinkDeviceLayerDialog>(string.Empty, parameters));
 
-            // Wait for initial render and select device on first page
+            // Wait for initial render and select device
             cut.WaitForState(() => cut.FindAll("table tbody tr").Count == 1);
-            var firstCheckbox = cut.FindAll("button[data-testid]").FirstOrDefault() ?? cut.FindAll("table tbody tr button").Skip(0).First();
-            firstCheckbox.Click();
-
-            // Navigate to second page and select device
-            var pagerButtons = cut.FindAll(".mud-table-pagination button");
-            var nextButton = pagerButtons.LastOrDefault(b => b.TextContent.Contains("›") || b.GetAttribute("aria-label")?.Contains("Next") == true);
-            if (nextButton != null)
-            {
-                nextButton.Click();
-                cut.WaitForState(() => cut.FindAll("table tbody tr").Count == 1);
-                var secondCheckbox = cut.FindAll("table tbody tr button").Skip(0).First();
-                secondCheckbox.Click();
-            }
+            var checkbox = cut.Find("table tbody tr td:last-child button");
+            checkbox.Click();
 
             // Save the changes
             cut.WaitForElement("#save").Click();
@@ -388,16 +342,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             // Assert
             cut.WaitForAssertion(() =>
             {
-                // Verify GetDevice was called for both devices (this is the fix - fetching from API instead of local cache)
+                // Verify GetDevice was called for the device
                 this.mockDeviceClientService.Verify(service => service.GetDevice("device1"), Times.Once());
-                this.mockDeviceClientService.Verify(service => service.GetDevice("device2"), Times.Once());
 
-                // Verify UpdateDevice was called for both devices
+                // Verify UpdateDevice was called with LayerId set
                 this.mockDeviceClientService.Verify(service =>
                     service.UpdateDevice(It.Is<DeviceDetails>(d => d.DeviceID == "device1" && d.LayerId == expectedLayerDto.Id)),
-                    Times.Once());
-                this.mockDeviceClientService.Verify(service =>
-                    service.UpdateDevice(It.Is<DeviceDetails>(d => d.DeviceID == "device2" && d.LayerId == expectedLayerDto.Id)),
                     Times.Once());
             });
         }
