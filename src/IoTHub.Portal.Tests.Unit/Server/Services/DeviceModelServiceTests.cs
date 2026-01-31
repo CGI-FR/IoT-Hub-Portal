@@ -467,6 +467,28 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task DeleteDeviceModelShouldThrowResourceAlreadyExistsExceptionWhenDeviceModelIsBuiltin()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetByIdAsync(deviceModelDto.ModelId, d => d.Labels))
+                .ReturnsAsync(new DeviceModel
+                {
+                    IsBuiltin = true,
+                    Labels = new List<Label>()
+                });
+
+            // Act
+            var act = () => this.deviceModelService.DeleteDeviceModel(deviceModelDto.ModelId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceAlreadyExistsException>()
+                .WithMessage($"The device model {deviceModelDto.ModelId} is a built-in model and cannot be deleted");
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetDeviceModelAvatarShouldReturnDeviceModelAvatar()
         {
             // Arrange

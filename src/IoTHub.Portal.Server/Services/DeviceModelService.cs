@@ -127,6 +127,12 @@ namespace IoTHub.Portal.Server.Services
                 return;
             }
 
+            if (deviceModelEntity.IsBuiltin)
+            {
+                throw new ResourceAlreadyExistsException(
+                    $"The device model {deviceModelId} is a built-in model and cannot be deleted");
+            }
+
             var devices = await this.externalDeviceService.GetAllDevice();
 
             if (devices.Items.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == deviceModelId))
