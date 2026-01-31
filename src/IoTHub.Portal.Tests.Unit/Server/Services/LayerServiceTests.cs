@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
     using DeviceEntity = Portal.Domain.Entities.Device;
+    using IncompatibleDeviceModelException = Portal.Domain.Exceptions.IncompatibleDeviceModelException;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
@@ -171,7 +172,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task UpdateLayer_WhenPlanningHasDeviceModelIdAndLayerHasIncompatibleDevices_ShouldThrowInvalidOperationException()
+        public async Task UpdateLayer_WhenPlanningHasDeviceModelIdAndLayerHasIncompatibleDevices_ShouldThrowIncompatibleDeviceModelException()
         {
             // Arrange
             var deviceModelId1 = Fixture.Create<string>();
@@ -198,17 +199,17 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockPlanningRepository.Setup(repository => repository.GetByIdAsync(planning.Id))
                 .ReturnsAsync(planning);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<DeviceEntity, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<DeviceEntity, object>>[]>()))
                 .ReturnsAsync(new List<DeviceEntity> { device });
 
-            _ = this.mockLayerRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+            _ = this.mockLayerRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<Layer, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<Layer, object>>[]>()))
                 .ReturnsAsync(new List<Layer>());
 
             // Act
             var act = () => this.layerService.UpdateLayer(layerDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InvalidOperationException>()
+            _ = await act.Should().ThrowAsync<IncompatibleDeviceModelException>()
                 .WithMessage($"Cannot link layer '{layer.Name}' to planning. The layer contains 1 device(s) with a different device model than required by the planning.");
 
             MockRepository.VerifyAll();
@@ -236,10 +237,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockPlanningRepository.Setup(repository => repository.GetByIdAsync(planning.Id))
                 .ReturnsAsync(planning);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<DeviceEntity, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<DeviceEntity, object>>[]>()))
                 .ReturnsAsync(new List<DeviceEntity>());
 
-            _ = this.mockLayerRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+            _ = this.mockLayerRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<Layer, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<Layer, object>>[]>()))
                 .ReturnsAsync(new List<Layer>());
 
             this.mockLayerRepository.Setup(repository => repository.Update(It.IsAny<Layer>()))
@@ -282,10 +283,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockPlanningRepository.Setup(repository => repository.GetByIdAsync(planning.Id))
                 .ReturnsAsync(planning);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<DeviceEntity, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<DeviceEntity, object>>[]>()))
                 .ReturnsAsync(new List<DeviceEntity> { device });
 
-            _ = this.mockLayerRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+            _ = this.mockLayerRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<Layer, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<Layer, object>>[]>()))
                 .ReturnsAsync(new List<Layer>());
 
             this.mockLayerRepository.Setup(repository => repository.Update(It.IsAny<Layer>()))
@@ -331,6 +332,34 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             await this.layerService.UpdateLayer(layerDto);
 
             // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateLayer_WhenPlanningDoesNotExist_ShouldThrowResourceNotFoundException()
+        {
+            // Arrange
+            var planningId = Fixture.Create<string>();
+
+            var layer = Fixture.Build<Layer>()
+                .With(l => l.Planning, planningId)
+                .Create();
+
+            var layerDto = Mapper.Map<LayerDto>(layer);
+
+            _ = this.mockLayerRepository.Setup(repository => repository.GetByIdAsync(layer.Id))
+                .ReturnsAsync(layer);
+
+            _ = this.mockPlanningRepository.Setup(repository => repository.GetByIdAsync(planningId))
+                .ReturnsAsync((Planning)null);
+
+            // Act
+            var act = () => this.layerService.UpdateLayer(layerDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceNotFoundException>()
+                .WithMessage($"The planning with id {planningId} doesn't exist");
+
             MockRepository.VerifyAll();
         }
     }
