@@ -40,6 +40,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             var searchedDevices = Fixture.CreateMany<TableData<DeviceListItem>>(3).ToList();
             var expectedLayerDto = Fixture.Create<LayerDto>();
 
+            // Setup GetPlanning mock to handle any planning ID (in case the fixture creates one)
+            _ = this.mockPlanningClientService.Setup(service => service.GetPlanning(It.IsAny<string>()))
+                .ReturnsAsync(new PlanningDto { DeviceModelId = null });
+
             _ = this.mockDeviceClientService.Setup(service =>
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
@@ -84,6 +88,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 Name = Guid.NewGuid().ToString()
             };
 
+            // Setup GetPlanning mock to handle any planning ID (in case the fixture creates one)
+            _ = this.mockPlanningClientService.Setup(service => service.GetPlanning(It.IsAny<string>()))
+                .ReturnsAsync(new PlanningDto { DeviceModelId = null });
 
             _ = this.mockDeviceClientService.Setup(service =>
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
@@ -140,6 +147,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 Name = Guid.NewGuid().ToString()
             };
 
+            // Setup GetPlanning mock to handle any planning ID (in case the fixture creates one)
+            _ = this.mockPlanningClientService.Setup(service => service.GetPlanning(It.IsAny<string>()))
+                .ReturnsAsync(new PlanningDto { DeviceModelId = null });
 
             _ = this.mockDeviceClientService.Setup(service =>
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
@@ -269,6 +279,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString()
             };
+
+            // Setup GetPlanning mock to handle any planning ID (in case the fixture creates one)
+            _ = this.mockPlanningClientService.Setup(service => service.GetPlanning(It.IsAny<string>()))
+                .ReturnsAsync(new PlanningDto { DeviceModelId = null });
 
             // Simulate device on first page (device not yet assigned to any layer)
             var device1 = new DeviceListItem
