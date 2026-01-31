@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Server.Services
 {
+    using DeviceEntity = Portal.Domain.Entities.Device;
     using ResourceNotFoundException = Portal.Domain.Exceptions.ResourceNotFoundException;
 
     [TestFixture]
@@ -10,6 +11,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
     {
         private Mock<ILayerRepository> mockLayerRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
+        private Mock<IPlanningRepository> mockPlanningRepository;
+        private Mock<IDeviceRepository> mockDeviceRepository;
 
         private ILayerService layerService;
 
@@ -20,9 +23,13 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             this.mockLayerRepository = MockRepository.Create<ILayerRepository>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
+            this.mockPlanningRepository = MockRepository.Create<IPlanningRepository>();
+            this.mockDeviceRepository = MockRepository.Create<IDeviceRepository>();
 
             _ = ServiceCollection.AddSingleton(this.mockLayerRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
+            _ = ServiceCollection.AddSingleton(this.mockPlanningRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
             _ = ServiceCollection.AddSingleton<ILayerService, LayerService>();
 
             Services = ServiceCollection.BuildServiceProvider();
@@ -160,6 +167,170 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var result = await this.layerService.GetLayers();
 
             _ = result.Count().Should().Be(expectedTotalLayersCount);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateLayer_WhenPlanningHasDeviceModelIdAndLayerHasIncompatibleDevices_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var deviceModelId1 = Fixture.Create<string>();
+            var deviceModelId2 = Fixture.Create<string>();
+
+            var planning = Fixture.Build<Planning>()
+                .With(p => p.DeviceModelId, deviceModelId1)
+                .Create();
+
+            var layer = Fixture.Build<Layer>()
+                .With(l => l.Planning, planning.Id)
+                .Create();
+
+            var layerDto = Mapper.Map<LayerDto>(layer);
+
+            var device = Fixture.Build<DeviceEntity>()
+                .With(d => d.LayerId, layer.Id)
+                .With(d => d.DeviceModelId, deviceModelId2)
+                .Create();
+
+            _ = this.mockLayerRepository.Setup(repository => repository.GetByIdAsync(layer.Id))
+                .ReturnsAsync(layer);
+
+            _ = this.mockPlanningRepository.Setup(repository => repository.GetByIdAsync(planning.Id))
+                .ReturnsAsync(planning);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<DeviceEntity> { device });
+
+            _ = this.mockLayerRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Layer>());
+
+            // Act
+            var act = () => this.layerService.UpdateLayer(layerDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InvalidOperationException>()
+                .WithMessage($"Cannot link layer '{layer.Name}' to planning. The layer contains 1 device(s) with a different device model than required by the planning.");
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateLayer_WhenPlanningHasDeviceModelIdAndLayerHasNoDevices_ShouldSucceed()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+
+            var planning = Fixture.Build<Planning>()
+                .With(p => p.DeviceModelId, deviceModelId)
+                .Create();
+
+            var layer = Fixture.Build<Layer>()
+                .With(l => l.Planning, planning.Id)
+                .Create();
+
+            var layerDto = Mapper.Map<LayerDto>(layer);
+
+            _ = this.mockLayerRepository.Setup(repository => repository.GetByIdAsync(layer.Id))
+                .ReturnsAsync(layer);
+
+            _ = this.mockPlanningRepository.Setup(repository => repository.GetByIdAsync(planning.Id))
+                .ReturnsAsync(planning);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<DeviceEntity>());
+
+            _ = this.mockLayerRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Layer>());
+
+            this.mockLayerRepository.Setup(repository => repository.Update(It.IsAny<Layer>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.layerService.UpdateLayer(layerDto);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateLayer_WhenPlanningHasDeviceModelIdAndLayerHasCompatibleDevices_ShouldSucceed()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+
+            var planning = Fixture.Build<Planning>()
+                .With(p => p.DeviceModelId, deviceModelId)
+                .Create();
+
+            var layer = Fixture.Build<Layer>()
+                .With(l => l.Planning, planning.Id)
+                .Create();
+
+            var layerDto = Mapper.Map<LayerDto>(layer);
+
+            var device = Fixture.Build<DeviceEntity>()
+                .With(d => d.LayerId, layer.Id)
+                .With(d => d.DeviceModelId, deviceModelId)
+                .Create();
+
+            _ = this.mockLayerRepository.Setup(repository => repository.GetByIdAsync(layer.Id))
+                .ReturnsAsync(layer);
+
+            _ = this.mockPlanningRepository.Setup(repository => repository.GetByIdAsync(planning.Id))
+                .ReturnsAsync(planning);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<DeviceEntity> { device });
+
+            _ = this.mockLayerRepository.Setup(repository => repository.GetAllAsync(null, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Layer>());
+
+            this.mockLayerRepository.Setup(repository => repository.Update(It.IsAny<Layer>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.layerService.UpdateLayer(layerDto);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateLayer_WhenPlanningHasNoDeviceModelId_ShouldSucceed()
+        {
+            // Arrange
+            var planning = Fixture.Build<Planning>()
+                .Without(p => p.DeviceModelId)
+                .Create();
+
+            var layer = Fixture.Build<Layer>()
+                .With(l => l.Planning, planning.Id)
+                .Create();
+
+            var layerDto = Mapper.Map<LayerDto>(layer);
+
+            _ = this.mockLayerRepository.Setup(repository => repository.GetByIdAsync(layer.Id))
+                .ReturnsAsync(layer);
+
+            _ = this.mockPlanningRepository.Setup(repository => repository.GetByIdAsync(planning.Id))
+                .ReturnsAsync(planning);
+
+            this.mockLayerRepository.Setup(repository => repository.Update(It.IsAny<Layer>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.layerService.UpdateLayer(layerDto);
+
+            // Assert
             MockRepository.VerifyAll();
         }
     }
