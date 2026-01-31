@@ -73,6 +73,7 @@ _ = builder.Services.AddScoped<IDeviceClientService, DeviceClientService>();
 _ = builder.Services.AddScoped<ILoRaWanDeviceModelsClientService, LoRaWanDeviceModelsClientService>();
 _ = builder.Services.AddScoped<ILoRaWanDeviceClientService, LoRaWanDeviceClientService>();
 _ = builder.Services.AddScoped<ILayerClientService, LayerClientService>();
+_ = builder.Services.AddScoped<IMenuEntryClientService, MenuEntryClientService>();
 _ = builder.Services.AddScoped<IPlanningClientService, PlanningClientService>();
 _ = builder.Services.AddScoped<IScheduleClientService, ScheduleClientService>();
 _ = builder.Services.AddScoped<IEdgeDeviceConfigurationsClientService, EdgeDeviceConfigurationsClientService>();
