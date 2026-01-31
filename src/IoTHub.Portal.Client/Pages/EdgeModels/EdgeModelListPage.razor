@@ -61,7 +61,7 @@
                             <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                         </MudTooltip>
                     </MudTd>
-                    <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudTd DataLabel="Delete" Style="text-align: center" @onclick:stopPropagation="true">
                         <MudTooltip Text="Delete device model">
                             <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" OnClick="@(async () => await DeleteDeviceModel(context))" Size="Size.Medium" id="deleteButton"></MudIconButton>
                         </MudTooltip>
