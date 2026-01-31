@@ -17,6 +17,11 @@ jobs:
   validate_bicep_templates:
     name: Build and Validate Bicep Templates
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      id-token: write  # Required for OIDC authentication
+      contents: read
+      pull-requests: write  # Required for PR labeling
     
     steps:
       - name: Apply arm-templates label on PR
@@ -31,10 +36,123 @@ jobs:
               labels: ['arm-templates']
             })
 
-      - uses: actions/checkout@v4.2.2
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
 
-      - name: Lint Bicep templates and Generate ARM template
-        working-directory: templates/azure
-        run: az bicep build --file azuredeploy.bicep --outfile azuredeploy.json 
+      # Azure authentication using OIDC (Workload Identity Federation)
+      - name: Azure Login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: false
+
+      # Verify Azure CLI is available and authenticated
+      - name: Verify Azure CLI Authentication
+        run: |
+          echo "Checking Azure CLI version..."
+          az version
+          echo ""
+          echo "Verifying authentication..."
+          az account show
+          echo ""
+          echo "Azure CLI is ready for deployment validation"
+      
+      # Create a temporary resource group for validation
+      - name: Create Validation Resource Group
+        run: |
+          VALIDATION_RG="rg-bicep-validation-${{ github.run_id }}"
+          echo "Creating validation resource group: ${VALIDATION_RG}"
+          az group create --name "${VALIDATION_RG}" --location eastus
+          echo "VALIDATION_RG=${VALIDATION_RG}" >> $GITHUB_ENV
+
+      # Validate main deployment template: azuredeploy.bicep
+      - name: Validate azuredeploy.bicep
+        id: validate-main
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ env.VALIDATION_RG }}
+          template: ./templates/azure/azuredeploy.bicep
+          parameters: ./templates/azure/tests/azuredeploy.parameters.test.json
+          deploymentMode: Validate
+          failOnStdErr: false
+
+      # Validate portal with LoRaWAN and starter kit template
+      - name: Validate portal_with_lorawan_and_starter_kit.bicep
+        id: validate-lorawan-full
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ env.VALIDATION_RG }}
+          template: ./templates/azure/portal_with_lorawan_and_starter_kit.bicep
+          parameters: ./templates/azure/tests/azuredeploy.parameters.test.json
+          deploymentMode: Validate
+          failOnStdErr: false
+
+      # Validate portal with LoRaWAN template
+      - name: Validate portal_with_lorawan.bicep
+        id: validate-lorawan
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ env.VALIDATION_RG }}
+          template: ./templates/azure/portal_with_lorawan.bicep
+          parameters: ./templates/azure/tests/azuredeploy.parameters.test.json
+          deploymentMode: Validate
+          failOnStdErr: false
+
+      # Validate portal without LoRaWAN template
+      - name: Validate portal_without_lorawan.bicep
+        id: validate-no-lorawan
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ env.VALIDATION_RG }}
+          template: ./templates/azure/portal_without_lorawan.bicep
+          parameters: ./templates/azure/tests/azuredeploy.parameters.test.json
+          deploymentMode: Validate
+          failOnStdErr: false
+      
+      # Clean up validation resource group
+      - name: Clean up Validation Resource Group
+        if: always()
+        run: |
+          if [ -n "${{ env.VALIDATION_RG }}" ]; then
+            echo "Deleting validation resource group: ${{ env.VALIDATION_RG }}"
+            az group delete --name "${{ env.VALIDATION_RG }}" --yes --no-wait || echo "Failed to delete resource group (may not exist)"
+          fi
+
+      # Report validation status
+      - name: Validation Status Check
+        if: always()
+        run: |
+          echo "==================================================="
+          echo "Bicep Template Validation Results"
+          echo "==================================================="
+          echo ""
+          echo "✅ azuredeploy.bicep: ${{ steps.validate-main.outcome }}"
+          echo "✅ portal_with_lorawan_and_starter_kit.bicep: ${{ steps.validate-lorawan-full.outcome }}"
+          echo "✅ portal_with_lorawan.bicep: ${{ steps.validate-lorawan.outcome }}"
+          echo "✅ portal_without_lorawan.bicep: ${{ steps.validate-no-lorawan.outcome }}"
+          echo ""
+          
+          # Check if any validation failed
+          if [ "${{ steps.validate-main.outcome }}" != "success" ] || \
+             [ "${{ steps.validate-lorawan-full.outcome }}" != "success" ] || \
+             [ "${{ steps.validate-lorawan.outcome }}" != "success" ] || \
+             [ "${{ steps.validate-no-lorawan.outcome }}" != "success" ]; then
+            echo "❌ One or more validations failed"
+            echo "==================================================="
+            exit 1
+          fi
+          
+          echo "✅ All validations passed successfully"
+          echo "===================================================" 
