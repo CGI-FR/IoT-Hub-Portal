@@ -140,7 +140,15 @@ namespace IoTHub.Portal.Shared.Security
         CreateOrUpdateDeviceTag,
         DeleteDeviceTagByName,
         GetOIDCSettings,
-        GetPortalSettings
+        GetPortalSettings,
+
+        // Menu Entry Management
+        GetAllMenuEntries,
+        GetMenuEntry,
+        CreateMenuEntry,
+        UpdateMenuEntry,
+        DeleteMenuEntry,
+        UpdateMenuEntryOrder
     }
 }
 

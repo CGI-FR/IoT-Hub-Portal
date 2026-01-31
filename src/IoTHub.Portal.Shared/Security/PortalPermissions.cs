@@ -29,6 +29,8 @@ namespace IoTHub.Portal.Shared.Security
         IdeaWrite,
         LayerRead,
         LayerWrite,
+        MenuEntryRead,
+        MenuEntryWrite,
         ModelRead,
         ModelWrite,
         PlanningRead,
