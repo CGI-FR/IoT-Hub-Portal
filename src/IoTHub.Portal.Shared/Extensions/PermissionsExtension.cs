@@ -35,6 +35,8 @@ namespace IoTHub.Portal.Shared.Extensions
                 PortalPermissions.IdeaWrite => "idea:write",
                 PortalPermissions.LayerRead => "layer:read",
                 PortalPermissions.LayerWrite => "layer:write",
+                PortalPermissions.MenuEntryRead => "menuentry:read",
+                PortalPermissions.MenuEntryWrite => "menuentry:write",
                 PortalPermissions.ModelRead => "model:read",
                 PortalPermissions.ModelWrite => "model:write",
                 PortalPermissions.PlanningRead => "planning:read",
