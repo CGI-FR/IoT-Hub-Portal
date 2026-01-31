@@ -292,7 +292,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                     NextToken = string.Empty
                 });
 
-                return coreDevices.CoreDevices.Where(c => c.Status == CoreDeviceStatus.HEALTHY).Count();
+                return coreDevices.CoreDevices.Count(c => c.Status == CoreDeviceStatus.HEALTHY);
             }
             catch (AmazonGreengrassV2Exception e)
             {
