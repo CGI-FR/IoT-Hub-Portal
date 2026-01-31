@@ -320,5 +320,34 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        [Test]
+        public void ClickOnDeleteShouldNotNavigateToDetailsPage()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = false } } });
+
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
+            _ = this.mockDialogService.Setup(c => c.Show<DeleteDeviceModelPage>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference.Object);
+
+            // Act
+            var cut = RenderComponent<DeviceModelListPage>();
+            var initialUri = Services.GetService<FakeNavigationManager>()?.Uri;
+
+            var deleteButton = cut.WaitForElement("#deleteButton");
+            deleteButton.Click();
+
+            // Assert - verify dialog was shown and no navigation occurred
+            cut.WaitForAssertion(() => this.mockDialogService.Verify(c => c.Show<DeleteDeviceModelPage>(It.IsAny<string>(), It.IsAny<DialogParameters>()), Times.Once));
+            cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().Be(initialUri));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }
