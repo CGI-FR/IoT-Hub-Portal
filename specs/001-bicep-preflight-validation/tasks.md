@@ -28,9 +28,9 @@ description: "Task list for Bicep Template Preflight Validation on CI feature"
 
 **Purpose**: Prepare Azure environment and credentials for validation
 
-- [ ] T001 Document Azure service principal requirements in docs/azure-validation-setup.md (OIDC-based authentication with Reader role + deployment validation permissions)
-- [ ] T002 Create GitHub repository secrets documentation in .github/workflows/README.md (AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID for OIDC)
-- [ ] T003 [P] Create test template directory structure at templates/azure/tests/ for validation test cases
+- [X] T001 Document Azure service principal requirements in docs/azure-validation-setup.md (OIDC-based authentication with Reader role + deployment validation permissions)
+- [X] T002 Create GitHub repository secrets documentation in .github/workflows/README.md (AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID for OIDC)
+- [X] T003 [P] Create test template directory structure at templates/azure/tests/ for validation test cases
 
 ---
 
@@ -40,9 +40,9 @@ description: "Task list for Bicep Template Preflight Validation on CI feature"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Create workflow helper script at .github/scripts/find-bicep-templates.sh to discover all Bicep templates in repository
-- [ ] T005 Create workflow helper script at .github/scripts/parse-validation-errors.sh to extract and format Azure validation error messages
-- [ ] T006 [P] Create test parameter file template at templates/azure/tests/azuredeploy.parameters.test.json with minimal valid parameters for validation
+- [X] T004 Create workflow helper script at .github/scripts/find-bicep-templates.sh to discover all Bicep templates in repository
+- [X] T005 Create workflow helper script at .github/scripts/parse-validation-errors.sh to extract and format Azure validation error messages
+- [X] T006 [P] Create test parameter file template at templates/azure/tests/azuredeploy.parameters.test.json with minimal valid parameters for validation
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -56,13 +56,13 @@ description: "Task list for Bicep Template Preflight Validation on CI feature"
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Add Azure OIDC authentication step to .github/workflows/bicep-lint.yml using azure/login@v2 action with federated credentials
-- [ ] T008 [US1] Add Azure CLI setup verification step in .github/workflows/bicep-lint.yml to ensure az cli is available and authenticated
-- [ ] T009 [US1] Update main validation job in .github/workflows/bicep-lint.yml to use azure/arm-deploy@v2 action for templates/azure/azuredeploy.bicep with deploymentMode: Validate
-- [ ] T010 [US1] Configure validation parameters in .github/workflows/bicep-lint.yml to pass test parameters file from templates/azure/tests/azuredeploy.parameters.test.json
-- [ ] T011 [US1] Add validation timeout configuration in .github/workflows/bicep-lint.yml with timeout-minutes: 10 for validation job
-- [ ] T012 [US1] Configure workflow to validate all main Bicep templates (portal_with_lorawan_and_starter_kit.bicep, portal_with_lorawan.bicep, portal_without_lorawan.bicep, azuredeploy.bicep) in templates/azure/
-- [ ] T013 [US1] Add status check reporting in .github/workflows/bicep-lint.yml to fail the workflow if any validation fails
+- [X] T007 [US1] Add Azure OIDC authentication step to .github/workflows/bicep-lint.yml using azure/login@v2 action with federated credentials
+- [X] T008 [US1] Add Azure CLI setup verification step in .github/workflows/bicep-lint.yml to ensure az cli is available and authenticated
+- [X] T009 [US1] Update main validation job in .github/workflows/bicep-lint.yml to use azure/arm-deploy@v2 action for templates/azure/azuredeploy.bicep with deploymentMode: Validate
+- [X] T010 [US1] Configure validation parameters in .github/workflows/bicep-lint.yml to pass test parameters file from templates/azure/tests/azuredeploy.parameters.test.json
+- [X] T011 [US1] Add validation timeout configuration in .github/workflows/bicep-lint.yml with timeout-minutes: 10 for validation job
+- [X] T012 [US1] Configure workflow to validate all main Bicep templates (portal_with_lorawan_and_starter_kit.bicep, portal_with_lorawan.bicep, portal_without_lorawan.bicep, azuredeploy.bicep) in templates/azure/
+- [X] T013 [US1] Add status check reporting in .github/workflows/bicep-lint.yml to fail the workflow if any validation fails
 - [ ] T014 [US1] Test validation with valid Bicep template change in a pull request to verify success path
 
 **Checkpoint**: At this point, User Story 1 should be fully functional - basic deployment validation working for all main templates

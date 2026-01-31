@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "uniqueSolutionPrefix": {
+      "value": "iottest001"
+    },
+    "pgsqlAdminLogin": {
+      "value": "testadmin"
+    },
+    "pgsqlAdminPassword": {
+      "value": "TestPassword123!"
+    },
+    "openIdAuthority": {
+      "value": "https://login.microsoftonline.com/test-tenant-id"
+    },
+    "openIdMetadataURL": {
+      "value": "https://login.microsoftonline.com/test-tenant-id/v2.0/.well-known/openid-configuration"
+    },
+    "clientId": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    "apiClientId": {
+      "value": "00000000-0000-0000-0000-000000000001"
+    },
+    "edgeGatewayName": {
+      "value": "TestLoRaWANGateway"
+    },
+    "deployDevice": {
+      "value": false
+    },
+    "resetPin": {
+      "value": 2
+    },
+    "region": {
+      "value": "EU863"
+    },
+    "spiSpeed": {
+      "value": 8
+    },
+    "spiDev": {
+      "value": 2
+    },
+    "isLoRaFeatureEnabled": {
+      "value": true
+    },
+    "ideasEnabled": {
+      "value": false
+    },
+    "ideasUrl": {
+      "value": ""
+    },
+    "ideasAuthenticationHeader": {
+      "value": "Ocp-Apim-Subscription-Key"
+    },
+    "ideasAuthenticationToken": {
+      "value": ""
+    }
+  }
+}
