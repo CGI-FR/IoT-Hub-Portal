@@ -4,6 +4,7 @@
 namespace IoTHub.Portal.Infrastructure.Services
 {
     using DeviceEntity = Domain.Entities.Device;
+    using IncompatibleDeviceModelException = Domain.Exceptions.IncompatibleDeviceModelException;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class LayerService : ILayerService
@@ -63,7 +64,12 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 var planning = await this.planningRepository.GetByIdAsync(layer.Planning);
 
-                if (planning != null && !string.IsNullOrEmpty(planning.DeviceModelId))
+                if (planning == null)
+                {
+                    throw new ResourceNotFoundException($"The planning with id {layer.Planning} doesn't exist");
+                }
+
+                if (!string.IsNullOrEmpty(planning.DeviceModelId))
                 {
                     var devicesInLayer = await GetDevicesInLayerHierarchy(layer.Id);
 
@@ -73,7 +79,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
                     if (incompatibleDevices.Any())
                     {
-                        throw new InvalidOperationException(
+                        throw new IncompatibleDeviceModelException(
                             $"Cannot link layer '{layer.Name}' to planning. " +
                             $"The layer contains {incompatibleDevices.Count} device(s) with a different device model than required by the planning.");
                     }
@@ -94,13 +100,12 @@ namespace IoTHub.Portal.Infrastructure.Services
         {
             var devices = new List<DeviceEntity>();
 
-            // Get devices directly in this layer
-            var allDevices = await this.deviceRepository.GetAllAsync();
-            devices.AddRange(allDevices.Where(d => d.LayerId == layerId));
+            // Get devices directly in this layer using filtered query
+            var devicesInCurrentLayer = await this.deviceRepository.GetAllAsync(d => d.LayerId == layerId);
+            devices.AddRange(devicesInCurrentLayer);
 
-            // Get child layers
-            var allLayers = await this.layerRepository.GetAllAsync();
-            var childLayers = allLayers.Where(l => l.Father == layerId).ToList();
+            // Get child layers using filtered query
+            var childLayers = await this.layerRepository.GetAllAsync(l => l.Father == layerId);
 
             // Recursively get devices from child layers
             foreach (var childLayer in childLayers)

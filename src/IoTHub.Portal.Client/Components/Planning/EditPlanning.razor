@@ -353,6 +353,11 @@
                 var selectedDeviceModel = DeviceModels.FirstOrDefault(dm => dm.Name == SelectedModel);
                 planning.DeviceModelId = selectedDeviceModel?.ModelId;
             }
+            else
+            {
+                // When the default model is selected, clear any previously set DeviceModelId
+                planning.DeviceModelId = null;
+            }
 
             // Save or update Planning
             if (mode == "New") await PlanningClientService.CreatePlanning(planning);
@@ -421,8 +426,8 @@
                     return;
                 }
             }
-            // If no device model is set yet but this is not a new planning, warn the user
-            else if (mode != "New" && SelectedModel != defaultDeviceModel)
+            // If no device model is set yet but a device model is selected, validate based on the selected model
+            else if (SelectedModel != defaultDeviceModel)
             {
                 // Get the device model ID for the selected model
                 var selectedDeviceModel = DeviceModels.FirstOrDefault(dm => dm.Name == SelectedModel);

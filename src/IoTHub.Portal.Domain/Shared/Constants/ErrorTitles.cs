@@ -16,5 +16,7 @@ namespace IoTHub.Portal.Domain.Shared.Constants
         public const string InvalidCloudProviderUndefined = "The CloudProvider configuration is undefined";
 
         public const string InvalidCloudProviderIncorrect = "The CloudProvider configuration is incorrect";
+
+        public const string IncompatibleDeviceModel = "Incompatible Device Model";
     }
 }

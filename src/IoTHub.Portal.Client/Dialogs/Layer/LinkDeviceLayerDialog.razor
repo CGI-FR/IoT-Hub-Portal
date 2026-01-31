@@ -132,11 +132,6 @@
             {
                 // Planning might not exist anymore, ignore the error
             }
-            catch (Exception ex)
-            {
-                // Unexpected error retrieving planning: report via shared error handler
-                Error?.ProcessError(ex);
-            }
         }
 
         var filter = new DeviceModelFilter
