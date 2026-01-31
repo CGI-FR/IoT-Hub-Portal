@@ -59,7 +59,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
 
             foreach (var item in expectedIoTEdgeDeviceModelListItems)
             {
-                item.Image = expectedImage;
+                item.ImageUri = expectedImage;
             }
 
             var edgeModelFilter = new EdgeModelFilter

@@ -360,14 +360,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             cut.WaitForAssertion(() => Assert.IsFalse(string.IsNullOrEmpty(cut.Find($"#model-image").Attributes["src"]?.Value)));
 
-            var avatar = cut.WaitForElement($"#{nameof(IoTEdgeModel.Image)}");
+            var avatar = cut.WaitForElement($"#{nameof(IoTEdgeModel.ImageUri)}");
             Assert.IsNotNull(avatar);
 
             var deleteAvatarBtn = cut.WaitForElement("#deleteAvatarButton");
             deleteAvatarBtn.Click();
 
             // Assert
-            cut.WaitForAssertion(() => Assert.IsTrue(string.IsNullOrEmpty(cut.Find($"#{nameof(IoTEdgeModel.Image)}").Attributes["src"]?.Value)));
+            cut.WaitForAssertion(() => Assert.IsTrue(string.IsNullOrEmpty(cut.Find($"#{nameof(IoTEdgeModel.ImageUri)}").Attributes["src"]?.Value)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -387,7 +387,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                         Version = "1.0.1"
                     }
                 },
-                Image = DeviceModelImageOptions.DefaultImage
+                ImageUri = DeviceModelImageOptions.DefaultImage
             };
 
             _ = this.mockEdgeModelService
@@ -396,7 +396,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             _ = this.mockEdgeModelService
                 .Setup(x => x.GetAvatar(It.Is<string>(c => c.Equals(this.mockEdgeModleId, StringComparison.Ordinal))))
-                .ReturnsAsync(edgeModel.Image);
+                .ReturnsAsync(edgeModel.ImageUri);
 
             return edgeModel;
         }

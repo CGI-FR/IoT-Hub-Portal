@@ -71,7 +71,7 @@ namespace IoTHub.Portal.Infrastructure.Services
                 .Select(model =>
                 {
                     var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);
-                    edgeDeviceModelListItem.Image = this.deviceModelImageManager.GetDeviceModelImageAsync(edgeDeviceModelListItem.ModelId).Result;
+                    edgeDeviceModelListItem.ImageUri = this.deviceModelImageManager.GetDeviceModelImageAsync(edgeDeviceModelListItem.ModelId).Result;
                     return edgeDeviceModelListItem;
                 })
                 .ToList();
@@ -178,7 +178,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var result = new IoTEdgeModel
             {
                 ModelId = edgeModelEntity.Id,
-                Image = await this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelEntity.Id),
+                ImageUri = await this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelEntity.Id),
                 Name = edgeModelEntity.Name,
                 Description = edgeModelEntity.Description,
                 EdgeModules = modules,
@@ -209,7 +209,7 @@ namespace IoTHub.Portal.Infrastructure.Services
             var result = new IoTEdgeModel
             {
                 ModelId = edgeModelEntity.Id,
-                Image = await this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelEntity.Id),
+                ImageUri = await this.deviceModelImageManager.GetDeviceModelImageAsync(edgeModelEntity.Id),
                 Name = edgeModelEntity.Name,
                 Description = edgeModelEntity.Description,
                 EdgeModules = modules,

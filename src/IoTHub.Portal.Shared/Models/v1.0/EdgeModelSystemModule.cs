@@ -7,7 +7,7 @@ namespace IoTHub.Portal.Shared.Models.v10
     {
         public string Name { get; set; }
 
-        public string Image { get; set; } = default!;
+        public string ImageUri { get; set; } = default!;
 
         public string ContainerCreateOptions { get; set; } = default!;
 

@@ -17,7 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var module = new EdgeModelSystemModule("edgeAgent")
             {
-                Image = Fixture.Create<string>(),
+                ImageUri = Fixture.Create<string>(),
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                 {
                     new IoTEdgeModuleEnvironmentVariable()
