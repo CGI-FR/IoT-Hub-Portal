@@ -15,6 +15,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
         private Mock<ILayerClientService> mockLayerClientService;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
         private Mock<ILoRaWanDeviceModelsClientService> mockLoRaWanDeviceModelsClientService;
+        private Mock<IDeviceClientService> mockDeviceClientService;
         private Mock<IDialogService> mockDialogService;
         private FakeNavigationManager mockNavigationManager;
 
@@ -27,6 +28,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             this.mockLayerClientService = MockRepository.Create<ILayerClientService>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
             this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
+            this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
             this.mockDialogService = MockRepository.Create<IDialogService>();
 
             _ = Services.AddSingleton(this.mockScheduleClientService.Object);
@@ -34,6 +36,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             _ = Services.AddSingleton(this.mockLayerClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
             _ = Services.AddSingleton(this.mockDialogService.Object);
 
@@ -676,6 +679,84 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             _ = tooltips[1].Instance.Text.Should().Be("Already registered");
             _ = tooltips[2].Instance.Text.Should().Be("Registered on other planning");
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void SavePlanning_SetsDeviceModelIdFromSelectedModel()
+        {
+            // Arrange
+            var expectedDeviceModel = new DeviceModelDto
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Name = "TestDeviceModel"
+            };
+
+            var expectedDeviceModelCommandDto = Fixture.CreateMany<DeviceModelCommandDto>(3).ToList();
+
+            var planning = new PlanningDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Test Planning",
+                Start = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"),
+                End = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd"),
+                DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday,
+                CommandId = expectedDeviceModelCommandDto[0].Id,
+                DeviceModelId = null
+            };
+
+            var firstSchedule = new ScheduleDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                Start = "00:00",
+                End = "23:59",
+                CommandId = expectedDeviceModelCommandDto[0].Id
+            };
+
+            var scheduleList = new List<ScheduleDto> { firstSchedule };
+
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
+                .ReturnsAsync(new List<LayerDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto> { expectedDeviceModel }
+                });
+
+            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModelCommands(It.IsAny<string>()))
+                .ReturnsAsync(expectedDeviceModelCommandDto);
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(It.IsAny<string>()))
+                .ReturnsAsync(new PaginationResult<DeviceListItem> { Items = new List<DeviceListItem>() });
+
+            _ = this.mockPlanningClientService.Setup(service => service.CreatePlanning(It.Is<PlanningDto>(p => p.DeviceModelId == expectedDeviceModel.ModelId)))
+                .ReturnsAsync(planning.Id);
+
+            _ = this.mockScheduleClientService.Setup(service => service.CreateSchedule(It.IsAny<ScheduleDto>()))
+                .ReturnsAsync(firstSchedule.Id);
+
+            // Act
+            var cut = RenderComponent<EditPlanning>(
+                ComponentParameter.CreateParameter("mode", "New"),
+                ComponentParameter.CreateParameter("planning", planning),
+                ComponentParameter.CreateParameter("scheduleList", scheduleList),
+                ComponentParameter.CreateParameter("initScheduleList", new List<ScheduleDto>()),
+                ComponentParameter.CreateParameter("SelectedModel", expectedDeviceModel.Name),
+                ComponentParameter.CreateParameter("CanWrite", true)
+            );
+
+            cut.WaitForState(() => cut.Instance.DeviceModels.Any());
+
+            var saveButton = cut.WaitForElement("#saveButton");
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                this.mockPlanningClientService.Verify(
+                    service => service.CreatePlanning(It.Is<PlanningDto>(p => p.DeviceModelId == expectedDeviceModel.ModelId)),
+                    Times.Once());
+            });
         }
     }
 }

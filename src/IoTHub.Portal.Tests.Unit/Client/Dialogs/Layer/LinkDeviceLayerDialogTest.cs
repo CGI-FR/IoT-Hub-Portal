@@ -14,6 +14,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
         private Mock<IDeviceClientService> mockDeviceClientService;
         private Mock<ILayerClientService> mockLayerClientService;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
+        private Mock<IPlanningClientService> mockPlanningClientService;
 
         private readonly string apiBaseUrl = "api/devices";
 
@@ -24,10 +25,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
             this.mockLayerClientService = MockRepository.Create<ILayerClientService>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockPlanningClientService = MockRepository.Create<IPlanningClientService>();
 
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockLayerClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockPlanningClientService.Object);
         }
 
         [Test]
@@ -349,6 +352,140 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 this.mockDeviceClientService.Verify(service =>
                     service.UpdateDevice(It.Is<DeviceDetails>(d => d.DeviceID == "device1" && d.LayerId == expectedLayerDto.Id)),
                     Times.Once());
+            });
+        }
+
+        [Test]
+        public async Task LinkDeviceLayerDialog_WithPlanningLinkedLayer_DisablesDeviceModelSelector()
+        {
+            // Arrange
+            var planningId = Guid.NewGuid().ToString();
+            var deviceModelId = Guid.NewGuid().ToString();
+
+            var expectedLayerDto = new LayerDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Test Layer",
+                Planning = planningId
+            };
+
+            var mockDeviceModel = new DeviceModelDto
+            {
+                ModelId = deviceModelId,
+                Name = "Test Model"
+            };
+
+            var mockPlanning = new PlanningDto
+            {
+                Id = planningId,
+                Name = "Test Planning",
+                DeviceModelId = deviceModelId
+            };
+
+            _ = this.mockPlanningClientService.Setup(service => service.GetPlanning(planningId))
+                .ReturnsAsync(mockPlanning);
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText=&modelId={deviceModelId}"))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = Array.Empty<DeviceListItem>(),
+                    TotalItems = 0
+                });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto> { mockDeviceModel }
+                });
+
+            // Act
+            var cut = RenderComponent<MudDialogProvider>();
+            var service = Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {"InitLayer", expectedLayerDto},
+                {"LayerList", new HashSet<LayerHash>()}
+            };
+
+            _ = await cut.InvokeAsync(() => service?.Show<LinkDeviceLayerDialog>(string.Empty, parameters));
+
+            // Assert - Device model selector should be disabled
+            cut.WaitForAssertion(() =>
+            {
+                var selectComponents = cut.FindComponents<MudSelect<IDeviceModel>>();
+                _ = selectComponents.Should().NotBeEmpty();
+                _ = selectComponents.First().Instance.Disabled.Should().BeTrue();
+            });
+
+            // Assert - Info alert should be displayed
+            cut.WaitForAssertion(() =>
+            {
+                var alerts = cut.FindComponents<MudAlert>();
+                _ = alerts.Should().NotBeEmpty();
+                var infoAlert = alerts.FirstOrDefault(a => a.Instance.Severity == Severity.Info);
+                _ = infoAlert.Should().NotBeNull();
+            });
+        }
+
+        [Test]
+        public async Task LinkDeviceLayerDialog_WithoutPlanningLinkedLayer_EnablesDeviceModelSelector()
+        {
+            // Arrange
+            var expectedLayerDto = new LayerDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Test Layer",
+                Planning = "None"  // No planning linked
+            };
+
+            var mockDeviceModel = new DeviceModelDto
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Name = "Test Model"
+            };
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = Array.Empty<DeviceListItem>(),
+                    TotalItems = 0
+                });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto> { mockDeviceModel }
+                });
+
+            // Act
+            var cut = RenderComponent<MudDialogProvider>();
+            var service = Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {"InitLayer", expectedLayerDto},
+                {"LayerList", new HashSet<LayerHash>()}
+            };
+
+            _ = await cut.InvokeAsync(() => service?.Show<LinkDeviceLayerDialog>(string.Empty, parameters));
+
+            // Assert - Device model selector should be enabled
+            cut.WaitForAssertion(() =>
+            {
+                var selectComponents = cut.FindComponents<MudSelect<IDeviceModel>>();
+                _ = selectComponents.Should().NotBeEmpty();
+                _ = selectComponents.First().Instance.Disabled.Should().BeFalse();
+            });
+
+            // Assert - Info alert should NOT be displayed
+            cut.WaitForAssertion(() =>
+            {
+                var alerts = cut.FindComponents<MudAlert>();
+                var infoAlert = alerts.FirstOrDefault(a => a.Instance.Severity == Severity.Info);
+                _ = infoAlert.Should().BeNull();
             });
         }
     }
