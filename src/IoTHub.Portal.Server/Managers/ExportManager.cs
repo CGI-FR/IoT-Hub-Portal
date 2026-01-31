@@ -109,7 +109,21 @@ namespace IoTHub.Portal.Server.Managers
                     nameof(LoRaDeviceDetails.AppSKey),
                     nameof(LoRaDeviceDetails.NwkSKey),
                     nameof(LoRaDeviceDetails.DevAddr),
-                    nameof(LoRaDeviceDetails.GatewayID)
+                    nameof(LoRaDeviceDetails.GatewayID),
+                    nameof(LoRaDeviceDetails.Downlink),
+                    nameof(LoRaDeviceDetails.ClassType),
+                    nameof(LoRaDeviceDetails.PreferredWindow),
+                    nameof(LoRaDeviceDetails.Deduplication),
+                    nameof(LoRaDeviceDetails.RX1DROffset),
+                    nameof(LoRaDeviceDetails.RX2DataRate),
+                    nameof(LoRaDeviceDetails.RXDelay),
+                    nameof(LoRaDeviceDetails.ABPRelaxMode),
+                    nameof(LoRaDeviceDetails.SensorDecoder),
+                    nameof(LoRaDeviceDetails.FCntUpStart),
+                    nameof(LoRaDeviceDetails.FCntDownStart),
+                    nameof(LoRaDeviceDetails.FCntResetCounter),
+                    nameof(LoRaDeviceDetails.Supports32BitFCnt),
+                    nameof(LoRaDeviceDetails.KeepAliveTimeout)
                 });
             }
 
