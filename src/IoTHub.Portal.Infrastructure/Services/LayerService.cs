@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
+    using DeviceEntity = Domain.Entities.Device;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class LayerService : ILayerService
@@ -10,14 +11,20 @@ namespace IoTHub.Portal.Infrastructure.Services
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly ILayerRepository layerRepository;
+        private readonly IPlanningRepository planningRepository;
+        private readonly IDeviceRepository deviceRepository;
 
         public LayerService(IMapper mapper,
             IUnitOfWork unitOfWork,
-            ILayerRepository layerRepository)
+            ILayerRepository layerRepository,
+            IPlanningRepository planningRepository,
+            IDeviceRepository deviceRepository)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.layerRepository = layerRepository;
+            this.planningRepository = planningRepository;
+            this.deviceRepository = deviceRepository;
         }
 
         /// <summary>
@@ -50,11 +57,59 @@ namespace IoTHub.Portal.Infrastructure.Services
                 throw new ResourceNotFoundException($"The layer with id {layer.Id} doesn't exist");
             }
 
+            // Validate that if the layer is being linked to a planning with a device model,
+            // all devices in the layer (and child layers) must have the same device model
+            if (!string.IsNullOrEmpty(layer.Planning) && layer.Planning != "None")
+            {
+                var planning = await this.planningRepository.GetByIdAsync(layer.Planning);
+
+                if (planning != null && !string.IsNullOrEmpty(planning.DeviceModelId))
+                {
+                    var devicesInLayer = await GetDevicesInLayerHierarchy(layer.Id);
+
+                    var incompatibleDevices = devicesInLayer
+                        .Where(d => d.DeviceModelId != planning.DeviceModelId)
+                        .ToList();
+
+                    if (incompatibleDevices.Any())
+                    {
+                        throw new InvalidOperationException(
+                            $"Cannot link layer '{layer.Name}' to planning. " +
+                            $"The layer contains {incompatibleDevices.Count} device(s) with a different device model than required by the planning.");
+                    }
+                }
+            }
+
             _ = this.mapper.Map(layer, layerEntity);
 
             this.layerRepository.Update(layerEntity);
 
             await this.unitOfWork.SaveAsync();
+        }
+
+        /// <summary>
+        /// Get all devices in a layer and its child layers recursively
+        /// </summary>
+        private async Task<List<DeviceEntity>> GetDevicesInLayerHierarchy(string layerId)
+        {
+            var devices = new List<DeviceEntity>();
+
+            // Get devices directly in this layer
+            var allDevices = await this.deviceRepository.GetAllAsync();
+            devices.AddRange(allDevices.Where(d => d.LayerId == layerId));
+
+            // Get child layers
+            var allLayers = await this.layerRepository.GetAllAsync();
+            var childLayers = allLayers.Where(l => l.Father == layerId).ToList();
+
+            // Recursively get devices from child layers
+            foreach (var childLayer in childLayers)
+            {
+                var childDevices = await GetDevicesInLayerHierarchy(childLayer.Id);
+                devices.AddRange(childDevices);
+            }
+
+            return devices;
         }
 
         /// <summary>
