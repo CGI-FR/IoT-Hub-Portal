@@ -9,19 +9,19 @@
       "value": "testadmin"
     },
     "pgsqlAdminPassword": {
-      "value": "TestPassword123!"
+      "value": "REPLACE_WITH_SECURE_PASSWORD_Min12Chars!"
     },
     "openIdAuthority": {
-      "value": "https://login.microsoftonline.com/test-tenant-id"
+      "value": "https://login.microsoftonline.com/REPLACE_WITH_TENANT_ID"
     },
     "openIdMetadataURL": {
-      "value": "https://login.microsoftonline.com/test-tenant-id/v2.0/.well-known/openid-configuration"
+      "value": "https://login.microsoftonline.com/REPLACE_WITH_TENANT_ID/v2.0/.well-known/openid-configuration"
     },
     "clientId": {
-      "value": "00000000-0000-0000-0000-000000000000"
+      "value": "REPLACE_WITH_CLIENT_ID"
     },
     "apiClientId": {
-      "value": "00000000-0000-0000-0000-000000000001"
+      "value": "REPLACE_WITH_API_CLIENT_ID"
     },
     "edgeGatewayName": {
       "value": "TestLoRaWANGateway"
