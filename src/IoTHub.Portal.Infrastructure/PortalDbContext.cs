@@ -23,6 +23,7 @@ namespace IoTHub.Portal.Infrastructure
         public DbSet<Concentrator> Concentrators { get; set; }
         public DbSet<LoRaDeviceTelemetry> LoRaDeviceTelemetry { get; set; }
         public DbSet<Label> Labels { get; set; }
+        public DbSet<MenuEntry> MenuEntries { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<AccessControl> AccessControls { get; set; }
