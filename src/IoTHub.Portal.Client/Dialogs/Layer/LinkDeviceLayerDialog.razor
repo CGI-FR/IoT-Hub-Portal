@@ -1,6 +1,7 @@
 ﻿@inject IDeviceClientService DeviceClientService
 @inject ILayerClientService LayerClientService
 @inject IDeviceModelsClientService DeviceModelsClientService
+@inject IPlanningClientService PlanningClientService
 
 <MudDialog MaxWidth="800px" MaxHeight="600px">
     <DialogContent>
@@ -14,7 +15,7 @@
                 @if (!IsLoading)
                 {
                     <div style="display: flex; align-items: center;">
-                        <MudSelect @bind-Value="@SelectedModel" Label="Device Model" Margin="Margin.Dense" Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="@SelectedModel" Label="Device Model" Margin="Margin.Dense" Variant="Variant.Outlined" Disabled="@(!string.IsNullOrEmpty(PlanningDeviceModelId))">
                             @foreach (IDeviceModel model in DeviceModels)
                             {
                                 <MudSelectItem Value="@(model)">@model.Name</MudSelectItem>
@@ -22,6 +23,10 @@
                         </MudSelect>
                         <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Search" id="saveButton">Search</MudButton>
                     </div>
+                    @if (!string.IsNullOrEmpty(PlanningDeviceModelId))
+                    {
+                        <MudAlert Severity="Severity.Info" Dense="true" Class="my-2">This layer is linked to a planning that only accepts devices of the selected device model.</MudAlert>
+                    }
                 }
                 <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="_table" Loading="@IsLoading" RowStyle="cursor: pointer;">
                     <ColGroup>
@@ -102,6 +107,7 @@
     public IDeviceModel SelectedModel = new DeviceModelDto();
     public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
     public bool ModelIdLoad;
+    private string? PlanningDeviceModelId;
 
     public List<string> DeviceList { get; init; } = new();
     public List<string> DeviceRemoveList { get; init; } = new();
@@ -113,6 +119,21 @@
     protected override async Task OnInitializedAsync()
     {
         LayerName = InitLayer.Name;
+        
+        // Check if this layer is linked to a planning and get the planning's device model
+        if (!string.IsNullOrEmpty(InitLayer.Planning) && InitLayer.Planning != "None")
+        {
+            try
+            {
+                var planning = await PlanningClientService.GetPlanning(InitLayer.Planning);
+                PlanningDeviceModelId = planning.DeviceModelId;
+            }
+            catch
+            {
+                // Planning might not exist anymore, ignore the error
+            }
+        }
+
         var filter = new DeviceModelFilter
             {
                 SearchText = "",
@@ -126,7 +147,20 @@
 
         DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
 
-        if (DeviceModels.Count() != 0) SelectedModel = DeviceModels.First();
+        // If the layer is linked to a planning with a specific device model, filter and auto-select that model
+        if (!string.IsNullOrEmpty(PlanningDeviceModelId))
+        {
+            var planningDeviceModel = DeviceModels.FirstOrDefault(dm => dm.ModelId == PlanningDeviceModelId);
+            if (planningDeviceModel != null)
+            {
+                SelectedModel = planningDeviceModel;
+                ModelIdLoad = true; // Auto-filter by this model
+            }
+        }
+        else if (DeviceModels.Count() != 0)
+        {
+            SelectedModel = DeviceModels.First();
+        }
 
         IsLoading = false;
     }
