@@ -176,6 +176,86 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
         }
 
         [Test]
+        public async Task LinkDeviceLayerDialog_UpdateChecked_UnselectingAlreadyRegisteredDevice_ShouldUpdateCheckboxState()
+        {
+            // Arrange
+            var expectedLayerDto = new LayerDto
+            {
+                Id = "layer-123",
+                Name = "Test Layer"
+            };
+
+            var mockDeviceModel = new DeviceModelDto
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Name = "Test Model"
+            };
+
+            var alreadyRegisteredDevice = new DeviceListItem
+            {
+                DeviceID = "device-already-registered",
+                DeviceName = "Already Registered Device",
+                IsEnabled = true,
+                IsConnected = true,
+                DeviceModelId = mockDeviceModel.ModelId,
+                Image = "image.png",
+                StatusUpdatedTime = DateTime.UtcNow,
+                LastActivityTime = DateTime.UtcNow,
+                Labels = new List<LabelDto>(),
+                LayerId = expectedLayerDto.Id  // Already registered to this layer
+            };
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new[] { alreadyRegisteredDevice },
+                    TotalItems = 1
+                });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto> { mockDeviceModel }
+                });
+
+            // Act
+            var cut = RenderComponent<MudDialogProvider>();
+            var service = Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {"InitLayer", expectedLayerDto},
+                {"LayerList", new HashSet<LayerHash>()}
+            };
+
+            _ = await cut.InvokeAsync(() => service?.Show<LinkDeviceLayerDialog>(string.Empty, parameters));
+
+            // Wait for the table to render
+            cut.WaitForState(() => cut.FindAll("table tbody tr").Count == 1);
+
+            // Find the checkbox button (should be checked with success color initially)
+            var checkboxButton = cut.Find("table tbody tr td:last-child button");
+            
+            // Verify initial state - should be checked (CheckBox icon, success color)
+            cut.WaitForAssertion(() => checkboxButton.OuterHtml.Should().Contain("CheckBox"));
+
+            // Click to unselect
+            checkboxButton.Click();
+
+            // Assert - after clicking, the checkbox should visually update
+            // The LayerId is set to null, so the condition should no longer match "Already registered"
+            // and should show either the "Add device" state or intermediate state
+            cut.WaitForAssertion(() =>
+            {
+                var updatedButton = cut.Find("table tbody tr td:last-child button");
+                // After unselecting, the button should not show the CheckBox icon anymore
+                // It should show CheckBoxOutlineBlank (unselected state)
+                updatedButton.OuterHtml.Should().Contain("CheckBoxOutlineBlank");
+            });
+        }
+
+        [Test]
         public async Task LinkDeviceLayerDialog_Save_UpdatesDevicesFromMultiplePages()
         {
             // Arrange
