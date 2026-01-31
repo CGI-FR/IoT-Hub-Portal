@@ -222,7 +222,7 @@
                     </MudTd>
                     @if (canWrite)
                     {
-                        <MudTd DataLabel="Delete" Style="text-align: center">
+                        <MudTd DataLabel="Delete" Style="text-align: center" @onclick:stopPropagation="true">
                             <MudTooltip Text="Delete device">
                                 <MudIconButton id="@($"delete-device-{@context.DeviceID}")" Color="Color.Default"
                                                Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"

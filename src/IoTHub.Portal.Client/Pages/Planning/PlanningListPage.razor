@@ -65,7 +65,7 @@
                         </MudTd>
                         @if (canWrite)
                         {
-                            <MudTh DataLabel="Delete" Style="text-align: center">
+                            <MudTh DataLabel="Delete" Style="text-align: center" @onclick:stopPropagation="true">
                                 <MudTooltip Text="Delete planning">
                                     <MudIconButton id="@($"delete-planning-{@context.Id}")" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeletePlanning(context))"></MudIconButton>
                                 </MudTooltip>
