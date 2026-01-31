@@ -814,11 +814,13 @@ namespace IoTHub.Portal.Postgres.Migrations
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.User", b =>
                 {
-                    b.HasOne("IoTHub.Portal.Domain.Entities.Principal", null)
+                    b.HasOne("IoTHub.Portal.Domain.Entities.Principal", "Principal")
                         .WithOne("User")
                         .HasForeignKey("IoTHub.Portal.Domain.Entities.User", "PrincipalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Principal");
                 });
 
             modelBuilder.Entity("IoTHub.Portal.Domain.Entities.LorawanDevice", b =>
