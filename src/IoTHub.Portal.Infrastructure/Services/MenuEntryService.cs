@@ -43,13 +43,6 @@ namespace IoTHub.Portal.Infrastructure.Services
                 throw new ArgumentException("Menu entry name must not exceed 100 characters", nameof(menuEntryDto));
             }
 
-            // Check for duplicate name
-            var existing = await this.menuEntryRepository.GetByNameAsync(menuEntryDto.Name);
-            if (existing != null)
-            {
-                throw new InvalidOperationException($"A menu entry with the name '{menuEntryDto.Name}' already exists");
-            }
-
             // Validate URL format
             if (string.IsNullOrWhiteSpace(menuEntryDto.Url))
             {
@@ -60,6 +53,13 @@ namespace IoTHub.Portal.Infrastructure.Services
                 (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 throw new ArgumentException("Menu entry URL must be a valid HTTP or HTTPS URL", nameof(menuEntryDto));
+            }
+
+            // Check for duplicate name
+            var existing = await this.menuEntryRepository.GetByNameAsync(menuEntryDto.Name);
+            if (existing != null)
+            {
+                throw new InvalidOperationException($"A menu entry with the name '{menuEntryDto.Name}' already exists");
             }
 
             // Determine if URL is external

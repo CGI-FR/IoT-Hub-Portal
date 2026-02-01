@@ -1,17 +1,20 @@
-using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #nullable disable
 
 namespace IoTHub.Portal.MySql.Migrations
 {
+    using System;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     /// <inheritdoc />
     public partial class AddMenuEntry : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "MenuEntries",
                 columns: table => new
                 {
@@ -26,7 +29,7 @@ namespace IoTHub.Portal.MySql.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MenuEntries", x => x.Id);
+                    _ = table.PrimaryKey("PK_MenuEntries", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
         }
@@ -34,7 +37,7 @@ namespace IoTHub.Portal.MySql.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "MenuEntries");
         }
     }

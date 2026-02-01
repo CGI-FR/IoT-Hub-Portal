@@ -121,44 +121,44 @@ description: "Task list for Custom Menu Entries feature implementation"
 
 ### Tests for User Story 2
 
-- [ ] T036 [P] [US2] Unit test for IMenuEntryService.UpdateMenuEntry in src/IoTHub.Portal.Tests.Unit/Infrastructure/Services/MenuEntryServiceTests.cs
-- [ ] T037 [P] [US2] Unit test for IMenuEntryService.DeleteMenuEntry in src/IoTHub.Portal.Tests.Unit/Infrastructure/Services/MenuEntryServiceTests.cs
-- [ ] T038 [P] [US2] Unit test for MenuEntriesController PUT endpoint in src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/MenuEntriesControllerTests.cs
-- [ ] T039 [P] [US2] Unit test for MenuEntriesController DELETE endpoint in src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/MenuEntriesControllerTests.cs
+- [X] T036 [P] [US2] Unit test for IMenuEntryService.UpdateMenuEntry in src/IoTHub.Portal.Tests.Unit/Infrastructure/Services/MenuEntryServiceTests.cs
+- [X] T037 [P] [US2] Unit test for IMenuEntryService.DeleteMenuEntry in src/IoTHub.Portal.Tests.Unit/Infrastructure/Services/MenuEntryServiceTests.cs
+- [X] T038 [P] [US2] Unit test for MenuEntriesController PUT endpoint in src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/MenuEntriesControllerTests.cs
+- [X] T039 [P] [US2] Unit test for MenuEntriesController DELETE endpoint in src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/MenuEntriesControllerTests.cs
 
 ### Implementation for User Story 2
 
 **Domain & Application Layer**
 
-- [ ] T040 [US2] Add UpdateMenuEntry and DeleteMenuEntry methods to IMenuEntryService interface in src/IoTHub.Portal.Application/Services/IMenuEntryService.cs
+- [X] T040 [US2] Add UpdateMenuEntry and DeleteMenuEntry methods to IMenuEntryService interface in src/IoTHub.Portal.Application/Services/IMenuEntryService.cs
 
 **Infrastructure Layer**
 
-- [ ] T041 [US2] Implement UpdateMenuEntry in MenuEntryService with validation (name required, max 100 chars, URL format, duplicate name check)
-- [ ] T042 [US2] Implement DeleteMenuEntry in MenuEntryService with existence check
+- [X] T041 [US2] Implement UpdateMenuEntry in MenuEntryService with validation (name required, max 100 chars, URL format, duplicate name check)
+- [X] T042 [US2] Implement DeleteMenuEntry in MenuEntryService with existence check
 
 **Server Layer (API)**
 
-- [ ] T043 [US2] Add GET by ID endpoint to MenuEntriesController in src/IoTHub.Portal.Server/Controllers/v1.0/MenuEntriesController.cs (requires menuentry:read authorization)
-- [ ] T044 [US2] Add PUT endpoint to MenuEntriesController for updating menu entries (requires menuentry:write authorization)
-- [ ] T045 [US2] Add DELETE endpoint to MenuEntriesController for deleting menu entries (requires menuentry:write authorization, returns 204 No Content)
-- [ ] T046 [US2] Add error handling for 404 Not Found when menu entry doesn't exist
+- [X] T043 [US2] Add GET by ID endpoint to MenuEntriesController in src/IoTHub.Portal.Server/Controllers/v1.0/MenuEntriesController.cs (requires menuentry:read authorization)
+- [X] T044 [US2] Add PUT endpoint to MenuEntriesController for updating menu entries (requires menuentry:write authorization)
+- [X] T045 [US2] Add DELETE endpoint to MenuEntriesController for deleting menu entries (requires menuentry:write authorization, returns 204 No Content)
+- [X] T046 [US2] Add error handling for 404 Not Found when menu entry doesn't exist
 
 **Client Layer (Blazor UI)**
 
-- [ ] T047 [P] [US2] Add GetMenuEntryById, UpdateMenuEntry, and DeleteMenuEntry methods to IMenuEntryClientService in src/IoTHub.Portal.Client/Services/IMenuEntryClientService.cs
-- [ ] T048 [P] [US2] Implement new methods in MenuEntryClientService in src/IoTHub.Portal.Client/Services/MenuEntryClientService.cs
-- [ ] T049 [P] [US2] Create EditMenuEntryDialog.razor in src/IoTHub.Portal.Client/Dialogs/MenuEntries/EditMenuEntryDialog.razor with pre-filled form
-- [ ] T050 [US2] Add validation to EditMenuEntryDialog form (same as create: name required, max 100 chars, valid URL)
-- [ ] T051 [US2] Add Edit button to MenuEntryListPage that opens EditMenuEntryDialog with selected entry
-- [ ] T052 [US2] Add Delete button to MenuEntryListPage with confirmation dialog before deletion
-- [ ] T053 [US2] Update MenuEntryListPage to refresh list after edit or delete operations
-- [ ] T054 [US2] Update NavMenu.razor to handle menu entry deletions gracefully (remove from navigation without breaking UI)
+- [X] T047 [P] [US2] Add GetMenuEntryById, UpdateMenuEntry, and DeleteMenuEntry methods to IMenuEntryClientService in src/IoTHub.Portal.Client/Services/IMenuEntryClientService.cs
+- [X] T048 [P] [US2] Implement new methods in MenuEntryClientService in src/IoTHub.Portal.Client/Services/MenuEntryClientService.cs
+- [X] T049 [P] [US2] Create EditMenuEntryDialog.razor in src/IoTHub.Portal.Client/Dialogs/MenuEntries/EditMenuEntryDialog.razor with pre-filled form
+- [X] T050 [US2] Add validation to EditMenuEntryDialog form (same as create: name required, max 100 chars, valid URL)
+- [X] T051 [US2] Add Edit button to MenuEntryListPage that opens EditMenuEntryDialog with selected entry
+- [X] T052 [US2] Add Delete button to MenuEntryListPage with confirmation dialog before deletion
+- [X] T053 [US2] Update MenuEntryListPage to refresh list after edit or delete operations
+- [X] T054 [US2] Update NavMenu.razor to handle menu entry deletions gracefully (remove from navigation without breaking UI)
 
 **Client Tests**
 
-- [ ] T055 [P] [US2] Unit test for EditMenuEntryDialog in src/IoTHub.Portal.Tests.Unit/Client/Dialogs/MenuEntries/EditMenuEntryDialogTests.cs
-- [ ] T056 [P] [US2] Update MenuEntryListPageTests to cover edit and delete operations in src/IoTHub.Portal.Tests.Unit/Client/Pages/MenuEntries/MenuEntryListPageTests.cs
+- [X] T055 [P] [US2] Unit test for EditMenuEntryDialog in src/IoTHub.Portal.Tests.Unit/Client/Dialogs/MenuEntries/EditMenuEntryDialogTests.cs
+- [X] T056 [P] [US2] Update MenuEntryListPageTests to cover edit and delete operations in src/IoTHub.Portal.Tests.Unit/Client/Pages/MenuEntries/MenuEntryListPageTests.cs
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently. Full CRUD operations are available.
 
