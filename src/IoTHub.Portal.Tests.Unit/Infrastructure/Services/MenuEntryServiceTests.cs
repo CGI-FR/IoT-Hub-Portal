@@ -95,7 +95,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             };
 
             // Act & Assert
-            _ = await Assert.ThrowsAsync<ArgumentException>(async () =>
+            _ = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await this.menuEntryService.CreateMenuEntry(menuEntryDto));
         }
 
@@ -110,7 +110,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             };
 
             // Act & Assert
-            _ = await Assert.ThrowsAsync<ArgumentException>(async () =>
+            _ = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await this.menuEntryService.CreateMenuEntry(menuEntryDto));
         }
 
@@ -136,7 +136,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .ReturnsAsync(existingEntry);
 
             // Act & Assert
-            _ = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await this.menuEntryService.CreateMenuEntry(menuEntryDto));
         }
 
@@ -151,7 +151,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             };
 
             // Act & Assert
-            _ = await Assert.ThrowsAsync<ArgumentException>(async () =>
+            _ = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await this.menuEntryService.CreateMenuEntry(menuEntryDto));
         }
 
@@ -170,7 +170,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .ReturnsAsync((MenuEntry)null);
 
             // Act & Assert
-            _ = await Assert.ThrowsAsync<ArgumentException>(async () =>
+            _ = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await this.menuEntryService.CreateMenuEntry(menuEntryDto));
         }
 
@@ -181,7 +181,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             var menuEntries = Fixture.CreateMany<MenuEntry>(3).ToList();
 
             _ = this.mockMenuEntryRepository
-                .Setup(x => x.GetAllAsync())
+                .Setup(x => x.GetAllAsync(null, default))
                 .ReturnsAsync(menuEntries);
 
             // Act
@@ -191,7 +191,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             _ = result.Should().NotBeNull();
             _ = result.Should().HaveCount(3);
 
-            this.mockMenuEntryRepository.Verify(x => x.GetAllAsync(), Times.Once);
+            this.mockMenuEntryRepository.Verify(x => x.GetAllAsync(null, default), Times.Once);
         }
 
         [Test]
@@ -286,7 +286,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .ReturnsAsync((MenuEntry)null);
 
             // Act & Assert
-            _ = await Assert.ThrowsAsync<ResourceNotFoundException>(async () =>
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(async () =>
                 await this.menuEntryService.UpdateMenuEntry(menuEntryDto));
         }
 
@@ -327,7 +327,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 .ReturnsAsync((MenuEntry)null);
 
             // Act & Assert
-            _ = await Assert.ThrowsAsync<ResourceNotFoundException>(async () =>
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(async () =>
                 await this.menuEntryService.DeleteMenuEntry(nonExistingId));
         }
     }

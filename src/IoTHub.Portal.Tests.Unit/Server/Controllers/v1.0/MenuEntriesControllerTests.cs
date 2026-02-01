@@ -59,11 +59,9 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<CreatedAtActionResult>(result);
-            
             var createdResult = result as CreatedAtActionResult;
             Assert.AreEqual(201, createdResult.StatusCode);
             Assert.IsNotNull(createdResult.Value);
-            
             var returnedEntry = createdResult.Value as MenuEntryDto;
             Assert.AreEqual(createdEntry.Id, returnedEntry.Id);
             Assert.AreEqual(createdEntry.Name, returnedEntry.Name);
@@ -91,7 +89,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
-            
             var badRequestResult = result as BadRequestObjectResult;
             Assert.AreEqual(400, badRequestResult.StatusCode);
 
@@ -118,7 +115,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<ConflictObjectResult>(result);
-            
             var conflictResult = result as ConflictObjectResult;
             Assert.AreEqual(409, conflictResult.StatusCode);
 
@@ -147,10 +143,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Result);
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            
             var okResult = result.Result as OkObjectResult;
             Assert.AreEqual(200, okResult.StatusCode);
-            
             var returnedEntries = okResult.Value as IEnumerable<MenuEntryDto>;
             Assert.AreEqual(3, returnedEntries.Count());
 
@@ -179,10 +173,8 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<OkObjectResult>(result);
-            
             var okResult = result as OkObjectResult;
             Assert.AreEqual(200, okResult.StatusCode);
-            
             var returnedEntry = okResult.Value as MenuEntryDto;
             Assert.AreEqual(menuEntryId, returnedEntry.Id);
 
@@ -205,7 +197,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<NotFoundObjectResult>(result);
-            
             var notFoundResult = result as NotFoundObjectResult;
             Assert.AreEqual(404, notFoundResult.StatusCode);
 
@@ -234,7 +225,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<NoContentResult>(result);
-            
             var noContentResult = result as NoContentResult;
             Assert.AreEqual(204, noContentResult.StatusCode);
 
@@ -260,7 +250,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
-            
             var badRequestResult = result as BadRequestObjectResult;
             Assert.AreEqual(400, badRequestResult.StatusCode);
 
@@ -290,7 +279,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<NotFoundObjectResult>(result);
-            
             var notFoundResult = result as NotFoundObjectResult;
             Assert.AreEqual(404, notFoundResult.StatusCode);
 
@@ -313,7 +301,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<NoContentResult>(result);
-            
             var noContentResult = result as NoContentResult;
             Assert.AreEqual(204, noContentResult.StatusCode);
 
@@ -336,7 +323,6 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<NotFoundObjectResult>(result);
-            
             var notFoundResult = result as NotFoundObjectResult;
             Assert.AreEqual(404, notFoundResult.StatusCode);
 

@@ -11,7 +11,6 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Versioning;
 
     [Authorize]
     [ApiController]
@@ -108,7 +107,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <returns>No content on success.</returns>
         [Authorize("menuentry:write")]
         [HttpPut("{id}", Name = "PUT Update menu entry")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -127,7 +126,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 }
 
                 await this.menuEntryService.UpdateMenuEntry(menuEntryDto);
-                return Ok();
+                return NoContent();
             }
             catch (ArgumentException ex)
             {
