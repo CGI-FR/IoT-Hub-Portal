@@ -84,7 +84,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             _ = MockHttpClient.When(HttpMethod.Post, "/api/menu-entries")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<StringContent>();
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<MenuEntryDto>>();
+                    var body = m.Content as ObjectContent<MenuEntryDto>;
+                    _ = body.Value.Should().BeEquivalentTo(menuEntryDto);
                     return true;
                 })
                 .Respond(HttpStatusCode.Created, new StringContent(
@@ -110,7 +112,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             _ = MockHttpClient.When(HttpMethod.Put, $"/api/menu-entries/{menuEntryDto.Id}")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<StringContent>();
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<MenuEntryDto>>();
+                    var body = m.Content as ObjectContent<MenuEntryDto>;
+                    _ = body.Value.Should().BeEquivalentTo(menuEntryDto);
                     return true;
                 })
                 .Respond(HttpStatusCode.NoContent);
@@ -150,7 +154,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
             _ = MockHttpClient.When(HttpMethod.Patch, $"/api/menu-entries/{menuEntryId}/order")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<StringContent>();
+                    _ = m.Content.Should().NotBeNull();
                     return true;
                 })
                 .Respond(HttpStatusCode.NoContent);
