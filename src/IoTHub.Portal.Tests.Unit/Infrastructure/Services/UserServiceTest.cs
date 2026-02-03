@@ -287,7 +287,17 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                  ))
                  .ReturnsAsync(new List<User>());
 
-            // We suppose that the insertion succeeds
+            // This is the first user in the system
+            _ = this.mockUserRepository
+                 .Setup(r => r.CountAsync(null, It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(0);
+
+            // We suppose that the Principal insertion succeeds
+            _ = this.mockPrincipalRepository
+                 .Setup(r => r.InsertAsync(It.IsAny<Principal>()))
+                 .Returns(Task.CompletedTask);
+
+            // We suppose that the User insertion succeeds
             _ = this.mockUserRepository
                  .Setup(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())))
                  .Returns(Task.CompletedTask);
@@ -327,14 +337,19 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                  .Setup(r => r.GetByNameAsync("Administrators"))
                  .ReturnsAsync(adminRole);
 
+            _ = this.mockAccessControlRepository
+                 .Setup(r => r.InsertAsync(It.IsAny<AccessControl>()))
+                 .Returns(Task.CompletedTask);
+
             // Act
             var result = await userService.GetOrCreateUserByEmailAsync(email, principal);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedModel,
                 opts => opts.Excluding(obj => obj.PrincipalId).Excluding(obj => obj.Id));
+            this.mockPrincipalRepository.Verify(r => r.InsertAsync(It.IsAny<Principal>()), Times.Once);
             this.mockUserRepository.Verify(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())), Times.Once);
-            this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Exactly(2));
+            this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Exactly(3));
         }
     }
 }
