@@ -67,16 +67,18 @@ namespace IoTHub.Portal.Postgres.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            const string administratorsRoleId = "a8e8f0c6-4c6e-4f8a-9e3e-7a5b8c9d0e1f";
+
             _ = migrationBuilder.Sql(
-                @"
+                $@"
                     DELETE FROM ""Actions""
-                    WHERE ""RoleId"" = (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')
+                    WHERE ""RoleId"" = '{administratorsRoleId}';
                 ");
 
             _ = migrationBuilder.Sql(
-                @"
-                DELETE FROM ""Groups""
-                WHERE ""Name"" = 'Administrators' AND ""Description"" = 'Default administrators group';
+                $@"
+                DELETE FROM ""Roles""
+                WHERE ""Id"" = '{administratorsRoleId}';
                 ");
         }
     }
