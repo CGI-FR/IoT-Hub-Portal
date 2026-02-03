@@ -5,6 +5,7 @@
 
 namespace IoTHub.Portal.Postgres.Migrations
 {
+    using System;
     using Microsoft.EntityFrameworkCore.Migrations;
 
     /// <inheritdoc />
@@ -13,54 +14,54 @@ namespace IoTHub.Portal.Postgres.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Enable pgcrypto extension for gen_random_uuid() function
-            _ = migrationBuilder.Sql("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
+            // Generate a fixed GUID for the Administrators role
+            var administratorsRoleId = Guid.NewGuid().ToString();
 
             // Add role with all permissions
             _ = migrationBuilder.Sql(
-                @"
+                $@"
                 INSERT INTO ""Roles"" (""Id"", ""Name"", ""Color"", ""Description"")
-                VALUES (gen_random_uuid(), 'Administrators', '#FF0000', 'Default administrators role');
+                VALUES ('{administratorsRoleId}', 'Administrators', '#FF0000', 'Default administrators role');
                 ");
 
             // Add actions to the role
             _ = migrationBuilder.Sql(
-                @"
+                $@"
                 INSERT INTO ""Actions"" (""Id"", ""Name"", ""RoleId"")
-                VALUES (gen_random_uuid(), 'group:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'group:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'access-control:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'access-control:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'dashboard:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'device:export', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'device:import', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'device:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'device:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'device-configuration:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'device-configuration:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'model:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'model:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'device-tag:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'device-tag:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'edge-device:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'edge-device:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'edge-device:execute', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'edge-model:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'edge-model:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'idea:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'layer:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'layer:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'planning:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'planning:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'role:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'role:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'user:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'user:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'schedule:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'schedule:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'setting:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'concentrator:read', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators')),
-                       (gen_random_uuid(), 'concentrator:write', (SELECT ""Id"" FROM ""Roles"" WHERE ""Name"" = 'Administrators'))
+                VALUES ('{Guid.NewGuid()}', 'group:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'group:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'access-control:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'access-control:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'dashboard:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'device:export', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'device:import', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'device:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'device:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'device-configuration:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'device-configuration:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'model:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'model:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'device-tag:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'device-tag:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'edge-device:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'edge-device:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'edge-device:execute', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'edge-model:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'edge-model:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'idea:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'layer:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'layer:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'planning:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'planning:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'role:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'role:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'user:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'user:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'schedule:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'schedule:write', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'setting:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'concentrator:read', '{administratorsRoleId}'),
+                       ('{Guid.NewGuid()}', 'concentrator:write', '{administratorsRoleId}')
                 ");
         }
 
