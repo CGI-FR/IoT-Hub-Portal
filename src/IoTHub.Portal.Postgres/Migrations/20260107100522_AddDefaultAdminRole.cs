@@ -5,7 +5,6 @@
 
 namespace IoTHub.Portal.Postgres.Migrations
 {
-    using System;
     using Microsoft.EntityFrameworkCore.Migrations;
 
     /// <inheritdoc />
@@ -14,8 +13,8 @@ namespace IoTHub.Portal.Postgres.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Generate a fixed GUID for the Administrators role
-            var administratorsRoleId = Guid.NewGuid().ToString();
+            // Use a fixed GUID for the Administrators role to ensure consistency across environments
+            const string administratorsRoleId = "a8e8f0c6-4c6e-4f8a-9e3e-7a5b8c9d0e1f";
 
             // Add role with all permissions
             _ = migrationBuilder.Sql(
@@ -24,44 +23,44 @@ namespace IoTHub.Portal.Postgres.Migrations
                 VALUES ('{administratorsRoleId}', 'Administrators', '#FF0000', 'Default administrators role');
                 ");
 
-            // Add actions to the role
+            // Add actions to the role with fixed GUIDs to ensure consistency across environments
             _ = migrationBuilder.Sql(
                 $@"
                 INSERT INTO ""Actions"" (""Id"", ""Name"", ""RoleId"")
-                VALUES ('{Guid.NewGuid()}', 'group:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'group:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'access-control:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'access-control:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'dashboard:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'device:export', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'device:import', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'device:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'device:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'device-configuration:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'device-configuration:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'model:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'model:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'device-tag:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'device-tag:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'edge-device:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'edge-device:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'edge-device:execute', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'edge-model:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'edge-model:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'idea:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'layer:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'layer:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'planning:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'planning:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'role:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'role:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'user:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'user:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'schedule:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'schedule:write', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'setting:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'concentrator:read', '{administratorsRoleId}'),
-                       ('{Guid.NewGuid()}', 'concentrator:write', '{administratorsRoleId}')
+                VALUES ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e11', 'group:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e12', 'group:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e13', 'access-control:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e14', 'access-control:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e15', 'dashboard:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e16', 'device:export', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e17', 'device:import', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e18', 'device:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e19', 'device:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e1a', 'device-configuration:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e1b', 'device-configuration:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e1c', 'model:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e1d', 'model:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e1e', 'device-tag:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e1f', 'device-tag:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e20', 'edge-device:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e21', 'edge-device:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e22', 'edge-device:execute', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e23', 'edge-model:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e24', 'edge-model:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e25', 'idea:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e26', 'layer:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e27', 'layer:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e28', 'planning:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e29', 'planning:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e2a', 'role:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e2b', 'role:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e2c', 'user:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e2d', 'user:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e2e', 'schedule:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e2f', 'schedule:write', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e30', 'setting:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e31', 'concentrator:read', '{administratorsRoleId}'),
+                       ('b1e1f1c1-5d1f-4f1a-8e1e-1a1b1c1d1e32', 'concentrator:write', '{administratorsRoleId}')
                 ");
         }
 
