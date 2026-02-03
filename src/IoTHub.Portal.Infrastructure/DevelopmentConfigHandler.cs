@@ -91,5 +91,7 @@ namespace IoTHub.Portal.Infrastructure
         public override string AWSGreengrassCoreTokenExchangeRoleAliasName => this.config[AWSGreengrassCoreTokenExchangeRoleAliasNameKey]!;
 
         public override int SendCommandsToDevicesIntervalInMinutes => this.config.GetValue(SendCommandsToDevicesIntervalKey, 10);
+
+        public override string GlobalAdminEmails => this.config.GetValue(GlobalAdminEmailsKey, string.Empty)!;
     }
 }

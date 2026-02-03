@@ -30,6 +30,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
         private Mock<IPrincipalRepository> mockPrincipalRepository;
         private Mock<IAccessControlRepository> mockAccessControlRepository;
         private Mock<IRoleRepository> mockRoleRepository;
+        private Mock<ConfigHandler> mockConfigHandler;
         private IUserManagementService userService;
 
         [SetUp]
@@ -47,12 +48,14 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockPrincipalRepository = new Mock<IPrincipalRepository>();
             this.mockAccessControlRepository = new Mock<IAccessControlRepository>();
             this.mockRoleRepository = new Mock<IRoleRepository>();
+            this.mockConfigHandler = new Mock<ConfigHandler>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockUserRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockPrincipalRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockAccessControlRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockRoleRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
             _ = ServiceCollection.AddSingleton<IUserManagementService, UserService>();
 
             Services = ServiceCollection.BuildServiceProvider();
@@ -341,6 +344,11 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                  .Setup(r => r.InsertAsync(It.Is<AccessControl>(ac => ac.Scope == "*")))
                  .Returns(Task.CompletedTask);
 
+            // Mock GlobalAdminEmails to be empty (relying on first-user logic)
+            _ = this.mockConfigHandler
+                 .Setup(c => c.GlobalAdminEmails)
+                 .Returns(string.Empty);
+
             // Act
             var result = await userService.GetOrCreateUserByEmailAsync(email, principal);
 
@@ -351,6 +359,177 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockUserRepository.Verify(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())), Times.Once);
             this.mockAccessControlRepository.Verify(r => r.InsertAsync(It.Is<AccessControl>(ac => ac.Scope == "*")), Times.Once);
             this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Exactly(3));
+        }
+
+        [Test]
+        public async Task GetOrCreateUserByEmailAsync_ShouldGrantAdminRole_WhenEmailIsInGlobalAdminEmails()
+        {
+            // Arrange
+            var email = "admin@example.com";
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(new []
+            {
+                new Claim("name", "Admin User"),
+                new Claim("preferred_username", "adminuser"),
+                new Claim("family_name", "User")
+            }, "TestAuth"));
+
+            // No existing user for this email
+            _ = this.mockUserRepository
+                 .Setup(r => r.GetAllAsync(
+                     It.IsAny<Expression<Func<User, bool>>>(),
+                     It.IsAny<CancellationToken>(),
+                     It.IsAny<Expression<Func<User, object>>[]>()
+                 ))
+                 .ReturnsAsync(new List<User>());
+
+            // This is NOT the first user in the system
+            _ = this.mockUserRepository
+                 .Setup(r => r.CountAsync(null, It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(5);
+
+            // We suppose that the Principal insertion succeeds
+            _ = this.mockPrincipalRepository
+                 .Setup(r => r.InsertAsync(It.IsAny<Principal>()))
+                 .Returns(Task.CompletedTask);
+
+            // We suppose that the User insertion succeeds
+            _ = this.mockUserRepository
+                 .Setup(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())))
+                 .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask);
+
+            // We assume that the new user is created and we can retrieve it
+            var newUser = Fixture.Build<User>()
+                .With(u => u.Id, Guid.NewGuid().ToString())
+                .With(u => u.Email, email)
+                .With(u => u.Name, "Admin User")
+                .With(u => u.GivenName, "adminuser")
+                .With(u => u.FamilyName, "User")
+                .With(u => u.PrincipalId, Guid.NewGuid().ToString())
+                .Create();
+            _ = this.mockUserRepository
+                 .Setup(r => r.GetByIdAsync(It.IsAny<string>(), It.IsAny<Expression<Func<User, object>>[]>()))
+                 .ReturnsAsync(newUser);
+
+            var expectedModel = new UserDetailsModel
+            {
+                Id = newUser.Id,
+                Email = newUser.Email,
+                Name = newUser.Name,
+                GivenName = newUser.GivenName,
+                FamilyName = newUser.FamilyName,
+                PrincipalId = newUser.PrincipalId
+            };
+
+            // Add default Administrators role
+            var adminRole = new Role
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Administrators"
+            };
+            _ = this.mockRoleRepository
+                 .Setup(r => r.GetByNameAsync("Administrators"))
+                 .ReturnsAsync(adminRole);
+
+            _ = this.mockAccessControlRepository
+                 .Setup(r => r.InsertAsync(It.Is<AccessControl>(ac => ac.Scope == "*")))
+                 .Returns(Task.CompletedTask);
+
+            // Mock GlobalAdminEmails to contain this user's email
+            _ = this.mockConfigHandler
+                 .Setup(c => c.GlobalAdminEmails)
+                 .Returns("admin@example.com,other-admin@example.com");
+
+            // Act
+            var result = await userService.GetOrCreateUserByEmailAsync(email, principal);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedModel,
+                opts => opts.Excluding(obj => obj.PrincipalId).Excluding(obj => obj.Id));
+            this.mockPrincipalRepository.Verify(r => r.InsertAsync(It.IsAny<Principal>()), Times.Once);
+            this.mockUserRepository.Verify(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())), Times.Once);
+            this.mockAccessControlRepository.Verify(r => r.InsertAsync(It.Is<AccessControl>(ac => ac.Scope == "*")), Times.Once);
+            this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Exactly(3));
+        }
+
+        [Test]
+        public async Task GetOrCreateUserByEmailAsync_ShouldNotGrantAdminRole_WhenEmailIsNotInGlobalAdminEmailsAndNotFirstUser()
+        {
+            // Arrange
+            var email = "regular@example.com";
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(new []
+            {
+                new Claim("name", "Regular User"),
+                new Claim("preferred_username", "regularuser"),
+                new Claim("family_name", "User")
+            }, "TestAuth"));
+
+            // No existing user for this email
+            _ = this.mockUserRepository
+                 .Setup(r => r.GetAllAsync(
+                     It.IsAny<Expression<Func<User, bool>>>(),
+                     It.IsAny<CancellationToken>(),
+                     It.IsAny<Expression<Func<User, object>>[]>()
+                 ))
+                 .ReturnsAsync(new List<User>());
+
+            // This is NOT the first user in the system
+            _ = this.mockUserRepository
+                 .Setup(r => r.CountAsync(null, It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(5);
+
+            // We suppose that the Principal insertion succeeds
+            _ = this.mockPrincipalRepository
+                 .Setup(r => r.InsertAsync(It.IsAny<Principal>()))
+                 .Returns(Task.CompletedTask);
+
+            // We suppose that the User insertion succeeds
+            _ = this.mockUserRepository
+                 .Setup(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())))
+                 .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask);
+
+            // We assume that the new user is created and we can retrieve it
+            var newUser = Fixture.Build<User>()
+                .With(u => u.Id, Guid.NewGuid().ToString())
+                .With(u => u.Email, email)
+                .With(u => u.Name, "Regular User")
+                .With(u => u.GivenName, "regularuser")
+                .With(u => u.FamilyName, "User")
+                .With(u => u.PrincipalId, Guid.NewGuid().ToString())
+                .Create();
+            _ = this.mockUserRepository
+                 .Setup(r => r.GetByIdAsync(It.IsAny<string>(), It.IsAny<Expression<Func<User, object>>[]>()))
+                 .ReturnsAsync(newUser);
+
+            var expectedModel = new UserDetailsModel
+            {
+                Id = newUser.Id,
+                Email = newUser.Email,
+                Name = newUser.Name,
+                GivenName = newUser.GivenName,
+                FamilyName = newUser.FamilyName,
+                PrincipalId = newUser.PrincipalId
+            };
+
+            // Mock GlobalAdminEmails to NOT contain this user's email
+            _ = this.mockConfigHandler
+                 .Setup(c => c.GlobalAdminEmails)
+                 .Returns("admin@example.com,other-admin@example.com");
+
+            // Act
+            var result = await userService.GetOrCreateUserByEmailAsync(email, principal);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedModel,
+                opts => opts.Excluding(obj => obj.PrincipalId).Excluding(obj => obj.Id));
+            this.mockPrincipalRepository.Verify(r => r.InsertAsync(It.IsAny<Principal>()), Times.Once);
+            this.mockUserRepository.Verify(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())), Times.Once);
+            // Should NOT create access control since user is not an admin
+            this.mockAccessControlRepository.Verify(r => r.InsertAsync(It.IsAny<AccessControl>()), Times.Never);
+            this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Exactly(2)); // Only for principal and user, not for access control
         }
     }
 }
