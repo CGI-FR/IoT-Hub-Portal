@@ -199,7 +199,7 @@ namespace IoTHub.Portal.Application.Services
                 var adminEmails = this.configHandler.GlobalAdminEmails
                     .Split(',', StringSplitOptions.RemoveEmptyEntries)
                     .Select(e => e.Trim().ToLower());
-                
+
                 if (adminEmails.Contains(email.ToLower()))
                 {
                     shouldGrantAdmin = true;
