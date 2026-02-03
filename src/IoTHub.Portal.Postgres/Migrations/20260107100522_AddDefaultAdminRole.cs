@@ -13,6 +13,9 @@ namespace IoTHub.Portal.Postgres.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Enable pgcrypto extension for gen_random_uuid() function
+            _ = migrationBuilder.Sql("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
+
             // Add role with all permissions
             _ = migrationBuilder.Sql(
                 @"
