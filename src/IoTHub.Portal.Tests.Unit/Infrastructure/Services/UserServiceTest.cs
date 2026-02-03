@@ -349,6 +349,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
                 opts => opts.Excluding(obj => obj.PrincipalId).Excluding(obj => obj.Id));
             this.mockPrincipalRepository.Verify(r => r.InsertAsync(It.IsAny<Principal>()), Times.Once);
             this.mockUserRepository.Verify(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())), Times.Once);
+            this.mockAccessControlRepository.Verify(r => r.InsertAsync(It.IsAny<AccessControl>()), Times.Once);
             this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Exactly(3));
         }
     }
