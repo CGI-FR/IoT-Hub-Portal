@@ -22,9 +22,10 @@ namespace IoTHub.Portal.Application.Services
         private readonly IPrincipalRepository principalRepository;
         private readonly IAccessControlRepository accessControlRepository;
         private readonly IRoleRepository roleRepository;
+        private readonly ConfigHandler configHandler;
 
 
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IUserRepository userRepository, IPrincipalRepository principalRepository, IAccessControlRepository accessControlRepository, IRoleRepository roleRepository)
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IUserRepository userRepository, IPrincipalRepository principalRepository, IAccessControlRepository accessControlRepository, IRoleRepository roleRepository, ConfigHandler configHandler)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -32,6 +33,7 @@ namespace IoTHub.Portal.Application.Services
             this.principalRepository = principalRepository;
             this.accessControlRepository = accessControlRepository;
             this.roleRepository = roleRepository;
+            this.configHandler = configHandler;
 
         }
         public async Task<UserDetailsModel> GetUserDetailsAsync(string id)
@@ -183,15 +185,36 @@ namespace IoTHub.Portal.Application.Services
             await this.userRepository.InsertAsync(newUser);
             await this.unitOfWork.SaveAsync();
 
+            // Check if user should be granted admin role
+            var shouldGrantAdmin = false;
+
+            // First user in the system gets admin automatically
             if (!isAny)
             {
-                // If this is the first user, assign them to the Administrators role
+                shouldGrantAdmin = true;
+            }
+            // Or if their email is in the GlobalAdminEmails configuration
+            else if (!string.IsNullOrWhiteSpace(this.configHandler.GlobalAdminEmails))
+            {
+                var adminEmails = this.configHandler.GlobalAdminEmails
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(e => e.Trim().ToLower());
+                
+                if (adminEmails.Contains(email.ToLower()))
+                {
+                    shouldGrantAdmin = true;
+                }
+            }
+
+            if (shouldGrantAdmin)
+            {
+                // Assign user to the Administrators role
                 var adminRole = await this.roleRepository.GetByNameAsync("Administrators");
 
                 if (adminRole == null)
                 {
                     throw new ResourceNotFoundException(
-                        "The 'Administrators' role does not exist. Cannot assign the first user to this role.");
+                        "The 'Administrators' role does not exist. Cannot assign the user to this role.");
                 }
 
                 var newAccessControl = new AccessControl

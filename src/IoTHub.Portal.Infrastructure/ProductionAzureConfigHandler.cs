@@ -81,6 +81,8 @@ namespace IoTHub.Portal.Infrastructure
 
         public override int SendCommandsToDevicesIntervalInMinutes => this.config.GetValue(SendCommandsToDevicesIntervalKey, 10);
 
+        public override string GlobalAdminEmails => this.config.GetValue(GlobalAdminEmailsKey, string.Empty)!;
+
         public override string CloudProvider => this.config[CloudProviderKey]!;
 
         public override string AWSAccess => throw new NotImplementedException();

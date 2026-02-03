@@ -59,5 +59,7 @@ namespace IoTHub.Portal.Infrastructure
         public const string AWSAccountIdKey = "AWS:AccountId";
         public const string AWSGreengrassRequiredRolesKey = "AWS:GreengrassRequiredRoles";
         public const string AWSGreengrassCoreTokenExchangeRoleAliasNameKey = "AWS:GreengrassCoreTokenExchangeRoleAliasName";
+
+        public const string GlobalAdminEmailsKey = "GlobalAdminEmails";
     }
 }
