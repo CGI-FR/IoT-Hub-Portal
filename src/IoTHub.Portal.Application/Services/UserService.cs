@@ -161,6 +161,15 @@ namespace IoTHub.Portal.Application.Services
             var familyName = principal.FindFirst("family_name")?.Value ?? "";
 
             // We ignore the "given_name" from the token since you want to use preferred_username
+            // Create a new Principal first
+            var newPrincipal = new Principal
+            {
+                Id = Guid.NewGuid().ToString()
+            };
+
+            await this.principalRepository.InsertAsync(newPrincipal);
+            await this.unitOfWork.SaveAsync();
+
             // Create a new user
             var newUser = new User
             {
@@ -168,8 +177,7 @@ namespace IoTHub.Portal.Application.Services
                 Name = fullName,
                 GivenName = preferredUsername,
                 FamilyName = familyName,
-                PrincipalId = Guid.NewGuid().ToString(),
-                //Principal = new Principal()
+                PrincipalId = newPrincipal.Id
             };
 
             await this.userRepository.InsertAsync(newUser);
