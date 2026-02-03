@@ -201,7 +201,7 @@ namespace IoTHub.Portal.Application.Services
                     PrincipalId = newUser.PrincipalId,
                     RoleId = adminRole.Id,
                     Role = adminRole,
-                    Scope = ""
+                    Scope = "*"
                 };
 
                 await this.accessControlRepository.InsertAsync(newAccessControl);
