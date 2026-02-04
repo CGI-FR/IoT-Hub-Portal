@@ -327,7 +327,7 @@
 
             if (imageData is not null)
             {
-                var imageContent = new StringContent(imageData);
+                var imageContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(imageData), System.Text.Encoding.UTF8, "application/json");
 
                 if (IsLoRa)
                 {
