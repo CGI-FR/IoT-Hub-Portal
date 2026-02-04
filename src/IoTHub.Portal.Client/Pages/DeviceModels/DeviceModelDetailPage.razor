@@ -294,6 +294,7 @@
     {
         var resizedImageFile = await e.File.RequestImageFileAsync(e.File.ContentType, 200, 200);
         var buffer = new byte[resizedImageFile.Size];
+        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
 
         imageData = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
     }
