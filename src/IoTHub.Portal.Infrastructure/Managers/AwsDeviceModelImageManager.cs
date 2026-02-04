@@ -29,6 +29,10 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file)
         {
+            if (string.IsNullOrEmpty(file))
+            {
+                return await this.SetDefaultImageToModel(deviceModelId);
+            }
 
             this.logger.LogInformation($"Uploading Image to AWS S3 storage");
 

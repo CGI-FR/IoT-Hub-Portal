@@ -43,6 +43,11 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
         public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, string file)
         {
+            if (string.IsNullOrEmpty(file))
+            {
+                return await this.SetDefaultImageToModel(deviceModelId);
+            }
+
             var blobContainer = this.blobService.GetBlobContainerClient(DeviceModelImageOptions.ImageContainerName);
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 

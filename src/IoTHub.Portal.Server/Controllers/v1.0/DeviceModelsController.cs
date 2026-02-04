@@ -67,7 +67,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         [Authorize("model:write")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override async Task<ActionResult<string>> ChangeAvatar(string id, string avatar)
+        public override async Task<ActionResult<string>> ChangeAvatar(string id, [FromBody] string avatar)
         {
             return await base.ChangeAvatar(id, avatar);
         }

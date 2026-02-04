@@ -90,7 +90,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         [Authorize("edge-model:write")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, string avatar)
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string edgeModelId, [FromBody] string avatar)
         {
             return Ok(await this.edgeModelService.UpdateEdgeModelAvatar(edgeModelId, avatar));
         }

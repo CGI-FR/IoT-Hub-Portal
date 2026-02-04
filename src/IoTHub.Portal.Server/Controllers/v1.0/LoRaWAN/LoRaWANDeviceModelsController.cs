@@ -73,7 +73,7 @@ namespace IoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [Authorize("model:write")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<ActionResult<string>> ChangeAvatar(string id, string avatar)
+        public override Task<ActionResult<string>> ChangeAvatar(string id, [FromBody] string avatar)
         {
             return base.ChangeAvatar(id, avatar);
         }
