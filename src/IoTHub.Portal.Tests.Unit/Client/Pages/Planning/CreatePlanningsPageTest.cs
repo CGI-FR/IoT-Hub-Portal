@@ -55,5 +55,28 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Planning
             Assert.AreEqual(cut.Instance.ScheduleList[0].Start, "00:00");
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        [Test]
+        public void CreatePlanningPage_SaveButtonIsDisplayed()
+        {
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
+                .ReturnsAsync(new List<LayerDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto>()
+                });
+
+            // Act
+            var cut = RenderComponent<CreatePlanningsPage>();
+
+            // Wait for the save button to be rendered
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            // Assert
+            Assert.IsNotNull(saveButton);
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }
