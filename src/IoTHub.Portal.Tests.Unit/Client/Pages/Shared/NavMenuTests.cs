@@ -9,6 +9,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
     public class NavMenuTests : BlazorUnitTest
     {
         private ILocalStorageService localStorageService;
+        private Mock<IMenuEntryClientService> mockMenuEntryClientService;
 
         public override void Setup()
         {
@@ -16,6 +17,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
 
             this.localStorageService = TestContext.AddBlazoredLocalStorage();
             _ = Services.AddScoped<ILayoutService, LayoutService>();
+
+            this.mockMenuEntryClientService = MockRepository.Create<IMenuEntryClientService>();
+            _ = this.mockMenuEntryClientService.Setup(service => service.GetMenuEntries())
+                .ReturnsAsync(new List<MenuEntryDto>());
+            _ = Services.AddSingleton(this.mockMenuEntryClientService.Object);
 
             _ = TestContext?.AddTestAuthorization().SetAuthorized(Guid.NewGuid().ToString());
 

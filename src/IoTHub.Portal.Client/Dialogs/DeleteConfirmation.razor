@@ -1,0 +1,21 @@
+<MudDialog>
+    <DialogContent>
+        <MudText>@ContentText</MudText>
+        <MudText Typo="Typo.caption" Class="mt-2"><i>Warning: this cannot be undone.</i></MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="cancel-button" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="confirm-button" Color="@Color" OnClick="Confirm">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public string ContentText { get; set; } = "Are you sure you want to proceed?";
+    [Parameter] public string ButtonText { get; set; } = "Confirm";
+    [Parameter] public Color Color { get; set; } = Color.Primary;
+
+    void Cancel() => MudDialog.Cancel();
+    void Confirm() => MudDialog.Close(DialogResult.Ok(true));
+}

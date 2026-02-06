@@ -9,6 +9,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
     public class MainLayoutTests : BlazorUnitTest
     {
         private TestAuthorizationContext authContext;
+        private Mock<IMenuEntryClientService> mockMenuEntryClientService;
 
         public override void Setup()
         {
@@ -24,6 +25,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Shared
                 IsLoRaSupported = false,
                 CloudProvider = "Azure"
             });
+
+            this.mockMenuEntryClientService = MockRepository.Create<IMenuEntryClientService>();
+            _ = this.mockMenuEntryClientService.Setup(service => service.GetMenuEntries())
+                .ReturnsAsync(new List<MenuEntryDto>());
+            _ = Services.AddSingleton(this.mockMenuEntryClientService.Object);
 
             _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
                 .ReturnsAsync(PortalPermissionsHelper.GetAllPermissions());

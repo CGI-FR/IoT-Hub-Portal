@@ -1,0 +1,192 @@
+@page "/menu-entries"
+@inherits AuthorizedComponentBase
+@using IoTHub.Portal.Shared.Security
+@using IoTHub.Portal.Shared.Models.v10
+@using IoTHub.Portal.Client.Dialogs
+@using IoTHub.Portal.Client.Dialogs.MenuEntries
+
+@attribute [Authorize]
+
+@inject IMenuEntryClientService MenuEntryClientService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h5" Class="mb-4">Custom Menu Entries</MudText>
+            <MudPaper>
+                <MudToolBar>
+                    <MudText Typo="Typo.h6">Menu Entries</MudText>
+                    <MudSpacer />
+                    @if (portalPermissions.Contains(PortalPermissions.MenuEntryWrite))
+                    {
+                        <MudButton id="addMenuEntryButton"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   OnClick="AddMenuEntry">
+                            Add Menu Entry
+                        </MudButton>
+                    }
+                </MudToolBar>
+                <MudTable Items="@menuEntries"
+                          Hover="true"
+                          Loading="@isLoading"
+                          LoadingProgressColor="Color.Info"
+                          Dense="true"
+                          Striped="true">
+                    <HeaderContent>
+                        <MudTh>Name</MudTh>
+                        <MudTh>URL</MudTh>
+                        <MudTh>Type</MudTh>
+                        <MudTh>Order</MudTh>
+                        <MudTh>Enabled</MudTh>
+                        <MudTh Style="text-align: center">Actions</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Name">@context.Name</MudTd>
+                        <MudTd DataLabel="URL">
+                            <MudLink Href="@context.Url" Target="@(context.IsExternal ? "_blank" : "_self")">
+                                @context.Url
+                            </MudLink>
+                        </MudTd>
+                        <MudTd DataLabel="Type">
+                            @if (context.IsExternal)
+                            {
+                                <MudChip Color="Color.Info" Size="Size.Small">External</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip Color="Color.Default" Size="Size.Small">Internal</MudChip>
+                            }
+                        </MudTd>
+                        <MudTd DataLabel="Order">@context.Order</MudTd>
+                        <MudTd DataLabel="Enabled">
+                            @if (context.IsEnabled)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" />
+                            }
+                        </MudTd>
+                        <MudTd DataLabel="Actions" Style="text-align: center">
+                            @if (portalPermissions.Contains(PortalPermissions.MenuEntryWrite))
+                            {
+                                <MudTooltip Text="Edit">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                   Size="Size.Small"
+                                                   Color="Color.Primary"
+                                                   OnClick="@(() => EditMenuEntry(context))" />
+                                </MudTooltip>
+                                <MudTooltip Text="Delete">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Size="Size.Small"
+                                                   Color="Color.Error"
+                                                   OnClick="@(() => DeleteMenuEntry(context))" />
+                                </MudTooltip>
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>No menu entries found. Click "Add Menu Entry" to create one.</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</AuthorizedContent>
+
+@code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.MenuEntryRead };
+
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
+
+    private List<MenuEntryDto> menuEntries = new();
+    private bool isLoading = true;
+    private PortalPermissions[] portalPermissions = Array.Empty<PortalPermissions>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        portalPermissions = await PermissionsService.GetUserPermissions();
+        await LoadMenuEntries();
+    }
+
+    private async Task LoadMenuEntries()
+    {
+        try
+        {
+            isLoading = true;
+            menuEntries = await MenuEntryClientService.GetMenuEntries();
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task AddMenuEntry()
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
+
+        var result = await DialogService.Show<CreateMenuEntryDialog>("Add Menu Entry", parameters, options).Result;
+
+        if (!result.Canceled)
+        {
+            await LoadMenuEntries();
+            Snackbar.Add("Menu entry created successfully", Severity.Success);
+        }
+    }
+
+    private async Task EditMenuEntry(MenuEntryDto menuEntry)
+    {
+        var parameters = new DialogParameters
+        {
+            { "MenuEntry", menuEntry }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
+
+        var result = await DialogService.Show<EditMenuEntryDialog>("Edit Menu Entry", parameters, options).Result;
+
+        if (!result.Canceled)
+        {
+            await LoadMenuEntries();
+            Snackbar.Add("Menu entry updated successfully", Severity.Success);
+        }
+    }
+
+    private async Task DeleteMenuEntry(MenuEntryDto menuEntry)
+    {
+        var parameters = new DialogParameters
+        {
+            { "ContentText", $"Are you sure you want to delete the menu entry '{menuEntry.Name}'?" },
+            { "ButtonText", "Delete" },
+            { "Color", Color.Error }
+        };
+
+        var result = await DialogService.Show<DeleteConfirmation>("Delete Menu Entry", parameters).Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+                await MenuEntryClientService.DeleteMenuEntry(menuEntry.Id);
+                await LoadMenuEntries();
+                Snackbar.Add("Menu entry deleted successfully", Severity.Success);
+            }
+            catch (ProblemDetailsException exception)
+            {
+                Error?.ProcessProblemDetails(exception);
+            }
+        }
+    }
+}
