@@ -5,12 +5,13 @@
 @attribute [Authorize]
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
-    <EditPlanning planning=@Planning scheduleList=@ScheduleList mode="New" CanWrite="true" />
+    <EditPlanning planning=@Planning scheduleList=@ScheduleList mode="New" CanWrite="@canWrite" />
 </AuthorizedContent>
 
 @code {
     // Specify which permissions are required for this page
     protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.PlanningWrite };
+    private bool canWrite;
 
     public List<ScheduleDto> ScheduleList { get; set; } = new List<ScheduleDto> { };
     public PlanningDto Planning { get; set; } = new PlanningDto();
@@ -21,5 +22,8 @@
 
         Planning.DayOff = DaysEnumFlag.DaysOfWeek.Saturday | DaysEnumFlag.DaysOfWeek.Sunday;
         ScheduleList.Add(new ScheduleDto { Start = "00:00" });
+        
+        // Check if user has write permission for conditional UI elements
+        canWrite = await HasPermissionAsync(PortalPermissions.PlanningWrite);
     }
 }
