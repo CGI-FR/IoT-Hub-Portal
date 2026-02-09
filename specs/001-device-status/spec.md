@@ -13,8 +13,6 @@ Non-technical users need to view their device list without being confused by mis
 
 **Why this priority**: This is the core problem causing user confusion and unnecessary support overhead. Removing the misleading Connection State column immediately solves the primary pain point.
 
-**Independent Test**: Can be fully tested by viewing the device list page with LoRaWAN devices that transmit infrequently and verifying that no misleading connection status is displayed, delivering clarity about device operational state.
-
 **Acceptance Scenarios**:
 
 1. **Given** I am viewing the device list page, **When** I look at the column headers, **Then** I should NOT see a "Connection State" column
@@ -29,8 +27,6 @@ Users need to see when a device last communicated with the system to understand 
 
 **Why this priority**: This enhances the fix by replacing misleading information with accurate activity tracking. It's P2 because removing the confusing column (P1) already solves the critical problem, but this provides better information.
 
-**Independent Test**: Can be tested by viewing the device list after devices send telemetry data and verifying the timestamp reflects actual device communication, not Device Twin updates.
-
 **Acceptance Scenarios**:
 
 1. **Given** I am viewing the device list page, **When** I look at the column headers, **Then** I should NOT see a "Last Status Update" column
@@ -44,8 +40,6 @@ Users need to see when a device last communicated with the system to understand 
 Users managing gateways need the same clarity as device management. Gateways also suffer from misleading Connection State and Last Status Update columns that create confusion about gateway operational status.
 
 **Why this priority**: This ensures consistency across the platform. It's P2 because gateways may be less numerous than devices, but the same confusion exists and should be fixed for a consistent user experience.
-
-**Independent Test**: Can be tested by viewing the gateway list page and verifying the same improvements (no Connection State column, accurate activity information) are applied as for devices.
 
 **Acceptance Scenarios**:
 
