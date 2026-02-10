@@ -136,10 +136,8 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             Assert.IsNotNull(result);
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(DeviceModelImageOptions.DefaultImage, result.Image);
-            Assert.IsFalse(result.IsConnected);
             Assert.IsFalse(result.IsEnabled);
 
-            Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
             Assert.AreEqual(DateTime.MinValue, result.LastActivityTime);
 
             this.mockRepository.VerifyAll();

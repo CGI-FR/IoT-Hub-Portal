@@ -51,7 +51,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true } }
+                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true } }
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });

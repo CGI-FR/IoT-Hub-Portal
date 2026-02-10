@@ -147,10 +147,8 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 Image = this.deviceModelImageManager
                     .GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!)
                     .Result,
-                IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId)),
-                StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
                 SupportLoRaFeatures =
                     bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ??

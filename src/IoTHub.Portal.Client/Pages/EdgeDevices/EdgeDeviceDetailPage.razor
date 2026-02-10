@@ -308,6 +308,10 @@
 
             edgeDevice = await EdgeDeviceClientService.GetDevice(deviceId);
 
+            // ConnectionState is used here to determine if the gateway is currently connected
+            // and capable of receiving commands. This is different from the list view where
+            // we removed the confusing "Connection State" column that showed misleading status
+            // for devices with intermittent connectivity.
             if (edgeDevice.ConnectionState == "Disconnected" || !canExec)
             {
                 btn_disable = true;

@@ -201,7 +201,16 @@
                         }
                     </MudTd>
 
-                    <MudTd DataLabel="LSU" Style="text-align: center">@context.LastActivityTime</MudTd>
+                    <MudTd DataLabel="LSU" Style="text-align: center">
+                        @if (context.LastActivityTime == DateTime.MinValue)
+                        {
+                            <text>No activity recorded</text>
+                        }
+                        else
+                        {
+                            @context.LastActivityTime
+                        }
+                    </MudTd>
 
                     @if (Portal.IsLoRaSupported)
                     {

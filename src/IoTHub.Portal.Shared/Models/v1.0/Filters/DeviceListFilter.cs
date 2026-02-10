@@ -9,8 +9,6 @@ namespace IoTHub.Portal.Shared.Models.v10.Filters
 
         public bool? IsEnabled { get; set; }
 
-        public bool? IsConnected { get; set; }
-
         public Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
 
         public string ModelId { get; set; } = default!;

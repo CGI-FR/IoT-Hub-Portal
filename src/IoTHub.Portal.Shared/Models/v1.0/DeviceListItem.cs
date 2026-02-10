@@ -29,11 +29,6 @@ namespace IoTHub.Portal.Models.v10
         public string Image { get; set; } = default!;
 
         /// <summary>
-        /// A value indicating whether the device is currently connected.
-        /// </summary>
-        public bool IsConnected { get; set; }
-
-        /// <summary>
         /// A value indicating whether the device is enabled on the platform.
         /// </summary>
         public bool IsEnabled { get; set; }
@@ -47,11 +42,6 @@ namespace IoTHub.Portal.Models.v10
         /// A value indicating whether the device has telemetry.
         /// </summary>
         public bool HasLoRaTelemetry { get; set; }
-
-        /// <summary>
-        /// The device last status updated time.
-        /// </summary>
-        public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
         /// Gets or sets the last activity time.
