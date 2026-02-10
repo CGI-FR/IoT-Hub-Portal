@@ -41,7 +41,6 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 PageSize = pageSize,
                 PageNumber = pageNumber,
-                IsConnected = searchState,
                 IsEnabled = searchStatus,
                 Keyword = searchText,
                 OrderBy = orderBy,
@@ -52,11 +51,6 @@ namespace IoTHub.Portal.Infrastructure.Services
             };
 
             var devicePredicate = PredicateBuilder.True<Device>();
-
-            if (deviceListFilter.IsConnected != null)
-            {
-                devicePredicate = devicePredicate.And(device => device.IsConnected.Equals(deviceListFilter.IsConnected));
-            }
 
             if (deviceListFilter.IsEnabled != null)
             {
@@ -103,8 +97,6 @@ namespace IoTHub.Portal.Infrastructure.Services
                     DeviceID = device.Id,
                     DeviceName = device.Name,
                     IsEnabled = device.IsEnabled,
-                    IsConnected = device.IsConnected,
-                    StatusUpdatedTime = device.StatusUpdatedTime,
                     LastActivityTime = device.LastActivityTime,
                     DeviceModelId = device.DeviceModelId,
                     SupportLoRaFeatures = device is LorawanDevice,

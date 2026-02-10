@@ -55,9 +55,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             return new DeviceListItem
             {
                 DeviceID = twin.DeviceId,
-                IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
-                StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
                 Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!).Result,

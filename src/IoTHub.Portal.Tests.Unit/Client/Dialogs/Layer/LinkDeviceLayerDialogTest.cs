@@ -48,8 +48,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true },
-                                    new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true }}
+                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true},
+                                    new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true}}
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
@@ -96,15 +96,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = mockDeviceModel.ModelId },
-                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = Guid.NewGuid().ToString() }}
+                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId },
+                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = Guid.NewGuid().ToString() }}
                 });
 
             _ = this.mockDeviceClientService.Setup(service =>
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText=&modelId={mockDeviceModel.ModelId}"))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = mockDeviceModel.ModelId } }
+                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId } }
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
@@ -155,8 +155,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = mockDeviceModel.ModelId },
-                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true, DeviceModelId = Guid.NewGuid().ToString() }}
+                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId },
+                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = Guid.NewGuid().ToString() }}
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
@@ -209,10 +209,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 DeviceID = "device-already-registered",
                 DeviceName = "Already Registered Device",
                 IsEnabled = true,
-                IsConnected = true,
+                // IsConnected removed,
                 DeviceModelId = mockDeviceModel.ModelId,
                 Image = "image.png",
-                StatusUpdatedTime = DateTime.UtcNow,
+                // StatusUpdatedTime removed,
                 LastActivityTime = DateTime.UtcNow,
                 Labels = new List<LabelDto>(),
                 LayerId = expectedLayerDto.Id  // Already registered to this layer
@@ -290,10 +290,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 DeviceID = "device1",
                 DeviceName = "Device 1",
                 IsEnabled = true,
-                IsConnected = true,
+                // IsConnected removed,
                 DeviceModelId = mockDeviceModel.ModelId,
                 Image = "image1.png",
-                StatusUpdatedTime = DateTime.UtcNow,
+                // StatusUpdatedTime removed,
                 LastActivityTime = DateTime.UtcNow,
                 Labels = new List<LabelDto>(),
                 LayerId = null // Not assigned to any layer
@@ -316,9 +316,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                     DeviceName = device1.DeviceName,
                     ModelId = device1.DeviceModelId,
                     Image = device1.Image,
-                    IsConnected = device1.IsConnected,
+                    // IsConnected removed,
                     IsEnabled = device1.IsEnabled,
-                    StatusUpdatedTime = device1.StatusUpdatedTime,
+                    // StatusUpdatedTime removed,
                     LastActivityTime = device1.LastActivityTime,
                     Labels = device1.Labels.ToList()
                 });
