@@ -9,7 +9,7 @@
 
 ### User Story 1 - View Device Status Without Confusion (Priority: P1)
 
-Non-technical users need to view their device list without being confused by misleading status indicators. Currently, LoRaWAN devices that send data infrequently (every 30 minutes to 24 hours) appear as "disconnected" most of the time because the Connection State column only shows "connected" when there's an active connection to the configured cloud IoT service (for example, Azure IoT Hub or AWS IoT Core). This causes users to think devices are malfunctioning and generates unnecessary support requests.
+Non-technical users need to view their device list without being confused by misleading status indicators. Currently, LoRaWAN devices that send data infrequently (every 30 minutes to 24 hours) appear as "disconnected" most of the time because the Connection State column only shows "connected" when there's an active connection to the cloud IoT service. This causes users to think devices are malfunctioning and generates unnecessary support requests.
 
 **Why this priority**: This is the core problem causing user confusion and unnecessary support overhead. Removing the misleading Connection State column immediately solves the primary pain point.
 
@@ -23,15 +23,15 @@ Non-technical users need to view their device list without being confused by mis
 
 ### User Story 2 - View Accurate Device Activity Timestamp (Priority: P2)
 
-Users need to see when a device last communicated with the system to understand device activity patterns. The current "Last Status Update" column only updates when the Device Twin is modified, which doesn't reflect actual device communication and creates confusion about device activity.
+Users need to see when a device last communicated with the system to understand device activity patterns. The current "Last Status Update" column only updates when the device metadata is modified, which doesn't reflect actual device communication and creates confusion about device activity.
 
 **Why this priority**: This enhances the fix by replacing misleading information with accurate activity tracking. It's P2 because removing the confusing column (P1) already solves the critical problem, but this provides better information.
 
 **Acceptance Scenarios**:
 
 1. **Given** I am viewing the device list page, **When** I look at the column headers, **Then** I should NOT see a "Last Status Update" column
-2. **Given** a device has sent telemetry data, **When** I view the device information, **Then** I should see the timestamp of the last activity (lastActivityTime)
-3. **Given** the Device Twin was updated but no device activity occurred, **When** I view the device information, **Then** the activity timestamp should reflect the actual last device communication, not the Twin update
+2. **Given** a device has sent telemetry data, **When** I view the device information, **Then** I should see the timestamp of the last activity
+3. **Given** the device metadata was updated but no device activity occurred, **When** I view the device information, **Then** the activity timestamp should reflect the actual last device communication, not the metadata update
 
 ---
 
@@ -51,11 +51,11 @@ Users managing gateways need the same clarity as device management. Gateways als
 
 ### Edge Cases
 
-- What happens when a device has never sent any data (lastActivityTime is null)?
+- What happens when a device has never sent any data (last activity timestamp is null)?
   - Display should show "No activity recorded" or similar placeholder text rather than an error or blank field
 - How does the system handle devices that were recently registered but haven't communicated yet?
   - Should display registration timestamp or "Awaiting first contact" status
-- What if lastActivityTime data is not available from the cloud provider (Azure IoT Hub or AWS IoT Core)?
+- What if last activity timestamp data is not available from the cloud provider?
   - System should gracefully handle missing data with appropriate fallback display
 
 ## Requirements *(mandatory)*
@@ -66,15 +66,15 @@ Users managing gateways need the same clarity as device management. Gateways als
 - **FR-002**: System MUST remove the "Connection State" column from the gateway list view
 - **FR-003**: System MUST remove the "Last Status Update" column from the device list view
 - **FR-004**: System MUST remove the "Last Status Update" column from the gateway list view
-- **FR-005**: System MUST display device activity information using the lastActivityTime field from the cloud provider (Azure IoT Hub or AWS IoT Core)
-- **FR-006**: System MUST display gateway activity information using the lastActivityTime field from the cloud provider
-- **FR-007**: System MUST handle cases where lastActivityTime is not available (null or missing) by displaying appropriate placeholder text
+- **FR-005**: System MUST display device activity information using the last device activity timestamp from the cloud provider
+- **FR-006**: System MUST display gateway activity information using the last gateway activity timestamp from the cloud provider
+- **FR-007**: System MUST handle cases where the last activity timestamp is not available (null or missing) by displaying appropriate placeholder text
 - **FR-008**: System MUST maintain all other existing columns and functionality in device and gateway list views
 
 ### Key Entities
 
-- **Device**: Represents an IoT device connected to the portal. Key attributes include device ID, name, model, and activity timestamp (lastActivityTime)
-- **Gateway**: Represents an IoT gateway managing multiple devices. Key attributes include gateway ID, name, model, and activity timestamp (lastActivityTime)
+- **Device**: Represents an IoT device connected to the portal. Key attributes include device ID, name, model, and last activity timestamp
+- **Gateway**: Represents an IoT gateway managing multiple devices. Key attributes include gateway ID, name, model, and last activity timestamp
 
 ## Success Criteria *(mandatory)*
 
