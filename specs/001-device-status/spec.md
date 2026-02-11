@@ -9,7 +9,7 @@
 
 ### User Story 1 - View Device Status Without Confusion (Priority: P1)
 
-Non-technical users need to view their device list without being confused by misleading status indicators. Currently, LoRaWAN devices that send data infrequently (every 30 minutes to 24 hours) appear as "disconnected" most of the time because the Connection State column only shows "connected" when there's an active connection to IoT Hub. This causes users to think devices are malfunctioning and generates unnecessary support requests.
+Non-technical users need to view their device list without being confused by misleading status indicators. Currently, LoRaWAN devices that send data infrequently (every 30 minutes to 24 hours) appear as "disconnected" most of the time because the Connection State column only shows "connected" when there's an active connection to the configured cloud IoT service (for example, Azure IoT Hub or AWS IoT Core). This causes users to think devices are malfunctioning and generates unnecessary support requests.
 
 **Why this priority**: This is the core problem causing user confusion and unnecessary support overhead. Removing the misleading Connection State column immediately solves the primary pain point.
 
