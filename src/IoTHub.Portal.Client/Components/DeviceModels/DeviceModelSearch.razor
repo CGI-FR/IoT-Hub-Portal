@@ -1,19 +1,13 @@
-﻿<MudExpansionPanels>
-    <MudExpansionPanel Text="Search panel">
-        <MudGrid>
-            <MudItem xs="12" md="6">
-                <MudTextField @bind-Value="searchText" Placeholder="Device Model Name / Device Model Description" id="searchText"></MudTextField>
-            </MudItem>
+﻿<MudGrid>
+    <MudItem xs="12" md="6">
+        <MudTextField @bind-Value="searchText" Placeholder="Device Model Name / Device Model Description" id="searchText"></MudTextField>
+    </MudItem>
 
-            <MudItem xs="12">
-                <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton" OnClick=Search>Search</MudButton>
-                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset" id="resetSearch">Reset</MudButton>
-            </MudItem>
-
-        </MudGrid>
-
-    </MudExpansionPanel>
-</MudExpansionPanels>
+    <MudItem xs="12">
+        <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton" OnClick=Search>Search</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset" id="resetSearch">Reset</MudButton>
+    </MudItem>
+</MudGrid>
 
 @code {
     [Parameter]

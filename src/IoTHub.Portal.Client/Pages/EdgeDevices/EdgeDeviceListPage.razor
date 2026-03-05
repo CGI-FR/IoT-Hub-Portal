@@ -12,70 +12,66 @@
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
     <MudGrid>
         <MudItem xs="12">
-            <MudExpansionPanels>
-                <MudExpansionPanel Text="Search panel">
-                    <MudGrid>
-                        <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="searchModel.DeviceId" Placeholder="Name"></MudTextField>
-                        </MudItem>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="searchModel.DeviceId" Placeholder="Name"></MudTextField>
+                </MudItem>
 
-                        <MudItem xs="12" md="6">
-                            <MudSelect T="LabelDto" Label="Labels" MultiSelection="true" @bind-SelectedValues="selectedLabels"
-                                       MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
-                                       Variant="Variant.Outlined">
-                                @foreach (var label in labels)
-                                {
-                                    <MudSelectItem T="LabelDto" Value="@label">
-                                        <MudChip Text="@label.Name" Color="Color.Primary" Style="@($"background-color: {label.Color};")" />
-                                    </MudSelectItem>
-                                }
-                            </MudSelect>
-                        </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect T="LabelDto" Label="Labels" MultiSelection="true" @bind-SelectedValues="selectedLabels"
+                               MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
+                               Variant="Variant.Outlined">
+                        @foreach (var label in labels)
+                        {
+                            <MudSelectItem T="LabelDto" Value="@label">
+                                <MudChip Text="@label.Name" Color="Color.Primary" Style="@($"background-color: {label.Color};")" />
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
 
-                        <MudItem xs="12" md="6">
-                            <MudAutocomplete T="IoTEdgeModelListItem"
-                                             id="@nameof(IoTEdgeModelListItem.ModelId)"
-                                             @bind-Value="edgeModel"
-                                             SearchFunc="@Search"
-                                             Label="Model"
-                                             Dense=true
-                                             For=@(() => this.edgeModel)
-                                             Variant="Variant.Outlined"
-                                             ToStringFunc="@(x => x?.Name)"
-                                             ResetValueOnEmptyText=true
-                                             Immediate=true
-                                             Clearable=true
-                                             CoerceText=true
-                                             CoerceValue=false>
-                                <ItemTemplate>
-                                    @context.Name
-                                    <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-                                        @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
-                                    </MudText>
-                                </ItemTemplate>
-                            </MudAutocomplete>
+                <MudItem xs="12" md="6">
+                    <MudAutocomplete T="IoTEdgeModelListItem"
+                                     id="@nameof(IoTEdgeModelListItem.ModelId)"
+                                     @bind-Value="edgeModel"
+                                     SearchFunc="@Search"
+                                     Label="Model"
+                                     Dense=true
+                                     For=@(() => this.edgeModel)
+                                     Variant="Variant.Outlined"
+                                     ToStringFunc="@(x => x?.Name)"
+                                     ResetValueOnEmptyText=true
+                                     Immediate=true
+                                     Clearable=true
+                                     CoerceText=true
+                                     CoerceValue=false>
+                        <ItemTemplate>
+                            @context.Name
+                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                            </MudText>
+                        </ItemTemplate>
+                    </MudAutocomplete>
+                </MudItem>
+                <MudItem sm="12" md="6">
+                    <MudText>Status</MudText>
+                    <MudRadioGroup @bind-SelectedOption="@searchModel.Status" Style="display:flex;align-items:baseline">
+                        <MudItem md="4" sm="12">
+                            <MudRadio Option=@("true") Color="Color.Primary">Connected</MudRadio>
                         </MudItem>
-                        <MudItem sm="12" md="6">
-                            <MudText>Status</MudText>
-                            <MudRadioGroup @bind-SelectedOption="@searchModel.Status" Style="display:flex;align-items:baseline">
-                                <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("true") Color="Color.Primary">Connected</MudRadio>
-                                </MudItem>
-                                <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("false") Color="Color.Primary">Disconnected</MudRadio>
-                                </MudItem>
-                                <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("true") Color="Color.Secondary">All</MudRadio>
-                                </MudItem>
-                            </MudRadioGroup>
+                        <MudItem md="4" sm="12">
+                            <MudRadio Option=@("false") Color="Color.Primary">Disconnected</MudRadio>
                         </MudItem>
-                        <MudItem xs="12" Class="pb-4 pl-4">
-                            <MudButton id="searchFilterButton" Variant="Variant.Outlined" Color="Color.Success" Class="ml-auto" OnClick="Search">Search</MudButton>
-                            <MudButton id="reset" Variant="Variant.Outlined" Color="Color.Primary" Class="ml-4" OnClick="ResetFilter">Reset</MudButton>
+                        <MudItem md="4" sm="12">
+                            <MudRadio Option=@("true") Color="Color.Secondary">All</MudRadio>
                         </MudItem>
-                    </MudGrid>
-                </MudExpansionPanel>
-            </MudExpansionPanels>
+                    </MudRadioGroup>
+                </MudItem>
+                <MudItem xs="12" Class="pb-4 pl-4">
+                    <MudButton id="searchFilterButton" Variant="Variant.Outlined" Color="Color.Success" Class="ml-auto" OnClick="Search">Search</MudButton>
+                    <MudButton id="reset" Variant="Variant.Outlined" Color="Color.Primary" Class="ml-4" OnClick="ResetFilter">Reset</MudButton>
+                </MudItem>
+            </MudGrid>
         </MudItem>
 
         <MudItem xs="12">
