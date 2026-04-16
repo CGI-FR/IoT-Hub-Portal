@@ -70,7 +70,7 @@
 
     [Parameter] public string UserId { get; set; } = string.Empty;
 
-    private UserDetailsModel user;
+    private UserDetailsModel user = new();
     private List<RoleModel> allRoles = new();
     private List<AccessControlModel> accessControls = new();
     private string newRoleId;
