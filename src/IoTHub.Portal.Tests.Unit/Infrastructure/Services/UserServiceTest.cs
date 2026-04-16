@@ -531,5 +531,89 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             this.mockAccessControlRepository.Verify(r => r.InsertAsync(It.IsAny<AccessControl>()), Times.Never);
             this.mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Exactly(2)); // Only for principal and user, not for access control
         }
+
+        [Test]
+        public async Task GetOrCreateUserByEmailAsync_ShouldHandleRaceCondition_WhenUserIsCreatedConcurrently()
+        {
+            // Arrange
+            var email = "concurrent@example.com";
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(new []
+            {
+                new Claim("name", "Concurrent User"),
+                new Claim("preferred_username", "concurrentuser"),
+                new Claim("family_name", "User")
+            }, "TestAuth"));
+
+            var existingUser = Fixture.Build<User>()
+                .With(u => u.Id, Guid.NewGuid().ToString())
+                .With(u => u.Email, email)
+                .With(u => u.Name, "Concurrent User")
+                .With(u => u.GivenName, "concurrentuser")
+                .With(u => u.FamilyName, "User")
+                .With(u => u.PrincipalId, Guid.NewGuid().ToString())
+                .Create();
+
+            var callCount = 0;
+
+            // First call: no user exists (to simulate race condition)
+            // Second call: user exists (created by concurrent request)
+            _ = this.mockUserRepository
+                 .Setup(r => r.GetAllAsync(
+                     It.IsAny<Expression<Func<User, bool>>>(),
+                     It.IsAny<CancellationToken>(),
+                     It.IsAny<Expression<Func<User, object>>[]>()
+                 ))
+                 .ReturnsAsync(() =>
+                 {
+                     callCount++;
+                     if (callCount == 1)
+                     {
+                         return new List<User>(); // First call: user doesn't exist
+                     }
+                     else
+                     {
+                         return new List<User> { existingUser }; // Subsequent calls: user exists
+                     }
+                 });
+
+            // User count for admin check
+            _ = this.mockUserRepository
+                 .Setup(r => r.CountAsync(null, It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(5);
+
+            // Principal insertion succeeds
+            _ = this.mockPrincipalRepository
+                 .Setup(r => r.InsertAsync(It.IsAny<Principal>()))
+                 .Returns(Task.CompletedTask);
+
+            // User insertion throws DbUpdateException to simulate duplicate key constraint violation
+            _ = this.mockUserRepository
+                 .Setup(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())))
+                 .ThrowsAsync(new Microsoft.EntityFrameworkCore.DbUpdateException("Simulated duplicate key error"));
+
+            // Principal deletion for cleanup
+            _ = this.mockPrincipalRepository
+                 .Setup(r => r.Delete(It.IsAny<string>()));
+
+            _ = this.mockUnitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask);
+
+            _ = this.mockConfigHandler
+                 .Setup(c => c.GlobalAdminEmails)
+                 .Returns(string.Empty);
+
+            // Act
+            var result = await userService.GetOrCreateUserByEmailAsync(email, principal);
+
+            // Assert
+            _ = result.Should().NotBeNull();
+            _ = result.Email.Should().Be(email);
+            this.mockPrincipalRepository.Verify(r => r.InsertAsync(It.IsAny<Principal>()), Times.Once);
+            this.mockUserRepository.Verify(r => r.InsertAsync(It.Is<User>(u => u.Email.ToLower() == email.ToLower())), Times.Once);
+            this.mockPrincipalRepository.Verify(r => r.Delete(It.IsAny<string>()), Times.Once); // Orphaned principal cleanup
+            this.mockUserRepository.Verify(r => r.GetAllAsync(
+                It.IsAny<Expression<Func<User, bool>>>(),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<Expression<Func<User, object>>[]>()), Times.Exactly(2)); // Once initially, once after exception
+        }
     }
 }

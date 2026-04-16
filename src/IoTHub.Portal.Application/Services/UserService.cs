@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Application.Services
     using IoTHub.Portal.Domain.Repositories;
     using IoTHub.Portal.Shared.Models.v10;
     using IoTHub.Portal.Shared.Models.v10.Filters;
+    using System.Collections.Concurrent;
 
     public class UserService : IUserManagementService
     {
@@ -23,6 +24,7 @@ namespace IoTHub.Portal.Application.Services
         private readonly IAccessControlRepository accessControlRepository;
         private readonly IRoleRepository roleRepository;
         private readonly ConfigHandler configHandler;
+        private static readonly ConcurrentDictionary<string, SemaphoreSlim> UserCreationLocks = new();
 
 
         public UserService(IMapper mapper, IUnitOfWork unitOfWork, IUserRepository userRepository, IPrincipalRepository principalRepository, IAccessControlRepository accessControlRepository, IRoleRepository roleRepository, ConfigHandler configHandler)
@@ -145,25 +147,36 @@ namespace IoTHub.Portal.Application.Services
 
         public async Task<UserDetailsModel> GetOrCreateUserByEmailAsync(string email, ClaimsPrincipal principal)
         {
-            // Retrieve the user by email (case insensitive)
-            var users = await this.userRepository.GetAllAsync(u => u.Email.ToLower() == email.ToLower());
-            var userEntity = users.FirstOrDefault();
+            var normalizedEmail = email.ToLower();
+            var userLock = UserCreationLocks.GetOrAdd(normalizedEmail, _ => new SemaphoreSlim(1, 1));
 
-            if (userEntity != null)
+            await userLock.WaitAsync();
+            try
             {
-                return mapper.Map<UserDetailsModel>(userEntity);
-            }
+                var users = await this.userRepository.GetAllAsync(u => u.Email.ToLower() == normalizedEmail);
+                var userEntity = users.FirstOrDefault();
 
-            // Check if it's the first user in the system, add to administrators role if so
+                if (userEntity != null)
+                {
+                    return this.mapper.Map<UserDetailsModel>(userEntity);
+                }
+
+                return await CreateUserInternalAsync(email, normalizedEmail, principal);
+            }
+            finally
+            {
+                _ = userLock.Release();
+            }
+        }
+
+        private async Task<UserDetailsModel> CreateUserInternalAsync(string email, string normalizedEmail, ClaimsPrincipal principal)
+        {
             var isAny = (await this.userRepository.CountAsync()) > 0;
 
-            // Extract user information from the ClaimsPrincipal
             var fullName = principal.FindFirst("name")?.Value ?? "";
             var preferredUsername = principal.FindFirst("preferred_username")?.Value ?? email;
             var familyName = principal.FindFirst("family_name")?.Value ?? "";
 
-            // We ignore the "given_name" from the token since you want to use preferred_username
-            // Create a new Principal first
             var newPrincipal = new Principal
             {
                 Id = Guid.NewGuid().ToString()
@@ -172,7 +185,6 @@ namespace IoTHub.Portal.Application.Services
             await this.principalRepository.InsertAsync(newPrincipal);
             await this.unitOfWork.SaveAsync();
 
-            // Create a new user
             var newUser = new User
             {
                 Email = email,
@@ -182,25 +194,40 @@ namespace IoTHub.Portal.Application.Services
                 PrincipalId = newPrincipal.Id
             };
 
-            await this.userRepository.InsertAsync(newUser);
-            await this.unitOfWork.SaveAsync();
+            try
+            {
+                await this.userRepository.InsertAsync(newUser);
+                await this.unitOfWork.SaveAsync();
+            }
+            catch (Exception ex) when (IsDuplicateKeyException(ex))
+            {
+                var users = await this.userRepository.GetAllAsync(u => u.Email.ToLower() == normalizedEmail);
+                var userEntity = users.FirstOrDefault();
 
-            // Check if user should be granted admin role
+                if (userEntity != null)
+                {
+                    this.principalRepository.Delete(newPrincipal.Id);
+                    await this.unitOfWork.SaveAsync();
+
+                    return this.mapper.Map<UserDetailsModel>(userEntity);
+                }
+
+                throw;
+            }
+
             var shouldGrantAdmin = false;
 
-            // First user in the system gets admin automatically
             if (!isAny)
             {
                 shouldGrantAdmin = true;
             }
-            // Or if their email is in the GlobalAdminEmails configuration
             else if (!string.IsNullOrWhiteSpace(this.configHandler.GlobalAdminEmails))
             {
                 var adminEmails = this.configHandler.GlobalAdminEmails
                     .Split(',', StringSplitOptions.RemoveEmptyEntries)
                     .Select(e => e.Trim().ToLower());
 
-                if (adminEmails.Contains(email.ToLower()))
+                if (adminEmails.Contains(normalizedEmail))
                 {
                     shouldGrantAdmin = true;
                 }
@@ -208,7 +235,6 @@ namespace IoTHub.Portal.Application.Services
 
             if (shouldGrantAdmin)
             {
-                // Assign user to the Administrators role
                 var adminRole = await this.roleRepository.GetByNameAsync("Administrators");
 
                 if (adminRole == null)
@@ -220,7 +246,6 @@ namespace IoTHub.Portal.Application.Services
                 var newAccessControl = new AccessControl
                 {
                     Id = Guid.NewGuid().ToString(),
-                    //Principal = newUser.Principal,
                     PrincipalId = newUser.PrincipalId,
                     RoleId = adminRole.Id,
                     Role = adminRole,
@@ -231,7 +256,16 @@ namespace IoTHub.Portal.Application.Services
                 await this.unitOfWork.SaveAsync();
             }
 
-            return mapper.Map<UserDetailsModel>(newUser);
+            return this.mapper.Map<UserDetailsModel>(newUser);
+        }
+
+        private static bool IsDuplicateKeyException(Exception ex)
+        {
+            var exceptionMessage = ex.ToString().ToLower();
+            return exceptionMessage.Contains("duplicate") ||
+                   exceptionMessage.Contains("unique constraint") ||
+                   exceptionMessage.Contains("unique index") ||
+                   exceptionMessage.Contains("violation");
         }
     }
 }
