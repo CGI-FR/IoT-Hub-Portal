@@ -21,7 +21,7 @@
     private bool canWrite;
 
     [Parameter] public string RoleId { get; set; }
-    private RoleDetailsModel Role;
+    private RoleDetailsModel Role = new();
 
     protected override async Task OnInitializedAsync()
     {
