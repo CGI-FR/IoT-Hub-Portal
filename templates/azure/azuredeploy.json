@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "10395669265929389736"
+      "version": "0.42.1.51946",
+      "templateHash": "7164104784918307483"
     }
   },
   "parameters": {
@@ -173,7 +173,7 @@
     {
       "condition": "[parameters('isLoRaFeatureEnabled')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "iothub-portal-with-lorawan",
       "properties": {
         "expressionEvaluationOptions": {
@@ -281,8 +281,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "5379200564556238016"
+              "version": "0.42.1.51946",
+              "templateHash": "12020049803183485911"
             }
           },
           "parameters": {
@@ -504,7 +504,7 @@
           "resources": [
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "lorawan-starter-kit",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -543,8 +543,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "346080367161556806"
+                      "version": "0.42.1.51946",
+                      "templateHash": "10522140334239696098"
                     }
                   },
                   "parameters": {
@@ -662,7 +662,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "iotHub",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -683,8 +683,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "4406886964679467929"
+                              "version": "0.42.1.51946",
+                              "templateHash": "2925568600317438241"
                             }
                           },
                           "parameters": {
@@ -718,7 +718,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "storage",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -742,8 +742,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12682578182798757700"
+                              "version": "0.42.1.51946",
+                              "templateHash": "10265690598743212703"
                             }
                           },
                           "parameters": {
@@ -799,7 +799,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "redisCache",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -820,8 +820,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "6446068394986242796"
+                              "version": "0.42.1.51946",
+                              "templateHash": "13810596333788475371"
                             }
                           },
                           "parameters": {
@@ -867,7 +867,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "function",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -876,10 +876,10 @@
                         "mode": "Incremental",
                         "parameters": {
                           "appInsightName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'observability'), '2022-09-01').outputs.appInsightName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'observability'), '2025-04-01').outputs.appInsightName.value]"
                           },
                           "logAnalyticsName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'observability'), '2022-09-01').outputs.logAnalyticsName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'observability'), '2025-04-01').outputs.logAnalyticsName.value]"
                           },
                           "uniqueSolutionPrefix": {
                             "value": "[parameters('uniqueSolutionPrefix')]"
@@ -891,13 +891,13 @@
                             "value": "[parameters('location')]"
                           },
                           "redisCacheName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'redisCache'), '2022-09-01').outputs.redisCacheName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'redisCache'), '2025-04-01').outputs.redisCacheName.value]"
                           },
                           "iotHubName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'iotHub'), '2022-09-01').outputs.iotHubName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'iotHub'), '2025-04-01').outputs.iotHubName.value]"
                           },
                           "storageAccountName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'storage'), '2022-09-01').outputs.storageAccountName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'storage'), '2025-04-01').outputs.storageAccountName.value]"
                           },
                           "gitUsername": {
                             "value": "[parameters('gitUsername')]"
@@ -912,8 +912,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10876830084289450946"
+                              "version": "0.42.1.51946",
+                              "templateHash": "18283401551805245119"
                             }
                           },
                           "parameters": {
@@ -1079,7 +1079,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "observability",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -1091,7 +1091,7 @@
                             "value": "[parameters('uniqueSolutionPrefix')]"
                           },
                           "iotHubName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'iotHub'), '2022-09-01').outputs.iotHubName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'iotHub'), '2025-04-01').outputs.iotHubName.value]"
                           },
                           "location": {
                             "value": "[parameters('location')]"
@@ -1106,8 +1106,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "200091648131379261"
+                              "version": "0.42.1.51946",
+                              "templateHash": "13562291926881018105"
                             }
                           },
                           "parameters": {
@@ -1160,7 +1160,7 @@
                             {
                               "condition": "[parameters('useAzureMonitorOnEdge')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "workbook",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -1184,8 +1184,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "15979896914498320375"
+                                      "version": "0.42.1.51946",
+                                      "templateHash": "17583200762390407831"
                                     }
                                   },
                                   "parameters": {
@@ -1229,7 +1229,7 @@
                             {
                               "condition": "[parameters('useAzureMonitorOnEdge')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "azureMonitorAlerts",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -1250,8 +1250,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "8944655127419665774"
+                                      "version": "0.42.1.51946",
+                                      "templateHash": "1488745620460386874"
                                     }
                                   },
                                   "parameters": {
@@ -1587,7 +1587,7 @@
                     {
                       "condition": "[parameters('useDiscoveryService')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "discoveryService",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -1596,7 +1596,7 @@
                         "mode": "Incremental",
                         "parameters": {
                           "appInsightName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'observability'), '2022-09-01').outputs.appInsightName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'observability'), '2025-04-01').outputs.appInsightName.value]"
                           },
                           "version": {
                             "value": "[parameters('version')]"
@@ -1605,7 +1605,7 @@
                             "value": "[parameters('gitUsername')]"
                           },
                           "iotHubName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'iotHub'), '2022-09-01').outputs.iotHubName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'iotHub'), '2025-04-01').outputs.iotHubName.value]"
                           },
                           "uniqueSolutionPrefix": {
                             "value": "[parameters('uniqueSolutionPrefix')]"
@@ -1620,8 +1620,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8004423485616138915"
+                              "version": "0.42.1.51946",
+                              "templateHash": "17846252795724677055"
                             }
                           },
                           "parameters": {
@@ -1709,7 +1709,7 @@
                             {
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2022-04-01",
-                              "scope": "[format('Microsoft.Devices/IotHubs/{0}', parameters('iotHubName'))]",
+                              "scope": "[resourceId('Microsoft.Devices/IotHubs', parameters('iotHubName'))]",
                               "name": "[parameters('roleNameGuid')]",
                               "properties": {
                                 "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('webAppName')), '2022-03-01', 'full').identity.principalId]",
@@ -1730,7 +1730,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "createDevices",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -1745,13 +1745,13 @@
                             "value": "[parameters('deployDevice')]"
                           },
                           "logAnalyticsName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'observability'), '2022-09-01').outputs.logAnalyticsName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'observability'), '2025-04-01').outputs.logAnalyticsName.value]"
                           },
                           "functionAppName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'function'), '2022-09-01').outputs.functionName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'function'), '2025-04-01').outputs.functionName.value]"
                           },
                           "iothubName": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'iotHub'), '2022-09-01').outputs.iotHubName.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'iotHub'), '2025-04-01').outputs.iotHubName.value]"
                           },
                           "edgeGatewayName": {
                             "value": "[parameters('edgeGatewayName')]"
@@ -1784,8 +1784,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "46906872022834320"
+                              "version": "0.42.1.51946",
+                              "templateHash": "3484814387897462266"
                             }
                           },
                           "parameters": {
@@ -1950,7 +1950,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "portal-with-lorawan",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2037,8 +2037,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "15987939942085163650"
+                      "version": "0.42.1.51946",
+                      "templateHash": "13280010280682309949"
                     }
                   },
                   "parameters": {
@@ -2200,7 +2200,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "ioTHubEventHubConsumerGroup",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2221,8 +2221,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "881471300335326963"
+                              "version": "0.42.1.51946",
+                              "templateHash": "13946345832645923210"
                             }
                           },
                           "parameters": {
@@ -2254,7 +2254,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "storageAccountName_default_deviceImageContainer",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2275,8 +2275,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "2841634721374662319"
+                              "version": "0.42.1.51946",
+                              "templateHash": "7479104980382332350"
                             }
                           },
                           "parameters": {
@@ -2305,7 +2305,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "dps",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2332,8 +2332,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "716080996334182344"
+                              "version": "0.42.1.51946",
+                              "templateHash": "11899208138863181242"
                             }
                           },
                           "parameters": {
@@ -2395,7 +2395,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "pgsqlServer",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2422,8 +2422,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "9454351289000143651"
+                              "version": "0.42.1.51946",
+                              "templateHash": "4711237218111372143"
                             }
                           },
                           "parameters": {
@@ -2483,7 +2483,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "servicePlan",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2504,8 +2504,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "17724326878957294482"
+                              "version": "0.42.1.51946",
+                              "templateHash": "8440507769657333023"
                             }
                           },
                           "parameters": {
@@ -2561,7 +2561,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "site",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2576,7 +2576,7 @@
                             "value": "[parameters('siteName')]"
                           },
                           "appServicePlanId": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'servicePlan'), '2022-09-01').outputs.id.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'servicePlan'), '2025-04-01').outputs.id.value]"
                           },
                           "iotHubName": {
                             "value": "[parameters('iotHubName')]"
@@ -2597,7 +2597,7 @@
                             "value": "[parameters('provisioningserviceownerPolicyName')]"
                           },
                           "dpsIdScope": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'dps'), '2022-09-01').outputs.idScope.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'dps'), '2025-04-01').outputs.idScope.value]"
                           },
                           "storageAccountName": {
                             "value": "[parameters('storageAccountName')]"
@@ -2660,8 +2660,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "3783326201754214092"
+                              "version": "0.42.1.51946",
+                              "templateHash": "10820897304119333313"
                             }
                           },
                           "parameters": {
@@ -2866,7 +2866,7 @@
                                 "reserved": true,
                                 "siteConfig": {
                                   "numberOfWorkers": 1,
-                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.3.1",
+                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:6.0.0-beta02",
                                   "connectionStrings": [
                                     {
                                       "name": "Azure__IoTHub__ConnectionString",
@@ -2996,7 +2996,7 @@
     {
       "condition": "[not(parameters('isLoRaFeatureEnabled'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "iothub-portal-without-lorawan",
       "properties": {
         "expressionEvaluationOptions": {
@@ -3080,8 +3080,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "17416047222374579127"
+              "version": "0.42.1.51946",
+              "templateHash": "7366193750516535344"
             }
           },
           "parameters": {
@@ -3233,7 +3233,7 @@
           "resources": [
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "iotHub",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3254,8 +3254,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "11446100841389223531"
+                      "version": "0.42.1.51946",
+                      "templateHash": "13680600419974805289"
                     }
                   },
                   "parameters": {
@@ -3290,7 +3290,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "dps",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3317,8 +3317,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "716080996334182344"
+                      "version": "0.42.1.51946",
+                      "templateHash": "11899208138863181242"
                     }
                   },
                   "parameters": {
@@ -3383,7 +3383,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "storageAccount",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3404,8 +3404,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "4642128237300944293"
+                      "version": "0.42.1.51946",
+                      "templateHash": "10827797779539164893"
                     }
                   },
                   "parameters": {
@@ -3439,7 +3439,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "storageAccountName_default_deviceImageContainer",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3460,8 +3460,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2841634721374662319"
+                      "version": "0.42.1.51946",
+                      "templateHash": "7479104980382332350"
                     }
                   },
                   "parameters": {
@@ -3493,7 +3493,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "pgsqlServer",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3520,8 +3520,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "9454351289000143651"
+                      "version": "0.42.1.51946",
+                      "templateHash": "4711237218111372143"
                     }
                   },
                   "parameters": {
@@ -3581,7 +3581,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "appInsights",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3602,8 +3602,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "4284457942474631397"
+                      "version": "0.42.1.51946",
+                      "templateHash": "3040152045867657958"
                     }
                   },
                   "parameters": {
@@ -3643,7 +3643,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "servicePlan",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3664,8 +3664,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "17724326878957294482"
+                      "version": "0.42.1.51946",
+                      "templateHash": "8440507769657333023"
                     }
                   },
                   "parameters": {
@@ -3721,7 +3721,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "site",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3736,7 +3736,7 @@
                     "value": "[parameters('siteName')]"
                   },
                   "appServicePlanId": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'servicePlan'), '2022-09-01').outputs.id.value]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'servicePlan'), '2025-04-01').outputs.id.value]"
                   },
                   "iotHubName": {
                     "value": "[parameters('iotHubName')]"
@@ -3751,7 +3751,7 @@
                     "value": "[parameters('provisioningserviceownerPolicyName')]"
                   },
                   "dpsIdScope": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'dps'), '2022-09-01').outputs.idScope.value]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'dps'), '2025-04-01').outputs.idScope.value]"
                   },
                   "storageAccountName": {
                     "value": "[parameters('storageAccountName')]"
@@ -3808,8 +3808,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "3783326201754214092"
+                      "version": "0.42.1.51946",
+                      "templateHash": "10820897304119333313"
                     }
                   },
                   "parameters": {
@@ -4014,7 +4014,7 @@
                         "reserved": true,
                         "siteConfig": {
                           "numberOfWorkers": 1,
-                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:5.3.1",
+                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:6.0.0-beta02",
                           "connectionStrings": [
                             {
                               "name": "Azure__IoTHub__ConnectionString",
