@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
         with: 
-          ref: 'docs/main'
+          ref: 'main'
 
       - uses: actions/download-artifact@v7
         with:
@@ -71,7 +71,7 @@ jobs:
       - name: Push Open API Markdown to GitHub
         uses: peter-evans/create-pull-request@v7
         with:
-          base: 'docs/main'
+          base: 'main'
           branch: 'docs/feature/open-api'
           commit-message: 'Adds auto-generated Open API doc.'
           token: ${{ steps.generate_app_token.outputs.token }}

@@ -1,18 +1,18 @@
-name: Delete Documentation Version
+name: Publish Documentation with Preview Version
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
   workflow_dispatch:
-    inputs:
-      version_to_delete:
-        description: 'Version to delete'
-        required: true
 jobs:
-  delete-documentation-version:
-    name: Delete Documentation Version
+  deploy-documentation-preview-version:
+    name: Publish Documentation with Preview Version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
         with:
-          ref: main
           fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -20,9 +20,9 @@ jobs:
           python-version: 3.x
       - name: Install dependencies
         run: pip install -r docs/requirements.txt
-      - name: Setup git user for mike push
+      - name: Setup doc deploy
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-      - name: Delete doc version and push
-        run: mike delete --push ${{ github.event.inputs.version_to_delete }}
+      - name: Deploy docs to dev version
+        run: mike deploy --push dev
