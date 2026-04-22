@@ -1,6 +1,6 @@
 # IoT Hub Portal
 
-This project aims to provide a solution for handling IoT Devices easyly.
+This project aims to provide a solution for handling IoT Devices easily.
 It leverages on Azure IoT Hub or AWS IoT Core for connectivity and device management.
 
 ## Features

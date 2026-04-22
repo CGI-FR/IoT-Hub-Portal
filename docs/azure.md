@@ -2,7 +2,7 @@
 
 ## Overall Architecture
 
-This schema represent the various components and how they interact to have a better understanding of the various solution elements.
+This schema represents the various components and how they interact to have a better understanding of the various solution elements.
 
 ![images/overall-architecture.png](images/overall-architecture.png)
 

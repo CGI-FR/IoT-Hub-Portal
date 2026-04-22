@@ -7,7 +7,7 @@ The code is organized into the following directory structure:
 * **src**: Source code
   * **AzureIoTHub.Portal.Server.Tests**: Unit test project for the Portal
   * **AzureIoTHub.Portal**: The Portal project
-    * **Client**: .NET 6 Blazor Web Assembly project that alow to visualize the IoT Hub data
+    * **Client**: .NET 6 Blazor Web Assembly project that allow to visualize the IoT Hub data
     * **Server**: .NET 6 Web API project that provides the API for the Portal
     * **Shared**: Shared code between the Client and Server projects
 * **templates**: contains the templates for the "deploy to Azure" button
@@ -37,7 +37,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 Before getting started, it is better to master the tools below:
 
 * Azure platform and Azure IoT Hub. A tutorial can be found [here](https://docs.microsoft.com/en-us/learn/paths/ai-edge-engineer/).
-* Blazor WebAssembly and Blazor Server. A traning is available [on this site](https://docs.microsoft.com/en-us/learn/paths/build-web-apps-with-blazor/).
+* Blazor WebAssembly and Blazor Server. A training is available [on this site](https://docs.microsoft.com/en-us/learn/paths/build-web-apps-with-blazor/).
 * Docker. An introduction to containerization is available [on this page](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/container-docker-introduction/).
 * IoTEdge LoraWAN StarterKit. Have a look at [LoRaWAN Starter Kit](https://azure.github.io/iotedge-lorawan-starterkit) to get more details on this OSS cross platform private network.
 

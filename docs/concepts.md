@@ -64,7 +64,7 @@ To store additional information about the device, the application uses device tw
 
 ## IoT Edge
 
-IoT Edge is fully herited from Azure IoT Hub concepts. In the portal, the user can mangage the IoT Edge devices stored in Azure IoT Hub.
+IoT Edge is fully inherited from Azure IoT Hub concepts. In the portal, the user can manage the IoT Edge devices stored in Azure IoT Hub.
 For more information about Azure IoT Edge, see [Azure IoT Edge documentation](https://docs.microsoft.com/en-us/azure/iot-edge/).
 
 ![images/iot-edge.png](images/iot-edge.png)
