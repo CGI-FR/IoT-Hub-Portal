@@ -9,14 +9,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
         with:
-          ref: docs/main
+          ref: main
           fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.x
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r docs/requirements.txt
       - name: Setup doc deploy
         run: |
           git config user.name github-actions

@@ -1,0 +1,5891 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Azure IoT Hub Portal API",
+    "description": "Available APIs for managing devices from Azure IoT Hub.",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/admin/devices/_export": {
+      "post": {
+        "tags": [
+          "Admin APIs"
+        ],
+        "operationId": "Export devices",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/admin/devices/_import": {
+      "post": {
+        "tags": [
+          "Admin APIs"
+        ],
+        "operationId": "Import devices",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ImportResultLine"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ImportResultLine"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ImportResultLine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/devices/_template": {
+      "post": {
+        "tags": [
+          "Admin APIs"
+        ],
+        "operationId": "Download template file",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/dashboard/metrics": {
+      "get": {
+        "tags": [
+          "Metrics"
+        ],
+        "operationId": "Get Portal Metrics",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalMetric"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalMetric"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalMetric"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/device-configurations": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "GET Device configurations",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigListItem"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigListItem"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigListItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "POST Create Device configuration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "PUT Update Device configuration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/device-configurations/{configurationId}": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "GET Device configuration",
+        "parameters": [
+          {
+            "name": "configurationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceConfig"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceConfig"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceConfig"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "DELETE Device configuration",
+        "parameters": [
+          {
+            "name": "configurationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/device-configurations/{configurationId}/metrics": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "GET Device configuration metrics",
+        "parameters": [
+          {
+            "name": "configurationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationMetrics"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationMetrics"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationMetrics"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/devices": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Gets the device list.",
+        "operationId": "GET Device list",
+        "parameters": [
+          {
+            "name": "searchText",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchStatus",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "searchState",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "labels",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Creates the device.",
+        "operationId": "POST Create device",
+        "requestBody": {
+          "description": "The device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceDetails"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceDetails"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceDetails"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Updates the device.",
+        "operationId": "PUT Update device",
+        "requestBody": {
+          "description": "The device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceDetails"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceDetails"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceDetails"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/devices/{deviceID}": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Gets the specified device.",
+        "operationId": "GET Device details",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Deletes the specified device.",
+        "operationId": "DELETE Remove device",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/devices/{deviceID}/credentials": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Gets the device credentials.",
+        "operationId": "GET Device Credentials",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceCredentials"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceCredentials"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceCredentials"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/devices/{deviceID}/properties": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Gets the device credentials.",
+        "operationId": "GET Device Properties",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Gets the device credentials.",
+        "operationId": "POST Device Properties",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The properties values.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DevicePropertyValue"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DevicePropertyValue"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DevicePropertyValue"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/devices/available-labels": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "GET Available Labels on Devices",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Gets the IoT Edge device list.",
+        "operationId": "GET IoT Edge devices",
+        "parameters": [
+          {
+            "name": "searchText",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchStatus",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "labels",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeListItemPaginationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeListItemPaginationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeListItemPaginationResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Creates the IoT Edge device.",
+        "operationId": "POST Create IoT Edge",
+        "requestBody": {
+          "description": "The IoT Edge device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Updates the device.",
+        "operationId": "PUT Update IoT Edge",
+        "requestBody": {
+          "description": "The IoT Edge device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/edge/devices/{deviceId}": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Gets the specified device.",
+        "operationId": "GET IoT Edge device",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeDevice"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeDevice"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeDevice"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Deletes the device.",
+        "operationId": "DELETE Remove IoT Edge",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/edge/devices/{deviceId}/{moduleName}/{methodName}": {
+      "post": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Executes the module method on the IoT Edge device.",
+        "operationId": "POST Execute module command",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "moduleName",
+            "in": "path",
+            "description": "The edge module name.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "methodName",
+            "in": "path",
+            "description": "Name of the method.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/C2Dresult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/C2Dresult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/C2Dresult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices/{deviceId}/credentials": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Gets the IoT Edge device enrollement credentials.",
+        "operationId": "GET Device enrollment credentials",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SymmetricCredentials"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SymmetricCredentials"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SymmetricCredentials"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices/{deviceId}/enrollementScript/{templateName}": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Gets the IoT Edge device enrollement script Url.",
+        "operationId": "GET Device enrollment script URL",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "templateName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices/{deviceId}/logs": {
+      "post": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Get edge device logs",
+        "operationId": "Get Edge Device logs",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "Device Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Edge module",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModule"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModule"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeDeviceLog"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeDeviceLog"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeDeviceLog"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices/available-labels": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "operationId": "GET Available Labels on Edge Devices",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices/enroll": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "operationId": "GET Device enrollment script",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/models": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModelListItem"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModelListItem"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModelListItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/edge/models/{edgeModelId}": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Delete the edge device model.",
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "description": "the model id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/edge/models/{edgeModelId}/avatar": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Gets the avatar.",
+        "operationId": "GET edge Device model avatar URL",
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Changes the avatar.",
+        "operationId": "POST Update the edge device model avatar",
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Deletes the avatar.",
+        "operationId": "DELETE Remove the edge device model avatar",
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/models/public-modules": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Get public edge modules",
+        "operationId": "GET edge public modules",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ideas": {
+      "post": {
+        "tags": [
+          "Ideas"
+        ],
+        "operationId": "Submit Idea to Iot Hub Portal community",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/concentrators": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Gets all device concentrators.",
+        "operationId": "GET LoRaWAN Concentrator list",
+        "parameters": [
+          {
+            "name": "searchText",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConcentratorDtoPaginationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConcentratorDtoPaginationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConcentratorDtoPaginationResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Creates the device.",
+        "operationId": "POST Create LoRaWAN concentrator",
+        "requestBody": {
+          "description": "The device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConcentratorDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConcentratorDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConcentratorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Updates the device.",
+        "operationId": "PUT Update LoRaWAN concentrator",
+        "requestBody": {
+          "description": "The device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConcentratorDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConcentratorDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConcentratorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/concentrators/{deviceId}": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Gets the device concentrator.",
+        "operationId": "GET LoRaWAN Concentrator",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConcentratorDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConcentratorDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConcentratorDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Deletes the specified device.",
+        "operationId": "DELETE Remove LoRaWAN concentrator",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Gets the device list.",
+        "operationId": "GET LoRaWAN device list",
+        "parameters": [
+          {
+            "name": "searchText",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchStatus",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "searchState",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Creates the device.",
+        "operationId": "POST Create LoRaWAN device",
+        "requestBody": {
+          "description": "The device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceDetails"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceDetails"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceDetails"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Updates the device.",
+        "operationId": "PUT Update LoRaWAN device",
+        "requestBody": {
+          "description": "The device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceDetails"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceDetails"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceDetails"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices/{deviceID}": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Gets the specified device.",
+        "operationId": "GET LoRaWAN device details",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaDeviceDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaDeviceDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaDeviceDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Deletes the specified device.",
+        "operationId": "DELETE Remove LoRaWAN device",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices/{deviceId}/_command/{commandId}": {
+      "post": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Executes the command on the device..",
+        "operationId": "POST Execute LoRaWAN command",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commandId",
+            "in": "path",
+            "description": "The command identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices/{deviceId}/telemetry": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices/available-labels": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "operationId": "GET Available Labels on LoRaWAN Devices",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices/gateways": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "operationId": "Get Gateways",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaGatewayIDList"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaGatewayIDList"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaGatewayIDList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/freqencyplans": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Get LoRaWAN supported frequency plans.",
+        "operationId": "GET LoRaWAN Frequency plans",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrequencyPlan"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrequencyPlan"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrequencyPlan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/models": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Gets the device model list.",
+        "operationId": "GET LoRaWAN device model list",
+        "parameters": [
+          {
+            "name": "searchText",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Creates the specified device model.",
+        "operationId": "POST Create a new LoRaWAN device model",
+        "requestBody": {
+          "description": "The device model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Updates the specified device model.",
+        "operationId": "PUT Update the LoRaWAN device model",
+        "requestBody": {
+          "description": "The device model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/models/{id}": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Get the device model details.",
+        "operationId": "GET LoRaWAN device model",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The devic emodel identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Deletes the specified device model.",
+        "operationId": "DELETE Remove the LoRaWAN device model",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The device model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/models/{id}/avatar": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Gets the device model avatar.",
+        "operationId": "GET LoRaWAN device model avatar URL",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The device model identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Changes the avatar.",
+        "operationId": "POST Update the LoRaWAN device model avatar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Deletes the avatar.",
+        "operationId": "DELETE Remove the LoRaWAN device model avatar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/models/{id}/commands": {
+      "post": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Updates the device model's commands.",
+        "operationId": "POST Set device model commands",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The commands.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceModelCommandDto"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceModelCommandDto"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceModelCommandDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Gets the device model's commands.",
+        "operationId": "GET Device model commands",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceModelCommandDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceModelCommandDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceModelCommandDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models": {
+      "get": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Gets the device model list.",
+        "operationId": "GET Device model list",
+        "parameters": [
+          {
+            "name": "searchText",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Creates the specified device model.",
+        "operationId": "POST Create a new device model",
+        "requestBody": {
+          "description": "The device model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceModelDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceModelDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceModelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Updates the specified device model.",
+        "operationId": "PUT Update the device model",
+        "requestBody": {
+          "description": "The device model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceModelDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceModelDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceModelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{id}": {
+      "get": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Get the device model details.",
+        "operationId": "GET Device model",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The devic emodel identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceModelDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Deletes the specified device model.",
+        "operationId": "DELETE Remove the device model",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The device model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{id}/avatar": {
+      "get": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Gets the device model avatar.",
+        "operationId": "GET Device model avatar URL",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The device model identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Changes the avatar.",
+        "operationId": "POST Update the device model avatar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Deletes the avatar.",
+        "operationId": "DELETE Remove the device model avatar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{id}/properties": {
+      "get": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Gets the device model properties.",
+        "operationId": "GET Device model properties",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The device model properties",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceProperty"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceProperty"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceProperty"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Sets the device model properties.",
+        "operationId": "POST Device model properties",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The device model properties",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The model properties",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceProperty"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceProperty"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceProperty"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings/device-tags": {
+      "post": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Updates the device tag settings to be used in the application.",
+        "operationId": "POST Update the Device tags settings",
+        "requestBody": {
+          "description": "List of tags.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceTagDto"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceTagDto"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceTagDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Gets the device tag settings to be used in the application",
+        "operationId": "GET Device tags settings",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceTagDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Create or update a device tag",
+        "operationId": "Create or update a device tag",
+        "requestBody": {
+          "description": "Device Tag",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceTagDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceTagDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/settings/device-tags/{deviceTagName}": {
+      "delete": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Delete a device tag by name",
+        "operationId": "Delete a device tag by name",
+        "parameters": [
+          {
+            "name": "deviceTagName",
+            "in": "path",
+            "description": "Device Tag Name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/settings/oidc": {
+      "get": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Get the Open ID Settings.",
+        "operationId": "GET Open ID settings",
+        "responses": {
+          "200": {
+            "description": "Returns the OIDC settings."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/settings/portal": {
+      "get": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Get the portal settings.",
+        "operationId": "GET Portal settings",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalSettings"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "C2Dresult": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "type": "string",
+            "description": "The C2D result payload.",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "description": "The C2D status.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Cloud to Device message result."
+      },
+      "CertificateCredentials": {
+        "type": "object",
+        "properties": {
+          "certificatePem": {
+            "type": "string",
+            "description": "The Certificate Pem",
+            "nullable": true
+          },
+          "publicKey": {
+            "type": "string",
+            "description": "The public key",
+            "nullable": true
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "The private key",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Certificate credentials."
+      },
+      "Channel": {
+        "type": "object",
+        "properties": {
+          "enable": {
+            "type": "boolean",
+            "description": "A value indicating whether the channel is enabled.",
+            "nullable": true
+          },
+          "freq": {
+            "type": "integer",
+            "description": "The frequency.",
+            "format": "int32"
+          },
+          "radio": {
+            "type": "integer",
+            "description": "The radio.",
+            "format": "int32"
+          },
+          "if": {
+            "type": "integer",
+            "description": "The interface.",
+            "format": "int32"
+          },
+          "bandwidth": {
+            "type": "integer",
+            "description": "The bandwidth.",
+            "format": "int32"
+          },
+          "spread_factor": {
+            "type": "integer",
+            "description": "The spread factor.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "LoRaWAN Concentrator Channel configuration."
+      },
+      "ConcentratorDto": {
+        "required": [
+          "deviceId",
+          "deviceName",
+          "loraRegion"
+        ],
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "minLength": 1,
+            "pattern": "^[A-F0-9]{16}$",
+            "type": "string",
+            "description": "The device identifier."
+          },
+          "deviceName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The name of the device."
+          },
+          "loraRegion": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The lora region."
+          },
+          "deviceType": {
+            "type": "string",
+            "description": "The type of the device.",
+            "nullable": true
+          },
+          "clientThumbprint": {
+            "pattern": "^(([A-F0-9]{2}:){19}[A-F0-9]{2}|)$",
+            "type": "string",
+            "description": "The client certificate thumbprint.",
+            "nullable": true
+          },
+          "isConnected": {
+            "type": "boolean",
+            "description": "`true` if this instance is connected; otherwise, `false`."
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "`true` if this instance is enabled; otherwise, `false`."
+          },
+          "alreadyLoggedInOnce": {
+            "type": "boolean",
+            "description": "`true` if [already logged in once]; otherwise, `false`."
+          },
+          "routerConfig": {
+            "$ref": "#/components/schemas/RouterConfig"
+          }
+        },
+        "additionalProperties": false,
+        "description": "LoRaWAN Concentrator."
+      },
+      "ConcentratorDtoPaginationResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConcentratorDto"
+            },
+            "description": "The current page items.",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "description": "The total number of items.",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "string",
+            "description": "The query next page Url.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing the page results."
+      },
+      "ConfigItem": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The IoT Edge configuration name."
+          },
+          "dateCreation": {
+            "type": "string",
+            "description": "The IoT Edge configuration creation date.",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "description": "The IoT Edge configuration status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "IoT Edge configuration"
+      },
+      "ConfigListItem": {
+        "type": "object",
+        "properties": {
+          "configurationID": {
+            "type": "string",
+            "description": "The IoT Edge configuration identifier.",
+            "nullable": true
+          },
+          "conditions": {
+            "type": "string",
+            "description": "The IoT Edge configuration target conditions.",
+            "nullable": true
+          },
+          "metricsTargeted": {
+            "type": "integer",
+            "description": "The IoT Edge configuration targeted metrics.",
+            "format": "int64"
+          },
+          "metricsApplied": {
+            "type": "integer",
+            "description": "The IoT Edge configuration applied metrics.",
+            "format": "int64"
+          },
+          "metricsSuccess": {
+            "type": "integer",
+            "description": "The IoT Edge configuration success metrics.",
+            "format": "int64"
+          },
+          "metricsFailure": {
+            "type": "integer",
+            "description": "The IoT Edge configuration failure metrics.",
+            "format": "int64"
+          },
+          "priority": {
+            "type": "integer",
+            "description": "The IoT Edge configuration priority.",
+            "format": "int32"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "The IoT Edge configuration creation date.",
+            "format": "date-time"
+          },
+          "modules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModule"
+            },
+            "description": "The IoT Edge modules configuration.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "IoT Edge configuration list item."
+      },
+      "ConfigurationMetrics": {
+        "type": "object",
+        "properties": {
+          "metricsTargeted": {
+            "type": "integer",
+            "description": "The IoT Edge configuration targeted metrics.",
+            "format": "int64"
+          },
+          "metricsApplied": {
+            "type": "integer",
+            "description": "The IoT Edge configuration applied metrics.",
+            "format": "int64"
+          },
+          "metricsSuccess": {
+            "type": "integer",
+            "description": "The IoT Edge configuration success metrics.",
+            "format": "int64"
+          },
+          "metricsFailure": {
+            "type": "integer",
+            "description": "The IoT Edge configuration failure metrics.",
+            "format": "int64"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "The IoT Edge configuration creation date.",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceConfig": {
+        "type": "object",
+        "properties": {
+          "configurationId": {
+            "type": "string",
+            "description": "The configuration identifier.",
+            "nullable": true
+          },
+          "modelId": {
+            "type": "string",
+            "description": "The model identifier.",
+            "nullable": true
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": "The device tags targeted by the configuration.",
+            "nullable": true
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": "The configuration properties.",
+            "nullable": true
+          },
+          "priority": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "description": "The Configuration priority.",
+            "format": "int32",
+            "default": 100
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceCredentials": {
+        "type": "object",
+        "properties": {
+          "authenticationMode": {
+            "enum": [
+              0,
+              1
+            ],
+            "type": "integer",
+            "description": "The authentication mode (either SymmetricKey or Certificate)",
+            "format": "int32"
+          },
+          "symmetricCredentials": {
+            "$ref": "#/components/schemas/SymmetricCredentials"
+          },
+          "certificateCredentials": {
+            "$ref": "#/components/schemas/CertificateCredentials"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceDetails": {
+        "required": [
+          "deviceName",
+          "modelId"
+        ],
+        "type": "object",
+        "properties": {
+          "deviceID": {
+            "maxLength": -1,
+            "pattern": "^[a-zA-Z0-9\\-.+%_#*?!(),:=@$']{1,128}$",
+            "type": "string",
+            "description": "The device identifier.",
+            "nullable": true
+          },
+          "deviceName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The name of the device."
+          },
+          "modelId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The model identifier."
+          },
+          "modelName": {
+            "type": "string",
+            "description": "The model name. (For AWS)",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "isConnected": {
+            "type": "boolean",
+            "description": "`true` if this instance is connected; otherwise, `false`."
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "`true` if this instance is enabled; otherwise, `false`."
+          },
+          "statusUpdatedTime": {
+            "type": "string",
+            "description": "The status updated time.",
+            "format": "date-time"
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": "List of custom device tags and their values.",
+            "nullable": true
+          },
+          "isLoraWan": {
+            "type": "boolean",
+            "description": "`true` if this instance is lorawan; otherwise, `false`.",
+            "readOnly": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Device details."
+      },
+      "DeviceListItem": {
+        "type": "object",
+        "properties": {
+          "deviceID": {
+            "type": "string",
+            "description": "The device Identifier.",
+            "nullable": true
+          },
+          "deviceName": {
+            "type": "string",
+            "description": "The device friendly name.",
+            "nullable": true
+          },
+          "deviceModelId": {
+            "type": "string",
+            "description": "The device Model Identifier.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "isConnected": {
+            "type": "boolean",
+            "description": "A value indicating whether the device is currently connected."
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "A value indicating whether the device is enabled on the platform."
+          },
+          "supportLoRaFeatures": {
+            "type": "boolean",
+            "description": "A value indicating whether the LoRa features is supported on this model."
+          },
+          "hasLoRaTelemetry": {
+            "type": "boolean",
+            "description": "A value indicating whether the device has telemetry."
+          },
+          "statusUpdatedTime": {
+            "type": "string",
+            "description": "The device last status updated time.",
+            "format": "date-time"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "The device labels.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Device list item."
+      },
+      "DeviceListItemPaginationResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceListItem"
+            },
+            "description": "The current page items.",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "description": "The total number of items.",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "string",
+            "description": "The query next page Url.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing the page results."
+      },
+      "DeviceModelCommandDto": {
+        "required": [
+          "frame",
+          "name",
+          "port"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The command identifier.",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The command name."
+          },
+          "frame": {
+            "maxLength": 255,
+            "minLength": 1,
+            "pattern": "^[0-9a-fA-F]{0,255}$",
+            "type": "string",
+            "description": "The command frame in hexa."
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "A value indicating if the command must be confirmed by sensor"
+          },
+          "port": {
+            "maximum": 223,
+            "minimum": 1,
+            "type": "integer",
+            "description": "The LoRa WAN port.",
+            "format": "int32"
+          },
+          "isBuiltin": {
+            "type": "boolean",
+            "description": "A value indicating whether this instance is builtin."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Device model command."
+      },
+      "DeviceModelDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "description": "The device model identifier.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The device model name."
+          },
+          "description": {
+            "type": "string",
+            "description": "The device model description.",
+            "nullable": true
+          },
+          "isBuiltin": {
+            "type": "boolean",
+            "description": "A value indicating whether this instance is builtin."
+          },
+          "supportLoRaFeatures": {
+            "type": "boolean",
+            "description": "A value indicating whether the LoRa features is supported on this model."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Device model."
+      },
+      "DeviceModelDtoPaginationResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceModelDto"
+            },
+            "description": "The current page items.",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "description": "The total number of items.",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "string",
+            "description": "The query next page Url.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing the page results."
+      },
+      "DeviceProperty": {
+        "required": [
+          "displayName",
+          "isWritable",
+          "name",
+          "order",
+          "propertyType"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "pattern": "^([\\w]+\\.)+[\\w]+|[\\w]+$",
+            "type": "string",
+            "description": "The property name"
+          },
+          "displayName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The property display name"
+          },
+          "isWritable": {
+            "type": "boolean",
+            "description": "Indicates whether the property is writable from the portal\r\n> Note: if writable, the property is set to the desired properties of the device twin\r\n>       otherwise, the property is read from the reported properties.\r\nDefault is false."
+          },
+          "order": {
+            "type": "integer",
+            "description": "The property display order.",
+            "format": "int32"
+          },
+          "propertyType": {
+            "enum": [
+              "Boolean",
+              "Double",
+              "Float",
+              "Integer",
+              "Long",
+              "String"
+            ],
+            "type": "string",
+            "description": "The device property type"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Device property."
+      },
+      "DevicePropertyValue": {
+        "required": [
+          "displayName",
+          "isWritable",
+          "name",
+          "order",
+          "propertyType"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "pattern": "^([\\w]+\\.)+[\\w]+|[\\w]+$",
+            "type": "string",
+            "description": "The property name"
+          },
+          "displayName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The property display name"
+          },
+          "isWritable": {
+            "type": "boolean",
+            "description": "Indicates whether the property is writable from the portal\r\n> Note: if writable, the property is set to the desired properties of the device twin\r\n>       otherwise, the property is read from the reported properties.\r\nDefault is false."
+          },
+          "order": {
+            "type": "integer",
+            "description": "The property display order.",
+            "format": "int32"
+          },
+          "propertyType": {
+            "enum": [
+              "Boolean",
+              "Double",
+              "Float",
+              "Integer",
+              "Long",
+              "String"
+            ],
+            "type": "string",
+            "description": "The device property type"
+          },
+          "value": {
+            "type": "string",
+            "description": "The current property value.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Device property value."
+      },
+      "DeviceTagDto": {
+        "required": [
+          "label",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9]*$",
+            "type": "string",
+            "description": "The registered name in the device twin."
+          },
+          "label": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The label shown to the user."
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether the field is required when creating a new device or not.\r\nDefault is false.",
+            "default": false
+          },
+          "searchable": {
+            "type": "boolean",
+            "description": "Whether the field can be searcheable via the device search panel or not.\r\nDefault is false.",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "description": "Device tag."
+      },
+      "EdgeModelSystemModule": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUri": {
+            "type": "string",
+            "nullable": true
+          },
+          "containerCreateOptions": {
+            "type": "string",
+            "nullable": true
+          },
+          "environmentVariables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModuleEnvironmentVariable"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FrequencyPlan": {
+        "type": "object",
+        "properties": {
+          "frequencyPlanID": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdeaRequest": {
+        "required": [
+          "body",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "body": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "consentToCollectTechnicalDetails": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdeaResponse": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ImportResultLine": {
+        "type": "object",
+        "properties": {
+          "lineNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deviceId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "isErrorMessage": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeDevice": {
+        "required": [
+          "deviceName",
+          "modelId"
+        ],
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "description": "The IoT Edge identifier.",
+            "nullable": true
+          },
+          "deviceName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The name of the device."
+          },
+          "modelId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The model identifier."
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "connectionState": {
+            "type": "string",
+            "description": "The IoT Edge connection state.",
+            "nullable": true
+          },
+          "scope": {
+            "type": "string",
+            "description": "The IoT Edge scope tag value.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The IoT Edge device status.",
+            "nullable": true
+          },
+          "runtimeResponse": {
+            "type": "string",
+            "description": "The IoT Edge runtime response.",
+            "nullable": true
+          },
+          "nbDevices": {
+            "type": "integer",
+            "description": "The number of connected devices on IoT Edge device.",
+            "format": "int32"
+          },
+          "nbModules": {
+            "type": "integer",
+            "description": "The number of modules on IoT Edge device.",
+            "format": "int32"
+          },
+          "lastDeployment": {
+            "$ref": "#/components/schemas/ConfigItem"
+          },
+          "modules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModule"
+            },
+            "description": "The IoT Edge modules.",
+            "nullable": true
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": "List of custom device tags and their values.",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "`true` if this instance is enabled; otherwise, `false`."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "IoT Edge device."
+      },
+      "IoTEdgeDeviceLog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "logLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeStamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeListItem": {
+        "required": [
+          "deviceId"
+        ],
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The device identifier."
+          },
+          "deviceName": {
+            "type": "string",
+            "description": "The device status.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The device status.",
+            "nullable": true
+          },
+          "nbDevices": {
+            "type": "integer",
+            "description": "The number of devices connected on the IoT Edge.",
+            "format": "int32"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Gets the edge device labels.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "IoT Edge list item."
+      },
+      "IoTEdgeListItemPaginationResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeListItem"
+            },
+            "description": "The current page items.",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "description": "The total number of items.",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "string",
+            "description": "The query next page Url.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing the page results."
+      },
+      "IoTEdgeModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "description": "The device model identifier.",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The IoT Edge device model name."
+          },
+          "description": {
+            "type": "string",
+            "description": "The device model description.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "externalIdentifier": {
+            "type": "string",
+            "description": "The aws deployment ID.",
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
+          },
+          "edgeModules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModule"
+            },
+            "description": "The device model module list.",
+            "nullable": true
+          },
+          "edgeRoutes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeRoute"
+            },
+            "nullable": true
+          },
+          "systemModules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EdgeModelSystemModule"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeModelListItem": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "description": "The device model identifier.",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The IoT Edge device model name."
+          },
+          "description": {
+            "type": "string",
+            "description": "The device model description.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "externalIdentifier": {
+            "type": "string",
+            "description": "The aws deployment ID.",
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Gets the edge model labels.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeModule": {
+        "required": [
+          "imageURI",
+          "moduleName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The module name, only used for AWS IoT Greengrass.",
+            "nullable": true
+          },
+          "moduleName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The module name."
+          },
+          "imageURI": {
+            "minLength": 1,
+            "type": "string",
+            "description": "the device image URI."
+          },
+          "containerCreateOptions": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The module status.",
+            "nullable": true
+          },
+          "environmentVariables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModuleEnvironmentVariable"
+            },
+            "description": "The module environment variables.",
+            "nullable": true
+          },
+          "moduleIdentityTwinSettings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModuleTwinSetting"
+            },
+            "description": "The module identity twin settings.",
+            "nullable": true
+          },
+          "commands": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModuleCommand"
+            },
+            "description": "The module commands.",
+            "nullable": true
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "IoT Edge module."
+      },
+      "IoTEdgeModuleCommand": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The command name",
+            "nullable": true
+          },
+          "edgeDeviceModelId": {
+            "type": "string",
+            "nullable": true
+          },
+          "commandId": {
+            "type": "string",
+            "nullable": true
+          },
+          "moduleName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeModuleEnvironmentVariable": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "pattern": "^[^\\.^\\$^\\#$\\ ]{1,128}$",
+            "type": "string",
+            "description": "The module environment variable name",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "description": "The module environment variable value",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeModuleTwinSetting": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The module identity twin setting name",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "description": "The module identity twin setting value",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeRoute": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The route name."
+          },
+          "value": {
+            "minLength": 1,
+            "pattern": "^(?i)FROM [\\S]+( WHERE (NOT )?[\\S]+)? INTO [\\S]+$",
+            "type": "string",
+            "description": "The route value.\r\nEg : FROM /messages/* INTO $upstream."
+          },
+          "priority": {
+            "maximum": 9,
+            "minimum": 0,
+            "type": "integer",
+            "description": "The route priority",
+            "format": "int32",
+            "nullable": true
+          },
+          "timeToLive": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "The route time to live (secs)",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LabelDto": {
+        "required": [
+          "color",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "color": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoRaDeviceDetails": {
+        "required": [
+          "deviceID",
+          "deviceName",
+          "modelId"
+        ],
+        "type": "object",
+        "properties": {
+          "classType": {
+            "enum": [
+              "A",
+              "C"
+            ],
+            "type": "string",
+            "description": "The LoRa device class.\r\nDefault is A.",
+            "default": "A"
+          },
+          "preferredWindow": {
+            "type": "integer",
+            "description": "Allows setting the device preferred receive window (RX1 or RX2).\r\nThe default preferred receive window is 1.",
+            "format": "int32",
+            "default": 1
+          },
+          "deduplication": {
+            "enum": [
+              "None",
+              "Drop",
+              "Mark"
+            ],
+            "type": "string",
+            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is Drop.",
+            "default": "Drop"
+          },
+          "rX1DROffset": {
+            "type": "integer",
+            "description": "Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "rX2DataRate": {
+            "type": "integer",
+            "description": "Allows setting a custom Datarate for second receive windows.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0 (DR0).",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "rxDelay": {
+            "type": "integer",
+            "description": "Allows setting a custom wait time between receiving and transmission as specified in the specification.",
+            "format": "int32",
+            "nullable": true
+          },
+          "abpRelaxMode": {
+            "type": "boolean",
+            "description": "Allows to disable the relax mode when using ABP.\r\nBy default relaxed mode is enabled.",
+            "default": true,
+            "nullable": true
+          },
+          "fCntUpStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.\r\nDefault is 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "fCntDownStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter down start value.\r\nDefault is 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "fCntResetCounter": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.\r\nDefault is 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "supports32BitFCnt": {
+            "type": "boolean",
+            "description": "Allow the usage of 32bit counters on your device.",
+            "default": true,
+            "nullable": true
+          },
+          "keepAliveTimeout": {
+            "type": "integer",
+            "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "sensorDecoder": {
+            "type": "string",
+            "description": "The sensor decoder API Url.",
+            "nullable": true
+          },
+          "deviceName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The name of the device."
+          },
+          "modelId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The model identifier."
+          },
+          "modelName": {
+            "type": "string",
+            "description": "The model name.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "isConnected": {
+            "type": "boolean",
+            "description": "`true` if this instance is connected; otherwise, `false`."
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "`true` if this instance is enabled; otherwise, `false`."
+          },
+          "statusUpdatedTime": {
+            "type": "string",
+            "description": "The status updated time.",
+            "format": "date-time"
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": "List of custom device tags and their values.",
+            "nullable": true
+          },
+          "deviceID": {
+            "maxLength": -1,
+            "minLength": 1,
+            "pattern": "^[A-Z0-9]{16}$",
+            "type": "string",
+            "description": "The device identifier."
+          },
+          "useOTAA": {
+            "type": "boolean",
+            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP",
+            "default": true
+          },
+          "appKey": {
+            "type": "string",
+            "description": "The OTAA App Key.",
+            "nullable": true
+          },
+          "appEUI": {
+            "type": "string",
+            "description": "The device OTAA Application EUI.",
+            "nullable": true
+          },
+          "appSKey": {
+            "type": "string",
+            "description": "The ABP AppSKey.",
+            "nullable": true
+          },
+          "nwkSKey": {
+            "type": "string",
+            "description": "The ABP NwkSKey.",
+            "nullable": true
+          },
+          "devAddr": {
+            "type": "string",
+            "description": "Unique identifier that allows\r\nthe device to be recognized.",
+            "nullable": true
+          },
+          "alreadyLoggedInOnce": {
+            "type": "boolean",
+            "description": "A value indicating whether the device has already joined the platform."
+          },
+          "dataRate": {
+            "type": "string",
+            "description": "The Device Current Datarate,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "txPower": {
+            "type": "string",
+            "description": "The Device Current Transmit Power,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "nbRep": {
+            "type": "string",
+            "description": "The Device Current repetition when transmitting.\r\nE.g. if set to two, the device will transmit twice his upstream messages.\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "reportedRX2DataRate": {
+            "type": "string",
+            "description": "The Device Current Rx2Datarate.",
+            "nullable": true
+          },
+          "reportedRX1DROffset": {
+            "type": "string",
+            "description": "The Device Current RX1DROffset.",
+            "nullable": true
+          },
+          "reportedRXDelay": {
+            "type": "string",
+            "description": "The Device Current RXDelay.",
+            "nullable": true
+          },
+          "gatewayID": {
+            "type": "string",
+            "description": "The GatewayID of the device.",
+            "nullable": true
+          },
+          "downlink": {
+            "type": "boolean",
+            "description": "A value indicating whether the downlinks are enabled (True if not provided)",
+            "default": true,
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "LoRa WAN Device details."
+      },
+      "LoRaDeviceModelDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "classType": {
+            "enum": [
+              "A",
+              "C"
+            ],
+            "type": "string",
+            "description": "The LoRa device class.\r\nDefault is A.",
+            "default": "A"
+          },
+          "preferredWindow": {
+            "type": "integer",
+            "description": "Allows setting the device preferred receive window (RX1 or RX2).\r\nThe default preferred receive window is 1.",
+            "format": "int32",
+            "default": 1
+          },
+          "deduplication": {
+            "enum": [
+              "None",
+              "Drop",
+              "Mark"
+            ],
+            "type": "string",
+            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is Drop.",
+            "default": "Drop"
+          },
+          "rX1DROffset": {
+            "type": "integer",
+            "description": "Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "rX2DataRate": {
+            "type": "integer",
+            "description": "Allows setting a custom Datarate for second receive windows.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0 (DR0).",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "rxDelay": {
+            "type": "integer",
+            "description": "Allows setting a custom wait time between receiving and transmission as specified in the specification.",
+            "format": "int32",
+            "nullable": true
+          },
+          "abpRelaxMode": {
+            "type": "boolean",
+            "description": "Allows to disable the relax mode when using ABP.\r\nBy default relaxed mode is enabled.",
+            "default": true,
+            "nullable": true
+          },
+          "fCntUpStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.\r\nDefault is 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "fCntDownStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter down start value.\r\nDefault is 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "fCntResetCounter": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.\r\nDefault is 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "supports32BitFCnt": {
+            "type": "boolean",
+            "description": "Allow the usage of 32bit counters on your device.",
+            "default": true,
+            "nullable": true
+          },
+          "keepAliveTimeout": {
+            "type": "integer",
+            "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "sensorDecoder": {
+            "type": "string",
+            "description": "The sensor decoder API Url.",
+            "nullable": true
+          },
+          "modelId": {
+            "type": "string",
+            "description": "The device model identifier.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The device model name."
+          },
+          "description": {
+            "type": "string",
+            "description": "The device model description.",
+            "nullable": true
+          },
+          "isBuiltin": {
+            "type": "boolean",
+            "description": "A value indicating whether this instance is builtin."
+          },
+          "supportLoRaFeatures": {
+            "type": "boolean",
+            "description": "A value indicating whether the LoRa features is supported on this model.",
+            "readOnly": true
+          },
+          "useOTAA": {
+            "type": "boolean",
+            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN network. Otherwise ABP.\r\nDefault is true.",
+            "default": true
+          },
+          "downlink": {
+            "type": "boolean",
+            "description": "Allows disabling the downstream (cloud to device) for a device.\r\nBy default downstream messages are enabled.",
+            "default": true,
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "LoRa Device model."
+      },
+      "LoRaDeviceTelemetryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "enqueuedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "telemetry": {
+            "$ref": "#/components/schemas/LoRaTelemetryDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoRaGatewayIDList": {
+        "type": "object",
+        "properties": {
+          "gatewayIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoRaTelemetryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "gpsTime": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "freq": {
+            "type": "number",
+            "format": "double"
+          },
+          "chan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rfch": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modu": {
+            "type": "string",
+            "nullable": true
+          },
+          "datr": {
+            "type": "string",
+            "nullable": true
+          },
+          "rssi": {
+            "type": "number",
+            "format": "double"
+          },
+          "lsnr": {
+            "type": "number",
+            "format": "float"
+          },
+          "data": {
+            "nullable": true
+          },
+          "port": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fcnt": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "edgets": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rawdata": {
+            "type": "string",
+            "nullable": true
+          },
+          "deviceEUI": {
+            "type": "string",
+            "nullable": true
+          },
+          "gatewayID": {
+            "type": "string",
+            "nullable": true
+          },
+          "stationEui": {
+            "type": "string",
+            "nullable": true
+          },
+          "dupMsg": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "extraData": {
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            },
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PortalMetric": {
+        "type": "object",
+        "properties": {
+          "deviceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "connectedDeviceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "edgeDeviceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "connectedEdgeDeviceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failedDeploymentCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "concentratorCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PortalSettings": {
+        "type": "object",
+        "properties": {
+          "isLoRaSupported": {
+            "type": "boolean",
+            "description": "A value indicating whether the LoRa features are acticated."
+          },
+          "version": {
+            "type": "string",
+            "description": "The portal version.",
+            "nullable": true
+          },
+          "portalName": {
+            "type": "string",
+            "description": "The poral name.",
+            "nullable": true
+          },
+          "copyrightYear": {
+            "type": "string",
+            "description": "Copyright Year",
+            "nullable": true
+          },
+          "isIdeasFeatureEnabled": {
+            "type": "boolean"
+          },
+          "cloudProvider": {
+            "type": "string",
+            "description": "The poral cloudProvider.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Portal Settings."
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "RouterConfig": {
+        "type": "object",
+        "properties": {
+          "NetID": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "The network identifier.",
+            "nullable": true
+          },
+          "JoinEui": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "The join eui.",
+            "nullable": true
+          },
+          "region": {
+            "type": "string",
+            "description": "The region.",
+            "nullable": true
+          },
+          "hwspec": {
+            "type": "string",
+            "description": "The hardware specifications.",
+            "nullable": true
+          },
+          "freq_range": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "The frequency range.",
+            "nullable": true
+          },
+          "DRs": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "description": "The DRs.",
+            "nullable": true
+          },
+          "sx1301_conf": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/Channel"
+              }
+            },
+            "description": "The SX1301 conf.",
+            "nullable": true
+          },
+          "nocca": {
+            "type": "boolean",
+            "description": "`true` if nocca; otherwise, `false`."
+          },
+          "nodc": {
+            "type": "boolean",
+            "description": "`true` if nodc; otherwise, `false`."
+          },
+          "nodwell": {
+            "type": "boolean",
+            "description": "`true` if nodwell; otherwise, `false`."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Router configuration."
+      },
+      "SymmetricCredentials": {
+        "type": "object",
+        "properties": {
+          "registrationID": {
+            "type": "string",
+            "description": "The registration identifier.",
+            "nullable": true
+          },
+          "symmetricKey": {
+            "type": "string",
+            "description": "The symmetric key.",
+            "nullable": true
+          },
+          "scopeID": {
+            "type": "string",
+            "description": "The scope identifier.",
+            "nullable": true
+          },
+          "provisioningEndpoint": {
+            "type": "string",
+            "description": "The provisioning endpoint.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Enrollment credentials."
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "\n    Specify the authorization token got from your IDP as a header.\n    > Ex: ``Authorization: Bearer * ***``",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    { }
+  ]
+}
