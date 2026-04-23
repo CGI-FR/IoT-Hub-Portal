@@ -94,6 +94,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddScoped<IScheduleRepository, ScheduleRepository>()
                             .AddScoped<IPlanningRepository, PlanningRepository>()
                             .AddScoped<ILabelRepository, LabelRepository>()
+                            .AddScoped<IMenuEntryRepository, MenuEntryRepository>()
                             .AddScoped<IRoleRepository, RoleRepository>()
                             .AddScoped<IActionRepository, ActionRepository>()
                             .AddScoped<IUserRepository, UserRepository>()
@@ -108,6 +109,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>()
                 .AddTransient<IDeviceTagService, DeviceTagService>()
                 .AddTransient<ILayerService, LayerService>()
+                .AddTransient<IMenuEntryService, MenuEntryService>()
                 .AddTransient<IScheduleService, ScheduleService>()
                 .AddTransient<IPlanningService, PlanningService>()
                 .AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();

@@ -1,0 +1,152 @@
+@using IoTHub.Portal.Shared.Models.v10
+@inject IMenuEntryClientService MenuEntryClientService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Add Custom Menu Entry</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm id="menu-entry-form" @ref="form" @bind-IsValid="@formIsValid">
+            <MudTextField id="menu-entry-name"
+                          T="string"
+                          @bind-Value="@menuEntry.Name"
+                          Label="Name"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          RequiredError="Name is required"
+                          MaxLength="100"
+                          Counter="100"
+                          Immediate="true"
+                          HelperText="Display name for the menu entry (max 100 characters)"
+                          HelperTextOnFocus="true" />
+
+            <MudTextField id="menu-entry-url"
+                          T="string"
+                          @bind-Value="@menuEntry.Url"
+                          Label="URL"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          RequiredError="URL is required"
+                          Immediate="true"
+                          Validation="@(new Func<string, string?>(ValidateUrl))"
+                          HelperText="Full URL (e.g., https://example.com or /internal-page)"
+                          HelperTextOnFocus="true" />
+
+            <MudCheckBox id="menu-entry-enabled"
+                         T="bool"
+                         @bind-Checked="@menuEntry.IsEnabled"
+                         Label="Enabled"
+                         Color="Color.Primary" />
+
+            @if (!string.IsNullOrWhiteSpace(menuEntry.Url))
+            {
+                <MudAlert Severity="@(IsExternalUrl(menuEntry.Url) ? Severity.Info : Severity.Normal)"
+                          Class="mt-4">
+                    @if (IsExternalUrl(menuEntry.Url))
+                    {
+                        <text>This is an external link and will open in a new tab.</text>
+                    }
+                    else
+                    {
+                        <text>This is an internal link and will navigate within the portal.</text>
+                    }
+                </MudAlert>
+            }
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="menu-entry-cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="menu-entry-save"
+                   Disabled="@(isSubmitting || !formIsValid)"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="Save">
+            @if (isSubmitting)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Saving</MudText>
+            }
+            else
+            {
+                <MudText>Save</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [CascadingParameter] Error Error { get; set; } = default!;
+
+    bool formIsValid;
+    private bool isSubmitting;
+    MudForm form = default!;
+
+    private readonly MenuEntryDto menuEntry = new MenuEntryDto
+    {
+        IsEnabled = true
+    };
+
+    private string? ValidateUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return null; // Required validation handles empty
+        }
+
+        // Check if it's a valid HTTP/HTTPS URL or a relative path
+        if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            if (!Uri.TryCreate(url, UriKind.Absolute, out _))
+            {
+                return "Invalid URL format";
+            }
+        }
+        else if (url.StartsWith("/"))
+        {
+            // Valid relative URL
+        }
+        else
+        {
+            return "URL must start with http://, https://, or / for internal pages";
+        }
+
+        return null;
+    }
+
+    private bool IsExternalUrl(string url)
+    {
+        return !string.IsNullOrWhiteSpace(url) &&
+               (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                url.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task Save()
+    {
+        try
+        {
+            isSubmitting = true;
+            await form.Validate();
+
+            if (!formIsValid)
+            {
+                return;
+            }
+
+            var created = await MenuEntryClientService.CreateMenuEntry(menuEntry);
+            MudDialog.Close(DialogResult.Ok(created));
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

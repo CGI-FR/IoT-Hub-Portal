@@ -3,6 +3,7 @@ using System;
 using IoTHub.Portal.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IoTHub.Portal.Postgres.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    partial class PortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260131172017_AddMenuEntry")]
+    partial class AddMenuEntry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -513,9 +516,6 @@ namespace IoTHub.Portal.Postgres.Migrations
 
                     b.Property<int>("DayOff")
                         .HasColumnType("integer");
-
-                    b.Property<string>("DeviceModelId")
-                        .HasColumnType("text");
 
                     b.Property<string>("End")
                         .IsRequired()

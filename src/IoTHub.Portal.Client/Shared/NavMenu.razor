@@ -3,9 +3,11 @@
 @inject NavigationManager NavigationManager
 @inject PortalSettings Portal
 @inject ILayoutService LayoutService
+@inject IMenuEntryClientService MenuEntryClientService
 
 @using IoTHub.Portal.Shared.Helpers
 @using IoTHub.Portal.Shared.Security
+@using IoTHub.Portal.Shared.Models.v10
 @implements IDisposable
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
@@ -105,10 +107,29 @@
             </MudNavGroup>
         }
 
+        @if (customMenuEntries.Any() && portalPermissions.Contains(PortalPermissions.MenuEntryRead))
+        {
+            <MudNavGroup Title="Quick Links" Icon="@Icons.Material.Outlined.Link"
+                         Expanded="@LayoutService.GetNavGroupExpanded("QuickLinks")"
+                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("QuickLinks", b))">
+                @foreach (var entry in customMenuEntries.Where(e => e.IsEnabled).OrderBy(e => e.Order))
+                {
+                    <MudNavLink Href="@entry.Url" Target="@(entry.IsExternal ? "_blank" : "_self")">
+                        @entry.Name
+                        @if (entry.IsExternal)
+                        {
+                            <MudIcon Icon="@Icons.Material.Outlined.OpenInNew" Size="Size.Small" Class="ml-2" />
+                        }
+                    </MudNavLink>
+                }
+            </MudNavGroup>
+        }
+
         <MudNavGroup Title="Settings" Icon="@Icons.Material.Outlined.Settings"
                      Expanded="@LayoutService.GetNavGroupExpanded("Settings")"
                      ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Settings", b))">
             <MudNavLink Href="/settings/device-tag" Disabled="@(!portalPermissions.Contains(PortalPermissions.DeviceTagRead))">Device Tags</MudNavLink>
+            <MudNavLink Href="/menu-entries" Disabled="@(!portalPermissions.Contains(PortalPermissions.MenuEntryRead))">Menu Entries</MudNavLink>
             <MudNavLink Href="/roles" Disabled="@(!portalPermissions.Contains(PortalPermissions.RoleRead))">Roles</MudNavLink>
             <MudNavLink Href="/users" Disabled="@(!portalPermissions.Contains(PortalPermissions.UserRead))">Users</MudNavLink>
         </MudNavGroup>
@@ -123,12 +144,27 @@
     private void AddDeviceConfig() => NavigationManager.NavigateTo("/device-configurations/new");
 
     private PortalPermissions[] portalPermissions;
+    private List<MenuEntryDto> customMenuEntries = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         portalPermissions = await PermissionsService.GetUserPermissions();
+
+        // Load custom menu entries if user has permission
+        if (portalPermissions.Contains(PortalPermissions.MenuEntryRead))
+        {
+            try
+            {
+                customMenuEntries = await MenuEntryClientService.GetMenuEntries();
+            }
+            catch
+            {
+                // Silently fail if menu entries can't be loaded - don't break navigation
+                customMenuEntries = new List<MenuEntryDto>();
+            }
+        }
 
         LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred!;
     }

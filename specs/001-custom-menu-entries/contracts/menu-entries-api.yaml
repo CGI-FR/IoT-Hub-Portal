@@ -1,0 +1,489 @@
+openapi: 3.0.3
+info:
+  title: IoT Hub Portal - Menu Entries API
+  description: |
+    API endpoints for managing custom menu entries in IoT Hub Portal.
+    
+    **User Story 2 Focus**: Edit and Delete operations
+    
+    This specification documents the complete CRUD API for menu entries, with emphasis on
+    the PUT (update) and DELETE endpoints required for User Story 2.
+    
+    **Authentication**: All endpoints require Bearer token authentication.
+    **Authorization**: Endpoints enforce role-based access control using permission policies.
+  version: 1.0.0
+  contact:
+    name: IoT Hub Portal Team
+    url: https://github.com/CGI-FR/IoT-Hub-Portal
+
+servers:
+  - url: https://api.example.com
+    description: Production server
+  - url: https://staging.example.com
+    description: Staging server
+  - url: http://localhost:5000
+    description: Local development server
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Menu Entries
+    description: Operations for managing custom menu entries
+
+paths:
+  /api/menu-entries:
+    get:
+      tags:
+        - Menu Entries
+      summary: Get all menu entries
+      description: |
+        Retrieves a list of all menu entries, ordered by the Order property.
+        Requires `menuentry:read` permission.
+        
+        **User Story**: US1 (Create/List), used by US2 for list refresh
+      operationId: getAllMenuEntries
+      security:
+        - BearerAuth: [menuentry:read]
+      responses:
+        '200':
+          description: List of menu entries retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuEntryDto'
+              example:
+                - id: "550e8400-e29b-41d4-a716-446655440000"
+                  name: "Monitoring Dashboard"
+                  url: "https://monitoring.example.com"
+                  order: 0
+                  isEnabled: true
+                  isExternal: true
+                - id: "550e8400-e29b-41d4-a716-446655440001"
+                  name: "Documentation"
+                  url: "/docs"
+                  order: 1
+                  isEnabled: true
+                  isExternal: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags:
+        - Menu Entries
+      summary: Create a new menu entry
+      description: |
+        Creates a new menu entry with the provided details.
+        Requires `menuentry:write` permission.
+        
+        **User Story**: US1 (Create)
+        
+        **Validation**:
+        - Name: required, max 100 characters, unique
+        - URL: required, valid HTTP/HTTPS or relative path format
+      operationId: createMenuEntry
+      security:
+        - BearerAuth: [menuentry:write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuEntryDto'
+            example:
+              name: "Monitoring Dashboard"
+              url: "https://monitoring.example.com"
+              isEnabled: true
+      responses:
+        '201':
+          description: Menu entry created successfully
+          headers:
+            Location:
+              description: URI of the created menu entry
+              schema:
+                type: string
+                example: "/api/menu-entries/550e8400-e29b-41d4-a716-446655440000"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuEntryDto'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                name: "Monitoring Dashboard"
+                url: "https://monitoring.example.com"
+                order: 0
+                isEnabled: true
+                isExternal: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/menu-entries/{id}:
+    get:
+      tags:
+        - Menu Entries
+      summary: Get a menu entry by ID
+      description: |
+        Retrieves a single menu entry by its unique identifier.
+        Requires `menuentry:read` permission.
+        
+        **User Story**: US2 (Edit) - used to pre-fill edit dialog
+      operationId: getMenuEntryById
+      security:
+        - BearerAuth: [menuentry:read]
+      parameters:
+        - $ref: '#/components/parameters/MenuEntryId'
+      responses:
+        '200':
+          description: Menu entry retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuEntryDto'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                name: "Monitoring Dashboard"
+                url: "https://monitoring.example.com"
+                order: 0
+                isEnabled: true
+                isExternal: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      tags:
+        - Menu Entries
+      summary: Update an existing menu entry
+      description: |
+        Updates an existing menu entry with the provided details.
+        Requires `menuentry:write` permission.
+        
+        **User Story**: US2 (Edit) ⭐ MAIN ENDPOINT FOR US2
+        
+        **Validation**:
+        - Name: required, max 100 characters, unique (excluding current entry)
+        - URL: required, valid HTTP/HTTPS or relative path format
+        - Id in URL must match Id in request body
+        
+        **Behavior**:
+        - UpdatedAt timestamp automatically set to current time
+        - CreatedAt timestamp preserved
+        - IsExternal auto-detected based on URL format
+      operationId: updateMenuEntry
+      security:
+        - BearerAuth: [menuentry:write]
+      parameters:
+        - $ref: '#/components/parameters/MenuEntryId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuEntryDto'
+            example:
+              id: "550e8400-e29b-41d4-a716-446655440000"
+              name: "Updated Dashboard Name"
+              url: "https://new-url.example.com"
+              order: 0
+              isEnabled: true
+      responses:
+        '200':
+          description: Menu entry updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuEntryDto'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                name: "Updated Dashboard Name"
+                url: "https://new-url.example.com"
+                order: 0
+                isEnabled: true
+                isExternal: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      tags:
+        - Menu Entries
+      summary: Delete a menu entry
+      description: |
+        Permanently deletes a menu entry by its unique identifier.
+        Requires `menuentry:write` permission.
+        
+        **User Story**: US2 (Delete) ⭐ MAIN ENDPOINT FOR US2
+        
+        **Behavior**:
+        - Hard delete (permanent removal from database)
+        - No cascade delete concerns (menu entries have no relationships)
+        - Returns 204 No Content on success (empty response body)
+      operationId: deleteMenuEntry
+      security:
+        - BearerAuth: [menuentry:write]
+      parameters:
+        - $ref: '#/components/parameters/MenuEntryId'
+      responses:
+        '204':
+          description: Menu entry deleted successfully (no content returned)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token obtained from authentication provider (Azure AD B2C, etc.)
+        Token must include claims for user permissions (menuentry:read, menuentry:write)
+
+  parameters:
+    MenuEntryId:
+      name: id
+      in: path
+      required: true
+      description: Unique identifier of the menu entry (GUID format)
+      schema:
+        type: string
+        format: uuid
+      example: "550e8400-e29b-41d4-a716-446655440000"
+
+  schemas:
+    MenuEntryDto:
+      type: object
+      required:
+        - name
+        - url
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier (GUID)
+          readOnly: true
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        name:
+          type: string
+          maxLength: 100
+          description: Display name for the menu entry
+          example: "Monitoring Dashboard"
+        url:
+          type: string
+          format: uri
+          description: |
+            Target URL - can be:
+            - HTTP/HTTPS URL (external): `https://monitoring.example.com`
+            - Relative path (internal): `/docs`
+          example: "https://monitoring.example.com"
+        order:
+          type: integer
+          format: int32
+          default: 0
+          description: Sort order (lower numbers appear first)
+          example: 0
+        isEnabled:
+          type: boolean
+          default: true
+          description: Whether the entry is visible in the navigation menu
+          example: true
+        isExternal:
+          type: boolean
+          readOnly: true
+          description: |
+            Auto-detected based on URL format.
+            True if URL starts with http:// or https://
+            False if URL is a relative path
+          example: true
+
+    ProblemDetails:
+      type: object
+      description: RFC 7807 Problem Details for HTTP APIs
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI reference identifying the problem type
+          example: "https://httpstatuses.com/400"
+        title:
+          type: string
+          description: Short, human-readable summary of the problem
+          example: "Validation failed"
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence
+          example: "Name cannot exceed 100 characters"
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors by field name
+          example:
+            Name:
+              - "Name cannot exceed 100 characters"
+            Url:
+              - "URL must be a valid format"
+
+  responses:
+    BadRequest:
+      description: Bad Request - Validation failed or invalid data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          examples:
+            validationError:
+              summary: Validation error
+              value:
+                type: "https://httpstatuses.com/400"
+                title: "Validation failed"
+                status: 400
+                detail: "One or more validation errors occurred"
+                errors:
+                  Name:
+                    - "Name is required"
+                    - "Name cannot exceed 100 characters"
+                  Url:
+                    - "URL must be a valid format"
+            duplicateName:
+              summary: Duplicate name error
+              value:
+                type: "https://httpstatuses.com/400"
+                title: "Resource already exists"
+                status: 400
+                detail: "A menu entry with name 'Monitoring Dashboard' already exists"
+
+    Unauthorized:
+      description: Unauthorized - Missing or invalid authentication token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: "https://httpstatuses.com/401"
+            title: "Unauthorized"
+            status: 401
+            detail: "User lacks required permission (menuentry:read or menuentry:write)"
+
+    NotFound:
+      description: Not Found - Menu entry does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: "https://httpstatuses.com/404"
+            title: "Resource not found"
+            status: 404
+            detail: "The menu entry with id 550e8400-e29b-41d4-a716-446655440000 doesn't exist"
+
+    Conflict:
+      description: Conflict - Duplicate resource (name already exists)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: "https://httpstatuses.com/409"
+            title: "Resource already exists"
+            status: 409
+            detail: "A menu entry with name 'Monitoring Dashboard' already exists"
+
+    InternalServerError:
+      description: Internal Server Error - Unexpected error occurred
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: "https://httpstatuses.com/500"
+            title: "Internal server error"
+            status: 500
+            detail: "An unexpected error occurred while processing the request"
+
+# Additional documentation for developers
+x-documentation:
+  userStory2Focus: |
+    User Story 2 (Edit and Delete Menu Entries) primarily uses these endpoints:
+    
+    1. GET /api/menu-entries/{id} - Retrieve entry for edit dialog pre-fill
+    2. PUT /api/menu-entries/{id} - Update existing entry ⭐ KEY ENDPOINT
+    3. DELETE /api/menu-entries/{id} - Delete entry ⭐ KEY ENDPOINT
+    
+    Authorization requirement: All endpoints require `menuentry:write` permission (except GET requires `menuentry:read`)
+    
+  validationRules:
+    update:
+      - Name: required, max 100 characters, unique (excluding current entry)
+      - URL: required, valid HTTP/HTTPS or relative path starting with /
+      - Id in URL must match Id in request body
+      - UpdatedAt timestamp automatically set to current UTC time
+      - CreatedAt timestamp preserved from original creation
+      - IsExternal auto-detected based on URL format
+    
+    delete:
+      - Entry must exist (404 if not found)
+      - No cascade delete concerns (MenuEntry is a leaf entity)
+      - Hard delete (permanent removal)
+      - Returns 204 No Content on success
+  
+  errorHandling:
+    - 400 Bad Request: Validation errors, invalid data, duplicate names
+    - 401 Unauthorized: Missing or invalid auth token, insufficient permissions
+    - 404 Not Found: Menu entry doesn't exist
+    - 409 Conflict: Duplicate name (alternative to 400 for clarity)
+    - 500 Internal Server Error: Unexpected server-side errors
+  
+  testingScenarios:
+    update:
+      - Valid update with name change → 200 OK
+      - Valid update with URL change → 200 OK
+      - Update with duplicate name → 400 Bad Request or 409 Conflict
+      - Update with invalid URL → 400 Bad Request
+      - Update with name > 100 chars → 400 Bad Request
+      - Update non-existent entry → 404 Not Found
+      - Update without permission → 401 Unauthorized
+    
+    delete:
+      - Delete existing entry → 204 No Content
+      - Delete non-existent entry → 404 Not Found
+      - Delete without permission → 401 Unauthorized
+
+  implementationNotes: |
+    - All endpoints use async/await patterns
+    - Controller methods return ActionResult<T> for flexibility
+    - Service layer handles business logic and validation
+    - Repository pattern used for data access
+    - AutoMapper maps between Entity and DTO
+    - Unit of Work coordinates database transactions
+    - ProblemDetails format for all error responses
