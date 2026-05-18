@@ -70,7 +70,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             ArgumentNullException.ThrowIfNull(item);
 
             // Update the twin properties
-            DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
+            DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName.Trim());
             DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
             DeviceHelper.SetTagValue(twin, nameof(item.LayerId), item.LayerId ?? string.Empty);
 

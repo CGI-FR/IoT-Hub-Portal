@@ -28,9 +28,9 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(DeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
-                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
-                Name = entity[nameof(DeviceModelDto.Name)]?.ToString(),
-                Description = entity[nameof(DeviceModelDto.Description)]?.ToString()
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString()?.Trim(),
+                Name = entity[nameof(DeviceModelDto.Name)]?.ToString()?.Trim(),
+                Description = entity[nameof(DeviceModelDto.Description)]?.ToString()?.Trim()
             };
         }
 

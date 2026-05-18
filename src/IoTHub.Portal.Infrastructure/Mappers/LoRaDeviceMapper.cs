@@ -161,7 +161,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             ArgumentNullException.ThrowIfNull(item);
 
             // Update the twin properties
-            DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
+            DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName.Trim());
             DeviceHelper.SetTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures), "true");
 
             DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
@@ -169,20 +169,20 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             DeviceHelper.SetTagValue(twin, nameof(item.LayerId), item.LayerId ?? string.Empty);
 
             // Update OTAA settings
-            DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI);
-            DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey);
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI?.Trim());
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey?.Trim());
 
             // Update ABP settings
-            DeviceHelper.SetDesiredProperty(twin, nameof(item.NwkSKey), item.NwkSKey);
-            DeviceHelper.SetDesiredProperty(twin, nameof(item.AppSKey), item.AppSKey);
-            DeviceHelper.SetDesiredProperty(twin, nameof(item.DevAddr), item.DevAddr);
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.NwkSKey), item.NwkSKey?.Trim());
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.AppSKey), item.AppSKey?.Trim());
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.DevAddr), item.DevAddr?.Trim());
 
-            DeviceHelper.SetDesiredProperty(twin, nameof(item.GatewayID), item.GatewayID);
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.GatewayID), item.GatewayID?.Trim());
 
             if (item.Tags != null)
             {
                 foreach (var customTag in item.Tags)
-                    DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+                    DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value.Trim());
             }
         }
     }

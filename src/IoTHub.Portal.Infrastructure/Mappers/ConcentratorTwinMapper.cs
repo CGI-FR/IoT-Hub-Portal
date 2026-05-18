@@ -27,17 +27,17 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
             ArgumentNullException.ThrowIfNull(item, nameof(item));
 
-            DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
+            DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName.Trim());
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
 
             if (!string.IsNullOrWhiteSpace(item.ClientThumbprint))
             {
-                DeviceHelper.SetDesiredProperty(twin, nameof(item.ClientThumbprint).ToCamelCase(), new[] { item.ClientThumbprint });
+                DeviceHelper.SetDesiredProperty(twin, nameof(item.ClientThumbprint).ToCamelCase().Trim(), new[] { item.ClientThumbprint });
             }
             else
             {
-                DeviceHelper.SetDesiredProperty(twin, nameof(item.ClientThumbprint).ToCamelCase(), null);
+                DeviceHelper.SetDesiredProperty(twin, nameof(item.ClientThumbprint).ToCamelCase().Trim(), null);
             }
 
             DeviceHelper.SetDesiredProperty(twin, nameof(item.RouterConfig).ToCamelCase(), item.RouterConfig);
