@@ -25,20 +25,6 @@
                         <CardHeaderContent>
                             <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(concentrator.DeviceName) ? concentrator.DeviceId : concentrator.DeviceName)</MudText>
                         </CardHeaderContent>
-                        <CardHeaderAvatar>
-                            @if (concentrator.IsConnected)
-                            {
-                                <MudTooltip Text="Concentrator is connected">
-                                    <MudIcon Icon="@Icons.Material.Filled.Wifi" Color="Color.Success" />
-                                </MudTooltip>
-                            }
-                            else
-                            {
-                                <MudTooltip Text="Concentrator is not connected">
-                                    <MudIcon Icon="@Icons.Material.Filled.WifiOff" Color="Color.Error" />
-                                </MudTooltip>
-                            }
-                        </CardHeaderAvatar>
                     </MudCardHeader>
                 </MudCard>
                 @if (canWrite)
