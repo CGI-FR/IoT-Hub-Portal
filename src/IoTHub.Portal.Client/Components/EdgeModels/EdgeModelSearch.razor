@@ -1,18 +1,12 @@
-﻿<MudExpansionPanels>
-    <MudExpansionPanel Text="Search panel">
-        <MudGrid>
-            <MudItem xs="12" md="6">
-                <MudTextField id="edge-model-search-keyword" @bind-Value="searchKeyword" Placeholder="Name / Description"></MudTextField>
-            </MudItem>
-            <MudItem xs="12">
-                <MudButton id="edge-model-search-button" Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" OnClick=Search>Search</MudButton>
-                <MudButton id="edge-model-search-reset-button" Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset">Reset</MudButton>
-            </MudItem>
-
-        </MudGrid>
-
-    </MudExpansionPanel>
-</MudExpansionPanels>
+﻿<MudGrid>
+    <MudItem xs="12" md="6">
+        <MudTextField id="edge-model-search-keyword" @bind-Value="searchKeyword" Placeholder="Name / Description"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudButton id="edge-model-search-button" Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" OnClick=Search>Search</MudButton>
+        <MudButton id="edge-model-search-reset-button" Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset">Reset</MudButton>
+    </MudItem>
+</MudGrid>
 
 @code {
     [Parameter]
