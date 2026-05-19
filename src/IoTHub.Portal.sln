@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.1.31911.260
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11806.211 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Solution Items", "00. Solution Items", "{20EC2171-363D-4DDE-827F-F56D4FE9ADF3}"
 	ProjectSection(SolutionItems) = preProject
@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Solution Items", "00. S
 		..\codecov.yml = ..\codecov.yml
 		Directory.Build.props = Directory.Build.props
 		Dockerfile = Dockerfile
+		Dockerfile.debug = Dockerfile.debug
 		e2e-docker-compose.yml = e2e-docker-compose.yml
 		global.json = global.json
 		..\LICENSE = ..\LICENSE

@@ -73,6 +73,9 @@ csharp_style_deconstructed_variable_declaration = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_space_around_declaration_statements = ignore
 csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_prefer_system_threading_lock = true:suggestion
+csharp_style_prefer_simple_property_accessors = true:suggestion
 
 [*.md]
 charset = utf-8
@@ -148,6 +151,18 @@ dotnet_diagnostic.IDE0061.severity=suggestion
 # IDE0052: Unused private member
 dotnet_diagnostic.IDE0052.severity=suggestion
 
+# IDE0029
+dotnet_diagnostic.IDE0029.severity=suggestion
+
+# IDE0200
+dotnet_diagnostic.IDE0200.severity=suggestion
+
+# IDE0370: Remove unnecessary suppression
+dotnet_diagnostic.IDE0370.severity = suggestion
+
+# IDE0391: Make method synchronous
+dotnet_diagnostic.IDE0391.severity = suggestion
+
 # This or Me qualifier
 dotnet_style_qualification_for_field=true
 dotnet_style_qualification_for_property=false
@@ -178,7 +193,7 @@ dotnet_diagnostic.IDE1008.severity=suggestion
 dotnet_diagnostic.IDE0270.severity=suggestion
 dotnet_diagnostic.IDE0220.severity=warning
 
- # Enforce file header
+# Enforce file header
 dotnet_diagnostic.IDE0073.severity = error
 file_header_template = Copyright (c) CGI France. All rights reserved.\nLicensed under the MIT license. See LICENSE file in the project root for full license information.
 

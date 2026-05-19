@@ -4,7 +4,6 @@
 namespace IoTHub.Portal.Server.Controllers.V10
 {
     [ApiController]
-    [AllowAnonymous]
     [ApiVersion("1.0")]
     [Route("/api/settings")]
     [Produces("application/json")]
