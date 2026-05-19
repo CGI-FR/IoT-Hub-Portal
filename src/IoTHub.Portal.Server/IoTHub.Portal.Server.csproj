@@ -26,9 +26,6 @@
     <ProjectReference Include="..\IoTHub.Portal.Application\IoTHub.Portal.Application.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Infrastructure\IoTHub.Portal.Infrastructure.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Domain\IoTHub.Portal.Domain.csproj" />
-    <ProjectReference Include="..\IoTHub.Portal.Client\IoTHub.Portal.Client.csproj" />
-    <ProjectReference Include="..\IoTHub.Portal.MySql\IoTHub.Portal.MySql.csproj" />
-    <ProjectReference Include="..\IoTHub.Portal.Postgres\IoTHub.Portal.Postgres.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Shared\IoTHub.Portal.Shared.csproj" />
   </ItemGroup>
 
