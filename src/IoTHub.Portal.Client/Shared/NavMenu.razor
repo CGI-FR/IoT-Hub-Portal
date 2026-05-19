@@ -8,41 +8,40 @@
 @using IoTHub.Portal.Shared.Security
 @implements IDisposable
 
-<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
-    <MudNavMenu>
-        <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+<MudNavMenu>
+    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
 
-        <MudNavGroup Title="Devices" Icon="@Icons.Material.Outlined.Memory"
-                     Expanded="@LayoutService.GetNavGroupExpanded("Devices")"
-                     ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Devices", b))">
-            @if (portalPermissions.Contains(PortalPermissions.DeviceRead))
-            {
-                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                    <MudNavLink Href="/devices">Device List</MudNavLink>
-                    @if (portalPermissions.Contains(PortalPermissions.DeviceWrite))
-                    {
-                        <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
-                        <MudTooltip Text="Add device">
-                            <MudIconButton id="addDeviceButton"
-                                           OnClick="AddDevice"
-                                           Color="Color.Secondary"
-                                           Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
-                        </MudTooltip>
-                    }
-                </MudPaper>
-            }
-            else
-            {
-                <MudNavLink Disabled="true">Devices</MudNavLink>
-            }
+    <MudNavGroup Title="Devices" Icon="@Icons.Material.Outlined.Memory"
+                 Expanded="@LayoutService.GetNavGroupExpanded("Devices")"
+                 ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Devices", b))">
+        @if (portalPermissions.Contains(PortalPermissions.DeviceRead))
+        {
+            <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                <MudNavLink Href="/devices">Device List</MudNavLink>
+                @if (portalPermissions.Contains(PortalPermissions.DeviceWrite))
+                {
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                    <MudTooltip Text="Add device">
+                        <MudIconButton id="addDeviceButton"
+                                       OnClick="AddDevice"
+                                       Color="Color.Secondary"
+                                       Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                    </MudTooltip>
+                }
+            </MudPaper>
+        }
+        else
+        {
+            <MudNavLink Disabled="true">Devices</MudNavLink>
+        }
 
-            @if (portalPermissions.Contains(PortalPermissions.ModelRead))
-            {
-                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                    <MudNavLink Href="/device-models">Device Models</MudNavLink>
+        @if (portalPermissions.Contains(PortalPermissions.ModelRead))
+        {
+            <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                <MudNavLink Href="/device-models">Device Models</MudNavLink>
                 @if (portalPermissions.Contains(PortalPermissions.ModelWrite))
                 {
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/>
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
                     <MudTooltip Text="Add device model">
                         <MudIconButton id="addDeviceModelButton"
                                        OnClick="AddDeviceModel"
