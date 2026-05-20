@@ -24,18 +24,21 @@
   
   <ItemGroup>
     <ProjectReference Include="..\IoTHub.Portal.Application\IoTHub.Portal.Application.csproj" />
+    <ProjectReference Include="..\IoTHub.Portal.Client\IoTHub.Portal.Client.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Infrastructure\IoTHub.Portal.Infrastructure.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Domain\IoTHub.Portal.Domain.csproj" />
+    <ProjectReference Include="..\IoTHub.Portal.MySql\IoTHub.Portal.MySql.csproj" />
+    <ProjectReference Include="..\IoTHub.Portal.Postgres\IoTHub.Portal.Postgres.csproj" />
     <ProjectReference Include="..\IoTHub.Portal.Shared\IoTHub.Portal.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-    <PackageReference Include="Azure.Data.Tables" Version="12.9.0" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.11.0" />
     <PackageReference Include="Azure.Messaging.EventHubs" Version="5.12.2" />
-    <PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.11.5" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.21.1" />
+    <PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.12.2" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.28.0" />
     <PackageReference Include="FluentValidation" Version="11.9.2" />
     <PackageReference Include="CsvHelper" Version="30.1.0" />
     <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
@@ -45,10 +48,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="10.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
-    <PackageReference Include="Microsoft.Azure.Devices" Version="1.39.1" />
+    <PackageReference Include="Microsoft.Azure.Devices" Version="1.41.0" />
     <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Service" Version="1.18.4" />
     <PackageReference Include="Microsoft.Azure.Devices.Shared" Version="1.30.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.300">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -65,9 +71,9 @@
     <PackageReference Include="MudBlazor" Version="6.21.0" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.22.0" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
-    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.0" />
-    <PackageReference Include="Quartz.Serialization.Json" Version="3.13.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.18.1" />
+    <PackageReference Include="Quartz.Serialization.Json" Version="3.18.1" />
     <PackageReference Include="UAParser" Version="3.1.47" />
     <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
