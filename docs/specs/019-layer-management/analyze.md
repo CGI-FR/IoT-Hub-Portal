@@ -1,17 +1,20 @@
 # Feature Analysis: Layer Management
 
 ## Overview
+
 The Layer Management feature provides CRUD operations for managing building layer/level entities in the IoT Hub Portal. It enables users to create, read, update, and delete building layer configurations with role-based access control, supporting hierarchical building structures for IoT device organization.
 
 ## Feature Identification
 
 ### Primary Components
+
 - **Controller**: `LayersController.cs` (v1.0 API)
 - **Service Interface**: `ILayerService`
 - **DTO**: `LayerDto` (data transfer object)
 - **Entity**: `Layer` (domain model)
 
 ### Naming Convention Note
+
 - Controller named `LayersController` but manages "levels" in documentation
 - Variable names use "level" terminology (`levelService`, `levelId`, `level`)
 - Route uses `/api/building` (building context)
@@ -22,6 +25,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 ### API Endpoints
 
 #### POST /api/building
+
 - **Purpose**: Creates a new building layer/level
 - **Authorization**: `layer:write` permission required
 - **Request Body**: `LayerDto`
@@ -29,6 +33,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 - **Validation**: ArgumentNullException for null input
 
 #### PUT /api/building
+
 - **Purpose**: Updates an existing layer/level
 - **Authorization**: `layer:write` permission required
 - **Request Body**: `LayerDto`
@@ -36,6 +41,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 - **Status Codes**: 200 OK
 
 #### DELETE /api/building/{levelId}
+
 - **Purpose**: Deletes a layer/level by ID
 - **Authorization**: `layer:write` permission required
 - **Route Parameter**: `levelId` (string)
@@ -43,6 +49,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 - **Status Codes**: 204 No Content
 
 #### GET /api/building/{levelId}
+
 - **Purpose**: Retrieves a specific layer/level by ID
 - **Authorization**: `layer:read` permission required
 - **Route Parameter**: `levelId` (string)
@@ -50,6 +57,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 - **Status Codes**: 200 OK, 404 Not Found
 
 #### GET /api/building
+
 - **Purpose**: Retrieves all layers/levels
 - **Authorization**: `layer:read` permission required
 - **Response**: 200 OK with `IEnumerable<LayerDto>`
@@ -58,11 +66,13 @@ The Layer Management feature provides CRUD operations for managing building laye
 ## Technical Details
 
 ### Dependencies
+
 ```csharp
 - ILayerService: Core business logic for layer operations
 ```
 
 ### Data Flow
+
 1. **Create**: Validate input → Service creates layer → Return DTO
 2. **Update**: Service updates layer → Return OK
 3. **Delete**: Service deletes layer → Return No Content
@@ -70,13 +80,15 @@ The Layer Management feature provides CRUD operations for managing building laye
 5. **Get All**: Service retrieves all layers → Return collection
 
 ### Security Model
+
 - **Authentication**: Required (Authorize attribute on controller)
-- **Authorization**: 
+- **Authorization**:
   - Write operations: `layer:write` permission
   - Read operations: `layer:read` permission
 - **Fine-grained**: Policy-based authorization per endpoint
 
 ### Error Handling
+
 - `DeviceNotFoundException` caught and returns 404 (incorrect exception type)
 - ArgumentNullException validation on create
 - Exception message passed to client on 404
@@ -84,6 +96,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 ## Key Observations
 
 ### Strengths
+
 - RESTful API design with proper HTTP verbs
 - Clear separation of controller and service layers
 - Role-based access control at method level
@@ -92,6 +105,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 - Building-context routing reflects domain purpose
 
 ### Design Decisions
+
 - Layer ID is string-based (not GUID or int)
 - Update uses PUT (full replacement pattern)
 - Delete returns 204 No Content (correct REST practice)
@@ -101,6 +115,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 - Building-centric route reflects physical space organization
 
 ### Potential Issues
+
 1. **Naming Inconsistency**: Mixed "layer" and "level" terminology throughout code
 2. **Exception Naming**: Uses `DeviceNotFoundException` instead of `LayerNotFoundException` or `LevelNotFoundException`
 3. **No Pagination**: List endpoint returns all layers (problematic for large buildings)
@@ -115,10 +130,12 @@ The Layer Management feature provides CRUD operations for managing building laye
 ## Domain Model
 
 ### Core Entities
+
 - **Layer/Level**: Domain entity representing building floor/layer
 - **LayerDto**: Data transfer object for API communication
 
 ### Expected Properties
+
 - Layer/Level ID (unique identifier)
 - Name (e.g., "Ground Floor", "Level 1")
 - Building reference (which building this layer belongs to)
@@ -129,6 +146,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 - Metadata (created, updated timestamps)
 
 ### Entity Relationships
+
 - Layer belongs to Building (parent entity)
 - Layer may have child layers (sub-levels)
 - Layer contains Devices (spatial organization)
@@ -138,6 +156,7 @@ The Layer Management feature provides CRUD operations for managing building laye
 ## Integration Points
 
 ### Service Contract
+
 ```csharp
 interface ILayerService
 {
@@ -150,11 +169,13 @@ interface ILayerService
 ```
 
 ### Data Transformation
+
 - Service returns `Layer` entity on single get
 - Service returns `LayerDto` collection on list
 - Controller responsible for JSON serialization
 
 ### Expected Integrations
+
 - Building management (layers belong to buildings)
 - Device management (devices assigned to layers)
 - Floor plan visualization (mapping)
@@ -162,6 +183,7 @@ interface ILayerService
 - Planning management (space planning)
 
 ## Business Rules
+
 1. Layer ID is required for update/delete/get operations
 2. Write operations require elevated permissions vs read
 3. All operations require authentication
@@ -175,6 +197,7 @@ interface ILayerService
 ## Testing Considerations
 
 ### Test Scenarios
+
 - Create layer with valid data
 - Create layer with null data
 - Create layer for specific building
@@ -190,6 +213,7 @@ interface ILayerService
 - Layer ordering validation
 
 ### Edge Cases
+
 - Layer ID that doesn't exist (delete/update/get)
 - Empty layer list
 - Duplicate layer creation (same name/number)
@@ -202,12 +226,14 @@ interface ILayerService
 - Circular parent references
 
 ## Configuration
+
 - API Version: 1.0
 - Base Route: `/api/building`
 - API Explorer Group: "IoT Building"
 - Authorization Policy Names: `layer:read`, `layer:write`
 
 ## Metrics & Logging
+
 - No explicit logging in controller
 - Exception messages exposed to client (security consideration)
 - No performance metrics
@@ -215,6 +241,7 @@ interface ILayerService
 - No device count or occupancy metrics per layer
 
 ## Building Management Context
+
 - Layers represent physical building structure
 - Supports multi-story building organization
 - Enables spatial device grouping
@@ -224,6 +251,7 @@ interface ILayerService
 ## Future Considerations
 
 ### Immediate Improvements
+
 1. Standardize terminology (layer vs level)
 2. Add pagination to list endpoint
 3. Add filtering (by building, floor number)
@@ -235,6 +263,7 @@ interface ILayerService
 9. Add device cascade handling on delete
 
 ### Scalability
+
 1. Implement caching for layer structures
 2. Add search capabilities (by building, name)
 3. Consider bulk operations API
@@ -242,6 +271,7 @@ interface ILayerService
 5. Optimize list query with building context
 
 ### Feature Enhancements
+
 1. Add PATCH for partial updates
 2. Add building context (filter layers by building)
 3. Add hierarchy management (parent-child relationships)
@@ -259,6 +289,7 @@ interface ILayerService
 15. Add layer map visualization endpoint
 
 ### Security
+
 1. Add input validation middleware
 2. Sanitize error messages
 3. Add request/response logging
@@ -268,6 +299,7 @@ interface ILayerService
 7. Add cascade permission checks (devices on layer)
 
 ### Integration
+
 1. Add floor plan image upload/management
 2. Add integration with BIM systems
 3. Add layer export/import
@@ -277,6 +309,7 @@ interface ILayerService
 7. Add integration with building automation systems
 
 ### Data Model Enhancement
+
 1. Add explicit Building entity relationship
 2. Add parent layer reference
 3. Add floor number/order field
@@ -286,6 +319,7 @@ interface ILayerService
 7. Add building tree structure endpoint
 
 ### Pattern Recognition
+
 - This controller follows identical pattern to Planning/Schedule controllers
 - Consider creating a base generic controller for CRUD operations
 - Reduces code duplication and maintenance burden
@@ -293,7 +327,9 @@ interface ILayerService
 - Layer/Level naming inconsistency suggests incomplete refactoring
 
 ## Terminology Recommendation
+
 **Standardize on "Layer"**:
+
 - Controller is already named LayersController
 - Authorization policies use "layer" prefix
 - Update all internal references from "level" to "layer"

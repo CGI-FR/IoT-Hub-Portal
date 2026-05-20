@@ -22,6 +22,7 @@ The Device Model Management feature provides comprehensive CRUD (Create, Read, U
 - Automatic enrollment group creation in IoT Hub/AWS when creating device models
 
 This feature serves as the foundation for device lifecycle management, providing business value through:
+
 - Standardized device templates for consistent device provisioning
 - Reusable device configurations across multiple devices
 - Centralized property definition and management
@@ -33,8 +34,10 @@ This feature serves as the foundation for device lifecycle management, providing
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelsController.cs` (Lines 1-133)
   - **Snippet**: Main REST API controller inheriting from DeviceModelsControllerBase
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -83,6 +86,7 @@ This feature serves as the foundation for device lifecycle management, providing
 
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesController.cs` (Lines 1-52)
   - **Snippet**: Controller for device model property management
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -102,8 +106,10 @@ This feature serves as the foundation for device lifecycle management, providing
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IDeviceModelService.cs` (Lines 1-26)
   - **Snippet**: Core service interface
+
     ```csharp
     public interface IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
@@ -143,12 +149,14 @@ This feature serves as the foundation for device lifecycle management, providing
   - Handles property CRUD operations
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IDeviceModelRepository.cs` (Lines 1-10)
   - Generic repository interface for DeviceModel entity
   - Method: GetByNameAsync for name-based lookup
 
 - `src/IoTHub.Portal.Domain/Entities/DeviceModel.cs` (Lines 1-41)
   - **Snippet**: Core device model entity
+
     ```csharp
     public class DeviceModel : EntityBase
     {
@@ -176,6 +184,7 @@ This feature serves as the foundation for device lifecycle management, providing
 
 - `src/IoTHub.Portal.Domain/Entities/DeviceModelProperty.cs` (Lines 1-45)
   - **Snippet**: Device model property entity
+
     ```csharp
     public class DeviceModelProperty : EntityBase
     {
@@ -203,6 +212,7 @@ This feature serves as the foundation for device lifecycle management, providing
   - Properties: Name, Frame, Confirmed, Port, IsBuiltin, DeviceModelId
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/DeviceModels/DeviceModelListPage.razor` (Lines 1-211)
   - Main device model listing page with search panel
   - Server-side paginated table with sorting
@@ -244,9 +254,11 @@ This feature serves as the foundation for device lifecycle management, providing
   - Search and reset buttons
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/DeviceModelDto.cs` (Lines 1-54)
   - Complete device model DTO with validation attributes
   - **Snippet**:
+
     ```csharp
     public class DeviceModelDto : IDeviceModel
     {
@@ -266,6 +278,7 @@ This feature serves as the foundation for device lifecycle management, providing
 - `src/IoTHub.Portal.Shared/Models/v1.0/DeviceProperty.cs` (Lines 1-45)
   - Device property DTO for model properties
   - **Snippet**:
+
     ```csharp
     public class DeviceProperty
     {
@@ -292,11 +305,13 @@ This feature serves as the foundation for device lifecycle management, providing
   - Properties: SearchText (name or description), plus inherited pagination properties
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IDeviceModelsClientService.cs` (Lines 1-26)
   - Client-side service interface for HTTP API calls
   - Methods: GetDeviceModelsAsync, GetDeviceModel, CreateDeviceModelAsync, UpdateDeviceModel, DeleteDeviceModel, GetDeviceModelModelPropertiesAsync, SetDeviceModelModelProperties, GetAvatar, ChangeAvatarAsync
 
 ### Validators
+
 - `src/IoTHub.Portal.Client/Validators/DeviceModelValidator.cs` (Lines 1-15)
   - FluentValidation validator for DeviceModelDto
   - Validates: Name is required
@@ -310,6 +325,7 @@ This feature serves as the foundation for device lifecycle management, providing
 ## API Endpoints
 
 ### Device Model Management
+
 - `GET /api/models` - Get paginated device model list
   - Query parameters: searchText, pageSize, pageNumber, orderBy[]
   - Returns: PaginationResult<DeviceModelDto>
@@ -340,6 +356,7 @@ This feature serves as the foundation for device lifecycle management, providing
   - Removes enrollment group, configurations, commands, labels, and image
 
 ### Device Model Avatar Management
+
 - `GET /api/models/{id}/avatar` - Get device model avatar URL
   - Returns: string (image URL)
   - Authorization: model:read
@@ -357,6 +374,7 @@ This feature serves as the foundation for device lifecycle management, providing
   - Resets to default avatar
 
 ### Device Model Properties
+
 - `GET /api/models/{id}/properties` - Get device model properties
   - Returns: IEnumerable<DeviceProperty>
   - Authorization: model:read
@@ -373,10 +391,12 @@ This feature serves as the foundation for device lifecycle management, providing
 ## Authorization
 
 ### Required Permissions
+
 - **model:read** - View device model list, details, properties, and avatars
 - **model:write** - Create, update, delete device models, manage properties and avatars
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` attributes on controller methods
 - Permission checks in UI components using `HasPermissionAsync(PortalPermissions.*)` for conditional rendering
 - Base authorization requirement: `[Authorize]` on DeviceModelsController
@@ -387,12 +407,14 @@ This feature serves as the foundation for device lifecycle management, providing
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **Label Management** - Device models can be tagged with labels for categorization
 - **Device Management** - Device models are referenced by devices; models cannot be deleted if in use
 - **LoRaWAN Management** - LoRaWAN device models have additional properties and commands
 - **IoT Hub Integration** - External device service for enrollment group and configuration management
 
 ### Service Dependencies
+
 - `IDeviceModelRepository` - Device model persistence
 - `IDeviceModelCommandRepository` - Device model command persistence (LoRaWAN)
 - `ILabelRepository` - Label persistence
@@ -405,12 +427,14 @@ This feature serves as the foundation for device lifecycle management, providing
 - `IMapper` (AutoMapper) - Entity to DTO mapping
 
 ### External Dependencies
+
 - **Azure IoT Hub** or **AWS IoT Core** - Cloud IoT device enrollment and configuration service
 - **Entity Framework Core** - Database access via PortalDbContext
 - **AutoMapper** - Entity to DTO mapping
 - **Azure Blob Storage** or **AWS S3** - Image storage (via IDeviceModelImageManager)
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library (MudTable, MudForm, MudTextField, MudExpansionPanel, etc.)
 - **FluentValidation** - Form validation
 - LabelsEditor component - Label management
@@ -421,17 +445,20 @@ This feature serves as the foundation for device lifecycle management, providing
 ## Key Features & Behaviors
 
 ### Search and Filtering
+
 - Full-text search by device model name or description (case-insensitive)
 - Searches across both Name and Description fields simultaneously
 - Server-side filtering for performance
 
 ### Pagination
+
 - Server-side pagination with configurable page size
 - Default page size: 10 items
 - Uses cursor-based navigation with nextPage URL
 - Sorting support on Name and Description columns
 
 ### Property Management
+
 - Define custom properties for device models
 - Property types: String, Integer, Double, Float, Long, Boolean, DateTime
 - Properties can be writable (desired properties) or read-only (reported properties)
@@ -440,6 +467,7 @@ This feature serves as the foundation for device lifecycle management, providing
 - Validation: name must be word or dot-separated words, display name required, order required
 
 ### Avatar Management
+
 - Upload custom images for device models (JPG, JPEG, PNG)
 - Automatic image resizing to 200x200 pixels
 - Default avatar assigned when no image uploaded
@@ -447,23 +475,27 @@ This feature serves as the foundation for device lifecycle management, providing
 - Images stored in blob storage (Azure or AWS)
 
 ### Device Model Types
+
 - **Standard Device Models**: Basic IoT devices with properties
 - **LoRaWAN Device Models**: LoRaWAN devices with additional configuration (OTAA, class type, deduplication, etc.) and commands
 - Type selection during creation (if LoRa is enabled in portal settings)
 
 ### IoT Hub Integration
+
 - Automatic enrollment group creation when model is created
 - Configuration rollout to all devices of the model type
 - Enrollment group deletion when model is deleted
 - Desired properties from model properties are pushed to device configurations
 
 ### Built-in Models
+
 - System-defined models that cannot be edited or deleted
 - Flagged with IsBuiltin property
 - Edit/delete buttons disabled in UI
 - Useful for default or template models
 
 ### Validation
+
 - Device model name required
 - Property name format validation (word or dot-separated words)
 - Property display name required
@@ -472,6 +504,7 @@ This feature serves as the foundation for device lifecycle management, providing
 - LoRaWAN command validation (if applicable)
 
 ### Label Management
+
 - Device models can have multiple labels
 - Labels provide categorization and filtering
 - Labels are displayed in list view
@@ -482,6 +515,7 @@ This feature serves as the foundation for device lifecycle management, providing
 ## Notes
 
 ### Architecture Patterns
+
 - **Generic Controller Base** - DeviceModelsControllerBase<TListItem, TModel> allows reuse for different model types (standard, LoRaWAN)
 - **Generic Service Interface** - IDeviceModelService<TListItem, TModel> enables polymorphic model handling
 - **Repository Pattern** - Clean separation of data access concerns
@@ -489,12 +523,14 @@ This feature serves as the foundation for device lifecycle management, providing
 - **DTO Pattern** - Clear separation between domain entities and API contracts
 
 ### Multi-Cloud Support
+
 - Supports both Azure IoT Hub and AWS IoT Core
 - Cloud provider selection via PortalSettings.CloudProvider
 - Provider-specific implementations handle enrollment groups and configurations
 - AWS provider has some restrictions (e.g., Name field disabled)
 
 ### Performance Considerations
+
 - Server-side pagination reduces data transfer
 - Lazy loading with Include() for related entities (Labels)
 - Image URLs retrieved asynchronously
@@ -502,6 +538,7 @@ This feature serves as the foundation for device lifecycle management, providing
 - Parallel image retrieval during list loading
 
 ### Security Considerations
+
 - Comprehensive authorization checks at controller and UI levels
 - Built-in models protected from modification
 - Input validation on all user-submitted data
@@ -510,10 +547,12 @@ This feature serves as the foundation for device lifecycle management, providing
 - Image upload restricted to specific formats
 
 ### Testing Coverage
+
 - Unit tests exist for controllers, services, validators, and UI components
 - Test files: DeviceModelServiceTests.cs, DeviceModelsControllerTests.cs, DeviceModelValidatorTests.cs, DeviceModelPropertiesServiceTests.cs
 
 ### Integration Points
+
 - Device models are the foundation for device provisioning
 - Properties defined in models are used in device twin synchronization
 - Commands defined in models (LoRaWAN) are available for device execution
@@ -521,6 +560,7 @@ This feature serves as the foundation for device lifecycle management, providing
 - Images stored in blob storage with model association
 
 ### Future Enhancement Opportunities
+
 - Import/export device model templates
 - Device model versioning
 - Model inheritance or composition

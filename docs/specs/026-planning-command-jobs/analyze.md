@@ -12,6 +12,7 @@ The Planning Command Jobs feature provides an advanced scheduling system that au
 Key capabilities include:
 
 **Planning Management**:
+
 - Time-bounded planning periods with start and end dates
 - Weekly day-off patterns for non-working days (e.g., weekends, holidays)
 - Default commands for off-days (e.g., "lights off" on weekends)
@@ -19,6 +20,7 @@ Key capabilities include:
 - Planning assignment to hierarchical device layers
 
 **Schedule Management**:
+
 - Multiple time-based schedules per planning
 - Start and end time ranges for command execution
 - Day-specific command sequences (different commands per weekday)
@@ -26,12 +28,14 @@ Key capabilities include:
 - Support for overlapping schedules within planning periods
 
 **Device Organization via Layers**:
+
 - Hierarchical device grouping (father-child layer relationships)
 - Planning association at layer level (inherited by all devices)
 - Dynamic device-to-planning mapping based on layer membership
 - Support for devices without layers (excluded from automation)
 
 **Automated Command Execution**:
+
 - Time-zone aware scheduling (Europe/Paris by default)
 - Per-minute execution cycle checks current time against all schedules
 - Finds appropriate command for current day and time slot
@@ -40,6 +44,7 @@ Key capabilities include:
 - Respects day-off periods with default commands
 
 **Job Workflow**:
+
 1. Refresh data from APIs (devices, layers, plannings, schedules)
 2. Build planning command database with device associations
 3. Evaluate active plannings based on current date
@@ -49,6 +54,7 @@ Key capabilities include:
 7. Execute appropriate command to all devices in affected layers
 
 This feature provides critical business value by:
+
 - Automating repetitive device control operations (reduce manual effort by 90%+)
 - Enabling smart city applications (streetlights, traffic control, environmental sensors)
 - Supporting energy optimization (automated HVAC, lighting based on schedules)
@@ -70,6 +76,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs` (Lines 1-259)
   - **Snippet**: Main job for executing scheduled commands
+
     ```csharp
     [DisallowConcurrentExecution]
     public class SendPlanningCommandJob : IJob
@@ -123,6 +130,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
     ```
 
   - **Snippet**: Data refresh from APIs
+
     ```csharp
     public async Task UpdateAPI()
     {
@@ -142,6 +150,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
     ```
 
   - **Snippet**: Planning database construction
+
     ```csharp
     public void UpdateDatabase()
     {
@@ -176,6 +185,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
     ```
 
   - **Snippet**: Schedule command building
+
     ```csharp
     public void AddCommand(PlanningCommand planningCommand)
     {
@@ -207,6 +217,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
     ```
 
   - **Snippet**: Day-off command handling
+
     ```csharp
     public void addPlanningSchedule(PlanningDto planningData, PlanningCommand planning)
     {
@@ -230,6 +241,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
     ```
 
   - **Snippet**: Regular schedule addition
+
     ```csharp
     public void addSchedule(ScheduleDto schedule, PlanningCommand planning)
     {
@@ -256,6 +268,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
     ```
 
   - **Snippet**: Time-based command execution
+
     ```csharp
     public async Task SendCommand()
     {
@@ -293,6 +306,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs` (Lines 6-36)
   - **Snippet**: Planning command data structures
+
     ```csharp
     public class PlanningCommand
     {
@@ -335,6 +349,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Infrastructure/Startup/AzureServiceCollectionExtension.cs` (Lines 169-180)
   - **Snippet**: Azure planning command job configuration
+
     ```csharp
     private static IServiceCollection ConfigureSendingCommands(
         this IServiceCollection services, ConfigHandler configuration)
@@ -356,6 +371,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Infrastructure/Startup/AWSServiceCollectionExtension.cs` (Lines 114-126)
   - **Snippet**: AWS planning command job configuration
+
     ```csharp
     private static IServiceCollection ConfigureAWSSendingCommands(
         this IServiceCollection services, ConfigHandler configuration)
@@ -387,6 +403,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Application/Services/IPlanningService.cs` (Lines 1-15)
   - **Snippet**: Planning management service
+
     ```csharp
     public interface IPlanningService
     {
@@ -405,6 +422,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Application/Services/ILoRaWANCommandService.cs` (Lines 1-13)
   - **Snippet**: LoRaWAN command execution service
+
     ```csharp
     public interface ILoRaWANCommandService
     {
@@ -418,6 +436,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/LayerDto.cs` (Lines 1-33)
   - **Snippet**: Layer DTO for device organization
+
     ```csharp
     public class LayerDto
     {
@@ -431,6 +450,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/PlanningDto.cs` (Lines 1-43)
   - **Snippet**: Planning DTO for automation rules
+
     ```csharp
     public class PlanningDto
     {
@@ -446,6 +466,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/ScheduleDto.cs` (Lines 1-31)
   - **Snippet**: Schedule DTO for time-based commands
+
     ```csharp
     public class ScheduleDto
     {
@@ -480,6 +501,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/DaysEnumFlag.cs`
   - **Snippet**: Day-of-week flag enum
+
     ```csharp
     [Flags]
     public enum DaysOfWeek
@@ -503,6 +525,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 ## Dependencies
 
 ### Internal Dependencies
+
 - **Application Layer**:
   - IDeviceService<T> for device list retrieval
   - ILayerService for layer and planning associations
@@ -522,6 +545,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
   - Logging infrastructure (ILogger<T>)
 
 ### External Dependencies
+
 - **Quartz.NET**:
   - `Quartz` (v3.x) - Job scheduling framework
   - `[DisallowConcurrentExecution]` attribute
@@ -535,6 +559,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
   - Collection types (List, Dictionary, Collection)
 
 ### Configuration Dependencies
+
 - **Settings**:
   - `SendCommandsToDevicesIntervalInMinutes` - Job execution frequency (default: 1)
   - Timezone configuration (hardcoded: Europe/Paris)
@@ -546,6 +571,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
   - Database connection string for planning data
 
 ### Feature Dependencies
+
 - **Depends on**:
   - Layer Management feature (device organization)
   - Planning Management feature (automation rules)
@@ -564,6 +590,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 ---
 
 ## Related Features
+
 - **023-background-job-management** - Job scheduling infrastructure
 - **012-lorawan-device-management** - LoRaWAN device and command management
 - **001-device-management** - Device inventory and metadata
@@ -574,6 +601,7 @@ The planning system uses a hierarchical model: Devices belong to Layers, Layers 
 ---
 
 ## Notes
+
 - Job executes every minute by default (`SendCommandsToDevicesIntervalInMinutes=1`)
 - Uses `[DisallowConcurrentExecution]` to prevent overlapping executions
 - Timezone is hardcoded to "Europe/Paris" - may need configuration for multi-region deployments

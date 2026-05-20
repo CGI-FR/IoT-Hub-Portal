@@ -9,7 +9,7 @@
 ## Summary
 
 | Criteria | Score | Weight | Weighted Score |
-|----------|-------|--------|----------------|
+| ---------- | ------- | -------- | ---------------- |
 | **Correctness** | 92% | 30% | 27.6% |
 | **Completeness** | 88% | 30% | 26.4% |
 | **Technical Quality** | 95% | 20% | 19.0% |
@@ -23,36 +23,43 @@
 ## Verified Specifications ✅
 
 ### FR-001: System MUST collect total device count from cloud provider
+
 - **Status**: ✅ Verified
 - **Evidence**: [DeviceMetricLoaderJob.cs#L34](src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricLoaderJob.cs#L34)
 - **Code**: `this.portalMetric.DeviceCount = await this.externalDeviceService.GetDevicesCount();`
 
 ### FR-002: System MUST collect connected device count from cloud provider
+
 - **Status**: ✅ Verified
 - **Evidence**: [DeviceMetricLoaderJob.cs#L44](src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricLoaderJob.cs#L44)
 - **Code**: `this.portalMetric.ConnectedDeviceCount = await this.externalDeviceService.GetConnectedDevicesCount();`
 
 ### FR-003: System MUST collect edge device count and connected edge device count
+
 - **Status**: ✅ Verified
 - **Evidence**: [EdgeDeviceMetricLoaderJob.cs#L38-50](src/IoTHub.Portal.Infrastructure/Jobs/EdgeDeviceMetricLoaderJob.cs#L38-50)
 - **Code**: Separate methods `LoadEdgeDevicesCountMetric()` and `LoadConnectedEdgeDevicesCountMetric()`
 
 ### FR-004: System MUST collect failed deployment count for edge devices
+
 - **Status**: ✅ Verified
 - **Evidence**: [EdgeDeviceMetricLoaderJob.cs#L56-66](src/IoTHub.Portal.Infrastructure/Jobs/EdgeDeviceMetricLoaderJob.cs#L56-66)
 - **Code**: `this.portalMetric.FailedDeploymentCount = await configService.GetFailedDeploymentsCount();`
 
 ### FR-005: System MUST collect concentrator count when LoRa features are enabled
+
 - **Status**: ✅ Verified
 - **Evidence**: [ConcentratorMetricLoaderJob.cs#L28-36](src/IoTHub.Portal.Infrastructure/Jobs/ConcentratorMetricLoaderJob.cs#L28-36)
 - **Code**: `this.portalMetric.ConcentratorCount = await this.externalDeviceService.GetConcentratorsCount();`
 
 ### FR-006: System MUST export metrics to Prometheus format
+
 - **Status**: ✅ Verified
 - **Evidence**: [DeviceMetricExporterJob.cs#L12-13](src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricExporterJob.cs#L12-13)
 - **Code**: Uses `Metrics.CreateCounter()` from prometheus-net library
 
 ### FR-007: Prometheus metrics MUST include standard metrics
+
 - **Status**: ✅ Verified
 - **Evidence**: [MetricName.cs](src/IoTHub.Portal.Domain/Shared/Constants/MetricName.cs)
 - **Details**: All specified metric names are defined:
@@ -64,31 +71,37 @@
   - `iot_hub_portal_concentrator_count`
 
 ### FR-008: Metrics loader jobs MUST update shared PortalMetric singleton
+
 - **Status**: ✅ Verified
 - **Evidence**: All loader jobs inject `PortalMetric` and update its properties directly
 - **Code**: [PortalMetric.cs](src/IoTHub.Portal.Shared/Models/v1.0/PortalMetric.cs)
 
 ### FR-009: Metrics exporter jobs MUST read from PortalMetric singleton
+
 - **Status**: ✅ Verified
 - **Evidence**: [DeviceMetricExporterJob.cs#L25-26](src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricExporterJob.cs#L25-26)
 - **Code**: `this.deviceCounter.IncTo(this.portalMetric.DeviceCount);`
 
 ### FR-010: System MUST continuously ingest LoRaWAN telemetry from Azure Event Hub
+
 - **Status**: ✅ Verified
 - **Evidence**: [SyncLoRaDeviceTelemetryJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/SyncLoRaDeviceTelemetryJob.cs)
 - **Code**: Uses `EventProcessorClient` for continuous event processing
 
 ### FR-011: Telemetry ingestion MUST use checkpointing for reliable processing
+
 - **Status**: ✅ Verified
 - **Evidence**: [SyncLoRaDeviceTelemetryJob.cs#L29-34](src/IoTHub.Portal.Infrastructure/Jobs/SyncLoRaDeviceTelemetryJob.cs#L29-34)
 - **Code**: Uses blob storage container `iothub-portal-events-checkpoints` for EventProcessorClient checkpointing
 
 ### FR-012: Metrics collection jobs MUST prevent concurrent execution
+
 - **Status**: ✅ Verified
 - **Evidence**: All metric jobs decorated with `[DisallowConcurrentExecution]` attribute
 - **Files**: DeviceMetricLoaderJob.cs, EdgeDeviceMetricLoaderJob.cs, ConcentratorMetricLoaderJob.cs, etc.
 
 ### FR-013: Metrics collection MUST handle API failures gracefully with error logging
+
 - **Status**: ✅ Verified
 - **Evidence**: [DeviceMetricLoaderJob.cs#L36-38](src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricLoaderJob.cs#L36-38)
 - **Code**: `catch (InternalServerErrorException e) { this.logger.LogError(...); }`
@@ -98,7 +111,7 @@
 ## Metrics Collection Jobs Verification
 
 | Job | Spec Status | Implementation | Verified |
-|-----|-------------|----------------|----------|
+| ----- | ------------- | ---------------- | ---------- |
 | DeviceMetricLoaderJob | ✅ | [DeviceMetricLoaderJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricLoaderJob.cs) | ✅ |
 | EdgeDeviceMetricLoaderJob | ✅ | [EdgeDeviceMetricLoaderJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/EdgeDeviceMetricLoaderJob.cs) | ✅ |
 | ConcentratorMetricLoaderJob | ✅ | [ConcentratorMetricLoaderJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/ConcentratorMetricLoaderJob.cs) | ✅ |
@@ -112,7 +125,7 @@
 ## Prometheus Metrics Verification
 
 | Metric Name | Spec | Actual | Match |
-|-------------|------|--------|-------|
+| ------------- | ------ | -------- | ------- |
 | iot_hub_portal_device_count | Counter | Counter | ✅ |
 | iot_hub_portal_connected_device_count | Counter | Counter | ✅ |
 | iot_hub_portal_edge_device_count | Counter | Counter | ✅ |
@@ -127,18 +140,21 @@
 ## Inaccuracies Found ⚠️
 
 ### 1. Missing Metric: connected_concentrator_count
+
 - **Severity**: Low
 - **Spec Says**: Does not mention `connected_concentrator_count`
 - **Actual**: [MetricName.cs#L22](src/IoTHub.Portal.Domain/Shared/Constants/MetricName.cs#L22) defines `ConnectedConcentratorCount`
 - **Impact**: Spec is incomplete regarding available metrics
 
 ### 2. Data Source for ConcentratorMetricLoaderJob
+
 - **Severity**: Low
 - **Spec Says**: "Local database" as data source
 - **Actual**: Uses `IExternalDeviceService.GetConcentratorsCount()` which queries the cloud provider
 - **Evidence**: [ConcentratorMetricLoaderJob.cs#L33](src/IoTHub.Portal.Infrastructure/Jobs/ConcentratorMetricLoaderJob.cs#L33)
 
 ### 3. SyncLoRaDeviceTelemetryJob Missing [DisallowConcurrentExecution]
+
 - **Severity**: Medium
 - **Spec Says**: FR-012 states "Metrics collection jobs MUST prevent concurrent execution"
 - **Actual**: `SyncLoRaDeviceTelemetryJob` does NOT have `[DisallowConcurrentExecution]` attribute
@@ -146,6 +162,7 @@
 - **Impact**: Concurrent execution is not prevented for this job (though its long-running nature makes this less critical)
 
 ### 4. Metric Type Clarification
+
 - **Severity**: Low
 - **Spec Says**: Metrics are "Counter" type
 - **Actual**: While implemented as Prometheus Counters, they use `IncTo()` method to set absolute values rather than incrementing
@@ -157,7 +174,7 @@
 ## Job Scheduling Configuration
 
 | Job Type | Scheduler Interval | Configuration |
-|----------|-------------------|---------------|
+| ---------- | ------------------- | --------------- |
 | Exporter Jobs | `MetricExporterRefreshIntervalInSeconds` | [QuartzConfiguratorExtension.cs#L17](src/IoTHub.Portal.Infrastructure/Extenstions/QuartzConfiguratorExtension.cs#L17) |
 | Loader Jobs | `MetricLoaderRefreshIntervalInMinutes` | [QuartzConfiguratorExtension.cs#L25](src/IoTHub.Portal.Infrastructure/Extenstions/QuartzConfiguratorExtension.cs#L25) |
 | SyncLoRaDeviceTelemetryJob | Starts once after 1 minute delay | [AzureServiceCollectionExtension.cs#L164](src/IoTHub.Portal.Infrastructure/Startup/AzureServiceCollectionExtension.cs#L164) |
@@ -167,7 +184,7 @@
 ## Test Coverage
 
 | Job | Test File | Status |
-|-----|-----------|--------|
+| ----- | ----------- | -------- |
 | DeviceMetricLoaderJob | [DeviceMetricLoaderJobTests.cs](src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/DeviceMetricLoaderJobTests.cs) | ✅ |
 | EdgeDeviceMetricLoaderJob | [EdgeDeviceMetricLoaderJobTests.cs](src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/EdgeDeviceMetricLoaderJobTests.cs) | ✅ |
 | ConcentratorMetricLoaderJob | [ConcentratorMetricLoaderJobTests.cs](src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/ConcentratorMetricLoaderJobTests.cs) | ✅ |
@@ -197,7 +214,7 @@
 ## Code References
 
 | Component | File Path | Lines |
-|-----------|-----------|-------|
+| ----------- | ----------- | ------- |
 | DeviceMetricLoaderJob | [src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricLoaderJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricLoaderJob.cs) | 1-54 |
 | DeviceMetricExporterJob | [src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricExporterJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricExporterJob.cs) | 1-33 |
 | EdgeDeviceMetricLoaderJob | [src/IoTHub.Portal.Infrastructure/Jobs/EdgeDeviceMetricLoaderJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/EdgeDeviceMetricLoaderJob.cs) | 1-69 |

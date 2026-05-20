@@ -9,7 +9,7 @@
 ## Summary
 
 | Metric | Score | Grade | Weight |
-|--------|-------|-------|--------|
+| -------- | ------- | ------- | -------- |
 | Correctness | 92/100 | A | 30% |
 | Completeness | 88/100 | B | 30% |
 | Technical Quality | 85/100 | B | 20% |
@@ -25,7 +25,7 @@
 ### ✅ Accurate Specifications
 
 | Spec Element | Code Location | Verification |
-|--------------|---------------|--------------|
+| -------------- | --------------- | -------------- |
 | User Story 1 - View/Search Device List | `DevicesController.cs#L35-47` | Matches implementation - paginated list with search, filters |
 | User Story 2 - View Device Details | `DevicesController.cs#L54-58` | Correctly documented - GetItem returns DeviceDetails |
 | User Story 3 - Create New Devices | `DevicesController.cs#L65-69` | Matches - CreateDeviceAsync with authorization |
@@ -47,7 +47,7 @@
 ### ⚠️ Inaccuracies Found
 
 | Spec Element | Issue | Code Reality | Severity |
-|--------------|-------|--------------|----------|
+| -------------- | ------- | -------------- | ---------- |
 | FR-006 - Filter by custom tags | Spec says "tag names defined in tag settings" | Implementation uses searchable tags only (`GetSearchableTags`) | Low |
 | FR-008 - Sorting by multiple columns | Spec says "multiple columns" | Implementation uses single orderBy string concatenation | Low |
 | FR-018 - Device credentials | Spec mentions "enrollment credentials" | Actual implementation is `GetDeviceCredentials` which returns external service credentials | Low |
@@ -68,7 +68,7 @@
 ### ✅ Well-Documented Areas
 
 | Aspect | Coverage | Notes |
-|--------|----------|-------|
+| -------- | ---------- | ------- |
 | CRUD Operations | Complete | All create, read, update, delete flows documented |
 | Authorization | Complete | All permission levels documented |
 | User Stories | Complete | 7 comprehensive user stories with acceptance criteria |
@@ -80,7 +80,7 @@
 ### 🔴 Missing Documentation
 
 | Missing Aspect | Code Location | Impact |
-|----------------|---------------|--------|
+| ---------------- | --------------- | -------- |
 | LoRaWAN device detection logic | `DeviceServiceBase.cs#L108-110` | Low - Not mentioned that SupportLoRaFeatures is derived |
 | Image retrieval pattern | `DeviceServiceBase.cs#L117-121` | Low - Blocking .Result call pattern not documented |
 | Label union with model labels | `DeviceServiceBase.cs#L79-81` | Medium - Labels include model labels, not just device labels |
@@ -104,7 +104,7 @@
 ### Testability Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Acceptance criteria are specific | ✅ | Given/When/Then format consistently used |
 | Scenarios are measurable | ✅ | Specific outcomes defined for each scenario |
 | Test data requirements clear | ⚠️ | Some scenarios lack specific test data examples |
@@ -113,7 +113,7 @@
 ### Traceability Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Requirements map to code | ✅ | Code References section provides exact file paths |
 | No orphan requirements | ✅ | All FRs have corresponding implementation |
 | No orphan code | ⚠️ | Some helper methods not explicitly covered (FilterDeviceTags, GetSearchableTags) |
@@ -122,7 +122,7 @@
 ### Consistency Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Terminology matches codebase | ✅ | DeviceDetails, DeviceListItem, etc. match actual class names |
 | Entity names align with models | ✅ | Device, Label, DeviceTagValue correctly named |
 | API paths match implementation | ✅ | `/api/devices` route matches spec |
@@ -130,7 +130,7 @@
 ### Currency Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Reflects latest code changes | ✅ | Spec dated 2026-01-30, code appears current |
 | No deprecated references | ✅ | No deprecated API usage found |
 | Version info accurate | ⚠️ | No explicit version tracking in spec |
@@ -149,7 +149,7 @@
 ### Security Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Authentication | ✅ | `DevicesController.cs#L6` `[Authorize]` | None |
 | Authorization | ✅ | `DevicesController.cs#L35,54,65,76,87` | None |
 | Input Validation | ✅ | `DevicesControllerBase.cs#L93-100` | None |
@@ -159,7 +159,7 @@
 ### Error Handling Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Failure Scenarios | ✅ | Edge Cases section | Comprehensive |
 | Error Responses | ✅ | `DevicesControllerBase.cs#L95-100` | ProblemDetails format |
 | Recovery Procedures | ⚠️ | Edge Cases section | Partially documented |
@@ -168,7 +168,7 @@
 ### Performance Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | SLAs/Requirements | ✅ | Success Criteria section | 3 second response time |
 | Rate Limiting | ❌ | N/A | Not documented or implemented |
 | Caching | ❌ | N/A | Not documented or implemented |
@@ -177,7 +177,7 @@
 ### Integration Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | External APIs | ✅ | `IExternalDeviceService` | Azure IoT Hub/AWS IoT Core |
 | Third-party Services | ✅ | Dependencies section | None |
 | Database/Storage | ✅ | `IDeviceRepository` | PortalDbContext |
@@ -186,7 +186,7 @@
 ### Configuration Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Environment Variables | ❌ | N/A | Not documented |
 | Feature Flags | ⚠️ | `Portal.IsLoRaSupported` | Partially mentioned in UI |
 | Settings/Defaults | ✅ | FR-027 | Page size default documented |
@@ -204,18 +204,22 @@
 ## Recommendations
 
 ### Critical (Must Fix)
+
 None - Spec is well-aligned with implementation.
 
 ### High Priority
+
 1. **Document audit logging requirements**: Add requirement for tracking device CRUD operations for compliance
 2. **Clarify label inheritance**: Document that device labels include inherited model labels
 
 ### Medium Priority
+
 1. **Add environment variable documentation**: List required configuration settings
 2. **Document error message formats**: Provide templates for user-facing error messages
 3. **Clarify multi-column sorting**: Current implementation may not support true multi-column sort
 
 ### Low Priority
+
 1. **Add version tracking**: Include spec version number for change tracking
 2. **Document telemetry endpoint behavior**: Clarify that standard devices return empty telemetry
 3. **Add caching strategy notes**: Document that device data is not cached
@@ -253,7 +257,7 @@ None - Spec is well-aligned with implementation.
 ## Code References
 
 | File | Lines | Purpose |
-|------|-------|---------|
+| ------ | ------- | --------- |
 | `src/IoTHub.Portal.Server/Controllers/v1.0/DevicesController.cs` | 1-137 | API endpoints for device CRUD |
 | `src/IoTHub.Portal.Server/Controllers/v1.0/DevicesControllerBase.cs` | 1-185 | Base controller with shared logic |
 | `src/IoTHub.Portal.Application/Services/IDeviceService.cs` | 1-39 | Service interface contract |

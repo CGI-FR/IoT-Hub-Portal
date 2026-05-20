@@ -154,21 +154,25 @@ As a facilities manager, I need to delete layers that are no longer needed so th
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/019-layer-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - LayersController: Layer CRUD endpoints (note: uses "building" route)
 - ILayerService: Layer business logic interface
 - Layer entity: Domain model for layer configuration
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 017-planning-management (plannings are assigned to layers)
-- **Depended By**: 
+- **Depended By**:
   - 001-standard-device-management (devices are assigned to layers)
   - 026-planning-command-jobs (uses layer-to-device mapping for automation)
 
 ### Known Issues
+
 - Inconsistent terminology between "layer" and "level" in codebase
 - Route uses "/api/building" instead of "/api/layers"

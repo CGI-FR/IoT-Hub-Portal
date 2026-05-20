@@ -254,6 +254,7 @@ As an IoT administrator, I need to assign labels to devices for categorization a
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/001-standard-device-management/analyze.md`
 - **Analyzed By**: excavator.analyze
 - **Analysis Date**: 2026-01-30
@@ -261,20 +262,24 @@ As an IoT administrator, I need to assign labels to devices for categorization a
 ### Code References
 
 **Controllers**:
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DevicesController.cs` (Lines 1-137)
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DevicesControllerBase.cs` (Lines 1-185)
 
 **Business Logic**:
+
 - `src/IoTHub.Portal.Application/Services/IDeviceService.cs` (Lines 1-39)
 - `src/IoTHub.Portal.Infrastructure/Services/DeviceService.cs` (Lines 1-134)
 - `src/IoTHub.Portal.Infrastructure/Services/DeviceServiceBase.cs` (Lines 1-220+)
 - `src/IoTHub.Portal.Server/Services/DevicePropertyService.cs` (Lines 1-129)
 
 **Data Access**:
+
 - `src/IoTHub.Portal.Domain/Repositories/IDeviceRepository.cs` (Lines 1-9)
 - `src/IoTHub.Portal.Domain/Entities/Device.cs` (Lines 1-63)
 
 **UI Components**:
+
 - `src/IoTHub.Portal.Client/Pages/Devices/DeviceListPage.razor` (Lines 1-480)
 - `src/IoTHub.Portal.Client/Pages/Devices/DeviceDetailPage.razor` (Lines 1-41)
 - `src/IoTHub.Portal.Client/Pages/Devices/CreateDevicePage.razor` (Lines 1-13)
@@ -283,12 +288,14 @@ As an IoT administrator, I need to assign labels to devices for categorization a
 ### Dependencies
 
 **Depends On**:
+
 - Device Model Management (002) - Devices must be associated with a model; model defines properties and behavior
 - Device Tag Settings Management (004) - Custom searchable metadata fields for devices
 - Layer Management (019) - Optional hierarchical organization of devices
 - Azure IoT Hub / AWS IoT Core - External cloud IoT device management service
 
 **Depended On By**:
+
 - Edge Device Management (006) - Shares base functionality through DevicesControllerBase
 - LoRaWAN Device Management (008) - Shares base functionality through DevicesControllerBase
 - Device Import Export (021) - Bulk operations depend on device CRUD functionality

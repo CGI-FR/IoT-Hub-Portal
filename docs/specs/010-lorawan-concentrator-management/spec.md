@@ -165,45 +165,54 @@ Users with large concentrator fleets need to sort the list by various columns (n
 ### Edge Cases
 
 **Device Identifier Validation:**
+
 - What happens when user provides DeviceID with lowercase hex characters? (System expects uppercase A-F)
 - What happens when user provides DeviceID with less than or more than 16 characters?
 - What happens when user attempts to create duplicate DeviceID?
 
 **Certificate Thumbprint Handling:**
+
 - What happens when ClientThumbprint contains lowercase hex characters?
 - What happens when ClientThumbprint has incorrect colon separator positions?
 - What happens when ClientThumbprint is null vs empty string?
 
 **Concurrent Modifications:**
+
 - What happens when two administrators update the same concentrator simultaneously?
 - What happens when concentrator is deleted while another user is viewing its details?
 
 **External Service Failures:**
+
 - What happens when IoT Hub is unavailable during creation/update/deletion?
 - What happens when LoRaWAN management service fails to return router configuration?
 - What happens when database save succeeds but IoT Hub operation fails (partial failure scenario)?
 
 **Data Consistency:**
+
 - What happens when concentrator exists in IoT Hub but not in database?
 - What happens when concentrator exists in database but not in IoT Hub?
 - What happens when IsConnected status in database doesn't match actual IoT Hub connection state?
 
 **Permission Boundary Conditions:**
+
 - What happens when user has concentrator:read but not concentrator:write and attempts modification?
 - What happens when user loses concentrator:write permission while editing a concentrator?
 - What happens when LoRaWAN feature is disabled mid-operation?
 
 **Pagination Edge Cases:**
+
 - What happens when page size exceeds total number of concentrators?
 - What happens when concentrator is deleted while user is viewing a paginated list?
 - What happens when page number exceeds available pages?
 
 **Filtering Edge Cases:**
+
 - What happens when search text contains special regex characters?
 - What happens when all filters are applied and no concentrators match?
 - What happens when status and state filters contradict each other logically?
 
 **Frequency Plan Changes:**
+
 - What happens when concentrator's LoraRegion is changed while LoRaWAN devices are actively communicating through it?
 - What happens when selected frequency plan becomes unavailable or deprecated?
 
@@ -214,6 +223,7 @@ Users with large concentrator fleets need to sort the list by various columns (n
 ### Functional Requirements
 
 **Concentrator Data Management:**
+
 - **FR-001**: System MUST store concentrator records with device identifier, name, frequency plan/region, device type, optional client certificate thumbprint, connection status, enabled status, and version
 - **FR-002**: System MUST enforce device identifier format as exactly 16 uppercase hexadecimal characters (0-9, A-F)
 - **FR-003**: System MUST validate client certificate thumbprint as exactly 40 hexadecimal characters formatted with colon separators (XX:XX:XX:...) or empty
@@ -221,6 +231,7 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - **FR-005**: System MUST automatically set device type to "LoRa Concentrator" during creation
 
 **Concentrator CRUD Operations:**
+
 - **FR-006**: System MUST provide ability to create new concentrators with validation of all required fields and format constraints
 - **FR-007**: System MUST retrieve individual concentrator details by device identifier
 - **FR-008**: System MUST support updating concentrator name, frequency plan/region, client certificate thumbprint, and enabled status
@@ -228,6 +239,7 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - **FR-010**: System MUST support deletion of concentrators with cascading removal from all dependent systems
 
 **IoT Hub Synchronization:**
+
 - **FR-011**: System MUST create corresponding device in cloud IoT platform when concentrator is created locally
 - **FR-012**: System MUST create and configure device twin with router configuration during concentrator creation
 - **FR-013**: System MUST update device twin properties when concentrator configuration is modified
@@ -235,11 +247,13 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - **FR-015**: System MUST delete device from cloud IoT platform when concentrator is deleted locally
 
 **Router Configuration Management:**
+
 - **FR-016**: System MUST retrieve appropriate router configuration from LoRaWAN management service based on selected frequency plan/region
 - **FR-017**: System MUST store router configuration in device twin during creation and update operations
 - **FR-018**: System MUST update router configuration when frequency plan/region is changed
 
 **List and Search Operations:**
+
 - **FR-019**: System MUST provide paginated list of all concentrators with configurable page size
 - **FR-020**: System MUST support searching concentrators by device identifier or device name with case-insensitive matching
 - **FR-021**: System MUST support filtering concentrators by enabled status (enabled/disabled/all)
@@ -249,17 +263,20 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - **FR-025**: System MUST provide next page URL in pagination results when additional pages exist
 
 **Connection Status Tracking:**
+
 - **FR-026**: System MUST track and display connection status (connected/disconnected) for each concentrator
 - **FR-027**: System MUST display visual indicators for connection status (e.g., green for connected, red for disconnected)
 - **FR-028**: System MUST track whether concentrator has successfully authenticated at least once (AlreadyLoggedInOnce property)
 
 **Validation and Error Handling:**
+
 - **FR-029**: System MUST validate all input data against defined constraints before processing
 - **FR-030**: System MUST return 422 Unprocessable Entity with detailed validation errors when input validation fails
 - **FR-031**: System MUST throw ResourceNotFoundException with descriptive message when attempting to retrieve, update, or delete non-existent concentrator
 - **FR-032**: System MUST gracefully handle missing database records during deletion without throwing exceptions
 
 **Authorization and Security:**
+
 - **FR-033**: System MUST require "concentrator:read" permission for viewing concentrator list and details
 - **FR-034**: System MUST require "concentrator:write" permission for creating, updating, and deleting concentrators
 - **FR-035**: System MUST enforce feature gate to disable all concentrator endpoints when LoRaWAN feature is not enabled in portal settings
@@ -267,10 +284,12 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - **FR-037**: System MUST support mutual TLS authentication using client certificate thumbprint for gateway connections
 
 **Transaction Management:**
+
 - **FR-038**: System MUST use unit of work pattern to ensure database operations are committed atomically
 - **FR-039**: System MUST coordinate database operations with IoT Hub operations to maintain consistency
 
 **User Interface:**
+
 - **FR-040**: System MUST provide input masking for client certificate thumbprint field to enforce format XX:XX:XX:...
 - **FR-041**: System MUST provide dropdown selection for frequency plan/region populated from available frequency plans
 - **FR-042**: System MUST conditionally render edit and delete operations based on user permissions
@@ -279,6 +298,7 @@ Users with large concentrator fleets need to sort the list by various columns (n
 ### Key Entities
 
 **Concentrator:**
+
 - Represents a LoRaWAN gateway device (concentrator) that bridges LoRa radio communications to IP networks
 - Unique identifier (DeviceId) - 16 hexadecimal characters
 - Name - human-readable name for identification
@@ -290,6 +310,7 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - Version - entity version for concurrency control
 
 **ConcentratorDto:**
+
 - Data transfer object for API communication
 - Contains all Concentrator properties plus additional fields:
   - AlreadyLoggedInOnce - tracks first successful connection
@@ -297,6 +318,7 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - Includes validation attributes for DeviceId and ClientThumbprint format enforcement
 
 **ConcentratorFilter:**
+
 - Query filter object for list operations
 - SearchText - keyword search for DeviceID or DeviceName
 - Status - optional boolean filter for enabled/disabled state
@@ -304,6 +326,7 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - Inherits pagination properties (PageNumber, PageSize, OrderBy)
 
 **RouterConfig:**
+
 - LoRaWAN-specific configuration for packet routing
 - Retrieved from LoRaWAN management service based on frequency plan/region
 - Stored in device twin for concentrator runtime configuration
@@ -315,43 +338,53 @@ Users with large concentrator fleets need to sort the list by various columns (n
 ### Measurable Outcomes
 
 **Provisioning Efficiency:**
+
 - **SC-001**: Network administrators can provision a new LoRaWAN concentrator from start to finish in under 2 minutes
 - **SC-002**: System validates concentrator configuration data and provides immediate feedback (within 2 seconds) for validation errors
 
 **Inventory Management:**
+
 - **SC-003**: Operations teams can locate any concentrator in a fleet of 500+ devices using search and filters in under 10 seconds
 - **SC-004**: System displays paginated concentrator list with all status information (connection state, enabled status) within 3 seconds for up to 100 devices per page
 
 **Configuration Updates:**
+
 - **SC-005**: Administrators can update concentrator configuration (name, region, certificate, status) and synchronize changes to cloud platform in under 30 seconds
 - **SC-006**: System successfully synchronizes 100% of configuration changes to device twin without manual intervention
 
 **Connection Monitoring:**
+
 - **SC-007**: Operations teams have real-time visibility into concentrator connection status with visual indicators (green/red) refreshed within 5 seconds of state change
 - **SC-008**: System accurately tracks and displays connection history (AlreadyLoggedInOnce) for 100% of concentrators
 
 **Data Consistency:**
+
 - **SC-009**: System maintains consistency between local database and cloud IoT platform with zero orphaned devices after create/update/delete operations
 - **SC-010**: System handles partial failures (e.g., IoT Hub unavailable) gracefully and provides clear error messages to users
 
 **Search and Filter Performance:**
+
 - **SC-011**: Combined search and multi-criteria filtering returns results for fleets of 1000+ concentrators in under 5 seconds
 - **SC-012**: Pagination navigation maintains filter and sort state across 100% of page transitions
 
 **Security and Compliance:**
+
 - **SC-013**: System enforces permission-based access control with zero unauthorized access to concentrator management operations
 - **SC-014**: System validates 100% of client certificate thumbprints against format requirements before allowing configuration
 - **SC-015**: Organizations using mutual TLS authentication achieve zero unauthorized gateway connections
 
 **User Experience:**
+
 - **SC-016**: 90% of users can successfully create, view, update, or delete concentrators on first attempt without consulting documentation
 - **SC-017**: Administrators can identify and troubleshoot disconnected gateways within 1 minute using connection status filters
 
 **System Reliability:**
+
 - **SC-018**: System handles concurrent concentrator management operations from multiple administrators without data corruption
 - **SC-019**: System maintains LoRaWAN feature gate enforcement with 100% accuracy (no endpoint access when feature disabled)
 
 **Validation Quality:**
+
 - **SC-020**: System rejects 100% of invalid DeviceID formats (non-hex, incorrect length) before attempting device creation
 - **SC-021**: System provides specific, actionable validation error messages for all input validation failures
 
@@ -360,6 +393,7 @@ Users with large concentrator fleets need to sort the list by various columns (n
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/010-lorawan-concentrator-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 - **Analysis Date**: January 30, 2025
@@ -367,22 +401,27 @@ Users with large concentrator fleets need to sort the list by various columns (n
 ### Code References
 
 **Controllers:**
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANConcentratorsController.cs` - REST API endpoints for concentrator CRUD operations
 
 **Business Logic:**
+
 - `src/IoTHub.Portal.Application/Services/ILoRaWANConcentratorService.cs` - Service interface
 - `src/IoTHub.Portal.Server/Services/LoRaWANConcentratorService.cs` - Core business logic for concentrator management, IoT Hub synchronization, and router configuration
 
 **Data Layer:**
+
 - `src/IoTHub.Portal.Domain/Entities/Concentrator.cs` - Concentrator domain entity
 - `src/IoTHub.Portal.Domain/Repositories/IConcentratorRepository.cs` - Repository interface
 
 **DTOs:**
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/ConcentratorDto.cs` - API data transfer object with validation attributes
 - `src/IoTHub.Portal.Shared/Models/v1.0/Filters/ConcentratorFilter.cs` - Query filter model
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/RouterConfig.cs` - Router configuration model
 
 **UI Components:**
+
 - `src/IoTHub.Portal.Client/Pages/LoRaWAN/Concentrator/ConcentratorListPage.razor` - List page with search and filters
 - `src/IoTHub.Portal.Client/Pages/LoRaWAN/Concentrator/ConcentratorDetailPage.razor` - Detail and edit page
 - `src/IoTHub.Portal.Client/Pages/LoRaWAN/Concentrator/CreateConcentratorPage.razor` - Creation page
@@ -390,24 +429,29 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - `src/IoTHub.Portal.Client/Components/Concentrators/ConcentratorSearch.razor` - Search and filter component
 
 **Client Services:**
+
 - `src/IoTHub.Portal.Client/Services/ILoRaWanConcentratorClientService.cs` - Client service interface
 - `src/IoTHub.Portal.Client/Services/LoRaWanConcentratorClientService.cs` - HTTP client implementation
 
 **Validators:**
+
 - `src/IoTHub.Portal.Client/Validators/ConcentratorValidator.cs` - FluentValidation rules
 
 **Mappers:**
+
 - `src/IoTHub.Portal.Application/Mappers/IConcentratorTwinMapper.cs` - Twin mapper interface
 - `src/IoTHub.Portal.Infrastructure/Mappers/ConcentratorTwinMapper.cs` - Device twin mapping implementation
 
 ### Dependencies
 
 **Internal Feature Dependencies:**
+
 - **Feature 012 - LoRaWAN Frequency Plans**: Concentrators must be associated with valid frequency plan/region from this feature
 - **Feature 008 - LoRaWAN Device Management**: LoRaWAN end-devices communicate through concentrators managed by this feature
 - **Feature 011 - LoRaWAN Commands Management**: Commands to LoRaWAN devices are routed through concentrators
 
 **Service Dependencies:**
+
 - **IExternalDeviceService**: Cloud IoT platform operations (create device with twin, update device, update device twin, delete device, get device, get device twin)
 - **IConcentratorTwinMapper**: Mapping between ConcentratorDto and device twin properties
 - **ILoRaWanManagementService**: LoRaWAN router configuration management (GetRouterConfig by region)
@@ -416,11 +460,13 @@ Users with large concentrator fleets need to sort the list by various columns (n
 - **IMapper**: AutoMapper for entity-DTO transformations
 
 **External Dependencies:**
+
 - **Azure IoT Hub**: Cloud IoT device management platform for device twin and device status
 - **LoRaWAN Network Server**: Manages LoRaWAN-specific configuration and routing rules
 - **Entity Framework Core**: Database access via PortalDbContext
 
 ### Related Documentation
+
 - LoRaWAN specification documentation for frequency plans and router configuration
 - Azure IoT Hub device twin documentation
 - Certificate authentication configuration guide for mutual TLS
@@ -432,118 +478,145 @@ Users with large concentrator fleets need to sort the list by various columns (n
 ### Design Decisions
 
 **Service Layer Pattern:**
+
 - Implemented service layer abstraction (ILoRaWANConcentratorService) to separate business logic from controller and enable unit testing in isolation
 - Service coordinates multiple external dependencies (IoT Hub, LoRaWAN management, database) in single operations
 
 **DTO Pattern:**
+
 - Clear separation between API models (ConcentratorDto) and domain entities (Concentrator) enables independent evolution and adds API-specific properties like RouterConfig
 
 **Twin Mapper Pattern:**
+
 - Extracted device twin mapping logic into dedicated mapper (IConcentratorTwinMapper) to isolate cloud platform specifics and enable future multi-cloud support
 
 **Repository Pattern:**
+
 - Generic repository interface for Concentrator entity provides clean data access abstraction and supports unit of work for transactions
 
 **Predicate Builder:**
+
 - Dynamic query construction using PredicateBuilder enables flexible combination of search and filter criteria without complex conditional logic
 
 ### Implementation Patterns
 
 **Two-Phase Operations:**
+
 - Create/Update/Delete operations follow pattern: 1) Perform cloud platform operation, 2) Perform database operation
 - Ensures cloud platform is source of truth and database reflects cloud state
 
 **Device Status Mapping:**
+
 - IsEnabled (bool) maps to DeviceStatus enum (Enabled/Disabled) for cloud platform compatibility
 - Simplifies UI binding while maintaining platform-specific requirements
 
 **Validation Strategy:**
+
 - Three-layer validation: 1) Attribute validation on DTO, 2) FluentValidation in client, 3) ModelState validation in controller
 - Provides comprehensive validation with early feedback in UI
 
 **Feature Gate:**
+
 - LoRaFeatureActiveFilter attribute on controller ensures endpoints return 404 when LoRaWAN feature disabled
 - Centralizes feature toggle logic at controller level
 
 ### Business Context
 
 **LoRaWAN Architecture:**
+
 - Concentrators are gateway devices, not end-devices, in LoRaWAN network architecture
 - Act as bridge between LoRa radio (end-devices) and IP network (cloud platform)
 - Single concentrator can serve hundreds of LoRaWAN end-devices
 
 **Regulatory Compliance:**
+
 - Frequency plan/region selection ensures compliance with regional radio regulations (e.g., EU868 for Europe, US915 for North America)
 - Critical for legal operation in different jurisdictions
 
 **Security Model:**
+
 - Optional mutual TLS using client certificate thumbprint for high-security environments
 - Prevents rogue gateways from joining network
 
 ### Performance Considerations
 
 **Pagination:**
+
 - Server-side pagination with database-level filtering reduces data transfer and memory usage
 - Supports large deployments with thousands of concentrators
 
 **Query Optimization:**
+
 - Predicate building constructs efficient database queries with combined WHERE clauses
 - Lazy loading not applicable (Concentrator entity has no navigation properties)
 
 **Caching Opportunities (not currently implemented):**
+
 - Router configuration could be cached per region to reduce calls to LoRaWAN management service
 - Frequency plan list could be cached as it changes infrequently
 
 ### Limitations and Constraints
 
 **Single Cloud Platform:**
+
 - Only supports Azure IoT Hub; no support for AWS IoT Core or other platforms for LoRaWAN concentrators
 
 **No Bulk Operations:**
+
 - No import/export functionality for concentrators (unlike standard devices)
 - Each concentrator must be created/updated/deleted individually
 
 **Passive Connection Monitoring:**
+
 - Connection status (IsConnected) is passively reported by device, not actively monitored with health checks
 - No real-time connection alerts or monitoring dashboard
 
 **Limited Telemetry:**
+
 - Feature focuses on configuration management only
 - No display of concentrator telemetry, traffic statistics, or LoRaWAN packet metrics
 
 **No Certificate Management:**
+
 - System accepts certificate thumbprint but doesn't provide certificate upload, renewal, or revocation workflows
 - Organizations must manage certificates externally
 
 ### Future Enhancement Opportunities
 
 **Real-Time Updates:**
+
 - Implement SignalR for real-time connection status updates without page refresh
 - Push notifications when concentrators connect/disconnect
 
 **Telemetry Dashboard:**
+
 - Display concentrator health metrics (CPU, memory, uptime)
 - Show LoRaWAN packet statistics (packets received, error rate, SNR/RSSI distribution)
 
 **Bulk Operations:**
+
 - Enable/disable multiple concentrators simultaneously
 - Bulk certificate rotation for multiple concentrators
 
 **Advanced Management:**
+
 - Firmware update management for remote concentrator updates
 - Advanced router configuration editing for expert users
 - Concentrator group management for logical organization
 
 **Certificate Lifecycle:**
+
 - Certificate upload and storage
 - Automatic renewal reminders
 - Certificate revocation workflow
 
 **Geographic Visualization:**
+
 - Map view showing concentrator locations and coverage areas
 - Network topology visualization
 
 **Analytics:**
+
 - Historical connection uptime reports
 - Gateway performance comparison
 - Network coverage gap analysis

@@ -103,7 +103,7 @@ As a new user, I need my account to be created automatically when my permissions
 Permissions follow the pattern: `{resource}:{action}`
 
 | Resource | Actions |
-|----------|---------|
+| ---------- | --------- |
 | device | read, write, execute, export, import |
 | edge-device | read, write |
 | model | read, write |
@@ -135,20 +135,23 @@ Permissions follow the pattern: `{resource}:{action}`
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/016-permissions-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - PermissionsController: Permission query endpoints
 - PortalPermissionsHelper: Static permission definitions
 - UserManagementService: User lookup and auto-provisioning
 - AccessControlManagementService: Permission verification
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 013-user-management (user identification and creation)
   - 015-access-control-management (permission verification)
   - 014-role-management (roles contain permissions)
-- **Depended By**: 
+- **Depended By**:
   - All portal UI components (use permissions for conditional rendering)
   - All protected API endpoints (use permissions for authorization)

@@ -36,7 +36,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 Before getting started, it is better to master the tools below:
 
-* Azure platform and Azure IoT Hub. A tutorial can be found [here](https://docs.microsoft.com/en-us/learn/paths/ai-edge-engineer/).
+* Azure platform and Azure IoT Hub. A tutorial can be found on the [Azure IoT learning path](https://docs.microsoft.com/en-us/learn/paths/ai-edge-engineer/).
 * Blazor WebAssembly and Blazor Server. A training is available [on this site](https://docs.microsoft.com/en-us/learn/paths/build-web-apps-with-blazor/).
 * Docker. An introduction to containerization is available [on this page](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/container-docker-introduction/).
 * IoTEdge LoraWAN StarterKit. Have a look at [LoRaWAN Starter Kit](https://azure.github.io/iotedge-lorawan-starterkit) to get more details on this OSS cross platform private network.
@@ -49,7 +49,7 @@ Once you know the basics of these technologies and tools, you must follow these 
 
 > Once you have download Docker, you must install the WSL 2 Linux kernel. To do that, please refer to the official [Microsoft documentation](https://aka.ms/wsl2kernel). You can choose the linux distribution of your choice, for example Ubuntu.
 
-* Node.js is used to run JavaScript code in the portal. You can download the latest version [here](https://nodejs.org/en/).The minimal version required is 16.17.0.
+* Node.js is used to run JavaScript code in the portal. You can download the latest version on the [Node.js website](https://nodejs.org/en/). The minimal version required is 16.17.0.
 * You must have an Azure subscription. [Get an Azure Free account to start](https://azure.microsoft.com/en-gb/free/).
 * An Identity provider supporting OpenIDConnect protocol configured with 2 applications (API and web) is required to login to the IoT Hub Portal. See [Azure AD B2C Tenant with applications](https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications/) configuration page for example.
 * To develop, you can choose your own IDE or text editor, for example [Visual Studio](https://visualstudio.microsoft.com/).

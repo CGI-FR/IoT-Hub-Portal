@@ -56,11 +56,11 @@ Devices are the physical IoT devices that are provisioned by the application. Th
 
 To store additional information about the device, the application uses device twin tags.
 
-| Name       | Position       | Description                                                                                                                                                  |
-|------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Name | Position | Description |
+| ------------ | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | deviceName | ``tags.deviceName`` | Field that contains the device friendly name.<br>_**note**: if not set, the portal will show the device id instead of the device name until it's configured._ |
-| modelId    | ``tags.modelId``   | Field that contains the device model identifier that the device is related.<br>_**note**: if not set, the device is not usable on the IoT hub portal._       |
-| supportLoRaFeatures | ``tags.supportLoRaFeatures`` | Field that specifies if the device must support LoRa features.<br>_**note**: if not set, LoRa features will be available on the device._       |
+| modelId | ``tags.modelId`` | Field that contains the device model identifier that the device is related.<br>_**note**: if not set, the device is not usable on the IoT hub portal._ |
+| supportLoRaFeatures | ``tags.supportLoRaFeatures`` | Field that specifies if the device must support LoRa features.<br>_**note**: if not set, LoRa features will be available on the device._ |
 
 ## IoT Edge
 
@@ -94,8 +94,8 @@ With the portal, the user can interact with these modules and manage them (Get l
 
 To store additional information about the device, the application uses device twin tags.
 
-| Name    | Position     | Description                                                                                                                                 |
-|---------|--------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| Name | Position | Description |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | Environment | ``tags.env`` | Field that contains the Device Environment value.<br>_**note**: this tag may be used to target deployment manifests for the IoT Edge_ |
 | Type | ``tags.type`` | Field that contains The type of the IoT Edge device.<br>_**note**: this tag may be used to target deployment manifests for the IoT Edge_ |
 
@@ -104,8 +104,7 @@ To store additional information about the device, the application uses device tw
 The IoT Hub portal relies on Azure Device Provisioning Enrollement groups to manage IoT Edge device connection strings.
 When clicking on "**Connect**" in the IoT Edge details page, the user can access the device unique credentials in the enrollment group.
 
-> Note: see [Provision the device with its cloud identity
-](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-provision-devices-at-scale-linux-symmetric?view=iotedge-2020-11&tabs=individual-enrollment%2Cubuntu#provision-the-device-with-its-cloud-identity) to know how to configure the IoT Edge to use these credentials to connect to the platform.
+> Note: see [Provision the device with its cloud identity](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-provision-devices-at-scale-linux-symmetric?view=iotedge-2020-11&tabs=individual-enrollment%2Cubuntu#provision-the-device-with-its-cloud-identity) to know how to configure the IoT Edge to use these credentials to connect to the platform.
 
 ## Device Configuration
 
@@ -155,11 +154,11 @@ The portal can be used to see the details of the configurations.
 The parameters are related to the IoT Edge deployment manifest target condition field.
 The IoT Hub portal will use the Target condition to extract this values from the deployment manifest.
 
-| Name        | Position       | Description                                              |
-|-------------|----------------|----------------------------------------------------------|
-| Owner       | ``tags.owner`` | Owner tag filter condition from the Deployment Manifest. |
-| Environment | ``tags.env``   | Environment tag filter from the Deployment Manifest.     |
-| Type        | ``tags.type``  | Device type tag filter from the Deployment Manifest. Expected value for IoT Edge LoRaWAN LNS is `LoRa Network Server`, otherwise the value must be `Other`     |
+| Name | Position | Description |
+| ------------- | ---------------- | ---------------------------------------------------------- |
+| Owner | ``tags.owner`` | Owner tag filter condition from the Deployment Manifest. |
+| Environment | ``tags.env`` | Environment tag filter from the Deployment Manifest. |
+| Type | ``tags.type`` | Device type tag filter from the Deployment Manifest. Expected value for IoT Edge LoRaWAN LNS is `LoRa Network Server`, otherwise the value must be `Other` |
 
 ## Enrollment groups
 
@@ -256,11 +255,11 @@ The LoRaWAN tab shows the device details.
 
 To store additional information about the concentrator, the application will use the target device to extract values:
 
-| Name    | Position     | Description                                                                                                                                 |
-|---------|--------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| Name | Position | Description |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | Device Name | ``tags.deviceName`` | Field that contains the Device name. |
 | Region | ``tags.loraRegion`` | Field that contains the Device region. |
-| deviceType | ``tags.deviceType`` | Field that contains The type of device. Expected value is `LoRa Concentrator`  |
+| deviceType | ``tags.deviceType`` | Field that contains The type of device. Expected value is `LoRa Concentrator` |
 
 ## Command Execution
 

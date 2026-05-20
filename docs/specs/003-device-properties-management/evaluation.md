@@ -9,7 +9,7 @@
 ## Summary
 
 | Criterion | Score | Weight | Weighted Score |
-|-----------|-------|--------|----------------|
+| ----------- | ------- | -------- | ---------------- |
 | **Correctness** | 85 | 30% | 25.5 |
 | **Completeness** | 80 | 30% | 24.0 |
 | **Technical Quality** | 78 | 20% | 15.6 |
@@ -17,6 +17,7 @@
 | **Overall** | **80.1** | 100% | **Grade: B** |
 
 ### Grade Summary
+
 **Grade B - Good with Minor Issues**: The specification accurately documents most of the device properties management implementation. Key functionality is correctly captured, but there are several discrepancies between the spec and implementation that should be addressed.
 
 ---
@@ -26,14 +27,14 @@
 ### ✅ Accurate Specifications
 
 | Spec Item | Code Verification | Status |
-|-----------|-------------------|--------|
+| ----------- | ------------------- | -------- |
 | **FR-001**: Retrieve device properties from cloud device twin | [DevicePropertyService.cs](src/IoTHub.Portal.Server/Services/DevicePropertyService.cs#L17-L82) uses `externalDevicesService.GetDeviceTwin()` | ✅ Correct |
 | **FR-002**: Distinguish writable (desired) vs read-only (reported) properties | [DevicePropertyService.cs](src/IoTHub.Portal.Server/Services/DevicePropertyService.cs#L66-L67) - `item.IsWritable ? desiredPropertiesAsJson.SelectToken() : reportedPropertiesAsJson.SelectToken()` | ✅ Correct |
 | **FR-006**: Write writable properties to device twin desired properties | [DevicePropertyService.cs](src/IoTHub.Portal.Server/Services/DevicePropertyService.cs#L84-L128) correctly updates desired properties | ✅ Correct |
 | **FR-007**: Ignore read-only properties during updates | [DevicePropertyService.cs](src/IoTHub.Portal.Server/Services/DevicePropertyService.cs#L112-L115) skips `!item.IsWritable` | ✅ Correct |
 | **FR-010/FR-011**: Dot notation for nested JSON with JObject.SelectToken | [DevicePropertyService.cs](src/IoTHub.Portal.Server/Services/DevicePropertyService.cs#L66) and [DeviceHelper.cs](src/IoTHub.Portal.Application/Helpers/DeviceHelper.cs#L204-L236) | ✅ Correct |
 | **FR-012**: Property templates at model level with required fields | [DeviceModelProperty.cs](src/IoTHub.Portal.Domain/Entities/DeviceModelProperty.cs#L1-L44) contains all fields: Name, DisplayName, IsWritable, Order, PropertyType, ModelId | ✅ Correct |
-| **FR-013**: Property name regex validation | [DeviceProperty.cs](src/IoTHub.Portal.Shared/Models/v1.0/DeviceProperty.cs#L16) - `[RegularExpression(@"^([\w]+\.)+[\w]+|[\w]+$")]` | ✅ Correct |
+| **FR-013**: Property name regex validation | [DeviceProperty.cs](src/IoTHub.Portal.Shared/Models/v1.0/DeviceProperty.cs#L16) - `[RegularExpression(@"^([\w]+\.)+[\w]+\|[\w]+$")]` | ✅ Correct |
 | **FR-017**: Upsert operations for model properties | [DeviceModelPropertiesRepository.cs](src/IoTHub.Portal.Infrastructure/Repositories/DeviceModelPropertiesRepository.cs#L19-L47) performs add/update/delete logic | ✅ Correct |
 | **FR-018/FR-019**: Validate model existence, return 404 | [DeviceModelPropertiesService.cs](src/IoTHub.Portal.Infrastructure/Services/DeviceModelPropertiesService.cs#L44-L52) throws `ResourceNotFoundException` | ✅ Correct |
 | **FR-020**: Get all distinct property names | [DeviceModelPropertiesService.cs](src/IoTHub.Portal.Infrastructure/Services/DeviceModelPropertiesService.cs#L55-L62) - `GetAllPropertiesNames()` method exists | ✅ Correct |
@@ -45,7 +46,7 @@
 ### ❌ Inaccuracies Found
 
 | Spec Item | Issue | Severity |
-|-----------|-------|----------|
+| ----------- | ------- | ---------- |
 | **FR-008**: DateTime property type | Spec lists DateTime as supported type, but [DevicePropertyType.cs](src/IoTHub.Portal.Shared/Models/DevicePropertyType.cs#L10-L38) only defines: Boolean, Double, Float, Integer, Long, String. **DateTime is missing**. | 🔴 High |
 | **FR-015**: Properties returned ordered by Order field | [DeviceModelPropertiesRepository.cs](src/IoTHub.Portal.Infrastructure/Repositories/DeviceModelPropertiesRepository.cs#L13-L17) does NOT include `.OrderBy(x => x.Order)` - ordering is only done client-side in Blazor UI | 🟡 Medium |
 | **FR-009**: Type-specific UI controls | Spec mentions "text areas for String" but [EditDevice.razor](src/IoTHub.Portal.Client/Components/Devices/EditDevice.razor#L307-L309) uses `MudTextField` not `MudTextArea` for String type | 🟢 Low |
@@ -58,7 +59,7 @@
 ### ✅ Well-Documented Areas
 
 | Area | Documentation Quality |
-|------|----------------------|
+| ------ | ---------------------- |
 | **Entity Structure** | Excellent - DeviceModelProperty entity correctly documented with all fields |
 | **API Endpoints** | Good - Controller routes and authorization documented |
 | **Service Layer** | Good - Service interfaces and implementations referenced |
@@ -69,8 +70,8 @@
 
 ### ⚠️ Missing or Incomplete Documentation
 
-| Gap | Impact |
-|-----|--------|
+| Gap | Impact | Severity |
+| ----- | -------- | -------- |
 | **No public API endpoint for GetAllPropertiesNames** | The `GetAllPropertiesNames()` method exists in service but has no controller endpoint - FR-020 is internally implemented but not exposed via API | 🟡 Medium |
 | **Client-side validation specifics** | Spec mentions validation but doesn't document the specific validation functions used in Blazor (e.g., `int.TryParse`, `double.TryParse`) | 🟢 Low |
 | **Export/Import integration** | Spec mentions dependency but doesn't detail how [ExportManager.cs](src/IoTHub.Portal.Server/Managers/ExportManager.cs#L102) uses properties | 🟢 Low |
@@ -84,7 +85,7 @@
 ### Testability Assessment
 
 | Aspect | Status | Evidence |
-|--------|--------|----------|
+| -------- | -------- | ---------- |
 | Unit Tests Exist | ✅ | [DevicePropertyServiceTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Services/DevicePropertyServiceTests.cs), [DeviceModelPropertiesServiceTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Services/DeviceModelPropertiesServiceTests.cs), [DeviceModelPropertiesControllerTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/DeviceModelPropertiesControllerTests.cs) |
 | AWS Tests Exist | ✅ | [AWSDevicePropertyServiceTests.cs](src/IoTHub.Portal.Tests.Unit/Infrastructure/Services/AWSDevicePropertyServiceTests.cs) |
 | Error Path Tests | ✅ | ResourceNotFoundException, InternalServerErrorException scenarios tested |
@@ -93,7 +94,7 @@
 ### Traceability Assessment
 
 | Aspect | Status |
-|--------|--------|
+| -------- | -------- |
 | Code References Accurate | ⚠️ Partially - Line numbers in spec may drift; file paths are accurate |
 | Bidirectional Links | ❌ No links from code back to spec |
 | Dependency Documentation | ✅ Good - Dependencies on 001, 002 and dependents 005, 021 documented |
@@ -101,7 +102,7 @@
 ### Consistency Assessment
 
 | Aspect | Status | Notes |
-|--------|--------|-------|
+| -------- | -------- | ------- |
 | Naming Conventions | ✅ | DeviceProperty, DevicePropertyValue, DeviceModelProperty consistent |
 | API Patterns | ✅ | Follows project's controller patterns |
 | Repository Pattern | ✅ | Follows project's repository + unit of work pattern |
@@ -110,9 +111,9 @@
 ### Currency Assessment
 
 | Aspect | Status |
-|--------|--------|
+| -------- | -------- |
 | Spec reflects current code | ⚠️ Mostly - DateTime type discrepancy, ordering implementation differs |
-| Version alignment | ✅ | API version 1.0 documented correctly |
+| Version alignment | ✅ API version 1.0 documented correctly |
 
 ---
 
@@ -121,7 +122,7 @@
 ### Security Coverage
 
 | Aspect | Documented | Implemented |
-|--------|------------|-------------|
+| -------- | ------------ | ------------- |
 | Authorization on endpoints | ✅ | ✅ `[Authorize("device:read")]`, `[Authorize("model:write")]` etc. |
 | Permission format | ✅ `{resource}:{action}` | ✅ Matches implementation |
 | Input validation | ✅ Regex for names | ✅ `[RegularExpression]` attribute |
@@ -129,7 +130,7 @@
 ### Error Handling Coverage
 
 | Scenario | Documented | Implemented |
-|----------|------------|-------------|
+| ---------- | ------------ | ------------- |
 | Device not found | ✅ | ✅ `ResourceNotFoundException` |
 | Model not found | ✅ | ✅ `ResourceNotFoundException` |
 | Cloud service unavailable | ✅ | ✅ `InternalServerErrorException` |
@@ -139,7 +140,7 @@
 ### Performance Coverage
 
 | Aspect | Documented | Notes |
-|--------|------------|-------|
+| -------- | ------------ | ------- |
 | Response time SLAs | ✅ SC-001, SC-002 | 3s for view, 5s for update |
 | Caching strategy | ✅ | FR-022, FR-024 document no caching |
 | Concurrency handling | ✅ | Last-write-wins documented |
@@ -147,7 +148,7 @@
 ### Integration Coverage
 
 | Integration | Documented |
-|-------------|------------|
+| ------------- | ------------ |
 | Azure IoT Hub | ✅ |
 | AWS IoT Core | ✅ |
 | Device Model Management | ✅ Dependency documented |
@@ -157,7 +158,7 @@
 ### Configuration Coverage
 
 | Aspect | Status |
-|--------|--------|
+| -------- | -------- |
 | Cloud provider selection | ❌ Not documented how portal switches between Azure/AWS |
 | Database configuration | ❌ Not documented |
 | Property limits | ❌ Device twin size limits mentioned but not enforced |
@@ -174,35 +175,35 @@
 
 ### 🟠 High Priority
 
-3. **Add server-side ordering for model properties** - Update [DeviceModelPropertiesRepository.cs](src/IoTHub.Portal.Infrastructure/Repositories/DeviceModelPropertiesRepository.cs#L13-L17) to include `.OrderBy(x => x.Order)` to match FR-015.
+1. **Add server-side ordering for model properties** - Update [DeviceModelPropertiesRepository.cs](src/IoTHub.Portal.Infrastructure/Repositories/DeviceModelPropertiesRepository.cs#L13-L17) to include `.OrderBy(x => x.Order)` to match FR-015.
 
-4. **Expose GetAllPropertiesNames via API** - Add controller endpoint for FR-020 or update spec to clarify this is internal-only functionality.
+2. **Expose GetAllPropertiesNames via API** - Add controller endpoint for FR-020 or update spec to clarify this is internal-only functionality.
 
 ### 🟡 Medium Priority
 
-5. **Update spec line numbers** - Line numbers in code references may have drifted; consider using class/method references instead of specific line numbers.
+1. **Update spec line numbers** - Line numbers in code references may have drifted; consider using class/method references instead of specific line numbers.
 
-6. **Document ExportManager integration** - Add details on how ExportManager uses `GetAllPropertiesNames()` for device export headers.
+2. **Document ExportManager integration** - Add details on how ExportManager uses `GetAllPropertiesNames()` for device export headers.
 
-7. **Add edge case tests** - Add tests for:
+3. **Add edge case tests** - Add tests for:
    - Dot notation conflicts (property "config" vs "config.interval")
    - Type mismatch scenarios when device twin has wrong type
    - Very long property names/values
 
 ### 🟢 Low Priority
 
-8. **Clarify String property UI control** - Update spec to reflect that String uses MudTextField (not MudTextArea), or update UI to use MudTextArea.
+1. **Clarify String property UI control** - Update spec to reflect that String uses MudTextField (not MudTextArea), or update UI to use MudTextArea.
 
-9. **Document mapper configurations** - Add AutoMapper profile references for property mapping.
+2. **Document mapper configurations** - Add AutoMapper profile references for property mapping.
 
-10. **Add bidirectional traceability** - Consider adding spec references as code comments in implementation files.
+3. **Add bidirectional traceability** - Consider adding spec references as code comments in implementation files.
 
 ---
 
 ## Code References
 
 | Spec Reference | Actual File Path | Verification Status |
-|----------------|------------------|---------------------|
+| ---------------- | ------------------ | --------------------- |
 | DeviceModelPropertiesController.cs | [src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesController.cs) | ✅ Verified |
 | DeviceModelPropertiesControllerBase.cs | [src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesControllerBase.cs](src/IoTHub.Portal.Server/Controllers/V10/DeviceModelPropertiesControllerBase.cs) | ✅ Verified |
 | DevicesController.cs | [src/IoTHub.Portal.Server/Controllers/v1.0/DevicesController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/DevicesController.cs) | ✅ Verified |
@@ -225,7 +226,7 @@
 ## Test Coverage Summary
 
 | Test File | Tests Found | Coverage |
-|-----------|-------------|----------|
+| ----------- | ------------- | ---------- |
 | [DevicePropertyServiceTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Services/DevicePropertyServiceTests.cs) | 8+ tests | GetProperties, SetProperties, error scenarios |
 | [DeviceModelPropertiesServiceTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Services/DeviceModelPropertiesServiceTests.cs) | 6+ tests | GetModelProperties, SavePropertiesForModel, GetAllPropertiesNames |
 | [DeviceModelPropertiesControllerTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/DeviceModelPropertiesControllerTests.cs) | 5+ tests | GetProperties, SetProperties, validation, 404 scenarios |

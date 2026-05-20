@@ -22,6 +22,7 @@ Key capabilities include:
 - Feature toggle discovery for conditional UI rendering
 
 This feature provides critical business value by:
+
 - Enabling secure authentication through OIDC configuration discovery
 - Supporting multi-environment deployments with environment-specific settings
 - Facilitating white-labeling and branding customization
@@ -40,8 +41,10 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/V10/SettingsController.cs` (Lines 1-70)
   - **Snippet**: REST API controller for settings retrieval
+
     ```csharp
     [ApiController]
     [AllowAnonymous]
@@ -97,8 +100,10 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
     ```
 
 ### Configuration Models
+
 - `src/IoTHub.Portal.Server/Identity/ClientApiIndentityOptions.cs` (Lines 1-16)
   - **Snippet**: OIDC configuration model
+
     ```csharp
     public sealed class ClientApiIndentityOptions
     {
@@ -111,6 +116,7 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/PortalSettings.cs` (Lines 1-38)
   - **Snippet**: Portal configuration model
+
     ```csharp
     public class PortalSettings
     {
@@ -144,6 +150,7 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
     ```
 
 ### Configuration Handler
+
 - `ConfigHandler` (injected dependency)
   - Properties: IsLoRaEnabled, PortalName, IdeasEnabled, CloudProvider
   - Source: Configuration system (appsettings, environment variables, etc.)
@@ -153,7 +160,8 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
 ## Data Flow
 
 ### OIDC Settings Flow
-```
+
+```text
 1. Client Request → GET /api/settings/oidc
 2. Authorization Check → Validate "setting:read" permission
 3. Return ClientApiIndentityOptions
@@ -165,7 +173,8 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
 ```
 
 ### Portal Settings Flow
-```
+
+```text
 1. Client Request → GET /api/settings/portal
 2. Authorization Check → Validate "setting:read" permission
 3. Build PortalSettings object:
@@ -179,6 +188,7 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
 ```
 
 **Key aspects:**
+
 - **Anonymous Access**: Controller marked `[AllowAnonymous]` but endpoints require authentication
 - **Runtime Computed**: Version and CopyrightYear computed at request time
 - **Fallback Values**: PortalName has default "Azure IoT Hub Portal"
@@ -189,6 +199,7 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
 ## Dependencies
 
 ### Internal Services/Components
+
 - **ConfigHandler**: Centralized configuration management
   - IsLoRaEnabled (bool)
   - PortalName (string)
@@ -196,13 +207,15 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
   - CloudProvider (string)
 
 ### Configuration Sources
+
 - **appsettings.json**: Base configuration
 - **appsettings.{Environment}.json**: Environment overrides
 - **Environment Variables**: Runtime overrides
 - **Azure App Configuration**: Cloud-based configuration (optional)
 - **User Secrets**: Development-time secrets
 
-### Dependencies
+### Service Dependencies
+
 - **IOptions<ClientApiIndentityOptions>**: Configuration binding
 - **Assembly Reflection**: Version information retrieval
 - **System.Globalization.CultureInfo**: Culture-invariant formatting
@@ -213,8 +226,9 @@ The feature provides two separate endpoints: one for OIDC settings (allowing ano
 
 ### Core Workflows
 
-**1. Get OIDC Settings**
-```
+#### 1. Get OIDC Settings
+
+```text
 Input: None (authenticated request)
 Process:
   1. Validate "setting:read" permission
@@ -222,8 +236,9 @@ Process:
 Output: OIDC configuration JSON
 ```
 
-**2. Get Portal Settings**
-```
+#### 2. Get Portal Settings
+
+```text
 Input: None (authenticated request)
 Process:
   1. Validate "setting:read" permission
@@ -236,11 +251,13 @@ Output: Portal configuration JSON
 ```
 
 ### Validation Rules
+
 - **Authentication Required**: Despite `[AllowAnonymous]` on controller, endpoints require `[Authorize]`
 - **Authorization Required**: User must have `setting:read` permission
 - **Configuration Validation**: Constructor validates non-null dependencies
 
 ### Error Handling
+
 - **401 Unauthorized**: Missing or invalid authentication token
 - **403 Forbidden**: User lacks `setting:read` permission
 - **500 Internal Server Error**: Configuration loading failures
@@ -251,6 +268,7 @@ Output: Portal configuration JSON
 ## User Interface Integration
 
 ### Frontend Integration Points
+
 - **Application Bootstrap**: First API call during app initialization
 - **Login Page**: Fetch OIDC settings before authentication
 - **Header/Footer**: Display portal name and version
@@ -258,7 +276,7 @@ Output: Portal configuration JSON
 
 ### Expected UI Behaviors
 
-```
+```text
 App Initialization:
   → Fetch /api/settings/oidc (for login setup)
   → Configure OIDC client with returned settings
@@ -279,6 +297,7 @@ Main Application:
 ```
 
 ### UI Component Suggestions
+
 - **Branding Component**: Display portal name with logo
 - **Footer Component**: Show version and copyright
 - **Feature Toggle HOC**: Wrap components with feature flag logic
@@ -289,6 +308,7 @@ Main Application:
 ## Testing Considerations
 
 ### Unit Testing
+
 - **Mock Dependencies**: Mock IOptions<ClientApiIndentityOptions> and ConfigHandler
 - **Authorization Testing**: Verify policy enforcement for `setting:read`
 - **Default Values**: Test PortalName fallback when ConfigHandler.PortalName is null
@@ -296,12 +316,14 @@ Main Application:
 - **Year Calculation**: Test CopyrightYear matches current year
 
 ### Integration Testing
+
 - **Configuration Loading**: Test with various appsettings configurations
 - **Environment Overrides**: Test environment variable overrides
 - **Feature Flag Combinations**: Test all permutations of IsLoRaEnabled and IdeasEnabled
 - **Null Configuration**: Test graceful handling of missing configuration sections
 
 ### End-to-End Testing
+
 - **Bootstrap Flow**: Verify app can load settings and initialize properly
 - **OIDC Integration**: Test full login flow with fetched OIDC settings
 - **Feature Visibility**: Verify UI components show/hide based on feature flags
@@ -312,17 +334,20 @@ Main Application:
 ## Performance Considerations
 
 ### Scalability
+
 - **O(1) Complexity**: Direct property access, no iteration
 - **No Database Queries**: Configuration loaded from memory
 - **Minimal CPU**: Simple object construction and serialization
 - **High Concurrency**: Thread-safe configuration access
 
 ### Optimization Strategies
+
 - **HTTP Caching**: Add Cache-Control headers for OIDC settings (rarely change)
 - **Client Caching**: Frontend can cache settings for session duration
 - **CDN Friendly**: Can be cached at CDN edge for global deployments
 
 ### Monitoring Recommendations
+
 - Track API response times (should be <20ms)
 - Monitor configuration load failures
 - Alert on version mismatches (frontend vs backend)
@@ -333,17 +358,20 @@ Main Application:
 ## Security Analysis
 
 ### Authentication & Authorization
+
 - **Controller Level**: `[AllowAnonymous]` attribute (misleading)
 - **Endpoint Level**: `[Authorize("setting:read")]` on both endpoints
 - **Effective Behavior**: Authentication required despite controller attribute
 
 ### Data Sensitivity
+
 - **OIDC Settings**: Low sensitivity (public OIDC discovery info)
 - **Portal Settings**: Very low sensitivity (feature flags and branding)
 - **Version Information**: May aid attackers in identifying vulnerabilities
 - **No Secrets**: No credentials or sensitive data exposed
 
 ### Security Recommendations
+
 - ⚠️ **Remove `[AllowAnonymous]`** from controller (contradicts endpoint attributes)
 - ⚠️ **Consider OIDC endpoint anonymous** for login initialization
 - ✅ Proper authorization on endpoints
@@ -352,6 +380,7 @@ Main Application:
 - ✅ No SQL injection, XSS, or CSRF risks (read-only, no user input)
 
 ### Proposed Authorization Fix
+
 ```csharp
 // Option 1: Make OIDC settings anonymous, keep portal settings authenticated
 [HttpGet("oidc")]
@@ -373,6 +402,7 @@ public IActionResult GetPortalSetting() { ... }
 ### Configuration Requirements
 
 **appsettings.json:**
+
 ```json
 {
   "ClientApiIndentityOptions": {
@@ -391,6 +421,7 @@ public IActionResult GetPortalSetting() { ... }
 ```
 
 ### Environment Variables
+
 ```bash
 ClientApiIndentityOptions__Authority=https://login.microsoftonline.com/{tenantId}
 ClientApiIndentityOptions__ClientId=your-client-id
@@ -401,6 +432,7 @@ CloudProvider=Azure
 ```
 
 ### Deployment Checklist
+
 - ✅ Configure OIDC settings for target environment
 - ✅ Set portal name (white-labeling)
 - ✅ Enable/disable LoRaWAN feature flag
@@ -416,6 +448,7 @@ CloudProvider=Azure
 ## Known Issues & Limitations
 
 ### Current Limitations
+
 1. **Authentication Confusion**: Controller marked `[AllowAnonymous]` but endpoints require auth
 2. **No Caching**: Settings not cached (repeated configuration reads)
 3. **No Versioning**: Settings structure changes are breaking
@@ -425,6 +458,7 @@ CloudProvider=Azure
 7. **Copyright Year**: Computed at runtime (not configuration-driven)
 
 ### Technical Debt
+
 - Resolve `[AllowAnonymous]` vs `[Authorize]` contradiction
 - Implement response caching (settings rarely change)
 - Add configuration validation at startup
@@ -432,6 +466,7 @@ CloudProvider=Azure
 - Standardize feature flag naming (IsXxxEnabled vs XxxEnabled)
 
 ### Future Considerations
+
 - Add setting update API for dynamic reconfiguration
 - Implement setting validation with FluentValidation
 - Add setting change notifications (WebSocket/SignalR)
@@ -448,16 +483,19 @@ CloudProvider=Azure
 ## Related Features
 
 ### Directly Related
+
 - User Authentication (OIDC settings consumer)
 - Role Management (defines `setting:read` permission)
 - LoRaWAN Integration (IsLoRaSupported flag)
 - Ideas Submission (IsIdeasFeatureEnabled flag)
 
 ### Dependent Features
+
 - All Frontend Components (consume portal settings for branding)
 - Feature Guards (use feature flags for conditional rendering)
 
 ### Integration Points
+
 - Configuration System (ConfigHandler)
 - Identity System (ClientApiIndentityOptions)
 - Frontend Bootstrap (application initialization)
@@ -467,22 +505,26 @@ CloudProvider=Azure
 ## Migration & Compatibility
 
 ### API Versioning
+
 - Current version: 1.0
 - Endpoints: `/api/settings/oidc`, `/api/settings/portal`
 - Version included in route via `[ApiVersion("1.0")]`
 
 ### Breaking Change Considerations
+
 - Adding required settings: Non-breaking (with defaults)
 - Removing settings: Breaking change
 - Renaming settings: Breaking change
 - Changing setting types: Breaking change
 
 ### Configuration Migration
+
 - Adding new feature flags: Non-breaking (with defaults)
 - Renaming configuration keys: Breaking (requires migration guide)
 - Changing OIDC structure: Breaking (impacts login flow)
 
 ### Backward Compatibility
+
 - New optional settings: Non-breaking (additive)
 - New feature flags: Non-breaking (default false)
 - Consider settings API v2.0 for significant structure changes
@@ -524,6 +566,7 @@ Response 200 OK:
 ### Usage Examples
 
 **JavaScript (App Initialization):**
+
 ```javascript
 async function initializeApp() {
   // Step 1: Get OIDC settings (before login)
@@ -558,6 +601,7 @@ async function initializeApp() {
 ```
 
 **React Feature Guard Component:**
+
 ```jsx
 function FeatureGuard({ feature, children }) {
   const settings = useSettings(); // Hook that fetches portal settings
@@ -579,6 +623,7 @@ function FeatureGuard({ feature, children }) {
 ```
 
 **PowerShell:**
+
 ```powershell
 $token = "your-jwt-token"
 $headers = @{ Authorization = "Bearer $token" }
@@ -601,14 +646,16 @@ Write-Host "LoRa Enabled: $($portal.isLoRaSupported)"
 ## References
 
 ### Related Documentation
-- OpenID Connect Discovery: https://openid.net/specs/openid-connect-discovery-1_0.html
-- ASP.NET Core Configuration: https://docs.microsoft.com/aspnet/core/fundamentals/configuration/
-- Azure App Configuration: https://docs.microsoft.com/azure/azure-app-configuration/
+
+- OpenID Connect Discovery: <https://openid.net/specs/openid-connect-discovery-1_0.html>
+- ASP.NET Core Configuration: <https://docs.microsoft.com/aspnet/core/fundamentals/configuration/>
+- Azure App Configuration: <https://docs.microsoft.com/azure/azure-app-configuration/>
 
 ### External Resources
-- OIDC Best Practices: https://oauth.net/2/oauth-best-practice/
-- Feature Flags: https://martinfowler.com/articles/feature-toggles.html
-- SPA Configuration: https://auth0.com/docs/libraries/auth0-single-page-app-sdk
+
+- OIDC Best Practices: <https://oauth.net/2/oauth-best-practice/>
+- Feature Flags: <https://martinfowler.com/articles/feature-toggles.html>
+- SPA Configuration: <https://auth0.com/docs/libraries/auth0-single-page-app-sdk>
 
 ---
 

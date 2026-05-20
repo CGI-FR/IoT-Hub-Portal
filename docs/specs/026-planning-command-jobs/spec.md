@@ -119,7 +119,7 @@ As the planning system, I need fresh data from the portal APIs so that command e
 
 ### Planning Command Workflow
 
-```
+```text
 1. Refresh Data
    ├── Load all devices (with layer assignments)
    ├── Load all layers (with planning references)
@@ -167,10 +167,12 @@ As the planning system, I need fresh data from the portal APIs so that command e
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/026-planning-command-jobs/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - SendPlanningCommandJob: Main scheduling and execution job
 - PlanningCommand: Internal data structure for job processing
 - ILoRaWANCommandService: Command execution interface
@@ -180,11 +182,12 @@ As the planning system, I need fresh data from the portal APIs so that command e
 - IDeviceService: Device data retrieval
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 017-planning-management (planning configurations)
   - 018-schedule-management (schedule definitions)
   - 019-layer-management (device-to-layer mapping)
   - 011-lorawan-commands-management (command execution)
   - 001-standard-device-management (device inventory)
-- **Depended By**: 
+- **Depended By**:
   - None (terminal job in the automation chain)

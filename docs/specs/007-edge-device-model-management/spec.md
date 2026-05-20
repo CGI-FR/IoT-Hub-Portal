@@ -393,6 +393,7 @@ As an IoT administrator working with AWS IoT Greengrass, I need to define compon
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/007-edge-device-model-management/analyze.md`
 - **Analyzed By**: excavate.specifier
 - **Analysis Date**: 2025-01-21
@@ -400,19 +401,23 @@ As an IoT administrator working with AWS IoT Greengrass, I need to define compon
 ### Code References
 
 #### Controllers
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/EdgeModelsController.cs` - REST API endpoints for edge model CRUD operations, avatar management, and public catalog access
 
 #### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IEdgeModelService.cs` - Service interface defining core edge model operations
 - `src/IoTHub.Portal.Infrastructure/Services/EdgeModelService.cs` - Service implementation with cloud provider integration, label management, and command synchronization
 
 #### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceModelRepository.cs` - Repository interface for EdgeDeviceModel entity
 - `src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceModelCommandRepository.cs` - Repository interface for module commands
 - `src/IoTHub.Portal.Domain/Entities/EdgeDeviceModel.cs` - Core entity definition with labels relationship
 - `src/IoTHub.Portal.Domain/Entities/EdgeDeviceModelCommand.cs` - Module command entity (Azure-specific)
 
 #### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/EdgeModels/EdgeModelListPage.razor` - Model list view with search, filtering, and pagination
 - `src/IoTHub.Portal.Client/Pages/EdgeModels/EdgeModelDetailPage.razor` - Detailed model view and editing with tabbed interface
 - `src/IoTHub.Portal.Client/Pages/EdgeModels/CreateEdgeModelsPage.razor` - Model creation page with full configuration wizard
@@ -420,6 +425,7 @@ As an IoT administrator working with AWS IoT Greengrass, I need to define compon
 - `src/IoTHub.Portal.Client/Dialogs/EdgeModels/DeleteEdgeModelDialog.razor` - Deletion confirmation dialog
 
 #### DTOs
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModel.cs` - Complete edge model DTO with modules, routes, system modules, and labels
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModelListItem.cs` - List view DTO for model browsing
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModule.cs` - Edge module definition with environment variables and twin settings
@@ -429,19 +435,23 @@ As an IoT administrator working with AWS IoT Greengrass, I need to define compon
 - `src/IoTHub.Portal.Shared/Models/v1.0/Filters/EdgeModelFilter.cs` - Filter DTO for search and filtering
 
 #### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IEdgeModelClientService.cs` - Client service interface for HTTP API calls
 - `src/IoTHub.Portal.Client/Services/EdgeModelClientService.cs` - HTTP client implementation
 
 #### Validators
+
 - `src/IoTHub.Portal.Client/Validators/EdgeModelValidator.cs` - FluentValidation for edge model DTOs
 
 #### Mappers
+
 - `src/IoTHub.Portal.Application/Mappers/EdgeDeviceModelProfile.cs` - AutoMapper profile for entity-DTO mapping
 - `src/IoTHub.Portal.Application/Mappers/EdgeDeviceModelCommandProfile.cs` - AutoMapper profile for command mapping
 
 ### Dependencies
 
 **This feature depends on:**
+
 - **Label Management** - Edge models use labels for categorization and filtering
 - **Role-Based Access Control** - Permissions enforced through RBAC system with edge-model:read and edge-model:write permissions
 - **Azure/AWS Integration** - Multi-cloud deployment orchestration via IConfigService
@@ -449,12 +459,14 @@ As an IoT administrator working with AWS IoT Greengrass, I need to define compon
 - **Device Model Image Manager** - Avatar/image storage and retrieval
 
 **Features that depend on this:**
+
 - **Edge Device Management** - Edge devices reference edge models for deployment configuration and module setup
 - **Device Configurations** - Edge models create automatic device configurations in cloud providers
 - **Dashboard** - May display edge model statistics and deployment metrics
 - **Device Provisioning** - New edge devices assigned to models during provisioning
 
 ### Related Features
+
 - Feature 001: User Management (authorization)
 - Feature 002: Authentication & Authorization (permission enforcement)
 - Feature 008: Device Management (edge device provisioning with models)
@@ -465,21 +477,27 @@ As an IoT administrator working with AWS IoT Greengrass, I need to define compon
 ## Notes
 
 ### Multi-Cloud Architecture
+
 The feature implements a strategy pattern for multi-cloud support, abstracting Azure and AWS differences behind the IConfigService interface. Azure models include system modules (edgeAgent, edgeHub) and message routes, while AWS models use a component-based architecture without these concepts.
 
 ### Model Lifecycle and Consistency
+
 Edge models are stored in the local database and synchronized to cloud providers (Azure IoT Hub or AWS IoT Core). The external identifier field links the database record to the cloud configuration, maintaining consistency. Updates trigger immediate rollout to the cloud provider.
 
 ### Module Commands Design (Azure-Specific)
+
 Module commands are stored in the EdgeDeviceModelCommand entity for quick lookup without cloud API calls. This optimization enables faster command execution by pre-loading available commands during model retrieval.
 
 ### Label Management Pattern
+
 Labels use a replace-all strategy during updates (delete all existing, insert all new) rather than incremental updates. This simplifies the update logic but may have performance implications for models with many labels.
 
 ### Route Validation
+
 Azure IoT Edge routes use a specific query language syntax validated by regex. The system validates syntax but cannot verify semantic correctness (e.g., whether referenced modules exist) until cloud deployment.
 
 ### User Experience Considerations
+
 - Name field is read-only after creation in the UI (technical limitation or business rule?)
 - Tabbed interface reduces visual clutter for complex model configurations
 - Expansion panels organize related settings logically
@@ -488,12 +506,14 @@ Azure IoT Edge routes use a specific query language syntax validated by regex. T
 - Confirmation dialogs prevent accidental deletion
 
 ### Performance Optimization
+
 - Pagination reduces initial page load for large model catalogs
 - Server-side filtering reduces data transfer
 - Avatar images loaded asynchronously to prevent blocking
 - Repository queries use Include() for efficient label loading
 
 ### Future Considerations
+
 - Model versioning and rollback capabilities for safer updates
 - Configuration diff/comparison tools for troubleshooting
 - Model cloning for rapid prototyping

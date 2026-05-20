@@ -10,7 +10,7 @@
 ## Summary
 
 | Metric | Score | Weight | Weighted Score |
-|--------|-------|--------|----------------|
+| -------- | ------- | -------- | ---------------- |
 | Correctness | 95% | 30% | 28.5% |
 | Completeness | 92% | 30% | 27.6% |
 | Technical Quality | 90% | 20% | 18.0% |
@@ -22,7 +22,7 @@
 ## Accurate Specifications
 
 | Requirement | Spec Description | Code Evidence | Status |
-|-------------|------------------|---------------|--------|
+| ------------- | ------------------ | --------------- | -------- |
 | FR-001 | Export all devices to CSV | [AdminController.cs#L20-30](src/IoTHub.Portal.Server/Controllers/v1.0/AdminController.cs#L20-30): `ExportDeviceList()` endpoint | ✅ Verified |
 | FR-002 | Export includes device ID, name, model ID | [ExportManager.cs#L56-61](src/IoTHub.Portal.Server/Managers/ExportManager.cs#L56-61): `Id`, `Name`, `ModelId` columns written | ✅ Verified |
 | FR-003 | Export includes TAG: prefixed columns | [ExportManager.cs#L63-66](src/IoTHub.Portal.Server/Managers/ExportManager.cs#L63-66): TAG:{tag} columns written | ✅ Verified |
@@ -44,7 +44,7 @@
 ## Inaccuracies Found
 
 | Issue | Spec Statement | Actual Code Behavior | Impact |
-|-------|----------------|----------------------|--------|
+| ------- | ---------------- | ---------------------- | -------- |
 | FR-013 | Import validates device model existence | Model validation is not explicitly performed in ExportManager - it relies on downstream service validation | 🟡 Medium |
 | Authorization | Spec references generic device permissions | [AdminController.cs#L21,33,45](src/IoTHub.Portal.Server/Controllers/v1.0/AdminController.cs#L21): Uses `device:export` and `device:import` specific policies | 🟢 Low |
 | Filename pattern | Spec mentions "e.g., Devices_202602031200.csv" | Actual: `Devices_{DateTime.Now:yyyyMMddHHmm}.csv` - Minutes are included, not full timestamp | 🟢 Low |
@@ -54,7 +54,7 @@
 ## Key Entities Verification
 
 | Entity | Spec Definition | Code Implementation | Match |
-|--------|-----------------|---------------------|-------|
+| -------- | ----------------- | --------------------- | ------- |
 | ImportResultLine | LineNumber, DeviceId, Message, IsErrorMessage | [ImportResultLine.cs](src/IoTHub.Portal.Shared/Models/v1.0/ImportResultLine.cs): All properties present | ✅ Match |
 | CSV Structure | Id, Name, ModelId, TAG:*, PROPERTY:* | [ExportManager.cs#L140-157](src/IoTHub.Portal.Server/Managers/ExportManager.cs#L140-157): Exact structure implemented | ✅ Match |
 
@@ -63,7 +63,7 @@
 ## Code References
 
 | Component | File Path | Lines | Purpose |
-|-----------|-----------|-------|---------|
+| ----------- | ----------- | ------- | --------- |
 | Controller | [AdminController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/AdminController.cs) | 1-55 | API endpoints for import/export |
 | Business Logic | [ExportManager.cs](src/IoTHub.Portal.Server/Managers/ExportManager.cs) | 1-363 | CSV generation and parsing logic |
 | Interface | [IExportManager.cs](src/IoTHub.Portal.Server/Managers/IExportManager.cs) | - | Manager interface |
@@ -76,7 +76,7 @@
 ## Test Coverage
 
 | Area | Status | Evidence |
-|------|--------|----------|
+| ------ | -------- | ---------- |
 | Controller Tests | ✅ 90% | [AdminControllerTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/AdminControllerTests.cs): Tests for export, template, import |
 | Manager Tests | ✅ 85% | [ExportManagerTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Managers/ExportManagerTests.cs): Tests for CSV parsing, device creation |
 | Error Handling Tests | ✅ 80% | Tests for missing fields, invalid format |

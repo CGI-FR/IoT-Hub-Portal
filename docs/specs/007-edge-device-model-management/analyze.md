@@ -28,8 +28,10 @@ This feature provides business value by enabling infrastructure-as-code approach
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/EdgeModelsController.cs` (Lines 1-126)
   - **Snippet**: Main REST API controller for edge model management
+
     ```csharp
     [Authorize]
     [Route("api/edge/models")]
@@ -81,8 +83,10 @@ This feature provides business value by enabling infrastructure-as-code approach
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IEdgeModelService.cs` (Lines 1-25)
   - **Snippet**: Core service interface for edge model operations
+
     ```csharp
     public interface IEdgeModelService
     {
@@ -109,6 +113,7 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Orchestrates edge configuration rollout to cloud providers
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceModelRepository.cs` (Lines 1-10)
   - Repository interface for EdgeDeviceModel entity
   - Extends IRepository<EdgeDeviceModel>
@@ -120,6 +125,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 
 - `src/IoTHub.Portal.Domain/Entities/EdgeDeviceModel.cs` (Lines 1-19)
   - **Snippet**: Edge device model entity definition
+
     ```csharp
     public class EdgeDeviceModel : EntityBase
     {
@@ -140,6 +146,7 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Azure IoT Edge specific functionality
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/EdgeModels/EdgeModelListPage.razor` (Lines 1-159)
   - Main edge model list view with search and filtering
   - Interactive MudTable displaying model list
@@ -204,8 +211,10 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Provides user feedback on success/failure
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModel.cs` (Lines 1-31)
   - **Snippet**: Complete edge model DTO
+
     ```csharp
     public class IoTEdgeModel : IoTEdgeModelListItem
     {
@@ -242,6 +251,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModelListItem.cs` (Lines 1-37)
   - **Snippet**: List view DTO for edge models
+
     ```csharp
     public class IoTEdgeModelListItem
     {
@@ -267,6 +277,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModule.cs` (Lines 1-54)
   - **Snippet**: Edge module definition DTO
+
     ```csharp
     public class IoTEdgeModule
     {
@@ -296,6 +307,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeRoute.cs` (Lines 1-35)
   - **Snippet**: Edge route definition DTO
+
     ```csharp
     public class IoTEdgeRoute
     {
@@ -338,10 +350,11 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Supports keyword-based filtering
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IEdgeModelClientService.cs` (Lines 1-26)
   - Client-side service interface for HTTP API calls
-  - Methods: GetIoTEdgeModelList, GetIoTEdgeModel, CreateIoTEdgeModel, 
-    UpdateIoTEdgeModel, DeleteIoTEdgeModel, GetAvatar, ChangeAvatar, 
+  - Methods: GetIoTEdgeModelList, GetIoTEdgeModel, CreateIoTEdgeModel,
+    UpdateIoTEdgeModel, DeleteIoTEdgeModel, GetAvatar, ChangeAvatar,
     DeleteAvatar, GetPublicEdgeModules
 
 - `src/IoTHub.Portal.Client/Services/EdgeModelClientService.cs` (Lines 1-69)
@@ -351,14 +364,17 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Supports filtering via query parameters
 
 ### Validators
+
 - `src/IoTHub.Portal.Client/Validators/EdgeModelValidator.cs`
   - FluentValidation validator for IoTEdgeModel
   - Validates model name, description, modules, routes
   - Ensures module and route configuration correctness
 
 ### Mappers
+
 - `src/IoTHub.Portal.Application/Mappers/EdgeDeviceModelProfile.cs` (Lines 1-19)
   - **Snippet**: AutoMapper profile for edge model entity mapping
+
     ```csharp
     public class EdgeDeviceModelProfile : Profile
     {
@@ -386,6 +402,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 ## API Endpoints
 
 ### Edge Model Management
+
 - `GET /api/edge/models` - Get filtered list of edge models
   - Query Parameters: `Keyword` (optional) - Filter by name or description
   - Returns: `IEnumerable<IoTEdgeModelListItem>`
@@ -430,6 +447,7 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Deletes database record
 
 ### Avatar Management
+
 - `GET /api/edge/models/{edgeModelId}/avatar` - Get model avatar image URL
   - Path Parameter: `edgeModelId` (string) - Model identifier
   - Returns: `string` (image URL or base64 data)
@@ -448,6 +466,7 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Reverts to default placeholder image
 
 ### Public Modules Catalog
+
 - `GET /api/edge/models/public-modules` - Get public edge module catalog
   - Returns: `IEnumerable<IoTEdgeModule>`
   - Authorization: `edge-model:read`
@@ -459,10 +478,12 @@ This feature provides business value by enabling infrastructure-as-code approach
 ## Authorization
 
 ### Required Permissions
+
 - **edge-model:read** - View edge models, retrieve model details, and access avatar images
 - **edge-model:write** - Create, update, and delete edge models and manage avatars
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` on controller methods
 - Permission strings defined in PortalPermissionsHelper
 - Base authorization requirement: `[Authorize]` on EdgeModelsController and edge model pages
@@ -471,6 +492,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - UI components conditionally render write operations based on user permissions
 
 ### Permission Mapping
+
 - `PortalPermissions.EdgeModelRead` → "edge-model:read"
 - `PortalPermissions.EdgeModelWrite` → "edge-model:write"
 
@@ -479,6 +501,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **Edge Device Management** - Edge devices reference edge models for deployment configuration
 - **Device Configurations** - Edge models create Azure IoT Hub automatic device configurations
 - **Label Management** - Edge models use labels for categorization and filtering
@@ -487,6 +510,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - **AWS/Azure Integration** - Multi-cloud deployment orchestration
 
 ### Service Dependencies
+
 - `IEdgeDeviceModelRepository` - Edge model entity persistence
 - `IEdgeDeviceModelCommandRepository` - Module command persistence (Azure)
 - `ILabelRepository` - Label entity persistence
@@ -507,11 +531,13 @@ This feature provides business value by enabling infrastructure-as-code approach
 - `ConfigHandler` - Application configuration (cloud provider setting)
 
 ### Related Entities
+
 - **EdgeDevice** - References EdgeDeviceModel for deployment configuration
 - **Label** - Many-to-many relationship with EdgeDeviceModel
 - **EdgeDeviceModelCommand** - One-to-many relationship with EdgeDeviceModel
 
 ### External Dependencies
+
 - **Entity Framework Core** - Database access via PortalDbContext
 - **AutoMapper** - Entity to DTO mapping
 - **FluentValidation** - DTO and form validation
@@ -519,6 +545,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - **AWS IoT SDK** - AWS Greengrass deployment management
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library
   - MudTable - Data grid for model list
   - MudTextField - Text input fields
@@ -535,6 +562,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 ## Key Features & Behaviors
 
 ### Edge Model Definition
+
 - **ModelId**: Unique identifier generated on creation
 - **Name**: Human-readable model name (required, read-only after creation in UI)
 - **Description**: Optional detailed description of the model purpose
@@ -543,6 +571,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - **ExternalIdentifier**: Cloud provider-specific deployment/configuration ID
 
 ### Multi-Cloud Support
+
 - **Azure IoT Edge**: Full support including system modules, routes, and module commands
   - EdgeAgent and EdgeHub system module configuration
   - Message routing between modules and cloud
@@ -554,6 +583,7 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Deployment configuration to IoT Core
 
 ### Edge Modules Configuration
+
 - **Custom Modules**: User-defined containerized modules
   - Module name (unique within model)
   - Container image URI (Docker registry)
@@ -569,6 +599,7 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Stored in database for quick access
 
 ### System Modules (Azure Only)
+
 - **edgeAgent**: Edge runtime agent managing module lifecycle
   - Image URI configuration
   - Runtime settings
@@ -577,6 +608,7 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Routing configuration
 
 ### Message Routing (Azure Only)
+
 - **Route Definition**: FROM <source> (WHERE <condition>) INTO <sink>
   - Source: Module output or system source
   - Optional WHERE clause for message filtering
@@ -586,6 +618,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - **Time To Live**: Message expiration in seconds
 
 ### Model Lifecycle
+
 1. **Creation**
    - User defines model name, description, and configuration
    - System generates unique ModelId
@@ -609,7 +642,8 @@ This feature provides business value by enabling infrastructure-as-code approach
    - Database record removed
    - Avatar/image cleaned up
 
-### Public Modules Catalog
+### Public Modules Catalog Features
+
 - Pre-configured reusable edge modules
 - Marketplace/catalog integration
 - Import modules during model creation
@@ -624,12 +658,14 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Stored via IDeviceModelImageManager (blob storage or file system)
 
 ### Search and Filtering
+
 - Keyword search across model name and description
 - Case-insensitive matching
 - Real-time filter application
 - Label-based filtering (UI capability)
 
 ### Validation Rules
+
 - **Model Name**: Required field
 - **Module Name**: Required, unique within model
 - **Module Image**: Required, valid URI format
@@ -639,6 +675,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - **Labels**: Valid label format and existence check
 
 ### Error Handling
+
 - `ResourceAlreadyExistsException` - Model with same ID already exists
 - `ResourceNotFoundException` - Model not found during get/update/delete
 - `ProblemDetailsException` - API errors with user-friendly messages
@@ -647,6 +684,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Loading states during async operations
 
 ### Cloud Provider Integration
+
 - Configuration rollout orchestrated by IConfigService
 - Azure: Creates/updates IoT Hub automatic device configuration
   - Configuration targets devices with matching tag (model=ModelId)
@@ -662,6 +700,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 ## Notes
 
 ### Architecture Patterns
+
 - **Repository Pattern** - Clean separation of data access concerns
 - **Unit of Work Pattern** - Transactional consistency across operations
 - **Service Layer** - Business logic abstraction from controllers
@@ -669,12 +708,14 @@ This feature provides business value by enabling infrastructure-as-code approach
 - **Strategy Pattern** - Multi-cloud support via IConfigService implementations
 
 ### ModelId as Primary Key
+
 - EdgeDeviceModel entity uses auto-generated GUID as Id
 - ModelId in DTOs maps to entity Id
 - Simplifies tracking and prevents naming conflicts
 - Name can be reused after model deletion
 
 ### Module Commands Storage (Azure Only)
+
 - Stored in EdgeDeviceModelCommand entity
 - Linked to model and module name
 - Enables quick command lookup without cloud API call
@@ -682,6 +723,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Cascade deleted with model
 
 ### Cloud Configuration Synchronization
+
 - Edge models stored locally in database
 - Full configuration stored in cloud provider (source of truth for deployments)
 - ExternalIdentifier links database record to cloud configuration
@@ -689,12 +731,14 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Devices receive configuration via cloud provider's deployment mechanism
 
 ### System Module Defaults
+
 - Azure models automatically include edgeAgent and edgeHub
 - Default system module images can be overridden
 - System modules required for Azure IoT Edge runtime
 - Not applicable to AWS Greengrass (different architecture)
 
 ### Route Query Language (Azure)
+
 - FROM clause: Source module output or system source
   - Module: `FROM /messages/modules/{moduleName}/outputs/{outputName}`
   - System: `FROM /messages/*` (all device-to-cloud messages)
@@ -707,7 +751,8 @@ This feature provides business value by enabling infrastructure-as-code approach
   - Module input: `INTO BrokeredEndpoint("/modules/{moduleName}/inputs/{inputName}")`
   - Built-in endpoints: `INTO BrokeredEndpoint("/modules/$edgeHub/inputs/events")`
 
-### Public Modules Catalog
+### Public Modules Catalog Integration
+
 - Source depends on cloud provider and configuration
 - Azure: Could integrate with Azure Marketplace or custom catalog
 - AWS: Could integrate with Greengrass Component Catalog
@@ -722,6 +767,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Update operation deletes old labels and inserts new ones
 
 ### UI/UX Considerations
+
 - Three-page workflow: List → Detail/Create → Success
 - Tabbed interface reduces clutter in detail/create pages
 - Expansion panels for logical grouping
@@ -732,6 +778,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Avatar display for quick visual identification
 
 ### Performance Considerations
+
 - Model list loads with pagination support
 - Filtering performed server-side (database query)
 - Avatar images loaded asynchronously
@@ -740,6 +787,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Efficient repository queries with Include for labels
 
 ### Security Considerations
+
 - Authorization required at both controller and UI levels
 - Permission-based access control prevents unauthorized modifications
 - Input validation protects against injection attacks
@@ -748,12 +796,14 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Avatar upload restricted to image file types
 
 ### Database Design
+
 - EdgeDeviceModel: Core model entity
 - EdgeDeviceModelCommand: Module commands (Azure, one-to-many)
 - Label: Categorization tags (many-to-many)
 - EdgeDevice: References EdgeDeviceModel (one-to-many)
 
 ### Migration History
+
 - Initial EdgeDeviceModel entity creation
 - EdgeDeviceModelCommand entity for module commands
 - Label many-to-many relationship
@@ -761,6 +811,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - RBAC permissions for edge-model:read and edge-model:write
 
 ### Testing Coverage
+
 - Unit tests: EdgeModelServiceTest.cs
 - Controller tests: EdgeModelsControllerTest.cs
 - UI tests: EdgeModelsListPageTest.cs, EdgeModelDetailPageTest.cs, CreateEdgeModelsPageTest.cs
@@ -768,6 +819,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Component tests: EdgeModelSearchTests.cs, DeleteEdgeModelDialogTest.cs
 
 ### Future Enhancement Opportunities
+
 - Model versioning and rollback capabilities
 - Model templates marketplace with community contributions
 - Module dependency validation and ordering
@@ -788,6 +840,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Module compatibility matrix and recommendations
 
 ### Known Limitations
+
 - Model name cannot be changed after creation (UI enforced read-only)
 - Module commands only supported for Azure IoT Edge
 - Routes only supported for Azure IoT Edge
@@ -807,7 +860,9 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Limited validation of container create options JSON
 
 ### Cloud Provider Differences
+
 **Azure IoT Edge:**
+
 - System modules (edgeAgent, edgeHub) required and configurable
 - Message routing between modules via edgeHub
 - Module commands stored and synchronized
@@ -816,6 +871,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Container-based modules
 
 **AWS IoT Greengrass:**
+
 - Component-based architecture (no system modules concept)
 - Inter-component communication via pub/sub
 - Component lifecycle managed by Greengrass core
@@ -824,6 +880,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Support for Lambda functions and containers
 
 ### Integration Points
+
 - **Edge Device Provisioning**: Models assigned to devices during creation
 - **Device Twin Sync**: Model configuration synchronized to device twin desired properties
 - **Deployment Orchestration**: Cloud provider deploys configuration to devices

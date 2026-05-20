@@ -219,6 +219,7 @@ As a developer or administrator, I need to retrieve a list of all distinct prope
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/003-device-properties-management/analyze.md`
 - **Analyzed By**: excavator.analyze
 - **Analysis Date**: 2026-01-30
@@ -226,11 +227,13 @@ As a developer or administrator, I need to retrieve a list of all distinct prope
 ### Code References
 
 **Controllers**:
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesController.cs` (Lines 1-53)
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesControllerBase.cs` (Lines 1-88)
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DevicesController.cs` (Lines 111-126)
 
 **Business Logic**:
+
 - `src/IoTHub.Portal.Application/Services/IDeviceModelPropertiesService.cs` (Lines 1-13)
 - `src/IoTHub.Portal.Infrastructure/Services/DeviceModelPropertiesService.cs` (Lines 1-64)
 - `src/IoTHub.Portal.Application/Services/IDevicePropertyService.cs` (Lines 1-12)
@@ -238,21 +241,25 @@ As a developer or administrator, I need to retrieve a list of all distinct prope
 - `src/IoTHub.Portal.Infrastructure/Services/AWS/AWSDevicePropertyService.cs` (Lines 1-130+)
 
 **Data Access**:
+
 - `src/IoTHub.Portal.Domain/Repositories/IDeviceModelPropertiesRepository.cs` (Lines 1-11)
 - `src/IoTHub.Portal.Infrastructure/Repositories/DeviceModelPropertiesRepository.cs` (Lines 1-49)
 - `src/IoTHub.Portal.Domain/Entities/DeviceModelProperty.cs` (Lines 1-44)
 
 **UI Components**:
+
 - `src/IoTHub.Portal.Client/Pages/DeviceModels/DeviceModelDetailPage.razor` (Lines 78-141)
 - `src/IoTHub.Portal.Client/Components/Devices/EditDevice.razor` (Lines 252-317)
 
 ### Dependencies
 
 **Depends On**:
+
 - Device Model Management (002) - Properties are always associated with a device model
 - Standard Device Management (001) - Device instance properties require device to exist with a model assigned
 - Azure IoT Hub / AWS IoT Core - Device instance property values stored in and retrieved from cloud device twins/shadows
 
 **Depended On By**:
+
 - Device Configurations Management (005) - Configurations can reference and set device model properties
 - Device Import Export (021) - Device exports include property values, imports can set property values

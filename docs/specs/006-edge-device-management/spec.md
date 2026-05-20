@@ -335,6 +335,7 @@ Network architects need to understand which downstream devices are using each ed
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/006-edge-device-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 - **Analysis Date**: January 30, 2025
@@ -342,34 +343,41 @@ Network architects need to understand which downstream devices are using each ed
 ### Code References
 
 **Controllers**:
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/EdgeDevicesController.cs` - REST API endpoints for edge device operations
 
 **Business Logic**:
+
 - `src/IoTHub.Portal.Application/Services/IEdgeDevicesService.cs` - Service interface for edge device operations
 - `src/IoTHub.Portal.Infrastructure/Services/EdgeDevicesServiceBase.cs` - Shared base implementation for cloud providers
 - `src/IoTHub.Portal.Server/Services/AzureEdgeDevicesService.cs` - Azure IoT Hub specific implementation
 - `src/IoTHub.Portal.Infrastructure/Services/AWS/AWSEdgeDevicesService.cs` - AWS IoT Greengrass specific implementation
 
 **Data Access**:
+
 - `src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceRepository.cs` - Repository interface
 - `src/IoTHub.Portal.Domain/Entities/EdgeDevice.cs` - Edge device entity definition
 
 **UI Components**:
+
 - `src/IoTHub.Portal.Client/Pages/EdgeDevices/EdgeDeviceListPage.razor` - Device list page with search and filtering
 - `src/IoTHub.Portal.Client/Pages/EdgeDevices/EdgeDeviceDetailPage.razor` - Device details and management page
 - `src/IoTHub.Portal.Client/Pages/EdgeDevices/CreateEdgeDevicePage.razor` - Device creation wizard
 
 **Data Transfer Objects**:
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeDevice.cs` - Complete edge device DTO
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeListItem.cs` - Lightweight list item DTO
 
 **Client Services**:
+
 - `src/IoTHub.Portal.Client/Services/IEdgeDeviceClientService.cs` - Client service interface
 - `src/IoTHub.Portal.Client/Services/EdgeDeviceClientService.cs` - HTTP API client implementation
 
 ### Dependencies
 
 **Depends On**:
+
 - Edge Device Models - Defines device capabilities, modules, and commands
 - Device Tag Settings - Custom metadata fields applied to edge devices
 - Label Management - Organizational labels for filtering and categorization
@@ -377,11 +385,13 @@ Network architects need to understand which downstream devices are using each ed
 - Device Model Images - Visual representation in device lists
 
 **Depended On By**:
+
 - Device Synchronization Jobs - Background jobs that sync edge device state from cloud providers
 - Monitoring & Analytics - Aggregates edge device connectivity and health metrics
 - Deployment Management - References edge devices for module deployment operations
 
 ### Related Features
+
 - Feature 001: Standard Device Management - Manages downstream leaf devices that connect through edge gateways
 - Feature 004: Device Tag Settings Management - Defines available tags for edge devices
 - Feature 014: Role Management - Configures roles with edge device permissions

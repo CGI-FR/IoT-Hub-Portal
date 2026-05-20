@@ -84,7 +84,7 @@ As an IoT administrator, I need to include custom tags and properties in my impo
 
 **Why this priority**: Complete device configuration during import eliminates the need for post-import manual configuration.
 
-**Independent Test**: Can be fully tested by importing devices with TAG:* and PROPERTY:* columns, then verifying the values are applied.
+**Independent Test**: Can be fully tested by importing devices with TAG:*and PROPERTY:* columns, then verifying the values are applied.
 
 **Acceptance Scenarios**:
 
@@ -157,21 +157,24 @@ As an IoT administrator, I need to include custom tags and properties in my impo
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/021-device-import-export/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - AdminController: Import/export endpoints
 - ExportManager: Business logic for CSV processing
 - IExternalDeviceService: Device data retrieval
 - DeviceService: Device creation/update operations
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 001-standard-device-management (device CRUD operations)
   - 002-device-model-management (model validation)
   - 004-device-tag-settings-management (tag configuration)
   - 003-device-properties-management (property configuration)
   - 008-lorawan-device-management (LoRaWAN device creation)
-- **Depended By**: 
+- **Depended By**:
   - None (standalone admin feature)

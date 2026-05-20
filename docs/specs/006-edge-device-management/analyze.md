@@ -30,8 +30,10 @@ This feature provides business value by enabling centralized management of edge 
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/EdgeDevicesController.cs` (Lines 1-277)
   - **Snippet**: Main REST API controller for edge device management
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -89,8 +91,10 @@ This feature provides business value by enabling centralized management of edge 
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IEdgeDevicesService.cs` (Lines 1-33)
   - **Snippet**: Core service interface for edge device operations
+
     ```csharp
     public interface IEdgeDevicesService
     {
@@ -132,6 +136,7 @@ This feature provides business value by enabling centralized management of edge 
   - Handles AWS-specific deployment and configuration
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceRepository.cs` (Lines 1-9)
   - Generic repository interface for EdgeDevice entity
   - Inherits from IRepository<EdgeDevice>
@@ -139,6 +144,7 @@ This feature provides business value by enabling centralized management of edge 
 
 - `src/IoTHub.Portal.Domain/Entities/EdgeDevice.cs` (Lines 1-52)
   - **Snippet**: Edge device entity definition
+
     ```csharp
     public class EdgeDevice : EntityBase
     {
@@ -157,6 +163,7 @@ This feature provides business value by enabling centralized management of edge 
     ```
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/EdgeDevices/EdgeDeviceListPage.razor` (Lines 1-332)
   - Main edge device list page with search and filtering
   - Features:
@@ -205,8 +212,10 @@ This feature provides business value by enabling centralized management of edge 
   - Authorization: `edge-device:write` required
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeDevice.cs` (Lines 1-96)
   - **Snippet**: Complete edge device DTO
+
     ```csharp
     public class IoTEdgeDevice
     {
@@ -235,6 +244,7 @@ This feature provides business value by enabling centralized management of edge 
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeListItem.cs` (Lines 1-42)
   - **Snippet**: Lightweight DTO for device list
+
     ```csharp
     public class IoTEdgeListItem
     {
@@ -249,6 +259,7 @@ This feature provides business value by enabling centralized management of edge 
     ```
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IEdgeDeviceClientService.cs` (Lines 1-29)
   - Client-side service interface for HTTP API calls
   - Methods: GetDevices, GetDevice, CreateDevice, UpdateDevice, DeleteDevice
@@ -266,9 +277,11 @@ This feature provides business value by enabling centralized management of edge 
   - POST /api/edge/devices/{deviceId}/{moduleName}/{methodName} for command execution
 
 ### Mappers
+
 - `src/IoTHub.Portal.Application/Mappers/EdgeDeviceProfile.cs` (Lines 1-78)
   - AutoMapper profile for edge device entity to DTO mapping
   - **Snippet**: Key mappings
+
     ```csharp
     // Azure Twin to EdgeDevice entity
     CreateMap<Twin, EdgeDevice>()
@@ -293,6 +306,7 @@ This feature provides business value by enabling centralized management of edge 
         .ForMember(dest => dest.Labels, opts => opts.MapFrom(
             src => src.Labels.Union(src.DeviceModel.Labels)));
     ```
+
   - Extracts connected devices count from device twin reported properties
   - Filters system tags (modelId, deviceName) from custom tags
   - Merges device-specific and model-level labels
@@ -302,6 +316,7 @@ This feature provides business value by enabling centralized management of edge 
 ## API Endpoints
 
 ### Edge Device Management
+
 - `GET /api/edge/devices` - Get paginated edge device list
   - Query Parameters:
     - searchText (string): Filter by device ID or name
@@ -345,6 +360,7 @@ This feature provides business value by enabling centralized management of edge 
   - Deletes database entry with cascade delete for tags and labels
 
 ### Edge Device Credentials & Enrollment
+
 - `GET /api/edge/devices/{deviceId}/credentials` - Get enrollment credentials
   - Route Parameter: deviceId (string)
   - Returns: SymmetricCredentials (primary/secondary keys)
@@ -368,6 +384,7 @@ This feature provides business value by enabling centralized management of edge 
   - Script configures IoT Edge runtime with connection string
 
 ### Edge Module Management
+
 - `POST /api/edge/devices/{deviceId}/{moduleName}/{methodName}` - Execute module method
   - Route Parameters: deviceId, moduleName, methodName (strings)
   - Returns: C2Dresult (status code and payload)
@@ -387,6 +404,7 @@ This feature provides business value by enabling centralized management of edge 
   - Used for troubleshooting and monitoring
 
 ### Label Management
+
 - `GET /api/edge/devices/available-labels` - Get all labels used by edge devices
   - Returns: IEnumerable<LabelDto>
   - Authorization: edge-device:read
@@ -398,11 +416,13 @@ This feature provides business value by enabling centralized management of edge 
 ## Authorization
 
 ### Required Permissions
+
 - **edge-device:read** - View edge devices, device details, and retrieve credentials
 - **edge-device:write** - Create, update, and delete edge devices
 - **edge-device:execute** - Execute commands on edge modules
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` on controller methods
 - Permission strings defined in PortalPermissionsHelper
 - Base authorization: `[Authorize]` on EdgeDevicesController and all UI pages
@@ -413,6 +433,7 @@ This feature provides business value by enabling centralized management of edge 
   - Module commands disabled if user lacks edge-device:execute or device is disconnected
 
 ### Permission Mapping
+
 - `PortalPermissions.EdgeDeviceRead` → "edge-device:read"
 - `PortalPermissions.EdgeDeviceWrite` → "edge-device:write"
 - `PortalPermissions.EdgeDeviceExecute` → "edge-device:execute"
@@ -422,6 +443,7 @@ This feature provides business value by enabling centralized management of edge 
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **Edge Device Models** - Defines edge device capabilities, modules, and commands
 - **Device Tag Settings** - Custom metadata fields applied to edge devices
 - **Label Management** - Organizational labels for filtering and categorization
@@ -430,6 +452,7 @@ This feature provides business value by enabling centralized management of edge 
 - **External Device Service** - Cloud provider abstraction (Azure/AWS)
 
 ### Service Dependencies
+
 - `IEdgeDeviceRepository` - Edge device entity persistence
 - `IDeviceTagService` - Device tag definitions and retrieval
 - `IDeviceTagValueRepository` - Device-specific tag values
@@ -441,6 +464,7 @@ This feature provides business value by enabling centralized management of edge 
 - `IDataProtectionProvider` - Time-limited enrollment URL encryption
 
 ### Related Entities
+
 - **EdgeDevice** - Primary entity with navigation to DeviceModel, Tags, Labels
 - **EdgeDeviceModel** - Defines device capabilities and modules
 - **DeviceTagValue** - Custom tag values per device
@@ -449,6 +473,7 @@ This feature provides business value by enabling centralized management of edge 
 - **ConfigItem** - Last deployment configuration
 
 ### External Dependencies
+
 - **Entity Framework Core** - Database access via PortalDbContext
 - **AutoMapper** - Entity to DTO mapping
 - **Azure IoT Hub SDK** - Azure-specific device management
@@ -461,6 +486,7 @@ This feature provides business value by enabling centralized management of edge 
 - **Data Protection API** - Secure enrollment URL generation
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library
   - MudTable - Paginated device list with server-side data
   - MudExpansionPanel - Collapsible sections for device details
@@ -477,13 +503,15 @@ This feature provides business value by enabling centralized management of edge 
 ## Key Features & Behaviors
 
 ### Edge Device Lifecycle Management
+
 - **Device Provisioning**: Creates device in cloud provider (Azure IoT Hub or AWS IoT Core) with automatic configuration
 - **Device Twin Synchronization**: Maintains device metadata in cloud provider device twin/thing shadow
 - **Connection State Tracking**: Real-time monitoring of device connectivity (Connected/Disconnected)
 - **Runtime Health Monitoring**: Tracks IoT Edge runtime status (running/stopped/unhealthy)
 - **Soft Delete**: Device removal from both database and cloud provider
 
-### Edge Module Management
+### Edge Module Capabilities
+
 - **Module Discovery**: Automatically lists modules deployed to edge device
 - **Module Status**: Shows runtime status of each module
 - **Module Commands**: Execute direct methods on modules (RestartModule, custom commands)
@@ -491,12 +519,14 @@ This feature provides business value by enabling centralized management of edge 
 - **Module Count**: Tracks number of deployed modules per device
 
 ### Gateway Functionality
+
 - **Leaf Device Aggregation**: Tracks number of downstream devices connected through edge device
 - **Transparent Gateway**: Edge devices act as gateways for devices without direct cloud connectivity
 - **Client Count**: Displays number of devices using edge device as gateway
 - **Scope Management**: Assigns device scope for hierarchical organization
 
 ### Search and Filtering
+
 - **Text Search**: Filter by device ID or device name (case-insensitive, partial match)
 - **Status Filter**: Filter by connection status (Connected, Disconnected, All)
 - **Model Filter**: Filter by edge device model with autocomplete
@@ -506,6 +536,7 @@ This feature provides business value by enabling centralized management of edge 
 - **Sortable Columns**: Click headers to sort by device ID, status, or connected devices
 
 ### Device Enrollment
+
 - **Credential Generation**: Provides symmetric keys for device authentication
 - **Enrollment Scripts**: Generates platform-specific installation scripts
 - **Secure URLs**: Time-limited (15 minutes) protected script download links
@@ -513,6 +544,7 @@ This feature provides business value by enabling centralized management of edge 
 - **Connection String Dialog**: Interactive UI for credential viewing
 
 ### Device Tags and Labels
+
 - **Custom Tags**: User-defined metadata fields with validation
 - **Required Tags**: Enforced during device creation
 - **Tag Synchronization**: Tags stored in cloud provider device twin
@@ -521,24 +553,28 @@ This feature provides business value by enabling centralized management of edge 
 - **Tag Validation**: Required field enforcement with visual error indicators
 
 ### Multi-Cloud Support
+
 - **Azure IoT Hub**: Full feature support including module commands and logs
 - **AWS IoT Greengrass**: Core functionality with Greengrass-specific adaptations
 - **Provider-Specific UI**: Conditional rendering based on CloudProvider setting
 - **Abstracted Service Layer**: Common interface with provider-specific implementations
 
 ### Device Duplication
+
 - **Save and Duplicate**: Creates new device from existing configuration
 - **Template Reuse**: Copies tags, labels, and model selection
 - **ID Generation**: Auto-generates new device ID for duplicate
 - **Shared State**: Uses layout service to pass device state between pages
 
 ### Real-Time Status Indicators
+
 - **Connection Status Icons**: Visual indicators (checkmark/error icon) with tooltips
 - **Runtime Status Icons**: Health indicators for IoT Edge runtime
 - **Color Coding**: Success (green) for healthy, error (red) for issues
 - **Tooltip Context**: Hover tooltips explain status meanings
 
 ### Validation and Error Handling
+
 - **Form Validation**: Required fields enforced (device name, model, required tags)
 - **Tag Validation**: Required tags checked before save
 - **Model Validation**: Edge device model must be selected
@@ -547,6 +583,7 @@ This feature provides business value by enabling centralized management of edge 
 - **Device Not Found**: 404 handling with appropriate user messaging
 
 ### Performance Optimizations
+
 - **Pagination**: Server-side pagination reduces data transfer
 - **Image Caching**: Device model images cached via IDeviceModelImageManager
 - **Lazy Loading**: Modules and logs loaded on-demand
@@ -558,6 +595,7 @@ This feature provides business value by enabling centralized management of edge 
 ## Notes
 
 ### Architecture Patterns
+
 - **Repository Pattern** - Clean separation of data access concerns
 - **Unit of Work Pattern** - Transactional consistency across operations
 - **Service Layer Pattern** - Business logic abstraction from controllers
@@ -566,6 +604,7 @@ This feature provides business value by enabling centralized management of edge 
 - **Adapter Pattern** - IExternalDeviceService abstracts cloud provider differences
 
 ### Edge Device Specialization
+
 - Edge devices are distinct from regular IoT devices (separate tables, controllers)
 - Edge devices can run containerized modules (Docker containers)
 - Edge devices act as gateways for downstream leaf devices
@@ -573,6 +612,7 @@ This feature provides business value by enabling centralized management of edge 
 - Edge modules defined by edge device models (not device models)
 
 ### Azure IoT Edge Integration
+
 - Device twin tags store device metadata (modelId, deviceName, custom tags)
 - Reported properties contain runtime status and connected clients count
 - Direct methods enable module command execution
@@ -581,6 +621,7 @@ This feature provides business value by enabling centralized management of edge 
 - Device scope enables hierarchical device relationships
 
 ### AWS IoT Greengrass Integration
+
 - Thing registry stores device metadata and attributes
 - Greengrass core devices map to edge devices
 - Thing shadows used for state synchronization
@@ -589,6 +630,7 @@ This feature provides business value by enabling centralized management of edge 
 - Limited command execution compared to Azure
 
 ### Device Model Relationship
+
 - EdgeDevice references EdgeDeviceModel (not DeviceModel)
 - EdgeDeviceModel defines available edge modules
 - Each module can have custom commands
@@ -596,6 +638,7 @@ This feature provides business value by enabling centralized management of edge 
 - Labels can be inherited from model or device-specific
 
 ### Tag Management
+
 - Tags stored as DeviceTagValue collection (many-to-many relationship)
 - Tags defined globally in Device Tag Settings
 - Tag values unique per device instance
@@ -604,6 +647,7 @@ This feature provides business value by enabling centralized management of edge 
 - Tag validation occurs on both client and server
 
 ### Module Command Execution
+
 - Commands defined in EdgeDeviceModel per module
 - RestartModule is standard across all modules
 - Custom commands specific to module type
@@ -612,6 +656,7 @@ This feature provides business value by enabling centralized management of edge 
 - Azure-specific feature (not available in AWS)
 
 ### Module Logs
+
 - Real-time log retrieval from IoT Hub
 - Logs specific to individual modules
 - Used for troubleshooting runtime issues
@@ -620,6 +665,7 @@ This feature provides business value by enabling centralized management of edge 
 - No persistent log storage in portal database
 
 ### Enrollment Script Generation
+
 - Scripts automate IoT Edge runtime installation
 - Include connection string and configuration
 - Template-based for different scenarios (bash, PowerShell)
@@ -628,6 +674,7 @@ This feature provides business value by enabling centralized management of edge 
 - Scripts stored as embedded resources or templates
 
 ### Connection State Synchronization
+
 - Connection state retrieved from cloud provider in real-time
 - Stored in database for query performance
 - Background jobs sync state periodically
@@ -635,6 +682,7 @@ This feature provides business value by enabling centralized management of edge 
 - Disconnected devices have limited available actions
 
 ### Label System
+
 - Labels provide flexible categorization
 - Devices can have multiple labels
 - Labels filterable in device list
@@ -643,6 +691,7 @@ This feature provides business value by enabling centralized management of edge 
 - Labels stored in database (not cloud provider)
 
 ### Pagination Implementation
+
 - Server-side pagination via PaginatedResult<T>
 - Total count provided for UI page control
 - NextPage URL generated by controller
@@ -651,6 +700,7 @@ This feature provides business value by enabling centralized management of edge 
 - Default page size: 10 items
 
 ### Security Considerations
+
 - Authorization required at both controller and UI levels
 - Permission-based access control prevents unauthorized operations
 - Time-limited enrollment URLs prevent replay attacks
@@ -659,6 +709,7 @@ This feature provides business value by enabling centralized management of edge 
 - Cloud provider credentials isolated in service implementations
 
 ### Database Schema
+
 - EdgeDevice table with navigation properties
 - Foreign key to EdgeDeviceModel
 - Many-to-many with DeviceTagValue via collection
@@ -667,6 +718,7 @@ This feature provides business value by enabling centralized management of edge 
 - Indexes on DeviceModelId, ConnectionState for query performance
 
 ### Background Synchronization
+
 - SyncEdgeDeviceJob periodically syncs from cloud provider
 - Updates connection state, module count, client count
 - Handles new devices created outside portal
@@ -674,6 +726,7 @@ This feature provides business value by enabling centralized management of edge 
 - Configurable sync interval via job scheduler
 
 ### Testing Coverage
+
 - Unit tests: EdgeDeviceServiceTest.cs
 - Controller tests: EdgeDevicesControllerTests.cs (integration)
 - UI tests: EdgeDeviceListPageTests.cs, EdgeDeviceDetailPageTests.cs, CreateEdgeDevicePageTest.cs
@@ -681,6 +734,7 @@ This feature provides business value by enabling centralized management of edge 
 - Mapper tests: EdgeDeviceProfileTests.cs
 
 ### Future Enhancement Opportunities
+
 - Bulk device operations (delete, update tags)
 - Device configuration management (desired properties)
 - Deployment history tracking
@@ -703,6 +757,7 @@ This feature provides business value by enabling centralized management of edge 
 - Role-based device access (not just feature access)
 
 ### Known Limitations
+
 - Module commands only available on Azure IoT Hub
 - Module logs only available on Azure IoT Hub
 - No real-time telemetry display on device details page
@@ -720,8 +775,9 @@ This feature provides business value by enabling centralized management of edge 
 - Cannot schedule commands for future execution
 
 ### Provider-Specific Behaviors
+
 | Feature | Azure IoT Hub | AWS IoT Greengrass |
-|---------|---------------|-------------------|
+| --------- | --------------- | ------------------- |
 | Module Commands | ✅ Supported | ❌ Not Supported |
 | Module Logs | ✅ Supported | ❌ Not Supported |
 | Device Status | Enabled/Disabled | Active only |
@@ -732,6 +788,7 @@ This feature provides business value by enabling centralized management of edge 
 | Client Count | From Reported Properties | Not Available |
 
 ### Performance Considerations
+
 - Edge device list queries optimized with includes
 - Device model images cached to reduce storage calls
 - Pagination reduces memory footprint

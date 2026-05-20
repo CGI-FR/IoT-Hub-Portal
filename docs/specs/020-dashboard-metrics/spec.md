@@ -112,7 +112,7 @@ As a LoRaWAN network operator, I need to see the total number of concentrators s
 ### Metrics Overview
 
 | Metric | Description | Source |
-|--------|-------------|--------|
+| -------- | ------------- | -------- |
 | DeviceCount | Total registered standard IoT devices | Azure IoT Hub / AWS IoT Core |
 | ConnectedDeviceCount | Devices currently connected | Cloud provider connection state |
 | EdgeDeviceCount | Total registered edge devices | Azure IoT Edge / AWS Greengrass |
@@ -137,18 +137,21 @@ As a LoRaWAN network operator, I need to see the total number of concentrators s
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/020-dashboard-metrics/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - DashboardController: Metrics retrieval endpoint
 - PortalMetric: Shared metrics model (singleton)
 - Background jobs: Populate PortalMetric singleton
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 025-metrics-collection-jobs (background jobs populate metrics)
   - Cloud provider integration (Azure IoT Hub / AWS IoT Core)
-- **Depended By**: 
+- **Depended By**:
   - Portal dashboard UI (displays metrics)
   - External monitoring systems (may consume metrics endpoint)

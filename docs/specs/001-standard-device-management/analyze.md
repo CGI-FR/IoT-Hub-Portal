@@ -26,8 +26,10 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DevicesController.cs` (Lines 1-137)
   - **Snippet**: Main REST API controller inheriting from DevicesControllerBase
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -70,8 +72,10 @@ This feature serves as the foundation for IoT device lifecycle management, provi
   - Base controller implementation with shared logic for device operations
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IDeviceService.cs` (Lines 1-39)
   - **Snippet**: Core service interface
+
     ```csharp
     public interface IDeviceService<TDto> where TDto : IDeviceDetails
     {
@@ -106,11 +110,13 @@ This feature serves as the foundation for IoT device lifecycle management, provi
   - Retrieves properties from device model templates
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IDeviceRepository.cs` (Lines 1-9)
   - Generic repository interface for Device entity
 
 - `src/IoTHub.Portal.Domain/Entities/Device.cs` (Lines 1-63)
   - **Snippet**: Core device entity
+
     ```csharp
     public class Device : EntityBase
     {
@@ -129,6 +135,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
     ```
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/Devices/DeviceListPage.razor` (Lines 1-480)
   - Main device listing page with search panel
   - Server-side paginated table with sorting
@@ -155,6 +162,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
   - Model-based device configuration
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/DeviceDetails.cs` (Lines 1-81)
   - Complete device details DTO with validation attributes
   - Properties: DeviceID, DeviceName, ModelId, Image, IsConnected, IsEnabled, StatusUpdatedTime, LastActivityTime, Tags, Labels, LayerId
@@ -167,6 +175,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
   - Interface defining common device detail properties
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IDeviceClientService.cs` (Lines 1-32)
   - Client-side service interface for HTTP API calls
   - Methods: GetDevices, GetDevice, CreateDevice, UpdateDevice, GetDeviceProperties, SetDeviceProperties, GetEnrollmentCredentials, DeleteDevice, ExportDeviceList, ExportTemplateFile, ImportDeviceList, GetAvailableLabels
@@ -176,6 +185,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 ## API Endpoints
 
 ### Device Management
+
 - `GET /api/devices` - Get paginated device list
   - Query parameters: searchText, searchStatus, searchState, pageSize, pageNumber, orderBy[], modelId, labels[], tag.*
   - Returns: PaginationResult<DeviceListItem>
@@ -203,6 +213,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
   - Removes device from both IoT Hub and database
 
 ### Device Credentials & Properties
+
 - `GET /api/devices/{deviceID}/credentials` - Get device enrollment credentials
   - Returns: DeviceCredentials
   - Authorization: device:read
@@ -217,6 +228,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
   - Authorization: device:write
 
 ### Supporting Endpoints
+
 - `GET /api/devices/available-labels` - Get available labels on devices
   - Returns: IEnumerable<LabelDto>
   - Authorization: device:read
@@ -226,6 +238,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 ## Authorization
 
 ### Required Permissions
+
 - **device:read** - View device list, details, properties, credentials, and labels
 - **device:write** - Create, update, delete devices and modify device properties
 - **device:execute** - Execute device commands (referenced in detail page)
@@ -233,6 +246,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 - **device:export** - Export device lists to file
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` attributes on controller methods
 - Permission checks in UI components using `HasPermissionAsync(PortalPermissions.*)` for conditional rendering
 - Base authorization requirement: `[Authorize]` on DevicesController
@@ -242,6 +256,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **Device Model Management** - Devices must be associated with a device model; model defines device properties and behavior
 - **Device Tags** - Custom searchable and filterable metadata fields for devices
 - **Label Management** - Device categorization and filtering system
@@ -249,6 +264,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 - **IoT Hub Integration** - External device service for Azure IoT Hub or AWS IoT Core synchronization
 
 ### Service Dependencies
+
 - `IExternalDeviceService` - IoT Hub/AWS device operations (create, update, delete, get twin)
 - `IDeviceTagService` - Device tag management
 - `IDeviceModelService` - Device model retrieval and validation
@@ -259,11 +275,13 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 - `ILabelRepository` - Label persistence
 
 ### External Dependencies
+
 - **Azure IoT Hub** or **AWS IoT Core** - Cloud IoT device management service
 - **Entity Framework Core** - Database access via PortalDbContext
 - **AutoMapper** - Entity to DTO mapping
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library (MudTable, MudForm, MudTextField, etc.)
 - Device Tag Settings (for searchable tags)
 - Device Models (for model selection and properties)
@@ -273,6 +291,7 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 ## Key Features & Behaviors
 
 ### Search and Filtering
+
 - Full-text search by device ID or device name
 - Filter by device status (enabled/disabled)
 - Filter by device state (connected/disconnected)
@@ -282,22 +301,26 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 - Sorting support on multiple columns
 
 ### Pagination
+
 - Server-side pagination with configurable page size
 - Default page size: 10 items
 - Uses cursor-based navigation with nextPage URL
 
 ### Import/Export
+
 - Template file download for bulk device creation
 - CSV/Excel import with validation and error reporting
 - Device list export with current filters applied
 
 ### Device Twin Synchronization
+
 - Automatic synchronization with Azure IoT Hub or AWS IoT Core
 - Device twin properties (desired and reported) management
 - Status synchronization (enabled/disabled, connected/disconnected)
 - Tag synchronization between portal and IoT Hub
 
 ### Validation
+
 - Device ID format validation (128 characters, alphanumeric with special characters)
 - Device name required
 - Model ID required
@@ -308,33 +331,39 @@ This feature serves as the foundation for IoT device lifecycle management, provi
 ## Notes
 
 ### Architecture Patterns
+
 - **Generic Controller Base** - DevicesControllerBase<TDto> allows reuse for different device types (standard, LoRaWAN)
 - **Service Layer Abstraction** - IDeviceService<TDto> enables polymorphic device handling
 - **Repository Pattern** - Clean separation of data access concerns
 - **External Service Integration** - IExternalDeviceService abstracts cloud provider differences
 
 ### Multi-Cloud Support
+
 - Supports both Azure IoT Hub and AWS IoT Core
 - Cloud provider selection via PortalSettings.CloudProvider
 - Provider-specific implementations of IExternalDeviceService
 
 ### Performance Considerations
+
 - Server-side pagination reduces data transfer
 - Lazy loading with Include() for related entities (Labels, Tags, DeviceModel)
 - Image URLs retrieved asynchronously
 - Query optimization with predicate building
 
 ### Security Considerations
+
 - Comprehensive authorization checks at controller and UI levels
 - Device credentials handled securely through dedicated endpoint
 - Input validation on all user-submitted data
 - XSS protection through Blazor's automatic encoding
 
 ### Testing Coverage
+
 - Unit tests exist for controllers, services, and UI components
 - Test files: DevicesControllerTests.cs, DeviceServiceTests.cs, DeviceDetailValidatorTests.cs, etc.
 
 ### Future Enhancement Opportunities
+
 - Real-time device status updates via SignalR
 - Bulk device operations (enable/disable multiple devices)
 - Device health monitoring and alerting

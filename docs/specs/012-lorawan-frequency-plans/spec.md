@@ -77,7 +77,7 @@ As an IoT administrator, I need to view all supported frequency plans so that I 
 ### Supported Frequency Plans
 
 | Region | Plans Available |
-|--------|----------------|
+| -------- | ---------------- |
 | Europe | EU_863_870 |
 | United States | US_902_928_FSB_1 through FSB_8 |
 | Asia | AS_923_925_1 through AS_923_925_4 |
@@ -100,16 +100,19 @@ As an IoT administrator, I need to view all supported frequency plans so that I 
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/012-lorawan-frequency-plans/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - LoRaWANFrequencyPlansController: Frequency plan retrieval
 - FrequencyPlan DTO: Data structure for frequency plan information
 - LoRaFeatureActiveFilter: Feature gate for LoRa functionality
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - Portal configuration (LoRa features must be enabled)
-- **Depended By**: 
+- **Depended By**:
   - 010-lorawan-concentrator-management (concentrators require frequency plan selection)

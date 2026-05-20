@@ -267,6 +267,7 @@ As an IoT administrator, I need to assign labels to device models for categoriza
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/002-device-model-management/analyze.md`
 - **Analyzed By**: excavator.analyze
 - **Analysis Date**: 2026-01-30
@@ -274,23 +275,27 @@ As an IoT administrator, I need to assign labels to device models for categoriza
 ### Code References
 
 **Controllers**:
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelsController.cs` (Lines 1-133)
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelControllerBase.cs` (Lines 1-138)
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesController.cs` (Lines 1-52)
 
 **Business Logic**:
+
 - `src/IoTHub.Portal.Application/Services/IDeviceModelService.cs` (Lines 1-26)
 - `src/IoTHub.Portal.Server/Services/DeviceModelService.cs` (Lines 1-190)
 - `src/IoTHub.Portal.Application/Services/IDeviceModelPropertiesService.cs` (Lines 1-13)
 - `src/IoTHub.Portal.Infrastructure/Services/DeviceModelPropertiesService.cs`
 
 **Data Access**:
+
 - `src/IoTHub.Portal.Domain/Repositories/IDeviceModelRepository.cs` (Lines 1-10)
 - `src/IoTHub.Portal.Domain/Entities/DeviceModel.cs` (Lines 1-41)
 - `src/IoTHub.Portal.Domain/Entities/DeviceModelProperty.cs` (Lines 1-45)
 - `src/IoTHub.Portal.Domain/Entities/DeviceModelCommand.cs` (Lines 1-20)
 
 **UI Components**:
+
 - `src/IoTHub.Portal.Client/Pages/DeviceModels/DeviceModelListPage.razor` (Lines 1-211)
 - `src/IoTHub.Portal.Client/Pages/DeviceModels/DeviceModelDetailPage.razor` (Lines 1-411)
 - `src/IoTHub.Portal.Client/Pages/DeviceModels/CreateDeviceModelPage.razor` (Lines 1-357)
@@ -298,10 +303,12 @@ As an IoT administrator, I need to assign labels to device models for categoriza
 ### Dependencies
 
 **Depends On**:
+
 - Azure IoT Hub / AWS IoT Core - External cloud IoT enrollment group and configuration management
 - Blob Storage (Azure or AWS S3) - Image storage via IDeviceModelImageManager
 
 **Depended On By**:
+
 - Standard Device Management (001) - Devices must be associated with a model
 - Edge Device Management (006) - Edge devices use device model templates
 - LoRaWAN Device Management (008) - LoRaWAN devices use model templates with LoRaWAN-specific features

@@ -10,7 +10,7 @@
 ## Summary Table
 
 | Metric | Score | Weight | Weighted Score |
-|--------|-------|--------|----------------|
+| -------- | ------- | -------- | ---------------- |
 | Correctness | 96% | 30% | 28.8% |
 | Completeness | 94% | 30% | 28.2% |
 | Technical Quality | 92% | 20% | 18.4% |
@@ -94,7 +94,7 @@
 ## Code References Verified
 
 | Spec Reference | Actual File | Match Status |
-|---------------|-------------|--------------|
+| --------------- | ------------- | -------------- |
 | LoRaWANConcentratorsController.cs | [Verified](../../src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANConcentratorsController.cs) | ✅ |
 | LoRaWANConcentratorService.cs | [Verified](../../src/IoTHub.Portal.Server/Services/LoRaWANConcentratorService.cs) | ✅ |
 | Concentrator.cs | [Verified](../../src/IoTHub.Portal.Domain/Entities/Concentrator.cs) | ✅ |
@@ -107,7 +107,7 @@
 ## Additional Code Found
 
 | File | Purpose |
-|------|---------|
+| ------ | --------- |
 | [SyncConcentratorsJob.cs](../../src/IoTHub.Portal.Infrastructure/Jobs/SyncConcentratorsJob.cs) | Background synchronization job |
 | [ConcentratorMetricLoaderJob.cs](../../src/IoTHub.Portal.Infrastructure/Jobs/ConcentratorMetricLoaderJob.cs) | Metrics collection |
 | [ConcentratorMetricExporterJob.cs](../../src/IoTHub.Portal.Infrastructure/Jobs/ConcentratorMetricExporterJob.cs) | Metrics export |
@@ -122,15 +122,15 @@
 
 ### Medium Priority
 
-2. **Lowercase Input Handling**: Document that DeviceID must be provided in uppercase, or add automatic uppercase conversion in the service layer.
+1. **Lowercase Input Handling**: Document that DeviceID must be provided in uppercase, or add automatic uppercase conversion in the service layer.
 
-3. **Error Response Codes**: Standardize on REST conventions - consider 204 No Content for DELETE success.
+2. **Error Response Codes**: Standardize on REST conventions - consider 204 No Content for DELETE success.
 
 ### Low Priority
 
-4. **UI Component Verification**: Spec references UI components (ConcentratorListPage.razor, etc.) that should be verified exist and match described behavior.
+1. **UI Component Verification**: Spec references UI components (ConcentratorListPage.razor, etc.) that should be verified exist and match described behavior.
 
-5. **Connection Status Real-Time Updates**: Document how `IsConnected` status is updated (via sync job or real-time events).
+2. **Connection Status Real-Time Updates**: Document how `IsConnected` status is updated (via sync job or real-time events).
 
 ---
 

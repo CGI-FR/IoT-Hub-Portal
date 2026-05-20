@@ -3,9 +3,9 @@
 To migrate from v3 to v4 `manually`, you have to add two new settings to the portal web app. These two settings are required to to pull devices telemetry from the IoT Hub:
 
 | Name | Setting Type | Detail |
-|---|---|---|
+| --- | --- | --- |
 | `IoTHub__EventHub__ConsumerGroup` | Application setting | (Default value `iothub-portal`) The name of the consumer group used to to pull data from the IoT Hub |
-| `IoTHub__EventHub__Endpoint` | Connection string  | The IotHub Event Hub compatible endpoint |
+| `IoTHub__EventHub__Endpoint` | Connection string | The IotHub Event Hub compatible endpoint |
 
 Below the required steps for each settings:
 

@@ -11,16 +11,19 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 ## What Was Implemented
 
 ### Phase 1: Setup Infrastructure (3 tasks)
+
 - ✅ **Azure Service Principal Documentation**: Comprehensive guide for setting up OIDC-based authentication with step-by-step instructions
 - ✅ **GitHub Workflows README**: Complete documentation of required secrets and workflow configuration
 - ✅ **Test Template Directory**: Created `templates/azure/tests/` directory structure for validation test cases
 
 ### Phase 2: Foundational Prerequisites (3 tasks)
+
 - ✅ **find-bicep-templates.sh**: Helper script to discover all Bicep templates in the repository
 - ✅ **parse-validation-errors.sh**: Helper script to parse and format Azure validation error messages
 - ✅ **Test Parameter File**: Created `azuredeploy.parameters.test.json` with minimal valid configuration for validation
 
 ### Phase 3: User Story 1 - Basic Deployment Validation (7 tasks)
+
 - ✅ **Azure OIDC Authentication**: Integrated `azure/login@v2` with Workload Identity Federation
 - ✅ **Azure CLI Verification**: Added authentication verification step
 - ✅ **Deployment Validation**: Configured `azure/arm-deploy@v2` with Validate mode
@@ -33,18 +36,21 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 ## Key Features
 
 ### 🔐 Security
+
 - **OIDC Authentication**: No client secrets stored in GitHub
 - **Minimal Permissions**: Documented Reader + Deployment Validator roles
 - **No Secrets in Logs**: Secure credential handling
 - **Federated Credentials**: Azure-recommended authentication method
 
 ### ✅ Validation Capabilities
+
 - **Deployment Mode**: Uses Azure ARM deployment validation API
 - **No Resource Creation**: Validation-only mode (no actual deployment)
 - **Multi-Template Support**: Validates 4 main Bicep templates
 - **Resource Group Isolation**: Creates temporary RG per run, auto-cleanup
 
 ### ⚡ Performance & Reliability
+
 - **10-Minute Timeout**: Prevents hung validations
 - **Status Reporting**: Clear pass/fail indicators for each template
 - **Workflow Failure**: Prevents merge if validation fails
@@ -60,18 +66,22 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 ## Files Created/Modified
 
 ### Documentation (353 lines)
+
 - `docs/azure-validation-setup.md` - Azure setup guide (234 lines)
 - `.github/workflows/README.md` - Workflow documentation (119 lines)
 
 ### Scripts (245 lines)
+
 - `.github/scripts/find-bicep-templates.sh` - Template discovery (83 lines)
 - `.github/scripts/parse-validation-errors.sh` - Error parsing (162 lines)
 
 ### Configuration (219 lines)
+
 - `.github/workflows/bicep-lint.yml` - Updated workflow (159 lines)
 - `templates/azure/tests/azuredeploy.parameters.test.json` - Test parameters (60 lines)
 
 ### Tracking
+
 - `specs/001-bicep-preflight-validation/tasks.md` - Updated task status (13 tasks completed)
 
 **Total**: 793 insertions, 17 deletions across 7 files
@@ -79,6 +89,7 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 ## Requirements Satisfied
 
 ### Fully Implemented
+
 - ✅ **FR-001**: Validate using Azure deployment validation API
 - ✅ **FR-002**: Auto-validate on PR template changes
 - ✅ **FR-003**: Auto-validate on main branch pushes
@@ -88,6 +99,7 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 - ✅ **FR-012**: Handle templates with module references (submodules: recursive)
 
 ### Partially Implemented (Requires Azure Setup)
+
 - 🔄 **FR-005**: Detect deployment-time issues (ready, needs Azure testing)
 - 🔄 **FR-006**: Provide detailed error messages (error parsing script ready)
 - 🔄 **FR-007**: Support all templates (main templates done, modules in Phase 4)
@@ -97,12 +109,14 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 ## What's NOT Yet Implemented
 
 ### Phase 4: User Story 2 - Comprehensive Validation (8 tasks)
+
 - Module template validation (app_service.bicep, iothub.bicep, storage.bicep, etc.)
 - Test templates for quota/SKU/permission errors
 - Matrix strategy for parallel module validation
 - Removal of old `az bicep build` validation step
 
 ### Phase 5: User Story 3 - Enhanced Error Feedback (8 tasks)
+
 - Integration of `parse-validation-errors.sh` into workflow
 - GitHub Actions annotations for PR review
 - Error categorization (quota, permission, SKU, API compatibility)
@@ -110,6 +124,7 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 - Job summary with validation results
 
 ### Phase 6: Polish & Documentation (10 tasks)
+
 - Bicep validation guide (usage, common errors)
 - Troubleshooting guide
 - Example parameter files
@@ -124,6 +139,7 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 ### Immediate: Complete MVP Testing (T014)
 
 **Prerequisites for testing**:
+
 1. Set up Azure Service Principal with OIDC (follow `docs/azure-validation-setup.md`)
 2. Configure GitHub repository secrets:
    - `AZURE_CLIENT_ID`
@@ -138,18 +154,21 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 **Expected outcome**: Workflow runs successfully, validates templates, reports pass/fail status
 
 ### Short Term: Phase 4 (User Story 2)
+
 - Expand validation to all module templates
 - Create test cases proving deployment validation catches issues syntax checks miss
 - Remove old `az bicep build` step from workflow
 - **Deliverable**: Comprehensive validation coverage for all templates
 
 ### Medium Term: Phase 5 (User Story 3)
+
 - Integrate error parsing for actionable feedback
 - Add GitHub Actions annotations for inline PR comments
 - Improve developer experience with clear error categorization
 - **Deliverable**: Developers can quickly identify and fix validation failures
 
 ### Long Term: Phase 6 (Polish)
+
 - Complete documentation suite
 - Edge case testing
 - Performance optimization
@@ -159,6 +178,7 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 ## Testing Strategy
 
 ### Manual Testing Required
+
 1. **Success Path**: Create PR with valid Bicep changes, verify validation passes
 2. **Failure Path**: Create PR with invalid Bicep (e.g., wrong SKU), verify validation fails with error message
 3. **Timeout**: Test with complex template approaching 10-minute limit
@@ -166,6 +186,7 @@ Successfully implemented the MVP scope of the Bicep Template Preflight Validatio
 5. **Azure API Issues**: Simulate Azure service degradation/unavailability
 
 ### Automated Testing (Future)
+
 - Unit tests for helper scripts (`find-bicep-templates.sh`, `parse-validation-errors.sh`)
 - Integration tests with mock Azure responses
 - End-to-end tests in staging environment
@@ -193,8 +214,10 @@ Once Azure is configured and testing is complete:
 ## Technical Decisions
 
 ### OIDC vs Service Principal with Secret
+
 **Decision**: Use OIDC (Workload Identity Federation)  
 **Rationale**:
+
 - No secrets stored in GitHub (better security)
 - Azure recommended best practice
 - Automatic credential rotation
@@ -202,8 +225,10 @@ Once Azure is configured and testing is complete:
 - Future-proof authentication method
 
 ### Resource Group Scope vs Subscription Scope
+
 **Decision**: Use resource group scope with temporary RG per run  
 **Rationale**:
+
 - Templates use `resourceGroup()` function
 - Better isolation between validation runs
 - Easier cleanup with `az group delete`
@@ -211,8 +236,10 @@ Once Azure is configured and testing is complete:
 - Unique RG per run ID prevents conflicts
 
 ### azure/arm-deploy@v2 vs Azure CLI
+
 **Decision**: Use `azure/arm-deploy@v2` GitHub Action  
 **Rationale**:
+
 - Higher-level abstraction with better error handling
 - Built-in support for Validate deployment mode
 - Consistent with GitHub Actions ecosystem
@@ -220,8 +247,10 @@ Once Azure is configured and testing is complete:
 - Automatic handling of deployment artifacts
 
 ### Validate Mode vs Actual Deployment
+
 **Decision**: Use Validate mode only (no resource creation)  
 **Rationale**:
+
 - No Azure costs for validation runs
 - Faster validation (no resource provisioning)
 - No cleanup of deployed resources needed
@@ -231,18 +260,23 @@ Once Azure is configured and testing is complete:
 ## Risks & Mitigations
 
 ### Risk: Azure API Rate Limits
+
 **Mitigation**: Validation uses read-only operations, validate action is lightweight, 10-minute timeout prevents resource exhaustion
 
 ### Risk: False Positives (Valid Template Reported as Invalid)
+
 **Mitigation**: Use realistic test parameters, validate against actual Azure subscription, comprehensive testing in Phase 6
 
 ### Risk: False Negatives (Invalid Template Reported as Valid)
+
 **Mitigation**: Phase 4 includes test cases with intentional errors to verify detection capability
 
 ### Risk: Validation Timeout
+
 **Mitigation**: 10-minute timeout configured, Phase 6 includes performance optimization, consider parallel validation for large template sets
 
 ### Risk: Concurrent PR Conflicts
+
 **Mitigation**: Unique resource group per run ID, isolated validation environments, no shared state between runs
 
 ## Lessons Learned
@@ -264,6 +298,7 @@ Once Azure is configured and testing is complete:
 ## Change Log
 
 ### 2026-01-31 - MVP Implementation (Phases 1-3)
+
 - Created Azure service principal setup documentation
 - Created GitHub workflows README with secrets configuration
 - Created helper scripts for template discovery and error parsing

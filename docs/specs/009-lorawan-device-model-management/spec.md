@@ -360,6 +360,7 @@ As a device administrator, I need to assign labels to device models for categori
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/009-lorawan-device-model-management/analyze.md`
 - **Analyzed By**: excavate.specifier
 - **Analysis Date**: 2025-01-30
@@ -367,6 +368,7 @@ As a device administrator, I need to assign labels to device models for categori
 ### Code References
 
 **Controllers & Entry Points**:
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANDeviceModelsController.cs` (Lines 1-138)
   - REST API for device model CRUD operations
   - Authorization: model:read, model:write
@@ -378,6 +380,7 @@ As a device administrator, I need to assign labels to device models for categori
   - Generic base controller shared with standard device models
 
 **Business Logic**:
+
 - `src/IoTHub.Portal.Application/Services/IDeviceModelService.cs` (Lines 1-26)
   - Service interface: GetDeviceModels, GetDeviceModel, CreateDeviceModel, UpdateDeviceModel, DeleteDeviceModel
 - `src/IoTHub.Portal.Server/Services/DeviceModelService.cs` (Lines 1-190)
@@ -386,6 +389,7 @@ As a device administrator, I need to assign labels to device models for categori
   - Command service: GetDeviceModelCommandsFromModel, PostDeviceModelCommands
 
 **Data Layer**:
+
 - `src/IoTHub.Portal.Domain/Entities/DeviceModel.cs` (Lines 1-41)
   - Core entity with SupportLoRaFeatures flag and LoRaWAN properties
 - `src/IoTHub.Portal.Domain/Entities/DeviceModelCommand.cs` (Lines 1-20)
@@ -396,6 +400,7 @@ As a device administrator, I need to assign labels to device models for categori
   - Command repository for persistence
 
 **Data Transfer Objects**:
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceModelDto.cs` (Lines 1-89)
   - Complete LoRaWAN device model DTO with validation
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceBase.cs` (Lines 1-100)
@@ -404,6 +409,7 @@ As a device administrator, I need to assign labels to device models for categori
   - Command DTO with frame validation regex
 
 **UI Components**:
+
 - `src/IoTHub.Portal.Client/Pages/DeviceModels/DeviceModelListPage.razor` (Lines 1-150+)
   - Paginated list with search and sorting
 - `src/IoTHub.Portal.Client/Components/DeviceModels/LoRaWAN/CreateLoraDeviceModel.razor` (Lines 1-50+)
@@ -412,6 +418,7 @@ As a device administrator, I need to assign labels to device models for categori
   - Edit form with OTAA/ABP sections and receive window configuration
 
 **Mappers**:
+
 - `src/IoTHub.Portal.Infrastructure/Mappers/IDeviceModelMapper.cs` (Lines 1-16)
   - Generic mapper interface
 - `src/IoTHub.Portal.Infrastructure/Mappers/LoRaDeviceModelMapper.cs` (Lines 1-79)
@@ -420,6 +427,7 @@ As a device administrator, I need to assign labels to device models for categori
 ### Dependencies
 
 **Depends On** (Prerequisites):
+
 - Standard Device Model Management - Generic base controller and service layer
 - Label Management - Model categorization system
 - Authentication & Authorization - Permission enforcement (model:read, model:write)
@@ -427,6 +435,7 @@ As a device administrator, I need to assign labels to device models for categori
 - Azure IoT Hub / AWS IoT Core - Enrollment group and device twin management
 
 **Depended On By** (Features that need this):
+
 - LoRaWAN Device Management - Devices must reference a LoRaWAN device model for provisioning
 - Device Provisioning - Models provide templates for automatic device onboarding
 - Command Execution - Commands defined on models are available to devices
@@ -434,6 +443,7 @@ As a device administrator, I need to assign labels to device models for categori
 ### API Endpoints
 
 **Device Model Management**:
+
 - `GET /api/lorawan/models` - List LoRaWAN device models (paginated, searchable, sortable)
 - `GET /api/lorawan/models/{id}` - Get device model details
 - `POST /api/lorawan/models` - Create new device model
@@ -441,26 +451,31 @@ As a device administrator, I need to assign labels to device models for categori
 - `DELETE /api/lorawan/models/{id}` - Delete device model
 
 **Avatar Management**:
+
 - `GET /api/lorawan/models/{id}/avatar` - Get avatar URL
 - `POST /api/lorawan/models/{id}/avatar` - Upload/update avatar
 - `DELETE /api/lorawan/models/{id}/avatar` - Delete avatar
 
 **Command Management**:
+
 - `GET /api/lorawan/models/{id}/commands` - Get model commands
 - `POST /api/lorawan/models/{id}/commands` - Set model commands
 
 ### LoRaWAN Protocol Specifications
 
 **Authentication Modes**:
+
 - OTAA (Over-The-Air Activation): Secure activation using network and application keys
 - ABP (Activation By Personalization): Pre-provisioned activation with fixed session keys
 
 **Device Classes**:
+
 - Class A: Bi-directional with scheduled receive windows after uplink (most power efficient)
 - Class B: Bi-directional with scheduled receive windows (synchronized)
 - Class C: Bi-directional with continuous receive windows (highest power consumption)
 
 **Deduplication Modes**:
+
 - None: Process all messages from all gateways
 - Drop: Keep only first message, discard duplicates
 - Mark: Process all messages but flag duplicates
@@ -474,11 +489,13 @@ As a device administrator, I need to assign labels to device models for categori
 ### Cloud Platform Integration
 
 **Azure IoT Hub**:
+
 - Enrollment groups created via IDeviceRegistryProvider
 - Device twin desired properties via IConfigService
 - Multi-cloud abstraction via provider interfaces
 
 **AWS IoT Core**:
+
 - Alternative cloud backend with same provider interface
 - Enrollment group equivalents via AWS IoT provisioning templates
 

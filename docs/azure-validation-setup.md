@@ -93,6 +93,7 @@ az role assignment create \
 ```
 
 **Note**: If "Deployment Validator" role doesn't exist in your environment, you may need to create a custom role with the following permission:
+
 - `Microsoft.Resources/deployments/validate/action`
 
 #### Custom Role Definition (if needed)
@@ -134,7 +135,7 @@ Navigate to GitHub repository → Settings → Secrets and variables → Actions
 Add the following secrets:
 
 | Secret Name | Value | Description |
-|------------|-------|-------------|
+| ------------ | ------- | ------------- |
 | `AZURE_CLIENT_ID` | Application (client) ID | From step 4 |
 | `AZURE_TENANT_ID` | Directory (tenant) ID | From step 4 |
 | `AZURE_SUBSCRIPTION_ID` | Subscription ID | From step 4 |
@@ -206,16 +207,19 @@ az ad sp create-for-rbac \
 ## Troubleshooting
 
 ### Error: "Authentication failed"
+
 - Verify `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, and `AZURE_SUBSCRIPTION_ID` are correct
 - Ensure federated credentials are configured for both branch and pull_request subjects
 - Check that the service principal exists: `az ad sp show --id <CLIENT_ID>`
 
 ### Error: "Authorization failed"
+
 - Verify role assignments: `az role assignment list --assignee <CLIENT_ID> --all`
 - Ensure "Reader" and "Deployment Validator" roles are assigned
 - Check subscription ID matches the validation target
 
 ### Error: "The client does not have authorization to perform action"
+
 - Service principal needs `Microsoft.Resources/deployments/validate/action` permission
 - Create custom "Deployment Validator" role if it doesn't exist
 
@@ -229,6 +233,7 @@ az ad sp create-for-rbac \
 ## Support
 
 For issues or questions about Azure configuration:
+
 - Open an issue in the repository
 - Contact the DevOps team
 - Review Azure documentation linked above

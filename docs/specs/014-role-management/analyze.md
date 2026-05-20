@@ -23,6 +23,7 @@ Key capabilities include:
 - Permission validation throughout the application via authorization policies
 
 This feature provides critical business value by:
+
 - Enforcing security boundaries and access control policies
 - Enabling flexible authorization models without code changes
 - Supporting multi-tenancy and organizational hierarchy
@@ -37,8 +38,10 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/RolesController.cs` (Lines 1-199)
   - **Snippet**: Main REST API controller for role management
+
     ```csharp
     [Authorize]
     [ApiVersion("1.0")]
@@ -79,6 +82,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 
 - `src/IoTHub.Portal.Server/Controllers/v1.0/PermissionsController.cs` (Lines 1-83)
   - **Snippet**: Controller for retrieving available permissions
+
     ```csharp
     [Authorize]
     [ApiVersion("1.0")]
@@ -99,8 +103,10 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IRoleManagementService.cs` (Lines 1-21)
   - **Snippet**: Core service interface for role operations
+
     ```csharp
     public interface IRoleManagementService
     {
@@ -133,6 +139,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
     - `DeleteRole`: Remove role and cascade delete actions
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IRoleRepository.cs` (Lines 1-12)
   - Repository interface for Role entity operations
   - Extends generic IRepository<Role>
@@ -145,6 +152,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 
 - `src/IoTHub.Portal.Domain/Entities/Role.cs` (Lines 1-19)
   - **Snippet**: Role entity definition
+
     ```csharp
     public class Role : EntityBase
     {
@@ -158,6 +166,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 
 - `src/IoTHub.Portal.Domain/Entities/Action.cs` (Lines 1-14)
   - **Snippet**: Action (permission) entity definition
+
     ```csharp
     public class Action : EntityBase
     {
@@ -167,6 +176,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
     ```
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/RBAC/RolesListPage.razor` (Lines 1-146)
   - Main role listing page with server-side pagination
   - Features:
@@ -222,8 +232,10 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
   - Used by: RoleDetailPage
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/RoleModel.cs` (Lines 1-14)
   - **Snippet**: Lightweight role DTO for list view
+
     ```csharp
     public class RoleModel
     {
@@ -236,6 +248,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/RoleDetailsModel.cs` (Lines 1-15)
   - **Snippet**: Complete role DTO with permissions
+
     ```csharp
     public class RoleDetailsModel
     {
@@ -248,6 +261,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
     ```
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IRoleClientService.cs` (Lines 1-24)
   - Client-side service interface for HTTP API calls
   - Methods:
@@ -270,6 +284,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
     - GET `api/permissions` for permission list
 
 ### Mappers
+
 - `src/IoTHub.Portal.Application/Mappers/RoleProfile.cs` (Lines 1-43)
   - AutoMapper profile for Role entity and DTO mappings
   - Mappings:
@@ -281,6 +296,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
       - Update mapping: Ignores Id to preserve entity identity
 
 ### Security
+
 - `src/IoTHub.Portal.Shared/Security/PortalPermissions.cs` (Lines 1-44)
   - Enum defining all available permissions in the portal
   - 42 permissions across 14 resource types
@@ -293,6 +309,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 ## API Endpoints
 
 ### Role Management
+
 - `GET /api/roles` - Get paginated list of roles
   - Query Parameters:
     - searchKeyword (string, optional): Filter by role name or description
@@ -336,6 +353,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
   - Returns: 404 NotFound if role doesn't exist
 
 ### Permission Management
+
 - `GET /api/permissions` - Get all available permissions
   - Returns: PortalPermissions[] (array of enum values)
   - Authorization: [AllowAnonymous] - Public endpoint for UI initialization
@@ -355,10 +373,12 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 ## Authorization
 
 ### Required Permissions
+
 - **role:read** (PortalPermissions.RoleRead) - View roles, role details, and role lists
 - **role:write** (PortalPermissions.RoleWrite) - Create, update, and delete roles
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` attributes on controller methods
 - Permission strings map to ASP.NET Core authorization policies
 - Policies configured in startup to check user claims against role assignments
@@ -370,6 +390,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
   - Create page only accessible with RoleWrite permission
 
 ### Permission Mapping
+
 - Enum values converted to policy strings via extension methods
 - Format: lowercase resource:action (e.g., "role:read", "role:write")
 - PortalPermissionsHelper provides conversion utilities
@@ -379,6 +400,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
   - UI layer: via AuthorizedComponentBase.HasPermissionAsync()
 
 ### Access Control Flow
+
 1. User authenticates via Azure AD/Entra ID
 2. AccessControlService retrieves user's assigned roles
 3. Roles loaded with associated Action entities (permissions)
@@ -391,12 +413,14 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **User Management** - Roles assigned to users through access control service
 - **Access Control Management** - Manages user-role associations and permission checks
 - **Authentication** - Azure AD/Entra ID integration for user identity
 - **Authorization Policies** - ASP.NET Core policy-based authorization
 
 ### Service Dependencies
+
 - `IRoleRepository` - Role entity persistence and queries
 - `IActionRepository` - Action entity persistence and deletion
 - `IUnitOfWork` - Transaction management for database operations
@@ -405,18 +429,21 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - `IUserManagementService` - User retrieval and creation
 
 ### Related Entities
+
 - **User** - Users are assigned roles through access control
 - **AccessControl** - Junction entity linking users to roles
 - **Action** - Permissions owned by roles
 - **Role** - Parent entity containing actions
 
 ### External Dependencies
+
 - **Entity Framework Core** - Database access via PortalDbContext
 - **AutoMapper** - Entity to DTO mapping
 - **Azure AD/Entra ID** - Authentication and user directory
 - **ASP.NET Core Authorization** - Policy-based authorization framework
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library
   - MudTable - Data grid with server-side pagination and sorting
   - MudAvatar - Role visual representation with color coding
@@ -437,12 +464,14 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 ## Key Features & Behaviors
 
 ### Role Definition
+
 - **Name**: Required, unique identifier for the role
 - **Color**: Hex color code for visual differentiation in UI
 - **Description**: Optional text describing role purpose
 - **Actions**: Collection of permission strings assigned to the role
 
 ### Permission Model
+
 - Permissions expressed as resource:action pairs (e.g., "device:read")
 - 14 resource types: device, edge-device, role, user, model, edge-model, device-tag, planning, schedule, layer, concentrator, access-control, dashboard, idea, setting, device-configuration, group
 - 3 action types: read, write, execute (execute only for devices)
@@ -450,6 +479,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Total 42 permissions available for assignment
 
 ### Role Creation Workflow
+
 1. User navigates to create page (/roles/new)
 2. System loads available permissions from API
 3. User enters role name, description, and selects color
@@ -461,6 +491,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 9. UI navigates to role list with success notification
 
 ### Role Update Workflow
+
 1. User navigates to role detail page (/roles/{id})
 2. System loads role details including current permissions
 3. EditRole component pre-populates form with current values
@@ -474,6 +505,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 8. UI navigates to role list with success notification
 
 ### Role Deletion Workflow
+
 1. User clicks delete button on role list
 2. System displays confirmation dialog with role ID
 3. On confirmation, API deletes role entity
@@ -483,6 +515,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 7. Returns: 404 NotFound if role already deleted/doesn't exist
 
 ### Pagination Implementation
+
 - Server-side pagination via PagedList pattern
 - Client specifies page number and page size
 - Server returns: Items, TotalItems, NextPage URL
@@ -491,6 +524,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Default page size: 10, configurable in UI (3, 5, 10)
 
 ### Search and Filter
+
 - **Role Search**: Keyword-based search on role name and description (case-insensitive)
 - **Permission Filter**: Client-side filtering by:
   - Resource type: Extracted from permission string before colon
@@ -501,6 +535,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Select All applies only to filtered permissions
 
 ### Permission Selection UI
+
 - Grid layout showing all permissions as checkboxes
 - Resource and action dropdown filters for permission subset
 - Permission counter chip showing selected/total count
@@ -511,16 +546,18 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Empty state message when filters match no permissions
 
 ### Database Operations
+
 - **Create**: Insert role with associated action entities in single transaction
 - **Update**: Update role and sync actions (add/remove) in single transaction
 - **Delete**: Cascade delete role and all associated actions
-- **Query**: 
+- **Query**:
   - Paginated with search and sort via GetPaginatedListAsync
   - Single with includes via GetByIdAsync(id, r => r.Actions)
   - Name lookup via GetByNameAsync for uniqueness checks
 - All operations use Unit of Work pattern for transactional consistency
 
 ### Error Handling
+
 - ProblemDetailsException handling for API errors
 - User-friendly error messages via Snackbar notifications
 - Form validation errors shown inline
@@ -531,6 +568,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Exception rethrowing to preserve stack traces
 
 ### Validation Rules
+
 - **Name**: Required, must be unique across all roles
 - **Description**: Optional
 - **Color**: Required (default value likely set in UI)
@@ -542,6 +580,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 ## Notes
 
 ### Architecture Patterns
+
 - **Repository Pattern** - Clean separation of data access concerns
 - **Unit of Work Pattern** - Transactional consistency across operations
 - **Service Layer** - Business logic abstraction from controllers
@@ -550,6 +589,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - **Component Composition** - EditRole component reused for create and edit
 
 ### Role-Permission Model Design
+
 - Two-level hierarchy: Role → Action (permission)
 - Actions stored as separate entities (not embedded collection)
 - Enables:
@@ -560,6 +600,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Alternative design consideration: Embedded string collection would simplify queries but reduce flexibility
 
 ### Permission String Format
+
 - Convention: lowercase resource:action (e.g., "device:read")
 - Benefits:
   - Human-readable and intuitive
@@ -570,12 +611,14 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Mapped to PortalPermissions enum for type safety in code
 
 ### Name Uniqueness Enforcement
+
 - Database-level: Unique constraint on Role.Name (likely)
 - Application-level: GetByNameAsync check before create
 - Update-level: Exclude self from uniqueness check (id != currentId)
 - Prevents duplicate roles and ensures role names serve as secondary key
 
 ### Action Synchronization Strategy
+
 - On update, service compares new action list with existing
 - Removes: Actions in DB but not in new list
 - Adds: Actions in new list but not in DB
@@ -584,6 +627,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Cascade delete handled via actionRepository.Delete
 
 ### Color Coding for Roles
+
 - Hex color codes stored in database
 - Used for:
   - Role avatar background in list view
@@ -593,6 +637,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - MudColorPicker provides color selection UI
 
 ### Pagination Performance
+
 - Server-side pagination reduces client memory usage
 - Essential for large role catalogs
 - Continuation URI pattern for stateless pagination
@@ -600,6 +645,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Client can bookmark/share specific pages
 
 ### Permission Loading Strategy
+
 - Permissions loaded once on page initialization
 - Cached in component state for session duration
 - AllowAnonymous on permissions endpoint enables pre-auth loading
@@ -607,6 +653,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Prevents multiple redundant API calls during permission selection
 
 ### Integration with Access Control
+
 - Roles assigned to users via AccessControl entity
 - AccessControlService checks user permissions at runtime
 - Permission claims populated during authentication
@@ -614,6 +661,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Role changes propagate to users on next auth token refresh
 
 ### Security Considerations
+
 - Authorization required at controller and UI levels
 - Permission-based access prevents unauthorized modifications
 - Role names stored as plain text (no sensitive data)
@@ -622,6 +670,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Role deletion doesn't check for assigned users (consider adding warning)
 
 ### UI/UX Considerations
+
 - Server-side pagination for scalability
 - Color-coded avatars for visual differentiation
 - Sortable columns for role discovery
@@ -633,6 +682,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Responsive grid layout for permission selection
 
 ### Performance Considerations
+
 - Paginated role queries prevent full table scans
 - Lazy loading not used (explicit includes for actions)
 - Predicate building enables efficient WHERE clauses
@@ -642,18 +692,21 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Role details loads with actions (RoleDetailsModel with includes)
 
 ### Multi-Tenancy Considerations
+
 - Current implementation: Single-tenant (shared role catalog)
 - All users see same roles (permissions filter access)
 - Future enhancement: Organization-level role isolation
 - Role names unique globally (not per-organization)
 
 ### Database Migrations
+
 - Role entity: Migration date unknown (likely early in project)
 - Action entity: Separate migration for permission system
 - RBAC schema: Migration 20260107100522 (recent)
 - Cascade delete configuration: Likely in entity configuration
 
 ### Testing Coverage
+
 - Unit tests: RoleServiceTests.cs (likely exists)
 - Controller tests: Integration tests for API endpoints
 - UI tests: RolesListPageTests.cs, RoleDetailPageTests.cs (likely)
@@ -661,6 +714,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Permission tests: Authorization policy tests
 
 ### Known Limitations
+
 - Role names cannot be easily renamed if already assigned to users (consider user impact)
 - No role templates or quick-start roles
 - No role cloning/duplication feature
@@ -673,6 +727,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - No permission grouping or categorization in UI
 
 ### Future Enhancement Opportunities
+
 - Role templates (Admin, Editor, Viewer, etc.)
 - Role cloning to create similar roles quickly
 - Role assignment impact analysis (show users with role before delete)
@@ -696,6 +751,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
 - Dynamic permission evaluation (context-aware permissions)
 
 ### Design Decisions and Trade-offs
+
 - **Actions as Entities vs. Embedded Collection**:
   - Chosen: Separate Action entities with foreign key to Role
   - Benefit: Audit trail, extensibility, normalized schema
@@ -722,6 +778,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
   - Trade-off: Additional uniqueness check during create/update
 
 ### Localization Notes
+
 - UI text in French in some components (RoleDetailPage, EditRole)
 - English in RolesListPage and CreateRolePage
 - Inconsistent localization suggests internationalization in progress
@@ -732,6 +789,7 @@ The RBAC system uses a two-level model: Roles contain Actions (permissions), and
   - Snackbar notifications
 
 ### Accessibility Considerations
+
 - MudBlazor components provide ARIA attributes
 - Color-coded avatars include text (first letter) for color-blind users
 - Tooltips on icon buttons provide context

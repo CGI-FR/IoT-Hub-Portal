@@ -12,6 +12,7 @@ The Device Synchronization Jobs feature provides a comprehensive background job 
 Key capabilities include:
 
 **Azure IoT Hub Synchronization:**
+
 - **SyncDevicesJob**: Synchronizes regular IoT devices (including LoRaWAN devices) from Azure IoT Hub
   - Retrieves all device twins excluding LoRa Concentrators
   - Creates or updates devices based on model type (LoRaWAN vs. standard)
@@ -38,6 +39,7 @@ Key capabilities include:
   - Critical for LoRaWAN message routing and network operations
 
 **AWS IoT Core Synchronization:**
+
 - **SyncThingsJob**: Synchronizes AWS IoT Things as devices or edge devices
   - Retrieves all things from AWS IoT Core
   - Determines device type (edge vs. standard) via thing shadow analysis
@@ -63,6 +65,7 @@ Key capabilities include:
   - Handles deployments with missing names
 
 This feature provides critical business value by:
+
 - Maintaining real-time device inventory accuracy across multi-cloud environments
 - Enabling centralized device management without cloud console access
 - Supporting automated device lifecycle management
@@ -84,6 +87,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/SyncDevicesJob.cs` (Lines 1-165)
   - **Snippet**: Main job for synchronizing standard IoT devices
+
     ```csharp
     [DisallowConcurrentExecution]
     public class SyncDevicesJob : IJob
@@ -132,6 +136,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/SyncEdgeDeviceJob.cs` (Lines 1-151)
   - **Snippet**: Job for synchronizing Azure IoT Edge devices
+
     ```csharp
     [DisallowConcurrentExecution]
     public class SyncEdgeDeviceJob : IJob
@@ -170,6 +175,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/SyncGatewayIDJob.cs` (Lines 1-45)
   - **Snippet**: Updates in-memory gateway ID list
+
     ```csharp
     [DisallowConcurrentExecution]
     public class SyncGatewayIDJob : IJob
@@ -188,6 +194,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/AWS/SyncThingsJob.cs` (Lines 1-251)
   - **Snippet**: Synchronizes AWS IoT Things as devices/edge devices
+
     ```csharp
     [DisallowConcurrentExecution]
     public class SyncThingsJob : IJob
@@ -239,6 +246,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/AWS/SyncThingTypesJob.cs` (Lines 1-203)
   - **Snippet**: Synchronizes AWS Thing Types as device models
+
     ```csharp
     [DisallowConcurrentExecution]
     public class SyncThingTypesJob : IJob
@@ -287,6 +295,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/AWS/SyncGreenGrassDeploymentsJob.cs` (Lines 1-159)
   - **Snippet**: Synchronizes Greengrass deployments as edge models
+
     ```csharp
     [DisallowConcurrentExecution]
     public class SyncGreenGrassDeploymentsJob : IJob
@@ -329,6 +338,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 
 - `src/IoTHub.Portal.Infrastructure/Startup/AzureServiceCollectionExtension.cs` (Lines 122-167)
   - **Snippet**: Azure job configuration with Quartz.NET
+
     ```csharp
     private static IServiceCollection ConfigureSyncJobs(
         this IServiceCollection services, ConfigHandler configuration)
@@ -371,6 +381,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 
 - `src/IoTHub.Portal.Infrastructure/Startup/AWSServiceCollectionExtension.cs` (Lines 60-112)
   - **Snippet**: AWS job configuration
+
     ```csharp
     private static IServiceCollection ConfigureAWSSyncJobs(
         this IServiceCollection services, ConfigHandler configuration)
@@ -489,6 +500,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 ## Dependencies
 
 ### Internal Dependencies
+
 - **Domain Layer**:
   - Entity models (Device, EdgeDevice, Concentrator, LorawanDevice)
   - Repository interfaces
@@ -508,6 +520,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
   - Logging infrastructure (ILogger<T>)
 
 ### External Dependencies
+
 - **Azure SDK**:
   - `Azure.IoT.Hub.Service` - Azure IoT Hub device twin operations
   - Device connection state tracking
@@ -534,6 +547,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
   - Change tracking and concurrency management
 
 ### Configuration Dependencies
+
 - **Settings**:
   - `SyncDatabaseJobRefreshIntervalInMinutes` - Job execution frequency (default: 5)
   - `IsLoRaEnabled` - Feature flag for LoRaWAN jobs
@@ -545,6 +559,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
   - Database connection string
 
 ### Feature Dependencies
+
 - **Depends on**:
   - Device Models feature (validates model existence)
   - Device Management feature (uses device repositories)
@@ -562,6 +577,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 ---
 
 ## Related Features
+
 - **023-background-job-management** - Job scheduling and monitoring infrastructure
 - **001-device-management** - Device CRUD operations on synchronized data
 - **002-edge-device-management** - Edge device management with synchronized modules
@@ -572,6 +588,7 @@ The synchronization system uses Quartz.NET for reliable job scheduling with conf
 ---
 
 ## Notes
+
 - All synchronization jobs use `[DisallowConcurrentExecution]` to prevent overlapping executions and race conditions
 - Jobs implement pagination for large device fleets (100 devices per page) to manage memory and API rate limits
 - Version-based optimistic concurrency prevents data loss during simultaneous updates

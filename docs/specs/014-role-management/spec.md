@@ -149,7 +149,7 @@ As a security administrator, I need to filter available permissions by resource 
 ### Available Permission Categories
 
 | Resource Type | Available Actions |
-|---------------|-------------------|
+| --------------- | ------------------- |
 | device | read, write, execute, export, import |
 | edge-device | read, write |
 | model | read, write |
@@ -181,10 +181,12 @@ As a security administrator, I need to filter available permissions by resource 
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/014-role-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - RolesController: Role CRUD endpoints
 - RoleService: Business logic for role operations
 - RoleRepository: Data access for role entities
@@ -194,8 +196,9 @@ As a security administrator, I need to filter available permissions by resource 
 - CreateRolePage.razor: Role creation with permission selection
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 016-permissions-management (available permissions to assign)
-- **Depended By**: 
+- **Depended By**:
   - 015-access-control-management (access controls reference roles)
   - 013-user-management (users are assigned roles through access controls)

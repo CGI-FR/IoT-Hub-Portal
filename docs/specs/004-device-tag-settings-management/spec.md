@@ -209,6 +209,7 @@ As an IoT administrator, I need to mark tags as searchable so that users can fil
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/004-device-tag-settings-management/analyze.md`
 - **Analyzed By**: excavator.analyze
 - **Analysis Date**: 2026-01-30
@@ -216,27 +217,33 @@ As an IoT administrator, I need to mark tags as searchable so that users can fil
 ### Code References
 
 **Controllers**:
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceTagSettingsController.cs` (Lines 1-89)
 
 **Business Logic**:
+
 - `src/IoTHub.Portal.Application/Services/IDeviceTagService.cs` (Lines 1-20)
 - `src/IoTHub.Portal.Infrastructure/Services/DeviceTagService.cs` (Lines 1-114)
 
 **Data Access**:
+
 - `src/IoTHub.Portal.Domain/Repositories/IDeviceTagRepository.cs` (Lines 1-9)
 - `src/IoTHub.Portal.Domain/Repositories/IDeviceTagValueRepository.cs` (Lines 1-9)
 - `src/IoTHub.Portal.Domain/Entities/DeviceTag.cs` (Lines 1-16)
 - `src/IoTHub.Portal.Domain/Entities/DeviceTagValue.cs` (Lines 1-12)
 
 **UI Components**:
+
 - `src/IoTHub.Portal.Client/Pages/Settings/DeviceTagsPage.razor` (Lines 1-188)
 
 ### Dependencies
 
 **Depends On**:
+
 - None - This is a foundational configuration feature
 
 **Depended On By**:
+
 - Standard Device Management (001) - Uses tags for device metadata and filtering
 - Edge Device Management (006) - Uses tags for edge device metadata and filtering
 - LoRaWAN Device Management (008) - Uses tags for LoRaWAN device metadata

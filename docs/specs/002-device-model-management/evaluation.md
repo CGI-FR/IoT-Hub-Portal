@@ -9,7 +9,7 @@
 ## Summary
 
 | Metric | Score | Grade | Weight |
-|--------|-------|-------|--------|
+| -------- | ------- | ------- | -------- |
 | Correctness | 90/100 | A | 30% |
 | Completeness | 85/100 | B | 30% |
 | Technical Quality | 88/100 | B | 20% |
@@ -25,7 +25,7 @@
 ### ✅ Accurate Specifications
 
 | Spec Element | Code Location | Verification |
-|--------------|---------------|--------------|
+| -------------- | --------------- | -------------- |
 | FR-001 - Paginated list of models | `DeviceModelsController.cs#L27-31` | GetItems with DeviceModelFilter |
 | FR-002 - Full-text search | `DeviceModelsController.cs#L27-31` | DeviceModelFilter supports search |
 | FR-003 - Create device models | `DeviceModelsController.cs#L89-97` | POST endpoint with model:write |
@@ -47,7 +47,7 @@
 ### ⚠️ Inaccuracies Found
 
 | Spec Element | Issue | Code Reality | Severity |
-|--------------|-------|--------------|----------|
+| -------------- | ------- | -------------- | ---------- |
 | FR-010 - Property name regex | Spec provides specific regex | Not validated in entity, may be UI-side | Low |
 | FR-017 - Validate model not in use | Spec mentions validation | Implementation not verified in controller | Medium |
 | FR-020 - 200x200 pixel resize | Spec mentions specific size | Size not verifiable in controller code | Low |
@@ -68,7 +68,7 @@
 ### ✅ Well-Documented Areas
 
 | Aspect | Coverage | Notes |
-|--------|----------|-------|
+| -------- | ---------- | ------- |
 | CRUD Operations | Complete | All create, read, update, delete flows documented |
 | Authorization | Complete | All permission levels documented |
 | User Stories | Complete | 8 comprehensive user stories |
@@ -80,7 +80,7 @@
 ### 🔴 Missing Documentation
 
 | Missing Aspect | Code Location | Impact |
-|----------------|---------------|--------|
+| ---------------- | --------------- | -------- |
 | DeviceModelFilter parameters | Not detailed in spec | Low - Filter options not enumerated |
 | Image storage backend | IDeviceModelImageManager | Medium - Blob storage details not in spec |
 | Property validation rules | UI components | Low - Validation happens client-side |
@@ -104,7 +104,7 @@
 ### Testability Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Acceptance criteria are specific | ✅ | Given/When/Then format consistently used |
 | Scenarios are measurable | ✅ | Specific outcomes defined |
 | Test data requirements clear | ⚠️ | Property type examples could be more detailed |
@@ -113,7 +113,7 @@
 ### Traceability Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Requirements map to code | ✅ | Code References section accurate |
 | No orphan requirements | ✅ | All FRs have implementation |
 | No orphan code | ⚠️ | LoRaWANCommandsController not in spec |
@@ -122,7 +122,7 @@
 ### Consistency Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Terminology matches codebase | ✅ | DeviceModel, DeviceModelProperty consistent |
 | Entity names align with models | ✅ | All entity names match |
 | API paths match implementation | ✅ | `/api/models` route matches |
@@ -130,7 +130,7 @@
 ### Currency Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Reflects latest code changes | ✅ | Spec dated 2026-01-30, code current |
 | No deprecated references | ✅ | No deprecated APIs |
 | Version info accurate | ⚠️ | No version tracking in spec |
@@ -149,7 +149,7 @@
 ### Security Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Authentication | ✅ | `DeviceModelsController.cs#L6` | None |
 | Authorization | ✅ | `DeviceModelsController.cs#L27,41,53,65,78,91,106,118` | None |
 | Input Validation | ⚠️ | Not detailed | Model validation not specified |
@@ -159,7 +159,7 @@
 ### Error Handling Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Failure Scenarios | ✅ | Edge Cases section | 10 scenarios documented |
 | Error Responses | ✅ | Controller ProducesResponseType | 400, 404 documented |
 | Recovery Procedures | ⚠️ | Edge Cases | Rollback mentioned |
@@ -168,7 +168,7 @@
 ### Performance Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | SLAs/Requirements | ✅ | Success Criteria | 2-10 second targets |
 | Rate Limiting | ❌ | N/A | Not documented |
 | Caching | ❌ | N/A | Not documented |
@@ -177,7 +177,7 @@
 ### Integration Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | External APIs | ✅ | Dependencies | IoT Hub enrollment groups |
 | Third-party Services | ✅ | Dependencies | Azure/AWS mentioned |
 | Database/Storage | ✅ | IDeviceModelRepository | Repository pattern |
@@ -186,7 +186,7 @@
 ### Configuration Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Environment Variables | ❌ | N/A | Not documented |
 | Feature Flags | ⚠️ | LoRaWAN support | Partially mentioned |
 | Settings/Defaults | ✅ | FR-027 | Page size documented |
@@ -204,18 +204,22 @@
 ## Recommendations
 
 ### Critical (Must Fix)
+
 None - Spec is well-aligned with implementation.
 
 ### High Priority
+
 1. **Document model-in-use validation**: Clarify how FR-017 is implemented
 2. **Add LoRaWAN commands controller reference**: Include LoRaWANCommandsController.cs in code references
 
 ### Medium Priority
+
 1. **Document image storage details**: Add information about blob storage backend
 2. **Specify validation rules**: Document property name regex enforcement location
 3. **Add audit logging requirements**: Consider tracking model changes
 
 ### Low Priority
+
 1. **Add DeviceModelFilter details**: Document available filter parameters
 2. **Version tracking**: Include spec version number
 3. **Document edge model separation**: Clarify edge-model vs model permissions
@@ -253,7 +257,7 @@ None - Spec is well-aligned with implementation.
 ## Code References
 
 | File | Lines | Purpose |
-|------|-------|---------|
+| ------ | ------- | --------- |
 | `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelsController.cs` | 1-133 | API endpoints for model CRUD |
 | `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesController.cs` | 1-52 | Property management endpoints |
 | `src/IoTHub.Portal.Domain/Entities/DeviceModel.cs` | 1-41 | Device model entity |

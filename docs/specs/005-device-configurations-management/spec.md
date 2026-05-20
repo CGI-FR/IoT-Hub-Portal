@@ -283,6 +283,7 @@ As an IoT administrator, I need to use tag-based targeting in configurations so 
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/005-device-configurations-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 - **Analysis Date**: January 30, 2025
@@ -290,42 +291,51 @@ As an IoT administrator, I need to use tag-based targeting in configurations so 
 ### Code References
 
 **Controllers**:
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceConfigurationsController.cs` - REST API endpoints for configuration CRUD operations and metrics retrieval
 
 **Services**:
+
 - `src/IoTHub.Portal.Server/Services/DeviceConfigurationsService.cs` - Business logic for configuration management, property type conversion, and IoT platform integration
 - `src/IoTHub.Portal.Application/Services/IDeviceConfigurationsService.cs` - Service interface defining configuration operations contract
 - `src/IoTHub.Portal.Application/Services/IConfigService.cs` - Cloud provider abstraction for IoT platform configuration management
 - `src/IoTHub.Portal.Application/Services/IDeviceModelPropertiesService.cs` - Device model property retrieval for validation
 
 **Helpers**:
+
 - `src/IoTHub.Portal.Application/Helpers/ConfigHelper.cs` - Transformation utilities for converting between IoT platform configurations and portal DTOs, target condition parsing
 
 **Data Transfer Objects**:
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/DeviceConfig.cs` - Configuration data structure with ID, model, tags, properties, priority
 - `src/IoTHub.Portal.Shared/Models/v1.0/ConfigListItem.cs` - Configuration list item with summary and metrics
 - `src/IoTHub.Portal.Shared/Models/v1.0/ConfigurationMetrics.cs` - Detailed deployment metrics structure
 
 **UI Components**:
+
 - `src/IoTHub.Portal.Client/Pages/DeviceConfigurations/DeviceConfigurationListPage.razor` - Configuration list view page
 - `src/IoTHub.Portal.Client/Pages/DeviceConfigurations/CreateDeviceConfigurationsPage.razor` - Configuration creation wizard
 - `src/IoTHub.Portal.Client/Pages/DeviceConfigurations/DeviceConfigurationDetailPage.razor` - Configuration detail and edit page
 - `src/IoTHub.Portal.Client/Pages/DeviceConfigurations/DeleteDeviceConfiguration.razor` - Deletion confirmation dialog
 
 **Client Services**:
+
 - `src/IoTHub.Portal.Client/Services/DeviceConfigurationsClientService.cs` - HTTP client for API communication
 
 ### Dependencies
 
 **Internal Features**:
+
 - **002-device-model-management**: Configurations target specific device models and validate properties against model definitions
 - **003-device-properties-management**: Device model properties define what can be configured and property types for validation
 - **004-device-tag-settings-management**: Tags used for target condition filtering and device cohort selection
 - **IoT Hub Integration**: Configurations synchronized to Azure IoT Hub or AWS IoT Core for automatic device management
 
 **External Services**:
+
 - **Azure IoT Hub / AWS IoT Core**: Cloud platform for storing configurations and automatically applying desired properties to device twins
 - **Microsoft.Azure.Devices SDK**: Azure IoT Hub interaction for configuration management operations
 
 **Authorization**:
+
 - **Role-Based Access Control (RBAC)**: Permissions enforced through device-configuration:read and device-configuration:write policies

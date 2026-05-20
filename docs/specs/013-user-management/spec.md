@@ -165,10 +165,12 @@ As a new user, I need to have my account automatically created when I first log 
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/013-user-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - UsersController: User CRUD endpoints
 - UserService: Business logic for user operations
 - UserRepository: Data access for user entities
@@ -176,10 +178,11 @@ As a new user, I need to have my account automatically created when I first log 
 - UserDetailPage.razor: User details and role management UI
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - OAuth/OIDC Authentication (external identity provider)
   - 015-access-control-management (role assignments)
-- **Depended By**: 
+- **Depended By**:
   - 014-role-management (roles are assigned to users)
   - 015-access-control-management (access controls reference user principals)
   - 016-permissions-management (permissions are checked against user context)

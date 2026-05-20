@@ -12,6 +12,7 @@ The Metrics Collection Jobs feature provides a comprehensive background job syst
 Key capabilities include:
 
 **Metric Loader Jobs** (Data Collection):
+
 - **DeviceMetricLoaderJob**: Collects device inventory metrics
   - Total device count across all device types
   - Connected device count (devices with active connections)
@@ -32,6 +33,7 @@ Key capabilities include:
   - Provides network coverage visibility
 
 **Metric Exporter Jobs** (Prometheus Export):
+
 - **DeviceMetricExporterJob**: Exports device metrics to Prometheus
   - Exposes `iot_hub_portal_device_count` counter
   - Exposes `iot_hub_portal_connected_device_count` counter
@@ -49,6 +51,7 @@ Key capabilities include:
   - Enables LoRaWAN network coverage monitoring
 
 **Special-Purpose Jobs**:
+
 - **SyncLoRaDeviceTelemetryJob**: Real-time LoRaWAN telemetry ingestion
   - Listens to Azure Event Hub for LoRaWAN device messages
   - Uses EventProcessorClient for scalable event processing
@@ -58,6 +61,7 @@ Key capabilities include:
   - Critical for real-time LoRaWAN device monitoring
 
 This feature provides critical business value by:
+
 - Enabling real-time operational dashboards (Grafana, Prometheus)
 - Supporting proactive alerting on device connectivity issues
 - Facilitating capacity planning with historical trend analysis
@@ -81,6 +85,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricLoaderJob.cs` (Lines 1-54)
   - **Snippet**: Loads device count metrics from cloud providers
+
     ```csharp
     [DisallowConcurrentExecution]
     public class DeviceMetricLoaderJob : IJob
@@ -128,6 +133,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/DeviceMetricExporterJob.cs` (Lines 1-33)
   - **Snippet**: Exports device metrics to Prometheus
+
     ```csharp
     [DisallowConcurrentExecution]
     public class DeviceMetricExporterJob : IJob
@@ -159,6 +165,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/EdgeDeviceMetricLoaderJob.cs` (Lines 1-70)
   - **Snippet**: Loads edge device and deployment metrics
+
     ```csharp
     [DisallowConcurrentExecution]
     public class EdgeDeviceMetricLoaderJob : IJob
@@ -222,6 +229,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/EdgeDeviceMetricExporterJob.cs` (Lines 1-36)
   - **Snippet**: Exports edge device metrics to Prometheus
+
     ```csharp
     [DisallowConcurrentExecution]
     public class EdgeDeviceMetricExporterJob : IJob
@@ -255,6 +263,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/ConcentratorMetricLoaderJob.cs` (Lines 1-41)
   - **Snippet**: Loads LoRa concentrator count metrics
+
     ```csharp
     [DisallowConcurrentExecution]
     public class ConcentratorMetricLoaderJob : IJob
@@ -289,6 +298,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/ConcentratorMetricExporterJob.cs` (Lines 1-31)
   - **Snippet**: Exports concentrator metrics to Prometheus
+
     ```csharp
     [DisallowConcurrentExecution]
     public class ConcentratorMetricExporterJob : IJob
@@ -316,6 +326,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Jobs/SyncLoRaDeviceTelemetryJob.cs` (Lines 1-72)
   - **Snippet**: Real-time LoRaWAN telemetry event processing
+
     ```csharp
     public class SyncLoRaDeviceTelemetryJob : IJob
     {
@@ -384,6 +395,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Startup/AzureServiceCollectionExtension.cs` (Lines 110-120)
   - **Snippet**: Azure metrics job configuration
+
     ```csharp
     private static IServiceCollection ConfigureMetrics(
         this IServiceCollection services, ConfigHandler configuration)
@@ -412,6 +424,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Startup/AWSServiceCollectionExtension.cs` (Lines 60-111)
   - **Snippet**: AWS metrics job configuration within sync jobs
+
     ```csharp
     private static IServiceCollection ConfigureAWSSyncJobs(
         this IServiceCollection services, ConfigHandler configuration)
@@ -449,6 +462,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Infrastructure/Extenstions/QuartzConfiguratorExtension.cs` (Lines 1-30)
   - **Snippet**: Generic metric job configuration helper
+
     ```csharp
     public static class QuartzConfiguratorExtension
     {
@@ -517,6 +531,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/PortalMetric.cs` (Lines 1-20)
   - **Snippet**: Shared singleton for metric storage
+
     ```csharp
     public class PortalMetric
     {
@@ -531,6 +546,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 
 - `src/IoTHub.Portal.Domain/Shared/Constants/MetricName.cs` (Lines 1-24)
   - **Snippet**: Prometheus metric name constants
+
     ```csharp
     public static class MetricName
     {
@@ -551,6 +567,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 ## Dependencies
 
 ### Internal Dependencies
+
 - **Application Layer**:
   - IExternalDeviceService for metric data retrieval
   - IConfigService for deployment metrics
@@ -569,6 +586,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
   - Azure Event Hub integration (SyncLoRaDeviceTelemetryJob)
 
 ### External Dependencies
+
 - **Prometheus (prometheus-net)**:
   - `prometheus-net` (v8.x) - Prometheus metric library
   - `Metrics.CreateCounter()` - Counter creation
@@ -593,6 +611,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
   - Checkpoint persistence for event processing
 
 ### Configuration Dependencies
+
 - **Settings**:
   - `MetricLoaderRefreshIntervalInMinutes` - Loader job frequency (default: 5)
   - `MetricExporterRefreshIntervalInSeconds` - Exporter job frequency (default: 30)
@@ -609,6 +628,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
   - Prometheus endpoint configuration
 
 ### Feature Dependencies
+
 - **Depends on**:
   - Device Synchronization Jobs (operates on synchronized device data)
   - External Device Services (cloud provider metric APIs)
@@ -627,6 +647,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 ---
 
 ## Related Features
+
 - **023-background-job-management** - Job scheduling and monitoring infrastructure
 - **024-device-synchronization-jobs** - Provides synchronized device data for metrics
 - **001-device-management** - Device inventory being measured
@@ -637,6 +658,7 @@ The metrics collection system follows a two-stage architecture: Loader jobs peri
 ---
 
 ## Notes
+
 - **Two-stage architecture**: Loader jobs fetch from cloud APIs, Exporter jobs update Prometheus from PortalMetric singleton
 - Loader jobs run less frequently (minutes) to reduce cloud API costs, Exporter jobs run frequently (seconds) for metric freshness
 - PortalMetric singleton ensures atomic metric updates and consistent timestamps across all exported metrics

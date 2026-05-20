@@ -26,8 +26,10 @@ This feature provides business value by enabling centralized, scalable device fl
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceConfigurationsController.cs` (Lines 1-71)
   - **Snippet**: Main REST API controller for device configurations
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -65,8 +67,10 @@ This feature provides business value by enabling centralized, scalable device fl
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IDeviceConfigurationsService.cs` (Lines 1-22)
   - **Snippet**: Core service interface for device configuration operations
+
     ```csharp
     public interface IDeviceConfigurationsService
     {
@@ -88,6 +92,7 @@ This feature provides business value by enabling centralized, scalable device fl
   - Integrates with IDeviceModelPropertiesService for property validation
 
 ### Core Service Integration
+
 - `src/IoTHub.Portal.Application/Services/IConfigService.cs` (Lines 1-36)
   - Cloud provider abstraction for configuration management
   - Key methods:
@@ -97,6 +102,7 @@ This feature provides business value by enabling centralized, scalable device fl
     - `DeleteConfiguration(string configId)` - Removes configuration from IoT Hub
 
 ### Helper Classes
+
 - `src/IoTHub.Portal.Application/Helpers/ConfigHelper.cs` (Lines 1-357)
   - Static utility class for configuration transformations
   - **Key Methods**:
@@ -108,6 +114,7 @@ This feature provides business value by enabling centralized, scalable device fl
     - `RetrieveMetricValue(Configuration item, string metricName)` - Extracts metric values safely (Lines 17-27)
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/DeviceConfigurations/DeviceConfigurationListPage.razor` (Lines 1-117)
   - Main listing page for device configurations
   - Displays configurations in interactive MudTable
@@ -158,8 +165,10 @@ This feature provides business value by enabling centralized, scalable device fl
   - Success/error notification via Snackbar
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/DeviceConfig.cs` (Lines 1-35)
   - **Snippet**: Complete device configuration DTO
+
     ```csharp
     public class DeviceConfig
     {
@@ -176,6 +185,7 @@ This feature provides business value by enabling centralized, scalable device fl
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/ConfigListItem.cs` (Lines 1-64)
   - **Snippet**: Configuration list item with metrics
+
     ```csharp
     public class ConfigListItem
     {
@@ -197,6 +207,7 @@ This feature provides business value by enabling centralized, scalable device fl
   - Includes creation date for timeline tracking
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IDeviceConfigurationsClientService.cs`
   - Client-side service interface for HTTP API calls
   - Methods mirror controller endpoints
@@ -215,6 +226,7 @@ This feature provides business value by enabling centralized, scalable device fl
 ## API Endpoints
 
 ### Device Configuration Management
+
 - `GET /api/device-configurations` - List all device configurations
   - Returns: IEnumerable<ConfigListItem>
   - Authorization: device-configuration:read
@@ -257,10 +269,12 @@ This feature provides business value by enabling centralized, scalable device fl
 ## Authorization
 
 ### Required Permissions
+
 - **device-configuration:read** - View device configurations and retrieve configuration details/metrics
 - **device-configuration:write** - Create, update, and delete device configurations
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` attributes on controller methods
 - Permission strings defined in PortalPermissionsHelper
 - Base authorization requirement: `[Authorize]` on DeviceConfigurationsController and UI pages
@@ -268,10 +282,12 @@ This feature provides business value by enabling centralized, scalable device fl
 - Default Administrator role includes both device-configuration:read and device-configuration:write permissions
 
 ### Permission Mapping
+
 - `PortalPermissions.DeviceConfigurationRead` → "device-configuration:read"
 - `PortalPermissions.DeviceConfigurationWrite` → "device-configuration:write"
 
 ### Conditional UI Rendering
+
 - Detail page conditionally shows Save/Delete buttons based on write permission check
 - Uses `HasPermissionAsync()` method to determine user capabilities
 - Read-only view available when user has only read permission
@@ -281,6 +297,7 @@ This feature provides business value by enabling centralized, scalable device fl
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **Device Models** - Configurations target specific device models and use their properties
 - **Device Model Properties** - Property definitions drive configuration schema validation
 - **Device Tag Settings** - Tags used for target condition filtering
@@ -288,17 +305,20 @@ This feature provides business value by enabling centralized, scalable device fl
 - **Role-Based Access Control** - Permissions enforced through RBAC system
 
 ### Service Dependencies
+
 - `IConfigService` - Cloud provider abstraction for configuration management
 - `IDeviceModelPropertiesService` - Retrieves device model properties for validation
 - `IDeviceModelsClientService` - Client-side device model data access
 - `IDeviceTagSettingsClientService` - Client-side device tag data access
 
 ### Related Entities
+
 - **Configuration** (Azure.Devices) - Azure IoT Hub configuration object
 - **DeviceModelProperty** - Property definitions from device models
 - **DeviceTag** - Tag definitions for targeting
 
 ### External Dependencies
+
 - **Microsoft.Azure.Devices** - Azure IoT Hub SDK for configuration management
 - **Azure IoT Hub** - Cloud service for storing and applying configurations
 - **MudBlazor** - UI component library
@@ -317,6 +337,7 @@ This feature provides business value by enabling centralized, scalable device fl
 ## Key Features & Behaviors
 
 ### Configuration Creation and Updates
+
 - **Configuration ID**: Unique identifier for the configuration
 - **Model Targeting**: Configurations associated with specific device models
 - **Tag-Based Targeting**: Devices selected by matching tag name/value pairs
@@ -324,12 +345,14 @@ This feature provides business value by enabling centralized, scalable device fl
 - **Priority**: Default priority of 100; higher priority wins when multiple configs match
 
 ### Target Condition Generation
+
 - Target conditions automatically constructed from tags and model ID
 - Format: `tags.modelId='model123' AND tags.tagName='tagValue' AND tags.tag2='value2'`
 - Parsed using regex when retrieving configurations: `tags[.](?<tagName>\w*)[ ]?[=][ ]?\'(?<tagValue>[\w-]*)\'`
 - ModelId tag separated from user-defined tags in UI display
 
 ### Property Type Conversion
+
 - UI stores all property values as strings in dictionaries
 - Service layer converts strings to appropriate types before IoT Hub rollout:
   - **Boolean**: TryParse to bool
@@ -342,6 +365,7 @@ This feature provides business value by enabling centralized, scalable device fl
 - Properties prefixed with `properties.desired.` in IoT Hub configuration
 
 ### Device Model Integration
+
 - Device model selection drives available properties
 - Only models without LoRaWAN features shown in autocomplete
 - Properties filtered to show only writable properties
@@ -349,6 +373,7 @@ This feature provides business value by enabling centralized, scalable device fl
 - Type-specific input validation based on property type
 
 ### Metrics Tracking
+
 - **System Metrics**:
   - `targetedCount` - Number of devices matching target conditions
   - `appliedCount` - Number of devices where configuration was applied
@@ -359,6 +384,7 @@ This feature provides business value by enabling centralized, scalable device fl
 - Safe retrieval with default value of 0 if metric doesn't exist
 
 ### Configuration Rollout Process
+
 1. Validate configuration name and model ID
 2. Retrieve device model properties for type validation
 3. Convert property string values to typed values
@@ -368,6 +394,7 @@ This feature provides business value by enabling centralized, scalable device fl
 7. IoT Hub automatically applies configuration to matching devices
 
 ### UI Workflow
+
 - **List View**: Browse all configurations with summary metrics
 - **Create View**: Step-by-step configuration creation
   - Select device model → loads available properties
@@ -379,6 +406,7 @@ This feature provides business value by enabling centralized, scalable device fl
   - Delete with confirmation
 
 ### Error Handling
+
 - ProblemDetailsException handling for API errors
 - User-friendly error messages via Snackbar notifications
 - Loading state management during async operations
@@ -389,54 +417,63 @@ This feature provides business value by enabling centralized, scalable device fl
 ## Notes
 
 ### Architecture Patterns
+
 - **Service Layer** - Business logic abstraction from controllers
 - **DTO Pattern** - Data transfer between layers with validation
 - **Cloud Abstraction** - IConfigService hides Azure/AWS implementation details
 - **Helper Pattern** - ConfigHelper for data transformation logic
 
 ### Configuration as Code
+
 - Device configurations stored in Azure IoT Hub, not local database
 - Portal acts as management interface over IoT Hub configurations
 - Configuration ID can differ from Azure configuration ID (stored in labels)
 - Priority determines precedence when multiple configs target same device
 
 ### Azure IoT Hub Integration
+
 - Configurations leverage Azure's automatic device management
 - Target conditions use IoT Hub query syntax
 - Desired properties synchronized to device twins
 - Metrics calculated by IoT Hub based on device reporting
 
 ### Multi-Cloud Support
+
 - IConfigService abstraction enables Azure and AWS support
 - Azure implementation uses Microsoft.Azure.Devices.Configuration
 - AWS implementation would use Thing Groups and Fleet Provisioning
 - DTOs cloud-agnostic
 
 ### Property Type Safety
+
 - Type conversion ensures correct JSON serialization to IoT Hub
 - Invalid type conversions result in null values (graceful degradation)
 - Client-side validation prevents most type mismatches
 - Server-side conversion provides final safety net
 
 ### Configuration Precedence
+
 - Default priority: 100
 - Higher priority configurations override lower priority
 - Useful for exception handling (high-priority config for specific devices)
 - Priority range: 0 to Int32.MaxValue
 
 ### Target Condition Limitations
+
 - Only AND operators between tags (no OR)
 - Tag values must be alphanumeric with hyphens
 - Regex parsing depends on specific format: `tags.name='value'`
 - No support for complex query expressions in UI
 
 ### Metrics Accuracy
+
 - Metrics reflect IoT Hub's perspective
 - Success/failure based on device twin reported properties
 - Devices must report configuration status for accurate metrics
 - Metrics may lag due to device connectivity/reporting delays
 
 ### UI/UX Considerations
+
 - Device model selection required before property configuration
 - Tag selection shows only tags not already added
 - Property selection shows only writable properties not already added
@@ -444,24 +481,28 @@ This feature provides business value by enabling centralized, scalable device fl
 - Inline validation prevents common errors
 
 ### Performance Considerations
+
 - No pagination on configuration list (reasonable count expected)
 - Device model properties loaded dynamically on selection
 - Single API call to retrieve configuration details
 - Separate metrics endpoint allows lazy loading
 
 ### Security Considerations
+
 - Authorization required at both controller and UI levels
 - Permission-based access control prevents unauthorized modifications
 - Read-only view available for users without write permission
 - Configuration IDs exposed in URLs (no sensitive data)
 
 ### Testing Coverage
+
 - Unit tests: DeviceConfigurationsServiceTest.cs
 - Controller tests: DeviceConfigurationsControllerTests.cs
 - UI tests: DeviceConfigurationListPageTests.cs, DeviceConfigurationDetailPageTests.cs, CreateDeviceConfigurationsPageTests.cs
 - Client service tests: DeviceConfigurationsClientServiceTests.cs
 
 ### Future Enhancement Opportunities
+
 - Configuration templates for common scenarios
 - Bulk configuration operations (copy, clone, batch create)
 - Configuration version history and rollback
@@ -480,6 +521,7 @@ This feature provides business value by enabling centralized, scalable device fl
 - Configuration dependencies (require another config first)
 
 ### Known Limitations
+
 - Priority not editable in UI (fixed at 100)
 - Cannot edit device model after creation (must recreate)
 - No support for complex target condition queries

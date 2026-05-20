@@ -10,7 +10,7 @@
 ## Summary Table
 
 | Metric | Score | Weight | Weighted Score |
-|--------|-------|--------|----------------|
+| -------- | ------- | -------- | ---------------- |
 | Correctness | 94% | 30% | 28.2% |
 | Completeness | 88% | 30% | 26.4% |
 | Technical Quality | 90% | 20% | 18.0% |
@@ -108,7 +108,7 @@
 ## Code References Verified
 
 | Spec Reference | Actual File | Match Status |
-|---------------|-------------|--------------|
+| --------------- | ------------- | -------------- |
 | LoRaWANCommandsController | [Verified](../../src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANCommandsController.cs) | ✅ |
 | LoRaWANCommandService | [Verified](../../src/IoTHub.Portal.Server/Services/LoRaWANCommandService.cs) | ✅ |
 | ILoRaWANCommandService | [Verified](../../src/IoTHub.Portal.Application/Services/ILoRaWANCommandService.cs) | ✅ |
@@ -120,7 +120,7 @@
 ## Missing from Codebase (per spec)
 
 | Spec Claim | Status |
-|------------|--------|
+| ------------ | -------- |
 | Even hex character count validation | ❌ Not implemented |
 | Built-in command protection | ⚠️ May not be enforced |
 | Downlink enabled check before execution | ⚠️ Location unclear |
@@ -137,15 +137,15 @@
 
 ### Medium Priority
 
-3. **Document Command Execution Flow**: The execution endpoint is on `ILoRaWANCommandService` but the spec should clarify which controller exposes this (likely LoRaWANDevicesController).
+1. **Document Command Execution Flow**: The execution endpoint is on `ILoRaWANCommandService` but the spec should clarify which controller exposes this (likely LoRaWANDevicesController).
 
-4. **Verify Downlink Check Location**: Document where downlink validation occurs in the execution flow.
+2. **Verify Downlink Check Location**: Document where downlink validation occurs in the execution flow.
 
 ### Low Priority
 
-5. **Add Unit Test References**: Spec should reference [LoRaWANCommandsControllerTests.cs](../../src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/LoRaWAN/LoRaWANCommandsControllerTests.cs) and [LoRaWANCommandServiceTests.cs](../../src/IoTHub.Portal.Tests.Unit/Server/Services/LoRaWANCommandServiceTests.cs).
+1. **Add Unit Test References**: Spec should reference [LoRaWANCommandsControllerTests.cs](../../src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/LoRaWAN/LoRaWANCommandsControllerTests.cs) and [LoRaWANCommandServiceTests.cs](../../src/IoTHub.Portal.Tests.Unit/Server/Services/LoRaWANCommandServiceTests.cs).
 
-6. **Edge Case: Cascade Delete**: Verify and document that commands are deleted when device model is deleted.
+2. **Edge Case: Cascade Delete**: Verify and document that commands are deleted when device model is deleted.
 
 ---
 

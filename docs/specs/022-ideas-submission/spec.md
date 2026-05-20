@@ -113,17 +113,20 @@ As a portal user, I need easy access to the idea submission feature so that I ca
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/022-ideas-submission/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - IdeasController: Idea submission endpoint
 - IdeaService: Business logic for idea processing
 - ConfigHandler: Ideas feature enable/disable configuration
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - External ideas platform API (for idea storage and tracking)
   - 023-portal-settings (IsIdeasFeatureEnabled configuration)
-- **Depended By**: 
+- **Depended By**:
   - None (standalone community feature)

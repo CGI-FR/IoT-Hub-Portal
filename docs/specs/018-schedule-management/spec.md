@@ -140,17 +140,20 @@ As an IoT operations manager, I need to delete schedules that are no longer need
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/018-schedule-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - SchedulesController: Schedule CRUD endpoints
 - IScheduleService: Schedule business logic interface
 - Schedule entity: Domain model for schedule configuration
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 017-planning-management (schedules belong to plannings)
   - 011-lorawan-commands-management (schedules reference commands)
-- **Depended By**: 
+- **Depended By**:
   - 026-planning-command-jobs (uses schedules for time-based command execution)

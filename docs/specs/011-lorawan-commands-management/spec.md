@@ -130,18 +130,21 @@ As an IoT administrator, I need to understand that certain commands are protecte
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/011-lorawan-commands-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - LoRaWANCommandsController: Command CRUD operations
 - LoRaWANDevicesController: Command execution endpoint
 - LoRaWANCommandService: Business logic for command management
 - LoRaWanManagementService: Network server integration
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 009-lorawan-device-model-management (commands are defined at model level)
   - 008-lorawan-device-management (commands are executed on devices)
-- **Depended By**: 
+- **Depended By**:
   - 026-planning-command-jobs (scheduled command execution)

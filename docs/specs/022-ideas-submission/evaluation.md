@@ -10,7 +10,7 @@
 ## Summary
 
 | Metric | Score | Weight | Weighted Score |
-|--------|-------|--------|----------------|
+| -------- | ------- | -------- | ---------------- |
 | Correctness | 98% | 30% | 29.4% |
 | Completeness | 95% | 30% | 28.5% |
 | Technical Quality | 92% | 20% | 18.4% |
@@ -22,7 +22,7 @@
 ## Accurate Specifications
 
 | Requirement | Spec Description | Code Evidence | Status |
-|-------------|------------------|---------------|--------|
+| ------------- | ------------------ | --------------- | -------- |
 | FR-001 | Allow authenticated users to submit ideas | [IdeasController.cs#L6,21](src/IoTHub.Portal.Server/Controllers/v1.0/IdeasController.cs#L6): `[Authorize]` + `[Authorize("idea:write")]` | ✅ Verified |
 | FR-002 | Idea includes title and description (body) | [IdeaRequest.cs](src/IoTHub.Portal.Shared/Models/v1.0/IdeaRequest.cs): `Title` and `Body` with `[Required]` | ✅ Verified |
 | FR-003 | Support optional consent for technical details | [IdeaRequest.cs#L14](src/IoTHub.Portal.Shared/Models/v1.0/IdeaRequest.cs#L14): `ConsentToCollectTechnicalDetails` boolean | ✅ Verified |
@@ -39,7 +39,7 @@
 ## Inaccuracies Found
 
 | Issue | Spec Statement | Actual Code Behavior | Impact |
-|-------|----------------|----------------------|--------|
+| ------- | ---------------- | ---------------------- | -------- |
 | Error message | Spec: "appropriate message indicating the feature is unavailable" | Actual: Throws exception with message "Ideas feature is not enabled. Please check Iot Hub Portal documentation" | 🟢 Low (more specific) |
 | User-agent parsing | Spec: "browser version" | Actual: Uses UAParser to get Family + Major + Minor (e.g., "Chrome12010") without separator | 🟢 Low |
 
@@ -48,7 +48,7 @@
 ## Key Entities Verification
 
 | Entity | Spec Definition | Code Implementation | Match |
-|--------|-----------------|---------------------|-------|
+| -------- | ----------------- | --------------------- | ------- |
 | IdeaRequest | Title, Body, ConsentToCollectTechnicalDetails | [IdeaRequest.cs](src/IoTHub.Portal.Shared/Models/v1.0/IdeaRequest.cs): All properties present with validation | ✅ Match |
 | IdeaResponse | URL (tracking link) | [IdeaResponse.cs](src/IoTHub.Portal.Shared/Models/v1.0/IdeaResponse.cs): `Url` property present | ✅ Match |
 | Technical Context | Application Version, Browser Version | [IdeaService.cs#L43-48](src/IoTHub.Portal.Server/Services/IdeaService.cs#L43-48): Both collected when consented | ✅ Match |
@@ -58,7 +58,7 @@
 ## Code References
 
 | Component | File Path | Lines | Purpose |
-|-----------|-----------|-------|---------|
+| ----------- | ----------- | ------- | --------- |
 | Controller | [IdeasController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/IdeasController.cs) | 1-27 | API endpoint for idea submission |
 | Service | [IdeaService.cs](src/IoTHub.Portal.Server/Services/IdeaService.cs) | 1-78 | Business logic for idea processing |
 | Interface | [IIdeaService.cs](src/IoTHub.Portal.Application/Services/IIdeaService.cs) | - | Service interface |
@@ -72,7 +72,7 @@
 ## Test Coverage
 
 | Area | Status | Evidence |
-|------|--------|----------|
+| ------ | -------- | ---------- |
 | Controller Tests | ✅ 90% | [IdeasControllerTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/IdeasControllerTests.cs): Covers submit idea flow |
 | Service Tests | ✅ 95% | [IdeaServiceTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Services/IdeaServiceTests.cs): Covers success, disabled feature, consent variations |
 | Error Handling | ✅ 90% | Tests for disabled feature, HTTP failures |
@@ -83,7 +83,7 @@
 ## Dependencies Verification
 
 | Dependency | Spec Statement | Code Evidence | Status |
-|------------|----------------|---------------|--------|
+| ------------ | ---------------- | --------------- | -------- |
 | 023-portal-settings | IsIdeasFeatureEnabled configuration | [IdeaService.cs#L22](src/IoTHub.Portal.Server/Services/IdeaService.cs#L22): Uses `configHandler.IdeasEnabled` | ✅ Verified |
 | External Platform | Ideas platform API | [Startup.cs#L303](src/IoTHub.Portal.Server/Startup.cs#L303): HTTP client configured with base URL | ✅ Verified |
 

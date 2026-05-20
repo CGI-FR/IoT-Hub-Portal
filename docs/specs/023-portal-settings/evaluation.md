@@ -10,7 +10,7 @@
 ## Summary
 
 | Metric | Score | Weight | Weighted Score |
-|--------|-------|--------|----------------|
+| -------- | ------- | -------- | ---------------- |
 | Correctness | 97% | 30% | 29.1% |
 | Completeness | 95% | 30% | 28.5% |
 | Technical Quality | 95% | 20% | 19.0% |
@@ -22,7 +22,7 @@
 ## Accurate Specifications
 
 | Requirement | Spec Description | Code Evidence | Status |
-|-------------|------------------|---------------|--------|
+| ------------- | ------------------ | --------------- | -------- |
 | FR-001 | Provide OIDC configuration for authentication | [SettingsController.cs#L42-48](src/IoTHub.Portal.Server/Controllers/v1.0/SettingsController.cs#L42-48): `GetOIDCSettings()` endpoint | ✅ Verified |
 | FR-002 | OIDC includes authority, metadata URL, client ID, scope | [ClientApiIndentityOptions.cs](src/IoTHub.Portal.Server/Identity/ClientApiIndentityOptions.cs): All 4 properties defined | ✅ Verified |
 | FR-003 | Provide portal branding settings | [SettingsController.cs#L54-67](src/IoTHub.Portal.Server/Controllers/v1.0/SettingsController.cs#L54-67): `GetPortalSetting()` endpoint | ✅ Verified |
@@ -40,7 +40,7 @@
 ## Inaccuracies Found
 
 | Issue | Spec Statement | Actual Code Behavior | Impact |
-|-------|----------------|----------------------|--------|
+| ------- | ---------------- | ---------------------- | -------- |
 | Class attribute | Spec: controller requires authorization | Actual: [SettingsController.cs#L7](src/IoTHub.Portal.Server/Controllers/v1.0/SettingsController.cs#L7) has `[AllowAnonymous]` at class level, but methods have `[Authorize]` | 🟡 Medium (spec should clarify) |
 | Authorization scope | Spec: "appropriate authorization" | Actual: Uses `setting:read` policy specifically | 🟢 Low |
 | Namespace typo | N/A | [ClientApiIndentityOptions.cs](src/IoTHub.Portal.Server/Identity/ClientApiIndentityOptions.cs): Note "Indentity" spelling (not "Identity") | 🟢 Low (legacy naming) |
@@ -50,7 +50,7 @@
 ## Key Entities Verification
 
 | Entity | Spec Definition | Code Implementation | Match |
-|--------|-----------------|---------------------|-------|
+| -------- | ----------------- | --------------------- | ------- |
 | ClientApiIndentityOptions | Authority, MetadataUrl, ClientId, Scope | [ClientApiIndentityOptions.cs](src/IoTHub.Portal.Server/Identity/ClientApiIndentityOptions.cs): All properties present | ✅ Match |
 | PortalSettings | PortalName, Version, CopyrightYear, IsLoRaSupported, IsIdeasFeatureEnabled, CloudProvider | [PortalSettings.cs](src/IoTHub.Portal.Shared/Models/v1.0/PortalSettings.cs): All properties present | ✅ Match |
 
@@ -59,7 +59,7 @@
 ## Code References
 
 | Component | File Path | Lines | Purpose |
-|-----------|-----------|-------|---------|
+| ----------- | ----------- | ------- | --------- |
 | Controller | [SettingsController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/SettingsController.cs) | 1-68 | Settings API endpoints |
 | OIDC Model | [ClientApiIndentityOptions.cs](src/IoTHub.Portal.Server/Identity/ClientApiIndentityOptions.cs) | 1-16 | OIDC configuration model |
 | Portal Settings Model | [PortalSettings.cs](src/IoTHub.Portal.Shared/Models/v1.0/PortalSettings.cs) | 1-39 | Runtime settings model |
@@ -71,7 +71,7 @@
 ## Test Coverage
 
 | Area | Status | Evidence |
-|------|--------|----------|
+| ------ | -------- | ---------- |
 | OIDC Endpoint | ✅ 90% | [SettingsControllerTest.cs](src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/SettingsControllerTest.cs): Tests OIDC settings retrieval |
 | Portal Settings | ✅ 95% | Tests for all portal settings properties |
 | Default Values | ✅ 85% | Tests for default portal name |
@@ -82,7 +82,7 @@
 ## Dependencies Verification
 
 | Dependency | Spec Statement | Code Evidence | Status |
-|------------|----------------|---------------|--------|
+| ------------ | ---------------- | --------------- | -------- |
 | ASP.NET Core Configuration | appsettings.json, environment variables | [SettingsController.cs#L26](src/IoTHub.Portal.Server/Controllers/v1.0/SettingsController.cs#L26): Uses `IOptions<ClientApiIndentityOptions>` | ✅ Verified |
 | ConfigHandler | Centralized config access | [SettingsController.cs#L32](src/IoTHub.Portal.Server/Controllers/v1.0/SettingsController.cs#L32): Uses `ConfigHandler` for runtime settings | ✅ Verified |
 
@@ -91,7 +91,7 @@
 ## API Endpoints Summary
 
 | Endpoint | Method | Path | Authorization |
-|----------|--------|------|---------------|
+| ---------- | -------- | ------ | --------------- |
 | GET OIDC Settings | GET | `/api/settings/oidc` | `setting:read` |
 | GET Portal Settings | GET | `/api/settings/portal` | `setting:read` |
 

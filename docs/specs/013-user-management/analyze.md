@@ -27,8 +27,10 @@ This feature provides essential business value by enabling secure, centralized u
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/UsersController.cs` (Lines 1-178)
   - **Snippet**: Main REST API controller for user management
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -65,8 +67,10 @@ This feature provides essential business value by enabling secure, centralized u
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IUserManagementService.cs` (Lines 1-24)
   - **Snippet**: Core service interface for user operations
+
     ```csharp
     public interface IUserManagementService
     {
@@ -92,8 +96,10 @@ This feature provides essential business value by enabling secure, centralized u
   - Cascade deletion of principal when user is deleted
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IUserRepository.cs` (Lines 1-14)
   - **Snippet**: User repository interface with custom queries
+
     ```csharp
     public interface IUserRepository : IRepository<User>
     {
@@ -109,6 +115,7 @@ This feature provides essential business value by enabling secure, centralized u
 
 - `src/IoTHub.Portal.Domain/Entities/User.cs` (Lines 1-21)
   - **Snippet**: User entity definition
+
     ```csharp
     public class User : EntityBase
     {
@@ -125,6 +132,7 @@ This feature provides essential business value by enabling secure, centralized u
 
 - `src/IoTHub.Portal.Domain/Entities/Principal.cs` (Lines 1-18)
   - **Snippet**: Principal entity for RBAC integration
+
     ```csharp
     public class Principal : EntityBase
     {
@@ -135,6 +143,7 @@ This feature provides essential business value by enabling secure, centralized u
     ```
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/RBAC/UsersListPage.razor` (Lines 1-84)
   - Main user list page with search and pagination
   - Features:
@@ -162,8 +171,10 @@ This feature provides essential business value by enabling secure, centralized u
   - Integrates with AccessControlClientService for role assignments
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/UserModel.cs` (Lines 1-14)
   - **Snippet**: Lightweight user model for list display
+
     ```csharp
     public class UserModel
     {
@@ -176,6 +187,7 @@ This feature provides essential business value by enabling secure, centralized u
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/UserDetailsModel.cs` (Lines 1-18)
   - **Snippet**: Complete user details with full profile
+
     ```csharp
     public class UserDetailsModel
     {
@@ -196,6 +208,7 @@ This feature provides essential business value by enabling secure, centralized u
   - Inherits pagination parameters from PaginationFilter
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IUserClientService.cs` (Lines 1-17)
   - Client-side service interface for HTTP API calls
   - Methods: GetUsers, GetUser, CreateUser, UpdateUser, DeleteUser
@@ -210,6 +223,7 @@ This feature provides essential business value by enabling secure, centralized u
   - Graceful 404 handling for GetUser method
 
 ### Mappers
+
 - `src/IoTHub.Portal.Application/Mappers/UserProfile.cs` (Lines 1-44)
   - AutoMapper profile for User entity and DTO mappings
   - Bidirectional mappings between User ↔ UserModel
@@ -222,8 +236,9 @@ This feature provides essential business value by enabling secure, centralized u
 ## API Endpoints
 
 ### User Management
+
 - `GET /api/users` - Get paginated list of users
-  - Query Parameters: 
+  - Query Parameters:
     - searchName (optional) - Filters by Name, FamilyName, or GivenName (case-insensitive)
     - searchEmail (optional) - Filters by email
     - pageSize (default: 10) - Number of results per page
@@ -269,10 +284,12 @@ This feature provides essential business value by enabling secure, centralized u
 ## Authorization
 
 ### Required Permissions
+
 - **user:read** - View users list and retrieve user details
 - **user:write** - Create, update, and delete users
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` attributes on controller methods
 - Permission strings defined in PortalPermissions enum (UserRead, UserWrite)
 - Base authorization requirement: `[Authorize]` on UsersController and all user pages
@@ -280,10 +297,12 @@ This feature provides essential business value by enabling secure, centralized u
 - Managed through role-based access control (RBAC) via AccessControl entities
 
 ### Permission Mapping
+
 - `PortalPermissions.UserRead` → "user:read"
 - `PortalPermissions.UserWrite` → "user:write"
 
 ### Permission-Based UI
+
 - UserDetailPage conditionally shows role management controls based on user:write permission
 - Add role button and delete role buttons disabled when canWrite = false
 - Authorization checks performed in OnInitializedAsync via HasPermissionAsync
@@ -293,6 +312,7 @@ This feature provides essential business value by enabling secure, centralized u
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **Role-Based Access Control (RBAC)** - Users are linked to roles via Principal → AccessControl → Role
 - **Access Control Management** - Manages role assignments for users via AccessControl entities
 - **Authentication System** - OAuth/OIDC integration for user provisioning via GetOrCreateUserByEmailAsync
@@ -300,6 +320,7 @@ This feature provides essential business value by enabling secure, centralized u
 - **Role Management** - Roles displayed and assigned through user detail page
 
 ### Service Dependencies
+
 - `IUserRepository` - User entity persistence and queries
 - `IPrincipalRepository` - Principal entity lifecycle management
 - `IAccessControlRepository` - Access control assignment operations
@@ -309,18 +330,21 @@ This feature provides essential business value by enabling secure, centralized u
 - `IAccessControlManagementService` - Role assignment operations (dependency in controller)
 
 ### Related Entities
+
 - **Principal** - One-to-one relationship with User via PrincipalId
 - **AccessControl** - Many-to-one relationship with Principal (via collection)
 - **Role** - Many-to-many relationship with User through AccessControl → Principal → User chain
 - **EntityBase** - Base class providing Id and common entity properties
 
 ### External Dependencies
+
 - **Entity Framework Core** - Database access via PortalDbContext
 - **AutoMapper** - Entity to DTO mapping
 - **System.Security.Claims** - ClaimsPrincipal for OAuth/OIDC user data extraction
 - **Microsoft.AspNetCore.Authorization** - Authorization attribute support
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library
   - MudTable - Server-side paginated data grid
   - MudTextField - Text input for search and display
@@ -337,6 +361,7 @@ This feature provides essential business value by enabling secure, centralized u
 ## Key Features & Behaviors
 
 ### User Profile Management
+
 - **Email**: Required field, used for login and user lookup (case-insensitive)
 - **GivenName**: Required field, displayed as primary name in lists and forms
 - **Name**: Optional full name field
@@ -345,6 +370,7 @@ This feature provides essential business value by enabling secure, centralized u
 - **PrincipalId**: System-generated GUID linking user to RBAC principal
 
 ### OAuth/OIDC User Provisioning
+
 - Automatic user creation on first login via GetOrCreateUserByEmailAsync
 - Claims mapping:
   - "name" claim → User.Name
@@ -355,6 +381,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Generates new Principal with unique GUID for RBAC integration
 
 ### First User Administrator Assignment
+
 - System checks if user being created is the first user (CountAsync = 0)
 - First user automatically assigned to "Administrators" role
 - Creates AccessControl entry linking user's Principal to admin role
@@ -362,6 +389,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Throws ResourceNotFoundException if Administrators role doesn't exist
 
 ### Pagination & Search
+
 - Server-side pagination with configurable page sizes
 - Search across multiple fields: Name, FamilyName, GivenName, Email
 - Case-insensitive search using ToLower() comparison
@@ -370,6 +398,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Default page size: 10 users per page
 
 ### Validation Rules
+
 - **Email**: Required field via [Required] attribute
 - **GivenName**: Required field via [Required] attribute
 - **Name Uniqueness**: Validated during create/update operations
@@ -380,6 +409,7 @@ This feature provides essential business value by enabling secure, centralized u
   - Throws ResourceNotFoundException if user doesn't exist
 
 ### User-Principal Relationship
+
 - One-to-one relationship between User and Principal
 - PrincipalId stored in User entity
 - Principal entity contains User navigation property
@@ -387,6 +417,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Principal provides collection of AccessControl entries for role assignments
 
 ### Role Assignment Integration
+
 - User detail page displays assigned roles via AccessControl entities
 - Role assignment performed through AccessControlClientService
 - Scope currently hardcoded to "*" (ALL) for all role assignments
@@ -395,6 +426,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Role management requires user:write permission
 
 ### Error Handling
+
 - ResourceNotFoundException thrown when user/resource doesn't exist
 - ResourceAlreadyExistsException thrown on duplicate name
 - ArgumentNullException thrown for null parameter validation
@@ -403,6 +435,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Structured logging throughout controller and service methods
 
 ### Database Operations
+
 - **Create**: Insert user with new Principal, validate uniqueness
 - **Read**: Single user by ID, paginated list with filters
 - **Update**: Update profile fields, preserve ID and PrincipalId
@@ -415,6 +448,7 @@ This feature provides essential business value by enabling secure, centralized u
 ## Notes
 
 ### Architecture Patterns
+
 - **Repository Pattern** - Clean separation of data access concerns
 - **Unit of Work Pattern** - Transactional consistency across operations
 - **Service Layer** - Business logic abstraction from controllers
@@ -423,6 +457,7 @@ This feature provides essential business value by enabling secure, centralized u
 - **Claims-Based Identity** - OAuth/OIDC integration via ClaimsPrincipal
 
 ### Principal-Based Identity Architecture
+
 - Users don't directly have roles; instead, users have a Principal
 - Principal is the RBAC subject (identity entity for access control)
 - AccessControl entries link Principal to Roles with optional Scopes
@@ -430,6 +465,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Allows single identity (Principal) to have different roles in different scopes
 
 ### Authentication vs. Authorization Separation
+
 - Authentication handled by external OAuth/OIDC providers (Azure AD, Keycloak, etc.)
 - User provisioning occurs on first successful authentication
 - Local user entity stores profile information and links to authorization system
@@ -437,6 +473,7 @@ This feature provides essential business value by enabling secure, centralized u
 - No password storage; authentication delegated to identity providers
 
 ### First User Bootstrap Logic
+
 - Ensures system is never locked out after initial deployment
 - First user automatically gets full administrator access
 - Subsequent users require explicit role assignment by administrators
@@ -444,12 +481,14 @@ This feature provides essential business value by enabling secure, centralized u
 - Hardcoded dependency on "Administrators" role existing in database
 
 ### Commented Code in UserDetailsModel
+
 - AccessControls collection property is commented out in current implementation
 - UserDetailPage loads access controls separately via API call
 - Design decision: Separate API call provides better performance for large AC lists
 - Could be re-enabled for simpler single-request user details retrieval
 
 ### Search Implementation
+
 - Search performed server-side for scalability
 - Single search term applied to multiple fields (Name, FamilyName, GivenName)
 - Email search is separate parameter but currently not used distinctly in UI
@@ -457,12 +496,14 @@ This feature provides essential business value by enabling secure, centralized u
 - Immediate search triggering on keyup may generate many API calls
 
 ### Navigation Patterns
+
 - UsersListPage → UserDetailPage navigation via user ID
 - Detail page is read-only for user profile (no inline editing)
 - Role management performed through separate AccessControl operations
 - No direct edit page for user profile (PUT endpoint exists but no UI)
 
 ### Pagination Strategy
+
 - Uses continuation URI pattern for hypermedia navigation
 - NextPage link includes all current filter parameters
 - Zero-based page indexing (pageNumber starts at 0)
@@ -470,6 +511,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Page size configurable per request (default 10, options 5/10/20)
 
 ### Logging Strategy
+
 - Structured logging at controller level for all operations
 - Success operations log informational messages with user IDs
 - Error operations log errors with exception details and context
@@ -477,12 +519,14 @@ This feature provides essential business value by enabling secure, centralized u
 - Consistent log message patterns aid debugging and monitoring
 
 ### Multi-Tenancy Considerations
+
 - Scope field in AccessControl enables future multi-tenant access patterns
 - Currently all scopes default to "*" (global/ALL access)
 - Principal architecture designed to support scoped role assignments
 - User entities are global; scoping applied at access control level
 
 ### Security Considerations
+
 - Authorization required at both controller and UI levels
 - Permission-based access control prevents unauthorized operations
 - Email used as primary identifier (not username) for better uniqueness
@@ -491,6 +535,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Principal-based design enables audit trail of all role assignments
 
 ### Database Migrations
+
 - User entity migrations: Track user table creation and schema changes
 - Principal entity migrations: Track RBAC principal infrastructure
 - AccessControl relationship migrations: Track role assignment schema
@@ -498,6 +543,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Cascade delete configuration ensures cleanup
 
 ### Testing Coverage
+
 - Unit tests expected for UserService (business logic)
 - Controller tests for API endpoint validation
 - UI tests for UsersListPage and UserDetailPage interactions
@@ -505,6 +551,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Integration tests for OAuth/OIDC user provisioning flow
 
 ### Known Limitations
+
 - No user profile editing UI (API exists but no corresponding page)
 - Scope field not fully utilized (hardcoded to "*" or empty string)
 - Search triggers on every keyup (could add debouncing for performance)
@@ -515,6 +562,7 @@ This feature provides essential business value by enabling secure, centralized u
 - Name uniqueness validation has typo in error message ("tis" should be "with")
 
 ### Future Enhancement Opportunities
+
 - User profile editing page with inline form validation
 - User status management (active, inactive, locked, pending)
 - User activity audit log (login history, role changes)
@@ -537,6 +585,7 @@ This feature provides essential business value by enabling secure, centralized u
 - User type classification (admin, operator, viewer)
 
 ### Performance Considerations
+
 - Pagination limits result set size for large user bases
 - Search queries use indexed Email and Name fields (assumed)
 - Single database query for user list (no N+1 problems)
@@ -545,12 +594,14 @@ This feature provides essential business value by enabling secure, centralized u
 - AutoMapper provides efficient entity-to-DTO conversions
 
 ### Internationalization Considerations
+
 - User names stored as Unicode strings (supports international characters)
 - Email addresses follow international email standards
 - No hardcoded locale-specific validation or formatting
 - UI strings currently not localized (future enhancement opportunity)
 
 ### Compliance & Privacy
+
 - User email addresses are PII (Personal Identifiable Information)
 - User deletion removes all associated data (GDPR right to be forgotten)
 - No password storage (authentication delegated to external providers)

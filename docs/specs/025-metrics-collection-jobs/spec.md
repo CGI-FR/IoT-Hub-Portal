@@ -120,7 +120,7 @@ As a LoRaWAN operator, I need device telemetry continuously ingested from the ne
 ### Prometheus Metrics
 
 | Metric Name | Type | Description |
-|-------------|------|-------------|
+| ------------- | ------ | ------------- |
 | iot_hub_portal_device_count | Counter | Total registered standard devices |
 | iot_hub_portal_connected_device_count | Counter | Devices currently connected |
 | iot_hub_portal_edge_device_count | Counter | Total registered edge devices |
@@ -131,7 +131,7 @@ As a LoRaWAN operator, I need device telemetry continuously ingested from the ne
 ### Metrics Collection Jobs
 
 | Job | Responsibility | Data Source |
-|-----|---------------|-------------|
+| ----- | --------------- | ------------- |
 | DeviceMetricLoaderJob | Device counts | Cloud provider API |
 | EdgeDeviceMetricLoaderJob | Edge device counts, deployment failures | Cloud provider API + Config service |
 | ConcentratorMetricLoaderJob | Concentrator count | Local database |
@@ -157,10 +157,12 @@ As a LoRaWAN operator, I need device telemetry continuously ingested from the ne
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/025-metrics-collection-jobs/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - DeviceMetricLoaderJob: Device count collection
 - DeviceMetricExporterJob: Device metrics to Prometheus
 - EdgeDeviceMetricLoaderJob: Edge device count collection
@@ -171,10 +173,11 @@ As a LoRaWAN operator, I need device telemetry continuously ingested from the ne
 - PortalMetric: Shared metrics singleton
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - Cloud provider APIs (for device counts)
   - Prometheus-net library (for metrics export)
   - Azure Event Hub (for LoRaWAN telemetry)
-- **Depended By**: 
+- **Depended By**:
   - 020-dashboard-metrics (displays collected metrics)
   - External monitoring systems (consume Prometheus endpoint)

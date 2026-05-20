@@ -134,20 +134,23 @@ As a portal client application, I need to know which cloud provider the portal i
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/023-portal-settings/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - SettingsController: Settings retrieval endpoints
 - ClientApiIndentityOptions: OIDC configuration model
 - PortalSettings: Portal configuration model
 - ConfigHandler: Centralized configuration access
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - ASP.NET Core configuration system (appsettings.json, environment variables)
   - Azure AD / OIDC identity provider configuration
-- **Depended By**: 
+- **Depended By**:
   - Portal client application (uses OIDC settings for authentication)
   - 022-ideas-submission (checks IsIdeasFeatureEnabled)
   - LoRaWAN features (check IsLoRaSupported)

@@ -24,8 +24,10 @@ This feature provides business value by enabling flexible device categorization 
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceTagSettingsController.cs` (Lines 1-89)
   - **Snippet**: Main REST API controller for device tag settings
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -56,8 +58,10 @@ This feature provides business value by enabling flexible device categorization 
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IDeviceTagService.cs` (Lines 1-20)
   - **Snippet**: Core service interface for device tag operations
+
     ```csharp
     public interface IDeviceTagService
     {
@@ -78,6 +82,7 @@ This feature provides business value by enabling flexible device categorization 
   - Individual tag create/update/delete operations
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IDeviceTagRepository.cs` (Lines 1-9)
   - Generic repository interface for DeviceTag entity
   - Inherits from IRepository<DeviceTag>
@@ -88,6 +93,7 @@ This feature provides business value by enabling flexible device categorization 
 
 - `src/IoTHub.Portal.Domain/Entities/DeviceTag.cs` (Lines 1-16)
   - **Snippet**: Device tag definition entity
+
     ```csharp
     public class DeviceTag : EntityBase
     {
@@ -100,6 +106,7 @@ This feature provides business value by enabling flexible device categorization 
 
 - `src/IoTHub.Portal.Domain/Entities/DeviceTagValue.cs` (Lines 1-12)
   - **Snippet**: Device-specific tag value entity
+
     ```csharp
     public class DeviceTagValue : EntityBase
     {
@@ -109,6 +116,7 @@ This feature provides business value by enabling flexible device categorization 
     ```
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/Settings/DeviceTagsPage.razor` (Lines 1-188)
   - Main device tag settings management page
   - Interactive MudTable with inline editing
@@ -129,8 +137,10 @@ This feature provides business value by enabling flexible device categorization 
   - Used for disabling name field editing on existing tags
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/DeviceTagDto.cs` (Lines 1-38)
   - **Snippet**: Complete device tag DTO with validation
+
     ```csharp
     public class DeviceTagDto
     {
@@ -150,6 +160,7 @@ This feature provides business value by enabling flexible device categorization 
     ```
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IDeviceTagSettingsClientService.cs` (Lines 1-14)
   - Client-side service interface for HTTP API calls
   - Methods: GetDeviceTags, CreateOrUpdateDeviceTag, DeleteDeviceTagByName
@@ -161,6 +172,7 @@ This feature provides business value by enabling flexible device categorization 
   - GET endpoint for retrieving all tags
 
 ### Mappers
+
 - `src/IoTHub.Portal.Application/Mappers/DeviceTagProfile.cs` (Lines 1-14)
   - AutoMapper profile for DeviceTag entity to DTO mapping
   - Maps DeviceTagDto.Name to DeviceTag.Id
@@ -171,6 +183,7 @@ This feature provides business value by enabling flexible device categorization 
 ## API Endpoints
 
 ### Device Tag Settings Management
+
 - `GET /api/settings/device-tags` - Get all device tag definitions
   - Returns: List<DeviceTagDto>
   - Authorization: device-tag:read
@@ -201,10 +214,12 @@ This feature provides business value by enabling flexible device categorization 
 ## Authorization
 
 ### Required Permissions
+
 - **device-tag:read** - View device tag settings and retrieve tag definitions
 - **device-tag:write** - Create, update, and delete device tag settings
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` attributes on controller methods
 - Permission strings defined in PortalPermissionsHelper
 - Base authorization requirement: `[Authorize]` on DeviceTagSettingsController and DeviceTagsPage
@@ -212,6 +227,7 @@ This feature provides business value by enabling flexible device categorization 
 - Default Administrator role includes both device-tag:read and device-tag:write permissions
 
 ### Permission Mapping
+
 - `PortalPermissions.DeviceTagRead` → "device-tag:read"
 - `PortalPermissions.DeviceTagWrite` → "device-tag:write"
 
@@ -220,28 +236,33 @@ This feature provides business value by enabling flexible device categorization 
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **Device Management** - Device entities reference DeviceTagValue collection for storing actual tag values
 - **Device Models** - Device model forms may use device tags for metadata collection
 - **IoT Hub Integration** - Device tags synchronized to device twin tags in Azure IoT Hub or AWS IoT Core
 - **Role-Based Access Control** - Permissions enforced through RBAC system
 
 ### Service Dependencies
+
 - `IDeviceTagRepository` - Device tag definition persistence
 - `IDeviceTagValueRepository` - Device-specific tag value persistence
 - `IUnitOfWork` - Transaction management for database operations
 - `IMapper` (AutoMapper) - Entity to DTO mapping
 
 ### Related Entities
+
 - **Device** - Contains collection of DeviceTagValue objects
 - **EdgeDevice** - Contains collection of DeviceTagValue objects
 - **LorawanDevice** - Inherits device tags through Device base class
 
 ### External Dependencies
+
 - **Entity Framework Core** - Database access via PortalDbContext
 - **AutoMapper** - Entity to DTO mapping
 - **FluentValidation** - DTO validation (via data annotations)
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library
   - MudTable - Data grid with toolbar and inline editing
   - MudTextField - Text input with validation
@@ -255,12 +276,14 @@ This feature provides business value by enabling flexible device categorization 
 ## Key Features & Behaviors
 
 ### Tag Definition Management
+
 - **Name**: Alphanumeric identifier stored in device twin (immutable after creation in UI)
 - **Label**: Human-readable display name shown to users (can be edited)
 - **Required**: Flag indicating whether tag must be provided during device creation
 - **Searchable**: Flag indicating whether tag appears as filter option in device list
 
 ### Inline Table Editing
+
 - Add new rows with "Add a new Tag" button
 - Edit existing tags directly in table cells
 - Individual row save operation with validation
@@ -269,6 +292,7 @@ This feature provides business value by enabling flexible device categorization 
 - Prevents adding new row if last row is incomplete
 
 ### Validation Rules
+
 - **Name**: Required, alphanumeric only (regex: ^[a-zA-Z0-9]*$)
 - **Label**: Required field
 - **Duplicate Names**: Prevented through validation check before save
@@ -276,6 +300,7 @@ This feature provides business value by enabling flexible device categorization 
 - **Empty Values**: Cannot save tag with null/empty name or label
 
 ### Tag Usage in Device Management
+
 - Searchable tags appear as filter options in device list search panel
 - Required tags must be filled during device creation
 - Tag values stored in DeviceTagValue collection per device
@@ -283,12 +308,14 @@ This feature provides business value by enabling flexible device categorization 
 - Device queries can filter by tag name and value
 
 ### Database Operations
+
 - **Create/Update**: Upsert operation based on tag name
 - **Delete**: Cascade delete to DeviceTagValue when tag definition removed
 - **Bulk Update**: Replace all tags operation available via POST endpoint
 - **Query**: Filtered retrieval of searchable tags vs. all tags
 
 ### Error Handling
+
 - ProblemDetailsException handling for API errors
 - User-friendly error messages via Snackbar notifications
 - Validation errors shown inline on form fields
@@ -299,35 +326,41 @@ This feature provides business value by enabling flexible device categorization 
 ## Notes
 
 ### Architecture Patterns
+
 - **Repository Pattern** - Clean separation of data access concerns
 - **Unit of Work Pattern** - Transactional consistency across operations
 - **Service Layer** - Business logic abstraction from controllers
 - **DTO Pattern** - Data transfer between layers with validation
 
 ### Tag Name as Primary Key
+
 - DeviceTag entity uses Name as Id (mapped via [NotMapped] property)
 - Simplifies lookups and prevents duplicate tag names at database level
 - Name immutability enforced through UI (disabled field for existing tags)
 
 ### Tag Value Storage
+
 - DeviceTagValue is a separate entity from DeviceTag
 - Enables many-to-many relationship: Device ↔ DeviceTagValue ↔ DeviceTag
 - Cascade delete configured: deleting device removes associated DeviceTagValue records
 - Tag values synchronized to IoT Hub device twin tags
 
 ### Integration with Device Twin
+
 - Tags defined here appear in Azure IoT Hub device twin's tags section
 - Searchable tags enable efficient device queries in IoT Hub
 - Tag synchronization handled by device service implementations
 - Supports both Azure IoT Hub and AWS IoT Core (via IExternalDeviceService)
 
 ### Multi-Cloud Support
+
 - Tag definitions cloud-agnostic
 - Tag values synchronized to cloud provider's device metadata
 - Azure: Device Twin Tags
 - AWS: Thing Attributes
 
 ### UI/UX Considerations
+
 - Inline editing reduces clicks and page loads
 - Individual row save allows partial updates
 - Validation feedback immediate and contextual
@@ -335,30 +368,35 @@ This feature provides business value by enabling flexible device categorization 
 - Loading indicators for async operations
 
 ### Performance Considerations
+
 - Tags loaded once on page initialization
 - No server-side pagination (reasonable tag count expected)
 - Lightweight DTO for data transfer
 - Efficient repository queries using GetAll()
 
 ### Security Considerations
+
 - Authorization required at both controller and UI levels
 - Permission-based access control prevents unauthorized modifications
 - Input validation protects against injection attacks
 - Name regex prevents special characters in tag names
 
 ### Database Migrations
+
 - Initial DeviceTag entity: Migration 20220911135612
 - DeviceTagValue entity: Migration 20220929174657
 - Cascade delete configuration: Migration 20240503170119
 - RBAC permissions: Migration 20260107100522
 
 ### Testing Coverage
+
 - Unit tests: DeviceTagServiceTests.cs
 - Controller tests: Not explicitly found but likely covered in integration tests
 - UI tests: DeviceTagsPageTests.cs
 - Client service tests: DeviceTagSettingsClientServiceTests.cs
 
 ### Future Enhancement Opportunities
+
 - Tag value type support (string, number, boolean, enum)
 - Tag value validation rules (regex, range, options)
 - Tag groups/categories for better organization
@@ -371,6 +409,7 @@ This feature provides business value by enabling flexible device categorization 
 - Conditional tag visibility based on device model
 
 ### Known Limitations
+
 - Tag names cannot be renamed after creation (must delete and recreate)
 - No tag value constraints or validation beyond string type
 - No tag dependencies or hierarchies

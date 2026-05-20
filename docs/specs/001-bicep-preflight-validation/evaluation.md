@@ -9,7 +9,7 @@
 ## Summary
 
 | Metric | Score | Grade | Weight |
-|--------|-------|-------|--------|
+| -------- | ------- | ------- | -------- |
 | Correctness | 95/100 | A | 30% |
 | Completeness | 90/100 | A | 30% |
 | Technical Quality | 88/100 | B | 20% |
@@ -25,7 +25,7 @@
 ### ✅ Accurate Specifications
 
 | Spec Element | Code Location | Verification |
-|--------------|---------------|--------------|
+| -------------- | --------------- | -------------- |
 | FR-001 - Validate Bicep using Azure deployment validation API | `bicep-lint.yml#L74-82` | Uses `azure/arm-deploy@v2` with `deploymentMode: Validate` |
 | FR-002 - Run on PR with templates/azure/** paths | `bicep-lint.yml#L4-9` | Correct path filters configured |
 | FR-003 - Run on push to main branch | `bicep-lint.yml#L10-14` | Push trigger with same path filters |
@@ -44,7 +44,7 @@
 ### ⚠️ Inaccuracies Found
 
 | Spec Element | Issue | Code Reality | Severity |
-|--------------|-------|--------------|----------|
+| -------------- | ------- | -------------- | ---------- |
 | FR-005 - Detect quota violations | Not fully verifiable | Validate mode may not catch all quota issues | Low |
 | FR-006 - Detailed error messages | Partial | Azure API errors shown but no custom formatting | Low |
 | A-005 - Uses arm-deploy@v1 | Version mismatch | Actually uses `azure/arm-deploy@v2` (better) | Low (improvement) |
@@ -63,7 +63,7 @@
 ### ✅ Well-Documented Areas
 
 | Aspect | Coverage | Notes |
-|--------|----------|-------|
+| -------- | ---------- | ------- |
 | User Stories | Complete | 3 prioritized stories with acceptance criteria |
 | Functional Requirements | Complete | 12 detailed requirements |
 | Assumptions | Complete | 6 clear assumptions documented |
@@ -73,7 +73,7 @@
 ### 🔴 Missing Documentation
 
 | Missing Aspect | Code Location | Impact |
-|----------------|---------------|--------|
+| ---------------- | --------------- | -------- |
 | Resource group creation/cleanup | `bicep-lint.yml#L63-71` | Low - Not mentioned in spec but implemented |
 | LoRaWAN starter kit submodule paths | `bicep-lint.yml#L8` | Low - Only templates/azure/ explicitly mentioned |
 | Azure CLI version verification | `bicep-lint.yml#L54-61` | Low - Verification step not in spec |
@@ -95,7 +95,7 @@
 ### Testability Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Acceptance criteria are specific | ✅ | Given/When/Then format consistently used |
 | Scenarios are measurable | ✅ | Clear pass/fail outcomes |
 | Test data requirements clear | ⚠️ | Test parameters file exists but not detailed in spec |
@@ -104,7 +104,7 @@
 ### Traceability Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Requirements map to code | ✅ | All FRs map to workflow steps |
 | No orphan requirements | ✅ | All requirements implemented |
 | No orphan code | ⚠️ | PR labeling, resource group cleanup not in spec |
@@ -113,7 +113,7 @@
 ### Consistency Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Terminology matches codebase | ✅ | "Bicep templates", "deployment validation" consistent |
 | File paths match implementation | ✅ | templates/azure/** matches |
 | Action versions accurate | ⚠️ | Spec says v1, code uses v2 |
@@ -121,7 +121,7 @@
 ### Currency Assessment
 
 | Criterion | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Reflects latest code changes | ✅ | Spec dated 2026-01-31, workflow appears current |
 | No deprecated references | ⚠️ | Spec references arm-ttk (correctly as being replaced) |
 | Version info accurate | ⚠️ | Action version outdated in spec |
@@ -140,7 +140,7 @@
 ### Security Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Authentication | ✅ | `bicep-lint.yml#L45-51` | OIDC with workload identity |
 | Credential Handling | ✅ | SC-007 | Secrets not exposed in logs |
 | Permissions | ✅ | `bicep-lint.yml#L20-23` | id-token, contents, pull-requests |
@@ -149,7 +149,7 @@
 ### Error Handling Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Failure Scenarios | ✅ | Edge Cases section | 5 scenarios documented |
 | Error Reporting | ✅ | FR-006 | Detailed error messages required |
 | Cleanup on Failure | ⚠️ | `bicep-lint.yml#L127-133` | `if: always()` cleanup, not in spec |
@@ -158,7 +158,7 @@
 ### Performance Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Timeout | ✅ | FR-009, SC-002 | 10 min max, 5 min target |
 | Concurrent Execution | ⚠️ | Edge Cases | Question asked but not answered |
 | Rate Limiting | ✅ | A-003 | Azure API limits acknowledged |
@@ -166,7 +166,7 @@
 ### Integration Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | GitHub Actions | ✅ | A-006 | Runner infrastructure mentioned |
 | Azure APIs | ✅ | FR-001, A-005 | Deployment validation API |
 | OIDC Federation | ✅ | `bicep-lint.yml#L43` | Workload Identity Federation |
@@ -174,7 +174,7 @@
 ### Configuration Coverage
 
 | Aspect | Documented | Code Location | Gap |
-|--------|------------|---------------|-----|
+| -------- | ------------ | --------------- | ----- |
 | Azure Secrets | ✅ | A-001 | CLIENT_ID, TENANT_ID, SUBSCRIPTION_ID |
 | Path Filters | ✅ | FR-002, FR-003 | templates/azure/** |
 | Test Parameters | ⚠️ | `bicep-lint.yml#L81` | File exists but not specified in spec |
@@ -192,17 +192,21 @@
 ## Recommendations
 
 ### Critical (Must Fix)
+
 None - Spec is well-aligned with implementation.
 
 ### High Priority
+
 1. **Update action version reference**: Change A-005 from arm-deploy@v1 to arm-deploy@v2
 
 ### Medium Priority
+
 1. **Document resource group lifecycle**: Add FR for temporary resource group creation and cleanup
 2. **List specific templates validated**: Document the 4 main templates being validated
 3. **Document test parameters file**: Add reference to `azuredeploy.parameters.test.json`
 
 ### Low Priority
+
 1. **Answer edge case questions**: Provide answers to the 5 edge case questions
 2. **Document PR labeling behavior**: Add note about automatic arm-templates label
 3. **Add implementation notes**: Document the actual workflow structure
@@ -248,7 +252,7 @@ None - Spec is well-aligned with implementation.
 ## Code References
 
 | File | Lines | Purpose |
-|------|-------|---------|
+| ------ | ------- | --------- |
 | `.github/workflows/bicep-lint.yml` | 1-159 | Main CI workflow for Bicep validation |
 | `templates/azure/tests/azuredeploy.parameters.test.json` | - | Test parameters for validation |
 | `templates/azure/azuredeploy.bicep` | - | Main deployment template |

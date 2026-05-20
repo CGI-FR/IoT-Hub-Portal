@@ -9,7 +9,7 @@
 ## Executive Summary
 
 | Metric | Score | Grade | Weight |
-|--------|-------|-------|--------|
+| -------- | ------- | ------- | -------- |
 | Global Correctness | 90/100 | A | 30% |
 | Global Completeness | 87/100 | B | 30% |
 | Global Technical Quality | 88/100 | B | 20% |
@@ -24,7 +24,7 @@
 ## Specification Scoreboard
 
 | # | Feature | Correctness | Completeness | Tech Quality | Coverage | Overall | Grade |
-|---|---------|-------------|--------------|--------------|----------|---------|-------|
+| --- | --------- | ------------- | -------------- | -------------- | ---------- | --------- | ------- |
 | 001 | Standard Device Management | 92 | 88 | 85 | 82 | 87 | B |
 | 001 | Bicep Preflight Validation | 95 | 90 | 88 | 85 | 90 | A |
 | 002 | Device Model Management | 90 | 85 | 88 | 80 | 86 | B |
@@ -69,7 +69,7 @@ None - All specifications scored above 70%.
 ### 🟢 Minor Gaps (Score 70-89)
 
 | Feature | Score | Primary Issues |
-|---------|-------|----------------|
+| --------- | ------- | ---------------- |
 | 003-device-properties-management | 80 | DateTime type missing from enum; UI doesn't disable non-writable properties |
 | 018-schedule-management | 79 | FR-005 day-specific commands not implemented; spec-code mismatch |
 | 006-edge-device-management | 84 | Server-side tag validation not enforced; exception type mismatch |
@@ -79,7 +79,7 @@ None - All specifications scored above 70%.
 ### ✅ Healthy Specs (Score 90+)
 
 | Feature | Score | Notes |
-|---------|-------|-------|
+| --------- | ------- | ------- |
 | 001-bicep-preflight-validation | 90 | Excellent CI/CD documentation |
 | 009-lorawan-device-model-management | 92 | Comprehensive LoRaWAN coverage |
 | 010-lorawan-concentrator-management | 93 | Very accurate with minor doc gaps |
@@ -192,7 +192,7 @@ None - All specifications scored above 70%.
 ### Documented vs Undocumented Code
 
 | Category | Documented | Undocumented | Coverage |
-|----------|------------|--------------|----------|
+| ---------- | ------------ | -------------- | ---------- |
 | API Controllers | 25 | 2 | 93% |
 | Domain Entities | 30 | 4 | 88% |
 | Application Services | 28 | 5 | 85% |
@@ -203,7 +203,7 @@ None - All specifications scored above 70%.
 ### Undocumented Areas
 
 | Area | Files/Components | Priority |
-|------|------------------|----------|
+| ------ | ------------------ | ---------- |
 | Error Handling Middleware | ExceptionHandlingMiddleware.cs | Medium |
 | AutoMapper Profiles | Various *Profile.cs files | Low |
 | Health Check Endpoints | HealthController.cs | Low |
@@ -240,7 +240,7 @@ None - All specifications scored above 70%.
 ## Appendix: Evaluation Links
 
 | Feature | Spec | Evaluation |
-|---------|------|------------|
+| --------- | ------ | ------------ |
 | 001-standard-device-management | [spec.md](../specs/001-standard-device-management/spec.md) | [evaluation.md](../specs/001-standard-device-management/evaluation.md) |
 | 001-bicep-preflight-validation | [spec.md](../specs/001-bicep-preflight-validation/spec.md) | [evaluation.md](../specs/001-bicep-preflight-validation/evaluation.md) |
 | 002-device-model-management | [spec.md](../specs/002-device-model-management/spec.md) | [evaluation.md](../specs/002-device-model-management/evaluation.md) |
@@ -283,6 +283,7 @@ This gap analysis was performed using the Excavator Evaluator Agent with the fol
 6. **Pattern Analysis**: Identified common gaps across specifications
 
 **Scoring Criteria**:
+
 - **Correctness (30%)**: Measures accuracy of spec vs actual implementation
 - **Completeness (30%)**: Measures coverage of all feature aspects
 - **Technical Quality (20%)**: Measures testability, traceability, consistency, currency
@@ -295,5 +296,5 @@ This gap analysis was performed using the Excavator Evaluator Agent with the fol
 ## Revision History
 
 | Version | Date | Author | Changes |
-|---------|------|--------|---------|
+| --------- | ------ | -------- | --------- |
 | 1.0 | 2026-02-03 | Excavator Evaluator Agent | Initial gap analysis |

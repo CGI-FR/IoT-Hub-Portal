@@ -10,7 +10,7 @@
 ## Summary
 
 | Metric | Score | Weight | Weighted Score |
-|--------|-------|--------|----------------|
+| -------- | ------- | -------- | ---------------- |
 | Correctness | 96% | 30% | 28.8% |
 | Completeness | 93% | 30% | 27.9% |
 | Technical Quality | 95% | 20% | 19.0% |
@@ -22,7 +22,7 @@
 ## Accurate Specifications
 
 | Requirement | Spec Description | Code Evidence | Status |
-|-------------|------------------|---------------|--------|
+| ------------- | ------------------ | --------------- | -------- |
 | FR-001 | Periodically synchronize standard devices | [SyncDevicesJob.cs#L41-54](src/IoTHub.Portal.Infrastructure/Jobs/SyncDevicesJob.cs#L41-54): `Execute()` method calls `SyncDevices()` | ✅ Verified |
 | FR-002 | Synchronize edge devices with modules | [SyncEdgeDeviceJob.cs#L40-54](src/IoTHub.Portal.Infrastructure/Jobs/SyncEdgeDeviceJob.cs#L40-54): `Execute()` method for edge devices | ✅ Verified |
 | FR-003 | Synchronize LoRaWAN concentrators | [SyncConcentratorsJob.cs#L28-42](src/IoTHub.Portal.Infrastructure/Jobs/SyncConcentratorsJob.cs#L28-42): `Execute()` method for concentrators | ✅ Verified |
@@ -42,7 +42,7 @@
 ## Synchronization Jobs Verification
 
 | Job Name | Spec Listed | Code File | Status |
-|----------|-------------|-----------|--------|
+| ---------- | ------------- | ----------- | -------- |
 | SyncDevicesJob | ✅ | [SyncDevicesJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/SyncDevicesJob.cs) | ✅ Verified |
 | SyncEdgeDeviceJob | ✅ | [SyncEdgeDeviceJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/SyncEdgeDeviceJob.cs) | ✅ Verified |
 | SyncConcentratorsJob | ✅ | [SyncConcentratorsJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/SyncConcentratorsJob.cs) | ✅ Verified |
@@ -56,7 +56,7 @@
 ## Inaccuracies Found
 
 | Issue | Spec Statement | Actual Code Behavior | Impact |
-|-------|----------------|----------------------|--------|
+| ------- | ---------------- | ---------------------- | -------- |
 | Job frequency | Spec: "Configurable (e.g., 5 min)" | Actual: Configured via Quartz job scheduler in Startup - not verified in spec | 🟢 Low |
 | Edge module sync | Spec: "synchronize edge devices with module configurations" | Actual: Module info fetched via `IEdgeDevicesService` but modules themselves not stored | 🟡 Medium |
 | AWS edge detection | Spec: "thing has Greengrass core device shadow" | Actual: [SyncThingsJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/AWS/SyncThingsJob.cs) checks via `amazonGreenGrass` service | 🟢 Low |
@@ -66,7 +66,7 @@
 ## Code References
 
 | Component | File Path | Lines | Purpose |
-|-----------|-----------|-------|---------|
+| ----------- | ----------- | ------- | --------- |
 | Device Sync | [SyncDevicesJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/SyncDevicesJob.cs) | 1-278 | Azure device synchronization |
 | Edge Device Sync | [SyncEdgeDeviceJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/SyncEdgeDeviceJob.cs) | 1-151 | Azure edge device sync |
 | Concentrator Sync | [SyncConcentratorsJob.cs](src/IoTHub.Portal.Infrastructure/Jobs/SyncConcentratorsJob.cs) | 1-101 | LoRa concentrator sync |
@@ -80,7 +80,7 @@
 ## Test Coverage
 
 | Area | Status | Evidence |
-|------|--------|----------|
+| ------ | -------- | ---------- |
 | SyncDevicesJob | ✅ 95% | [SyncDevicesJobTests.cs](src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/SyncDevicesJobTests.cs): Comprehensive test coverage |
 | SyncEdgeDeviceJob | ✅ 90% | [SyncEdgeDeviceJobTest.cs](src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/SyncEdgeDeviceJobTest.cs): Tests for create, update, delete |
 | SyncConcentratorsJob | ⚠️ 75% | Tests exist but less comprehensive |
@@ -94,7 +94,7 @@
 ## Key Patterns Verified
 
 | Pattern | Spec Description | Code Evidence | Status |
-|---------|------------------|---------------|--------|
+| --------- | ------------------ | --------------- | -------- |
 | Pagination | Handle large device fleets | [SyncDevicesJob.cs#L96-111](src/IoTHub.Portal.Infrastructure/Jobs/SyncDevicesJob.cs#L96-111): `continuationToken` loop | ✅ Verified |
 | Version Checking | Optimistic concurrency | [SyncDevicesJob.cs#L122](src/IoTHub.Portal.Infrastructure/Jobs/SyncDevicesJob.cs#L122): Version comparison before update | ✅ Verified |
 | Error Isolation | Per-device error handling | [SyncEdgeDeviceJob.cs#L60-84](src/IoTHub.Portal.Infrastructure/Jobs/SyncEdgeDeviceJob.cs#L60-84): Try-catch per device | ✅ Verified |
@@ -105,7 +105,7 @@
 ## Dependencies Verification
 
 | Dependency | Spec Statement | Code Evidence | Status |
-|------------|----------------|---------------|--------|
+| ------------ | ---------------- | --------------- | -------- |
 | Cloud provider APIs | Azure IoT Hub / AWS IoT Core | `IExternalDeviceService` interface abstracts cloud provider | ✅ Verified |
 | Device model config | Model validation | `IDeviceModelRepository.GetByIdAsync()` for validation | ✅ Verified |
 

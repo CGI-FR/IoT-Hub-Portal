@@ -17,6 +17,7 @@ The Device Properties Management feature enables the definition and management o
 - Support dot notation for hierarchical property names (e.g., "config.interval")
 
 The feature distinguishes between two key concepts:
+
 - **Device Model Properties**: Template definitions stored in the portal database that define what properties a device model supports
 - **Device Instance Properties**: Actual property values stored in the cloud IoT service (Azure IoT Hub twin or AWS IoT shadow) for individual devices
 
@@ -30,6 +31,7 @@ This enables model-driven device configuration where all devices of the same mod
 
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesController.cs` (Lines 1-53)
   - **Snippet**: REST API controller for device model properties
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -55,6 +57,7 @@ This enables model-driven device configuration where all devices of the same mod
 
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DevicesController.cs` (Lines 111-126)
   - **Snippet**: Device instance property endpoints
+
     ```csharp
     [HttpGet("{deviceID}/properties", Name = "GET Device Properties")]
     [Authorize("device:read")]
@@ -70,6 +73,7 @@ This enables model-driven device configuration where all devices of the same mod
 
 - `src/IoTHub.Portal.Application/Services/IDeviceModelPropertiesService.cs` (Lines 1-13)
   - **Snippet**: Service interface for model property templates
+
     ```csharp
     public interface IDeviceModelPropertiesService
     {
@@ -87,6 +91,7 @@ This enables model-driven device configuration where all devices of the same mod
 
 - `src/IoTHub.Portal.Application/Services/IDevicePropertyService.cs` (Lines 1-12)
   - **Snippet**: Service interface for device instance properties
+
     ```csharp
     public interface IDevicePropertyService
     {
@@ -112,6 +117,7 @@ This enables model-driven device configuration where all devices of the same mod
 
 - `src/IoTHub.Portal.Domain/Repositories/IDeviceModelPropertiesRepository.cs` (Lines 1-11)
   - **Snippet**: Repository interface
+
     ```csharp
     public interface IDeviceModelPropertiesRepository : IRepository<DeviceModelProperty>
     {
@@ -128,6 +134,7 @@ This enables model-driven device configuration where all devices of the same mod
 
 - `src/IoTHub.Portal.Domain/Entities/DeviceModelProperty.cs` (Lines 1-44)
   - **Snippet**: Domain entity for property templates
+
     ```csharp
     public class DeviceModelProperty : EntityBase
     {
@@ -171,6 +178,7 @@ This enables model-driven device configuration where all devices of the same mod
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/DeviceProperty.cs` (Lines 1-44)
   - **Snippet**: DTO for property templates
+
     ```csharp
     public class DeviceProperty
     {
@@ -195,6 +203,7 @@ This enables model-driven device configuration where all devices of the same mod
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/DevicePropertyValue.cs` (Lines 1-16)
   - **Snippet**: DTO for property values
+
     ```csharp
     public class DevicePropertyValue : DeviceProperty
     {
@@ -303,6 +312,7 @@ This enables model-driven device configuration where all devices of the same mod
 ### Property Types
 
 Supports six property types with UI validation:
+
 - **Boolean**: Rendered as checkbox with tri-state support
 - **Double**: Text field with double parsing validation
 - **Float**: Text field with float parsing validation
@@ -325,6 +335,7 @@ Supports six property types with UI validation:
 ### Dot Notation Support
 
 Property names support hierarchical paths using dot notation:
+
 - Example: `config.telemetryInterval` maps to `{ "config": { "telemetryInterval": 30 } }`
 - Uses JSON path selection (JObject.SelectToken) to navigate nested properties
 - Validation ensures format: single word or dot-separated words

@@ -146,7 +146,7 @@ As the authorization system, I need to verify if a user has a specific permissio
 
 ### Access Control Model
 
-```
+```text
 User ─────► Principal ─────► AccessControl ─────► Role ─────► Actions
                                    │
                                    └── Scope (resource boundary)
@@ -169,10 +169,12 @@ User ─────► Principal ─────► AccessControl ────�
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/015-access-control-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - AccessControlController: Access control CRUD endpoints
 - AccessControlService: Business logic for access control operations
 - AccessControlRepository: Data access for access control entities
@@ -180,9 +182,10 @@ User ─────► Principal ─────► AccessControl ────�
 - AccessControlProfile: AutoMapper configuration for DTOs
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 013-user-management (users/principals to assign roles to)
   - 014-role-management (roles to assign)
-- **Depended By**: 
+- **Depended By**:
   - All protected features (use access control for authorization)
   - 016-permissions-management (user permission queries)

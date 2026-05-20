@@ -262,52 +262,65 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 ### Edge Cases
 
 **Device ID Validation**:
+
 - What happens when a user attempts to register a device with a device ID containing lowercase letters or special characters? The system must reject the registration and display a clear error message explaining the required format (16 uppercase hexadecimal characters).
 - How does the system handle device IDs that are too short or too long? The system validates the exact 16-character length and provides specific feedback.
 
 **Authentication Mode Switching**:
+
 - What happens when a user switches from OTAA to ABP mode without providing ABP credentials? The system must validate that all required ABP fields (DevAddr, AppSKey, NwkSKey) are populated before allowing the save.
 - How does the system handle switching from ABP to OTAA on a device that has already connected? The device will require a new join procedure, and frame counters will reset according to OTAA negotiation.
 
 **Frame Counter Boundaries**:
+
 - What happens when frame counters reach the maximum value (4,294,967,295 for 32-bit counters)? The system should allow frame counter reset or device re-provisioning to prevent counter exhaustion.
 - How does the system handle frame counter resets in ABP mode? The ABP relaxed mode should be configured to prevent replay attack protection from blocking legitimate resets during testing.
 
 **Gateway Assignment**:
+
 - What happens when a device is assigned to a gateway that goes offline? The device should still be able to communicate through other available gateways if no explicit assignment is made.
 - How does the system handle deletion of a gateway that has devices assigned to it? The system should either prevent gateway deletion or clear gateway assignments from affected devices.
 
 **Telemetry Deduplication**:
+
 - What happens when the same message is received by multiple gateways with deduplication set to "Drop"? The system processes the first message received and ignores subsequent duplicates based on sequence number.
 - How does the system handle "Mark" deduplication mode? The system processes all messages but marks duplicates with metadata indicating they are duplicates.
 
 **Telemetry Storage Limits**:
+
 - What happens when telemetry history reaches the retention limit? The system automatically removes the oldest telemetry entries while retaining the most recent messages.
 - How does the system handle high-frequency telemetry from devices? Rate limiting or aggregation may be necessary to prevent database growth.
 
 **Sensor Decoder Failures**:
+
 - What happens when the configured decoder URL is unreachable? The system stores the raw binary payload and logs the decoder failure, allowing retry or manual decoding later.
 - How does the system handle decoder responses that return invalid JSON? Error handling should gracefully store the raw payload and alert administrators to the decoder issue.
 
 **Cloud Platform Synchronization**:
+
 - What happens when device creation succeeds locally but fails to provision to the cloud platform? The system should roll back the local creation or mark the device as pending synchronization for retry.
 - How does the system handle cloud platform disconnections during device updates? Transactional integrity should ensure either both local and cloud updates succeed or both fail.
 
 **Permission Boundaries**:
+
 - What happens when a user with read-only permissions attempts to update a device? The system displays appropriate read-only interfaces and prevents modification attempts.
 - How does the system handle users with device:write permission but not device:execute permission? Command execution buttons are hidden or disabled, and API attempts return authorization errors.
 
 **Device Model Dependencies**:
+
 - What happens when an administrator creates a device with a model that doesn't exist? The system validates model existence and prevents device creation with invalid model references.
 - How does the system handle model deletion when devices are assigned to that model? The system should either prevent model deletion or handle orphaned device references gracefully.
 
 **Concurrent Modifications**:
+
 - What happens when two administrators simultaneously edit the same device? The system should detect concurrent modifications and either use optimistic locking to prevent conflicts or notify the second user their changes may overwrite the first.
 
 **Bulk Operations**:
+
 - How does the system handle requests to view or export large device lists (1000+ devices)? Pagination ensures only a subset loads at once, and export operations should handle large datasets efficiently.
 
 **Feature Toggle Scenarios**:
+
 - What happens when the LoRa feature is disabled while users are viewing LoRaWAN devices? The system returns "not found" errors for LoRa endpoints and displays appropriate messages.
 
 ---
@@ -317,6 +330,7 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 ### Functional Requirements
 
 **Device Registration**:
+
 - **FR-001**: System MUST allow administrators to register new LoRaWAN devices with a unique 16-character hexadecimal device identifier (DevEUI)
 - **FR-002**: System MUST validate device identifiers are exactly 16 characters containing only uppercase letters A-F and numbers 0-9
 - **FR-003**: System MUST require a device name and device model selection for each registered device
@@ -324,12 +338,14 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 - **FR-005**: System MUST provision registered devices to the cloud IoT platform for connectivity
 
 **Authentication Configuration**:
+
 - **FR-006**: System MUST support Over-The-Air Activation (OTAA) authentication requiring Application EUI and Application Key
 - **FR-007**: System MUST support Activation By Personalization (ABP) authentication requiring Device Address, Application Session Key, and Network Session Key
 - **FR-008**: System MUST enforce that either OTAA or ABP credentials are provided based on the selected authentication mode
 - **FR-009**: System MUST default new devices to OTAA authentication mode as the recommended secure method
 
 **Device Inventory Management**:
+
 - **FR-010**: System MUST display a paginated list of all registered LoRaWAN devices
 - **FR-011**: System MUST allow users to search devices by name or identifier
 - **FR-012**: System MUST allow users to filter devices by connection status (connected/disconnected)
@@ -340,6 +356,7 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 - **FR-017**: System MUST maintain filter and search criteria when navigating between pages
 
 **Device Configuration Updates**:
+
 - **FR-018**: System MUST allow administrators to update device names
 - **FR-019**: System MUST allow administrators to change device model assignments
 - **FR-020**: System MUST allow administrators to modify LoRaWAN device class (Class A, B, or C)
@@ -355,12 +372,14 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 - **FR-030**: System MUST validate all configuration changes before persisting
 
 **Device Deletion**:
+
 - **FR-031**: System MUST allow administrators to permanently delete devices
 - **FR-032**: System MUST remove deleted devices from both local storage and cloud IoT platform
 - **FR-033**: System MUST cascade deletion to remove associated device tags, labels, and telemetry data
 - **FR-034**: System MUST prevent access to deleted devices through any interface
 
 **Telemetry Management**:
+
 - **FR-035**: System MUST receive and store telemetry messages transmitted by LoRaWAN devices
 - **FR-036**: System MUST display telemetry history for individual devices with timestamps
 - **FR-037**: System MUST decode telemetry payloads using configured sensor decoders
@@ -370,32 +389,38 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 - **FR-041**: System MUST update device last activity time when telemetry is received
 
 **Command Execution**:
+
 - **FR-042**: System MUST allow administrators to execute commands on LoRaWAN devices
 - **FR-043**: System MUST display available commands based on device model definitions
 - **FR-044**: System MUST transmit commands as cloud-to-device messages through the LoRaWAN network
 - **FR-045**: System MUST provide feedback on command execution success or failure
 
 **Gateway Management**:
+
 - **FR-046**: System MUST provide a list of available gateways for device assignment
 - **FR-047**: System MUST allow optional gateway assignment to devices for traffic routing
 - **FR-048**: System MUST support devices operating without explicit gateway assignment (automatic routing)
 
 **Device Organization**:
+
 - **FR-049**: System MUST allow administrators to add custom tags (name-value pairs) to devices
 - **FR-050**: System MUST allow administrators to assign labels to devices for categorization
 - **FR-051**: System MUST allow filtering and searching devices by tags and labels
 - **FR-052**: System MUST synchronize device tags to cloud IoT platform metadata
 
 **Adaptive Data Rate (ADR) Monitoring**:
+
 - **FR-053**: System MUST display adaptive data rate values reported by devices including data rate, transmit power, and number of repetitions
 - **FR-054**: System MUST display reported receive window parameters from connected devices
 - **FR-055**: System MUST update displayed ADR values when they change on the cloud platform
 
 **Deduplication Configuration**:
+
 - **FR-056**: System MUST allow administrators to configure deduplication mode (none, drop, or mark) for handling messages received by multiple gateways
 - **FR-057**: System MUST apply the configured deduplication strategy when processing telemetry
 
 **Frame Counter Management**:
+
 - **FR-058**: System MUST support frame counter configuration with values from 0 to 4,294,967,295
 - **FR-059**: System MUST allow configuration of uplink and downlink frame counter start values
 - **FR-060**: System MUST support frame counter reset functionality
@@ -403,23 +428,27 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 - **FR-062**: System MUST support ABP relaxed mode for flexible frame counter validation during testing
 
 **Connection Status**:
+
 - **FR-063**: System MUST track and display device connection status (connected/disconnected)
 - **FR-064**: System MUST track and display device enabled status
 - **FR-065**: System MUST record device first connection timestamp
 - **FR-066**: System MUST update device status based on cloud platform state
 
 **Device Duplication**:
+
 - **FR-067**: System MUST allow administrators to duplicate existing device configurations
 - **FR-068**: System MUST copy all device settings except unique identifiers when duplicating
 - **FR-069**: System MUST require unique device ID and name for duplicated devices
 
 **Authorization and Access Control**:
+
 - **FR-070**: System MUST enforce read permission for viewing devices and telemetry
 - **FR-071**: System MUST enforce write permission for creating, updating, and deleting devices
 - **FR-072**: System MUST enforce execute permission for sending commands to devices
 - **FR-073**: System MUST restrict access to LoRaWAN features when LoRa support is disabled in configuration
 
 **Data Validation**:
+
 - **FR-074**: System MUST validate device identifier format before allowing registration
 - **FR-075**: System MUST validate required fields are populated based on authentication mode
 - **FR-076**: System MUST validate frame counter values are within valid range
@@ -427,6 +456,7 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 - **FR-078**: System MUST provide clear error messages for validation failures
 
 **Cloud Platform Integration**:
+
 - **FR-079**: System MUST create device twins in cloud IoT platform when devices are registered
 - **FR-080**: System MUST synchronize device configuration to cloud platform desired properties
 - **FR-081**: System MUST retrieve device reported properties from cloud platform
@@ -462,46 +492,55 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 ### Measurable Outcomes
 
 **Device Onboarding Efficiency**:
+
 - **SC-001**: Administrators can register a new LoRaWAN device with OTAA authentication in under 2 minutes including credential entry and model selection
 - **SC-002**: Device registration validation errors are displayed within 1 second of form submission with clear guidance on required corrections
 - **SC-003**: 95% of device registrations succeed on first attempt without validation errors
 
 **Operational Visibility**:
+
 - **SC-004**: Device list displays 50+ devices with search, filter, and pagination in under 2 seconds
 - **SC-005**: Search and filter operations return results within 1 second of user input
 - **SC-006**: Administrators can locate a specific device by name or identifier in under 10 seconds regardless of fleet size
 
 **Configuration Management**:
+
 - **SC-007**: Device configuration updates synchronize to cloud platform within 5 seconds of save operation
 - **SC-008**: LoRaWAN parameter changes (class type, receive windows, frame counters) take effect on next device communication
 - **SC-009**: 98% of device updates complete successfully without synchronization errors
 
 **Telemetry Monitoring**:
+
 - **SC-010**: Telemetry data appears in device history within 30 seconds of device transmission
 - **SC-011**: Sensor decoder processes and displays human-readable telemetry values within 5 seconds of receipt
 - **SC-012**: System maintains telemetry history for at least the most recent 100 messages per device
 
 **Remote Device Management**:
+
 - **SC-013**: Command execution requests transmit to connected devices within 10 seconds
 - **SC-014**: Administrators receive confirmation of command transmission within 15 seconds of execution request
 - **SC-015**: Command execution success rate exceeds 95% for connected devices
 
 **Fleet Management at Scale**:
+
 - **SC-016**: System supports management of at least 1,000 LoRaWAN devices without performance degradation
 - **SC-017**: Bulk filtering operations (e.g., "show all disconnected devices") complete in under 3 seconds for fleets up to 1,000 devices
 - **SC-018**: Concurrent device updates by multiple administrators complete without data loss or conflicts
 
 **User Productivity**:
+
 - **SC-019**: Duplicate device function reduces time to register similar devices by at least 50%
 - **SC-020**: Tag and label filtering reduces time to locate specific device categories by at least 60% compared to manual searching
 - **SC-021**: Reduce administrator training time for device management tasks to under 1 hour through intuitive interface design
 
 **Reliability and Data Integrity**:
+
 - **SC-022**: Device data remains synchronized between local database and cloud platform with 99.9% accuracy
 - **SC-023**: Device deletion successfully removes all associated data (tags, labels, telemetry) in 100% of cases
 - **SC-024**: Telemetry deduplication prevents processing duplicate messages with 99% accuracy
 
 **Security and Access Control**:
+
 - **SC-025**: Unauthorized access attempts to device management functions result in appropriate error responses in 100% of cases
 - **SC-026**: Device credentials (AppKey, AppSKey, NwkSKey) are stored and transmitted securely in all scenarios
 - **SC-027**: Frame counter security prevents replay attacks on ABP devices in production deployments
@@ -511,6 +550,7 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/008-lorawan-device-management/analyze.md`
 - **Analyzed By**: excavator.specifier agent
 - **Analysis Date**: January 30, 2025
@@ -518,39 +558,47 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 ### Code References
 
 **Controllers**:
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANDevicesController.cs` - REST API endpoints for LoRaWAN device CRUD operations, telemetry retrieval, command execution, and gateway management
 
 **Business Logic**:
+
 - `src/IoTHub.Portal.Infrastructure/Services/LoRaWanDeviceService.cs` - Core device service implementation with LoRa-specific business logic
 - `src/IoTHub.Portal.Application/Services/ILoRaWANCommandService.cs` - Command execution service interface
 - `src/IoTHub.Portal.Application/Services/IDeviceService.cs` - Generic device service interface
 
 **Data Access**:
+
 - `src/IoTHub.Portal.Domain/Repositories/ILorawanDeviceRepository.cs` - Device repository interface
 - `src/IoTHub.Portal.Domain/Repositories/ILoRaDeviceTelemetryRepository.cs` - Telemetry repository interface
 - `src/IoTHub.Portal.Domain/Entities/LorawanDevice.cs` - Device entity with comprehensive LoRa properties
 - `src/IoTHub.Portal.Domain/Entities/LoRaDeviceTelemetry.cs` - Telemetry entity
 
 **DTOs and Models**:
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceDetails.cs` - Complete device DTO with validation
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceBase.cs` - Base LoRa configuration properties
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaDeviceTelemetryDto.cs` - Telemetry DTO
 
 **UI Components**:
+
 - `src/IoTHub.Portal.Client/Pages/Devices/DeviceListPage.razor` - Device inventory list page
 - `src/IoTHub.Portal.Client/Components/Devices/EditDevice.razor` - Device create/edit form with LoRa-specific sections
 - `src/IoTHub.Portal.Client/Pages/Devices/DeviceDetailPage.razor` - Device detail view
 
 **Client Services**:
+
 - `src/IoTHub.Portal.Client/Services/LoRaWanDeviceClientService.cs` - HTTP client service for API communication
 
 **Mappers**:
+
 - `src/IoTHub.Portal.Infrastructure/Mappers/LoRaDeviceTwinMapper.cs` - IoT Hub device twin mapper
 - `src/IoTHub.Portal.Infrastructure/Mappers/LoRaDeviceMapper.cs` - Entity to DTO mapper
 
 ### Dependencies
 
 **Internal Feature Dependencies**:
+
 - Device Models - Define available commands, decoder settings, and device capabilities
 - Device Tag Settings - Provide custom tag definitions for device organization
 - Label Management - Supply label definitions for device categorization
@@ -560,6 +608,7 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 - Gateway Management - Provide gateway list for device routing
 
 **Features That Depend on This Feature**:
+
 - LoRaWAN Device Models - Use device instances to test model configurations
 - Telemetry Analytics - Aggregate telemetry data across LoRaWAN device fleet
 - Device Monitoring Dashboards - Display LoRaWAN device health and connectivity
@@ -567,6 +616,7 @@ An IoT administrator deploying multiple similar devices needs to duplicate an ex
 - Reporting Systems - Generate reports on LoRaWAN device inventory and usage
 
 ### Related Documentation
+
 - LoRaWAN 1.0.x Specification - Protocol standards for device communication
 - Azure IoT Hub Documentation - Cloud platform integration patterns
 - AWS IoT Core Documentation - Alternative cloud platform support

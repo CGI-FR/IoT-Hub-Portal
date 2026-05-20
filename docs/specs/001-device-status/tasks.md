@@ -21,6 +21,7 @@ description: "Task list for improving device status display"
 ## Path Conventions
 
 This is a Blazor web application with the following structure:
+
 - Frontend: `/src/IoTHub.Portal.Client/`
 - Shared Models: `/src/IoTHub.Portal.Shared/Models/`
 - Unit Tests: `/src/IoTHub.Portal.Tests.Unit/`
@@ -50,6 +51,7 @@ This is a Blazor web application with the following structure:
 **Goal**: Remove the misleading "Connection State" column from the device list view so LoRaWAN devices don't appear as "disconnected" when functioning normally
 
 **Independent Test**: Navigate to `/devices` page and verify that:
+
 1. "Connection State" column is NOT present in the table headers
 2. Devices are displayed without connection state indicators in the list
 3. All other columns remain functional (Device, Allowed, Last activity time, See details, Delete)
@@ -79,6 +81,7 @@ This is a Blazor web application with the following structure:
 **Goal**: Remove the "Last Status Update" column that shows Device Twin update time (misleading) and ensure activity information uses lastActivityTime
 
 **Independent Test**: Navigate to `/devices` page and verify that:
+
 1. "Last Status Update" column is NOT present in the table headers
 2. "Last activity time" column is present and displays accurate timestamps
 3. Activity timestamp reflects actual device communication, not Twin updates
@@ -107,6 +110,7 @@ This is a Blazor web application with the following structure:
 **Goal**: Apply the same column removal to gateway list view for consistency across the platform
 
 **Independent Test**: Navigate to `/edge/devices` page and verify that:
+
 1. "Connection State" column is NOT present (Status column showing "Connected/Disconnected" should remain)
 2. Gateway list displays correctly with all other columns functional
 3. Activity information is accurate

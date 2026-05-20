@@ -123,7 +123,7 @@ As the LoRaWAN system, I need an up-to-date list of gateway IDs so that LoRaWAN 
 ### Synchronization Jobs
 
 | Job | Frequency | Scope |
-|-----|-----------|-------|
+| ----- | ----------- | ------- |
 | SyncDevicesJob | Configurable (e.g., 5 min) | Standard IoT devices |
 | SyncEdgeDeviceJob | Configurable (e.g., 5 min) | Edge devices with modules |
 | SyncConcentratorsJob | Configurable (e.g., 5 min) | LoRa concentrators |
@@ -149,10 +149,12 @@ As the LoRaWAN system, I need an up-to-date list of gateway IDs so that LoRaWAN 
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/024-device-synchronization-jobs/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - SyncDevicesJob: Standard device synchronization
 - SyncEdgeDeviceJob: Edge device synchronization
 - SyncConcentratorsJob: LoRa concentrator synchronization
@@ -162,10 +164,11 @@ As the LoRaWAN system, I need an up-to-date list of gateway IDs so that LoRaWAN 
 - SyncGreenGrassDeploymentsJob: AWS Greengrass synchronization
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - Cloud provider APIs (Azure IoT Hub / AWS IoT Core)
   - Device model configuration (to validate model references)
-- **Depended By**: 
+- **Depended By**:
   - 001-standard-device-management (devices from sync)
   - 006-edge-device-management (edge devices from sync)
   - 010-lorawan-concentrator-management (concentrators from sync)

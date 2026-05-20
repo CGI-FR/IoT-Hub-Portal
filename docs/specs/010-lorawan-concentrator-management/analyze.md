@@ -25,8 +25,10 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANConcentratorsController.cs` (Lines 1-153)
   - **Snippet**: Main REST API controller for concentrator operations
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -60,8 +62,10 @@ This feature is essential for LoRaWAN network infrastructure management, providi
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/ILoRaWANConcentratorService.cs` (Lines 1-14)
   - **Snippet**: Core service interface
+
     ```csharp
     public interface ILoRaWANConcentratorService
     {
@@ -81,11 +85,13 @@ This feature is essential for LoRaWAN network infrastructure management, providi
   - Coordinates with concentrator twin mapper for twin updates
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IConcentratorRepository.cs`
   - Generic repository interface for Concentrator entity
 
 - `src/IoTHub.Portal.Domain/Entities/Concentrator.cs` (Lines 1-41)
   - **Snippet**: Core concentrator entity
+
     ```csharp
     public class Concentrator : EntityBase
     {
@@ -107,6 +113,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
     ```
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/LoRaWAN/Concentrator/ConcentratorListPage.razor` (Lines 1-190)
   - Main concentrator listing page with search panel
   - Server-side paginated table with sorting
@@ -138,6 +145,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
   - Reset functionality
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/ConcentratorDto.cs` (Lines 1-63)
   - Complete concentrator details DTO with validation attributes
   - Properties: DeviceId (16 hex chars), DeviceName, LoraRegion, DeviceType, ClientThumbprint (optional, 40 hex chars), IsConnected, IsEnabled, AlreadyLoggedInOnce, RouterConfig
@@ -151,6 +159,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
   - LoRaWAN-specific router configuration model
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/ILoRaWanConcentratorClientService.cs` (Lines 1-20)
   - Client-side service interface for HTTP API calls
   - Methods: GetConcentrators, GetConcentrator, CreateConcentrator, UpdateConcentrator, DeleteConcentrator, GetFrequencyPlans
@@ -159,6 +168,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
   - HTTP client implementation for concentrator API calls
 
 ### Mappers
+
 - `src/IoTHub.Portal.Application/Mappers/IConcentratorTwinMapper.cs`
   - Interface for mapping between ConcentratorDto and IoT Hub device twin
 
@@ -167,6 +177,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
   - Updates device twin desired properties from concentrator DTO
 
 ### Validators
+
 - `src/IoTHub.Portal.Client/Validators/ConcentratorValidator.cs`
   - FluentValidation rules for concentrator data
   - Validates DeviceID format, DeviceName, LoraRegion, ClientThumbprint format
@@ -176,6 +187,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 ## API Endpoints
 
 ### Concentrator Management
+
 - `GET /api/lorawan/concentrators` - Get paginated concentrator list
   - Query parameters: pageSize, pageNumber, orderBy[], searchText, status (bool?), state (bool?)
   - Returns: PaginationResult<ConcentratorDto>
@@ -210,6 +222,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
   - Removes device from both IoT Hub and database
 
 ### Supporting Endpoints
+
 - `GET /api/lorawan/freqbands` - Get available frequency plans/regions
   - Used by UI to populate LoraRegion dropdown
   - Returns: IEnumerable<FrequencyPlan>
@@ -219,10 +232,12 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 ## Authorization
 
 ### Required Permissions
+
 - **concentrator:read** - View concentrator list and details
 - **concentrator:write** - Create, update, and delete concentrators
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` attributes on controller methods
 - Permission checks in UI components using `HasPermissionAsync(PortalPermissions.ConcentratorRead/ConcentratorWrite)` for conditional rendering
 - Base authorization requirement: `[Authorize]` on LoRaWANConcentratorsController
@@ -233,11 +248,13 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **LoRaWAN Frequency Plans** - Concentrators must be associated with a valid frequency plan/region
 - **LoRaWAN Network Server** - Router configuration is retrieved from LoRaWAN management service
 - **IoT Hub Integration** - External device service for Azure IoT Hub device operations
 
 ### Service Dependencies
+
 - `IExternalDeviceService` - IoT Hub device operations (create device with twin, update device, update device twin, delete device, get device, get device twin)
 - `IConcentratorTwinMapper` - Mapping between ConcentratorDto and device twin properties
 - `ILoRaWanManagementService` - LoRaWAN router configuration management (GetRouterConfig by region)
@@ -246,11 +263,13 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 - `IMapper` - AutoMapper for entity to DTO mapping
 
 ### External Dependencies
+
 - **Azure IoT Hub** - Cloud IoT device management service for device twin and device status
 - **LoRaWAN Network Server** - Manages LoRaWAN-specific configuration and routing
 - **Entity Framework Core** - Database access via PortalDbContext
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library (MudTable, MudForm, MudTextField, MudSelect, etc.)
 - Frequency Plans API for region selection dropdown
 
@@ -259,6 +278,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 ## Key Features & Behaviors
 
 ### LoRaWAN-Specific Features
+
 - **DeviceID Validation**: 16 hexadecimal characters (0-9, A-F) format enforced
 - **Client Certificate Authentication**: Optional SHA1 thumbprint (40 hex chars with colon separators) for mutual TLS
 - **Frequency Plan/Region Selection**: Required selection from available LoRaWAN frequency plans (e.g., EU868, US915)
@@ -266,28 +286,33 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 - **DeviceType**: Automatically set to "LoRa Concentrator" during creation
 
 ### Search and Filtering
+
 - Full-text search by DeviceID or DeviceName
 - Filter by enabled status (Enabled/Disabled/All)
 - Filter by connection state (Connected/Disconnected/All)
 - Sorting support on Name and IsEnabled columns
 
 ### Pagination
+
 - Server-side pagination with configurable page size
 - Uses cursor-based navigation with nextPage URL
 - Default page size shown in table
 
 ### Connection Status
+
 - Real-time display of connection status (IsConnected property)
 - Visual indicators: WiFi icon (green=connected, red=disconnected) in detail view
 - Status shown in list view with checkmark (enabled) or error icon (disabled)
 
 ### Device Twin Synchronization
+
 - Automatic synchronization with Azure IoT Hub device twin
 - Device twin properties updated via ConcentratorTwinMapper
 - Device status (enabled/disabled) synchronized via DeviceStatus enum
 - Router configuration embedded in device twin
 
 ### Validation
+
 - DeviceID format: exactly 16 hexadecimal characters
 - DeviceName: required field
 - LoraRegion: required, must be valid frequency plan
@@ -296,6 +321,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 - Client-side validation using ConcentratorValidator and MudForm validation
 
 ### Input Masking
+
 - ClientThumbprint field uses PatternMask to enforce format: "XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX"
 - Automatic uppercase transformation for hex characters
 - Colon delimiters preserved in value
@@ -305,6 +331,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 ## Notes
 
 ### Architecture Patterns
+
 - **Service Layer Abstraction** - ILoRaWANConcentratorService enables clean separation of concerns
 - **Repository Pattern** - Clean separation of data access concerns
 - **External Service Integration** - IExternalDeviceService abstracts IoT Hub provider specifics
@@ -312,18 +339,21 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 - **DTO Pattern** - Clear separation between API models (ConcentratorDto) and domain entities (Concentrator)
 
 ### LoRaWAN Integration
+
 - Concentrators are gateway devices in LoRaWAN architecture, not end-devices
 - Router configuration is region-specific and managed by LoRaWAN Network Server
 - Supports LoRaWAN 1.0.x and 1.1 standards
 - Client certificate thumbprint enables mutual TLS authentication for secure gateway connections
 
 ### Performance Considerations
+
 - Server-side pagination reduces data transfer
 - Predicate building for efficient database queries
 - Lazy loading not applicable (concentrator entity has no navigation properties)
 - Simple entity structure minimizes query complexity
 
 ### Security Considerations
+
 - Comprehensive authorization checks at controller and UI levels
 - Client certificate thumbprint validation for secure gateway authentication
 - Input validation on all user-submitted data
@@ -331,21 +361,25 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 - Feature gate ensures concentrator management only available when LoRaWAN feature enabled
 
 ### Feature Gate
+
 - `[LoRaFeatureActiveFilter]` attribute on controller ensures all endpoints return 404 when LoRaWAN feature is disabled
 - Portal settings control LoRaWAN feature availability
 - UI navigation to concentrator pages should also check feature flag
 
 ### Testing Coverage
+
 - Unit tests exist for controller, service, validator, and UI components
 - Test files should include: LoRaWANConcentratorsControllerTests.cs, LoRaWANConcentratorServiceTests.cs, ConcentratorValidatorTests.cs
 
 ### Limitations
+
 - Only supports Azure IoT Hub (no AWS IoT Core support for LoRaWAN concentrators)
 - No bulk operations (import/export not implemented for concentrators)
 - No telemetry or metrics display for concentrators (focused on configuration only)
 - Connection status is passively reported, not actively monitored with health checks
 
 ### Future Enhancement Opportunities
+
 - Real-time connection status updates via SignalR
 - Concentrator health metrics and telemetry dashboard
 - Bulk concentrator operations (enable/disable multiple)
@@ -369,6 +403,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 ## Business Value
 
 ### Key Benefits
+
 - **Simplified Gateway Management**: Centralized portal for managing all LoRaWAN concentrators
 - **Secure Authentication**: Client certificate support ensures secure gateway connections
 - **Region Flexibility**: Support for multiple frequency plans enables global deployments
@@ -377,6 +412,7 @@ This feature is essential for LoRaWAN network infrastructure management, providi
 - **Access Control**: Fine-grained permissions for read vs. write operations
 
 ### Use Cases
+
 1. **Network Setup**: IT administrators provision new LoRaWAN gateways during network expansion
 2. **Gateway Troubleshooting**: Operations teams monitor connection status and reconfigure disconnected gateways
 3. **Regional Deployment**: Global deployments require different concentrators for different frequency regulations

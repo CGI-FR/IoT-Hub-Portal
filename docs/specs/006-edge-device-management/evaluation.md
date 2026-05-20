@@ -16,7 +16,7 @@ The Edge Device Management specification (006) provides comprehensive documentat
 ## Summary Scores
 
 | Category | Score | Weight | Weighted Score |
-|----------|-------|--------|----------------|
+| ---------- | ------- | -------- | ---------------- |
 | **Correctness** | 88 | 30% | 26.4 |
 | **Completeness** | 85 | 30% | 25.5 |
 | **Technical Quality** | 82 | 20% | 16.4 |
@@ -32,7 +32,7 @@ The Edge Device Management specification (006) provides comprehensive documentat
 ### Accurate Specifications ✅
 
 | Requirement | Implementation Evidence |
-|-------------|------------------------|
+| ------------- | ------------------------ |
 | FR-001: Create edge devices with model, name, tags | [AzureEdgeDevicesService.cs#L54-L76](src/IoTHub.Portal.Server/Services/AzureEdgeDevicesService.cs#L54-L76): `CreateEdgeDevice()` creates device twin with tags and model |
 | FR-002: Multi-cloud provisioning (Azure/AWS) | [AzureEdgeDevicesService.cs](src/IoTHub.Portal.Server/Services/AzureEdgeDevicesService.cs) and [AWSEdgeDevicesService.cs](src/IoTHub.Portal.Infrastructure/Services/AWS/AWSEdgeDevicesService.cs): Separate implementations |
 | FR-003: Paginated list with server-side filtering | [EdgeDevicesServiceBase.cs#L33-L85](src/IoTHub.Portal.Infrastructure/Services/EdgeDevicesServiceBase.cs#L33-L85): `GetEdgeDevicesPage()` with predicate-based filtering |
@@ -53,7 +53,7 @@ The Edge Device Management specification (006) provides comprehensive documentat
 ### Inaccuracies Found ⚠️
 
 | Issue | Spec Statement | Actual Implementation |
-|-------|---------------|----------------------|
+| ------- | --------------- | ---------------------- |
 | **FR-007: Required tag validation** | "System MUST validate that all required tags are provided before allowing edge device creation or updates" | Validation occurs on **client-side only** in [CreateEdgeDevicePage.razor#L150-L152](src/IoTHub.Portal.Client/Pages/EdgeDevices/CreateEdgeDevicePage.razor#L150-L152) using `Required="@tag.Required"`. No server-side enforcement found in `CreateEdgeDevice()` or `UpdateEdgeDevice()` |
 | **FR-009: Detailed device info** | "runtime health status, module list, deployment information" | Implementation shows partial: `RuntimeResponse` and `Modules` exist in [IoTEdgeDevice.cs](src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeDevice.cs), but "health status" terminology differs (uses "running"/"HEALTHY") |
 | **FR-016: Available labels display** | "based on labels currently assigned to edge devices or device models" | [EdgeDevicesServiceBase.cs#L120-L127](src/IoTHub.Portal.Infrastructure/Services/EdgeDevicesServiceBase.cs#L120-L127): Correctly implements but spec doesn't mention the union operation with device model labels |
@@ -74,7 +74,7 @@ The Edge Device Management specification (006) provides comprehensive documentat
 ### Well-Documented Areas ✅
 
 | Area | Documentation Quality | Evidence |
-|------|----------------------|----------|
+| ------ | ---------------------- | ---------- |
 | User Stories | Excellent - 10 stories with priorities | Stories 1-10 with P1-P4 priorities and acceptance criteria |
 | Edge Cases | Very Good - 12 edge cases documented | Covers sync failures, concurrency, expired URLs, large deployments |
 | Functional Requirements | Very Good - 25 requirements | FR-001 through FR-025 with clear MUST statements |
@@ -85,7 +85,7 @@ The Edge Device Management specification (006) provides comprehensive documentat
 ### Missing Documentation ⚠️
 
 | Gap | Impact | Recommendation |
-|-----|--------|----------------|
+| ----- | -------- | ---------------- |
 | **API Request/Response schemas** | Medium | Add DTOs specification (`IoTEdgeDevice`, `IoTEdgeListItem` structures) |
 | **Error response formats** | Medium | Document HTTP status codes and error payload structures |
 | **Configuration settings** | Low | Document job intervals, page size defaults, timeout values |
@@ -98,6 +98,7 @@ The Edge Device Management specification (006) provides comprehensive documentat
 ### Non-Functional Requirements Gap
 
 The spec lacks explicit documentation for:
+
 - Rate limiting on enrollment script generation
 - Maximum device name/ID length
 - Tag key/value character restrictions
@@ -111,7 +112,7 @@ The spec lacks explicit documentation for:
 ### Testability Assessment
 
 | Aspect | Rating | Notes |
-|--------|--------|-------|
+| -------- | -------- | ------- |
 | Independent Tests | ✅ Good | Each user story has "Independent Test" section |
 | Acceptance Scenarios | ✅ Good | Given-When-Then format for all stories |
 | Test Coverage Mapping | ⚠️ Partial | Tests exist in [EdgeDevicesControllerTests.cs](src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/EdgeDevicesControllerTests.cs) and [EdgeDeviceServiceTest.cs](src/IoTHub.Portal.Tests.Unit/Server/Services/EdgeDeviceServiceTest.cs) but not all FR requirements mapped |
@@ -120,7 +121,7 @@ The spec lacks explicit documentation for:
 ### Traceability Assessment
 
 | Aspect | Rating | Notes |
-|--------|--------|-------|
+| -------- | -------- | ------- |
 | Source References | ✅ Excellent | Links to analyze.md, code files listed |
 | Dependency Graph | ✅ Good | Depends on/Depended by sections present |
 | Related Features | ✅ Good | Links to Features 001, 004, 014, 024 |
@@ -128,7 +129,7 @@ The spec lacks explicit documentation for:
 ### Consistency Assessment
 
 | Aspect | Rating | Notes |
-|--------|--------|-------|
+| -------- | -------- | ------- |
 | Terminology | ⚠️ Minor issues | "edge-device:execute" vs "Execute" permission naming variations |
 | Requirement IDs | ✅ Consistent | FR-### format maintained |
 | Priority Levels | ✅ Consistent | P1-P4 with justifications |
@@ -137,7 +138,7 @@ The spec lacks explicit documentation for:
 ### Currency Assessment
 
 | Aspect | Rating | Notes |
-|--------|--------|-------|
+| -------- | -------- | ------- |
 | Code Alignment | ✅ Current | Matches current codebase structure |
 | API Routes | ✅ Current | `/api/edge/devices` correctly documented |
 | Technology Stack | ✅ Current | Blazor, ASP.NET Core references accurate |
@@ -149,7 +150,7 @@ The spec lacks explicit documentation for:
 ### Security Coverage
 
 | Aspect | Status | Evidence |
-|--------|--------|----------|
+| -------- | -------- | ---------- |
 | Authorization | ✅ Documented | FR-020 and permission attributes verified |
 | Authentication | ⚠️ Implicit | `[Authorize]` mentioned but not detailed |
 | Data Protection | ✅ Documented | FR-011 time-limited URLs with encryption |
@@ -159,7 +160,7 @@ The spec lacks explicit documentation for:
 ### Error Handling Coverage
 
 | Scenario | Status | Evidence |
-|----------|--------|----------|
+| ---------- | -------- | ---------- |
 | Device Not Found | ✅ Covered | Edge case documented + [EdgeDevicesController.cs#L126](src/IoTHub.Portal.Server/Controllers/v1.0/EdgeDevicesController.cs#L126) |
 | Cloud Provider Failures | ✅ Covered | Edge cases for sync failures, deletion failures |
 | Expired URLs | ✅ Covered | Edge case + implementation throws `CryptographicException` |
@@ -169,7 +170,7 @@ The spec lacks explicit documentation for:
 ### Performance Coverage
 
 | Aspect | Status | Evidence |
-|--------|--------|----------|
+| -------- | -------- | ---------- |
 | Pagination | ✅ Documented | SC-002, SC-007 with response time targets |
 | Large Deployments | ✅ Documented | Edge case for thousands of devices |
 | Background Jobs | ✅ Documented | SC-011 mentions 5-minute staleness |
@@ -178,7 +179,7 @@ The spec lacks explicit documentation for:
 ### Integration Coverage
 
 | Integration Point | Status | Notes |
-|-------------------|--------|-------|
+| ------------------- | -------- | ------- |
 | Azure IoT Hub | ✅ Good | Device twins, direct methods, logs documented |
 | AWS IoT Greengrass | ⚠️ Partial | Thing creation documented; module commands not supported |
 | Database | ⚠️ Implicit | Repository pattern mentioned, no schema details |
@@ -189,7 +190,7 @@ The spec lacks explicit documentation for:
 ### Configuration Coverage
 
 | Config Area | Status | Notes |
-|-------------|--------|-------|
+| ------------- | -------- | ------- |
 | Cloud Provider Selection | ⚠️ Implicit | `ConfigHandler.CloudProvider` referenced in code |
 | Job Scheduling | ❌ Missing | Sync job intervals not documented |
 | Default Page Size | ✅ Documented | SC-007 mentions "default 10 items" |
@@ -212,41 +213,41 @@ The spec lacks explicit documentation for:
 
 ### High Priority 🟠
 
-3. **Add API schema documentation**
+1. **Add API schema documentation**
    - Document request/response DTOs (`IoTEdgeDevice`, `IoTEdgeListItem`, `EdgeDeviceListFilter`)
    - Include validation constraints and examples
 
-4. **Add server-side connection state check for commands (FR-019)**
+2. **Add server-side connection state check for commands (FR-019)**
    - Validate device connection state before executing module commands
    - Return appropriate error for disconnected devices
 
-5. **Document device ID validation rules (FR-025)**
+3. **Document device ID validation rules (FR-025)**
    - Specify Azure IoT Hub naming conventions (ASCII 7-bit, max 128 chars)
    - Specify AWS Thing naming conventions
 
 ### Medium Priority 🟡
 
-6. **Add enrollment script template documentation**
+1. **Add enrollment script template documentation**
    - Document template placeholders and generation logic
    - Specify bash and PowerShell template locations
 
-7. **Document error response formats**
+2. **Document error response formats**
    - Standard problem details structure
    - Error codes and messages for common failures
 
-8. **Add configuration settings section**
+3. **Add configuration settings section**
    - Background job intervals
    - Command timeout values
    - Log retrieval parameters
 
 ### Low Priority 🟢
 
-9. **Add database relationship diagram**
+1. **Add database relationship diagram**
    - EdgeDevice → EdgeDeviceModel relationship
    - EdgeDevice → DeviceTagValue (1:N)
    - EdgeDevice → Label (N:M)
 
-10. **Clarify version tracking behavior**
+2. **Clarify version tracking behavior**
     - Document optimistic concurrency implementation
     - Specify version comparison logic in sync job
 
@@ -255,7 +256,7 @@ The spec lacks explicit documentation for:
 ## Code References Table
 
 | Component | File Path | Purpose |
-|-----------|-----------|---------|
+| ----------- | ----------- | --------- |
 | Controller | [src/IoTHub.Portal.Server/Controllers/v1.0/EdgeDevicesController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/EdgeDevicesController.cs) | REST API endpoints |
 | Service Interface | [src/IoTHub.Portal.Application/Services/IEdgeDevicesService.cs](src/IoTHub.Portal.Application/Services/IEdgeDevicesService.cs) | Service contract |
 | Service Base | [src/IoTHub.Portal.Infrastructure/Services/EdgeDevicesServiceBase.cs](src/IoTHub.Portal.Infrastructure/Services/EdgeDevicesServiceBase.cs) | Shared implementation |
@@ -283,12 +284,14 @@ The spec lacks explicit documentation for:
 The Edge Device Management specification demonstrates **strong overall quality** with an 84.3% weighted score. The spec accurately documents the core functionality of edge device lifecycle management across Azure IoT Hub and AWS IoT Greengrass platforms.
 
 **Key Strengths:**
+
 - Comprehensive user story coverage with clear priorities
 - Well-documented edge cases and error scenarios
 - Excellent code reference traceability
 - Clear cloud provider abstraction documentation
 
 **Primary Gaps:**
+
 - Server-side validation for required tags not implemented as specified
 - Some security validations rely on client-side only
 - API schema and error response documentation missing

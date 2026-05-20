@@ -11,6 +11,7 @@ This guide helps developers understand and implement the fix for the device impo
 ## Problem Summary
 
 **Symptom**: After importing LoRaWAN devices via CSV, only basic fields are retained:
+
 - ✅ Retained: Id, Name, ModelId, AppKey, AppEUI, AppSKey, NwkSKey, DevAddr, GatewayID
 - ❌ Lost: ClassType, PreferredWindow, Deduplication, Downlink, RX1DROffset, RX2DataRate, RXDelay, ABPRelaxMode, FCntUpStart, FCntDownStart, FCntResetCounter, Supports32BitFCnt, KeepAliveTimeout, SensorDecoder
 
@@ -21,12 +22,14 @@ This guide helps developers understand and implement the fix for the device impo
 ## Quick Reference
 
 ### Files to Modify
+
 | File | Purpose | Lines |
-|------|---------|-------|
+| ------ | --------- | ------- |
 | `src/IoTHub.Portal.Server/Managers/ExportManager.cs` | Add property reads in `ImportLoRaDevice()` | After line 288 |
 | `src/IoTHub.Portal.Tests.Unit/Server/Managers/ExportManagerTests.cs` | Update/add unit tests | Multiple locations |
 
 ### Files to Review (No Changes)
+
 - `src/IoTHub.Portal.Application/Mappers/DeviceProfile.cs` - AutoMapper already correct
 - `src/IoTHub.Portal.Infrastructure/Jobs/SyncDevicesJob.cs` - Sync logic already correct
 - `src/IoTHub.Portal.Infrastructure/Services/LoRaWanDeviceService.cs` - Service already correct
@@ -38,6 +41,7 @@ This guide helps developers understand and implement the fix for the device impo
 **File**: `ExportManager.cs`, method `ImportLoRaDevice()` (lines 263-293)
 
 Current implementation:
+
 ```csharp
 private async Task ImportLoRaDevice(
     CsvReader csvReader,
@@ -103,6 +107,7 @@ TryReadProperty(csvReader, newDevice, c => c.SensorDecoder, string.Empty);
 ```
 
 **Key points**:
+
 - Use existing `TryReadProperty()` helper - it handles missing columns gracefully
 - Default values match `LoRaDeviceBase.cs` `[DefaultValue]` attributes
 - `(int?)null` vs `(int?)0`: nullable fields use null for "not set", others use 0
@@ -112,6 +117,7 @@ TryReadProperty(csvReader, newDevice, c => c.SensorDecoder, string.Empty);
 **File**: `ExportManagerTests.cs`
 
 Add test for complete property import:
+
 ```csharp
 [Fact]
 public async Task ImportLoRaDevice_WithAllProperties_ShouldPersistAllFields()
@@ -159,6 +165,7 @@ ABCD1234ABCD1234,TestDevice,test-model-id,true,TESTAPPKEY123456,TESTEUI123456789
 ```
 
 Add test for backward compatibility (old CSV without new columns):
+
 ```csharp
 [Fact]
 public async Task ImportLoRaDevice_WithMinimalProperties_ShouldUseDefaults()
@@ -229,6 +236,7 @@ ABCD1234ABCD1234,TestDevice,test-model-id,true,TESTAPPKEY123456,TESTEUI123456789
 ### Step 5: Test Synchronization
 
 After import, trigger sync job (or wait for scheduled run) and verify:
+
 1. Database still contains all imported values
 2. No data loss occurs
 
@@ -257,8 +265,10 @@ Expected: All values match imported CSV, not defaults.
 ## Common Issues & Solutions
 
 ### Issue: Enum parsing fails
+
 **Symptom**: "Unable to cast object of type 'System.String' to type 'ClassType'"  
 **Solution**: `TryReadProperty` expects typed value. Use explicit parsing:
+
 ```csharp
 // If TryReadProperty doesn't handle enums automatically:
 if (csvReader.TryGetField($"PROPERTY:ClassType", out string classTypeStr))
@@ -268,8 +278,10 @@ if (csvReader.TryGetField($"PROPERTY:ClassType", out string classTypeStr))
 ```
 
 ### Issue: CSV template doesn't have new columns
+
 **Symptom**: Export template missing new property columns  
 **Resolution**: `GetPropertiesToExport()` already includes these (lines 96-103). If not, add:
+
 ```csharp
 if (this.loRaWANOptions.Value.Enabled)
 {
@@ -282,12 +294,14 @@ if (this.loRaWANOptions.Value.Enabled)
 ```
 
 ### Issue: Null values in database after import
+
 **Symptom**: Database has null where default expected  
 **Solution**: Ensure default values in `TryReadProperty` calls match `LoRaDeviceBase` defaults
 
 ## Rollback Plan
 
 If issues arise:
+
 1. Revert `ExportManager.cs` changes
 2. Redeploy previous version
 3. Data already in IoT Hub is safe (no schema changes)
@@ -296,6 +310,7 @@ If issues arise:
 ## Next Steps
 
 After implementation:
+
 1. Create pull request with changes
 2. Request code review
 3. Merge to main branch
@@ -316,6 +331,7 @@ After implementation:
 ## Support
 
 For questions or issues during implementation:
+
 - Tag: @kbeaugrand (issue assignee)
 - Team: CGI-FR/IoT-Hub-Portal maintainers
 - Milestone: v6.0

@@ -23,6 +23,7 @@ Key capabilities include:
 - Metrics aggregated from multiple underlying IoT Hub services
 
 This feature provides critical business value by:
+
 - Enabling proactive monitoring of IoT infrastructure health
 - Providing at-a-glance operational visibility for support teams
 - Supporting capacity planning through device count tracking
@@ -39,8 +40,10 @@ The metrics are sourced from Azure IoT Hub device twins, deployment status, and 
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/DashboardController.cs` (Lines 1-27)
   - **Snippet**: Main REST API controller for dashboard metrics retrieval
+
     ```csharp
     [Authorize]
     [ApiVersion("1.0")]
@@ -66,8 +69,10 @@ The metrics are sourced from Azure IoT Hub device twins, deployment status, and 
     ```
 
 ### Data Models
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/PortalMetric.cs` (Lines 1-20)
   - **Snippet**: Metrics data model containing all portal statistics
+
     ```csharp
     public class PortalMetric
     {
@@ -81,6 +86,7 @@ The metrics are sourced from Azure IoT Hub device twins, deployment status, and 
     ```
 
 ### Authorization
+
 - Authorization policy: `dashboard:read`
 - Requires authenticated user with dashboard read permissions
 - Enforces RBAC through ASP.NET Core authorization policies
@@ -89,7 +95,7 @@ The metrics are sourced from Azure IoT Hub device twins, deployment status, and 
 
 ## Data Flow
 
-```
+```text
 1. Client Request → GET /api/dashboard/metrics
 2. Authorization Check → Validate "dashboard:read" permission
 3. Controller → Returns pre-populated PortalMetric instance
@@ -97,6 +103,7 @@ The metrics are sourced from Azure IoT Hub device twins, deployment status, and 
 ```
 
 **Key aspects:**
+
 - **Singleton Pattern**: PortalMetric is registered as a singleton, shared across all requests
 - **Background Updates**: Metrics are updated by background services/jobs (not visible in controller code)
 - **Low Latency**: No direct IoT Hub queries during request handling
@@ -107,13 +114,16 @@ The metrics are sourced from Azure IoT Hub device twins, deployment status, and 
 ## Dependencies
 
 ### Internal Services/Components
+
 - **PortalMetric** (injected singleton): Pre-populated metrics object updated by background services
 
 ### External Services
+
 - Indirectly depends on Azure IoT Hub for device data (via background metric collection)
 - Potential dependency on LoRaWAN network server for concentrator counts
 
 ### Configuration
+
 - No direct configuration in controller
 - Authorization policy `dashboard:read` must be configured in authorization setup
 
@@ -123,8 +133,9 @@ The metrics are sourced from Azure IoT Hub device twins, deployment status, and 
 
 ### Core Workflows
 
-**1. Get Portal Metrics**
-```
+#### 1. Get Portal Metrics
+
+```text
 Input: None (authenticated request only)
 Process:
   1. Validate user has "dashboard:read" permission
@@ -133,11 +144,13 @@ Output: PortalMetric JSON with 6 counters
 ```
 
 ### Validation Rules
+
 - **Authentication Required**: All endpoints require valid authentication token
 - **Authorization Required**: User must have `dashboard:read` permission
 - **No Input Validation**: Endpoint accepts no parameters
 
 ### Error Handling
+
 - **401 Unauthorized**: Missing or invalid authentication token
 - **403 Forbidden**: User lacks `dashboard:read` permission
 - **500 Internal Server Error**: Unexpected exceptions during metric retrieval
@@ -147,12 +160,14 @@ Output: PortalMetric JSON with 6 counters
 ## User Interface Integration
 
 ### Frontend Integration Points
+
 - **Dashboard Home Page**: Primary consumer of metrics
 - **Header/Navigation**: May display device counts
 - **Monitoring Widgets**: Can embed individual metric tiles
 
 ### Expected UI Behaviors
-```
+
+```text
 Dashboard Page Load:
   → Fetch /api/dashboard/metrics
   → Display 6 metric cards with counts
@@ -162,6 +177,7 @@ Dashboard Page Load:
 ```
 
 ### UI Component Suggestions
+
 - Metric cards with icon, label, and numeric value
 - Color coding: Green (healthy), Yellow (warnings), Red (failures)
 - Trend indicators if historical data available
@@ -172,11 +188,13 @@ Dashboard Page Load:
 ## Testing Considerations
 
 ### Unit Testing
+
 - **Mock Dependencies**: Mock PortalMetric instance with test data
 - **Authorization Testing**: Verify policy enforcement for `dashboard:read`
 - **Response Format**: Validate JSON structure matches PortalMetric model
 
 ### Integration Testing
+
 - **Background Service Integration**: Verify metrics are populated correctly
 - **Multiple Scenarios**:
   - Empty portal (all zeros)
@@ -185,6 +203,7 @@ Dashboard Page Load:
   - LoRa enabled/disabled scenarios
 
 ### End-to-End Testing
+
 - **Dashboard Load**: Verify metrics display on dashboard page
 - **Authorization Flows**: Test with various user roles
 - **Real-time Updates**: Verify metrics reflect actual device changes
@@ -195,17 +214,20 @@ Dashboard Page Load:
 ## Performance Considerations
 
 ### Scalability
+
 - **O(1) Complexity**: Direct singleton access, no iteration
 - **No Database Queries**: Pre-computed metrics in memory
 - **Minimal CPU/Memory**: Simple object serialization
 - **High Concurrency**: Thread-safe singleton access
 
 ### Optimization Strategies
+
 - Use HTTP caching headers (Cache-Control) if metrics update frequency is known
 - Implement ETag support for conditional requests
 - Consider adding metric timestamps for staleness detection
 
 ### Monitoring Recommendations
+
 - Track API response times (should be <50ms)
 - Monitor metric staleness (last update timestamp)
 - Alert on metric retrieval failures
@@ -216,16 +238,19 @@ Dashboard Page Load:
 ## Security Analysis
 
 ### Authentication & Authorization
+
 - **Authentication Required**: `[Authorize]` attribute on controller
 - **Fine-grained Authorization**: `dashboard:read` permission required
 - **No Anonymous Access**: Prevents unauthorized metric exposure
 
 ### Data Sensitivity
+
 - **Low Sensitivity**: Aggregated counts, no PII or device details
 - **Potential Information Disclosure**: Counts reveal infrastructure scale
 - **No Filtering**: Returns portal-wide metrics (not tenant-scoped)
 
 ### Security Recommendations
+
 - ✅ Proper authorization in place
 - ✅ No sensitive data exposure
 - ⚠️ Consider tenant-scoped metrics for multi-tenant deployments
@@ -237,15 +262,18 @@ Dashboard Page Load:
 ## Configuration & Deployment
 
 ### Configuration Requirements
+
 - **Authorization Policy**: `dashboard:read` must be defined in policy configuration
 - **Metric Collection**: Background services must be configured to populate PortalMetric singleton
 - **DI Registration**: PortalMetric must be registered as singleton in Startup/Program.cs
 
 ### Environment Variables
+
 - No direct environment variables in this feature
 - Authorization configuration may reference environment-specific settings
 
 ### Deployment Checklist
+
 - ✅ Verify PortalMetric singleton registration
 - ✅ Confirm background metric collection services are enabled
 - ✅ Validate `dashboard:read` permission exists in role definitions
@@ -257,6 +285,7 @@ Dashboard Page Load:
 ## Known Issues & Limitations
 
 ### Current Limitations
+
 1. **No Historical Data**: Only current snapshot, no trends
 2. **No Tenant Filtering**: Portal-wide metrics only
 3. **No Metric Timestamps**: Cannot determine data freshness
@@ -264,12 +293,14 @@ Dashboard Page Load:
 5. **Fixed Metric Set**: Cannot customize which metrics are returned
 
 ### Technical Debt
+
 - Missing metric update timestamp in response
 - No metric health/staleness indicator
 - No support for custom metric aggregations
 - Limited extensibility for new metric types
 
 ### Future Considerations
+
 - Add timestamp field to PortalMetric model
 - Implement metric health checks
 - Support tenant-scoped metrics
@@ -282,16 +313,19 @@ Dashboard Page Load:
 ## Related Features
 
 ### Directly Related
+
 - Device Management (source of DeviceCount metrics)
 - Edge Device Management (source of EdgeDeviceCount metrics)
 - Deployment Management (source of FailedDeploymentCount)
 - LoRaWAN Integration (source of ConcentratorCount)
 
 ### Dependent Features
+
 - Role Management (defines `dashboard:read` permission)
 - Background Jobs/Services (metric collection and update)
 
 ### Integration Points
+
 - Dashboard UI (primary consumer)
 - Monitoring systems (may consume metrics via API)
 - Alerting systems (may trigger on metric thresholds)
@@ -301,17 +335,20 @@ Dashboard Page Load:
 ## Migration & Compatibility
 
 ### API Versioning
+
 - Current version: 1.0
 - Endpoint: `/api/dashboard/metrics`
 - Version included in route via `[ApiVersion("1.0")]`
 
 ### Breaking Change Considerations
+
 - Adding new metrics: Non-breaking (additive)
 - Removing metrics: Breaking change
 - Changing metric semantics: Breaking change
 - Renaming metrics: Breaking change
 
 ### Backward Compatibility
+
 - Current API is stable
 - New metrics should be added as optional fields
 - Consider API v2.0 for significant metric model changes
@@ -321,6 +358,7 @@ Dashboard Page Load:
 ## Documentation & Examples
 
 ### API Documentation
+
 ```http
 GET /api/dashboard/metrics
 Authorization: Bearer {token}
@@ -339,6 +377,7 @@ Response 200 OK:
 ### Usage Examples
 
 **PowerShell:**
+
 ```powershell
 $token = "your-jwt-token"
 $headers = @{ Authorization = "Bearer $token" }
@@ -348,12 +387,14 @@ Write-Host "Connected: $($response.connectedDeviceCount)"
 ```
 
 **cURL:**
+
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN" \
      https://portal.example.com/api/dashboard/metrics
 ```
 
 **JavaScript (fetch):**
+
 ```javascript
 const response = await fetch('/api/dashboard/metrics', {
   headers: { 'Authorization': `Bearer ${token}` }
@@ -367,13 +408,15 @@ console.log(`Devices: ${metrics.deviceCount}, Connected: ${metrics.connectedDevi
 ## References
 
 ### Related Documentation
+
 - API Documentation: Swagger/OpenAPI definition at `/swagger`
 - Authorization Guide: Role and permission configuration
 - Deployment Guide: Failed deployment troubleshooting
 
 ### External Resources
-- ASP.NET Core Authorization: https://docs.microsoft.com/aspnet/core/security/authorization/
-- Azure IoT Hub Metrics: https://docs.microsoft.com/azure/iot-hub/monitor-iot-hub
+
+- ASP.NET Core Authorization: <https://docs.microsoft.com/aspnet/core/security/authorization/>
+- Azure IoT Hub Metrics: <https://docs.microsoft.com/azure/iot-hub/monitor-iot-hub>
 
 ---
 

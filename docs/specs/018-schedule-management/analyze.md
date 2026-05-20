@@ -1,11 +1,13 @@
 # Feature Analysis: Schedule Management
 
 ## Overview
+
 The Schedule Management feature provides CRUD operations for managing schedule entities in the IoT Hub Portal. It enables users to create, read, update, and delete schedule configurations with role-based access control for IoT device scheduling.
 
 ## Feature Identification
 
 ### Primary Components
+
 - **Controller**: `SchedulesController.cs` (v1.0 API)
 - **Service Interface**: `IScheduleService`
 - **DTO**: `ScheduleDto` (data transfer object)
@@ -14,6 +16,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 ### API Endpoints
 
 #### POST /api/schedule
+
 - **Purpose**: Creates a new schedule
 - **Authorization**: `schedule:write` permission required
 - **Request Body**: `ScheduleDto`
@@ -21,6 +24,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 - **Validation**: ArgumentNullException for null input
 
 #### PUT /api/schedule
+
 - **Purpose**: Updates an existing schedule
 - **Authorization**: `schedule:write` permission required
 - **Request Body**: `ScheduleDto`
@@ -28,6 +32,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 - **Status Codes**: 200 OK
 
 #### DELETE /api/schedule/{scheduleId}
+
 - **Purpose**: Deletes a schedule by ID
 - **Authorization**: `schedule:write` permission required
 - **Route Parameter**: `scheduleId` (string)
@@ -35,6 +40,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 - **Status Codes**: 204 No Content
 
 #### GET /api/schedule/{scheduleId}
+
 - **Purpose**: Retrieves a specific schedule by ID
 - **Authorization**: `schedule:read` permission required
 - **Route Parameter**: `scheduleId` (string)
@@ -42,6 +48,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 - **Status Codes**: 200 OK, 404 Not Found
 
 #### GET /api/schedule
+
 - **Purpose**: Retrieves all schedules
 - **Authorization**: `schedule:read` permission required
 - **Response**: 200 OK with `IEnumerable<ScheduleDto>`
@@ -50,11 +57,13 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 ## Technical Details
 
 ### Dependencies
+
 ```csharp
 - IScheduleService: Core business logic for schedule operations
 ```
 
 ### Data Flow
+
 1. **Create**: Validate input → Service creates schedule → Return DTO
 2. **Update**: Service updates schedule → Return OK
 3. **Delete**: Service deletes schedule → Return No Content
@@ -62,13 +71,15 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 5. **Get All**: Service retrieves all schedules → Return collection
 
 ### Security Model
+
 - **Authentication**: Required (Authorize attribute on controller)
-- **Authorization**: 
+- **Authorization**:
   - Write operations: `schedule:write` permission
   - Read operations: `schedule:read` permission
 - **Fine-grained**: Policy-based authorization per endpoint
 
 ### Error Handling
+
 - `DeviceNotFoundException` caught and returns 404 (inconsistent exception type)
 - ArgumentNullException validation on create
 - Exception message passed to client on 404
@@ -76,6 +87,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 ## Key Observations
 
 ### Strengths
+
 - RESTful API design with proper HTTP verbs
 - Clear separation of controller and service layers
 - Role-based access control at method level
@@ -84,6 +96,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 - Consistent naming conventions
 
 ### Design Decisions
+
 - Schedule ID is string-based (not GUID or int)
 - Update uses PUT (full replacement pattern)
 - Delete returns 204 No Content (correct REST practice)
@@ -92,6 +105,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 - Nearly identical pattern to PlanningsController
 
 ### Potential Issues
+
 1. **Exception Naming**: Uses `DeviceNotFoundException` instead of `ScheduleNotFoundException`
 2. **No Pagination**: List endpoint returns all schedules (scalability concern)
 3. **No Filtering**: List endpoint has no query parameters (e.g., by date range, device)
@@ -104,10 +118,12 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 ## Domain Model
 
 ### Core Entities
+
 - **Schedule**: Domain entity (likely includes timing, recurrence, actions)
 - **ScheduleDto**: Data transfer object for API communication
 
 ### Expected Properties (Based on Domain)
+
 - Schedule ID (unique identifier)
 - Schedule timing (start time, end time, recurrence)
 - Associated device or device group
@@ -116,6 +132,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 - Metadata (created, updated timestamps)
 
 ### Entity Relationships
+
 - Schedule likely relates to Devices or Device Groups
 - May relate to Planning entities
 - May have associated Commands or Actions
@@ -123,6 +140,7 @@ The Schedule Management feature provides CRUD operations for managing schedule e
 ## Integration Points
 
 ### Service Contract
+
 ```csharp
 interface IScheduleService
 {
@@ -135,17 +153,20 @@ interface IScheduleService
 ```
 
 ### Data Transformation
+
 - Service returns `Schedule` entity on single get
 - Service returns `ScheduleDto` collection on list
 - Controller responsible for JSON serialization
 
 ### Expected Integrations
+
 - Device management (schedule applies to devices)
 - Command execution (schedules trigger commands)
 - Time zone management (for correct timing)
 - Notification system (for schedule events)
 
 ## Business Rules
+
 1. Schedule ID is required for update/delete/get operations
 2. Write operations require elevated permissions vs read
 3. All operations require authentication
@@ -158,6 +179,7 @@ interface IScheduleService
 ## Testing Considerations
 
 ### Test Scenarios
+
 - Create schedule with valid data
 - Create schedule with null data
 - Create schedule with invalid timing
@@ -172,6 +194,7 @@ interface IScheduleService
 - Overlapping schedule handling
 
 ### Edge Cases
+
 - Schedule ID that doesn't exist (delete/update/get)
 - Empty schedule list
 - Duplicate schedule creation
@@ -183,12 +206,14 @@ interface IScheduleService
 - Time zone edge cases (DST transitions)
 
 ## Configuration
+
 - API Version: 1.0
 - Base Route: `/api/schedule`
 - API Explorer Group: "IoT Schedule"
 - Authorization Policy Names: `schedule:read`, `schedule:write`
 
 ## Metrics & Logging
+
 - No explicit logging in controller
 - Exception messages exposed to client (security consideration)
 - No performance metrics
@@ -196,6 +221,7 @@ interface IScheduleService
 - No schedule execution metrics
 
 ## Schedule Execution Context
+
 - Controller handles CRUD only (not execution)
 - Execution likely handled by separate background service
 - No visibility into schedule execution status from this endpoint
@@ -204,6 +230,7 @@ interface IScheduleService
 ## Future Considerations
 
 ### Immediate Improvements
+
 1. Add pagination to list endpoint (page size, page number)
 2. Add filtering (by date range, device, status)
 3. Add sorting capabilities
@@ -214,6 +241,7 @@ interface IScheduleService
 8. Add schedule validation (timing, recurrence patterns)
 
 ### Scalability
+
 1. Implement caching for frequently accessed schedules
 2. Add search capabilities (by device, date range)
 3. Consider bulk operations API
@@ -221,6 +249,7 @@ interface IScheduleService
 5. Optimize list query (projection, indexes)
 
 ### Feature Enhancements
+
 1. Add PATCH for partial updates
 2. Add batch operations (enable/disable multiple)
 3. Add schedule validation rules
@@ -237,6 +266,7 @@ interface IScheduleService
 14. Add notification preferences
 
 ### Security
+
 1. Add input validation middleware
 2. Sanitize error messages (don't expose internals)
 3. Add request/response logging
@@ -245,6 +275,7 @@ interface IScheduleService
 6. Validate schedule ownership/access rights
 
 ### Integration
+
 1. Add webhook support for schedule events
 2. Add integration with external calendar systems
 3. Add schedule import/export
@@ -252,6 +283,7 @@ interface IScheduleService
 5. Add schedule analytics and reporting
 
 ### Pattern Recognition
+
 - This controller follows identical pattern to PlanningsController
 - Consider creating a base generic controller for CRUD operations
 - Reduces code duplication and maintenance burden

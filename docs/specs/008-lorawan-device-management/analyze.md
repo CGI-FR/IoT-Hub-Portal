@@ -29,8 +29,10 @@ This feature provides business value by enabling organizations to manage their L
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANDevicesController.cs` (Lines 1-142)
   - **Snippet**: Main REST API controller for LoRaWAN devices
+
     ```csharp
     [Authorize]
     [ApiController]
@@ -83,8 +85,10 @@ This feature provides business value by enabling organizations to manage their L
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IDeviceService.cs` (Lines 1-39)
   - **Snippet**: Generic device service interface
+
     ```csharp
     public interface IDeviceService<TDto> where TDto : IDeviceDetails
     {
@@ -115,6 +119,7 @@ This feature provides business value by enabling organizations to manage their L
 
 - `src/IoTHub.Portal.Application/Services/ILoRaWANCommandService.cs` (Lines 1-12)
   - **Snippet**: Service for executing LoRaWAN commands
+
     ```csharp
     public interface ILoRaWANCommandService
     {
@@ -125,6 +130,7 @@ This feature provides business value by enabling organizations to manage their L
     ```
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/ILorawanDeviceRepository.cs` (Lines 1-9)
   - Generic repository interface for LorawanDevice entity
   - Inherits from IRepository<LorawanDevice>
@@ -135,6 +141,7 @@ This feature provides business value by enabling organizations to manage their L
 
 - `src/IoTHub.Portal.Domain/Entities/LorawanDevice.cs` (Lines 1-176)
   - **Snippet**: LoRaWAN device entity with comprehensive properties
+
     ```csharp
     public class LorawanDevice : Device
     {
@@ -190,6 +197,7 @@ This feature provides business value by enabling organizations to manage their L
   - Links to LorawanDevice through relationship
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/Devices/DeviceDetailPage.razor` (Lines 1-41)
   - Device detail page that routes to EditDevice component
   - Accepts IsLoRa query parameter to render LoRa-specific UI
@@ -221,8 +229,10 @@ This feature provides business value by enabling organizations to manage their L
     - Responsive layout with MudBlazor components
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceDetails.cs` (Lines 1-174)
   - **Snippet**: Complete LoRaWAN device DTO with validation
+
     ```csharp
     public class LoRaDeviceDetails : LoRaDeviceBase, IDeviceDetails
     {
@@ -277,6 +287,7 @@ This feature provides business value by enabling organizations to manage their L
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceBase.cs` (Lines 1-100)
   - **Snippet**: Base class with LoRa-specific configuration properties
+
     ```csharp
     public abstract class LoRaDeviceBase
     {
@@ -327,8 +338,10 @@ This feature provides business value by enabling organizations to manage their L
   - Contains timestamp and telemetry payload
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/ILoRaWanDeviceClientService.cs` (Lines 1-22)
   - **Snippet**: Client-side service interface for HTTP API calls
+
     ```csharp
     public interface ILoRaWanDeviceClientService
     {
@@ -350,8 +363,10 @@ This feature provides business value by enabling organizations to manage their L
   - Telemetry data retrieval
 
 ### Mappers
+
 - `src/IoTHub.Portal.Infrastructure/Mappers/LoRaDeviceTwinMapper.cs` (Lines 1-191)
   - **Snippet**: Device twin mapper for IoT Hub integration
+
     ```csharp
     public class LoRaDeviceTwinMapper : IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>
     {
@@ -385,6 +400,7 @@ This feature provides business value by enabling organizations to manage their L
 ## API Endpoints
 
 ### LoRaWAN Device Management
+
 - `GET /api/lorawan/devices` - Get paginated LoRaWAN device list
   - Query Parameters:
     - searchText (string, optional): Filter by device name/ID
@@ -461,11 +477,13 @@ This feature provides business value by enabling organizations to manage their L
 ## Authorization
 
 ### Required Permissions
+
 - **device:read** - View LoRaWAN devices, device lists, details, telemetry, gateways, and labels
 - **device:write** - Create, update, and delete LoRaWAN devices
 - **device:execute** - Execute commands on LoRaWAN devices
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` attributes on controller methods
 - Permission strings defined in PortalPermissionsHelper
 - Base authorization requirement: `[Authorize]` on LoRaWANDevicesController
@@ -473,12 +491,14 @@ This feature provides business value by enabling organizations to manage their L
 - Default Administrator role includes device:read, device:write, and device:execute permissions
 
 ### Feature Filter
+
 - `[LoRaFeatureActiveFilter]` attribute on controller
 - Blocks all LoRaWAN endpoints when LoRa feature is disabled in configuration
 - Returns 404 Not Found when feature is inactive
 - Configuration setting: `PortalSettings.IsLoRaSupported`
 
 ### Permission Mapping
+
 - `PortalPermissions.DeviceRead` → "device:read"
 - `PortalPermissions.DeviceWrite` → "device:write"
 - `PortalPermissions.DeviceExecute` → "device:execute"
@@ -488,6 +508,7 @@ This feature provides business value by enabling organizations to manage their L
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **Device Models** - LoRaWAN device models define available commands, properties, and decoder settings
 - **Device Tag Settings** - Tags applied to LoRaWAN devices for organization
 - **Label Management** - Labels for categorizing and filtering LoRaWAN devices
@@ -497,6 +518,7 @@ This feature provides business value by enabling organizations to manage their L
 - **Gateway Management** - LoRa concentrators/gateways for device connectivity
 
 ### Service Dependencies
+
 - `IDeviceService<LoRaDeviceDetails>` - Core device operations
 - `ILorawanDeviceRepository` - Device entity persistence
 - `ILoRaDeviceTelemetryRepository` - Telemetry data persistence
@@ -512,6 +534,7 @@ This feature provides business value by enabling organizations to manage their L
 - `LoRaGatewayIDList` - Gateway configuration
 
 ### Related Entities
+
 - **LorawanDevice** - Primary device entity inheriting from Device
 - **LoRaDeviceTelemetry** - Telemetry messages collection
 - **DeviceTagValue** - Custom tag values per device
@@ -520,6 +543,7 @@ This feature provides business value by enabling organizations to manage their L
 - **Concentrator** - LoRa gateways/concentrators
 
 ### External Dependencies
+
 - **Entity Framework Core** - Database access via PortalDbContext
 - **AutoMapper** - Entity to DTO mapping
 - **FluentValidation** - DTO validation
@@ -527,6 +551,7 @@ This feature provides business value by enabling organizations to manage their L
 - **AWS IoT Core SDK** - Alternative cloud provider support
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library
   - MudForm - Form container with validation
   - MudTextField - Text input for device properties
@@ -544,7 +569,8 @@ This feature provides business value by enabling organizations to manage their L
 ## Key Features & Behaviors
 
 ### LoRaWAN Authentication Modes
-- **OTAA (Over-The-Air Activation)**: 
+
+- **OTAA (Over-The-Air Activation)**:
   - Uses AppEUI (Application EUI) and AppKey for secure join
   - Device negotiates session keys during join procedure
   - Recommended for production deployments
@@ -556,24 +582,28 @@ This feature provides business value by enabling organizations to manage their L
   - Frame counter management critical
 
 ### Device ID Format
+
 - Must be exactly 16 hexadecimal characters (0-9, A-F)
 - Represents the DevEUI (Device Extended Unique Identifier)
 - Validated by regex: `^[A-Z0-9]{16}$`
 - Immutable after device creation
 
 ### LoRa Device Classes
+
 - **Class A**: Lowest power, bi-directional communication after uplink
 - **Class B**: Scheduled receive windows for downlink
 - **Class C**: Continuous receive, highest power consumption
 - Configurable via ClassType property
 
 ### Receive Window Configuration
+
 - **Preferred Window**: RX1 (1) or RX2 (2)
 - **RX1DROffset**: Offset between RX and TX data rate (OTAA only)
 - **RX2DataRate**: Custom data rate for RX2 window (OTAA only)
 - **RXDelay**: Wait time between receive and transmit per LoRaWAN spec
 
 ### Frame Counter Management
+
 - **FCntUpStart**: Initial uplink frame counter (default: 0)
 - **FCntDownStart**: Initial downlink frame counter (default: 0)
 - **FCntResetCounter**: Allows frame counter reset
@@ -582,6 +612,7 @@ This feature provides business value by enabling organizations to manage their L
 - Valid range: 0 to 4,294,967,295
 
 ### Adaptive Data Rate (ADR)
+
 - Network server automatically adjusts transmission parameters
 - Reported values from device:
   - DataRate: Current data rate
@@ -593,6 +624,7 @@ This feature provides business value by enabling organizations to manage their L
 - Optimizes battery life and network capacity
 
 ### Deduplication Modes
+
 - **None**: No deduplication, process all messages
 - **Drop**: Drop duplicate messages from multiple gateways
 - **Mark**: Mark duplicates but don't drop
@@ -600,18 +632,21 @@ This feature provides business value by enabling organizations to manage their L
 - Important for devices in range of multiple gateways
 
 ### Gateway Assignment
+
 - GatewayID links device to specific LoRa concentrator
 - Optional field for gateway-specific routing
 - Gateway list retrieved via `/gateways` endpoint
 - Used in multi-gateway deployments
 
 ### Sensor Decoder
+
 - Custom decoder API URL for payload parsing
 - Converts binary LoRa payload to JSON telemetry
 - Decoder specific to device model capabilities
 - Optional field
 
 ### Device Telemetry
+
 - Stored in LoRaDeviceTelemetry collection
 - Includes EnqueuedTime and LoRaTelemetry payload
 - Processed from EventHub messages
@@ -619,6 +654,7 @@ This feature provides business value by enabling organizations to manage their L
 - Accessible via telemetry endpoint
 
 ### Connection Management
+
 - **KeepAliveTimeout**: Sliding expiration for IoT Hub connection
 - **Downlink**: Enable/disable downlink messages (default: true)
 - **AlreadyLoggedInOnce**: Tracks first successful join
@@ -626,6 +662,7 @@ This feature provides business value by enabling organizations to manage their L
 - **IsEnabled**: Device enabled state in IoT Hub
 
 ### Device Tags and Labels
+
 - Tags: Custom metadata with name-value pairs
 - Labels: Simple categorization markers
 - Synchronized to device twin tags section
@@ -633,6 +670,7 @@ This feature provides business value by enabling organizations to manage their L
 - Managed through DeviceTagValue and Label entities
 
 ### Command Execution
+
 - Execute LoRaWAN-specific commands on devices
 - Commands defined in device model
 - Sent as cloud-to-device (C2D) messages
@@ -640,6 +678,7 @@ This feature provides business value by enabling organizations to manage their L
 - Uses ILoRaWANCommandService
 
 ### CRUD Operations
+
 - **Create**: Validates device ID format, creates device twin, stores entity
 - **Read**: Retrieves from database with eager loading of tags/labels
 - **Update**: Updates device twin and entity, replaces tags/labels
@@ -647,6 +686,7 @@ This feature provides business value by enabling organizations to manage their L
 - All operations unit-of-work transactional
 
 ### Device Twin Synchronization
+
 - All LoRa settings stored in device twin desired properties
 - Reported properties contain ADR values
 - Tags contain device metadata (name, model, custom tags)
@@ -654,6 +694,7 @@ This feature provides business value by enabling organizations to manage their L
 - Automatic sync on create/update operations
 
 ### Pagination and Filtering
+
 - Server-side pagination with configurable page size
 - Filter by search text (name/ID)
 - Filter by connection status (connected/disconnected)
@@ -664,6 +705,7 @@ This feature provides business value by enabling organizations to manage their L
 - Sorting support via orderBy parameter
 
 ### UI Edit/Create Flow
+
 - Unified EditDevice component handles both standard and LoRa devices
 - IsLoRa parameter controls LoRa-specific UI sections
 - Tabbed interface for grouped settings
@@ -673,6 +715,7 @@ This feature provides business value by enabling organizations to manage their L
 - Device image preview from model
 
 ### Error Handling
+
 - ResourceNotFoundException for missing devices
 - ValidationException for invalid inputs
 - ProblemDetailsException handling in controllers
@@ -684,6 +727,7 @@ This feature provides business value by enabling organizations to manage their L
 ## Notes
 
 ### Architecture Patterns
+
 - **Generic Device Service Pattern** - IDeviceService<TDto> allows polymorphism
 - **Repository Pattern** - Clean separation of data access
 - **Unit of Work Pattern** - Transactional consistency
@@ -693,6 +737,7 @@ This feature provides business value by enabling organizations to manage their L
 - **Feature Filter Pattern** - Runtime feature toggling
 
 ### LoRaWAN Protocol Support
+
 - Full LoRaWAN 1.0.x specification support
 - OTAA and ABP authentication modes
 - Class A/B/C device types
@@ -702,30 +747,35 @@ This feature provides business value by enabling organizations to manage their L
 - Bi-directional communication support
 
 ### DevEUI Validation
+
 - 16 hexadecimal character requirement enforces LoRaWAN standard
 - DevEUI is globally unique identifier per LoRaWAN specification
 - Uppercase enforcement for consistency
 - Prevents invalid device identifiers at API level
 
 ### OTAA vs ABP Trade-offs
+
 - OTAA recommended for production: dynamic key negotiation, enhanced security
 - ABP useful for testing: faster connection, simpler setup
 - ABP requires careful frame counter management to prevent replay attacks
 - OTAA requires AppEUI and AppKey; ABP requires DevAddr, AppSKey, NwkSKey
 
 ### Frame Counter Security
+
 - Critical for preventing replay attacks in LoRaWAN
 - ABPRelaxMode trades security for flexibility in testing
 - 32-bit counters prevent counter exhaustion
 - Reset counter allows controlled frame counter resets
 
 ### Multi-Gateway Considerations
+
 - Deduplication modes handle messages received by multiple gateways
 - Gateway assignment can force routing through specific gateway
 - Telemetry processing handles duplicate messages
 - Network coverage optimization through gateway distribution
 
 ### Telemetry Processing
+
 - ProcessTelemetryEvent handles incoming messages from EventHub
 - Filters by device scope (ignores non-device events)
 - Deduplicates by sequence number
@@ -733,6 +783,7 @@ This feature provides business value by enabling organizations to manage their L
 - KeepOnlyLatestTelemetry prevents unbounded growth
 
 ### Integration with IoT Hub/AWS IoT Core
+
 - Device twin desired properties store configuration
 - Device twin reported properties store runtime values
 - Device twin tags store metadata
@@ -741,18 +792,21 @@ This feature provides business value by enabling organizations to manage their L
 - Multi-cloud support via IExternalDeviceService abstraction
 
 ### Feature Toggle
+
 - LoRaFeatureActiveFilter ensures LoRa endpoints only available when enabled
 - Configuration-driven feature activation
 - Prevents accidental LoRa operations in non-LoRa deployments
 - Returns 404 when feature disabled
 
 ### Database Schema
+
 - LorawanDevice inherits from Device (TPH - Table Per Hierarchy)
 - LoRaDeviceTelemetry separate table with foreign key
 - Cascade delete configured for telemetry on device delete
 - DeviceTagValue and Label many-to-many relationships
 
 ### Performance Considerations
+
 - Eager loading of Tags and Labels prevents N+1 queries
 - Telemetry history limited to recent entries
 - Pagination on device list endpoints
@@ -760,6 +814,7 @@ This feature provides business value by enabling organizations to manage their L
 - Efficient repository queries using Include()
 
 ### Security Considerations
+
 - Authentication keys (AppKey, AppSKey, NwkSKey) stored securely
 - Authorization required at controller level
 - Permission-based access control
@@ -768,6 +823,7 @@ This feature provides business value by enabling organizations to manage their L
 - Device twin access controlled by IoT Hub policies
 
 ### Testing Coverage
+
 - Unit tests: LoRaWanDeviceServiceTests.cs
 - Controller tests: LoRaWANDevicesControllerTests.cs
 - Client service tests: LoRaWanDeviceClientServiceTests.cs
@@ -775,6 +831,7 @@ This feature provides business value by enabling organizations to manage their L
 - Integration tests likely cover end-to-end scenarios
 
 ### Known Limitations
+
 - Telemetry history limited (not configurable)
 - No bulk device operations (create/update multiple)
 - No device provisioning service integration
@@ -783,6 +840,7 @@ This feature provides business value by enabling organizations to manage their L
 - Sensor decoder URL must be manually configured (no registry)
 
 ### Future Enhancement Opportunities
+
 - Bulk device import/export with CSV
 - Device provisioning service integration for OTAA
 - LoRa network server webhook integration
@@ -800,12 +858,14 @@ This feature provides business value by enabling organizations to manage their L
 - LoRaWAN compliance testing tools
 
 ### Related LoRaWAN Features
+
 - **Concentrator Management**: LoRa gateways/concentrators that route device messages
 - **LoRaWAN Device Models**: Device templates with command definitions
 - **LoRaWAN Frequency Plans**: Regional frequency configurations
 - **LoRaWAN Commands**: C2D command definitions and execution
 
 ### LoRa-Specific UI Sections
+
 - **OTAA Tab**: AppEUI and AppKey configuration
 - **ABP Tab**: DevAddr, AppSKey, NwkSKey configuration
 - **LoRaWAN Settings Tab**: Class type, preferred window, deduplication
@@ -814,6 +874,7 @@ This feature provides business value by enabling organizations to manage their L
 - **General Tab**: Gateway, sensor decoder, downlink, keep-alive timeout
 
 ### Default Values
+
 - ClassType: A (lowest power)
 - PreferredWindow: 1 (RX1)
 - Deduplication: None
@@ -826,6 +887,7 @@ This feature provides business value by enabling organizations to manage their L
 - UseOTAA: true
 
 ### Validation Rules
+
 - DeviceID: Required, 16 hexadecimal characters uppercase
 - DeviceName: Required
 - ModelId: Required
@@ -835,6 +897,7 @@ This feature provides business value by enabling organizations to manage their L
 - PreferredWindow: 1 or 2
 
 ### Client-Side State Management
+
 - EditDevice component manages form state
 - Device model selection triggers image update
 - UseOTAA toggle controls OTAA/ABP section visibility
@@ -843,6 +906,7 @@ This feature provides business value by enabling organizations to manage their L
 - Duplicate device mode for cloning
 
 ### Server-Side Processing
+
 - Validation via data annotations and Fluent Validation
 - Transaction management via Unit of Work
 - Cascade deletes handled by repository layer
@@ -850,6 +914,7 @@ This feature provides business value by enabling organizations to manage their L
 - Telemetry processing idempotent
 
 ### Multi-Cloud Abstraction
+
 - IExternalDeviceService abstracts cloud provider
 - Azure IoT Hub implementation via Twin operations
 - AWS IoT Core support via Thing Shadow

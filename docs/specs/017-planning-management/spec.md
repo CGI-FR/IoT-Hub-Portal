@@ -139,18 +139,21 @@ As an IoT operations manager, I need to delete plannings that are no longer need
 ## Traceability
 
 ### Source Analysis
+
 - **Analysis Path**: `specs/017-planning-management/analyze.md`
 - **Analyzed By**: excavator.specifier
 
 ### Code References
+
 - PlanningsController: Planning CRUD endpoints
 - IPlanningService: Planning business logic interface
 - Planning entity: Domain model for planning configuration
 
 ### Dependencies
-- **Depends On**: 
+
+- **Depends On**:
   - 019-layer-management (plannings are assigned to layers)
   - 011-lorawan-commands-management (plannings reference commands)
-- **Depended By**: 
+- **Depended By**:
   - 018-schedule-management (schedules belong to plannings)
   - 026-planning-command-jobs (executes planning-based automation)

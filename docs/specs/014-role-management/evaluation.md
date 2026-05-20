@@ -15,7 +15,7 @@ The Role Management specification accurately reflects the implemented codebase. 
 ## Scoring Summary
 
 | Criterion | Weight | Score | Weighted |
-|-----------|--------|-------|----------|
+| ----------- | -------- | ------- | ---------- |
 | **Correctness** | 30% | 95/100 | 28.5 |
 | **Completeness** | 30% | 90/100 | 27.0 |
 | **Technical Quality** | 20% | 92/100 | 18.4 |
@@ -27,6 +27,7 @@ The Role Management specification accurately reflects the implemented codebase. 
 ## Accurate Specifications ✅
 
 ### 1. Role Entity Structure
+
 **Spec**: Role contains Name, Description, Color, and Actions collection  
 **Code Reference**: [Role.cs](src/IoTHub.Portal.Domain/Entities/Role.cs#L10-L17)  
 **Verification**: ✅ **ACCURATE**
@@ -43,6 +44,7 @@ public class Role : EntityBase
 ```
 
 ### 2. Action Entity Structure
+
 **Spec**: Individual permission containing Name (format "resource:action")  
 **Code Reference**: [Action.cs](src/IoTHub.Portal.Domain/Entities/Action.cs#L9-L12)  
 **Verification**: ✅ **ACCURATE**
@@ -56,14 +58,17 @@ public class Action : EntityBase
 ```
 
 ### 3. Role CRUD Operations (FR-001, FR-007, FR-008)
+
 **Spec**: Create, Update, Delete roles with permissions  
-**Code References**: 
+**Code References**:
+
 - Create: [RolesController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/RolesController.cs#L117-L129)
 - Update: [RolesController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/RolesController.cs#L139-L152)
 - Delete: [RolesController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/RolesController.cs#L161-L177)  
 **Verification**: ✅ **ACCURATE**
 
 ### 4. Role Name Uniqueness (FR-002)
+
 **Spec**: Role names must be unique  
 **Code Reference**: [RoleService.cs](src/IoTHub.Portal.Application/Services/RoleService.cs#L108-L112)  
 **Verification**: ✅ **ACCURATE**
@@ -77,6 +82,7 @@ if (roleWithName is not null)
 ```
 
 ### 5. Paginated Role List with Search (FR-004, FR-005)
+
 **Spec**: Paginated list with search by name and description  
 **Code Reference**: [RoleService.cs](src/IoTHub.Portal.Application/Services/RoleService.cs#L56-L87)  
 **Verification**: ✅ **ACCURATE**
@@ -89,6 +95,7 @@ rolePredicate = rolePredicate.And(role =>
 ```
 
 ### 6. View Role Details with Permissions (FR-006)
+
 **Spec**: Display role details including all assigned permissions  
 **Code Reference**: [RoleService.cs](src/IoTHub.Portal.Application/Services/RoleService.cs#L89-L98)  
 **Verification**: ✅ **ACCURATE** - Includes Actions navigation property
@@ -98,6 +105,7 @@ var roleEntity = await this.roleRepository.GetByIdAsync(id, r => r.Actions);
 ```
 
 ### 7. Modify Role Permissions (FR-007)
+
 **Spec**: Add and remove permissions from roles  
 **Code Reference**: [RoleService.cs](src/IoTHub.Portal.Application/Services/RoleService.cs#L140-L164)  
 **Verification**: ✅ **ACCURATE** - Syncs actions by removing old and adding new
@@ -122,6 +130,7 @@ foreach (var actionName in role.Actions)
 ```
 
 ### 8. Delete Role with Cascade (FR-008)
+
 **Spec**: Delete roles with cascade removal of associated actions  
 **Code Reference**: [RoleService.cs](src/IoTHub.Portal.Application/Services/RoleService.cs#L38-L54)  
 **Verification**: ✅ **ACCURATE**
@@ -139,6 +148,7 @@ roleRepository.Delete(role.Id);
 ```
 
 ### 9. Authorization on Endpoints
+
 **Spec**: Requires `role:read` for viewing, `role:write` for modifications  
 **Code Reference**: [RolesController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/RolesController.cs)  
 **Verification**: ✅ **ACCURATE**
@@ -149,6 +159,7 @@ roleRepository.Delete(role.Id);
 ```
 
 ### 10. RoleDetailsModel Structure
+
 **Spec**: Includes Id, Name, Color, Description, and Actions collection  
 **Code Reference**: [RoleDetailsModel.cs](src/IoTHub.Portal.Shared/Models/v1.0/RoleDetailsModel.cs)  
 **Verification**: ✅ **ACCURATE**
@@ -169,6 +180,7 @@ public class RoleDetailsModel
 ## Inaccuracies & Gaps ❌
 
 ### 1. Permission Filtering (FR-009, FR-010, FR-011)
+
 **Spec**: Filter permissions by resource type and action type; "Select All" for batch assignment  
 **Code Reference**: UI components (not fully verified)  
 **Issue**: ⚠️ **UNVERIFIED** - This is a UI feature that would require reviewing [CreateRolePage.razor](src/IoTHub.Portal.Client/Pages/RBAC/CreateRolePage.razor)
@@ -176,13 +188,16 @@ public class RoleDetailsModel
 **Severity**: Low - Likely implemented in UI but needs frontend verification
 
 ### 2. Permission Count Display (FR-013)
+
 **Spec**: Show permission count during role creation/editing  
 **Issue**: ⚠️ **UNVERIFIED** - UI feature requiring frontend verification
 
 ### 3. Available Permission Categories Table
+
 **Spec**: Lists device, edge-device, model, concentrator, user, role, access-control, planning, schedule, layer, dashboard, setting, idea  
 **Code Reference**: [PortalPermissions.cs](src/IoTHub.Portal.Shared/Security/PortalPermissions.cs)  
 **Issue**: ⚠️ **PARTIALLY ACCURATE** - Additional permissions exist in code not listed in spec:
+
 - `DeviceConfigurationRead`, `DeviceConfigurationWrite`
 - `DeviceTagRead`, `DeviceTagWrite`
 - `EdgeDeviceExecute`
@@ -196,7 +211,7 @@ public class RoleDetailsModel
 ## Code References Summary
 
 | Component | File Path | Status |
-|-----------|-----------|--------|
+| ----------- | ----------- | -------- |
 | Controller | [RolesController.cs](src/IoTHub.Portal.Server/Controllers/v1.0/RolesController.cs) | ✅ Exists |
 | Service | [RoleService.cs](src/IoTHub.Portal.Application/Services/RoleService.cs) | ✅ Exists |
 | Interface | [IRoleManagementService.cs](src/IoTHub.Portal.Application/Services/IRoleManagementService.cs) | ✅ Exists |
@@ -232,6 +247,7 @@ public class RoleDetailsModel
 ## Conclusion
 
 The Role Management specification is **highly accurate** (91.5%) with the codebase. All core functionality is correctly documented:
+
 - Role entity structure matches
 - CRUD operations implemented as specified
 - Authorization correctly applied
@@ -239,5 +255,6 @@ The Role Management specification is **highly accurate** (91.5%) with the codeba
 - Action synchronization logic works correctly
 
 The primary gaps are:
+
 - Permission categories list is incomplete (missing ~8 permissions from the enum)
 - UI-specific features need frontend verification

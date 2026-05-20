@@ -22,6 +22,7 @@ Key capabilities include:
 - Flexible scope-based authorization supporting multi-tenancy patterns
 
 This feature provides critical business value by:
+
 - Enforcing granular access control at the principal-role-scope level
 - Enabling dynamic permission assignment without code deployments
 - Supporting organizational hierarchies and resource isolation
@@ -39,8 +40,10 @@ The access control system uses a three-level model: Principals (users/identities
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/AccessControlController.cs` (Lines 1-179)
   - **Snippet**: Main REST API controller for access control management
+
     ```csharp
     [Authorize]
     [ApiVersion("1.0")]
@@ -81,8 +84,10 @@ The access control system uses a three-level model: Principals (users/identities
     ```
 
 ### Business Logic
+
 - `src/IoTHub.Portal.Application/Services/IAccessControlManagementService.cs` (Lines 1-25)
   - **Snippet**: Core service interface for access control operations
+
     ```csharp
     public interface IAccessControlManagementService
     {
@@ -116,6 +121,7 @@ The access control system uses a three-level model: Principals (users/identities
     - `UserHasPermissionAsync`: Runtime permission validation for authorization
 
 ### Data Access
+
 - `src/IoTHub.Portal.Domain/Repositories/IAccessControlRepository.cs` (Lines 1-11)
   - Repository interface for AccessControl entity operations
   - Extends generic IRepository<AccessControl>
@@ -128,6 +134,7 @@ The access control system uses a three-level model: Principals (users/identities
 
 - `src/IoTHub.Portal.Domain/Entities/AccessControl.cs` (Lines 1-16)
   - **Snippet**: AccessControl entity definition
+
     ```csharp
     public class AccessControl : EntityBase
     {
@@ -141,6 +148,7 @@ The access control system uses a three-level model: Principals (users/identities
 
 - `src/IoTHub.Portal.Domain/Entities/Principal.cs` (Lines 1-18)
   - **Snippet**: Principal entity definition
+
     ```csharp
     public class Principal : EntityBase
     {
@@ -152,6 +160,7 @@ The access control system uses a three-level model: Principals (users/identities
 
 - `src/IoTHub.Portal.Domain/Entities/Action.cs` (Lines 1-14)
   - **Snippet**: Action (permission) entity definition
+
     ```csharp
     public class Action : EntityBase
     {
@@ -161,6 +170,7 @@ The access control system uses a three-level model: Principals (users/identities
     ```
 
 ### UI Components
+
 - `src/IoTHub.Portal.Client/Pages/RBAC/UserDetailPage.razor` (Lines 1-183)
   - User detail page with embedded access control management
   - Features:
@@ -177,8 +187,10 @@ The access control system uses a three-level model: Principals (users/identities
   - Write operations require: PortalPermissions.UserWrite
 
 ### Data Transfer Objects
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/AccessControlModel.cs` (Lines 1-15)
   - **Snippet**: Access control DTO
+
     ```csharp
     public class AccessControlModel
     {
@@ -191,6 +203,7 @@ The access control system uses a three-level model: Principals (users/identities
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/Filters/AccessControlFilter.cs` (Lines 1-12)
   - **Snippet**: Filter DTO for access control pagination
+
     ```csharp
     public class AccessControlFilter : PaginationFilter
     {
@@ -199,6 +212,7 @@ The access control system uses a three-level model: Principals (users/identities
     ```
 
 ### Client Services
+
 - `src/IoTHub.Portal.Client/Services/IAccessControlClientService.cs` (Lines 1-15)
   - Client-side service interface for HTTP API calls
   - Methods:
@@ -215,6 +229,7 @@ The access control system uses a three-level model: Principals (users/identities
     - DELETE `api/access-controls/{id}` for deletion
 
 ### Mappers
+
 - `src/IoTHub.Portal.Application/Mappers/AccessControlProfile.cs` (Lines 1-34)
   - AutoMapper profile for AccessControl entity and DTO mappings
   - Mappings:
@@ -233,6 +248,7 @@ The access control system uses a three-level model: Principals (users/identities
 ## API Endpoints
 
 ### Access Control Management
+
 - `GET /api/access-controls` - Get paginated list of access controls
   - Query Parameters:
     - searchKeyword (string, optional): Filter by scope or role name (case-insensitive)
@@ -285,12 +301,14 @@ The access control system uses a three-level model: Principals (users/identities
 ## Authorization
 
 ### Required Permissions
+
 - **access-control:read** (PortalPermissions.AccessControlRead) - View access controls and assignments
 - **access-control:write** (PortalPermissions.AccessControlWrite) - Create, update, and delete access controls
 - **user:read** (PortalPermissions.UserRead) - View user detail page (where access controls are managed)
 - **user:write** (PortalPermissions.UserWrite) - Modify user role assignments
 
 ### Authorization Implementation
+
 - Attribute-based authorization using `[Authorize("permission")]` attributes on controller methods
 - Permission strings map to ASP.NET Core authorization policies
 - Policies configured in startup to check user claims against access control assignments
@@ -301,6 +319,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Access control management only accessible through authorized user pages
 
 ### Permission Validation Flow
+
 - Runtime permission checking via `UserHasPermissionAsync` method
 - Process:
   1. Retrieve all access controls for the principal (user)
@@ -312,6 +331,7 @@ The access control system uses a three-level model: Principals (users/identities
 - Supports scope-based filtering (future enhancement)
 
 ### Access Control Flow
+
 1. User authenticates via Azure AD/Entra ID (obtains principal identity)
 2. Principal entity created or retrieved from database
 3. AccessControl entities link principal to roles with scopes
@@ -326,6 +346,7 @@ The access control system uses a three-level model: Principals (users/identities
 ## Dependencies
 
 ### Internal Feature Dependencies
+
 - **Role Management** - Defines roles and their associated permissions (actions)
 - **User Management** - Manages user entities linked to principals
 - **Authentication** - Azure AD/Entra ID integration for principal identity
@@ -333,6 +354,7 @@ The access control system uses a three-level model: Principals (users/identities
 - **Principal Management** - Manages principal entities representing identities
 
 ### Service Dependencies
+
 - `IAccessControlRepository` - Access control entity persistence and queries
 - `IPrincipalRepository` - Principal entity validation and retrieval
 - `IRoleRepository` - Role entity validation and retrieval
@@ -341,6 +363,7 @@ The access control system uses a three-level model: Principals (users/identities
 - `IUserManagementService` - User retrieval for UI display
 
 ### Related Entities
+
 - **Principal** - Identity entity linking to access controls and users
 - **User** - Portal user entity linked to principal
 - **Role** - Security role containing permissions
@@ -348,12 +371,14 @@ The access control system uses a three-level model: Principals (users/identities
 - **AccessControl** - Junction entity linking principal, role, and scope
 
 ### External Dependencies
+
 - **Entity Framework Core** - Database access via PortalDbContext
 - **AutoMapper** - Entity to DTO mapping
 - **Azure AD/Entra ID** - Authentication and principal identity management
 - **ASP.NET Core Authorization** - Policy-based authorization framework
 
 ### UI Dependencies
+
 - **MudBlazor** - UI component library
   - MudTextField - Text input for user details and scope
   - MudSelect - Dropdown for role selection
@@ -371,12 +396,14 @@ The access control system uses a three-level model: Principals (users/identities
 ## Key Features & Behaviors
 
 ### Access Control Model
+
 - **PrincipalId**: Unique identifier for the user/identity (from Azure AD)
 - **RoleId**: Foreign key to Role entity defining permissions
 - **Scope**: Resource boundary filter (e.g., "*" for all, specific resource IDs)
 - **Role**: Navigation property to Role entity with actions
 
 ### Scope-Based Authorization
+
 - Scopes define resource boundaries for role application
 - Wildcard scope ("*"): Role applies to all resources organization-wide
 - Specific scope: Role applies only to specified resource (future implementation)
@@ -389,6 +416,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Single device operator: scope = "device-789"
 
 ### Access Control Creation Workflow
+
 1. User navigates to user detail page (/users/{userId})
 2. System loads user details and existing access controls
 3. System loads available roles from API (all roles in system)
@@ -403,6 +431,7 @@ The access control system uses a three-level model: Principals (users/identities
 12. Success feedback via loading state (no explicit notification)
 
 ### Access Control Deletion Workflow
+
 1. User views access control list on user detail page
 2. User clicks delete icon button for specific access control
 3. API deletes access control entity by ID
@@ -412,6 +441,7 @@ The access control system uses a three-level model: Principals (users/identities
 7. Returns: 404 NotFound if access control already deleted
 
 ### Permission Validation Workflow
+
 1. User attempts to access protected resource or action
 2. Authorization middleware extracts principal ID from claims
 3. System calls UserHasPermissionAsync with principalId and permission
@@ -425,6 +455,7 @@ The access control system uses a three-level model: Principals (users/identities
 8. Authorization middleware allows/denies request based on result
 
 ### Pagination Implementation
+
 - Server-side pagination via PagedList pattern
 - Client specifies page number and page size
 - Server returns: Items, TotalItems, NextPage URL
@@ -434,6 +465,7 @@ The access control system uses a three-level model: Principals (users/identities
 - Principal filtering enables user-specific access control views
 
 ### Search and Filter
+
 - **Keyword Search**: Searches scope and role name (case-insensitive)
 - **Principal Filter**: Filters access controls by specific principal ID
 - **Combined Filters**: Keyword AND principal filters can be combined
@@ -442,6 +474,7 @@ The access control system uses a three-level model: Principals (users/identities
 - Used primarily for user-specific views (filter by user's principal)
 
 ### Database Operations
+
 - **Create**: Insert access control with principal/role validation
 - **Update**: Update principal, role, or scope assignments
 - **Delete**: Remove access control entry (no cascade effects)
@@ -453,6 +486,7 @@ The access control system uses a three-level model: Principals (users/identities
 - All operations use Unit of Work pattern for transactional consistency
 
 ### Principal-User Relationship
+
 - Principal: Abstract identity entity (can represent user, service, group)
 - User: Concrete portal user entity with profile information
 - Relationship: One-to-one optional (Principal.User can be null)
@@ -464,6 +498,7 @@ The access control system uses a three-level model: Principals (users/identities
 - UI limitation: Access controls currently managed only through User pages
 
 ### Error Handling
+
 - ProblemDetailsException handling for API errors
 - User-friendly error messages via Snackbar notifications
 - Loading state management during async operations
@@ -474,6 +509,7 @@ The access control system uses a three-level model: Principals (users/identities
 - Safe API call pattern in UI prevents unhandled exceptions
 
 ### Validation Rules
+
 - **PrincipalId**: Required, must exist in database
 - **RoleId**: Required, must exist in database
 - **Scope**: Required, defaults to "*" in UI
@@ -485,6 +521,7 @@ The access control system uses a three-level model: Principals (users/identities
 ## Notes
 
 ### Architecture Patterns
+
 - **Repository Pattern** - Clean separation of data access concerns
 - **Unit of Work Pattern** - Transactional consistency across operations
 - **Service Layer** - Business logic abstraction from controllers
@@ -494,6 +531,7 @@ The access control system uses a three-level model: Principals (users/identities
 - **Predicate Builder Pattern** - Dynamic query construction
 
 ### Access Control Model Design
+
 - Three-level hierarchy: Principal → AccessControl → Role → Action
 - AccessControl as junction entity with additional scope attribute
 - Benefits:
@@ -507,6 +545,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Separate permission entities: More granular but more complex
 
 ### Scope Attribute Design
+
 - Current implementation: Scope stored in database but not enforced
 - Wildcard scope "*": Convention for organization-wide access
 - Specific scopes: Future enhancement for resource-level permissions
@@ -520,6 +559,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Department-based: scope = department ID or "*"
 
 ### Principal vs User Distinction
+
 - **Principal**: Authentication identity (Azure AD object ID, email, etc.)
 - **User**: Portal-specific user profile (name, preferences, metadata)
 - Design rationale:
@@ -531,6 +571,7 @@ The access control system uses a three-level model: Principals (users/identities
 - Future enhancement: Support principal management independent of users
 
 ### Permission Checking Performance
+
 - Current implementation: Loads all access controls + roles + actions per check
 - Optimization considerations:
   - Cache permission results per request/session
@@ -543,6 +584,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Claims: Fastest but requires token refresh for permission changes
 
 ### Role Assignment Model
+
 - Multiple roles per principal: Supported (union of permissions)
 - Multiple scopes per role: Requires multiple access controls
 - Permission conflict resolution: Union (any role grants permission)
@@ -553,6 +595,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Scope-specific permission overrides
 
 ### UI/UX Considerations
+
 - Access control management embedded in user detail page
 - No standalone access control management UI
 - Scope field disabled (always "*") indicating incomplete implementation
@@ -563,6 +606,7 @@ The access control system uses a three-level model: Principals (users/identities
 - Delete action has no confirmation dialog (immediate deletion)
 
 ### Security Considerations
+
 - Authorization required at controller level
 - Permission-based access prevents unauthorized modifications
 - Principal validation prevents assignments to non-existent identities
@@ -573,6 +617,7 @@ The access control system uses a three-level model: Principals (users/identities
 - No rate limiting on role assignment (consider abuse prevention)
 
 ### Multi-Tenancy Considerations
+
 - Scope attribute designed to support multi-tenancy
 - Current implementation: Single-tenant (scope not enforced)
 - Future multi-tenant pattern:
@@ -585,6 +630,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Scope wildcards ("org:123:*" for all departments in org 123)
 
 ### Performance Considerations
+
 - Paginated access control queries prevent full table scans
 - Principal filtering enables efficient user-specific queries
 - Eager loading reduces N+1 queries (includes for Role)
@@ -597,6 +643,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Claims-based permission storage
 
 ### Database Schema Considerations
+
 - AccessControl entity likely has foreign keys to Principal and Role
 - Cascade delete considerations:
   - Delete principal: Should cascade delete access controls (orphan cleanup)
@@ -610,6 +657,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Backward compatibility with existing authorization system
 
 ### Testing Coverage
+
 - Unit tests: AccessControlServiceTests.cs (likely exists)
 - Controller tests: Integration tests for API endpoints
 - UI tests: UserDetailPageTests.cs with access control scenarios
@@ -625,6 +673,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Scope variations (though not enforced yet)
 
 ### Known Limitations
+
 - Scope attribute stored but not enforced in permission checks
 - No standalone access control management UI
 - No bulk role assignment or revocation
@@ -641,6 +690,7 @@ The access control system uses a three-level model: Principals (users/identities
 - Permission check doesn't consider scope (treats all scopes equally)
 
 ### Future Enhancement Opportunities
+
 - **Scope Enforcement**: Implement scope-aware permission validation
 - **Standalone UI**: Dedicated access control management interface
 - **Bulk Operations**: Assign/revoke multiple roles at once
@@ -663,6 +713,7 @@ The access control system uses a three-level model: Principals (users/identities
 - **Permission Analytics**: Usage tracking and anomaly detection
 
 ### Design Decisions and Trade-offs
+
 - **Scope in AccessControl vs. Separate Scope Entity**:
   - Chosen: Scope as string attribute in AccessControl
   - Benefit: Simplicity, flexibility, no additional tables
@@ -689,6 +740,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Trade-off: No way to deny permissions, no role precedence
 
 ### Integration Points
+
 - **Authentication System**: Receives principal ID from Azure AD claims
 - **Role Management**: References roles defined in role system
 - **User Management**: Access controls managed through user detail pages
@@ -697,6 +749,7 @@ The access control system uses a three-level model: Principals (users/identities
 - **Audit System**: Should log access control changes (future)
 
 ### Localization Notes
+
 - UI text in English (UserDetailPage)
 - Error messages in English
 - Localization opportunities:
@@ -707,6 +760,7 @@ The access control system uses a three-level model: Principals (users/identities
   - Empty state message ("No roles assigned.")
 
 ### Accessibility Considerations
+
 - MudBlazor components provide ARIA attributes
 - Role dropdown properly labeled
 - Delete icon button needs accessible label
@@ -717,6 +771,7 @@ The access control system uses a three-level model: Principals (users/identities
 - Disabled states properly communicated via ARIA
 
 ### Migration and Deployment Notes
+
 - AccessControl table likely added in recent RBAC migration
 - Data migration considerations:
   - Migrate existing user-role associations to access controls

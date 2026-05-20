@@ -10,6 +10,7 @@ This is a bug fix, not a new feature. No new entities or schema changes are requ
 ## Entities
 
 ### LorawanDevice (Domain Entity)
+
 **File**: `src/IoTHub.Portal.Domain/Entities/LorawanDevice.cs`  
 **Purpose**: Database entity representing a LoRaWAN device  
 **Inherits**: `Device` (base entity with Id, Name, ModelId, Tags, etc.)
@@ -17,7 +18,7 @@ This is a bug fix, not a new feature. No new entities or schema changes are requ
 **LoRaWAN-Specific Fields**:
 
 | Field | Type | Description | Source |
-|-------|------|-------------|--------|
+| ------- | ------ | ------------- | -------- |
 | UseOTAA | bool | OTAA vs ABP authentication | CSV / IoT Hub |
 | AppKey | string? | OTAA Application Key | CSV / IoT Hub desired |
 | AppEUI | string? | OTAA Application EUI | CSV / IoT Hub desired |
@@ -48,17 +49,20 @@ This is a bug fix, not a new feature. No new entities or schema changes are requ
 | SensorDecoder | string? | Decoder API URL | **MISSING FROM IMPORT** |
 
 **Relationships**:
+
 - `Device.DeviceModelId` → `DeviceModel.Id` (many-to-one)
 - `Device.Tags` → `DeviceTagValue[]` (one-to-many)
 - `Device.Labels` → `Label[]` (one-to-many)
 - `Telemetry` → `LoRaDeviceTelemetry[]` (one-to-many)
 
 ### LoRaDeviceDetails (DTO)
+
 **File**: `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceDetails.cs`  
 **Purpose**: Data Transfer Object for API and import/export  
 **Inherits**: `LoRaDeviceBase` (contains all LoRaWAN-specific properties)
 
 **Additional DTO Fields** (not in entity):
+
 - `DeviceName` - mapped from `Device.Name`
 - `ModelId` - mapped from `Device.DeviceModelId`
 - `ModelName` - lookup from `DeviceModel.Name`
@@ -72,11 +76,13 @@ This is a bug fix, not a new feature. No new entities or schema changes are requ
 ## Value Objects
 
 ### ClassType (Enum)
+
 **File**: `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/ClassType.cs`  
 **Values**: `A` (default), `B`, `C`  
 **Purpose**: LoRaWAN device class determining downlink behavior
 
 ### DeduplicationMode (Enum)
+
 **File**: `src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/DeduplicationMode.cs`  
 **Values**: `None`, `Drop`, `Mark`  
 **Purpose**: How to handle duplicate messages from multiple gateways
@@ -84,7 +90,8 @@ This is a bug fix, not a new feature. No new entities or schema changes are requ
 ## Data Flow
 
 ### Import Flow (Current - Buggy)
-```
+
+```text
 CSV File
   ↓ (CsvHelper reads)
 LoRaDeviceDetails DTO (partially populated)
@@ -99,7 +106,8 @@ LoRaDeviceDetails DTO (partially populated)
 ```
 
 ### Import Flow (After Fix)
-```
+
+```text
 CSV File
   ↓ (CsvHelper reads ALL LoRaWAN properties)
 LoRaDeviceDetails DTO (fully populated)
@@ -116,12 +124,14 @@ LoRaDeviceDetails DTO (fully populated)
 ## Validation Rules
 
 ### Existing Rules (No Changes)
+
 - `DeviceID`: Required, max 128 chars, must match regex `^[A-Z0-9]{16}$` (16 hex chars)
 - `DeviceName`: Required
 - `ModelId`: Required, must reference existing DeviceModel
 - Authentication mode: Either (AppKey + AppEUI) OR (AppSKey + NwkSKey + DevAddr)
 
 ### CSV Import Rules
+
 - `Id`, `Name`, `ModelId` columns are mandatory
 - `TAG:supportLoRaFeatures` must be "true" for LoRaWAN device import
 - Authentication fields: Must provide OTAA (AppKey+AppEUI) OR ABP (AppSKey+NwkSKey+DevAddr)
@@ -130,8 +140,9 @@ LoRaDeviceDetails DTO (fully populated)
 ## Field Mappings
 
 ### CSV Column to DTO Property
+
 | CSV Column | DTO Property | Type | Default |
-|------------|--------------|------|---------|
+| ------------ | -------------- | ------ | --------- |
 | Id | DeviceID | string | (required) |
 | Name | DeviceName | string | (required) |
 | ModelId | ModelId | string | (required) |
@@ -158,7 +169,9 @@ LoRaDeviceDetails DTO (fully populated)
 | PROPERTY:SensorDecoder | SensorDecoder | string | null |
 
 ### DTO to IoT Hub Twin (Desired Properties)
+
 All LoRaWAN properties from DTO are written as desired properties with the same name:
+
 - `AppKey`, `AppEUI`, `AppSKey`, `NwkSKey`, `DevAddr`
 - `ClassType`, `PreferredWindow`, `Deduplication`, `Downlink`
 - `RX1DROffset`, `RX2DataRate`, `RXDelay`
@@ -167,7 +180,9 @@ All LoRaWAN properties from DTO are written as desired properties with the same 
 - `GatewayID` (special: can be desired OR reported)
 
 ### IoT Hub Twin to Entity (Sync Mapping)
+
 AutoMapper (`DeviceProfile.cs` lines 62-98) already correctly maps:
+
 - Desired properties → Entity properties (via `DeviceHelper.RetrieveDesiredPropertyValue()`)
 - Reported properties → Entity reported fields (DataRate, TxPower, etc.)
 
@@ -176,6 +191,7 @@ AutoMapper (`DeviceProfile.cs` lines 62-98) already correctly maps:
 ## State Transitions
 
 ### Device Import States
+
 1. **New device** (`CheckIfDeviceExists()` = false):
    - `CreateDevice()` called
    - New entity inserted into database
@@ -198,16 +214,19 @@ AutoMapper (`DeviceProfile.cs` lines 62-98) already correctly maps:
 ## Backward Compatibility
 
 ### CSV Format Compatibility
+
 - **Existing CSV files** (without new columns): Will import successfully with default values
 - **New CSV files** (with all columns): Will import successfully with explicit values
 - **Export format**: Already includes all LoRaWAN properties (no change needed)
 
 ### API Compatibility
+
 - No API contract changes
 - `POST /api/admin/devices/_import` endpoint unchanged
 - Response format unchanged
 
 ### Data Migration
+
 - No database migration required
 - No data backfill required
 - Fix is forward-compatible only (previously imported devices won't auto-heal, but new imports will work correctly)

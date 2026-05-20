@@ -8,6 +8,7 @@
 ## Summary
 
 Fix critical data loss bug where imported LoRaWAN device data is overwritten during synchronization. When devices are imported via CSV, only a subset of fields (Id, Name, ModelId, assetId, locationCode, supportLoRaFeatures, AppKey, AppEUI, AppSKey, NwkSKey, DevAddr, GatewayID) are retained. Other CSV-provided data is lost because:
+
 1. Import process doesn't push all fields to Azure IoT Hub
 2. Synchronization job then overwrites database with incomplete data from IoT Hub
 3. Some fields inherit unwanted device model defaults
@@ -17,7 +18,8 @@ Technical approach: Modify import flow to properly persist all CSV fields to IoT
 ## Technical Context
 
 **Language/Version**: C# / .NET 8.0  
-**Primary Dependencies**: 
+**Primary Dependencies**:
+
 - ASP.NET Core (Backend API)
 - Blazor WebAssembly (Frontend)
 - AutoMapper (Object mapping)
@@ -31,13 +33,15 @@ Technical approach: Modify import flow to properly persist all CSV fields to IoT
 **Target Platform**: Linux/Windows server (containerized via Docker), Web browser for frontend  
 **Project Type**: Web application (separate backend/frontend)  
 **Performance Goals**: Handle CSV imports with 1000+ devices, sync job completion within 5 minutes for typical deployments  
-**Constraints**: 
+**Constraints**:
+
 - Must maintain Azure IoT Hub as source of truth for device state
 - Cannot break existing CSV import/export format for backward compatibility
 - Synchronization runs on scheduled intervals (via Quartz job)
 - Must handle both OTAA and ABP LoRaWAN authentication modes
 
-**Scale/Scope**: 
+**Scale/Scope**:
+
 - IoT Hub Portal manages thousands of IoT devices
 - Bug affects LoRaWAN device import specifically
 - Impacts ~30 LoRaWAN-specific properties in LoRaDeviceBase class
@@ -51,9 +55,10 @@ Technical approach: Modify import flow to properly persist all CSV fields to IoT
 
 **Post-Phase 1 Status**: ✅ PASS (Constitution template remains empty/unconfigured)
 
-The project constitution file exists but contains only placeholder templates without concrete principles or constraints. Since no enforceable rules are defined, there are no violations to justify. 
+The project constitution file exists but contains only placeholder templates without concrete principles or constraints. Since no enforceable rules are defined, there are no violations to justify.
 
 **Design Review**:
+
 - ✅ No new architectural layers introduced
 - ✅ No new dependencies added
 - ✅ Follows existing patterns (AutoMapper, CsvHelper, LoRaWAN service layer)
@@ -63,6 +68,7 @@ The project constitution file exists but contains only placeholder templates wit
 - ✅ Unit tests follow existing xUnit + Moq patterns
 
 This implementation will:
+
 - Follow existing codebase patterns and conventions
 - Maintain backward compatibility with CSV format
 - Preserve Azure IoT Hub as source of truth architecture
@@ -134,6 +140,7 @@ tests/
 ```
 
 **Structure Decision**: Standard ASP.NET Core layered architecture with:
+
 - **Server**: REST API controllers and managers
 - **Infrastructure**: Data access, external services (Azure IoT Hub), and scheduled jobs
 - **Application**: Business logic and cross-cutting concerns (mappers)
@@ -158,6 +165,7 @@ No violations detected. Constitution is not yet configured with concrete princip
 ### Implementation Scope
 
 **Primary Changes**:
+
 1. **ExportManager.cs** - Add 14 property reads in `ImportLoRaDevice()` method
 2. **ExportManagerTests.cs** - Add/update unit tests for complete property import
 
@@ -175,6 +183,7 @@ No violations detected. Constitution is not yet configured with concrete princip
 ### Task Breakdown Preview
 
 Expected tasks for `/speckit.tasks`:
+
 1. Add LoRaWAN configuration property reads to CSV import
 2. Update unit tests for complete property coverage
 3. Add backward compatibility test for minimal CSV
@@ -191,6 +200,7 @@ Expected tasks for `/speckit.tasks`:
 ### Success Criteria
 
 Fix is successful when:
+
 - [ ] All 14 LoRaWAN configuration properties are read from CSV
 - [ ] Properties are persisted to Azure IoT Hub desired properties
 - [ ] Sync job retrieves complete data from IoT Hub
@@ -208,15 +218,18 @@ Fix is successful when:
 ### Artifacts Generated
 
 ✅ **Phase 0 Outputs**:
+
 - `research.md` - Root cause analysis and technical decisions
 
 ✅ **Phase 1 Outputs**:
+
 - `data-model.md` - Data structures and flow documentation
 - `contracts/device-import-api.md` - API contract specification
 - `quickstart.md` - Implementation guide
 - `.github/agents/copilot-instructions.md` - Updated agent context
 
 ✅ **Planning Artifacts**:
+
 - `plan.md` - This comprehensive implementation plan (updated)
 
 ### Next Steps

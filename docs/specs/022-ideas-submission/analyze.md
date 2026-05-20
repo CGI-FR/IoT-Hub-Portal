@@ -23,6 +23,7 @@ Key capabilities include:
 - URL return for tracking submitted ideas
 
 This feature provides critical business value by:
+
 - Capturing user feedback at the point of need (contextual feedback)
 - Building community engagement and user loyalty
 - Prioritizing development based on actual user demand
@@ -41,8 +42,10 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
 ## Code Locations
 
 ### Entry Points / Endpoints
+
 - `src/IoTHub.Portal.Server/Controllers/v1.0/IdeasController.cs` (Lines 1-27)
   - **Snippet**: REST API controller for idea submission
+
     ```csharp
     [Authorize]
     [ApiVersion("1.0")]
@@ -70,8 +73,10 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
     ```
 
 ### Business Logic / Service Layer
+
 - `src/IoTHub.Portal.Application/Services/IIdeaService.cs` (Lines 1-10)
   - **Snippet**: Interface defining idea submission contract
+
     ```csharp
     public interface IIdeaService
     {
@@ -83,6 +88,7 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
 
 - `src/IoTHub.Portal.Server/Services/IdeaService.cs` (Lines 1-81)
   - **Snippet**: Implementation of idea submission with external API integration
+
     ```csharp
     public class IdeaService : IIdeaService
     {
@@ -148,8 +154,10 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
     ```
 
 ### Data Models
+
 - `src/IoTHub.Portal.Shared/Models/v1.0/IdeaRequest.cs` (Lines 1-16)
   - **Snippet**: Request model for idea submission
+
     ```csharp
     public class IdeaRequest
     {
@@ -165,6 +173,7 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
 
 - `src/IoTHub.Portal.Shared/Models/v1.0/IdeaResponse.cs` (Lines 1-10)
   - **Snippet**: Response model containing URL to submitted idea
+
     ```csharp
     public class IdeaResponse
     {
@@ -176,7 +185,7 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
 
 ## Data Flow
 
-```
+```text
 1. Client Request → POST /api/ideas
    Body: { title, body, consentToCollectTechnicalDetails }
    Headers: User-Agent, Authorization
@@ -205,6 +214,7 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
 ```
 
 **Key aspects:**
+
 - **Feature Flag**: IdeasEnabled config controls feature availability
 - **Privacy-First**: Technical data only collected with explicit consent
 - **External Integration**: Delegates to external API for idea storage
@@ -216,15 +226,18 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
 ## Dependencies
 
 ### Internal Services/Components
+
 - **ConfigHandler**: Provides IdeasEnabled configuration flag
 - **ILogger<IdeaService>**: Structured logging for monitoring
 
 ### External Libraries
+
 - **UAParser** (or similar): User-agent string parsing library
 - **Newtonsoft.Json**: JSON serialization (JsonConvert)
 - **HttpClient**: External API communication
 
 ### External Services
+
 - **Ideas API Endpoint**: External service for idea management
   - Base URL configured in HttpClient registration
   - Expects POST to `/ideas` endpoint
@@ -232,6 +245,7 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
   - Returns JSON with Url field
 
 ### Configuration
+
 - **IdeasEnabled**: Boolean flag to enable/disable feature
 - **HttpClient Base Address**: URL of external ideas API
 - **Authorization**: `idea:write` permission required
@@ -242,8 +256,9 @@ The feature uses a configurable external HTTP endpoint for idea submission, allo
 
 ### Core Workflows
 
-**1. Submit Idea (With Technical Details)**
-```
+#### 1. Submit Idea (With Technical Details)
+
+```text
 Input: IdeaRequest { title, body, consentToCollectTechnicalDetails: true }
 Process:
   1. Validate "idea:write" permission
@@ -259,8 +274,9 @@ Process:
 Output: IdeaResponse { url: "https://ideas.example.com/123" }
 ```
 
-**2. Submit Idea (Without Technical Details)**
-```
+#### 2. Submit Idea (Without Technical Details)
+
+```text
 Input: IdeaRequest { title, body, consentToCollectTechnicalDetails: false }
 Process:
   1. Validate "idea:write" permission
@@ -273,6 +289,7 @@ Output: IdeaResponse { url: "https://ideas.example.com/124" }
 ```
 
 ### Validation Rules
+
 - **Title**: Required, non-empty string (ASP.NET validation)
 - **Body**: Required, non-empty string (ASP.NET validation)
 - **ConsentToCollectTechnicalDetails**: Optional boolean (default: false)
@@ -281,6 +298,7 @@ Output: IdeaResponse { url: "https://ideas.example.com/124" }
 - **Authorization**: User must have `idea:write` permission
 
 ### Error Handling
+
 - **Feature Disabled**: 500 Internal Server Error with message "Ideas feature is not enabled"
 - **Authentication Failed**: 401 Unauthorized
 - **Authorization Failed**: 403 Forbidden
@@ -294,6 +312,7 @@ Output: IdeaResponse { url: "https://ideas.example.com/124" }
 ## User Interface Integration
 
 ### Frontend Integration Points
+
 - **Help Menu**: "Submit Feedback" or "Suggest a Feature" menu item
 - **Floating Action Button**: Quick access feedback button
 - **Settings Page**: Ideas submission link
@@ -301,7 +320,7 @@ Output: IdeaResponse { url: "https://ideas.example.com/124" }
 
 ### Expected UI Behaviors
 
-```
+```text
 User Clicks "Submit Idea":
   → Open modal dialog with form
     - Title text input (required)
@@ -329,6 +348,7 @@ Technical Details Checkbox:
 ```
 
 ### UI Component Suggestions
+
 - **Modal Dialog**: 500px wide, centered
 - **Title Field**: Single-line text input, max 100 characters
 - **Description Field**: Multi-line textarea, max 2000 characters
@@ -342,6 +362,7 @@ Technical Details Checkbox:
 ## Testing Considerations
 
 ### Unit Testing
+
 - **Mock Dependencies**: Mock HttpClient, ConfigHandler, ILogger
 - **Feature Disabled**: Verify exception when IdeasEnabled = false
 - **With Consent**: Verify description enrichment with technical details
@@ -352,6 +373,7 @@ Technical Details Checkbox:
 - **External API Failure**: Mock 4xx/5xx responses
 
 ### Integration Testing
+
 - **End-to-End Submission**: Test with real external API (test environment)
 - **Authorization**: Test with valid/invalid permissions
 - **Large Descriptions**: Test with 10KB+ text bodies
@@ -360,6 +382,7 @@ Technical Details Checkbox:
 - **Timeout Handling**: Test with slow-responding API
 
 ### Edge Cases
+
 - Empty User-Agent header
 - Malformed User-Agent strings
 - User-Agent with special characters
@@ -374,23 +397,27 @@ Technical Details Checkbox:
 ## Performance Considerations
 
 ### Scalability
+
 - **API Call Overhead**: Each submission = 1 external HTTP call
 - **User-Agent Parsing**: O(1) complexity, minimal CPU
 - **JSON Serialization**: O(n) where n = description length
 - **No Database Impact**: Feature doesn't use local database
 
 ### Optimization Strategies
+
 - **HttpClient Reuse**: Ensure HttpClient is registered as singleton
 - **Timeout Configuration**: Set reasonable timeout (e.g., 10 seconds)
 - **Retry Logic**: Consider implementing retry policy (Polly)
 - **Async Processing**: Consider queueing for resilience (not critical path)
 
 ### Resource Limits
+
 - **Rate Limiting**: Consider rate limiting per user (e.g., 5 ideas/hour)
 - **Payload Size**: Description limited by ASP.NET max request size
 - **External API Limits**: Dependent on external service quotas
 
 ### Monitoring Recommendations
+
 - Track idea submission success/failure rates
 - Monitor external API response times
 - Alert on submission failures >10%
@@ -402,29 +429,34 @@ Technical Details Checkbox:
 ## Security Analysis
 
 ### Authentication & Authorization
+
 - **Authentication Required**: `[Authorize]` attribute on controller
 - **Fine-grained Authorization**: `idea:write` permission required
 - **No Anonymous Access**: Prevents spam and abuse
 
 ### Input Validation
+
 - ✅ Title and Body required (ASP.NET validation)
 - ✅ User input not executed (no code injection risk)
 - ⚠️ No length limits enforced (potential DoS)
 - ⚠️ No content filtering (profanity, spam)
 
 ### Data Privacy
+
 - **User Consent**: Technical data only collected with explicit consent
 - **PII Exposure**: User-Agent may contain fingerprinting data
 - **No Authentication Token Logging**: Good practice observed
 - **No Subscription ID Collection**: Commented out in code (privacy consideration)
 
 ### External Integration Risks
+
 - **API Credential Security**: Ensure API keys/tokens secured in configuration
 - **Man-in-the-Middle**: Use HTTPS for external API communication
 - **Data Exposure**: Ideas sent to external service (ensure trusted provider)
 - **Service Compromise**: External service breach could expose idea data
 
 ### Security Recommendations
+
 - ✅ Proper authorization in place
 - ✅ User consent for technical data collection
 - ⚠️ **Add rate limiting** to prevent abuse/spam
@@ -441,12 +473,14 @@ Technical Details Checkbox:
 ## Configuration & Deployment
 
 ### Configuration Requirements
+
 - **IdeasEnabled**: Boolean flag (default: false)
 - **Ideas API Base URL**: HTTP client base address
 - **Ideas API Credentials**: Authentication tokens/API keys
 - **Authorization Policy**: `idea:write` must be defined
 
 ### Environment Variables
+
 ```bash
 IDEAS_ENABLED=true
 IDEAS_API_URL=https://ideas.example.com/api
@@ -454,6 +488,7 @@ IDEAS_API_KEY=your-api-key-here
 ```
 
 ### Deployment Checklist
+
 - ✅ Configure IdeasEnabled in appsettings.json
 - ✅ Register HttpClient with base address in Startup/Program.cs
 - ✅ Configure external API authentication
@@ -465,6 +500,7 @@ IDEAS_API_KEY=your-api-key-here
 - ✅ Document external API provider and SLA
 
 ### HttpClient Registration Example
+
 ```csharp
 services.AddHttpClient<IIdeaService, IdeaService>(client => {
     client.BaseAddress = new Uri(configuration["IdeasApiUrl"]);
@@ -479,6 +515,7 @@ services.AddHttpClient<IIdeaService, IdeaService>(client => {
 ## Known Issues & Limitations
 
 ### Current Limitations
+
 1. **No Rate Limiting**: Users can spam submissions
 2. **No Draft Saving**: Ideas must be submitted immediately (no save/resume)
 3. **No Attachment Support**: Cannot attach screenshots or files
@@ -489,6 +526,7 @@ services.AddHttpClient<IIdeaService, IdeaService>(client => {
 8. **Synchronous Processing**: Blocks request thread during external API call
 
 ### Technical Debt
+
 - External API call in request pipeline (should be async/queued)
 - No retry logic for transient failures
 - Hardcoded "ideas" endpoint path
@@ -497,6 +535,7 @@ services.AddHttpClient<IIdeaService, IdeaService>(client => {
 - Commented-out subscription ID collection code (remove or document)
 
 ### Future Considerations
+
 - Implement async processing with background queue
 - Add retry and circuit breaker policies (Polly)
 - Support idea drafts and autosave
@@ -515,14 +554,17 @@ services.AddHttpClient<IIdeaService, IdeaService>(client => {
 ## Related Features
 
 ### Directly Related
+
 - Role Management (defines `idea:write` permission)
 - User Authentication (identifies submitters)
 - Settings Management (IdeasEnabled configuration)
 
 ### Dependent Features
+
 - None (feature is self-contained)
 
 ### Integration Points
+
 - Help System (UI entry point)
 - User Profile (potential idea history view)
 - Notifications (potential status updates)
@@ -532,21 +574,25 @@ services.AddHttpClient<IIdeaService, IdeaService>(client => {
 ## Migration & Compatibility
 
 ### API Versioning
+
 - Current version: 1.0
 - Endpoint: `/api/ideas`
 - Version included in route via `[ApiVersion("1.0")]`
 
 ### Breaking Change Considerations
+
 - Adding required fields: Breaking change
 - Changing response structure: Breaking change
 - Removing ConsentToCollectTechnicalDetails: Breaking change
 
 ### External API Compatibility
+
 - **Current Contract**: POST with Title and Description
 - **Assumptions**: External API returns JSON with Url field
 - **Migration Risk**: External API changes require code updates
 
 ### Backward Compatibility
+
 - Adding optional fields: Non-breaking
 - Adding technical metadata fields: Non-breaking (opt-in)
 - Changing external API: Requires careful migration
@@ -556,6 +602,7 @@ services.AddHttpClient<IIdeaService, IdeaService>(client => {
 ## Documentation & Examples
 
 ### API Documentation
+
 ```http
 POST /api/ideas
 Authorization: Bearer {token}
@@ -587,6 +634,7 @@ Response 500 Internal Server Error (API Failure):
 ### Usage Examples
 
 **JavaScript (fetch):**
+
 ```javascript
 async function submitIdea(title, body, includeDetails) {
   const response = await fetch('/api/ideas', {
@@ -614,6 +662,7 @@ async function submitIdea(title, body, includeDetails) {
 ```
 
 **PowerShell:**
+
 ```powershell
 $token = "your-jwt-token"
 $headers = @{
@@ -634,6 +683,7 @@ Write-Host "Idea submitted: $($response.url)"
 ```
 
 **cURL:**
+
 ```bash
 curl -X POST https://portal.example.com/api/ideas \
   -H "Authorization: Bearer YOUR_TOKEN" \
@@ -650,14 +700,16 @@ curl -X POST https://portal.example.com/api/ideas \
 ## References
 
 ### Related Documentation
+
 - Authorization Guide: idea:write permission
 - Configuration Guide: IdeasEnabled flag
 - External API Integration: Ideas platform documentation
 
 ### External Resources
-- UAParser Library: https://github.com/ua-parser
-- HttpClient Best Practices: https://docs.microsoft.com/aspnet/core/fundamentals/http-requests
-- User Feedback Best Practices: https://www.nngroup.com/articles/user-feedback/
+
+- UAParser Library: <https://github.com/ua-parser>
+- HttpClient Best Practices: <https://docs.microsoft.com/aspnet/core/fundamentals/http-requests>
+- User Feedback Best Practices: <https://www.nngroup.com/articles/user-feedback/>
 
 ---
 
