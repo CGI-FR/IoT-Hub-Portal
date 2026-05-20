@@ -651,6 +651,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Reduces configuration errors
 
 ### Image/Avatar Management
+
 - Upload custom images (JPG, JPEG, PNG)
 - Display in model list for visual identification
 - Default placeholder for models without custom image
@@ -760,6 +761,7 @@ This feature provides business value by enabling infrastructure-as-code approach
 - Accelerates model creation with tested components
 
 ### Label Usage
+
 - Labels stored as many-to-many relationship
 - Enable model categorization (e.g., "production", "testing", "v1.0")
 - UI filtering by labels (implementation in progress)
