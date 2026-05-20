@@ -163,6 +163,9 @@ dotnet_diagnostic.IDE0370.severity = suggestion
 # IDE0391: Make method synchronous
 dotnet_diagnostic.IDE0391.severity = suggestion
 
+# IDE0390: Method can be made synchronous
+dotnet_diagnostic.IDE0390.severity = suggestion
+
 # This or Me qualifier
 dotnet_style_qualification_for_field=true
 dotnet_style_qualification_for_property=false
