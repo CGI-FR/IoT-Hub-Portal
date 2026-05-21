@@ -1,0 +1,960 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Task list for Bicep Template Preflight Validation on CI feature" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Tasks: Bicep Template Preflight Validation on CI - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#tasks-bicep-template-preflight-validation-on-ci">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Tasks: Bicep Template Preflight Validation on CI
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#format-id-p-story-description">
+<span class="md-ellipsis">
+      Format: [ID] [P?] [Story] Description
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-conventions">
+<span class="md-ellipsis">
+      Path Conventions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-1-setup-shared-infrastructure">
+<span class="md-ellipsis">
+      Phase 1: Setup (Shared Infrastructure)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-2-foundational-blocking-prerequisites">
+<span class="md-ellipsis">
+      Phase 2: Foundational (Blocking Prerequisites)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-3-user-story-1-validate-bicep-deployment-before-merge-priority-p1-mvp">
+<span class="md-ellipsis">
+      Phase 3: User Story 1 - Validate Bicep Deployment Before Merge (Priority: P1) 🎯 MVP
+    </span>
+</a>
+<nav aria-label="Phase 3: User Story 1 - Validate Bicep Deployment Before Merge (Priority: P1) 🎯 MVP" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implementation-for-user-story-1">
+<span class="md-ellipsis">
+      Implementation for User Story 1
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-4-user-story-2-replace-syntax-only-validation-with-full-deployment-validation-priority-p2">
+<span class="md-ellipsis">
+      Phase 4: User Story 2 - Replace Syntax-Only Validation with Full Deployment Validation (Priority: P2)
+    </span>
+</a>
+<nav aria-label="Phase 4: User Story 2 - Replace Syntax-Only Validation with Full Deployment Validation (Priority: P2)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implementation-for-user-story-2">
+<span class="md-ellipsis">
+      Implementation for User Story 2
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-5-user-story-3-provide-clear-feedback-on-validation-results-priority-p3">
+<span class="md-ellipsis">
+      Phase 5: User Story 3 - Provide Clear Feedback on Validation Results (Priority: P3)
+    </span>
+</a>
+<nav aria-label="Phase 5: User Story 3 - Provide Clear Feedback on Validation Results (Priority: P3)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implementation-for-user-story-3">
+<span class="md-ellipsis">
+      Implementation for User Story 3
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-6-polish-cross-cutting-concerns">
+<span class="md-ellipsis">
+      Phase 6: Polish &amp; Cross-Cutting Concerns
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies-execution-order">
+<span class="md-ellipsis">
+      Dependencies &amp; Execution Order
+    </span>
+</a>
+<nav aria-label="Dependencies &amp; Execution Order" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-dependencies">
+<span class="md-ellipsis">
+      Phase Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-dependencies">
+<span class="md-ellipsis">
+      User Story Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#within-each-user-story">
+<span class="md-ellipsis">
+      Within Each User Story
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#parallel-opportunities">
+<span class="md-ellipsis">
+      Parallel Opportunities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#parallel-example-user-story-2">
+<span class="md-ellipsis">
+      Parallel Example: User Story 2
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implementation-strategy">
+<span class="md-ellipsis">
+      Implementation Strategy
+    </span>
+</a>
+<nav aria-label="Implementation Strategy" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mvp-first-user-story-1-only">
+<span class="md-ellipsis">
+      MVP First (User Story 1 Only)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#incremental-delivery">
+<span class="md-ellipsis">
+      Incremental Delivery
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#parallel-team-strategy">
+<span class="md-ellipsis">
+      Parallel Team Strategy
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validation-checklist">
+<span class="md-ellipsis">
+      Validation Checklist
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-metrics">
+<span class="md-ellipsis">
+      Success Metrics
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notes">
+<span class="md-ellipsis">
+      Notes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="tasks-bicep-template-preflight-validation-on-ci">Tasks: Bicep Template Preflight Validation on CI<a class="headerlink" href="#tasks-bicep-template-preflight-validation-on-ci" title="Permanent link">¶</a></h1>
+<p><strong>Feature Branch</strong>: <code>001-bicep-preflight-validation</code><br/>
+<strong>Input</strong>: Design documents from <code>/specs/001-bicep-preflight-validation/</code><br/>
+<strong>Prerequisites</strong>: spec.md (user stories with priorities)</p>
+<p><strong>Organization</strong>: Tasks are grouped by user story to enable independent implementation and testing of each story.</p>
+<h2 id="format-id-p-story-description">Format: <code>[ID] [P?] [Story] Description</code><a class="headerlink" href="#format-id-p-story-description" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>[P]</strong>: Can run in parallel (different files, no dependencies)</li>
+<li><strong>[Story]</strong>: Which user story this task belongs to (e.g., US1, US2, US3)</li>
+<li>Include exact file paths in descriptions</li>
+</ul>
+<h2 id="path-conventions">Path Conventions<a class="headerlink" href="#path-conventions" title="Permanent link">¶</a></h2>
+<ul>
+<li>GitHub Actions workflows: <code>.github/workflows/</code></li>
+<li>Bicep templates: <code>templates/azure/**</code> and <code>templates/iotedge-lorawan-starterkit/**</code></li>
+<li>Test templates: <code>templates/azure/tests/</code></li>
+</ul>
+<hr/>
+<h2 id="phase-1-setup-shared-infrastructure">Phase 1: Setup (Shared Infrastructure)<a class="headerlink" href="#phase-1-setup-shared-infrastructure" title="Permanent link">¶</a></h2>
+<p><strong>Purpose</strong>: Prepare Azure environment and credentials for validation</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T001 Document Azure service principal requirements in docs/azure-validation-setup.md (OIDC-based authentication with Reader role + deployment validation permissions)</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T002 Create GitHub repository secrets documentation in .github/workflows/README.md (AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID for OIDC)</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T003 [P] Create test template directory structure at templates/azure/tests/ for validation test cases</li>
+</ul>
+<hr/>
+<h2 id="phase-2-foundational-blocking-prerequisites">Phase 2: Foundational (Blocking Prerequisites)<a class="headerlink" href="#phase-2-foundational-blocking-prerequisites" title="Permanent link">¶</a></h2>
+<p><strong>Purpose</strong>: Core workflow infrastructure that MUST be complete before implementing user stories</p>
+<p><strong>⚠️ CRITICAL</strong>: No user story work can begin until this phase is complete</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T004 Create workflow helper script at .github/scripts/find-bicep-templates.sh to discover all Bicep templates in repository</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T005 Create workflow helper script at .github/scripts/parse-validation-errors.sh to extract and format Azure validation error messages</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T006 [P] Create test parameter file template at templates/azure/tests/azuredeploy.parameters.test.json with minimal valid parameters for validation</li>
+</ul>
+<p><strong>Checkpoint</strong>: Foundation ready - user story implementation can now begin in parallel</p>
+<hr/>
+<h2 id="phase-3-user-story-1-validate-bicep-deployment-before-merge-priority-p1-mvp">Phase 3: User Story 1 - Validate Bicep Deployment Before Merge (Priority: P1) 🎯 MVP<a class="headerlink" href="#phase-3-user-story-1-validate-bicep-deployment-before-merge-priority-p1-mvp" title="Permanent link">¶</a></h2>
+<p><strong>Goal</strong>: Enable CI pipeline to validate Bicep template deployments using Azure's deployment validation API, catching deployment failures before code is merged.</p>
+<p><strong>Independent Test</strong>: Create a pull request with valid Bicep changes and observe the CI pipeline perform deployment validation with success status. Then create a PR with intentionally invalid Bicep (e.g., invalid SKU) and verify validation fails with error details.</p>
+<h3 id="implementation-for-user-story-1">Implementation for User Story 1<a class="headerlink" href="#implementation-for-user-story-1" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T007 [US1] Add Azure OIDC authentication step to .github/workflows/bicep-lint.yml using azure/login@v2 action with federated credentials</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T008 [US1] Add Azure CLI setup verification step in .github/workflows/bicep-lint.yml to ensure az cli is available and authenticated</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T009 [US1] Update main validation job in .github/workflows/bicep-lint.yml to use azure/arm-deploy@v2 action for templates/azure/azuredeploy.bicep with deploymentMode: Validate</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T010 [US1] Configure validation parameters in .github/workflows/bicep-lint.yml to pass test parameters file from templates/azure/tests/azuredeploy.parameters.test.json</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T011 [US1] Add validation timeout configuration in .github/workflows/bicep-lint.yml with timeout-minutes: 10 for validation job</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T012 [US1] Configure workflow to validate all main Bicep templates (portal_with_lorawan_and_starter_kit.bicep, portal_with_lorawan.bicep, portal_without_lorawan.bicep, azuredeploy.bicep) in templates/azure/</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T013 [US1] Add status check reporting in .github/workflows/bicep-lint.yml to fail the workflow if any validation fails</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T014 [US1] Test validation with valid Bicep template change in a pull request to verify success path</li>
+</ul>
+<p><strong>Checkpoint</strong>: At this point, User Story 1 should be fully functional - basic deployment validation working for all main templates</p>
+<hr/>
+<h2 id="phase-4-user-story-2-replace-syntax-only-validation-with-full-deployment-validation-priority-p2">Phase 4: User Story 2 - Replace Syntax-Only Validation with Full Deployment Validation (Priority: P2)<a class="headerlink" href="#phase-4-user-story-2-replace-syntax-only-validation-with-full-deployment-validation-priority-p2" title="Permanent link">¶</a></h2>
+<p><strong>Goal</strong>: Enhance validation to catch deployment-time issues beyond syntax, including resource quota limits, permission problems, unavailable SKUs, and resource conflicts.</p>
+<p><strong>Independent Test</strong>: Create test templates that pass syntax validation (<code>az bicep build</code>) but would fail deployment (e.g., requesting unavailable VM SKUs, exceeding quota limits, or referencing non-existent resources), and verify the new validation catches these issues while the old validation did not.</p>
+<h3 id="implementation-for-user-story-2">Implementation for User Story 2<a class="headerlink" href="#implementation-for-user-story-2" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T015 [P] [US2] Create test template at templates/azure/tests/invalid-sku.bicep with unavailable Azure resource SKU to verify deployment validation catches it</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T016 [P] [US2] Create test template at templates/azure/tests/quota-violation.bicep with resource configurations that would exceed typical quotas</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T017 [P] [US2] Create test template at templates/azure/tests/permission-issue.bicep requiring elevated permissions to verify validation detects permission problems</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T018 [US2] Add matrix strategy to .github/workflows/bicep-lint.yml to validate all module templates (app_service.bicep, iothub.bicep, storage.bicep, database.bicep, dps.bicep, app_insights.bicep, etc.) from templates/azure/</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T019 [US2] Configure validation scope in .github/workflows/bicep-lint.yml to use appropriate resource group scope for validation (create validation resource group if needed)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T020 [US2] Add step in .github/workflows/bicep-lint.yml to validate module templates with their dependencies resolved</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T021 [US2] Remove old arm-ttk validation step from .github/workflows/bicep-lint.yml (line 39-40: "Lint Bicep templates and Generate ARM template")</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T022 [US2] Test with templates from templates/azure/tests/ to verify deployment validation catches quota, SKU, and permission issues that syntax validation misses</li>
+</ul>
+<p><strong>Checkpoint</strong>: At this point, User Stories 1 AND 2 should both work - comprehensive deployment validation replacing syntax-only validation</p>
+<hr/>
+<h2 id="phase-5-user-story-3-provide-clear-feedback-on-validation-results-priority-p3">Phase 5: User Story 3 - Provide Clear Feedback on Validation Results (Priority: P3)<a class="headerlink" href="#phase-5-user-story-3-provide-clear-feedback-on-validation-results-priority-p3" title="Permanent link">¶</a></h2>
+<p><strong>Goal</strong>: Provide clear, actionable error messages when validation fails, including specific details about what will fail and why, enabling developers to quickly fix issues without trial-and-error.</p>
+<p><strong>Independent Test</strong>: Intentionally create various types of errors in Bicep templates (invalid resource names, wrong SKUs, missing dependencies, quota issues) and verify that the validation output provides specific, actionable error messages with Azure error codes and resource details.</p>
+<h3 id="implementation-for-user-story-3">Implementation for User Story 3<a class="headerlink" href="#implementation-for-user-story-3" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T023 [P] [US3] Create error parsing script at .github/scripts/format-validation-output.sh to extract Azure error codes, resource names, and descriptions from validation failures</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T024 [US3] Update .github/workflows/bicep-lint.yml to capture and parse validation error output using format-validation-output.sh script</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T025 [US3] Add step in .github/workflows/bicep-lint.yml to format and display validation errors in GitHub Actions annotations for easy PR review</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T026 [US3] Configure workflow to continue validation for all templates even if one fails (continue-on-error strategy) to report all errors together</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T027 [US3] Add summary step in .github/workflows/bicep-lint.yml to create job summary with all validation results (passed/failed templates with error details)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T028 [P] [US3] Create test template at templates/azure/tests/multiple-errors.bicep with multiple intentional errors to verify all errors are reported together</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T029 [US3] Add validation result formatting to display error categories (quota, permission, SKU, API compatibility) in .github/workflows/bicep-lint.yml</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T030 [US3] Test error reporting with templates containing various error types to verify actionable error messages with specific resource names and Azure error codes</li>
+</ul>
+<p><strong>Checkpoint</strong>: All user stories should now be independently functional - complete deployment validation with clear, actionable feedback</p>
+<hr/>
+<h2 id="phase-6-polish-cross-cutting-concerns">Phase 6: Polish &amp; Cross-Cutting Concerns<a class="headerlink" href="#phase-6-polish-cross-cutting-concerns" title="Permanent link">¶</a></h2>
+<p><strong>Purpose</strong>: Improvements that affect the overall feature quality and maintainability</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T031 [P] Create documentation at docs/bicep-validation-guide.md explaining how the validation works, what it catches, and how to fix common errors</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T032 [P] Update repository README.md to document the Bicep validation requirement for pull requests</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T033 [P] Create troubleshooting guide at docs/bicep-validation-troubleshooting.md with solutions for common validation issues</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T034 Add workflow documentation comments in .github/workflows/bicep-lint.yml explaining each validation step and its purpose</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T035 [P] Create example parameter files at templates/azure/tests/examples/ showing valid parameter configurations for each template</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T036 Test edge cases: validation timeout, Azure API unavailability, concurrent PR validations, templates with external dependencies</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T037 Optimize validation performance: explore parallel validation of independent templates, caching of validation results</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T038 Security review: verify no secrets are exposed in logs, credentials are properly scoped with minimal permissions</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T039 Add workflow badge to README.md showing Bicep validation status</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T040 Final end-to-end test: Create pull request with valid and invalid templates, verify complete validation cycle and error reporting</li>
+</ul>
+<hr/>
+<h2 id="dependencies-execution-order">Dependencies &amp; Execution Order<a class="headerlink" href="#dependencies-execution-order" title="Permanent link">¶</a></h2>
+<h3 id="phase-dependencies">Phase Dependencies<a class="headerlink" href="#phase-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Setup (Phase 1)</strong>: No dependencies - can start immediately</li>
+<li><strong>Foundational (Phase 2)</strong>: Depends on Setup completion - BLOCKS all user stories</li>
+<li><strong>User Stories (Phase 3-5)</strong>: All depend on Foundational phase completion</li>
+<li>User stories can then proceed in parallel (if staffed)</li>
+<li>Or sequentially in priority order (P1 → P2 → P3)</li>
+<li><strong>Polish (Phase 6)</strong>: Depends on all user stories being complete</li>
+</ul>
+<h3 id="user-story-dependencies">User Story Dependencies<a class="headerlink" href="#user-story-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>User Story 1 (P1)</strong>: Can start after Foundational (Phase 2) - No dependencies on other stories</li>
+<li>Establishes basic deployment validation with azure/arm-deploy@v2</li>
+<li>
+<p>Validates main templates only</p>
+</li>
+<li>
+<p><strong>User Story 2 (P2)</strong>: Can start after Foundational (Phase 2) - Extends US1 but is independently testable</p>
+</li>
+<li>Adds comprehensive validation for all templates including modules</li>
+<li>Creates test cases for deployment-time issues</li>
+<li>
+<p>Removes old arm-ttk validation</p>
+</li>
+<li>
+<p><strong>User Story 3 (P3)</strong>: Can start after Foundational (Phase 2) - Enhances US1 output but is independently testable</p>
+</li>
+<li>Adds error parsing and formatting</li>
+<li>Improves developer experience with actionable feedback</li>
+<li>Does not change validation logic from US1/US2</li>
+</ul>
+<h3 id="within-each-user-story">Within Each User Story<a class="headerlink" href="#within-each-user-story" title="Permanent link">¶</a></h3>
+<ul>
+<li>Azure authentication must be configured before validation steps (T007 before T009)</li>
+<li>Test templates can be created in parallel (all T015-T017 marked [P])</li>
+<li>Documentation tasks can run in parallel (all marked [P])</li>
+<li>Validation configuration tasks must be sequential (T009 → T010 → T011)</li>
+<li>Error parsing script (T023) must exist before using it in workflow (T024)</li>
+</ul>
+<h3 id="parallel-opportunities">Parallel Opportunities<a class="headerlink" href="#parallel-opportunities" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Setup Phase</strong>: T001 and T003 can run in parallel with T002</li>
+<li><strong>Foundational Phase</strong>: T005 and T006 can run in parallel after T004 completes</li>
+<li><strong>User Story 2</strong>: All test template creation (T015, T016, T017) can run in parallel</li>
+<li><strong>User Story 3</strong>: Error parsing script (T023) and test template (T028) can run in parallel</li>
+<li><strong>Polish Phase</strong>: All documentation tasks (T031, T032, T033, T035) can run in parallel</li>
+</ul>
+<hr/>
+<h2 id="parallel-example-user-story-2">Parallel Example: User Story 2<a class="headerlink" href="#parallel-example-user-story-2" title="Permanent link">¶</a></h2>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Launch all test template creation tasks for User Story 2 together:</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a>Task<span class="w"> </span>T015:<span class="w"> </span><span class="s2">"Create test template at templates/azure/tests/invalid-sku.bicep"</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a>Task<span class="w"> </span>T016:<span class="w"> </span><span class="s2">"Create test template at templates/azure/tests/quota-violation.bicep"</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a>Task<span class="w"> </span>T017:<span class="w"> </span><span class="s2">"Create test template at templates/azure/tests/permission-issue.bicep"</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1"># These can all be worked on simultaneously as they create different files</span>
+</code></pre></div></td></tr></table></div>
+<hr/>
+<h2 id="implementation-strategy">Implementation Strategy<a class="headerlink" href="#implementation-strategy" title="Permanent link">¶</a></h2>
+<h3 id="mvp-first-user-story-1-only">MVP First (User Story 1 Only)<a class="headerlink" href="#mvp-first-user-story-1-only" title="Permanent link">¶</a></h3>
+<ol>
+<li>Complete Phase 1: Setup (Azure credentials documentation, test directory)</li>
+<li>Complete Phase 2: Foundational (Helper scripts, parameter files) - CRITICAL</li>
+<li>Complete Phase 3: User Story 1 (Basic deployment validation working)</li>
+<li><strong>STOP and VALIDATE</strong>: Test User Story 1 independently</li>
+<li>Create PR with valid Bicep changes → validation should pass</li>
+<li>Create PR with invalid Bicep → validation should fail</li>
+<li>Merge and deploy if ready - <strong>MVP delivered!</strong></li>
+</ol>
+<h3 id="incremental-delivery">Incremental Delivery<a class="headerlink" href="#incremental-delivery" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Phase 1+2</strong>: Foundation → Validation infrastructure ready</li>
+<li><strong>Phase 3 (US1)</strong>: Basic deployment validation → Test independently → <strong>MVP ACHIEVED</strong></li>
+<li>Replaces <code>az bicep build</code> with <code>azure/arm-deploy@v2</code> validation</li>
+<li>Validates main templates against Azure</li>
+<li>Catches deployment failures before merge</li>
+<li><strong>Phase 4 (US2)</strong>: Comprehensive validation → Test independently → Enhanced protection</li>
+<li>Validates all module templates</li>
+<li>Test cases prove deployment validation catches more than syntax</li>
+<li>Fully removes old arm-ttk approach</li>
+<li><strong>Phase 5 (US3)</strong>: Clear error feedback → Test independently → Better developer experience</li>
+<li>Developers get actionable error messages</li>
+<li>Multiple errors reported together</li>
+<li>Categorized error types for quick fixes</li>
+<li><strong>Phase 6</strong>: Polish and documentation → Production-ready feature</li>
+</ol>
+<h3 id="parallel-team-strategy">Parallel Team Strategy<a class="headerlink" href="#parallel-team-strategy" title="Permanent link">¶</a></h3>
+<p>With multiple developers:</p>
+<ol>
+<li>Team completes Setup + Foundational together</li>
+<li>Once Foundational is done:</li>
+<li>Developer A: User Story 1 (Basic validation)</li>
+<li>Developer B: User Story 2 (Comprehensive validation + test cases)</li>
+<li>Developer C: User Story 3 (Error parsing and formatting)</li>
+<li>Stories complete and integrate independently</li>
+<li>Team completes Polish phase together</li>
+</ol>
+<hr/>
+<h2 id="validation-checklist">Validation Checklist<a class="headerlink" href="#validation-checklist" title="Permanent link">¶</a></h2>
+<p>Before considering this feature complete:</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Valid Bicep changes pass validation in CI (success path)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Invalid deployment configurations fail validation with error messages (failure path)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> All main Bicep templates are validated (azuredeploy.bicep, portal_*.bicep)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> All module templates are validated (app_service, iothub, storage, etc.)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Validation completes within 10 minutes for typical templates</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Azure credentials are securely configured using OIDC (no secrets in logs)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Error messages include specific resource names, error codes, and descriptions</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Multiple errors in a single PR are all reported (not just the first error)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Validation runs on pull_request and push events for template changes</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Workflow status checks prevent merge of PRs with validation failures</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Test cases demonstrate validation catches deployment issues (quota, SKU, permissions)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Documentation exists for setup, usage, and troubleshooting</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Old arm-ttk validation step is removed from workflow</li>
+</ul>
+<hr/>
+<h2 id="success-metrics">Success Metrics<a class="headerlink" href="#success-metrics" title="Permanent link">¶</a></h2>
+<p>After implementation, measure:</p>
+<ul>
+<li><strong>SC-001</strong>: Validation catch rate - 100% of deployment failures caught before merge (no false negatives)</li>
+<li><strong>SC-002</strong>: Validation performance - Completes within 5 minutes for typical templates</li>
+<li><strong>SC-003</strong>: Developer feedback quality - Error messages are actionable without requiring Azure portal debugging</li>
+<li><strong>SC-004</strong>: Zero deployment failures - No merged Bicep changes fail during actual deployment</li>
+<li><strong>SC-005</strong>: Reliability - 95%+ of validation runs succeed without infrastructure failures</li>
+<li><strong>SC-006</strong>: Security - No Azure credentials or secrets exposed in CI logs</li>
+<li><strong>SC-007</strong>: Coverage - All templates validated (main + modules + submodules)</li>
+</ul>
+<hr/>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>[P] tasks</strong>: Different files, no dependencies - can run in parallel</li>
+<li><strong>[Story] label</strong>: Maps task to specific user story (US1, US2, US3) for traceability</li>
+<li><strong>Each user story is independently testable</strong>: Can verify each story delivers value on its own</li>
+<li><strong>Commit after each task</strong>: Version control for easy rollback if needed</li>
+<li><strong>Stop at checkpoints</strong>: Validate story independently before proceeding</li>
+<li><strong>Azure OIDC preferred</strong>: Use Workload Identity Federation, fallback to Service Principal if needed</li>
+<li><strong>Minimal permissions</strong>: Reader role + Microsoft.Resources/deployments/validate/action</li>
+<li><strong>No actual deployment</strong>: Validation mode only, no resources created</li>
+<li><strong>Support submodules</strong>: Workflow includes <code>submodules: recursive</code> in checkout step (already present)</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

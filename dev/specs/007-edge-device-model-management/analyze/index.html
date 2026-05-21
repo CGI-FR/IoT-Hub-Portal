@@ -1,0 +1,2056 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature: Edge Device Model Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-edge-device-model-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature: Edge Device Model Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#description">
+<span class="md-ellipsis">
+      Description
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-locations">
+<span class="md-ellipsis">
+      Code Locations
+    </span>
+</a>
+<nav aria-label="Code Locations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entry-points-endpoints">
+<span class="md-ellipsis">
+      Entry Points / Endpoints
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-logic">
+<span class="md-ellipsis">
+      Business Logic
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-access">
+<span class="md-ellipsis">
+      Data Access
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-components">
+<span class="md-ellipsis">
+      UI Components
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-transfer-objects">
+<span class="md-ellipsis">
+      Data Transfer Objects
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#client-services">
+<span class="md-ellipsis">
+      Client Services
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validators">
+<span class="md-ellipsis">
+      Validators
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mappers">
+<span class="md-ellipsis">
+      Mappers
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-endpoints">
+<span class="md-ellipsis">
+      API Endpoints
+    </span>
+</a>
+<nav aria-label="API Endpoints" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-model-management">
+<span class="md-ellipsis">
+      Edge Model Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#avatar-management">
+<span class="md-ellipsis">
+      Avatar Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#public-modules-catalog">
+<span class="md-ellipsis">
+      Public Modules Catalog
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization">
+<span class="md-ellipsis">
+      Authorization
+    </span>
+</a>
+<nav aria-label="Authorization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#required-permissions">
+<span class="md-ellipsis">
+      Required Permissions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization-implementation">
+<span class="md-ellipsis">
+      Authorization Implementation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#permission-mapping">
+<span class="md-ellipsis">
+      Permission Mapping
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+<nav aria-label="Dependencies" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#internal-feature-dependencies">
+<span class="md-ellipsis">
+      Internal Feature Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#service-dependencies">
+<span class="md-ellipsis">
+      Service Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-entities">
+<span class="md-ellipsis">
+      Related Entities
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-dependencies">
+<span class="md-ellipsis">
+      External Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-dependencies">
+<span class="md-ellipsis">
+      UI Dependencies
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-features-behaviors">
+<span class="md-ellipsis">
+      Key Features &amp; Behaviors
+    </span>
+</a>
+<nav aria-label="Key Features &amp; Behaviors" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-model-definition">
+<span class="md-ellipsis">
+      Edge Model Definition
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#multi-cloud-support">
+<span class="md-ellipsis">
+      Multi-Cloud Support
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-modules-configuration">
+<span class="md-ellipsis">
+      Edge Modules Configuration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#system-modules-azure-only">
+<span class="md-ellipsis">
+      System Modules (Azure Only)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#message-routing-azure-only">
+<span class="md-ellipsis">
+      Message Routing (Azure Only)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#model-lifecycle">
+<span class="md-ellipsis">
+      Model Lifecycle
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#public-modules-catalog-features">
+<span class="md-ellipsis">
+      Public Modules Catalog Features
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#imageavatar-management">
+<span class="md-ellipsis">
+      Image/Avatar Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#search-and-filtering">
+<span class="md-ellipsis">
+      Search and Filtering
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validation-rules">
+<span class="md-ellipsis">
+      Validation Rules
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#error-handling">
+<span class="md-ellipsis">
+      Error Handling
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cloud-provider-integration">
+<span class="md-ellipsis">
+      Cloud Provider Integration
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notes">
+<span class="md-ellipsis">
+      Notes
+    </span>
+</a>
+<nav aria-label="Notes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture-patterns">
+<span class="md-ellipsis">
+      Architecture Patterns
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#modelid-as-primary-key">
+<span class="md-ellipsis">
+      ModelId as Primary Key
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#module-commands-storage-azure-only">
+<span class="md-ellipsis">
+      Module Commands Storage (Azure Only)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cloud-configuration-synchronization">
+<span class="md-ellipsis">
+      Cloud Configuration Synchronization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#system-module-defaults">
+<span class="md-ellipsis">
+      System Module Defaults
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#route-query-language-azure">
+<span class="md-ellipsis">
+      Route Query Language (Azure)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#public-modules-catalog-integration">
+<span class="md-ellipsis">
+      Public Modules Catalog Integration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#label-usage">
+<span class="md-ellipsis">
+      Label Usage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#uiux-considerations">
+<span class="md-ellipsis">
+      UI/UX Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-considerations">
+<span class="md-ellipsis">
+      Performance Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-considerations">
+<span class="md-ellipsis">
+      Security Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#database-design">
+<span class="md-ellipsis">
+      Database Design
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#migration-history">
+<span class="md-ellipsis">
+      Migration History
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testing-coverage">
+<span class="md-ellipsis">
+      Testing Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-enhancement-opportunities">
+<span class="md-ellipsis">
+      Future Enhancement Opportunities
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-limitations">
+<span class="md-ellipsis">
+      Known Limitations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cloud-provider-differences">
+<span class="md-ellipsis">
+      Cloud Provider Differences
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-points">
+<span class="md-ellipsis">
+      Integration Points
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-edge-device-model-management">Feature: Edge Device Model Management<a class="headerlink" href="#feature-edge-device-model-management" title="Permanent link">¶</a></h1>
+<p><strong>Category</strong>: Device Model Management<br/>
+<strong>Status</strong>: Analyzed  </p>
+<hr/>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">¶</a></h2>
+<p>The Edge Device Model Management feature enables administrators to define, configure, and manage IoT Edge device models (templates) that represent different types of Azure IoT Edge or AWS IoT Greengrass devices. Edge device models serve as blueprints that define the modules, routes, system configurations, and metadata for edge devices, allowing standardized deployment and consistent configuration across edge device fleets. This feature includes:</p>
+<ul>
+<li>Creating and managing edge device model definitions with modules and routes</li>
+<li>Configuring system modules (edgeAgent, edgeHub) for Azure IoT Edge</li>
+<li>Defining custom edge modules with container images, environment variables, and twin settings</li>
+<li>Managing module commands for remote execution capabilities</li>
+<li>Defining message routing between modules and cloud</li>
+<li>Avatar/image management for visual model identification</li>
+<li>Label support for model categorization and filtering</li>
+<li>Multi-cloud support (Azure IoT Edge and AWS IoT Greengrass)</li>
+<li>Integration with Azure IoT Hub configurations and AWS IoT Core deployments</li>
+<li>Public module catalog for reusable edge module templates</li>
+<li>CRUD operations through REST API and interactive UI</li>
+</ul>
+<p>This feature provides business value by enabling infrastructure-as-code approach to edge deployments, reducing manual configuration errors, ensuring consistency across device fleets, and allowing rapid deployment of standardized edge solutions. Organizations can define tested and approved edge configurations once, then deploy them to multiple devices efficiently.</p>
+<hr/>
+<h2 id="code-locations">Code Locations<a class="headerlink" href="#code-locations" title="Permanent link">¶</a></h2>
+<h3 id="entry-points-endpoints">Entry Points / Endpoints<a class="headerlink" href="#entry-points-endpoints" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/EdgeModelsController.cs</code> (Lines 1-126)</li>
+<li>
+<p><strong>Snippet</strong>: Main REST API controller for edge model management</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span>
+<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+<span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">[Authorize]</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="na">[Route("api/edge/models")]</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="na">[ApiExplorerSettings(GroupName = "IoT Edge Devices Models")]</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="na">[ApiController]</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EdgeModelsController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="p">{</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IEdgeModelService</span><span class="w"> </span><span class="n">edgeModelService</span><span class="p">;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">    </span><span class="na">[HttpGet]</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="na">[Authorize("edge-model:read")]</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="na">[ProducesResponseType(StatusCodes.Status200OK)]</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">IoTEdgeModelListItem</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">GetEdgeModelList</span><span class="p">(</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">        </span><span class="na">[FromQuery]</span><span class="w"> </span><span class="n">EdgeModelFilter</span><span class="w"> </span><span class="n">edgeModelFilter</span><span class="p">)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">    </span><span class="na">[HttpGet("{edgeModelId}")]</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span><span class="na">[Authorize("edge-model:read")]</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">IoTEdgeModel</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetEdgeDeviceModel</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">edgeModelId</span><span class="p">)</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">    </span><span class="na">[HttpPost]</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="na">[Authorize("edge-model:write")]</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CreateEdgeModel</span><span class="p">(</span><span class="n">IoTEdgeModel</span><span class="w"> </span><span class="n">EdgeModel</span><span class="p">)</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="na">[HttpPut]</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="na">[Authorize("edge-model:write")]</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">UpdateEdgeModel</span><span class="p">(</span><span class="n">IoTEdgeModel</span><span class="w"> </span><span class="n">EdgeModel</span><span class="p">)</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="w">    </span><span class="na">[HttpDelete("{edgeModelId}")]</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">    </span><span class="na">[Authorize("edge-model:write")]</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">DeleteModelAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">edgeModelId</span><span class="p">)</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="w">    </span><span class="na">[HttpGet("{edgeModelId}/avatar")]</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">    </span><span class="na">[Authorize("edge-model:read")]</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">virtual</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">edgeModelId</span><span class="p">)</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">    </span><span class="na">[HttpPost("{edgeModelId}/avatar")]</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">    </span><span class="na">[Authorize("edge-model:write")]</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">virtual</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ChangeAvatar</span><span class="p">(</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="n">edgeModelId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">avatar</span><span class="p">)</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="w">    </span><span class="na">[HttpDelete("{edgeModelId}/avatar")]</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="w">    </span><span class="na">[Authorize("edge-model:write")]</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">virtual</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">DeleteAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">edgeModelId</span><span class="p">)</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="w">    </span><span class="na">[HttpGet("public-modules")]</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="w">    </span><span class="na">[Authorize("edge-model:read")]</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">virtual</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">IoTEdgeModel</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">GetPublicEdgeModules</span><span class="p">()</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h3 id="business-logic">Business Logic<a class="headerlink" href="#business-logic" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IEdgeModelService.cs</code> (Lines 1-25)</li>
+<li>
+<p><strong>Snippet</strong>: Core service interface for edge model operations</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span>
+<span class="normal"><a href="#__codelineno-1-11">11</a></span>
+<span class="normal"><a href="#__codelineno-1-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IEdgeModelService</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">IoTEdgeModelListItem</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetEdgeModels</span><span class="p">(</span><span class="n">EdgeModelFilter</span><span class="w"> </span><span class="n">edgeModelFilter</span><span class="p">);</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IoTEdgeModel</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetEdgeModel</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">modelId</span><span class="p">);</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">CreateEdgeModel</span><span class="p">(</span><span class="n">IoTEdgeModel</span><span class="w"> </span><span class="n">edgeModel</span><span class="p">);</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">UpdateEdgeModel</span><span class="p">(</span><span class="n">IoTEdgeModel</span><span class="w"> </span><span class="n">edgeModel</span><span class="p">);</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">DeleteEdgeModel</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">edgeModelId</span><span class="p">);</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetEdgeModelAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">edgeModelId</span><span class="p">);</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">UpdateEdgeModelAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">edgeModelId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">avatar</span><span class="p">);</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">DeleteEdgeModelAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">edgeModelId</span><span class="p">);</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">IoTEdgeModule</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetPublicEdgeModules</span><span class="p">();</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Infrastructure/Services/EdgeModelService.cs</code> (Lines 1-339)</p>
+</li>
+<li>Concrete implementation of IEdgeModelService</li>
+<li>Handles edge model CRUD operations with multi-cloud support</li>
+<li>Manages module commands for Azure IoT Edge</li>
+<li>Integrates with IConfigService for Azure/AWS deployment configurations</li>
+<li>Manages device model images through IDeviceModelImageManager</li>
+<li>Implements label management and filtering</li>
+<li>Handles system module (edgeAgent, edgeHub) configuration</li>
+<li>Orchestrates edge configuration rollout to cloud providers</li>
+</ul>
+<h3 id="data-access">Data Access<a class="headerlink" href="#data-access" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceModelRepository.cs</code> (Lines 1-10)</li>
+<li>Repository interface for EdgeDeviceModel entity</li>
+<li>Extends IRepository<edgedevicemodel></edgedevicemodel></li>
+<li>
+<p>Provides GetByNameAsync method for name-based lookups</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceModelCommandRepository.cs</code></p>
+</li>
+<li>Repository interface for EdgeDeviceModelCommand entity</li>
+<li>
+<p>Manages module commands associated with edge models</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Domain/Entities/EdgeDeviceModel.cs</code> (Lines 1-19)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Edge device model entity definition</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EdgeDeviceModel</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EntityBase</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">Description</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">ExternalIdentifier</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// AWS deployment ID or Azure config ID</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="c1">/// Labels for categorization and filtering</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ICollection</span><span class="o">&lt;</span><span class="n">Label</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Labels</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Domain/Entities/EdgeDeviceModelCommand.cs</code></p>
+</li>
+<li>Entity for module commands associated with edge models</li>
+<li>Links commands to specific modules within a model</li>
+<li>Azure IoT Edge specific functionality</li>
+</ul>
+<h3 id="ui-components">UI Components<a class="headerlink" href="#ui-components" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/EdgeModels/EdgeModelListPage.razor</code> (Lines 1-159)</li>
+<li>Main edge model list view with search and filtering</li>
+<li>Interactive MudTable displaying model list</li>
+<li>Features:<ul>
+<li>Search by keyword (name/description)</li>
+<li>Model avatar display</li>
+<li>Label display for each model</li>
+<li>Quick navigation to model details</li>
+<li>Delete model with confirmation dialog</li>
+<li>Add new model button</li>
+<li>Refresh functionality</li>
+<li>Sortable columns (Name, Description)</li>
+<li>Pagination with configurable page sizes</li>
+</ul>
+</li>
+<li>Accessible at route: <code>/edge/models</code></li>
+<li>Authorization: Requires <code>edge-model:read</code> permission</li>
+<li>
+<p>Conditional write operations based on <code>edge-model:write</code> permission</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/EdgeModels/EdgeModelDetailPage.razor</code> (Lines 1-800+)</p>
+</li>
+<li>Detailed edge model view and edit page</li>
+<li>Features:<ul>
+<li>Model avatar management (upload, delete)</li>
+<li>General details (name, description)</li>
+<li>System modules configuration (Azure only)</li>
+<li>Custom edge modules management</li>
+<li>Module environment variables</li>
+<li>Module twin settings</li>
+<li>Module commands</li>
+<li>Edge routes configuration</li>
+<li>Labels management</li>
+<li>Save and delete operations</li>
+<li>Tabbed interface (General, Modules, Routes)</li>
+<li>Expansion panels for organized sections</li>
+<li>Read-only mode for users without write permissions</li>
+</ul>
+</li>
+<li>Accessible at route: <code>/edge/models/{ModelID}</code></li>
+<li>Authorization: Requires <code>edge-model:read</code> permission</li>
+<li>
+<p>Write operations require <code>edge-model:write</code> permission</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/EdgeModels/CreateEdgeModelsPage.razor</code> (Lines 1-600+)</p>
+</li>
+<li>Edge model creation page with full configuration</li>
+<li>Similar structure to detail page but for new models</li>
+<li>Features:<ul>
+<li>Model name and description input</li>
+<li>Avatar upload</li>
+<li>System modules setup (Azure)</li>
+<li>Custom modules configuration</li>
+<li>Routes definition</li>
+<li>Labels assignment</li>
+<li>Public modules catalog integration</li>
+<li>Form validation</li>
+</ul>
+</li>
+<li>Accessible at route: <code>/edge/models/new</code></li>
+<li>
+<p>Authorization: Requires <code>edge-model:write</code> permission</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Components/EdgeModels/EdgeModelSearch.razor</code></p>
+</li>
+<li>Search component for filtering edge models</li>
+<li>Keyword-based search functionality</li>
+<li>
+<p>Integrated into EdgeModelListPage</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Dialogs/EdgeModels/DeleteEdgeModelDialog.razor</code></p>
+</li>
+<li>Confirmation dialog for edge model deletion</li>
+<li>Displays model name and ID</li>
+<li>Handles deletion API call</li>
+<li>Provides user feedback on success/failure</li>
+</ul>
+<h3 id="data-transfer-objects">Data Transfer Objects<a class="headerlink" href="#data-transfer-objects" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModel.cs</code> (Lines 1-31)</li>
+<li>
+<p><strong>Snippet</strong>: Complete edge model DTO</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span>
+<span class="normal"><a href="#__codelineno-3-23">23</a></span>
+<span class="normal"><a href="#__codelineno-3-24">24</a></span>
+<span class="normal"><a href="#__codelineno-3-25">25</a></span>
+<span class="normal"><a href="#__codelineno-3-26">26</a></span>
+<span class="normal"><a href="#__codelineno-3-27">27</a></span>
+<span class="normal"><a href="#__codelineno-3-28">28</a></span>
+<span class="normal"><a href="#__codelineno-3-29">29</a></span>
+<span class="normal"><a href="#__codelineno-3-30">30</a></span>
+<span class="normal"><a href="#__codelineno-3-31">31</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">IoTEdgeModel</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IoTEdgeModelListItem</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="c1">/// The device model module list (custom modules)</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeModule</span><span class="o">&gt;</span><span class="w"> </span><span class="n">EdgeModules</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeModule</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">    </span><span class="c1">/// Message routing configuration</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeRoute</span><span class="o">&gt;</span><span class="w"> </span><span class="n">EdgeRoutes</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeRoute</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">    </span><span class="c1">/// System modules (edgeAgent, edgeHub) - Azure only</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">EdgeModelSystemModule</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SystemModules</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17"></a>
+<a id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">    </span><span class="c1">/// Model labels for categorization</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">LabelDto</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Labels</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22"></a>
+<a id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">IoTEdgeModel</span><span class="p">()</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">        </span><span class="n">SystemModules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">EdgeModelSystemModule</span><span class="o">&gt;</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="nf">EdgeModelSystemModule</span><span class="p">(</span><span class="s">"edgeAgent"</span><span class="p">),</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="nf">EdgeModelSystemModule</span><span class="p">(</span><span class="s">"edgeHub"</span><span class="p">)</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModelListItem.cs</code> (Lines 1-37)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: List view DTO for edge models</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span>
+<span class="normal"><a href="#__codelineno-4-13">13</a></span>
+<span class="normal"><a href="#__codelineno-4-14">14</a></span>
+<span class="normal"><a href="#__codelineno-4-15">15</a></span>
+<span class="normal"><a href="#__codelineno-4-16">16</a></span>
+<span class="normal"><a href="#__codelineno-4-17">17</a></span>
+<span class="normal"><a href="#__codelineno-4-18">18</a></span>
+<span class="normal"><a href="#__codelineno-4-19">19</a></span>
+<span class="normal"><a href="#__codelineno-4-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">IoTEdgeModelListItem</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="p">{</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ModelId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The IoT Edge device model name is required.")]</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Description</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">    </span><span class="c1">/// The AWS deployment ID or Azure configuration ID</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ExternalIdentifier</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15"></a>
+<a id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">    </span><span class="c1">/// Gets the edge model labels</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">LabelDto</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Labels</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">LabelDto</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModule.cs</code> (Lines 1-54)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Edge module definition DTO</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span>
+<span class="normal"><a href="#__codelineno-5-12">12</a></span>
+<span class="normal"><a href="#__codelineno-5-13">13</a></span>
+<span class="normal"><a href="#__codelineno-5-14">14</a></span>
+<span class="normal"><a href="#__codelineno-5-15">15</a></span>
+<span class="normal"><a href="#__codelineno-5-16">16</a></span>
+<span class="normal"><a href="#__codelineno-5-17">17</a></span>
+<span class="normal"><a href="#__codelineno-5-18">18</a></span>
+<span class="normal"><a href="#__codelineno-5-19">19</a></span>
+<span class="normal"><a href="#__codelineno-5-20">20</a></span>
+<span class="normal"><a href="#__codelineno-5-21">21</a></span>
+<span class="normal"><a href="#__codelineno-5-22">22</a></span>
+<span class="normal"><a href="#__codelineno-5-23">23</a></span>
+<span class="normal"><a href="#__codelineno-5-24">24</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">IoTEdgeModule</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span><span class="w">  </span><span class="c1">// AWS Greengrass module ID</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The device model name is required.")]</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ModuleName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7"></a>
+<a id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The device image uri is required.")]</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span><span class="w">  </span><span class="c1">// Container image URI</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10"></a>
+<a id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ContainerCreateOptions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">StartupOrder</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Version</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15"></a>
+<a id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeModuleEnvironmentVariable</span><span class="o">&gt;</span><span class="w"> </span><span class="n">EnvironmentVariables</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
+<a id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeModuleEnvironmentVariable</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18"></a>
+<a id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeModuleTwinSetting</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ModuleIdentityTwinSettings</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
+<a id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeModuleTwinSetting</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21"></a>
+<a id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeModuleCommand</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Commands</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
+<a id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">IoTEdgeModuleCommand</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeRoute.cs</code> (Lines 1-35)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Edge route definition DTO</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-6-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-6-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-6-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-6-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-6-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-6-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-6-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-6-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-6-10">10</a></span>
+<span class="normal"><a href="#__codelineno-6-11">11</a></span>
+<span class="normal"><a href="#__codelineno-6-12">12</a></span>
+<span class="normal"><a href="#__codelineno-6-13">13</a></span>
+<span class="normal"><a href="#__codelineno-6-14">14</a></span>
+<span class="normal"><a href="#__codelineno-6-15">15</a></span>
+<span class="normal"><a href="#__codelineno-6-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">IoTEdgeRoute</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="p">{</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The route should have a name.")]</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">    </span><span class="na">[RegularExpression(@"^(?i)FROM [\S]</span><span class="o">+</span><span class="p">(</span><span class="w"> </span><span class="n">WHERE</span><span class="w"> </span><span class="p">(</span><span class="n">NOT</span><span class="w"> </span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="err">\</span><span class="n">S</span><span class="p">]</span><span class="o">+</span><span class="p">)</span><span class="o">?</span><span class="w"> </span><span class="n">INTO</span><span class="w"> </span><span class="p">[</span><span class="err">\</span><span class="n">S</span><span class="p">]</span><span class="o">+</span><span class="s">$", </span>
+<a id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">        </span><span class="n">ErrorMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Route should be 'FROM &lt;source&gt; (WHERE &lt;condition&gt;) INTO &lt;sink&gt;'"</span><span class="p">)]</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The route should have a value.")]</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Value</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span><span class="w">  </span><span class="c1">// e.g., "FROM /messages/* INTO $upstream"</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10"></a>
+<a id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">    </span><span class="na">[Range(0, 9)]</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int?</span><span class="w"> </span><span class="n">Priority</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13"></a>
+<a id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">    </span><span class="na">[Range(0, uint.MaxValue)]</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">uint?</span><span class="w"> </span><span class="n">TimeToLive</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span><span class="w">  </span><span class="c1">// Seconds</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/EdgeModelSystemModule.cs</code></p>
+</li>
+<li>DTO for system modules (edgeAgent, edgeHub)</li>
+<li>Azure IoT Edge specific</li>
+<li>
+<p>Contains module image URI and configuration</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModuleCommand.cs</code></p>
+</li>
+<li>DTO for module commands</li>
+<li>Links command to module within edge model</li>
+<li>
+<p>Used for remote command execution</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModuleEnvironmentVariable.cs</code></p>
+</li>
+<li>DTO for module environment variables</li>
+<li>
+<p>Key-value pairs injected into module containers</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModuleTwinSetting.cs</code></p>
+</li>
+<li>DTO for module twin desired properties</li>
+<li>
+<p>Configuration settings synchronized to module twin</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/Filters/EdgeModelFilter.cs</code></p>
+</li>
+<li>Filter DTO for edge model list queries</li>
+<li>Supports keyword-based filtering</li>
+</ul>
+<h3 id="client-services">Client Services<a class="headerlink" href="#client-services" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Services/IEdgeModelClientService.cs</code> (Lines 1-26)</li>
+<li>Client-side service interface for HTTP API calls</li>
+<li>
+<p>Methods: GetIoTEdgeModelList, GetIoTEdgeModel, CreateIoTEdgeModel,
+    UpdateIoTEdgeModel, DeleteIoTEdgeModel, GetAvatar, ChangeAvatar,
+    DeleteAvatar, GetPublicEdgeModules</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Services/EdgeModelClientService.cs</code> (Lines 1-69)</p>
+</li>
+<li>Implementation using HttpClient for API communication</li>
+<li>Base URL: <code>api/edge/models</code></li>
+<li>Handles JSON serialization/deserialization</li>
+<li>Supports filtering via query parameters</li>
+</ul>
+<h3 id="validators">Validators<a class="headerlink" href="#validators" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Validators/EdgeModelValidator.cs</code></li>
+<li>FluentValidation validator for IoTEdgeModel</li>
+<li>Validates model name, description, modules, routes</li>
+<li>Ensures module and route configuration correctness</li>
+</ul>
+<h3 id="mappers">Mappers<a class="headerlink" href="#mappers" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Mappers/EdgeDeviceModelProfile.cs</code> (Lines 1-19)</li>
+<li>
+<p><strong>Snippet</strong>: AutoMapper profile for edge model entity mapping</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-7-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-7-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-7-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-7-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-7-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-7-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-7-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-7-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-7-10">10</a></span>
+<span class="normal"><a href="#__codelineno-7-11">11</a></span>
+<span class="normal"><a href="#__codelineno-7-12">12</a></span>
+<span class="normal"><a href="#__codelineno-7-13">13</a></span>
+<span class="normal"><a href="#__codelineno-7-14">14</a></span>
+<span class="normal"><a href="#__codelineno-7-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EdgeDeviceModelProfile</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Profile</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="p">{</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">EdgeDeviceModelProfile</span><span class="p">()</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">        </span><span class="c1">// Map IoTEdgeModel DTO to EdgeDeviceModel entity</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">        </span><span class="n">CreateMap</span><span class="o">&lt;</span><span class="n">IoTEdgeModel</span><span class="p">,</span><span class="w"> </span><span class="n">EdgeDeviceModel</span><span class="o">&gt;</span><span class="p">()</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">            </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(</span><span class="n">src</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">.</span><span class="n">ModelId</span><span class="p">))</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">            </span><span class="p">.</span><span class="n">ReverseMap</span><span class="p">();</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9"></a>
+<a id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w">        </span><span class="c1">// Map IoTEdgeModelListItem DTO to EdgeDeviceModel entity</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w">        </span><span class="n">CreateMap</span><span class="o">&lt;</span><span class="n">IoTEdgeModelListItem</span><span class="p">,</span><span class="w"> </span><span class="n">EdgeDeviceModel</span><span class="o">&gt;</span><span class="p">()</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">            </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(</span><span class="n">src</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">.</span><span class="n">ModelId</span><span class="p">))</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w">            </span><span class="p">.</span><span class="n">ReverseMap</span><span class="p">();</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Application/Mappers/EdgeDeviceModelCommandProfile.cs</code></p>
+</li>
+<li>AutoMapper profile for module command mapping</li>
+<li>Maps between IoTEdgeModuleCommand DTO and EdgeDeviceModelCommand entity</li>
+</ul>
+<hr/>
+<h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">¶</a></h2>
+<h3 id="edge-model-management">Edge Model Management<a class="headerlink" href="#edge-model-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/edge/models</code> - Get filtered list of edge models</li>
+<li>Query Parameters: <code>Keyword</code> (optional) - Filter by name or description</li>
+<li>Returns: <code>IEnumerable&lt;IoTEdgeModelListItem&gt;</code></li>
+<li>Authorization: <code>edge-model:read</code></li>
+<li>
+<p>Used to populate model list page with search/filter capabilities</p>
+</li>
+<li>
+<p><code>GET /api/edge/models/{edgeModelId}</code> - Get detailed edge model configuration</p>
+</li>
+<li>Path Parameter: <code>edgeModelId</code> (string) - Model identifier</li>
+<li>Returns: <code>IoTEdgeModel</code> (includes modules, routes, system modules, labels)</li>
+<li>Authorization: <code>edge-model:read</code></li>
+<li>Cloud-specific: Returns different structures for Azure vs AWS</li>
+<li>Azure: Includes system modules, routes, and module commands</li>
+<li>
+<p>AWS: Includes custom modules only</p>
+</li>
+<li>
+<p><code>POST /api/edge/models</code> - Create new edge model</p>
+</li>
+<li>Body: <code>IoTEdgeModel</code> (complete model configuration)</li>
+<li>Returns: 200 OK</li>
+<li>Authorization: <code>edge-model:write</code></li>
+<li>Validates model doesn't already exist</li>
+<li>Creates database record</li>
+<li>Sets default avatar image</li>
+<li>Rolls out configuration to cloud provider (Azure IoT Hub or AWS IoT Core)</li>
+<li>Saves module commands (Azure only)</li>
+<li>
+<p>Stores external identifier (deployment/configuration ID)</p>
+</li>
+<li>
+<p><code>PUT /api/edge/models</code> - Update existing edge model</p>
+</li>
+<li>Body: <code>IoTEdgeModel</code> (complete model configuration)</li>
+<li>Returns: 200 OK</li>
+<li>Authorization: <code>edge-model:write</code></li>
+<li>Updates database record</li>
+<li>Updates labels (delete old, insert new)</li>
+<li>Rolls out updated configuration to cloud provider</li>
+<li>
+<p>Updates module commands (Azure only)</p>
+</li>
+<li>
+<p><code>DELETE /api/edge/models/{edgeModelId}</code> - Delete edge model</p>
+</li>
+<li>Path Parameter: <code>edgeModelId</code> (string) - Model identifier</li>
+<li>Returns: 204 No Content</li>
+<li>Authorization: <code>edge-model:write</code></li>
+<li>Deletes cloud configuration (Azure IoT Hub or AWS IoT Core)</li>
+<li>Deletes module commands (Azure only)</li>
+<li>Deletes labels</li>
+<li>Deletes database record</li>
+</ul>
+<h3 id="avatar-management">Avatar Management<a class="headerlink" href="#avatar-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/edge/models/{edgeModelId}/avatar</code> - Get model avatar image URL</li>
+<li>Path Parameter: <code>edgeModelId</code> (string) - Model identifier</li>
+<li>Returns: <code>string</code> (image URL or base64 data)</li>
+<li>
+<p>Authorization: <code>edge-model:read</code></p>
+</li>
+<li>
+<p><code>POST /api/edge/models/{edgeModelId}/avatar</code> - Upload/update model avatar</p>
+</li>
+<li>Path Parameter: <code>edgeModelId</code> (string) - Model identifier</li>
+<li>Body: <code>string</code> (image data)</li>
+<li>Returns: <code>string</code> (new image URL)</li>
+<li>
+<p>Authorization: <code>edge-model:write</code></p>
+</li>
+<li>
+<p><code>DELETE /api/edge/models/{edgeModelId}/avatar</code> - Delete model avatar</p>
+</li>
+<li>Path Parameter: <code>edgeModelId</code> (string) - Model identifier</li>
+<li>Returns: 204 No Content</li>
+<li>Authorization: <code>edge-model:write</code></li>
+<li>Reverts to default placeholder image</li>
+</ul>
+<h3 id="public-modules-catalog">Public Modules Catalog<a class="headerlink" href="#public-modules-catalog" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/edge/models/public-modules</code> - Get public edge module catalog</li>
+<li>Returns: <code>IEnumerable&lt;IoTEdgeModule&gt;</code></li>
+<li>Authorization: <code>edge-model:read</code></li>
+<li>Provides reusable module templates from marketplace/catalog</li>
+<li>Used during model creation to import pre-configured modules</li>
+</ul>
+<hr/>
+<h2 id="authorization">Authorization<a class="headerlink" href="#authorization" title="Permanent link">¶</a></h2>
+<h3 id="required-permissions">Required Permissions<a class="headerlink" href="#required-permissions" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>edge-model:read</strong> - View edge models, retrieve model details, and access avatar images</li>
+<li><strong>edge-model:write</strong> - Create, update, and delete edge models and manage avatars</li>
+</ul>
+<h3 id="authorization-implementation">Authorization Implementation<a class="headerlink" href="#authorization-implementation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Attribute-based authorization using <code>[Authorize("permission")]</code> on controller methods</li>
+<li>Permission strings defined in PortalPermissionsHelper</li>
+<li>Base authorization requirement: <code>[Authorize]</code> on EdgeModelsController and edge model pages</li>
+<li>Permissions managed through role-based access control (RBAC)</li>
+<li>Default Administrator role includes both edge-model:read and edge-model:write permissions</li>
+<li>UI components conditionally render write operations based on user permissions</li>
+</ul>
+<h3 id="permission-mapping">Permission Mapping<a class="headerlink" href="#permission-mapping" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>PortalPermissions.EdgeModelRead</code> → "edge-model:read"</li>
+<li><code>PortalPermissions.EdgeModelWrite</code> → "edge-model:write"</li>
+</ul>
+<hr/>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h2>
+<h3 id="internal-feature-dependencies">Internal Feature Dependencies<a class="headerlink" href="#internal-feature-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Edge Device Management</strong> - Edge devices reference edge models for deployment configuration</li>
+<li><strong>Device Configurations</strong> - Edge models create Azure IoT Hub automatic device configurations</li>
+<li><strong>Label Management</strong> - Edge models use labels for categorization and filtering</li>
+<li><strong>Role-Based Access Control</strong> - Permissions enforced through RBAC system</li>
+<li><strong>Dashboard</strong> - May display edge model statistics and metrics</li>
+<li><strong>AWS/Azure Integration</strong> - Multi-cloud deployment orchestration</li>
+</ul>
+<h3 id="service-dependencies">Service Dependencies<a class="headerlink" href="#service-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>IEdgeDeviceModelRepository</code> - Edge model entity persistence</li>
+<li><code>IEdgeDeviceModelCommandRepository</code> - Module command persistence (Azure)</li>
+<li><code>ILabelRepository</code> - Label entity persistence</li>
+<li><code>IConfigService</code> - Cloud provider configuration management (Azure/AWS)</li>
+<li>RollOutEdgeModelConfiguration - Deploy model to cloud</li>
+<li>GetConfigModuleList - Retrieve modules from cloud configuration</li>
+<li>GetModelSystemModule - Retrieve system modules (Azure)</li>
+<li>GetConfigRouteList - Retrieve routes from cloud configuration</li>
+<li>GetPublicEdgeModules - Access public module catalog</li>
+<li>DeleteConfiguration - Remove cloud configuration</li>
+<li><code>IDeviceModelImageManager</code> - Model avatar/image management</li>
+<li>GetDeviceModelImageAsync - Retrieve model image</li>
+<li>SetDefaultImageToModel - Set default placeholder image</li>
+<li>ChangeDeviceModelImageAsync - Update model image</li>
+<li>DeleteDeviceModelImageAsync - Remove model image</li>
+<li><code>IUnitOfWork</code> - Transaction management for database operations</li>
+<li><code>IMapper</code> (AutoMapper) - Entity to DTO mapping</li>
+<li><code>ConfigHandler</code> - Application configuration (cloud provider setting)</li>
+</ul>
+<h3 id="related-entities">Related Entities<a class="headerlink" href="#related-entities" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>EdgeDevice</strong> - References EdgeDeviceModel for deployment configuration</li>
+<li><strong>Label</strong> - Many-to-many relationship with EdgeDeviceModel</li>
+<li><strong>EdgeDeviceModelCommand</strong> - One-to-many relationship with EdgeDeviceModel</li>
+</ul>
+<h3 id="external-dependencies">External Dependencies<a class="headerlink" href="#external-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Entity Framework Core</strong> - Database access via PortalDbContext</li>
+<li><strong>AutoMapper</strong> - Entity to DTO mapping</li>
+<li><strong>FluentValidation</strong> - DTO and form validation</li>
+<li><strong>Azure IoT Hub SDK</strong> - Azure edge configuration deployment</li>
+<li><strong>AWS IoT SDK</strong> - AWS Greengrass deployment management</li>
+</ul>
+<h3 id="ui-dependencies">UI Dependencies<a class="headerlink" href="#ui-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>MudBlazor</strong> - UI component library</li>
+<li>MudTable - Data grid for model list</li>
+<li>MudTextField - Text input fields</li>
+<li>MudForm - Form validation</li>
+<li>MudTabs - Tabbed interface for detail page</li>
+<li>MudExpansionPanels - Collapsible sections</li>
+<li>MudAvatar/MudImage - Image display</li>
+<li>MudButton/MudIconButton - Action buttons</li>
+<li>MudSnackbar - User feedback notifications</li>
+<li>MudDialog - Confirmation dialogs</li>
+</ul>
+<hr/>
+<h2 id="key-features-behaviors">Key Features &amp; Behaviors<a class="headerlink" href="#key-features-behaviors" title="Permanent link">¶</a></h2>
+<h3 id="edge-model-definition">Edge Model Definition<a class="headerlink" href="#edge-model-definition" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>ModelId</strong>: Unique identifier generated on creation</li>
+<li><strong>Name</strong>: Human-readable model name (required, read-only after creation in UI)</li>
+<li><strong>Description</strong>: Optional detailed description of the model purpose</li>
+<li><strong>Image/Avatar</strong>: Visual identifier for quick recognition in lists</li>
+<li><strong>Labels</strong>: Categorization tags for filtering and organization</li>
+<li><strong>ExternalIdentifier</strong>: Cloud provider-specific deployment/configuration ID</li>
+</ul>
+<h3 id="multi-cloud-support">Multi-Cloud Support<a class="headerlink" href="#multi-cloud-support" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Azure IoT Edge</strong>: Full support including system modules, routes, and module commands</li>
+<li>EdgeAgent and EdgeHub system module configuration</li>
+<li>Message routing between modules and cloud</li>
+<li>Module commands for remote execution</li>
+<li>Automatic device configuration deployment</li>
+<li><strong>AWS IoT Greengrass</strong>: Core module deployment support</li>
+<li>Component-based module structure</li>
+<li>Greengrass component version management</li>
+<li>Deployment configuration to IoT Core</li>
+</ul>
+<h3 id="edge-modules-configuration">Edge Modules Configuration<a class="headerlink" href="#edge-modules-configuration" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Custom Modules</strong>: User-defined containerized modules</li>
+<li>Module name (unique within model)</li>
+<li>Container image URI (Docker registry)</li>
+<li>Container create options (JSON configuration)</li>
+<li>Startup order for dependency management</li>
+<li>Status tracking</li>
+<li>Version specification</li>
+<li><strong>Environment Variables</strong>: Key-value pairs injected into module containers</li>
+<li><strong>Module Twin Settings</strong>: Desired properties synchronized to module twins</li>
+<li><strong>Module Commands</strong>: Remote execution capabilities (Azure only)</li>
+<li>Command name</li>
+<li>Associated module</li>
+<li>Stored in database for quick access</li>
+</ul>
+<h3 id="system-modules-azure-only">System Modules (Azure Only)<a class="headerlink" href="#system-modules-azure-only" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>edgeAgent</strong>: Edge runtime agent managing module lifecycle</li>
+<li>Image URI configuration</li>
+<li>Runtime settings</li>
+<li><strong>edgeHub</strong>: Message routing and cloud communication hub</li>
+<li>Image URI configuration</li>
+<li>Routing configuration</li>
+</ul>
+<h3 id="message-routing-azure-only">Message Routing (Azure Only)<a class="headerlink" href="#message-routing-azure-only" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Route Definition</strong>: FROM <source/> (WHERE <condition>) INTO <sink></sink></condition></li>
+<li>Source: Module output or system source</li>
+<li>Optional WHERE clause for message filtering</li>
+<li>Sink: Module input, cloud ($upstream), or built-in endpoints</li>
+<li>Regex validation ensures correct syntax</li>
+<li><strong>Priority</strong>: 0-9 range for route prioritization</li>
+<li><strong>Time To Live</strong>: Message expiration in seconds</li>
+</ul>
+<h3 id="model-lifecycle">Model Lifecycle<a class="headerlink" href="#model-lifecycle" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Creation</strong></li>
+<li>User defines model name, description, and configuration</li>
+<li>System generates unique ModelId</li>
+<li>Default avatar assigned</li>
+<li>Configuration deployed to cloud provider</li>
+<li>ExternalIdentifier stored (deployment/config ID)</li>
+<li>
+<p>Module commands saved (Azure)</p>
+</li>
+<li>
+<p><strong>Update</strong></p>
+</li>
+<li>Model configuration modified in UI</li>
+<li>Labels updated (delete old, insert new)</li>
+<li>Configuration rolled out to cloud provider</li>
+<li>Module commands updated (Azure)</li>
+<li>
+<p>Existing devices using model can be redeployed</p>
+</li>
+<li>
+<p><strong>Deletion</strong></p>
+</li>
+<li>Confirmation required</li>
+<li>Cloud configuration removed</li>
+<li>Module commands deleted (Azure)</li>
+<li>Labels cascade deleted</li>
+<li>Database record removed</li>
+<li>Avatar/image cleaned up</li>
+</ol>
+<h3 id="public-modules-catalog-features">Public Modules Catalog Features<a class="headerlink" href="#public-modules-catalog-features" title="Permanent link">¶</a></h3>
+<ul>
+<li>Pre-configured reusable edge modules</li>
+<li>Marketplace/catalog integration</li>
+<li>Import modules during model creation</li>
+<li>Accelerates development with tested components</li>
+<li>Reduces configuration errors</li>
+</ul>
+<h3 id="imageavatar-management">Image/Avatar Management<a class="headerlink" href="#imageavatar-management" title="Permanent link">¶</a></h3>
+<ul>
+<li>Upload custom images (JPG, JPEG, PNG)</li>
+<li>Display in model list for visual identification</li>
+<li>Default placeholder for models without custom image</li>
+<li>Delete to revert to default</li>
+<li>Stored via IDeviceModelImageManager (blob storage or file system)</li>
+</ul>
+<h3 id="search-and-filtering">Search and Filtering<a class="headerlink" href="#search-and-filtering" title="Permanent link">¶</a></h3>
+<ul>
+<li>Keyword search across model name and description</li>
+<li>Case-insensitive matching</li>
+<li>Real-time filter application</li>
+<li>Label-based filtering (UI capability)</li>
+</ul>
+<h3 id="validation-rules">Validation Rules<a class="headerlink" href="#validation-rules" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Model Name</strong>: Required field</li>
+<li><strong>Module Name</strong>: Required, unique within model</li>
+<li><strong>Module Image</strong>: Required, valid URI format</li>
+<li><strong>Route Format</strong>: Regex validation for "FROM <source/> INTO <sink>" syntax</sink></li>
+<li><strong>Route Priority</strong>: 0-9 range</li>
+<li><strong>Route TTL</strong>: Non-negative integer</li>
+<li><strong>Labels</strong>: Valid label format and existence check</li>
+</ul>
+<h3 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>ResourceAlreadyExistsException</code> - Model with same ID already exists</li>
+<li><code>ResourceNotFoundException</code> - Model not found during get/update/delete</li>
+<li><code>ProblemDetailsException</code> - API errors with user-friendly messages</li>
+<li>User feedback via Snackbar notifications</li>
+<li>Validation errors shown inline on form fields</li>
+<li>Loading states during async operations</li>
+</ul>
+<h3 id="cloud-provider-integration">Cloud Provider Integration<a class="headerlink" href="#cloud-provider-integration" title="Permanent link">¶</a></h3>
+<ul>
+<li>Configuration rollout orchestrated by IConfigService</li>
+<li>Azure: Creates/updates IoT Hub automatic device configuration</li>
+<li>Configuration targets devices with matching tag (model=ModelId)</li>
+<li>Includes modules, routes, and desired properties</li>
+<li>Priority-based configuration layering</li>
+<li>AWS: Creates/updates Greengrass deployment</li>
+<li>Deployment targets thing group</li>
+<li>Component versions and configurations</li>
+<li>Deployment rollout strategy</li>
+</ul>
+<hr/>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
+<h3 id="architecture-patterns">Architecture Patterns<a class="headerlink" href="#architecture-patterns" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Repository Pattern</strong> - Clean separation of data access concerns</li>
+<li><strong>Unit of Work Pattern</strong> - Transactional consistency across operations</li>
+<li><strong>Service Layer</strong> - Business logic abstraction from controllers</li>
+<li><strong>DTO Pattern</strong> - Data transfer between layers with validation</li>
+<li><strong>Strategy Pattern</strong> - Multi-cloud support via IConfigService implementations</li>
+</ul>
+<h3 id="modelid-as-primary-key">ModelId as Primary Key<a class="headerlink" href="#modelid-as-primary-key" title="Permanent link">¶</a></h3>
+<ul>
+<li>EdgeDeviceModel entity uses auto-generated GUID as Id</li>
+<li>ModelId in DTOs maps to entity Id</li>
+<li>Simplifies tracking and prevents naming conflicts</li>
+<li>Name can be reused after model deletion</li>
+</ul>
+<h3 id="module-commands-storage-azure-only">Module Commands Storage (Azure Only)<a class="headerlink" href="#module-commands-storage-azure-only" title="Permanent link">¶</a></h3>
+<ul>
+<li>Stored in EdgeDeviceModelCommand entity</li>
+<li>Linked to model and module name</li>
+<li>Enables quick command lookup without cloud API call</li>
+<li>Synchronized during model create/update operations</li>
+<li>Cascade deleted with model</li>
+</ul>
+<h3 id="cloud-configuration-synchronization">Cloud Configuration Synchronization<a class="headerlink" href="#cloud-configuration-synchronization" title="Permanent link">¶</a></h3>
+<ul>
+<li>Edge models stored locally in database</li>
+<li>Full configuration stored in cloud provider (source of truth for deployments)</li>
+<li>ExternalIdentifier links database record to cloud configuration</li>
+<li>Updates rolled out to cloud immediately</li>
+<li>Devices receive configuration via cloud provider's deployment mechanism</li>
+</ul>
+<h3 id="system-module-defaults">System Module Defaults<a class="headerlink" href="#system-module-defaults" title="Permanent link">¶</a></h3>
+<ul>
+<li>Azure models automatically include edgeAgent and edgeHub</li>
+<li>Default system module images can be overridden</li>
+<li>System modules required for Azure IoT Edge runtime</li>
+<li>Not applicable to AWS Greengrass (different architecture)</li>
+</ul>
+<h3 id="route-query-language-azure">Route Query Language (Azure)<a class="headerlink" href="#route-query-language-azure" title="Permanent link">¶</a></h3>
+<ul>
+<li>FROM clause: Source module output or system source</li>
+<li>Module: <code>FROM /messages/modules/{moduleName}/outputs/{outputName}</code></li>
+<li>System: <code>FROM /messages/*</code> (all device-to-cloud messages)</li>
+<li>WHERE clause: Optional message filtering</li>
+<li>Property filters: <code>WHERE propertyName = 'value'</code></li>
+<li>Nested properties: <code>WHERE $body.temperature &gt; 25</code></li>
+<li>Logical operators: AND, OR, NOT</li>
+<li>INTO clause: Destination</li>
+<li>Upstream: <code>INTO $upstream</code> (cloud)</li>
+<li>Module input: <code>INTO BrokeredEndpoint("/modules/{moduleName}/inputs/{inputName}")</code></li>
+<li>Built-in endpoints: <code>INTO BrokeredEndpoint("/modules/$edgeHub/inputs/events")</code></li>
+</ul>
+<h3 id="public-modules-catalog-integration">Public Modules Catalog Integration<a class="headerlink" href="#public-modules-catalog-integration" title="Permanent link">¶</a></h3>
+<ul>
+<li>Source depends on cloud provider and configuration</li>
+<li>Azure: Could integrate with Azure Marketplace or custom catalog</li>
+<li>AWS: Could integrate with Greengrass Component Catalog</li>
+<li>Implementation via IConfigService.GetPublicEdgeModules()</li>
+<li>Accelerates model creation with tested components</li>
+</ul>
+<h3 id="label-usage">Label Usage<a class="headerlink" href="#label-usage" title="Permanent link">¶</a></h3>
+<ul>
+<li>Labels stored as many-to-many relationship</li>
+<li>Enable model categorization (e.g., "production", "testing", "v1.0")</li>
+<li>UI filtering by labels (implementation in progress)</li>
+<li>Cascade deleted with model</li>
+<li>Update operation deletes old labels and inserts new ones</li>
+</ul>
+<h3 id="uiux-considerations">UI/UX Considerations<a class="headerlink" href="#uiux-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Three-page workflow: List → Detail/Create → Success</li>
+<li>Tabbed interface reduces clutter in detail/create pages</li>
+<li>Expansion panels for logical grouping</li>
+<li>Inline editing for modules, routes, environment variables</li>
+<li>Read-only mode for users without write permissions</li>
+<li>Visual feedback with loading indicators</li>
+<li>Confirmation dialogs for destructive actions</li>
+<li>Avatar display for quick visual identification</li>
+</ul>
+<h3 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Model list loads with pagination support</li>
+<li>Filtering performed server-side (database query)</li>
+<li>Avatar images loaded asynchronously</li>
+<li>Modules and routes loaded on-demand (detail page)</li>
+<li>Lazy loading of public modules catalog</li>
+<li>Efficient repository queries with Include for labels</li>
+</ul>
+<h3 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Authorization required at both controller and UI levels</li>
+<li>Permission-based access control prevents unauthorized modifications</li>
+<li>Input validation protects against injection attacks</li>
+<li>Route regex validation prevents malformed route configurations</li>
+<li>Cloud provider credentials managed securely via ConfigHandler</li>
+<li>Avatar upload restricted to image file types</li>
+</ul>
+<h3 id="database-design">Database Design<a class="headerlink" href="#database-design" title="Permanent link">¶</a></h3>
+<ul>
+<li>EdgeDeviceModel: Core model entity</li>
+<li>EdgeDeviceModelCommand: Module commands (Azure, one-to-many)</li>
+<li>Label: Categorization tags (many-to-many)</li>
+<li>EdgeDevice: References EdgeDeviceModel (one-to-many)</li>
+</ul>
+<h3 id="migration-history">Migration History<a class="headerlink" href="#migration-history" title="Permanent link">¶</a></h3>
+<ul>
+<li>Initial EdgeDeviceModel entity creation</li>
+<li>EdgeDeviceModelCommand entity for module commands</li>
+<li>Label many-to-many relationship</li>
+<li>ExternalIdentifier field for cloud provider integration</li>
+<li>RBAC permissions for edge-model:read and edge-model:write</li>
+</ul>
+<h3 id="testing-coverage">Testing Coverage<a class="headerlink" href="#testing-coverage" title="Permanent link">¶</a></h3>
+<ul>
+<li>Unit tests: EdgeModelServiceTest.cs</li>
+<li>Controller tests: EdgeModelsControllerTest.cs</li>
+<li>UI tests: EdgeModelsListPageTest.cs, EdgeModelDetailPageTest.cs, CreateEdgeModelsPageTest.cs</li>
+<li>Client service tests: EdgeModelClientServiceTest.cs</li>
+<li>Component tests: EdgeModelSearchTests.cs, DeleteEdgeModelDialogTest.cs</li>
+</ul>
+<h3 id="future-enhancement-opportunities">Future Enhancement Opportunities<a class="headerlink" href="#future-enhancement-opportunities" title="Permanent link">¶</a></h3>
+<ul>
+<li>Model versioning and rollback capabilities</li>
+<li>Model templates marketplace with community contributions</li>
+<li>Module dependency validation and ordering</li>
+<li>Configuration diff/comparison between models</li>
+<li>Model cloning for rapid prototyping</li>
+<li>Import/export model configurations (JSON/YAML)</li>
+<li>Module health monitoring and diagnostics integration</li>
+<li>Automated testing framework for model validation before deployment</li>
+<li>Model deployment analytics (success rate, device count)</li>
+<li>A/B testing capabilities for model configurations</li>
+<li>Conditional module deployment based on device capabilities</li>
+<li>Module resource requirements and validation</li>
+<li>Integration with CI/CD pipelines for automated deployments</li>
+<li>Model approval workflow for production deployments</li>
+<li>Historical configuration audit trail</li>
+<li>Model usage analytics (which models are most deployed)</li>
+<li>Cost estimation for edge deployments based on model</li>
+<li>Module compatibility matrix and recommendations</li>
+</ul>
+<h3 id="known-limitations">Known Limitations<a class="headerlink" href="#known-limitations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Model name cannot be changed after creation (UI enforced read-only)</li>
+<li>Module commands only supported for Azure IoT Edge</li>
+<li>Routes only supported for Azure IoT Edge</li>
+<li>System modules hardcoded to edgeAgent and edgeHub</li>
+<li>No validation of module image URI accessibility</li>
+<li>No automatic module version update detection</li>
+<li>Labels updated via replace operation (delete all, insert all)</li>
+<li>No draft/unpublished state for models under development</li>
+<li>No model deployment scheduling or phased rollouts</li>
+<li>No automatic rollback on deployment failure</li>
+<li>Public modules catalog requires external configuration</li>
+<li>No container registry credential management in UI</li>
+<li>Module startup order limited to numeric values without dependency graph</li>
+<li>Route priority limited to 0-9 range</li>
+<li>No visual route designer or graph visualization</li>
+<li>No module marketplace integration (manual image URI entry)</li>
+<li>Limited validation of container create options JSON</li>
+</ul>
+<h3 id="cloud-provider-differences">Cloud Provider Differences<a class="headerlink" href="#cloud-provider-differences" title="Permanent link">¶</a></h3>
+<p><strong>Azure IoT Edge:</strong></p>
+<ul>
+<li>System modules (edgeAgent, edgeHub) required and configurable</li>
+<li>Message routing between modules via edgeHub</li>
+<li>Module commands stored and synchronized</li>
+<li>Automatic device configuration mechanism</li>
+<li>Module twin desired properties</li>
+<li>Container-based modules</li>
+</ul>
+<p><strong>AWS IoT Greengrass:</strong></p>
+<ul>
+<li>Component-based architecture (no system modules concept)</li>
+<li>Inter-component communication via pub/sub</li>
+<li>Component lifecycle managed by Greengrass core</li>
+<li>Deployment groups target thing groups</li>
+<li>Component recipes define configuration</li>
+<li>Support for Lambda functions and containers</li>
+</ul>
+<h3 id="integration-points">Integration Points<a class="headerlink" href="#integration-points" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Edge Device Provisioning</strong>: Models assigned to devices during creation</li>
+<li><strong>Device Twin Sync</strong>: Model configuration synchronized to device twin desired properties</li>
+<li><strong>Deployment Orchestration</strong>: Cloud provider deploys configuration to devices</li>
+<li><strong>Monitoring</strong>: Device reports module status back to portal</li>
+<li><strong>Commands</strong>: Module commands executed remotely via cloud provider APIs</li>
+<li><strong>Telemetry</strong>: Module telemetry routed through configured routes</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

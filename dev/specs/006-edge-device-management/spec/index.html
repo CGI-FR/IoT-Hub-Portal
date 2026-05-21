@@ -1,0 +1,1141 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature Specification: Edge Device Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-specification-edge-device-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature Specification: Edge Device Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-scenarios-testing">
+<span class="md-ellipsis">
+      User Scenarios &amp; Testing
+    </span>
+</a>
+<nav aria-label="User Scenarios &amp; Testing" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-1-create-and-provision-edge-gateway-device-priority-p1">
+<span class="md-ellipsis">
+      User Story 1 - Create and Provision Edge Gateway Device (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-2-monitor-edge-device-health-and-connectivity-priority-p1">
+<span class="md-ellipsis">
+      User Story 2 - Monitor Edge Device Health and Connectivity (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-3-search-and-filter-edge-devices-priority-p1">
+<span class="md-ellipsis">
+      User Story 3 - Search and Filter Edge Devices (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-4-update-edge-device-configuration-priority-p2">
+<span class="md-ellipsis">
+      User Story 4 - Update Edge Device Configuration (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-5-retrieve-device-enrollment-credentials-priority-p2">
+<span class="md-ellipsis">
+      User Story 5 - Retrieve Device Enrollment Credentials (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-6-execute-commands-on-edge-modules-priority-p2">
+<span class="md-ellipsis">
+      User Story 6 - Execute Commands on Edge Modules (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-7-view-edge-module-logs-priority-p3">
+<span class="md-ellipsis">
+      User Story 7 - View Edge Module Logs (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-8-delete-edge-devices-priority-p3">
+<span class="md-ellipsis">
+      User Story 8 - Delete Edge Devices (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-9-duplicate-edge-device-configuration-priority-p4">
+<span class="md-ellipsis">
+      User Story 9 - Duplicate Edge Device Configuration (Priority: P4)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-10-view-gateway-connected-leaf-devices-priority-p4">
+<span class="md-ellipsis">
+      User Story 10 - View Gateway Connected Leaf Devices (Priority: P4)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-cases">
+<span class="md-ellipsis">
+      Edge Cases
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements">
+<span class="md-ellipsis">
+      Requirements
+    </span>
+</a>
+<nav aria-label="Requirements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-entities">
+<span class="md-ellipsis">
+      Key Entities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-criteria">
+<span class="md-ellipsis">
+      Success Criteria
+    </span>
+</a>
+<nav aria-label="Success Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#measurable-outcomes">
+<span class="md-ellipsis">
+      Measurable Outcomes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#traceability">
+<span class="md-ellipsis">
+      Traceability
+    </span>
+</a>
+<nav aria-label="Traceability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#source-analysis">
+<span class="md-ellipsis">
+      Source Analysis
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-features">
+<span class="md-ellipsis">
+      Related Features
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-specification-edge-device-management">Feature Specification: Edge Device Management<a class="headerlink" href="#feature-specification-edge-device-management" title="Permanent link">¶</a></h1>
+<p><strong>Feature ID</strong>: 006<br/>
+<strong>Feature Branch</strong>: <code>006-edge-device-management</code><br/>
+<strong>Created</strong>: January 30, 2025<br/>
+<strong>Status</strong>: Draft<br/>
+<strong>Source</strong>: Analysis from <code>specs/006-edge-device-management/analyze.md</code></p>
+<hr/>
+<h2 id="user-scenarios-testing">User Scenarios &amp; Testing<a class="headerlink" href="#user-scenarios-testing" title="Permanent link">¶</a></h2>
+<h3 id="user-story-1-create-and-provision-edge-gateway-device-priority-p1">User Story 1 - Create and Provision Edge Gateway Device (Priority: P1)<a class="headerlink" href="#user-story-1-create-and-provision-edge-gateway-device-priority-p1" title="Permanent link">¶</a></h3>
+<p>An IoT administrator needs to register a new edge gateway device that will act as a transparent gateway for downstream IoT devices, enabling local data processing and offline capabilities at remote locations.</p>
+<p><strong>Why this priority</strong>: Core foundational capability required for any edge deployment. Without the ability to create edge devices, no other edge functionality can be utilized. This represents the entry point for edge device lifecycle management.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating a new edge device through the portal, verifying cloud provider registration, and confirming the device appears in the device list with correct metadata.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> an authenticated administrator with edge device write permission, <strong>When</strong> they select a device model, provide a device name, assign required tags, and save the edge device, <strong>Then</strong> the system creates the device in both the cloud provider and local database, generates authentication credentials, and displays the new device in the device list.</p>
+</li>
+<li>
+<p><strong>Given</strong> a user attempting to create an edge device without required tags, <strong>When</strong> they attempt to save, <strong>Then</strong> the system displays validation errors indicating which required fields are missing and prevents device creation until corrected.</p>
+</li>
+<li>
+<p><strong>Given</strong> a user creating an edge device on Azure IoT Hub, <strong>When</strong> they complete the device creation process, <strong>Then</strong> the system provisions the device with symmetric key authentication and enables the device by default.</p>
+</li>
+<li>
+<p><strong>Given</strong> a user creating an edge device on AWS IoT Greengrass, <strong>When</strong> they complete the device creation process, <strong>Then</strong> the system registers a Greengrass core device with certificate-based authentication configuration.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-2-monitor-edge-device-health-and-connectivity-priority-p1">User Story 2 - Monitor Edge Device Health and Connectivity (Priority: P1)<a class="headerlink" href="#user-story-2-monitor-edge-device-health-and-connectivity-priority-p1" title="Permanent link">¶</a></h3>
+<p>Operations teams need to monitor the health status, connectivity state, and runtime status of deployed edge devices to ensure gateway operations remain functional and downstream devices maintain cloud connectivity.</p>
+<p><strong>Why this priority</strong>: Critical for operational reliability. Edge devices are often deployed in remote locations where direct physical access is limited. Real-time health monitoring enables proactive issue detection and resolution before downstream device connectivity is impacted.</p>
+<p><strong>Independent Test</strong>: Can be tested by viewing the device list with connection status indicators, filtering by connection state, and viewing detailed device information showing runtime health status.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> multiple edge devices with varying connection states, <strong>When</strong> an operator views the edge device list, <strong>Then</strong> the system displays each device with visual connection status indicators (connected/disconnected) and the count of connected downstream devices.</p>
+</li>
+<li>
+<p><strong>Given</strong> an operator filtering the device list, <strong>When</strong> they select "Connected" status filter, <strong>Then</strong> the system displays only devices currently connected to the cloud platform.</p>
+</li>
+<li>
+<p><strong>Given</strong> an operator viewing device details, <strong>When</strong> the device page loads, <strong>Then</strong> the system displays runtime health status, count of deployed modules, count of connected leaf devices, and last deployment information.</p>
+</li>
+<li>
+<p><strong>Given</strong> an edge device that becomes disconnected, <strong>When</strong> an operator refreshes the device list, <strong>Then</strong> the system reflects the updated connection status with appropriate visual indicators.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-3-search-and-filter-edge-devices-priority-p1">User Story 3 - Search and Filter Edge Devices (Priority: P1)<a class="headerlink" href="#user-story-3-search-and-filter-edge-devices-priority-p1" title="Permanent link">¶</a></h3>
+<p>System administrators managing large edge device deployments need to quickly locate specific devices or groups of devices based on name, model, connection status, or organizational labels.</p>
+<p><strong>Why this priority</strong>: Essential for scalability. As edge deployments grow from dozens to hundreds or thousands of devices, the ability to efficiently search and filter becomes critical for operational efficiency and reduces time to locate devices requiring attention.</p>
+<p><strong>Independent Test</strong>: Can be tested by applying various search terms and filter combinations in the device list, verifying server-side filtering returns correct results, and confirming pagination works with filtered data.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> a deployment with hundreds of edge devices, <strong>When</strong> an administrator enters a partial device name or ID in the search field, <strong>Then</strong> the system returns only devices matching the search text with pagination.</p>
+</li>
+<li>
+<p><strong>Given</strong> an administrator needing to find all edge devices of a specific model, <strong>When</strong> they select a model from the filter dropdown, <strong>Then</strong> the system displays only devices using that device model.</p>
+</li>
+<li>
+<p><strong>Given</strong> devices organized with labels for departments or locations, <strong>When</strong> an administrator selects multiple labels from the filter, <strong>Then</strong> the system displays devices having any of the selected labels.</p>
+</li>
+<li>
+<p><strong>Given</strong> multiple filters applied simultaneously, <strong>When</strong> an administrator combines search text, status filter, model filter, and label filters, <strong>Then</strong> the system applies all filters with AND logic and returns matching devices.</p>
+</li>
+<li>
+<p><strong>Given</strong> a large filtered result set, <strong>When</strong> an administrator navigates through pages, <strong>Then</strong> the system maintains filter state across page navigation and displays accurate page counts.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-4-update-edge-device-configuration-priority-p2">User Story 4 - Update Edge Device Configuration (Priority: P2)<a class="headerlink" href="#user-story-4-update-edge-device-configuration-priority-p2" title="Permanent link">¶</a></h3>
+<p>Device administrators need to update edge device metadata, tags, and labels after initial provisioning to reflect organizational changes, update device categorization, or correct device information.</p>
+<p><strong>Why this priority</strong>: Important for maintaining accurate device inventory as organizational needs evolve. While not as critical as initial provisioning, the ability to update device configuration prevents the need to delete and recreate devices when changes are required.</p>
+<p><strong>Independent Test</strong>: Can be tested by modifying device name, tags, and labels on the device details page, saving changes, and verifying updates are reflected in both the portal and cloud provider.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> an edge device with existing configuration, <strong>When</strong> an administrator changes the device name and saves, <strong>Then</strong> the system updates the device name in both the local database and cloud provider device twin.</p>
+</li>
+<li>
+<p><strong>Given</strong> an administrator updating device tags, <strong>When</strong> they modify tag values and save, <strong>Then</strong> the system synchronizes the updated tags to the cloud provider and validates required tags are present.</p>
+</li>
+<li>
+<p><strong>Given</strong> an administrator managing device labels, <strong>When</strong> they add or remove labels and save, <strong>Then</strong> the system updates the device's label associations and the device appears in appropriate filtered lists.</p>
+</li>
+<li>
+<p><strong>Given</strong> an administrator attempting to save with missing required tags, <strong>When</strong> they attempt to save, <strong>Then</strong> the system displays validation errors and prevents the update until required tags are provided.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-5-retrieve-device-enrollment-credentials-priority-p2">User Story 5 - Retrieve Device Enrollment Credentials (Priority: P2)<a class="headerlink" href="#user-story-5-retrieve-device-enrollment-credentials-priority-p2" title="Permanent link">¶</a></h3>
+<p>Field technicians provisioning physical edge devices need to retrieve device authentication credentials and enrollment scripts to configure the IoT Edge runtime on the device hardware.</p>
+<p><strong>Why this priority</strong>: Critical for device deployment workflow but occurs after initial portal registration. Enables physical device commissioning and connects hardware to the cloud identity created in the portal.</p>
+<p><strong>Independent Test</strong>: Can be tested by selecting an edge device, requesting enrollment credentials, verifying symmetric keys are displayed, and generating time-limited enrollment script URLs.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> a registered edge device, <strong>When</strong> an administrator views device details and requests credentials, <strong>Then</strong> the system displays the device's primary and secondary symmetric keys for manual configuration.</p>
+</li>
+<li>
+<p><strong>Given</strong> an administrator preparing automated device provisioning, <strong>When</strong> they request an enrollment script for a specific template (bash/PowerShell), <strong>Then</strong> the system generates a secure time-limited URL valid for 15 minutes.</p>
+</li>
+<li>
+<p><strong>Given</strong> a field technician with the enrollment script URL, <strong>When</strong> they download the script within the valid time window, <strong>Then</strong> the system returns a platform-specific script containing the device connection string and IoT Edge runtime configuration commands.</p>
+</li>
+<li>
+<p><strong>Given</strong> an enrollment script URL that has expired, <strong>When</strong> someone attempts to download the script, <strong>Then</strong> the system returns an error indicating the URL has expired and requires regeneration.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-6-execute-commands-on-edge-modules-priority-p2">User Story 6 - Execute Commands on Edge Modules (Priority: P2)<a class="headerlink" href="#user-story-6-execute-commands-on-edge-modules-priority-p2" title="Permanent link">¶</a></h3>
+<p>Operations teams need to remotely execute commands on edge modules (such as restarting modules or triggering custom business logic) without physical access to edge devices, enabling remote troubleshooting and management.</p>
+<p><strong>Why this priority</strong>: Important for operational efficiency and reduces mean time to resolution for edge device issues. Enables remote management capabilities that would otherwise require costly site visits or device reboots.</p>
+<p><strong>Independent Test</strong>: Can be tested on Azure IoT Hub deployments by selecting a connected edge device with running modules, executing a module restart command, and verifying command execution results.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> a connected edge device on Azure IoT Hub with running modules, <strong>When</strong> an operator executes the RestartModule command on a specific module, <strong>Then</strong> the system invokes the direct method and returns the command execution status and response payload.</p>
+</li>
+<li>
+<p><strong>Given</strong> a module with custom commands defined in the device model, <strong>When</strong> an operator executes a custom command, <strong>Then</strong> the system invokes the command and displays the execution result.</p>
+</li>
+<li>
+<p><strong>Given</strong> a disconnected edge device, <strong>When</strong> an operator attempts to execute a module command, <strong>Then</strong> the system disables command buttons and prevents command execution.</p>
+</li>
+<li>
+<p><strong>Given</strong> a user without edge-device:execute permission, <strong>When</strong> they view device details, <strong>Then</strong> the system hides or disables module command buttons.</p>
+</li>
+<li>
+<p><strong>Given</strong> an edge device on AWS IoT Greengrass, <strong>When</strong> an operator views device details, <strong>Then</strong> the system hides module command features as they are not supported on AWS.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-7-view-edge-module-logs-priority-p3">User Story 7 - View Edge Module Logs (Priority: P3)<a class="headerlink" href="#user-story-7-view-edge-module-logs-priority-p3" title="Permanent link">¶</a></h3>
+<p>Support engineers troubleshooting edge device issues need to retrieve real-time logs from edge modules to diagnose runtime errors, connectivity problems, or business logic failures.</p>
+<p><strong>Why this priority</strong>: Valuable for troubleshooting but not required for core operational workflows. Provides diagnostic capabilities that enhance supportability but can be supplemented with alternative logging approaches.</p>
+<p><strong>Independent Test</strong>: Can be tested on Azure IoT Hub deployments by selecting a running module on a connected edge device, requesting logs, and verifying recent log entries are displayed in a dialog.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> a connected edge device on Azure IoT Hub with running modules, <strong>When</strong> a support engineer requests logs for a specific module, <strong>Then</strong> the system retrieves and displays recent log entries from the module via IoT Hub APIs.</p>
+</li>
+<li>
+<p><strong>Given</strong> log entries retrieved from a module, <strong>When</strong> displayed to the user, <strong>Then</strong> the system presents logs in a readable dialog format with timestamp and log level information.</p>
+</li>
+<li>
+<p><strong>Given</strong> an edge device on AWS IoT Greengrass, <strong>When</strong> a user views device details, <strong>Then</strong> the system does not display log retrieval options as the feature is not supported on AWS.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-8-delete-edge-devices-priority-p3">User Story 8 - Delete Edge Devices (Priority: P3)<a class="headerlink" href="#user-story-8-delete-edge-devices-priority-p3" title="Permanent link">¶</a></h3>
+<p>System administrators decommissioning edge devices need to remove devices from both the portal and cloud provider when devices are retired, replaced, or no longer in service.</p>
+<p><strong>Why this priority</strong>: Important for maintaining clean device inventory but occurs infrequently compared to create/read/update operations. Proper cleanup prevents billing for unused devices and maintains accurate inventory counts.</p>
+<p><strong>Independent Test</strong>: Can be tested by selecting an edge device, confirming deletion, and verifying the device is removed from both the portal database and cloud provider.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> an edge device in the portal, <strong>When</strong> an administrator with write permission deletes the device and confirms the action, <strong>Then</strong> the system removes the device from the cloud provider and deletes the database entry with cascade deletion of associated tags and labels.</p>
+</li>
+<li>
+<p><strong>Given</strong> an administrator without write permission, <strong>When</strong> they view the device list, <strong>Then</strong> the system does not display delete action buttons.</p>
+</li>
+<li>
+<p><strong>Given</strong> an edge device selected for deletion, <strong>When</strong> the administrator confirms deletion, <strong>Then</strong> the system displays a success notification and removes the device from the device list.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-9-duplicate-edge-device-configuration-priority-p4">User Story 9 - Duplicate Edge Device Configuration (Priority: P4)<a class="headerlink" href="#user-story-9-duplicate-edge-device-configuration-priority-p4" title="Permanent link">¶</a></h3>
+<p>Device administrators provisioning multiple similar edge devices need to duplicate an existing device's configuration (model, tags, labels) to accelerate deployment of standardized device configurations.</p>
+<p><strong>Why this priority</strong>: Nice-to-have efficiency feature that reduces repetitive data entry but is not required for core functionality. Provides time savings for specific deployment scenarios with similar device configurations.</p>
+<p><strong>Independent Test</strong>: Can be tested by viewing an existing edge device, selecting "Save and Duplicate", verifying the new device page is populated with copied configuration, and completing device creation with a new device ID.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> an existing edge device with configured tags and labels, <strong>When</strong> an administrator selects "Save and Duplicate" from the device details page, <strong>Then</strong> the system navigates to the create device page with model, tags, and labels pre-populated from the source device.</p>
+</li>
+<li>
+<p><strong>Given</strong> a duplicated device configuration, <strong>When</strong> the administrator provides a new device ID and saves, <strong>Then</strong> the system creates a new independent edge device with the copied configuration.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-10-view-gateway-connected-leaf-devices-priority-p4">User Story 10 - View Gateway Connected Leaf Devices (Priority: P4)<a class="headerlink" href="#user-story-10-view-gateway-connected-leaf-devices-priority-p4" title="Permanent link">¶</a></h3>
+<p>Network architects need to understand which downstream devices are using each edge device as a gateway to assess gateway capacity utilization and plan for gateway scaling.</p>
+<p><strong>Why this priority</strong>: Useful for capacity planning and architecture optimization but not required for basic edge device operation. Provides visibility into gateway utilization patterns for advanced deployments.</p>
+<p><strong>Independent Test</strong>: Can be tested by viewing an edge device that has downstream devices connected, verifying the count of connected leaf devices is displayed in both the list view and detail view.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> an edge device acting as a transparent gateway for downstream devices, <strong>When</strong> an administrator views the device list, <strong>Then</strong> the system displays the count of connected leaf devices for each edge device.</p>
+</li>
+<li>
+<p><strong>Given</strong> an edge device with connected downstream devices, <strong>When</strong> an administrator views device details, <strong>Then</strong> the system displays the current count of leaf devices using this edge device as their gateway.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>Cloud Provider Synchronization Failure</strong>: What happens when the edge device is created in the cloud provider but local database creation fails? System should attempt rollback of cloud provider device or log for manual cleanup.</p>
+</li>
+<li>
+<p><strong>Device Already Exists</strong>: What happens when attempting to create an edge device with a device ID that already exists in the cloud provider? System should return validation error indicating device ID conflict.</p>
+</li>
+<li>
+<p><strong>Expired Enrollment URLs</strong>: What happens when a technician attempts to download an enrollment script after the 15-minute validity period? System should return clear error message and provide ability to regenerate URL.</p>
+</li>
+<li>
+<p><strong>Module Command Timeout</strong>: What happens when executing a module command that doesn't respond within timeout period? System should return timeout error and allow retry.</p>
+</li>
+<li>
+<p><strong>Disconnected Device Updates</strong>: What happens when updating configuration on a disconnected edge device? System should allow updates to device twin/thing shadow which will sync when device reconnects.</p>
+</li>
+<li>
+<p><strong>Concurrent Device Updates</strong>: What happens when multiple administrators update the same edge device simultaneously? System should use version tracking or optimistic concurrency to detect conflicts.</p>
+</li>
+<li>
+<p><strong>Label Filtering with No Results</strong>: What happens when label filters are applied that match no devices? System should display empty state message indicating no devices match the selected filters.</p>
+</li>
+<li>
+<p><strong>Large Deployment Pagination</strong>: What happens when an organization has thousands of edge devices? System should maintain responsive pagination and provide efficient search capabilities without loading all devices.</p>
+</li>
+<li>
+<p><strong>Module Logs Unavailable</strong>: What happens when requesting logs from a module that has no recent log output? System should return empty result set with appropriate message.</p>
+</li>
+<li>
+<p><strong>Required Tag Value Changes</strong>: What happens when a required tag's definition changes after devices are created? System should enforce new validation on updates while allowing existing devices to retain old values until edited.</p>
+</li>
+<li>
+<p><strong>Cloud Provider Deletion Failure</strong>: What happens when local device deletion succeeds but cloud provider deletion fails? System should log error for manual remediation and potentially queue for retry.</p>
+</li>
+<li>
+<p><strong>Cross-Provider Device Migration</strong>: What happens when attempting to migrate an edge device from Azure to AWS or vice versa? System does not support migration; devices must be recreated on the target platform.</p>
+</li>
+</ul>
+<hr/>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
+<h3 id="functional-requirements">Functional Requirements<a class="headerlink" href="#functional-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>FR-001</strong>: System MUST allow administrators with edge-device:write permission to create new edge devices by selecting a device model, providing device name, and assigning required tags.</p>
+</li>
+<li>
+<p><strong>FR-002</strong>: System MUST provision edge devices in the configured cloud provider (Azure IoT Hub or AWS IoT Greengrass) with appropriate authentication mechanisms (symmetric keys for Azure, certificates for AWS).</p>
+</li>
+<li>
+<p><strong>FR-003</strong>: System MUST display paginated list of edge devices with server-side filtering by search text, connection status, device model, and organizational labels.</p>
+</li>
+<li>
+<p><strong>FR-004</strong>: System MUST show real-time connection state (connected/disconnected) for each edge device with visual status indicators.</p>
+</li>
+<li>
+<p><strong>FR-005</strong>: System MUST display count of connected downstream leaf devices and deployed modules for each edge device.</p>
+</li>
+<li>
+<p><strong>FR-006</strong>: System MUST allow administrators with edge-device:write permission to update edge device name, tags, and labels with synchronization to cloud provider.</p>
+</li>
+<li>
+<p><strong>FR-007</strong>: System MUST validate that all required tags are provided before allowing edge device creation or updates.</p>
+</li>
+<li>
+<p><strong>FR-008</strong>: System MUST allow administrators with edge-device:write permission to delete edge devices with removal from both local database and cloud provider.</p>
+</li>
+<li>
+<p><strong>FR-009</strong>: System MUST display detailed edge device information including runtime health status, module list, deployment information, and device metadata.</p>
+</li>
+<li>
+<p><strong>FR-010</strong>: System MUST provide device enrollment credentials (symmetric keys or certificate information) for manual device configuration.</p>
+</li>
+<li>
+<p><strong>FR-011</strong>: System MUST generate time-limited secure enrollment script URLs valid for 15 minutes using data protection encryption.</p>
+</li>
+<li>
+<p><strong>FR-012</strong>: System MUST provide platform-specific enrollment scripts (bash/PowerShell templates) containing device connection strings and IoT Edge runtime configuration.</p>
+</li>
+<li>
+<p><strong>FR-013</strong>: System MUST allow administrators with edge-device:execute permission to execute commands on edge modules (Azure IoT Hub only).</p>
+</li>
+<li>
+<p><strong>FR-014</strong>: System MUST retrieve and display real-time logs from edge modules for troubleshooting (Azure IoT Hub only).</p>
+</li>
+<li>
+<p><strong>FR-015</strong>: System MUST support multi-select label filtering with AND logic when combined with other filters.</p>
+</li>
+<li>
+<p><strong>FR-016</strong>: System MUST display available labels for filtering based on labels currently assigned to edge devices or device models.</p>
+</li>
+<li>
+<p><strong>FR-017</strong>: System MUST maintain device model associations with display of model images in device lists.</p>
+</li>
+<li>
+<p><strong>FR-018</strong>: System MUST support device duplication to accelerate provisioning of devices with similar configurations.</p>
+</li>
+<li>
+<p><strong>FR-019</strong>: System MUST disable module command execution when edge devices are disconnected.</p>
+</li>
+<li>
+<p><strong>FR-020</strong>: System MUST enforce permission-based authorization for read, write, and execute operations on edge devices.</p>
+</li>
+<li>
+<p><strong>FR-021</strong>: System MUST persist edge device entities with relationships to device models, tags, and labels.</p>
+</li>
+<li>
+<p><strong>FR-022</strong>: System MUST synchronize edge device connection state and runtime status through periodic background jobs.</p>
+</li>
+<li>
+<p><strong>FR-023</strong>: System MUST support sorting edge device lists by device ID, connection status, or number of connected devices.</p>
+</li>
+<li>
+<p><strong>FR-024</strong>: System MUST provide distinct module management capabilities for Azure IoT Hub (commands and logs) versus AWS IoT Greengrass (limited functionality).</p>
+</li>
+<li>
+<p><strong>FR-025</strong>: System MUST validate device IDs according to cloud provider requirements (Azure: case-sensitive alphanumeric; AWS: thing name conventions).</p>
+</li>
+</ul>
+<h3 id="key-entities">Key Entities<a class="headerlink" href="#key-entities" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>Edge Device</strong>: Represents an IoT Edge gateway device with properties including device ID, device name, connection state, runtime status, enabled status, device scope, count of connected leaf devices, count of deployed modules, and associations to device model, tags, and labels.</p>
+</li>
+<li>
+<p><strong>Edge Device Model</strong>: Defines the capabilities, available modules, and visual representation for a category of edge devices. Each edge device references exactly one edge device model.</p>
+</li>
+<li>
+<p><strong>Device Tag Value</strong>: Custom metadata key-value pairs associated with edge devices, synchronized to cloud provider device twin or thing shadow. Tags can be marked as required and are validated during device creation and updates.</p>
+</li>
+<li>
+<p><strong>Label</strong>: Organizational categorization tags that can be assigned to edge devices or inherited from device models. Used for filtering and grouping devices. Stored locally and not synchronized to cloud provider.</p>
+</li>
+<li>
+<p><strong>Edge Module</strong>: Containerized workload deployed to an edge device. Modules have runtime status, support command execution (Azure only), and provide log output (Azure only).</p>
+</li>
+<li>
+<p><strong>Enrollment Credentials</strong>: Authentication credentials (symmetric keys for Azure, certificate paths for AWS) used to configure physical edge devices to authenticate with cloud provider.</p>
+</li>
+<li>
+<p><strong>Module Command</strong>: Direct method that can be invoked on edge modules for remote management operations such as RestartModule or custom business logic commands.</p>
+</li>
+</ul>
+<hr/>
+<h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes<a class="headerlink" href="#measurable-outcomes" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>SC-001</strong>: Administrators can create and provision a new edge device in under 3 minutes including model selection, name entry, and required tag assignment.</p>
+</li>
+<li>
+<p><strong>SC-002</strong>: System displays paginated edge device lists with applied filters (search, status, model, labels) with page load times under 2 seconds for deployments with up to 10,000 edge devices.</p>
+</li>
+<li>
+<p><strong>SC-003</strong>: Device connection status indicators reflect actual cloud provider connectivity state with accuracy of 95% or higher within 1 minute of state change.</p>
+</li>
+<li>
+<p><strong>SC-004</strong>: Administrators can locate a specific edge device using search functionality in under 30 seconds in deployments with hundreds of devices.</p>
+</li>
+<li>
+<p><strong>SC-005</strong>: Module command execution (restart, custom commands) completes successfully with response status in under 10 seconds for connected devices.</p>
+</li>
+<li>
+<p><strong>SC-006</strong>: Enrollment script generation and download completes in under 5 seconds, enabling field technicians to quickly provision physical devices.</p>
+</li>
+<li>
+<p><strong>SC-007</strong>: System maintains responsive user interface performance with pagination limiting result sets to configurable page sizes (default 10 items).</p>
+</li>
+<li>
+<p><strong>SC-008</strong>: Device configuration updates (name, tags, labels) synchronize to cloud provider within 5 seconds and reflect in UI within 10 seconds.</p>
+</li>
+<li>
+<p><strong>SC-009</strong>: Edge device deletion removes device from both portal and cloud provider with 100% success rate or provides clear error messages for manual remediation.</p>
+</li>
+<li>
+<p><strong>SC-010</strong>: 90% of edge device troubleshooting scenarios can be diagnosed using portal features (status indicators, module logs, command execution) without requiring direct device access.</p>
+</li>
+<li>
+<p><strong>SC-011</strong>: Background synchronization jobs update device connection states, module counts, and leaf device counts with maximum staleness of 5 minutes.</p>
+</li>
+<li>
+<p><strong>SC-012</strong>: System prevents unauthorized edge device operations with 100% enforcement of permission-based authorization (read, write, execute).</p>
+</li>
+</ul>
+<hr/>
+<h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">¶</a></h2>
+<h3 id="source-analysis">Source Analysis<a class="headerlink" href="#source-analysis" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Analysis Path</strong>: <code>specs/006-edge-device-management/analyze.md</code></li>
+<li><strong>Analyzed By</strong>: excavator.specifier</li>
+<li><strong>Analysis Date</strong>: January 30, 2025</li>
+</ul>
+<h3 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h3>
+<p><strong>Controllers</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/EdgeDevicesController.cs</code> - REST API endpoints for edge device operations</li>
+</ul>
+<p><strong>Business Logic</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IEdgeDevicesService.cs</code> - Service interface for edge device operations</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Services/EdgeDevicesServiceBase.cs</code> - Shared base implementation for cloud providers</li>
+<li><code>src/IoTHub.Portal.Server/Services/AzureEdgeDevicesService.cs</code> - Azure IoT Hub specific implementation</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Services/AWS/AWSEdgeDevicesService.cs</code> - AWS IoT Greengrass specific implementation</li>
+</ul>
+<p><strong>Data Access</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceRepository.cs</code> - Repository interface</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/EdgeDevice.cs</code> - Edge device entity definition</li>
+</ul>
+<p><strong>UI Components</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/EdgeDevices/EdgeDeviceListPage.razor</code> - Device list page with search and filtering</li>
+<li><code>src/IoTHub.Portal.Client/Pages/EdgeDevices/EdgeDeviceDetailPage.razor</code> - Device details and management page</li>
+<li><code>src/IoTHub.Portal.Client/Pages/EdgeDevices/CreateEdgeDevicePage.razor</code> - Device creation wizard</li>
+</ul>
+<p><strong>Data Transfer Objects</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeDevice.cs</code> - Complete edge device DTO</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeListItem.cs</code> - Lightweight list item DTO</li>
+</ul>
+<p><strong>Client Services</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Services/IEdgeDeviceClientService.cs</code> - Client service interface</li>
+<li><code>src/IoTHub.Portal.Client/Services/EdgeDeviceClientService.cs</code> - HTTP API client implementation</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
+<p><strong>Depends On</strong>:</p>
+<ul>
+<li>Edge Device Models - Defines device capabilities, modules, and commands</li>
+<li>Device Tag Settings - Custom metadata fields applied to edge devices</li>
+<li>Label Management - Organizational labels for filtering and categorization</li>
+<li>Role-Based Access Control - Permission enforcement (edge-device:read, edge-device:write, edge-device:execute)</li>
+<li>Device Model Images - Visual representation in device lists</li>
+</ul>
+<p><strong>Depended On By</strong>:</p>
+<ul>
+<li>Device Synchronization Jobs - Background jobs that sync edge device state from cloud providers</li>
+<li>Monitoring &amp; Analytics - Aggregates edge device connectivity and health metrics</li>
+<li>Deployment Management - References edge devices for module deployment operations</li>
+</ul>
+<h3 id="related-features">Related Features<a class="headerlink" href="#related-features" title="Permanent link">¶</a></h3>
+<ul>
+<li>Feature 001: Standard Device Management - Manages downstream leaf devices that connect through edge gateways</li>
+<li>Feature 004: Device Tag Settings Management - Defines available tags for edge devices</li>
+<li>Feature 014: Role Management - Configures roles with edge device permissions</li>
+<li>Feature 024: Device Synchronization Jobs - Syncs edge device state from cloud providers</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

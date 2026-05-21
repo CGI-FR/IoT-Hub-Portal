@@ -1,0 +1,1296 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature Specification: LoRaWAN Concentrator Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-specification-lorawan-concentrator-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature Specification: LoRaWAN Concentrator Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-scenarios-testing">
+<span class="md-ellipsis">
+      User Scenarios &amp; Testing
+    </span>
+</a>
+<nav aria-label="User Scenarios &amp; Testing" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-1-view-and-search-concentrator-inventory-priority-p1">
+<span class="md-ellipsis">
+      User Story 1 - View and Search Concentrator Inventory (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-2-provision-new-lorawan-gateway-priority-p1">
+<span class="md-ellipsis">
+      User Story 2 - Provision New LoRaWAN Gateway (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-3-view-concentrator-details-and-connection-status-priority-p2">
+<span class="md-ellipsis">
+      User Story 3 - View Concentrator Details and Connection Status (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-4-update-concentrator-configuration-priority-p2">
+<span class="md-ellipsis">
+      User Story 4 - Update Concentrator Configuration (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-5-decommission-gateway-priority-p2">
+<span class="md-ellipsis">
+      User Story 5 - Decommission Gateway (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-6-manage-client-certificate-authentication-priority-p3">
+<span class="md-ellipsis">
+      User Story 6 - Manage Client Certificate Authentication (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-7-filter-by-multiple-criteria-priority-p3">
+<span class="md-ellipsis">
+      User Story 7 - Filter by Multiple Criteria (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-8-sort-concentrator-list-priority-p4">
+<span class="md-ellipsis">
+      User Story 8 - Sort Concentrator List (Priority: P4)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-cases">
+<span class="md-ellipsis">
+      Edge Cases
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements">
+<span class="md-ellipsis">
+      Requirements
+    </span>
+</a>
+<nav aria-label="Requirements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-entities">
+<span class="md-ellipsis">
+      Key Entities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-criteria">
+<span class="md-ellipsis">
+      Success Criteria
+    </span>
+</a>
+<nav aria-label="Success Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#measurable-outcomes">
+<span class="md-ellipsis">
+      Measurable Outcomes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#traceability">
+<span class="md-ellipsis">
+      Traceability
+    </span>
+</a>
+<nav aria-label="Traceability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#source-analysis">
+<span class="md-ellipsis">
+      Source Analysis
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-documentation">
+<span class="md-ellipsis">
+      Related Documentation
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notes">
+<span class="md-ellipsis">
+      Notes
+    </span>
+</a>
+<nav aria-label="Notes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#design-decisions">
+<span class="md-ellipsis">
+      Design Decisions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implementation-patterns">
+<span class="md-ellipsis">
+      Implementation Patterns
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-context">
+<span class="md-ellipsis">
+      Business Context
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-considerations">
+<span class="md-ellipsis">
+      Performance Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#limitations-and-constraints">
+<span class="md-ellipsis">
+      Limitations and Constraints
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-enhancement-opportunities">
+<span class="md-ellipsis">
+      Future Enhancement Opportunities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-specification-lorawan-concentrator-management">Feature Specification: LoRaWAN Concentrator Management<a class="headerlink" href="#feature-specification-lorawan-concentrator-management" title="Permanent link">¶</a></h1>
+<p><strong>Feature ID</strong>: 010<br/>
+<strong>Feature Branch</strong>: <code>010-lorawan-concentrator-management</code><br/>
+<strong>Created</strong>: January 30, 2025<br/>
+<strong>Status</strong>: Draft<br/>
+<strong>Source</strong>: Analysis from <code>specs/010-lorawan-concentrator-management/analyze.md</code></p>
+<hr/>
+<h2 id="user-scenarios-testing">User Scenarios &amp; Testing<a class="headerlink" href="#user-scenarios-testing" title="Permanent link">¶</a></h2>
+<h3 id="user-story-1-view-and-search-concentrator-inventory-priority-p1">User Story 1 - View and Search Concentrator Inventory (Priority: P1)<a class="headerlink" href="#user-story-1-view-and-search-concentrator-inventory-priority-p1" title="Permanent link">¶</a></h3>
+<p>Network administrators need to view all registered LoRaWAN concentrators (gateways) to understand network infrastructure, identify disconnected devices, and manage their LoRaWAN gateway fleet. Administrators can search by device identifier or name and filter by operational status and connection state.</p>
+<p><strong>Why this priority</strong>: This is the foundation of concentrator management. Without the ability to view and locate concentrators, no other management operations are possible. This represents the core read capability that every user role with concentrator access needs.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by authenticating with concentrator:read permission, navigating to the concentrator list, and verifying that all concentrators are displayed with pagination. Delivers value by providing visibility into gateway infrastructure.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> user has concentrator:read permission, <strong>When</strong> user accesses concentrator list page, <strong>Then</strong> system displays all concentrators in a paginated table with device ID, name, region, connection status, and enabled/disabled status</li>
+<li><strong>Given</strong> user views concentrator list with 50+ devices, <strong>When</strong> user navigates between pages, <strong>Then</strong> system displays results in pages with configurable page size and provides next page navigation</li>
+<li><strong>Given</strong> user needs to find a specific concentrator, <strong>When</strong> user enters search text matching device ID or name, <strong>Then</strong> system filters results to show only matching concentrators</li>
+<li><strong>Given</strong> user wants to view only enabled concentrators, <strong>When</strong> user selects "Enabled" status filter, <strong>Then</strong> system displays only concentrators where IsEnabled is true</li>
+<li><strong>Given</strong> user needs to identify disconnected gateways, <strong>When</strong> user selects "Disconnected" state filter, <strong>Then</strong> system displays only concentrators where IsConnected is false</li>
+<li><strong>Given</strong> user sorts by name column, <strong>When</strong> user clicks column header, <strong>Then</strong> system reorders concentrators alphabetically by name</li>
+<li><strong>Given</strong> LoRaWAN feature is disabled in portal settings, <strong>When</strong> user attempts to access concentrator endpoints, <strong>Then</strong> system returns 404 Not Found</li>
+</ol>
+<hr/>
+<h3 id="user-story-2-provision-new-lorawan-gateway-priority-p1">User Story 2 - Provision New LoRaWAN Gateway (Priority: P1)<a class="headerlink" href="#user-story-2-provision-new-lorawan-gateway-priority-p1" title="Permanent link">¶</a></h3>
+<p>IT administrators need to provision new LoRaWAN concentrators during network expansion or deployment. They must configure the device with a valid 16-character hexadecimal device identifier, assign it to a frequency plan/region based on regulatory requirements, optionally configure client certificate authentication for secure connections, and set its operational status.</p>
+<p><strong>Why this priority</strong>: Gateway provisioning is essential for establishing LoRaWAN network infrastructure. Without the ability to register new concentrators, no LoRaWAN devices can communicate with the cloud platform. This is a core write capability required for network setup.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by authenticating with concentrator:write permission, creating a new concentrator with required fields (DeviceID, DeviceName, LoraRegion), and verifying it appears in the concentrator list and is created in the IoT Hub with proper device twin configuration.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> user has concentrator:write permission, <strong>When</strong> user submits new concentrator form with valid DeviceID (16 hex chars), DeviceName, and LoraRegion, <strong>Then</strong> system creates concentrator in database and IoT Hub with router configuration</li>
+<li><strong>Given</strong> user creates concentrator with DeviceID "1234567890ABCDEF", <strong>When</strong> system processes creation request, <strong>Then</strong> system validates DeviceID matches regex pattern ^[A-F0-9]{16}$ and accepts the request</li>
+<li><strong>Given</strong> user creates concentrator without DeviceName, <strong>When</strong> user submits form, <strong>Then</strong> system returns validation error indicating DeviceName is required</li>
+<li><strong>Given</strong> user selects LoraRegion "EU868", <strong>When</strong> system creates concentrator, <strong>Then</strong> system retrieves appropriate router configuration for EU868 region from LoRaWAN management service</li>
+<li><strong>Given</strong> user provides ClientThumbprint in format "AB:CD:EF:...", <strong>When</strong> user submits form, <strong>Then</strong> system validates thumbprint matches pattern ^(([A-F0-9]{2}:){19}[A-F0-9]{2}|)$ (40 hex chars with colons)</li>
+<li><strong>Given</strong> user creates concentrator with IsEnabled set to false, <strong>When</strong> system creates device, <strong>Then</strong> system sets device status to Disabled in IoT Hub</li>
+<li><strong>Given</strong> user submits concentrator with invalid DeviceID format, <strong>When</strong> system validates request, <strong>Then</strong> system returns 422 Unprocessable Entity with validation error</li>
+<li><strong>Given</strong> system creates concentrator successfully, <strong>When</strong> creation completes, <strong>Then</strong> system creates device twin in IoT Hub with router configuration and returns created concentrator details</li>
+</ol>
+<hr/>
+<h3 id="user-story-3-view-concentrator-details-and-connection-status-priority-p2">User Story 3 - View Concentrator Details and Connection Status (Priority: P2)<a class="headerlink" href="#user-story-3-view-concentrator-details-and-connection-status-priority-p2" title="Permanent link">¶</a></h3>
+<p>Network operators need to view detailed information about a specific concentrator, including its configuration, connection status, and operational state, to troubleshoot connectivity issues and verify proper configuration.</p>
+<p><strong>Why this priority</strong>: While list view provides overview, detailed view is essential for operations teams to diagnose connection issues, verify certificate configuration, and confirm router settings. This supports day-to-day network monitoring and troubleshooting.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by selecting a concentrator from the list, viewing its detail page, and verifying all properties are displayed including connection status indicator. Delivers value by providing comprehensive device information for troubleshooting.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> user has concentrator:read permission and valid deviceId, <strong>When</strong> user requests concentrator details, <strong>Then</strong> system returns complete concentrator information including DeviceId, DeviceName, LoraRegion, ClientThumbprint, IsConnected, IsEnabled, and RouterConfig</li>
+<li><strong>Given</strong> user views concentrator with IsConnected=true, <strong>When</strong> detail page renders, <strong>Then</strong> system displays green WiFi icon indicating connected status</li>
+<li><strong>Given</strong> user views concentrator with IsConnected=false, <strong>When</strong> detail page renders, <strong>Then</strong> system displays red WiFi icon indicating disconnected status</li>
+<li><strong>Given</strong> user requests details for non-existent concentrator, <strong>When</strong> system processes request, <strong>Then</strong> system throws ResourceNotFoundException with message "The concentrator with id {deviceId} doesn't exist"</li>
+<li><strong>Given</strong> concentrator has AlreadyLoggedInOnce=true, <strong>When</strong> user views details, <strong>Then</strong> system displays this property indicating gateway has successfully connected at least once</li>
+</ol>
+<hr/>
+<h3 id="user-story-4-update-concentrator-configuration-priority-p2">User Story 4 - Update Concentrator Configuration (Priority: P2)<a class="headerlink" href="#user-story-4-update-concentrator-configuration-priority-p2" title="Permanent link">¶</a></h3>
+<p>Network administrators need to modify concentrator configuration after deployment, such as changing the frequency plan for regional migrations, updating client certificate thumbprints during certificate rotation, changing the device name for better organization, or enabling/disabling the gateway for maintenance.</p>
+<p><strong>Why this priority</strong>: Configuration changes are common in production environments due to certificate expiration, regional relocations, or maintenance activities. This enables ongoing management of deployed gateways without requiring device re-provisioning.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by editing an existing concentrator's properties (name, region, certificate, status), saving changes, and verifying updates are persisted in database and synchronized to IoT Hub device twin.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> user has concentrator:write permission and valid concentrator, <strong>When</strong> user updates DeviceName, LoraRegion, or ClientThumbprint and submits, <strong>Then</strong> system updates database record and synchronizes changes to IoT Hub device twin</li>
+<li><strong>Given</strong> user changes LoraRegion from "EU868" to "US915", <strong>When</strong> system processes update, <strong>Then</strong> system retrieves new router configuration for US915 and updates device twin with new router config</li>
+<li><strong>Given</strong> user updates IsEnabled from true to false, <strong>When</strong> system processes update, <strong>Then</strong> system sets device status to Disabled in IoT Hub and updates database</li>
+<li><strong>Given</strong> user updates IsEnabled from false to true, <strong>When</strong> system processes update, <strong>Then</strong> system sets device status to Enabled in IoT Hub and updates database</li>
+<li><strong>Given</strong> user updates ClientThumbprint with invalid format, <strong>When</strong> system validates request, <strong>Then</strong> system returns 422 Unprocessable Entity with validation error</li>
+<li><strong>Given</strong> user updates concentrator that doesn't exist in database, <strong>When</strong> system processes update, <strong>Then</strong> system throws ResourceNotFoundException with message "The device {deviceId} doesn't exist"</li>
+<li><strong>Given</strong> user successfully updates concentrator, <strong>When</strong> update completes, <strong>Then</strong> system updates device twin properties, device status, and database record atomically</li>
+</ol>
+<hr/>
+<h3 id="user-story-5-decommission-gateway-priority-p2">User Story 5 - Decommission Gateway (Priority: P2)<a class="headerlink" href="#user-story-5-decommission-gateway-priority-p2" title="Permanent link">¶</a></h3>
+<p>IT administrators need to remove concentrators from the system when gateways are decommissioned, relocated to different networks, or replaced due to hardware failure. Removal must ensure the device is deleted from both the IoT Hub and local database to maintain data consistency.</p>
+<p><strong>Why this priority</strong>: Gateway decommissioning is less frequent than viewing or creating but still essential for lifecycle management. Proper cleanup prevents orphaned devices in IoT Hub and maintains accurate inventory.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by deleting an existing concentrator and verifying it is removed from both the database and IoT Hub, and no longer appears in the concentrator list.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> user has concentrator:write permission and valid deviceId, <strong>When</strong> user requests concentrator deletion, <strong>Then</strong> system removes concentrator from IoT Hub and deletes database record</li>
+<li><strong>Given</strong> user deletes concentrator, <strong>When</strong> deletion process executes, <strong>Then</strong> system first deletes device from IoT Hub, then removes database record</li>
+<li><strong>Given</strong> concentrator doesn't exist in database but exists in IoT Hub, <strong>When</strong> user deletes concentrator, <strong>Then</strong> system removes device from IoT Hub and gracefully handles missing database record without error</li>
+<li><strong>Given</strong> user successfully deletes concentrator, <strong>When</strong> deletion completes, <strong>Then</strong> system returns 200 OK status</li>
+<li><strong>Given</strong> user attempts to view deleted concentrator, <strong>When</strong> user requests details, <strong>Then</strong> system returns ResourceNotFoundException</li>
+<li><strong>Given</strong> deletion fails at IoT Hub level, <strong>When</strong> system processes deletion, <strong>Then</strong> system propagates exception and database record remains intact</li>
+</ol>
+<hr/>
+<h3 id="user-story-6-manage-client-certificate-authentication-priority-p3">User Story 6 - Manage Client Certificate Authentication (Priority: P3)<a class="headerlink" href="#user-story-6-manage-client-certificate-authentication-priority-p3" title="Permanent link">¶</a></h3>
+<p>Security-conscious organizations need to configure mutual TLS authentication for concentrators using client certificate thumbprints to ensure only authorized gateways can connect to the network. The system must validate thumbprint format (40 hexadecimal characters) and support certificate updates during rotation.</p>
+<p><strong>Why this priority</strong>: While security is important, certificate authentication is optional for many deployments. Organizations with strict security requirements need this capability, but basic gateway management works without it.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating/updating a concentrator with a valid ClientThumbprint value in format "XX:XX:XX:..." (40 hex chars with colon separators), verifying validation, and confirming the thumbprint is stored in device twin for authentication.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> user creates concentrator with ClientThumbprint, <strong>When</strong> system validates thumbprint, <strong>Then</strong> system accepts format matching ^(([A-F0-9]{2}:){19}[A-F0-9]{2}|)$ (20 pairs of hex with colon separators)</li>
+<li><strong>Given</strong> user provides ClientThumbprint without colons or incorrect length, <strong>When</strong> system validates, <strong>Then</strong> system returns validation error "ClientThumbprint must contain 40 hexadecimal characters"</li>
+<li><strong>Given</strong> user creates concentrator without ClientThumbprint, <strong>When</strong> system processes creation, <strong>Then</strong> system sets ClientThumbprint to empty string (optional field)</li>
+<li><strong>Given</strong> user updates concentrator to add ClientThumbprint, <strong>When</strong> update completes, <strong>Then</strong> system updates device twin with new thumbprint for subsequent authentication</li>
+<li><strong>Given</strong> UI input field for ClientThumbprint, <strong>When</strong> user types hex characters, <strong>Then</strong> system applies pattern mask "XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX" and auto-formats with colons</li>
+<li><strong>Given</strong> concentrator has valid ClientThumbprint configured, <strong>When</strong> gateway attempts connection, <strong>Then</strong> IoT Hub validates certificate against configured thumbprint</li>
+</ol>
+<hr/>
+<h3 id="user-story-7-filter-by-multiple-criteria-priority-p3">User Story 7 - Filter by Multiple Criteria (Priority: P3)<a class="headerlink" href="#user-story-7-filter-by-multiple-criteria-priority-p3" title="Permanent link">¶</a></h3>
+<p>Power users and operations teams need to combine multiple filters (search text, status, and connection state) to perform complex queries like "find all disconnected enabled concentrators in production" or "locate all disabled gateways with names containing 'warehouse'."</p>
+<p><strong>Why this priority</strong>: While basic filtering is P1, advanced multi-criteria filtering is valuable for large deployments with many gateways but not essential for basic operations. Most users start with simple searches.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by applying multiple filters simultaneously (e.g., searchText + status filter + state filter) and verifying the system returns only concentrators matching all criteria.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> user enters searchText="gateway" AND status="Enabled" AND state="Disconnected", <strong>When</strong> system executes query, <strong>Then</strong> system applies all three predicates using AND logic and returns concentrators matching all conditions</li>
+<li><strong>Given</strong> user applies searchText filter matching DeviceID or Name, <strong>When</strong> system builds query, <strong>Then</strong> system performs case-insensitive search using ToLower() on both fields</li>
+<li><strong>Given</strong> user selects status filter, <strong>When</strong> filter value is not null, <strong>Then</strong> system adds predicate "concentrator.IsEnabled == filter.Status" to query</li>
+<li><strong>Given</strong> user selects state filter, <strong>When</strong> filter value is not null, <strong>Then</strong> system adds predicate "concentrator.IsConnected == filter.State" to query</li>
+<li><strong>Given</strong> user resets all filters, <strong>When</strong> system executes query, <strong>Then</strong> system uses predicate PredicateBuilder.True<concentrator>() returning all concentrators</concentrator></li>
+</ol>
+<hr/>
+<h3 id="user-story-8-sort-concentrator-list-priority-p4">User Story 8 - Sort Concentrator List (Priority: P4)<a class="headerlink" href="#user-story-8-sort-concentrator-list-priority-p4" title="Permanent link">¶</a></h3>
+<p>Users with large concentrator fleets need to sort the list by various columns (name, enabled status, connection state) to organize and prioritize their view, such as viewing all concentrators alphabetically or grouping by status.</p>
+<p><strong>Why this priority</strong>: Sorting improves usability but is not essential for core functionality. Users can accomplish most tasks with search and filtering alone. This is a quality-of-life enhancement.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by clicking column headers in the concentrator list and verifying results are reordered according to the selected column and direction (ascending/descending).</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> user clicks "Name" column header, <strong>When</strong> system processes request, <strong>Then</strong> system adds orderBy parameter to query and returns concentrators sorted alphabetically by Name</li>
+<li><strong>Given</strong> user clicks "IsEnabled" column header, <strong>When</strong> system processes request, <strong>Then</strong> system sorts concentrators by enabled status (enabled first or disabled first based on direction)</li>
+<li><strong>Given</strong> user applies orderBy parameter in API request, <strong>When</strong> system executes query, <strong>Then</strong> system passes orderBy array to GetPaginatedListAsync for database-level sorting</li>
+<li><strong>Given</strong> user sorts and paginates, <strong>When</strong> user navigates to next page, <strong>Then</strong> system preserves orderBy parameter in nextPage URL for consistent sorting across pages</li>
+</ol>
+<hr/>
+<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<p><strong>Device Identifier Validation:</strong></p>
+<ul>
+<li>What happens when user provides DeviceID with lowercase hex characters? (System expects uppercase A-F)</li>
+<li>What happens when user provides DeviceID with less than or more than 16 characters?</li>
+<li>What happens when user attempts to create duplicate DeviceID?</li>
+</ul>
+<p><strong>Certificate Thumbprint Handling:</strong></p>
+<ul>
+<li>What happens when ClientThumbprint contains lowercase hex characters?</li>
+<li>What happens when ClientThumbprint has incorrect colon separator positions?</li>
+<li>What happens when ClientThumbprint is null vs empty string?</li>
+</ul>
+<p><strong>Concurrent Modifications:</strong></p>
+<ul>
+<li>What happens when two administrators update the same concentrator simultaneously?</li>
+<li>What happens when concentrator is deleted while another user is viewing its details?</li>
+</ul>
+<p><strong>External Service Failures:</strong></p>
+<ul>
+<li>What happens when IoT Hub is unavailable during creation/update/deletion?</li>
+<li>What happens when LoRaWAN management service fails to return router configuration?</li>
+<li>What happens when database save succeeds but IoT Hub operation fails (partial failure scenario)?</li>
+</ul>
+<p><strong>Data Consistency:</strong></p>
+<ul>
+<li>What happens when concentrator exists in IoT Hub but not in database?</li>
+<li>What happens when concentrator exists in database but not in IoT Hub?</li>
+<li>What happens when IsConnected status in database doesn't match actual IoT Hub connection state?</li>
+</ul>
+<p><strong>Permission Boundary Conditions:</strong></p>
+<ul>
+<li>What happens when user has concentrator:read but not concentrator:write and attempts modification?</li>
+<li>What happens when user loses concentrator:write permission while editing a concentrator?</li>
+<li>What happens when LoRaWAN feature is disabled mid-operation?</li>
+</ul>
+<p><strong>Pagination Edge Cases:</strong></p>
+<ul>
+<li>What happens when page size exceeds total number of concentrators?</li>
+<li>What happens when concentrator is deleted while user is viewing a paginated list?</li>
+<li>What happens when page number exceeds available pages?</li>
+</ul>
+<p><strong>Filtering Edge Cases:</strong></p>
+<ul>
+<li>What happens when search text contains special regex characters?</li>
+<li>What happens when all filters are applied and no concentrators match?</li>
+<li>What happens when status and state filters contradict each other logically?</li>
+</ul>
+<p><strong>Frequency Plan Changes:</strong></p>
+<ul>
+<li>What happens when concentrator's LoraRegion is changed while LoRaWAN devices are actively communicating through it?</li>
+<li>What happens when selected frequency plan becomes unavailable or deprecated?</li>
+</ul>
+<hr/>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
+<h3 id="functional-requirements">Functional Requirements<a class="headerlink" href="#functional-requirements" title="Permanent link">¶</a></h3>
+<p><strong>Concentrator Data Management:</strong></p>
+<ul>
+<li><strong>FR-001</strong>: System MUST store concentrator records with device identifier, name, frequency plan/region, device type, optional client certificate thumbprint, connection status, enabled status, and version</li>
+<li><strong>FR-002</strong>: System MUST enforce device identifier format as exactly 16 uppercase hexadecimal characters (0-9, A-F)</li>
+<li><strong>FR-003</strong>: System MUST validate client certificate thumbprint as exactly 40 hexadecimal characters formatted with colon separators (XX:XX:XX:...) or empty</li>
+<li><strong>FR-004</strong>: System MUST require device name and frequency plan/region for all concentrators</li>
+<li><strong>FR-005</strong>: System MUST automatically set device type to "LoRa Concentrator" during creation</li>
+</ul>
+<p><strong>Concentrator CRUD Operations:</strong></p>
+<ul>
+<li><strong>FR-006</strong>: System MUST provide ability to create new concentrators with validation of all required fields and format constraints</li>
+<li><strong>FR-007</strong>: System MUST retrieve individual concentrator details by device identifier</li>
+<li><strong>FR-008</strong>: System MUST support updating concentrator name, frequency plan/region, client certificate thumbprint, and enabled status</li>
+<li><strong>FR-009</strong>: System MUST prevent modification of device identifier after creation</li>
+<li><strong>FR-010</strong>: System MUST support deletion of concentrators with cascading removal from all dependent systems</li>
+</ul>
+<p><strong>IoT Hub Synchronization:</strong></p>
+<ul>
+<li><strong>FR-011</strong>: System MUST create corresponding device in cloud IoT platform when concentrator is created locally</li>
+<li><strong>FR-012</strong>: System MUST create and configure device twin with router configuration during concentrator creation</li>
+<li><strong>FR-013</strong>: System MUST update device twin properties when concentrator configuration is modified</li>
+<li><strong>FR-014</strong>: System MUST synchronize enabled/disabled status between local database and cloud IoT platform device status</li>
+<li><strong>FR-015</strong>: System MUST delete device from cloud IoT platform when concentrator is deleted locally</li>
+</ul>
+<p><strong>Router Configuration Management:</strong></p>
+<ul>
+<li><strong>FR-016</strong>: System MUST retrieve appropriate router configuration from LoRaWAN management service based on selected frequency plan/region</li>
+<li><strong>FR-017</strong>: System MUST store router configuration in device twin during creation and update operations</li>
+<li><strong>FR-018</strong>: System MUST update router configuration when frequency plan/region is changed</li>
+</ul>
+<p><strong>List and Search Operations:</strong></p>
+<ul>
+<li><strong>FR-019</strong>: System MUST provide paginated list of all concentrators with configurable page size</li>
+<li><strong>FR-020</strong>: System MUST support searching concentrators by device identifier or device name with case-insensitive matching</li>
+<li><strong>FR-021</strong>: System MUST support filtering concentrators by enabled status (enabled/disabled/all)</li>
+<li><strong>FR-022</strong>: System MUST support filtering concentrators by connection state (connected/disconnected/all)</li>
+<li><strong>FR-023</strong>: System MUST allow combining search text with status and state filters using AND logic</li>
+<li><strong>FR-024</strong>: System MUST support sorting concentrator list by name and enabled status columns</li>
+<li><strong>FR-025</strong>: System MUST provide next page URL in pagination results when additional pages exist</li>
+</ul>
+<p><strong>Connection Status Tracking:</strong></p>
+<ul>
+<li><strong>FR-026</strong>: System MUST track and display connection status (connected/disconnected) for each concentrator</li>
+<li><strong>FR-027</strong>: System MUST display visual indicators for connection status (e.g., green for connected, red for disconnected)</li>
+<li><strong>FR-028</strong>: System MUST track whether concentrator has successfully authenticated at least once (AlreadyLoggedInOnce property)</li>
+</ul>
+<p><strong>Validation and Error Handling:</strong></p>
+<ul>
+<li><strong>FR-029</strong>: System MUST validate all input data against defined constraints before processing</li>
+<li><strong>FR-030</strong>: System MUST return 422 Unprocessable Entity with detailed validation errors when input validation fails</li>
+<li><strong>FR-031</strong>: System MUST throw ResourceNotFoundException with descriptive message when attempting to retrieve, update, or delete non-existent concentrator</li>
+<li><strong>FR-032</strong>: System MUST gracefully handle missing database records during deletion without throwing exceptions</li>
+</ul>
+<p><strong>Authorization and Security:</strong></p>
+<ul>
+<li><strong>FR-033</strong>: System MUST require "concentrator:read" permission for viewing concentrator list and details</li>
+<li><strong>FR-034</strong>: System MUST require "concentrator:write" permission for creating, updating, and deleting concentrators</li>
+<li><strong>FR-035</strong>: System MUST enforce feature gate to disable all concentrator endpoints when LoRaWAN feature is not enabled in portal settings</li>
+<li><strong>FR-036</strong>: System MUST return 404 Not Found for all concentrator endpoints when LoRaWAN feature is disabled</li>
+<li><strong>FR-037</strong>: System MUST support mutual TLS authentication using client certificate thumbprint for gateway connections</li>
+</ul>
+<p><strong>Transaction Management:</strong></p>
+<ul>
+<li><strong>FR-038</strong>: System MUST use unit of work pattern to ensure database operations are committed atomically</li>
+<li><strong>FR-039</strong>: System MUST coordinate database operations with IoT Hub operations to maintain consistency</li>
+</ul>
+<p><strong>User Interface:</strong></p>
+<ul>
+<li><strong>FR-040</strong>: System MUST provide input masking for client certificate thumbprint field to enforce format XX:XX:XX:...</li>
+<li><strong>FR-041</strong>: System MUST provide dropdown selection for frequency plan/region populated from available frequency plans</li>
+<li><strong>FR-042</strong>: System MUST conditionally render edit and delete operations based on user permissions</li>
+<li><strong>FR-043</strong>: System MUST display confirmation dialog before deleting concentrator</li>
+</ul>
+<h3 id="key-entities">Key Entities<a class="headerlink" href="#key-entities" title="Permanent link">¶</a></h3>
+<p><strong>Concentrator:</strong></p>
+<ul>
+<li>Represents a LoRaWAN gateway device (concentrator) that bridges LoRa radio communications to IP networks</li>
+<li>Unique identifier (DeviceId) - 16 hexadecimal characters</li>
+<li>Name - human-readable name for identification</li>
+<li>LoraRegion - frequency plan/region (e.g., EU868, US915) for regulatory compliance</li>
+<li>DeviceType - classification as "LoRa Concentrator"</li>
+<li>ClientThumbprint - optional SHA1 certificate thumbprint for mutual TLS authentication (40 hex chars)</li>
+<li>IsConnected - real-time connection status</li>
+<li>IsEnabled - operational status (enabled/disabled)</li>
+<li>Version - entity version for concurrency control</li>
+</ul>
+<p><strong>ConcentratorDto:</strong></p>
+<ul>
+<li>Data transfer object for API communication</li>
+<li>Contains all Concentrator properties plus additional fields:</li>
+<li>AlreadyLoggedInOnce - tracks first successful connection</li>
+<li>RouterConfig - LoRaWAN-specific router configuration embedded from management service</li>
+<li>Includes validation attributes for DeviceId and ClientThumbprint format enforcement</li>
+</ul>
+<p><strong>ConcentratorFilter:</strong></p>
+<ul>
+<li>Query filter object for list operations</li>
+<li>SearchText - keyword search for DeviceID or DeviceName</li>
+<li>Status - optional boolean filter for enabled/disabled state</li>
+<li>State - optional boolean filter for connected/disconnected state</li>
+<li>Inherits pagination properties (PageNumber, PageSize, OrderBy)</li>
+</ul>
+<p><strong>RouterConfig:</strong></p>
+<ul>
+<li>LoRaWAN-specific configuration for packet routing</li>
+<li>Retrieved from LoRaWAN management service based on frequency plan/region</li>
+<li>Stored in device twin for concentrator runtime configuration</li>
+</ul>
+<hr/>
+<h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes<a class="headerlink" href="#measurable-outcomes" title="Permanent link">¶</a></h3>
+<p><strong>Provisioning Efficiency:</strong></p>
+<ul>
+<li><strong>SC-001</strong>: Network administrators can provision a new LoRaWAN concentrator from start to finish in under 2 minutes</li>
+<li><strong>SC-002</strong>: System validates concentrator configuration data and provides immediate feedback (within 2 seconds) for validation errors</li>
+</ul>
+<p><strong>Inventory Management:</strong></p>
+<ul>
+<li><strong>SC-003</strong>: Operations teams can locate any concentrator in a fleet of 500+ devices using search and filters in under 10 seconds</li>
+<li><strong>SC-004</strong>: System displays paginated concentrator list with all status information (connection state, enabled status) within 3 seconds for up to 100 devices per page</li>
+</ul>
+<p><strong>Configuration Updates:</strong></p>
+<ul>
+<li><strong>SC-005</strong>: Administrators can update concentrator configuration (name, region, certificate, status) and synchronize changes to cloud platform in under 30 seconds</li>
+<li><strong>SC-006</strong>: System successfully synchronizes 100% of configuration changes to device twin without manual intervention</li>
+</ul>
+<p><strong>Connection Monitoring:</strong></p>
+<ul>
+<li><strong>SC-007</strong>: Operations teams have real-time visibility into concentrator connection status with visual indicators (green/red) refreshed within 5 seconds of state change</li>
+<li><strong>SC-008</strong>: System accurately tracks and displays connection history (AlreadyLoggedInOnce) for 100% of concentrators</li>
+</ul>
+<p><strong>Data Consistency:</strong></p>
+<ul>
+<li><strong>SC-009</strong>: System maintains consistency between local database and cloud IoT platform with zero orphaned devices after create/update/delete operations</li>
+<li><strong>SC-010</strong>: System handles partial failures (e.g., IoT Hub unavailable) gracefully and provides clear error messages to users</li>
+</ul>
+<p><strong>Search and Filter Performance:</strong></p>
+<ul>
+<li><strong>SC-011</strong>: Combined search and multi-criteria filtering returns results for fleets of 1000+ concentrators in under 5 seconds</li>
+<li><strong>SC-012</strong>: Pagination navigation maintains filter and sort state across 100% of page transitions</li>
+</ul>
+<p><strong>Security and Compliance:</strong></p>
+<ul>
+<li><strong>SC-013</strong>: System enforces permission-based access control with zero unauthorized access to concentrator management operations</li>
+<li><strong>SC-014</strong>: System validates 100% of client certificate thumbprints against format requirements before allowing configuration</li>
+<li><strong>SC-015</strong>: Organizations using mutual TLS authentication achieve zero unauthorized gateway connections</li>
+</ul>
+<p><strong>User Experience:</strong></p>
+<ul>
+<li><strong>SC-016</strong>: 90% of users can successfully create, view, update, or delete concentrators on first attempt without consulting documentation</li>
+<li><strong>SC-017</strong>: Administrators can identify and troubleshoot disconnected gateways within 1 minute using connection status filters</li>
+</ul>
+<p><strong>System Reliability:</strong></p>
+<ul>
+<li><strong>SC-018</strong>: System handles concurrent concentrator management operations from multiple administrators without data corruption</li>
+<li><strong>SC-019</strong>: System maintains LoRaWAN feature gate enforcement with 100% accuracy (no endpoint access when feature disabled)</li>
+</ul>
+<p><strong>Validation Quality:</strong></p>
+<ul>
+<li><strong>SC-020</strong>: System rejects 100% of invalid DeviceID formats (non-hex, incorrect length) before attempting device creation</li>
+<li><strong>SC-021</strong>: System provides specific, actionable validation error messages for all input validation failures</li>
+</ul>
+<hr/>
+<h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">¶</a></h2>
+<h3 id="source-analysis">Source Analysis<a class="headerlink" href="#source-analysis" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Analysis Path</strong>: <code>specs/010-lorawan-concentrator-management/analyze.md</code></li>
+<li><strong>Analyzed By</strong>: excavator.specifier</li>
+<li><strong>Analysis Date</strong>: January 30, 2025</li>
+</ul>
+<h3 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h3>
+<p><strong>Controllers:</strong></p>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANConcentratorsController.cs</code> - REST API endpoints for concentrator CRUD operations</li>
+</ul>
+<p><strong>Business Logic:</strong></p>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/ILoRaWANConcentratorService.cs</code> - Service interface</li>
+<li><code>src/IoTHub.Portal.Server/Services/LoRaWANConcentratorService.cs</code> - Core business logic for concentrator management, IoT Hub synchronization, and router configuration</li>
+</ul>
+<p><strong>Data Layer:</strong></p>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Entities/Concentrator.cs</code> - Concentrator domain entity</li>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IConcentratorRepository.cs</code> - Repository interface</li>
+</ul>
+<p><strong>DTOs:</strong></p>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/ConcentratorDto.cs</code> - API data transfer object with validation attributes</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/Filters/ConcentratorFilter.cs</code> - Query filter model</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/RouterConfig.cs</code> - Router configuration model</li>
+</ul>
+<p><strong>UI Components:</strong></p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/LoRaWAN/Concentrator/ConcentratorListPage.razor</code> - List page with search and filters</li>
+<li><code>src/IoTHub.Portal.Client/Pages/LoRaWAN/Concentrator/ConcentratorDetailPage.razor</code> - Detail and edit page</li>
+<li><code>src/IoTHub.Portal.Client/Pages/LoRaWAN/Concentrator/CreateConcentratorPage.razor</code> - Creation page</li>
+<li><code>src/IoTHub.Portal.Client/Pages/LoRaWAN/Concentrator/DeleteConcentratorPage.razor</code> - Deletion confirmation dialog</li>
+<li><code>src/IoTHub.Portal.Client/Components/Concentrators/ConcentratorSearch.razor</code> - Search and filter component</li>
+</ul>
+<p><strong>Client Services:</strong></p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Services/ILoRaWanConcentratorClientService.cs</code> - Client service interface</li>
+<li><code>src/IoTHub.Portal.Client/Services/LoRaWanConcentratorClientService.cs</code> - HTTP client implementation</li>
+</ul>
+<p><strong>Validators:</strong></p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Validators/ConcentratorValidator.cs</code> - FluentValidation rules</li>
+</ul>
+<p><strong>Mappers:</strong></p>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Mappers/IConcentratorTwinMapper.cs</code> - Twin mapper interface</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Mappers/ConcentratorTwinMapper.cs</code> - Device twin mapping implementation</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
+<p><strong>Internal Feature Dependencies:</strong></p>
+<ul>
+<li><strong>Feature 012 - LoRaWAN Frequency Plans</strong>: Concentrators must be associated with valid frequency plan/region from this feature</li>
+<li><strong>Feature 008 - LoRaWAN Device Management</strong>: LoRaWAN end-devices communicate through concentrators managed by this feature</li>
+<li><strong>Feature 011 - LoRaWAN Commands Management</strong>: Commands to LoRaWAN devices are routed through concentrators</li>
+</ul>
+<p><strong>Service Dependencies:</strong></p>
+<ul>
+<li><strong>IExternalDeviceService</strong>: Cloud IoT platform operations (create device with twin, update device, update device twin, delete device, get device, get device twin)</li>
+<li><strong>IConcentratorTwinMapper</strong>: Mapping between ConcentratorDto and device twin properties</li>
+<li><strong>ILoRaWanManagementService</strong>: LoRaWAN router configuration management (GetRouterConfig by region)</li>
+<li><strong>IConcentratorRepository</strong>: Database persistence for concentrator entities</li>
+<li><strong>IUnitOfWork</strong>: Transaction management for atomic database operations</li>
+<li><strong>IMapper</strong>: AutoMapper for entity-DTO transformations</li>
+</ul>
+<p><strong>External Dependencies:</strong></p>
+<ul>
+<li><strong>Azure IoT Hub</strong>: Cloud IoT device management platform for device twin and device status</li>
+<li><strong>LoRaWAN Network Server</strong>: Manages LoRaWAN-specific configuration and routing rules</li>
+<li><strong>Entity Framework Core</strong>: Database access via PortalDbContext</li>
+</ul>
+<h3 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">¶</a></h3>
+<ul>
+<li>LoRaWAN specification documentation for frequency plans and router configuration</li>
+<li>Azure IoT Hub device twin documentation</li>
+<li>Certificate authentication configuration guide for mutual TLS</li>
+</ul>
+<hr/>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
+<h3 id="design-decisions">Design Decisions<a class="headerlink" href="#design-decisions" title="Permanent link">¶</a></h3>
+<p><strong>Service Layer Pattern:</strong></p>
+<ul>
+<li>Implemented service layer abstraction (ILoRaWANConcentratorService) to separate business logic from controller and enable unit testing in isolation</li>
+<li>Service coordinates multiple external dependencies (IoT Hub, LoRaWAN management, database) in single operations</li>
+</ul>
+<p><strong>DTO Pattern:</strong></p>
+<ul>
+<li>Clear separation between API models (ConcentratorDto) and domain entities (Concentrator) enables independent evolution and adds API-specific properties like RouterConfig</li>
+</ul>
+<p><strong>Twin Mapper Pattern:</strong></p>
+<ul>
+<li>Extracted device twin mapping logic into dedicated mapper (IConcentratorTwinMapper) to isolate cloud platform specifics and enable future multi-cloud support</li>
+</ul>
+<p><strong>Repository Pattern:</strong></p>
+<ul>
+<li>Generic repository interface for Concentrator entity provides clean data access abstraction and supports unit of work for transactions</li>
+</ul>
+<p><strong>Predicate Builder:</strong></p>
+<ul>
+<li>Dynamic query construction using PredicateBuilder enables flexible combination of search and filter criteria without complex conditional logic</li>
+</ul>
+<h3 id="implementation-patterns">Implementation Patterns<a class="headerlink" href="#implementation-patterns" title="Permanent link">¶</a></h3>
+<p><strong>Two-Phase Operations:</strong></p>
+<ul>
+<li>Create/Update/Delete operations follow pattern: 1) Perform cloud platform operation, 2) Perform database operation</li>
+<li>Ensures cloud platform is source of truth and database reflects cloud state</li>
+</ul>
+<p><strong>Device Status Mapping:</strong></p>
+<ul>
+<li>IsEnabled (bool) maps to DeviceStatus enum (Enabled/Disabled) for cloud platform compatibility</li>
+<li>Simplifies UI binding while maintaining platform-specific requirements</li>
+</ul>
+<p><strong>Validation Strategy:</strong></p>
+<ul>
+<li>Three-layer validation: 1) Attribute validation on DTO, 2) FluentValidation in client, 3) ModelState validation in controller</li>
+<li>Provides comprehensive validation with early feedback in UI</li>
+</ul>
+<p><strong>Feature Gate:</strong></p>
+<ul>
+<li>LoRaFeatureActiveFilter attribute on controller ensures endpoints return 404 when LoRaWAN feature disabled</li>
+<li>Centralizes feature toggle logic at controller level</li>
+</ul>
+<h3 id="business-context">Business Context<a class="headerlink" href="#business-context" title="Permanent link">¶</a></h3>
+<p><strong>LoRaWAN Architecture:</strong></p>
+<ul>
+<li>Concentrators are gateway devices, not end-devices, in LoRaWAN network architecture</li>
+<li>Act as bridge between LoRa radio (end-devices) and IP network (cloud platform)</li>
+<li>Single concentrator can serve hundreds of LoRaWAN end-devices</li>
+</ul>
+<p><strong>Regulatory Compliance:</strong></p>
+<ul>
+<li>Frequency plan/region selection ensures compliance with regional radio regulations (e.g., EU868 for Europe, US915 for North America)</li>
+<li>Critical for legal operation in different jurisdictions</li>
+</ul>
+<p><strong>Security Model:</strong></p>
+<ul>
+<li>Optional mutual TLS using client certificate thumbprint for high-security environments</li>
+<li>Prevents rogue gateways from joining network</li>
+</ul>
+<h3 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h3>
+<p><strong>Pagination:</strong></p>
+<ul>
+<li>Server-side pagination with database-level filtering reduces data transfer and memory usage</li>
+<li>Supports large deployments with thousands of concentrators</li>
+</ul>
+<p><strong>Query Optimization:</strong></p>
+<ul>
+<li>Predicate building constructs efficient database queries with combined WHERE clauses</li>
+<li>Lazy loading not applicable (Concentrator entity has no navigation properties)</li>
+</ul>
+<p><strong>Caching Opportunities (not currently implemented):</strong></p>
+<ul>
+<li>Router configuration could be cached per region to reduce calls to LoRaWAN management service</li>
+<li>Frequency plan list could be cached as it changes infrequently</li>
+</ul>
+<h3 id="limitations-and-constraints">Limitations and Constraints<a class="headerlink" href="#limitations-and-constraints" title="Permanent link">¶</a></h3>
+<p><strong>Single Cloud Platform:</strong></p>
+<ul>
+<li>Only supports Azure IoT Hub; no support for AWS IoT Core or other platforms for LoRaWAN concentrators</li>
+</ul>
+<p><strong>No Bulk Operations:</strong></p>
+<ul>
+<li>No import/export functionality for concentrators (unlike standard devices)</li>
+<li>Each concentrator must be created/updated/deleted individually</li>
+</ul>
+<p><strong>Passive Connection Monitoring:</strong></p>
+<ul>
+<li>Connection status (IsConnected) is passively reported by device, not actively monitored with health checks</li>
+<li>No real-time connection alerts or monitoring dashboard</li>
+</ul>
+<p><strong>Limited Telemetry:</strong></p>
+<ul>
+<li>Feature focuses on configuration management only</li>
+<li>No display of concentrator telemetry, traffic statistics, or LoRaWAN packet metrics</li>
+</ul>
+<p><strong>No Certificate Management:</strong></p>
+<ul>
+<li>System accepts certificate thumbprint but doesn't provide certificate upload, renewal, or revocation workflows</li>
+<li>Organizations must manage certificates externally</li>
+</ul>
+<h3 id="future-enhancement-opportunities">Future Enhancement Opportunities<a class="headerlink" href="#future-enhancement-opportunities" title="Permanent link">¶</a></h3>
+<p><strong>Real-Time Updates:</strong></p>
+<ul>
+<li>Implement SignalR for real-time connection status updates without page refresh</li>
+<li>Push notifications when concentrators connect/disconnect</li>
+</ul>
+<p><strong>Telemetry Dashboard:</strong></p>
+<ul>
+<li>Display concentrator health metrics (CPU, memory, uptime)</li>
+<li>Show LoRaWAN packet statistics (packets received, error rate, SNR/RSSI distribution)</li>
+</ul>
+<p><strong>Bulk Operations:</strong></p>
+<ul>
+<li>Enable/disable multiple concentrators simultaneously</li>
+<li>Bulk certificate rotation for multiple concentrators</li>
+</ul>
+<p><strong>Advanced Management:</strong></p>
+<ul>
+<li>Firmware update management for remote concentrator updates</li>
+<li>Advanced router configuration editing for expert users</li>
+<li>Concentrator group management for logical organization</li>
+</ul>
+<p><strong>Certificate Lifecycle:</strong></p>
+<ul>
+<li>Certificate upload and storage</li>
+<li>Automatic renewal reminders</li>
+<li>Certificate revocation workflow</li>
+</ul>
+<p><strong>Geographic Visualization:</strong></p>
+<ul>
+<li>Map view showing concentrator locations and coverage areas</li>
+<li>Network topology visualization</li>
+</ul>
+<p><strong>Analytics:</strong></p>
+<ul>
+<li>Historical connection uptime reports</li>
+<li>Gateway performance comparison</li>
+<li>Network coverage gap analysis</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>
