@@ -82,7 +82,9 @@
                                                     {
                                                         var isChecked = SelectedPermissions.Contains(permission);
                                                         <MudItem xs="12" sm="6" md="4">
-                                                            <MudCheckBox T="bool" Checked="@isChecked" CheckedChanged="@(val => TogglePermission(permission, val))" Label="@permission" />
+                                                            <MudCheckBox T="bool"
+                                                                         Checked="@isChecked" CheckedChanged="@(val => TogglePermission(permission, val))"
+                                                                         Label="@permission" />
                                                         </MudItem>
                                                     }
                                                 }

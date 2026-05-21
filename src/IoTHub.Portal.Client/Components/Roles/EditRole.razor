@@ -4,9 +4,9 @@
 @inject AuthenticationStateProvider AuthStateProvider
 
 <MudForm Model="@Role" @ref="form">
-    <MudTextField T="string" Label="Nom" @bind-Value="Role.Name" Required="true" />
-    <MudTextField T="string" Label="Description" @bind-Value="Role.Description" />
-    <MudColorPicker Label="Couleur" @bind-Text="Role.Color" />
+    <MudTextField T="string" Label="Nom" @bind-Value="Role.Name" Required="true" Disabled="!CanWrite" />
+    <MudTextField T="string" Label="Description" @bind-Value="Role.Description" Disabled="!CanWrite" />
+    <MudColorPicker Label="Couleur" @bind-Text="Role.Color" Disabled="!CanWrite" />
 
     <MudPaper Class="pa-4 mt-4" Elevation="1">
         <MudStack Row Spacing="2" Class="mb-3" AlignItems="AlignItems.Center">
@@ -24,7 +24,7 @@
                 }
             </MudSelect>
             <MudButton Variant="Variant.Outlined" Disabled="string.IsNullOrEmpty(resourceFilter) && string.IsNullOrEmpty(actionFilter)" OnClick="ClearFilters">Clear</MudButton>
-            <MudButton Variant="Variant.Filled" OnClick="SelectAll">Select All</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="SelectAll" Disabled="!CanWrite">Select All</MudButton>
             <MudSpacer />
             <MudChip Color="Color.Primary" Variant="Variant.Outlined">@FilteredPermissions.Count() / @AllPermissions.Length</MudChip>
         </MudStack>
@@ -45,7 +45,10 @@
                     {
                         var isChecked = SelectedPermissions.Contains(permission);
                         <MudItem xs="12" sm="6" md="4">
-                            <MudCheckBox T="bool" Checked="@isChecked" CheckedChanged="@(val => TogglePermission(permission, val))" Label="@permission" />
+                            <MudCheckBox T="bool"
+                                         Checked="@isChecked" CheckedChanged="@(val => TogglePermission(permission, val))"
+                                         Label="@permission"
+                                         Disabled="!CanWrite" />
                         </MudItem>
                     }
                 }

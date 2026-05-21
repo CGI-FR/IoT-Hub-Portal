@@ -61,10 +61,22 @@
                                         <ChildContent>
                                             <MudGrid>
                                                 <MudItem xs="12" md="6">
-                                                    <MudTextField id="@nameof(Model.Name)" @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" Disabled="@(Model.IsBuiltin || Portal.CloudProvider.Equals("AWS"))" />
+                                                    <MudTextField id="@nameof(Model.Name)"
+                                                                  @bind-Value="@Model.Name" For="@(() => Model.Name)"
+                                                                  Label="Name"
+                                                                  Margin="Margin.Dense"
+                                                                  Variant="Variant.Outlined"
+                                                                  Required="true"
+                                                                  Disabled="@(Model.IsBuiltin || Portal.CloudProvider.Equals("AWS"))" />
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
-                                                    <MudTextField id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" Disabled="@(Model.IsBuiltin || Portal.CloudProvider.Equals("AWS"))" />
+                                                    <MudTextField id="@nameof(Model.Description)"
+                                                                  @bind-Value="@Model.Description"
+                                                                  For="@(() => Model.Description)"
+                                                                  Label="Description"
+                                                                  Variant="Variant.Outlined"
+                                                                  Lines="5"
+                                                                  Disabled="@(Model.IsBuiltin || Portal.CloudProvider.Equals("AWS"))" />
                                                 </MudItem>
                                             </MudGrid>
                                         </ChildContent>
