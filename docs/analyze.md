@@ -8,6 +8,7 @@
 ## Architecture Overview
 
 ### Technology Stack
+
 - **Backend Framework**: ASP.NET Core (C#)
 - **Frontend Framework**: Blazor WebAssembly
 - **Language**: C#
@@ -18,7 +19,9 @@
 - **Authorization**: Policy-based authorization with custom permissions
 
 ### Architecture Pattern
+
 **Clean Architecture / Layered Architecture:**
+
 - **IoTHub.Portal.Server**: API Controllers and Web Host
 - **IoTHub.Portal.Client**: Blazor WebAssembly UI
 - **IoTHub.Portal.Application**: Business Logic Services and Managers
@@ -28,16 +31,19 @@
 - **IoTHub.Portal.Crosscutting**: Cross-cutting concerns
 
 ### Authorization Mechanism
+
 - **Policy-based Authorization**: Custom permission-based policies (e.g., `device:read`, `device:write`, `role:read`)
 - **RBAC System**: Role-Based Access Control with Users, Roles, and Access Control entities
 - **Claims-based Authentication**: Uses OIDC/OAuth with email claims
 
 ### Real-time Features
+
 - **Background Jobs**: Scheduled synchronization jobs using Quartz.NET or similar
 - **Metrics Collection**: Periodic device and concentrator metrics collection
 - **Device Synchronization**: Real-time sync with Azure IoT Hub / AWS IoT Core
 
 ### External Integrations
+
 - **Azure IoT Hub**: Device connectivity and management
 - **AWS IoT Core**: Alternative cloud provider support
 - **LoRaWAN Integration**: Support for LoRa devices and concentrators
@@ -48,7 +54,7 @@
 ## Features to Analyze
 
 | # | Feature | Category | Details |
-|---|---------|----------|---------|
+| --- | --------- | ---------- | --------- |
 | 001 | Standard Device Management | Device Management | [specs/001-standard-device-management/analyze.md](specs/001-standard-device-management/analyze.md) |
 | 002 | Device Model Management | Device Management | [specs/002-device-model-management/analyze.md](specs/002-device-model-management/analyze.md) |
 | 003 | Device Properties Management | Device Management | [specs/003-device-properties-management/analyze.md](specs/003-device-properties-management/analyze.md) |
@@ -112,7 +118,7 @@
 ## Summary by Category
 
 | Category | Feature Count | Primary Files |
-|----------|---------------|---------------|
+| ---------- | --------------- | --------------- |
 | Device Management | 5 | DevicesController.cs, DeviceModelsController.cs, DeviceConfigurationsController.cs, DeviceTagSettingsController.cs |
 | Edge Devices | 2 | EdgeDevicesController.cs, EdgeModelsController.cs |
 | LoRaWAN | 5 | LoRaWANDevicesController.cs, LoRaWANDeviceModelsController.cs, LoRaWANConcentratorsController.cs, LoRaWANCommandsController.cs |

@@ -23,6 +23,7 @@ Add the `GlobalAdminEmails` configuration setting to specify which users should 
 **Format**: Comma-separated list of email addresses
 
 **Example**:
+
 ```json
 {
   "GlobalAdminEmails": "admin@company.com,admin2@company.com,superadmin@company.com"
@@ -35,7 +36,7 @@ Add the `GlobalAdminEmails` configuration setting to specify which users should 
 
 For Azure deployments, add this as an Application Setting:
 
-```
+```text
 Name: GlobalAdminEmails
 Value: admin@company.com,admin2@company.com
 ```
@@ -109,7 +110,8 @@ If you see an "Unauthorized Access" error after successfully logging in, it mean
 2. Your email is not in the `GlobalAdminEmails` configuration
 3. You have not been assigned any roles by an existing administrator
 
-**Solution**: 
+**Solution**:
+
 - Add your email address to the `GlobalAdminEmails` configuration
 - Restart the application
 - Log out and log in again
