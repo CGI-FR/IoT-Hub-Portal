@@ -3,6 +3,8 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Settings
 {
+    using Portal.Shared.Security;
+
     [TestFixture]
     public class DeviceTagsPageTests : BlazorUnitTest
     {
@@ -18,6 +20,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Settings
 
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[]
+                    { PortalPermissions.DeviceTagRead, PortalPermissions.DeviceTagWrite });
         }
 
         [Test]
