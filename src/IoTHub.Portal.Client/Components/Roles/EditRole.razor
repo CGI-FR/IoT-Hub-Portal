@@ -54,7 +54,14 @@
         }
         <MudDivider Class="my-4" />
         <MudStack Row Justify="Justify.FlexEnd">
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Save" Disabled="isProcessing || isLoadingPermissions" id="saveRoleButton">@ButtonText</MudButton>
+            @if (CanWrite)
+            {
+                <MudButton Color="Color.Primary" Variant="Variant.Filled"
+                           OnClick="Save"
+                           Disabled="isProcessing || isLoadingPermissions" id="saveRoleButton">
+                    @ButtonText
+                </MudButton>
+            }
         </MudStack>
     </MudPaper>
 </MudForm>
@@ -62,6 +69,7 @@
 @code {
     [Parameter] public RoleDetailsModel Role { get; set; } = default!;
     [Parameter] public EventCallback OnSaved { get; set; }
+    [Parameter] public bool CanWrite { get; set; }
     [Parameter] public bool IsEdit { get; set; }
 
     private MudForm form = default!;

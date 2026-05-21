@@ -158,7 +158,8 @@
                     {
                         <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red" : "")>
                             <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModelDto)"
-                                                 Commands="Commands" />
+                                                 Commands="Commands"
+                                                 CanWrite="@canWrite" />
                         </MudTabPanel>
                     }
                 </MudTabs>

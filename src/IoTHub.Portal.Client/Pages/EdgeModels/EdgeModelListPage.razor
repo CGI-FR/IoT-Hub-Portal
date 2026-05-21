@@ -13,7 +13,10 @@
             <EdgeModelSearch OnSearch=@Search />
         </MudItem>
         <MudItem xs="12">
-            <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
+            <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList"
+                      Loading="IsLoading"
+                      Dense=true OnRowClick="@((e) => GoToDetails(e.Item))"
+                      Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 30%;" />
@@ -25,14 +28,22 @@
                     <MudText Typo="Typo.h6">Edge Models</MudText>
                     <MudSpacer />
                     <MudTooltip Text="Refresh list">
-                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@LoadEdgeModels" Class="ma-2"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                                       Size="Size.Medium" id="tableRefreshButton"
+                                       OnClick="@LoadEdgeModels"
+                                       Class="ma-2" />
                     </MudTooltip>
-                    <MudTooltip Text="Add device model">
-                        <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@RedirectToCreatePage" Size="Size.Medium" id="addEdgeModelButton" />
-                    </MudTooltip>
+                    @if (canWrite)
+                    {
+                        <MudTooltip Text="Add device model">
+                            <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add"
+                                    OnClick="@RedirectToCreatePage"
+                                    Size="Size.Medium" id="addEdgeModelButton" />
+                        </MudTooltip>
+                    }
                 </ToolBarContent>
                 <HeaderContent>
-                    <MudTh></MudTh>
+                    <MudTh />
                     <MudTh><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItem, object>(x => x.Name)" id="NameLabel">Name</MudTableSortLabel></MudTh>
                     <MudTh Style="text-align: center"><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItem, object>(x => x.Description)" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
                     <MudTh Style="text-align: center">Details</MudTh>

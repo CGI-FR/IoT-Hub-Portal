@@ -159,11 +159,20 @@
                                         <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Variant="Variant.Outlined" Disabled="CommandContext.IsBuiltin"></MudNumericField>
                                     </MudTd>
                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                        <MudIconButton id="removeButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" Disabled="@CommandContext.IsBuiltin" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>
+                                        <MudIconButton id="removeButton"
+                                                       Color="Color.Default" Icon="@Icons.Material.Filled.Delete"
+                                                       Size="Size.Medium"
+                                                       Disabled="@(CommandContext.IsBuiltin || !CanWrite)"
+                                                       OnClick="@(() => DeleteCommand(CommandContext))" />
                                     </MudTd>
                                 </RowTemplate>
                                 <FooterContent>
-                                    <MudButton id="addButton" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add Command</MudButton>
+                                    @if (CanWrite)
+                                    {
+                                        <MudButton id="addButton" StartIcon="@Icons.Material.Filled.Add"
+                                                   Size="Size.Medium" Color="Color.Success"
+                                                   OnClick="AddCommand">Add Command</MudButton>
+                                    }
                                 </FooterContent>
                             </MudTable>
                         </MudItem>
@@ -181,6 +190,9 @@
 
     [Parameter]
     public IList<DeviceModelCommandDto> Commands { get; set; } = default!;
+
+    [Parameter]
+    public bool CanWrite { get; set; }
 
     private DeviceModelCommandDto DeviceModelCommandDto { get; set; } = new DeviceModelCommandDto();
 

@@ -23,14 +23,17 @@
             <MudText Typo="Typo.h6">Roles</MudText>
             <MudSpacer />
             <MudTooltip Text="Refresh list">
-                <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="HandleRefresh" Class="ma-2"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="HandleRefresh" Class="ma-2" />
             </MudTooltip>
-            <MudTooltip Text="Add a group">
-                <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="RedirectToCreatePage" Size="Size.Medium" id="addAGrp" />
-            </MudTooltip>
+            @if (canWrite)
+            {
+                <MudTooltip Text="Add a group">
+                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="RedirectToCreatePage" Size="Size.Medium" id="addAGrp" />
+                </MudTooltip>
+            }
         </ToolBarContent>
         <HeaderContent>
-            <MudTh></MudTh>
+            <MudTh />
             <MudTh><MudTableSortLabel SortBy="new Func<RoleDetailsModel, object>(x => x.Name)" id="NameLabel">Name</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<RoleDetailsModel, object>(x => x.Description)" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
             <MudTh Style="text-align: center">Details</MudTh>
