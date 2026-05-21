@@ -3,7 +3,6 @@
 
 namespace IoTHub.Portal.Server
 {
-    using Server.Security;
     public class Startup
     {
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)

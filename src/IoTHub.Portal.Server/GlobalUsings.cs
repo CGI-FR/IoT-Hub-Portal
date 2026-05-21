@@ -52,6 +52,7 @@ global using IoTHub.Portal.Server.Extensions;
 global using IoTHub.Portal.Server.Filters;
 global using IoTHub.Portal.Server.Identity;
 global using IoTHub.Portal.Server.Managers;
+global using IoTHub.Portal.Server.Security;
 global using IoTHub.Portal.Server.Services;
 global using IoTHub.Portal.Shared.Constants;
 global using IoTHub.Portal.Shared.Models;

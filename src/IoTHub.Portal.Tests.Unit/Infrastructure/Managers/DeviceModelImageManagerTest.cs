@@ -179,7 +179,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 .Returns(this.mockBlobContainerClient.Object);
 
             _ = this.mockBlobContainerClient
-                .Setup(x => x.GetBlobsAsync(It.IsAny<BlobTraits>(), It.IsAny<BlobStates>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetBlobsAsync(It.IsAny<GetBlobsOptions>(), It.IsAny<CancellationToken>()))
                 .Returns(blobsPageable);
 
             _ = this.mockBlobContainerClient

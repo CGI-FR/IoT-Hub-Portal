@@ -1,31 +1,20 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-FROM docker.artifactory.michelin.com/dotnet/aspnet:8.0 AS base
+FROM docker.artifactory.michelin.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM docker.artifactory.michelin.com/dotnet/sdk:8.0 AS build
+FROM docker.artifactory.michelin.com/dotnet/sdk:10.0 AS build
 ARG BUILD_VERSION=1.2.3
 ARG GITHUB_RUN_NUMBER=4
 WORKDIR /src
 
 COPY nuget.config .
-COPY ["IoTHub.Portal.Application/IoTHub.Portal.Application.csproj", "IoTHub.Portal.Application/"]
-COPY ["IoTHub.Portal.Client/IoTHub.Portal.Client.csproj", "IoTHub.Portal.Client/"]
-COPY ["IoTHub.Portal.Crosscutting/IoTHub.Portal.Crosscutting.csproj", "IoTHub.Portal.Crosscutting/"]
-COPY ["IoTHub.Portal.Domain/IoTHub.Portal.Domain.csproj", "IoTHub.Portal.Domain/"]
-COPY ["IoTHub.Portal.Infrastructure/IoTHub.Portal.Infrastructure.csproj", "IoTHub.Portal.Infrastructure/"]
-COPY ["IoTHub.Portal.MySql/IoTHub.Portal.MySql.csproj", "IoTHub.Portal.MySql/"]
-COPY ["IoTHub.Portal.Postgres/IoTHub.Portal.Postgres.csproj", "IoTHub.Portal.Postgres/"]
 COPY ["IoTHub.Portal.Server/IoTHub.Portal.Server.csproj", "IoTHub.Portal.Server/"]
 COPY ["IoTHub.Portal.Shared/IoTHub.Portal.Shared.csproj", "IoTHub.Portal.Shared/"]
+COPY ["IoTHub.Portal.Client/IoTHub.Portal.Client.csproj", "IoTHub.Portal.Client/"]
 
-RUN dotnet restore "IoTHub.Portal.Application/IoTHub.Portal.Application.csproj"
-RUN dotnet restore "IoTHub.Portal.Client/IoTHub.Portal.Client.csproj"
-RUN dotnet restore "IoTHub.Portal.Crosscutting/IoTHub.Portal.Crosscutting.csproj"
-RUN dotnet restore "IoTHub.Portal.Domain/IoTHub.Portal.Domain.csproj"
 RUN dotnet restore "IoTHub.Portal.Server/IoTHub.Portal.Server.csproj"
-RUN dotnet restore "IoTHub.Portal.Shared/IoTHub.Portal.Shared.csproj"
 
 COPY . .
 WORKDIR "/src/IoTHub.Portal.Server"
