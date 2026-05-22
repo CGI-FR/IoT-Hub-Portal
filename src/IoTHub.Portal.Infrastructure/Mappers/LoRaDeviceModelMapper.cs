@@ -14,9 +14,9 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(LoRaDeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
                 SupportLoRaFeatures = bool.Parse(entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)]?.ToString() ?? "false"),
-                Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
-                Name = entity[nameof(LoRaDeviceModelDto.Name)]?.ToString(),
-                Description = entity[nameof(LoRaDeviceModelDto.Description)]?.ToString(),
+                Image = entity[nameof(DeviceModelDto.Image)]?.ToString()?.Trim(),
+                Name = entity[nameof(LoRaDeviceModelDto.Name)]?.ToString()?.Trim(),
+                Description = entity[nameof(LoRaDeviceModelDto.Description)]?.ToString()?.Trim(),
             };
         }
 
@@ -29,9 +29,9 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(LoRaDeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
                 Image = entity[nameof(DeviceModelDto.Image)]?.ToString(),
-                Name = entity[nameof(LoRaDeviceModelDto.Name)]?.ToString(),
-                Description = entity[nameof(LoRaDeviceModelDto.Description)]?.ToString(),
-                SensorDecoder = entity[nameof(LoRaDeviceModelDto.SensorDecoder)]?.ToString(),
+                Name = entity[nameof(LoRaDeviceModelDto.Name)]?.ToString()?.Trim(),
+                Description = entity[nameof(LoRaDeviceModelDto.Description)]?.ToString()?.Trim(),
+                SensorDecoder = entity[nameof(LoRaDeviceModelDto.SensorDecoder)]?.ToString()?.Trim(),
                 UseOTAA = bool.Parse(entity[nameof(LoRaDeviceModelDto.UseOTAA)]?.ToString() ?? "true"),
                 ClassType = Enum.TryParse<ClassType>(entity[nameof(LoRaDeviceModelDto.ClassType)]?.ToString(), out var classType) ? classType : ClassType.A,
                 PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceModelDto.PreferredWindow)]?.ToString(), out var intResult) ? intResult : 1,
