@@ -110,7 +110,7 @@
     // Specify which permissions are required for this page
     protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.RoleWrite };
 
-    private readonly RoleDetailsModel role = new();
+    private readonly RoleDetailsModel role = new() { Color = ColorHelper.GetRandomColor() };
 
     private HashSet<string> SelectedPermissions { get; set; } = new();
     private string[] AllPermissions = Array.Empty<string>();
