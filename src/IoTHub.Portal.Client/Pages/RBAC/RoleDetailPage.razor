@@ -9,7 +9,7 @@
 
 <AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Détail du rôle</MudText>
-    <EditRole Role="@Role" OnSaved="OnSaved" IsEdit="@canWrite" />
+    <EditRole Role="@Role" OnSaved="OnSaved" IsEdit="@true" CanWrite="@canWrite" />
 </AuthorizedContent>
 
 @code {

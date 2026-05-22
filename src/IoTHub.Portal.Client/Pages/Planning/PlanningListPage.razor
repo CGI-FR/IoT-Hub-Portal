@@ -27,9 +27,15 @@
                         <MudTooltip Text="Refresh list">
                             <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@GetPlannings" Class="ma-2"></MudIconButton>
                         </MudTooltip>
-                        <MudTooltip Text="Add new Planning">
-                            <MudFab id="planningListAddLayer" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@AddPlanning" Size="Size.Medium" />
-                        </MudTooltip>
+                        @if (canWrite)
+                        {
+                            <MudTooltip Text="Add new Planning">
+                                <MudFab id="planningListAddLayer"
+                                        Color="Color.Secondary"
+                                        StartIcon="@Icons.Material.Filled.Add"
+                                        OnClick="@AddPlanning" Size="Size.Medium"/>
+                            </MudTooltip>
+                        }
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh><MudTableSortLabel SortBy="new Func<PlanningDto, object>(x => x.Name)" id="NameLabel">Name</MudTableSortLabel></MudTh>

@@ -34,7 +34,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.DevicesModels.LoRaWAN
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
-                ComponentParameter.CreateParameter("Commands", commands)
+                ComponentParameter.CreateParameter("Commands", commands),
+                ComponentParameter.CreateParameter("CanWrite", true)
             );
 
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(0));
@@ -52,7 +53,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.DevicesModels.LoRaWAN
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
-                ComponentParameter.CreateParameter("Commands", commands)
+                ComponentParameter.CreateParameter("Commands", commands),
+                ComponentParameter.CreateParameter("CanWrite", true)
             );
 
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(0));
