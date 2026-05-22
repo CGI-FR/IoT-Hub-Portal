@@ -30,13 +30,17 @@
                                                     </MudAvatar>
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
-                                                    <MudTextField T="string" Label="Name" @bind-Value="role.Name" Required="true" />
+                                                    <MudTextField T="string" @bind-Value="role.Name"
+                                                                  Label="Name"
+                                                                  Required />
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
                                                     <MudTextField T="string" Label="Description" @bind-Value="role.Description" />
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
-                                                    <MudColorPicker Label="Color" @bind-Text="role.Color" Style="@($"color: {role.Color};")" Placeholder="Select Color" />
+                                                    <MudColorPicker Label="Color" @bind-Text="role.Color" Style="@($"color: {role.Color};")"
+                                                                    Placeholder="Select Color"
+                                                                    Required />
                                                 </MudItem>
                                             </MudGrid>
                                         </ChildContent>
