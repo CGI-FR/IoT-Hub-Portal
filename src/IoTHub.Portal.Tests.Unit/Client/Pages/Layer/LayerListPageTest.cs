@@ -47,7 +47,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
                 .ReturnsAsync(new PaginationResult<DeviceListItem>());
 
             // Act
-            var cut = RenderComponent<LayerListPage>();
+            var cut = RenderComponent<LayersListPage>();
 
             cut.WaitForAssertion(() => cut.FindAll("#editLayerElement").Count.Should().Be(1));
             var editLayerMouseOver = cut.WaitForElement("#editLayerElement");
@@ -83,7 +83,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
                 .ReturnsAsync(new PaginationResult<DeviceListItem>());
 
             // Act
-            var cut = RenderComponent<LayerListPage>();
+            var cut = RenderComponent<LayersListPage>();
 
             cut.WaitForAssertion(() => cut.FindAll("#editLayerElement").Count.Should().Be(3));
 
@@ -124,7 +124,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
                 .ReturnsAsync(new PaginationResult<DeviceListItem>());
 
             // Act
-            var cut = RenderComponent<LayerListPage>();
+            var cut = RenderComponent<LayersListPage>();
 
             cut.WaitForAssertion(() => cut.FindAll("#editLayerElement").Count.Should().Be(3));
 
