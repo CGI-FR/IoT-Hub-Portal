@@ -1,0 +1,233 @@
+﻿@page "/layers"
+@using IoTHub.Portal.Client.Dialogs.Layers
+@inherits AuthorizedComponentBase
+
+@attribute [Authorize]
+
+@inject ILayerClientService LayerClientService
+@inject IDeviceClientService DeviceClientService
+@inject IPlanningClientService PlanningClientService
+@inject IDialogService DialogService
+
+<AuthorizedContent IsLoading="@IsLoading" IsAuthorized="@IsAuthorized">
+    <MudPaper>
+        <ChildContent>
+            <MudGrid Class="mt-4">
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h6" Style="padding-left: 16px;">Layers</MudText>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTreeView Items="@Layers" Hover>
+                        <ItemTemplate Context="item">
+                            <MudTreeViewItem Items="@item.Children" Expanded OnClick="() => OpenDevices(item.LayerData)" Style="cursor: pointer;">
+                                <BodyContent>
+                                    <MudGrid @onmouseover="() => PrintDetails = item.LayerData.Id" Spacing="0" Justify="Justify.SpaceBetween" Style="min-height: 48px">
+                                        <ChildContent>
+                                            <MudItem xs="10" Class="align-content-center">
+                                                <MudText Class="pr-2" Inline>@item.LayerData.Name</MudText>
+                                                @{
+                                                    var devicesCount = Devices.Count(x => x.LayerId == item.LayerData.Id);
+                                                    if (devicesCount > 0)
+                                                    {
+
+                                                        <MudText Typo="Typo.caption"
+                                                                 Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")"
+                                                                 Inline>
+                                                            @*<MudIcon Icon="@Icons.Material.Filled.Sensors"
+                                                                     Size="Size.Small"
+                                                                     Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" />*@
+                                                            @devicesCount device(s)
+                                                        </MudText>
+                                                    }
+                                                }
+                                                @{
+                                                    if (!string.IsNullOrEmpty(item.LayerData.Planning) && item.LayerData.Planning != "None")
+                                                    {
+                                                        if (devicesCount > 0)
+                                                        {
+                                                            <MudText Typo="Typo.caption"
+                                                                     Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")"
+                                                                     Inline>
+                                                                &nbsp;|&nbsp;
+                                                            </MudText>
+                                                        }
+
+                                                        <MudText Typo="Typo.caption"
+                                                                 Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")"
+                                                                 Inline>
+                                                            @*<MudIcon Icon="@Icons.Material.Filled.EventNote" />*@
+                                                            Covered by planning « @(Plannings.Single(x => x.Id == item.LayerData.Planning).Name) »
+                                                        </MudText>
+                                                    }
+                                                }
+                                            </MudItem>
+                                            <MudItem xs="2" Style="text-align: right;" Class="align-content-center">
+                                                @if (PrintDetails == item.LayerData.Id)
+                                                {
+                                                    <MudIconButton id="editLayerAddLayer" Icon="@Icons.Material.Filled.PlaylistAdd" OnClick="() => AddLayer(item)" Title="Add a new layer" />
+                                                    <MudIconButton id="editLayerDeleteLayer" Icon="@(item.LayerData.Father != null ? Icons.Material.Filled.Delete : Icons.Material.Outlined.Delete)" OnClick="() => DeleteLayer(item, Layers)" />
+                                                }
+                                            </MudItem>
+                                        </ChildContent>
+                                    </MudGrid>
+                                </BodyContent>
+                            </MudTreeViewItem>
+                        </ItemTemplate>
+                    </MudTreeView>
+                </MudItem>
+            </MudGrid>
+        </ChildContent>
+    </MudPaper>
+</AuthorizedContent>
+
+@code {
+    protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.LayerRead };
+
+    [CascadingParameter]
+    public Error Error { get; set; } = null!;
+
+    public HashSet<LayerHash> Layers { get; set; } = new();
+
+    private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
+    private IEnumerable<PlanningDto> Plannings { get; set; } = new List<PlanningDto>();
+
+    private string? PrintDetails { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        IsLoading = true;
+
+        var listLayers = await LayerClientService.GetLayers();
+        var result = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
+        Plannings = await PlanningClientService.GetPlannings();
+
+        Devices = result.Items;
+
+        if (listLayers.Count == 0)
+        {
+            try
+            {
+                var newLayer = new LayerDto
+                {
+                    Name = "Main Layer",
+                    Father = null,
+                    Planning = "None"
+                };
+                newLayer.Id = await LayerClientService.CreateLayer(newLayer);
+                Layers.Add(new LayerHash(newLayer, 0, false));
+            }
+            catch (ProblemDetailsException exception)
+            {
+                Error.ProcessProblemDetails(exception);
+            }
+        }
+
+        Layers = LayerHelper.GetHashsetLayer(listLayers);
+
+        IsLoading = false;
+    }
+
+    public async Task AddLayer(LayerHash layer)
+    {
+        try
+        {
+            LayerDto newLayer = new LayerDto
+            {
+                Name = "New Layer",
+                Father = layer.LayerData.Id,
+                Planning = layer.LayerData.Planning ?? "None"
+            };
+            newLayer.Id = await LayerClientService.CreateLayer(newLayer);
+
+            layer.Children.Add(new LayerHash(newLayer, layer.Level + 1, false));
+            layer.IsExpanded = true;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error.ProcessProblemDetails(exception);
+        }
+    }
+
+    public async Task DeleteLayer(LayerHash delLayer, HashSet<LayerHash> fatherLayers)
+    {
+        foreach (var layer in fatherLayers)
+        {
+            if (layer.Children.Contains(delLayer))
+            {
+                await RemoveChild(delLayer);
+                layer.Children.Remove(delLayer);
+                StateHasChanged();
+            }
+            else
+            {
+                await DeleteLayer(delLayer, layer.Children);
+            }
+        }
+    }
+
+    private async Task RemoveChild(LayerHash delLayer)
+    {
+        if (delLayer.Children.Count != 0)
+            foreach (LayerHash layer in delLayer.Children) await RemoveChild(layer);
+        try
+        {
+            await DeleteLayerOnDevice(delLayer.LayerData.Id);
+            await LayerClientService.DeleteLayer(delLayer.LayerData.Id);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error.ProcessProblemDetails(exception);
+        }
+    }
+
+    private async Task DeleteLayerOnDevice(string delLayerId)
+    {
+        foreach (var device in Devices.Where(device => device.LayerId == delLayerId))
+        {
+            var updatedDevice = FindDevice(device.DeviceID);
+            updatedDevice.LayerId = null;
+            await DeviceClientService.UpdateDevice(updatedDevice);
+        }
+    }
+
+    private DeviceDetails FindDevice(string deviceId)
+    {
+        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceId);
+
+        var deviceDetails = new DeviceDetails();
+
+        if (device == null) return deviceDetails;
+
+        deviceDetails.DeviceID = device.DeviceID;
+        deviceDetails.DeviceName = device.DeviceName;
+        deviceDetails.ModelId = device.DeviceModelId;
+        deviceDetails.Image = device.Image;
+        deviceDetails.IsEnabled = device.IsEnabled;
+        deviceDetails.LastActivityTime = device.LastActivityTime;
+        deviceDetails.Labels = device.Labels.ToList();
+        deviceDetails.LayerId = device.LayerId;
+
+        return deviceDetails;
+    }
+
+    private async Task OpenDevices(LayerDto layer)
+    {
+        var dialogParameters = new DialogParameters { { "InitLayer", layer }, { "LayerList", Layers } };
+
+        var dialogOptions = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true, CloseButton = true };
+
+        var dialog = await DialogService.ShowAsync<EditLayerDialog>("Edit layer " + layer.Name, dialogParameters, dialogOptions);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false, Data: string updatedName })
+        {
+            layer.Name = updatedName;
+        }
+
+        var newDeviceList = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
+        Devices = newDeviceList.Items;
+        StateHasChanged();
+    }
+}
