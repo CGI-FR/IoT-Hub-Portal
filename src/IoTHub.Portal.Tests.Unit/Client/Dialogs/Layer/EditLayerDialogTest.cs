@@ -132,7 +132,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
         public async Task EditLayerDialog_Save_UpdatesDevices()
         {
             // Arrange
-            var searchedDevices = Fixture.CreateMany<TableData<DeviceListItem>>(3).ToList();
             var expectedLayerDto = Fixture.Create<LayerDto>();
 
             var mockDeviceModel = new DeviceModelDto
