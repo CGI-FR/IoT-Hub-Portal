@@ -335,7 +335,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 {"LayerList", new HashSet<LayerHash>()}
             };
 
-            var dialog = await cut.InvokeAsync(() => service?.Show<EditLayerDialog>(string.Empty, parameters));
+            await cut.InvokeAsync(() => service?.Show<EditLayerDialog>(string.Empty, parameters));
 
             // Wait for initial render and select device using MudDataGrid SelectColumn checkbox
             cut.WaitForState(() => cut.FindAll("table tbody tr").Count == 1);
