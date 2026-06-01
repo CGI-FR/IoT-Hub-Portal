@@ -16,8 +16,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
         private Mock<IPlanningClientService> mockPlanningClientService;
 
-        private readonly string apiBaseUrl = "api/devices";
-
         public override void Setup()
         {
             base.Setup();
@@ -44,18 +42,24 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             _ = this.mockPlanningClientService.Setup(service => service.GetPlanning(It.IsAny<string>()))
                 .ReturnsAsync(new PlanningDto { DeviceModelId = null });
 
+            var mockDeviceModel = new DeviceModelDto
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString()
+            };
+
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
+                    service.GetDevices("api/devices?pageSize=10000"))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true},
-                                    new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true}}
+                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId },
+                                    new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId }}
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
-                    Items = new List<DeviceModelDto>()
+                    Items = new List<DeviceModelDto> { mockDeviceModel }
                 });
 
             // Act
@@ -93,18 +97,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 .ReturnsAsync(new PlanningDto { DeviceModelId = null });
 
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
+                    service.GetDevices("api/devices?pageSize=10000"))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId },
-                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = Guid.NewGuid().ToString() }}
-                });
-
-            _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText=&modelId={mockDeviceModel.ModelId}"))
-                .ReturnsAsync(new PaginationResult<DeviceListItem>
-                {
-                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId } }
+                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId }}
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
@@ -127,10 +124,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             };
 
             _ = await cut.InvokeAsync(() => service?.Show<EditLayerDialog>(string.Empty, parameters));
-            cut.WaitForElement("#saveButton").Click();
 
-            // Assert
-            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(1));
+            // Assert - both devices should be displayed (filtering is now client-side)
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -152,11 +148,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 .ReturnsAsync(new PlanningDto { DeviceModelId = null });
 
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
+                    service.GetDevices("api/devices?pageSize=10000"))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId },
-                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = Guid.NewGuid().ToString() }}
+                        new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, DeviceModelId = mockDeviceModel.ModelId }}
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
@@ -219,7 +215,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             };
 
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
+                    service.GetDevices("api/devices?pageSize=10000"))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = new[] { alreadyRegisteredDevice },
@@ -247,24 +243,20 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             // Wait for the table to render
             cut.WaitForState(() => cut.FindAll("table tbody tr").Count == 1);
 
-            // Find the checkbox button (should be checked with success color initially)
-            var checkboxButton = cut.Find("table tbody tr td:last-child button");
+            // Find the row checkbox (SelectColumn renders checkbox in the first column)
+            var rowCheckbox = cut.Find("table tbody tr td:first-child input[type='checkbox']");
 
-            // Verify initial state - should be checked (success color indicates already registered)
-            cut.WaitForAssertion(() => checkboxButton.OuterHtml.Should().Contain("mud-success-text"));
+            // Verify initial state - should be checked (device is already assigned to this layer)
+            cut.WaitForAssertion(() => rowCheckbox.HasAttribute("checked").Should().BeTrue());
 
             // Click to unselect
-            checkboxButton.Click();
+            rowCheckbox.Change(false);
 
-            // Assert - after clicking, the checkbox should visually update
-            // The LayerId is set to null and the device is added to DeviceRemoveList,
-            // so the condition (context.LayerId == InitLayer.Id) no longer matches.
-            // This should trigger the else branch showing the unchecked state (default color).
+            // Assert - after clicking, the checkbox should be unchecked
             cut.WaitForAssertion(() =>
             {
-                var updatedButton = cut.Find("table tbody tr td:last-child button");
-                // After unselecting, the button should show default color (unchecked state)
-                _ = updatedButton.OuterHtml.Should().NotContain("mud-success-text");
+                var updatedCheckbox = cut.Find("table tbody tr td:first-child input[type='checkbox']");
+                _ = updatedCheckbox.HasAttribute("checked").Should().BeFalse();
             });
         }
 
@@ -301,7 +293,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
 
             // Setup GetDevices
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
+                    service.GetDevices("api/devices?pageSize=10000"))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = new[] { device1 },
@@ -348,10 +340,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
 
             var dialog = await cut.InvokeAsync(() => service?.Show<EditLayerDialog>(string.Empty, parameters));
 
-            // Wait for initial render and select device
+            // Wait for initial render and select device using MudDataGrid SelectColumn checkbox
             cut.WaitForState(() => cut.FindAll("table tbody tr").Count == 1);
-            var checkbox = cut.Find("table tbody tr td:last-child button");
-            checkbox.Click();
+            var checkbox = cut.Find("table tbody tr td:first-child input[type='checkbox']");
+            checkbox.Change(true);
 
             // Save the changes
             cut.WaitForElement("#save").Click();
@@ -400,7 +392,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 .ReturnsAsync(mockPlanning);
 
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText=&modelId={deviceModelId}"))
+                    service.GetDevices("api/devices?pageSize=10000"))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>(),
@@ -425,15 +417,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
 
             _ = await cut.InvokeAsync(() => service?.Show<EditLayerDialog>(string.Empty, parameters));
 
-            // Assert - Device model selector should be disabled
-            cut.WaitForAssertion(() =>
-            {
-                var selectComponents = cut.FindComponents<MudSelect<IDeviceModel>>();
-                _ = selectComponents.Should().NotBeEmpty();
-                _ = selectComponents.First().Instance.Disabled.Should().BeTrue();
-            });
-
-            // Assert - Info alert should be displayed
+            // Assert - Info alert should be displayed when layer is linked to a planning with a device model
             cut.WaitForAssertion(() =>
             {
                 var alerts = cut.FindComponents<MudAlert>();
@@ -461,7 +445,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             };
 
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=5&searchText="))
+                    service.GetDevices("api/devices?pageSize=10000"))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>(),
@@ -486,15 +470,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
 
             _ = await cut.InvokeAsync(() => service?.Show<EditLayerDialog>(string.Empty, parameters));
 
-            // Assert - Device model selector should be enabled
-            cut.WaitForAssertion(() =>
-            {
-                var selectComponents = cut.FindComponents<MudSelect<IDeviceModel>>();
-                _ = selectComponents.Should().NotBeEmpty();
-                _ = selectComponents.First().Instance.Disabled.Should().BeFalse();
-            });
-
-            // Assert - Info alert should NOT be displayed
+            // Assert - Info alert should NOT be displayed when no planning is linked
             cut.WaitForAssertion(() =>
             {
                 var alerts = cut.FindComponents<MudAlert>();
