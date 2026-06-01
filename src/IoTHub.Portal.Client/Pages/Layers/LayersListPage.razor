@@ -188,9 +188,10 @@
 
     private async Task DeleteLayerOnDevice(string delLayerId)
     {
-        foreach (var device in Devices.Where(device => device.LayerId == delLayerId))
+        foreach (var updatedDevice in Devices
+            .Where(device => device.LayerId == delLayerId)
+            .Select(device => FindDevice(device.DeviceID)))
         {
-            var updatedDevice = FindDevice(device.DeviceID);
             updatedDevice.LayerId = null;
             await DeviceClientService.UpdateDevice(updatedDevice);
         }
