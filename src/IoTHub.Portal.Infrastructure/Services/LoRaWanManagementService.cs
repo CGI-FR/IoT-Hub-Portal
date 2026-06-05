@@ -3,8 +3,6 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
-    using JsonSerializer = System.Text.Json.JsonSerializer;
-
     public class LoRaWanManagementService : ILoRaWanManagementService
     {
         private readonly HttpClient httpClient;
@@ -18,7 +16,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         {
             var currentAssembly = Assembly.GetExecutingAssembly();
 
-            using var resourceStream = currentAssembly.GetManifestResourceStream($"{currentAssembly.GetName().Name}.RouterConfigFiles.{loRaRegion}.json");
+            var resourceStream = currentAssembly.GetManifestResourceStream($"{currentAssembly.GetName().Name}.RouterConfigFiles.{loRaRegion}.json");
 
             if (resourceStream == null)
                 return null;
@@ -28,8 +26,8 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommandDto commandDto)
         {
-            ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
-            ArgumentNullException.ThrowIfNull(commandDto, nameof(commandDto));
+            ArgumentNullException.ThrowIfNull(deviceId);
+            ArgumentNullException.ThrowIfNull(commandDto);
 
             // Convert the hex frame to a byte array
             var hexFrame = Enumerable.Range(0, commandDto.Frame.Length / 2)

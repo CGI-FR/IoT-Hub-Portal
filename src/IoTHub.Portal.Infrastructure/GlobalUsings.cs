@@ -80,8 +80,6 @@ global using Microsoft.Extensions.Diagnostics.HealthChecks;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
-global using Newtonsoft.Json;
-global using Newtonsoft.Json.Linq;
 global using Polly;
 global using Polly.Extensions.Http;
 global using Prometheus;
