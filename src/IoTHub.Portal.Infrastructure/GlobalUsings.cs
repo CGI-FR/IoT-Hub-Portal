@@ -86,3 +86,5 @@ global using Prometheus;
 global using Quartz;
 global using Quartz.Util;
 global using Metrics = Prometheus.Metrics;
+global using Newtonsoft.Json;
+global using Newtonsoft.Json.Linq;
