@@ -324,5 +324,15 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             // Assert
             _ = productionAWSConfigHandler.SendCommandsToDevicesIntervalInMinutes.Should().Be(10);
         }
+
+        [Test]
+        public void IsStorageAccountConfigured_ShouldAlwaysReturnFalse()
+        {
+            // Arrange
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionAWSConfigHandler.IsStorageAccountConfigured.Should().BeFalse();
+        }
     }
 }

@@ -111,6 +111,51 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Managers
             MockRepository.VerifyAll();
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        public async Task ChangeDeviceModelImageAsyncShouldSetDefaultImageWhenFileIsNullOrEmpty(string file)
+        {
+            // Arrange
+            var deviceModel = Fixture.Create<DeviceModel>();
+
+            _ = this.mockDeviceModelRepository
+                .Setup(x => x.GetByIdAsync(deviceModel.Id, It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
+                .ReturnsAsync(deviceModel);
+
+            _ = this.mockDeviceModelRepository
+                .Setup(x => x.Update(deviceModel));
+
+            _ = this.mockUnitOfWork
+                .Setup(x => x.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModel.Id, file);
+
+            // Assert
+            _ = result.Should().Be(DeviceModelImageOptions.DefaultImage);
+            _ = deviceModel.Image.Should().Be(DeviceModelImageOptions.DefaultImage);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void SetDefaultImageToModelShouldThrowResourceNotFoundExceptionWhenDeviceModelDoesNotExist()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+
+            _ = this.mockDeviceModelRepository
+                .Setup(x => x.GetByIdAsync(deviceModelId, It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
+                .ReturnsAsync((DeviceModel)null);
+
+            // Act
+            var act = () => this.deviceModelImageManager.SetDefaultImageToModel(deviceModelId);
+
+            // Assert
+            _ = act.Should().ThrowAsync<ResourceNotFoundException>();
+            MockRepository.VerifyAll();
+        }
+
         [Test]
         public async Task SetDefaultImageToModelShouldUpdateImageAndReturnDefaultImage()
         {
