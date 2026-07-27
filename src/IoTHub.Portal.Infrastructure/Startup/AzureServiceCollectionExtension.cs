@@ -91,9 +91,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
                .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth");
 
             if (configuration.IsStorageAccountConfigured)
-            {
                 _ = healthChecksBuilder.AddCheck<StorageAccountHealthCheck>("storageAccountHealth");
-            }
 
             return services;
         }
@@ -101,9 +99,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureImageBlobStorage(this IServiceCollection services, ConfigHandler configuration)
         {
             if (!configuration.IsStorageAccountConfigured)
-            {
                 return services.AddTransient<IDeviceModelImageManager, DatabaseDeviceModelImageManager>();
-            }
 
             return services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>()
                 .AddTransient(_ => new BlobServiceClient(configuration.AzureStorageAccountConnectionString))
