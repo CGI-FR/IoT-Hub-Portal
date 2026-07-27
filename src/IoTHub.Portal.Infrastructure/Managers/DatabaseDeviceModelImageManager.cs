@@ -29,6 +29,7 @@ namespace IoTHub.Portal.Infrastructure.Managers
 
             if (deviceModel == null || string.IsNullOrEmpty(deviceModel.Image))
             {
+                deviceModelId = deviceModelId.Replace("\r", string.Empty).Replace("\n", string.Empty).Trim();
                 this.logger.LogWarning("Image for device model {DeviceModelId} not found in database. Returning default image.", deviceModelId);
                 return DeviceModelImageOptions.DefaultImage;
             }
