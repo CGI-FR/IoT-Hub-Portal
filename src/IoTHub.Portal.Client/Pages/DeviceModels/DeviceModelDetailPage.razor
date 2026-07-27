@@ -246,6 +246,11 @@
                 imageData = await DeviceModelsClientService.GetAvatar(ModelID);
             }
 
+            // The API returns a default placeholder image when no custom avatar has been set.
+            // Treat it as "no picture" so the UI offers to upload one instead of delete.
+            if (imageData == DeviceModelImageConstants.DefaultImage)
+                imageData = null;
+
             // Check if user has write permission for conditional UI elements
             canWrite = await HasPermissionAsync(PortalPermissions.ModelWrite);
 

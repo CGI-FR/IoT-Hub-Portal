@@ -446,14 +446,16 @@ namespace IoTHub.Portal.Server
 
         private static async Task ConfigureAzureAsync(IApplicationBuilder app)
         {
-            var deviceModelImageManager = app.ApplicationServices.GetService<IDeviceModelImageManager>();
+            using var scope = app.ApplicationServices.CreateScope();
+            var deviceModelImageManager = scope.ServiceProvider.GetService<IDeviceModelImageManager>();
 
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
             await deviceModelImageManager?.SyncImagesCacheControl()!;
         }
         private static async Task ConfigureAwsAsync(IApplicationBuilder app)
         {
-            var deviceModelImageManager = app.ApplicationServices.GetService<IDeviceModelImageManager>();
+            using var scope = app.ApplicationServices.CreateScope();
+            var deviceModelImageManager = scope.ServiceProvider.GetService<IDeviceModelImageManager>();
 
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
         }

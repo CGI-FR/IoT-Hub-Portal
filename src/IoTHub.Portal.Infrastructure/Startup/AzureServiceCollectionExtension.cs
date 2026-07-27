@@ -12,7 +12,7 @@ namespace IoTHub.Portal.Infrastructure.Startup
                            .ConfigureDeviceRegstryDependencies(configuration)
                            .ConfigureServices()
                            .ConfigureMappers()
-                           .ConfigureHealthCheck()
+                           .ConfigureHealthCheck(configuration)
                            .ConfigureMetricsJobs(configuration)
                            .ConfigureSyncJobs(configuration)
                            .ConfigureSendingCommands(configuration);
@@ -73,7 +73,6 @@ namespace IoTHub.Portal.Infrastructure.Startup
                             .AddTransient<IDeviceModelMapper<DeviceModelDto, DeviceModelDto>, DeviceModelMapper>()
                             .AddTransient<IDeviceModelMapper<DeviceModelDto, LoRaDeviceModelDto>, LoRaDeviceModelMapper>()
                             .AddTransient<IEdgeDeviceMapper, EdgeDeviceMapper>()
-                            .AddTransient<IDeviceModelImageManager, DeviceModelImageManager>()
                             .AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>()
                             .AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
         }
@@ -84,20 +83,30 @@ namespace IoTHub.Portal.Infrastructure.Startup
                 .AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
         }
 
-        private static IServiceCollection ConfigureHealthCheck(this IServiceCollection services)
+        private static IServiceCollection ConfigureHealthCheck(this IServiceCollection services, ConfigHandler configuration)
         {
-            _ = services.AddHealthChecks()
+            var healthChecksBuilder = services.AddHealthChecks()
                .AddCheck<IoTHubHealthCheck>("iothubHealth")
-               .AddCheck<StorageAccountHealthCheck>("storageAccountHealth")
                .AddCheck<ProvisioningServiceClientHealthCheck>("dpsHealth")
                .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth");
+
+            if (configuration.IsStorageAccountConfigured)
+            {
+                _ = healthChecksBuilder.AddCheck<StorageAccountHealthCheck>("storageAccountHealth");
+            }
 
             return services;
         }
 
         private static IServiceCollection ConfigureImageBlobStorage(this IServiceCollection services, ConfigHandler configuration)
         {
-            return services.AddTransient(_ => new BlobServiceClient(configuration.AzureStorageAccountConnectionString))
+            if (!configuration.IsStorageAccountConfigured)
+            {
+                return services.AddTransient<IDeviceModelImageManager, DatabaseDeviceModelImageManager>();
+            }
+
+            return services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>()
+                .AddTransient(_ => new BlobServiceClient(configuration.AzureStorageAccountConnectionString))
                 .Configure<DeviceModelImageOptions>((opts) =>
                 {
                     var serviceClient = new BlobServiceClient(configuration.AzureStorageAccountConnectionString);
