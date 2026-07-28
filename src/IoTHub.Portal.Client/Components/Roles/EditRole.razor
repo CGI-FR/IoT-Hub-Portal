@@ -4,9 +4,9 @@
 @inject AuthenticationStateProvider AuthStateProvider
 
 <MudForm Model="@Role" @ref="form">
-    <MudTextField T="string" Label="Nom" @bind-Value="Role.Name" Required="true" Disabled="!CanWrite" />
+    <MudTextField T="string" Label="Nom" @bind-Value="Role.Name" Required Disabled="!CanWrite" />
     <MudTextField T="string" Label="Description" @bind-Value="Role.Description" Disabled="!CanWrite" />
-    <MudColorPicker Label="Couleur" @bind-Text="Role.Color" Disabled="!CanWrite" />
+    <MudColorPicker Label="Couleur" @bind-Text="Role.Color" Required Disabled="!CanWrite" />
 
     <MudPaper Class="pa-4 mt-4" Elevation="1">
         <MudStack Row Spacing="2" Class="mb-3" AlignItems="AlignItems.Center">
