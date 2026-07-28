@@ -16,7 +16,7 @@
         </MudGrid>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="cancel-delete-planning" OnClick="Cancel">Cancel</MudButton>
         <MudButton id="delete-planning" Color="Color.Primary" OnClick="DeletePlanning">Delete</MudButton>
     </DialogActions>
 </MudDialog>
@@ -60,9 +60,9 @@
 
     private async Task DeletePlanningOnLayer(string planningId)
     {
-        foreach (var layer in Layers.Where(layer => layer.Planning == planningId))
+        foreach (var layerId in Layers.Where(layer => layer.Planning == planningId).Select(layer => layer.Id))
         {
-            var updatedLayer = FindLayer(layer.Id);
+            var updatedLayer = FindLayer(layerId);
             updatedLayer.Planning = null;
             await LayerClientService.UpdateLayer(updatedLayer);
         }
