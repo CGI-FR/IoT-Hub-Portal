@@ -582,7 +582,7 @@ Resources:
               - Name: CloudProvider
                 Value: AWS            
           ImageIdentifier:
-            Fn::Sub: "public.ecr.aws/cgi-fr/iothub-portal:6.0.0-beta02"
+            Fn::Sub: "public.ecr.aws/cgi-fr/iothub-portal:6.0.0-beta03"
           ImageRepositoryType: ECR_PUBLIC
       Tags:
         - Key: Name
