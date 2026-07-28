@@ -4,7 +4,6 @@
 namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
 {
     using Portal.Shared.Security;
-    using static MudBlazor.CategoryTypes;
 
     internal class LayerListPageTest : BlazorUnitTest
     {
