@@ -61,10 +61,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(list => list.Count.Equals(expectedProperties.Length))))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.ChangeAvatarAsync(It.IsAny<string>(), It.IsAny<StringContent>()))
-                .Returns(Task.CompletedTask);
-
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
             // Act

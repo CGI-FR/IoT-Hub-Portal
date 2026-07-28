@@ -62,6 +62,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// Changes the avatar.
         /// </summary>
         /// <param name="id">The model identifier.</param>
+        /// <param name="avatar">The new avatar image data.</param>
         /// <returns>The avatar.</returns>
         [HttpPost("{id}/avatar", Name = "POST Update the device model avatar")]
         [Authorize("model:write")]

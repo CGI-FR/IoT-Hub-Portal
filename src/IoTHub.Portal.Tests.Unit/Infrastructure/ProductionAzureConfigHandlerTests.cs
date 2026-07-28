@@ -310,5 +310,28 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure
             // Assert
             _ = productionConfigHandler.SendCommandsToDevicesIntervalInMinutes.Should().Be(10);
         }
+
+        [TestCase("some-connection-string", true)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        public void IsStorageAccountConfigured_ShouldReturnExpectedValue(string connectionString, bool expected)
+        {
+            // Arrange
+            var productionConfigHandler = CreateProductionAzureConfigHandler();
+            var mockConfigurationSection = this.mockRepository.Create<IConfigurationSection>();
+
+            _ = this.mockConfiguration.Setup(c => c.GetSection(It.Is<string>(x => x == "ConnectionStrings")))
+                .Returns(mockConfigurationSection.Object);
+
+            _ = mockConfigurationSection.SetupGet(c => c[It.Is<string>(x => x == ConfigHandlerBase.AzureStorageAccountConnectionStringKey)])
+                .Returns(connectionString);
+
+            // Act
+            var result = productionConfigHandler.IsStorageAccountConfigured;
+
+            // Assert
+            _ = result.Should().Be(expected);
+            this.mockRepository.VerifyAll();
+        }
     }
 }

@@ -19,6 +19,13 @@ namespace IoTHub.Portal.Domain
 
         public abstract string AzureStorageAccountConnectionString { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether an Azure Storage Account is configured.
+        /// When false, device model images are stored as base64 strings in the database
+        /// instead of being uploaded to a blob container.
+        /// </summary>
+        public virtual bool IsStorageAccountConfigured => !string.IsNullOrEmpty(AzureStorageAccountConnectionString);
+
         public abstract int StorageAccountDeviceModelImageMaxAge { get; }
 
         public abstract bool UseSecurityHeaders { get; }
