@@ -1,0 +1,1262 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature Specification: LoRaWAN Device Model Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-specification-lorawan-device-model-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature Specification: LoRaWAN Device Model Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-scenarios-testing">
+<span class="md-ellipsis">
+      User Scenarios &amp; Testing
+    </span>
+</a>
+<nav aria-label="User Scenarios &amp; Testing" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-1-browse-and-search-lorawan-device-models-priority-p1">
+<span class="md-ellipsis">
+      User Story 1 - Browse and Search LoRaWAN Device Models (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-2-view-lorawan-device-model-details-priority-p1">
+<span class="md-ellipsis">
+      User Story 2 - View LoRaWAN Device Model Details (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-3-create-new-lorawan-device-model-priority-p1">
+<span class="md-ellipsis">
+      User Story 3 - Create New LoRaWAN Device Model (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-4-update-existing-lorawan-device-model-priority-p2">
+<span class="md-ellipsis">
+      User Story 4 - Update Existing LoRaWAN Device Model (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-5-delete-lorawan-device-model-priority-p2">
+<span class="md-ellipsis">
+      User Story 5 - Delete LoRaWAN Device Model (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-6-manage-device-model-avatar-images-priority-p3">
+<span class="md-ellipsis">
+      User Story 6 - Manage Device Model Avatar Images (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-7-define-and-manage-lorawan-commands-priority-p2">
+<span class="md-ellipsis">
+      User Story 7 - Define and Manage LoRaWAN Commands (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-8-configure-lorawan-authentication-modes-priority-p1">
+<span class="md-ellipsis">
+      User Story 8 - Configure LoRaWAN Authentication Modes (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-9-configure-lorawan-receive-windows-priority-p2">
+<span class="md-ellipsis">
+      User Story 9 - Configure LoRaWAN Receive Windows (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-10-configure-message-deduplication-priority-p3">
+<span class="md-ellipsis">
+      User Story 10 - Configure Message Deduplication (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-11-categorize-models-with-labels-priority-p3">
+<span class="md-ellipsis">
+      User Story 11 - Categorize Models with Labels (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-cases">
+<span class="md-ellipsis">
+      Edge Cases
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements">
+<span class="md-ellipsis">
+      Requirements
+    </span>
+</a>
+<nav aria-label="Requirements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-entities">
+<span class="md-ellipsis">
+      Key Entities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-criteria">
+<span class="md-ellipsis">
+      Success Criteria
+    </span>
+</a>
+<nav aria-label="Success Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#measurable-outcomes">
+<span class="md-ellipsis">
+      Measurable Outcomes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#traceability">
+<span class="md-ellipsis">
+      Traceability
+    </span>
+</a>
+<nav aria-label="Traceability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#source-analysis">
+<span class="md-ellipsis">
+      Source Analysis
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-endpoints">
+<span class="md-ellipsis">
+      API Endpoints
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lorawan-protocol-specifications">
+<span class="md-ellipsis">
+      LoRaWAN Protocol Specifications
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cloud-platform-integration">
+<span class="md-ellipsis">
+      Cloud Platform Integration
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notes">
+<span class="md-ellipsis">
+      Notes
+    </span>
+</a>
+<nav aria-label="Notes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implementation-considerations">
+<span class="md-ellipsis">
+      Implementation Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-value">
+<span class="md-ellipsis">
+      Business Value
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testing-strategy">
+<span class="md-ellipsis">
+      Testing Strategy
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-specification-lorawan-device-model-management">Feature Specification: LoRaWAN Device Model Management<a class="headerlink" href="#feature-specification-lorawan-device-model-management" title="Permanent link">¶</a></h1>
+<p><strong>Feature ID</strong>: 009<br/>
+<strong>Feature Branch</strong>: <code>009-lorawan-device-model-management</code><br/>
+<strong>Created</strong>: 2025-01-30<br/>
+<strong>Status</strong>: Draft<br/>
+<strong>Source</strong>: Analysis from <code>specs/009-lorawan-device-model-management/analyze.md</code></p>
+<hr/>
+<h2 id="user-scenarios-testing">User Scenarios &amp; Testing<a class="headerlink" href="#user-scenarios-testing" title="Permanent link">¶</a></h2>
+<h3 id="user-story-1-browse-and-search-lorawan-device-models-priority-p1">User Story 1 - Browse and Search LoRaWAN Device Models (Priority: P1)<a class="headerlink" href="#user-story-1-browse-and-search-lorawan-device-models-priority-p1" title="Permanent link">¶</a></h3>
+<p>As a network administrator, I need to view all LoRaWAN device model templates in the portal so that I can understand what device types are supported and quickly find specific models to configure devices.</p>
+<p><strong>Why this priority</strong>: This is the foundation for all device model management activities. Without the ability to browse and search, administrators cannot effectively manage their device model catalog or find the right templates for device provisioning. This represents the core read capability that all other operations depend on.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by accessing the device model list page, performing searches, applying filters, and verifying pagination works correctly. Delivers immediate value by providing visibility into available LoRaWAN device templates.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am an authenticated administrator with model:read permission, <strong>When</strong> I navigate to the LoRaWAN device models page, <strong>Then</strong> I see a paginated list of all LoRaWAN device models with their names, descriptions, and labels</li>
+<li><strong>Given</strong> there are more than 10 device models in the system, <strong>When</strong> I view the device model list, <strong>Then</strong> I can navigate through pages using pagination controls</li>
+<li><strong>Given</strong> I am viewing the device model list, <strong>When</strong> I enter a search term in the search box, <strong>Then</strong> the list filters to show only models whose name or description contains the search term</li>
+<li><strong>Given</strong> I am viewing the device model list, <strong>When</strong> I click on a table column header, <strong>Then</strong> the list sorts by that column in ascending or descending order</li>
+<li><strong>Given</strong> device models have label tags assigned, <strong>When</strong> I view the device model list, <strong>Then</strong> I see label badges displayed for each model</li>
+<li><strong>Given</strong> some models are marked as built-in, <strong>When</strong> I view the device model list, <strong>Then</strong> built-in models are visually distinguished and lack delete buttons</li>
+</ol>
+<hr/>
+<h3 id="user-story-2-view-lorawan-device-model-details-priority-p1">User Story 2 - View LoRaWAN Device Model Details (Priority: P1)<a class="headerlink" href="#user-story-2-view-lorawan-device-model-details-priority-p1" title="Permanent link">¶</a></h3>
+<p>As a network engineer, I need to view the complete configuration details of a LoRaWAN device model including all protocol parameters, so that I can understand how devices using this model will behave on the network.</p>
+<p><strong>Why this priority</strong>: Understanding device model configurations is critical for troubleshooting network issues, planning device deployments, and ensuring correct LoRaWAN protocol settings. This is essential before making any modifications or creating similar models.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by selecting a device model and viewing all its details including authentication mode (OTAA/ABP), class type, deduplication settings, receive window configuration, frame counters, sensor decoder, and commands. Delivers value by providing complete visibility into device model behavior.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am viewing the device model list, <strong>When</strong> I click on a specific LoRaWAN device model, <strong>Then</strong> I see all model details including name, description, avatar image, and all LoRaWAN protocol settings</li>
+<li><strong>Given</strong> I am viewing a device model's details, <strong>When</strong> the model uses OTAA authentication, <strong>Then</strong> I see OTAA-specific settings including RX1 datarate offset and RX2 datarate</li>
+<li><strong>Given</strong> I am viewing a device model's details, <strong>When</strong> the model uses ABP authentication, <strong>Then</strong> I see ABP-specific settings including frame counter start values and ABP relax mode status</li>
+<li><strong>Given</strong> I am viewing a device model's details, <strong>When</strong> frame counter management is configured, <strong>Then</strong> I see FCntUpStart, FCntDownStart, and FCntResetCounter values</li>
+<li><strong>Given</strong> I am viewing a device model's details, <strong>When</strong> a sensor decoder URL is configured, <strong>Then</strong> I see the decoder URL for payload processing</li>
+<li><strong>Given</strong> I am viewing a device model's details, <strong>When</strong> commands are defined for the model, <strong>Then</strong> I see a list of all available commands with their names, frames, ports, and confirmation status</li>
+</ol>
+<hr/>
+<h3 id="user-story-3-create-new-lorawan-device-model-priority-p1">User Story 3 - Create New LoRaWAN Device Model (Priority: P1)<a class="headerlink" href="#user-story-3-create-new-lorawan-device-model-priority-p1" title="Permanent link">¶</a></h3>
+<p>As a device administrator, I need to create new LoRaWAN device model templates with protocol-specific configurations so that I can quickly onboard multiple devices of the same type with consistent settings.</p>
+<p><strong>Why this priority</strong>: Device model creation is essential for scaling device deployments. Without reusable templates, every device would need manual configuration, leading to errors and inconsistencies. This enables standardized, repeatable device provisioning.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating a new device model with all required fields, selecting OTAA or ABP authentication, configuring protocol parameters, and verifying the model is saved and appears in the model list. Delivers value by enabling template-based device provisioning.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am an authenticated user with model:write permission, <strong>When</strong> I click "Create Device Model" and enter a unique name, <strong>Then</strong> a new LoRaWAN device model is created with default settings</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I select OTAA authentication mode, <strong>Then</strong> I can configure OTAA-specific settings including RX windows and datarate offsets</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I select ABP authentication mode, <strong>Then</strong> I can configure ABP-specific settings including frame counter start values and relaxed mode</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I select a device class type (A, B, or C), <strong>Then</strong> the model is configured with the appropriate receive window behavior</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I configure message deduplication to "Drop", <strong>Then</strong> duplicate messages received by multiple gateways will be dropped</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I enter a sensor decoder URL, <strong>Then</strong> device telemetry payloads will be processed by the specified decoder</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I set a keep-alive timeout value, <strong>Then</strong> device connections will expire after the specified period of inactivity</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I upload a custom avatar image, <strong>Then</strong> the image is associated with the model for visual identification</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I assign labels to the model, <strong>Then</strong> the labels are saved for categorization and filtering</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> the model is successfully saved, <strong>Then</strong> an enrollment group is created in the cloud IoT platform for automatic device provisioning</li>
+</ol>
+<hr/>
+<h3 id="user-story-4-update-existing-lorawan-device-model-priority-p2">User Story 4 - Update Existing LoRaWAN Device Model (Priority: P2)<a class="headerlink" href="#user-story-4-update-existing-lorawan-device-model-priority-p2" title="Permanent link">¶</a></h3>
+<p>As a network administrator, I need to modify existing LoRaWAN device model configurations to adjust protocol parameters, update descriptions, or correct settings without disrupting devices already using the model.</p>
+<p><strong>Why this priority</strong>: As network requirements evolve or issues are discovered, device model configurations need updates. This is high priority because it affects all devices using the model, but slightly lower than creation since it's a refinement activity rather than enabling new capabilities.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by editing an existing device model, changing various settings (except OTAA/ABP mode which is immutable), saving changes, and verifying all devices using the model receive updated configurations. Delivers value by allowing configuration refinement without recreating models.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am viewing a device model, <strong>When</strong> I click "Edit" and modify the description, <strong>Then</strong> the updated description is saved and visible in the model list</li>
+<li><strong>Given</strong> I am editing a device model, <strong>When</strong> I change receive window settings (preferred window, RX delays), <strong>Then</strong> all devices using this model receive the updated downlink configuration</li>
+<li><strong>Given</strong> I am editing a device model, <strong>When</strong> I update frame counter management settings, <strong>Then</strong> the frame counter behavior changes for all associated devices</li>
+<li><strong>Given</strong> I am editing a device model, <strong>When</strong> I change the deduplication mode, <strong>Then</strong> duplicate message handling is updated across all devices using the model</li>
+<li><strong>Given</strong> I am editing a device model, <strong>When</strong> I modify the keep-alive timeout, <strong>Then</strong> connection expiration behavior is updated for all devices</li>
+<li><strong>Given</strong> I am editing a device model, <strong>When</strong> I update the sensor decoder URL, <strong>Then</strong> telemetry processing uses the new decoder for all devices</li>
+<li><strong>Given</strong> I am editing a device model with OTAA authentication, <strong>When</strong> I view the authentication mode field, <strong>Then</strong> the OTAA/ABP toggle is disabled to prevent mode changes</li>
+<li><strong>Given</strong> I am editing a built-in device model, <strong>When</strong> I attempt to access the edit screen, <strong>Then</strong> editing is prevented to protect system-defined models</li>
+<li><strong>Given</strong> I am editing a device model, <strong>When</strong> I add or remove labels, <strong>Then</strong> the label changes are reflected in the model's categorization</li>
+<li><strong>Given</strong> I am editing a device model, <strong>When</strong> I save changes, <strong>Then</strong> the cloud enrollment group and device configurations are updated with new parameters</li>
+</ol>
+<hr/>
+<h3 id="user-story-5-delete-lorawan-device-model-priority-p2">User Story 5 - Delete LoRaWAN Device Model (Priority: P2)<a class="headerlink" href="#user-story-5-delete-lorawan-device-model-priority-p2" title="Permanent link">¶</a></h3>
+<p>As a device administrator, I need to remove obsolete or incorrect LoRaWAN device models from the system to maintain a clean model catalog, but only when no devices are using them.</p>
+<p><strong>Why this priority</strong>: Model deletion is important for maintaining system hygiene and preventing confusion from outdated templates, but is less critical than read/create/update operations. The safety validation (preventing deletion of in-use models) is crucial.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by attempting to delete unused models (should succeed) and models in use by devices (should fail with validation error). Delivers value by keeping the model catalog clean and preventing accidental deletion of active models.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am viewing the device model list, <strong>When</strong> I click delete on a model that is not used by any devices, <strong>Then</strong> the model is permanently removed along with its enrollment group, configurations, commands, and images</li>
+<li><strong>Given</strong> I am viewing the device model list, <strong>When</strong> I click delete on a model that is currently used by devices, <strong>Then</strong> the deletion is blocked and I receive an error message indicating the model is in use</li>
+<li><strong>Given</strong> I am viewing the device model list, <strong>When</strong> I attempt to delete a built-in device model, <strong>Then</strong> the delete action is not available to protect system-defined models</li>
+<li><strong>Given</strong> I am deleting a device model, <strong>When</strong> the deletion is confirmed, <strong>Then</strong> all associated labels are removed from the system</li>
+<li><strong>Given</strong> I am deleting a device model, <strong>When</strong> the deletion is confirmed, <strong>Then</strong> all associated commands for the model are removed</li>
+<li><strong>Given</strong> I am deleting a device model, <strong>When</strong> the deletion is confirmed, <strong>Then</strong> the enrollment group is removed from the cloud IoT platform</li>
+</ol>
+<hr/>
+<h3 id="user-story-6-manage-device-model-avatar-images-priority-p3">User Story 6 - Manage Device Model Avatar Images (Priority: P3)<a class="headerlink" href="#user-story-6-manage-device-model-avatar-images-priority-p3" title="Permanent link">¶</a></h3>
+<p>As a device administrator, I need to upload, update, and remove custom avatar images for device models so that different device types are easily recognizable in the user interface.</p>
+<p><strong>Why this priority</strong>: Visual identification improves user experience and reduces errors when selecting device models, but this is a usability enhancement rather than core functionality. The system can function with default images.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by uploading a custom image, viewing it in the model list, updating it with a different image, and deleting it to revert to the default. Delivers value by improving model recognition and user experience.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am creating or editing a device model, <strong>When</strong> I upload a custom avatar image, <strong>Then</strong> the image is stored and displayed as the model's visual identifier</li>
+<li><strong>Given</strong> a device model has a custom avatar, <strong>When</strong> I view the model in the list, <strong>Then</strong> the custom avatar is displayed instead of the default image</li>
+<li><strong>Given</strong> a device model has a custom avatar, <strong>When</strong> I click "Change Avatar" and upload a new image, <strong>Then</strong> the previous image is replaced with the new one</li>
+<li><strong>Given</strong> a device model has a custom avatar, <strong>When</strong> I click "Delete Avatar", <strong>Then</strong> the custom image is removed and the default avatar is displayed</li>
+<li><strong>Given</strong> I am uploading an avatar image, <strong>When</strong> the image format is supported (PNG, JPG, etc.), <strong>Then</strong> the upload succeeds and the image is displayed</li>
+<li><strong>Given</strong> I am viewing device model details, <strong>When</strong> I request the avatar URL, <strong>Then</strong> I receive a valid URL to retrieve the image</li>
+</ol>
+<hr/>
+<h3 id="user-story-7-define-and-manage-lorawan-commands-priority-p2">User Story 7 - Define and Manage LoRaWAN Commands (Priority: P2)<a class="headerlink" href="#user-story-7-define-and-manage-lorawan-commands-priority-p2" title="Permanent link">¶</a></h3>
+<p>As a network engineer, I need to define custom commands for LoRaWAN device models so that devices using the model can receive remote control instructions with proper framing and port configuration.</p>
+<p><strong>Why this priority</strong>: Command management enables remote device control, which is a key value proposition of IoT systems. This is high priority because it directly enables business use cases like remote actuator control, but is lower than basic model management since it's an advanced capability.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by defining a command with name, frame (hex), port, and confirmation settings, saving it to a device model, and verifying it appears in the command list. Delivers value by enabling standardized remote control for all devices of a model type.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am viewing a device model, <strong>When</strong> I navigate to the commands section, <strong>Then</strong> I see all currently defined commands for the model</li>
+<li><strong>Given</strong> I am managing device model commands, <strong>When</strong> I add a new command with a name and hex frame, <strong>Then</strong> the command is available for all devices using this model</li>
+<li><strong>Given</strong> I am defining a command, <strong>When</strong> I specify a LoRaWAN port number between 1 and 223, <strong>Then</strong> the command will be transmitted on that port</li>
+<li><strong>Given</strong> I am defining a command, <strong>When</strong> I mark the command as "confirmed", <strong>Then</strong> devices must acknowledge receipt of the command</li>
+<li><strong>Given</strong> I am defining a command, <strong>When</strong> I mark the command as "unconfirmed", <strong>Then</strong> devices receive the command without acknowledgment requirement</li>
+<li><strong>Given</strong> I am defining a command, <strong>When</strong> I enter a frame with non-hexadecimal characters, <strong>Then</strong> validation prevents the invalid frame from being saved</li>
+<li><strong>Given</strong> I am defining a command, <strong>When</strong> the frame exceeds 255 characters, <strong>Then</strong> validation prevents the oversized frame from being saved</li>
+<li><strong>Given</strong> I am managing commands, <strong>When</strong> I update the command list, <strong>Then</strong> all existing commands are replaced with the new command set</li>
+<li><strong>Given</strong> commands are marked as built-in, <strong>When</strong> I view the command list, <strong>Then</strong> built-in commands are protected from modification or deletion</li>
+<li><strong>Given</strong> I am saving commands, <strong>When</strong> multiple commands have the same name, <strong>Then</strong> each command is stored with a unique identifier</li>
+</ol>
+<hr/>
+<h3 id="user-story-8-configure-lorawan-authentication-modes-priority-p1">User Story 8 - Configure LoRaWAN Authentication Modes (Priority: P1)<a class="headerlink" href="#user-story-8-configure-lorawan-authentication-modes-priority-p1" title="Permanent link">¶</a></h3>
+<p>As a security engineer, I need to configure device models with either OTAA (Over-The-Air Activation) or ABP (Activation By Personalization) authentication so that devices follow the appropriate security and provisioning strategy for their deployment environment.</p>
+<p><strong>Why this priority</strong>: Authentication mode is fundamental to LoRaWAN security and device provisioning. This decision affects network security, device deployment processes, and compliance requirements. This is critical for proper LoRaWAN network operation.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating models with OTAA and ABP modes, configuring mode-specific parameters (OTAA: RX datarates; ABP: frame counters, relax mode), and verifying the correct parameters are available and enforced. Delivers value by enabling proper security configuration for different deployment scenarios.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I select OTAA authentication mode, <strong>Then</strong> OTAA-specific configuration options are available (RX1 datarate offset, RX2 datarate)</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> I select ABP authentication mode, <strong>Then</strong> ABP-specific configuration options are available (frame counter start values, ABP relax mode)</li>
+<li><strong>Given</strong> I am creating a device model with ABP, <strong>When</strong> I enable ABP relax mode, <strong>Then</strong> frame counter validation is relaxed for device restarts</li>
+<li><strong>Given</strong> I am creating a device model with ABP, <strong>When</strong> I set FCntUpStart and FCntDownStart values, <strong>Then</strong> frame counters initialize at these values for device security</li>
+<li><strong>Given</strong> I am creating a device model with OTAA, <strong>When</strong> I configure RX1 datarate offset, <strong>Then</strong> the offset is applied between received and retransmit datarates per LoRaWAN specification</li>
+<li><strong>Given</strong> I am creating a device model with OTAA, <strong>When</strong> I configure RX2 datarate, <strong>Then</strong> the custom datarate is used for the second receive window</li>
+<li><strong>Given</strong> I have created a device model with OTAA, <strong>When</strong> I later edit the model, <strong>Then</strong> the authentication mode cannot be changed to preserve device provisioning consistency</li>
+<li><strong>Given</strong> I am configuring frame counters for ABP, <strong>When</strong> I enter values outside the range 0-4294967295, <strong>Then</strong> validation prevents invalid frame counter values</li>
+<li><strong>Given</strong> I am configuring a device model, <strong>When</strong> I enable 32-bit frame counter support, <strong>Then</strong> devices can use the full 32-bit counter range</li>
+</ol>
+<hr/>
+<h3 id="user-story-9-configure-lorawan-receive-windows-priority-p2">User Story 9 - Configure LoRaWAN Receive Windows (Priority: P2)<a class="headerlink" href="#user-story-9-configure-lorawan-receive-windows-priority-p2" title="Permanent link">¶</a></h3>
+<p>As a network engineer, I need to configure receive window settings for device models (RX1/RX2 preferences, delays, datarates) so that downlink communications are optimized for device power consumption and network latency requirements.</p>
+<p><strong>Why this priority</strong>: Receive window configuration affects downlink reliability and device battery life. While important for network optimization, devices can function with default settings, making this a refinement rather than critical functionality.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by configuring preferred window, RX delays, and datarates on a model, deploying a test device, and verifying downlink messages use the specified receive window parameters. Delivers value by enabling network performance optimization.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am configuring a device model, <strong>When</strong> I enable downlink support, <strong>Then</strong> cloud-to-device messages are permitted for devices using this model</li>
+<li><strong>Given</strong> I am configuring a device model, <strong>When</strong> I disable downlink support, <strong>Then</strong> cloud-to-device messages are blocked for devices using this model</li>
+<li><strong>Given</strong> I am configuring a device model with downlink enabled, <strong>When</strong> I set preferred window to 1 (RX1), <strong>Then</strong> downlink messages are primarily sent during the first receive window</li>
+<li><strong>Given</strong> I am configuring a device model with downlink enabled, <strong>When</strong> I set preferred window to 2 (RX2), <strong>Then</strong> downlink messages are primarily sent during the second receive window</li>
+<li><strong>Given</strong> I am configuring a device model, <strong>When</strong> I set custom RX delay values, <strong>Then</strong> the wait time between device transmission and receive windows follows the custom timing</li>
+<li><strong>Given</strong> I am configuring an OTAA device model, <strong>When</strong> I configure RX1 datarate offset, <strong>Then</strong> the offset adjusts the downlink datarate relative to the uplink datarate</li>
+<li><strong>Given</strong> I am configuring an OTAA device model, <strong>When</strong> I configure RX2 datarate, <strong>Then</strong> the second receive window uses the specified datarate instead of the default</li>
+</ol>
+<hr/>
+<h3 id="user-story-10-configure-message-deduplication-priority-p3">User Story 10 - Configure Message Deduplication (Priority: P3)<a class="headerlink" href="#user-story-10-configure-message-deduplication-priority-p3" title="Permanent link">¶</a></h3>
+<p>As a network administrator, I need to configure how duplicate messages from multiple gateways are handled (None, Drop, Mark) so that telemetry data quality matches application requirements without overwhelming the system.</p>
+<p><strong>Why this priority</strong>: Deduplication affects data quality and system efficiency but is not essential for basic operation. Most deployments can start with default deduplication and adjust later based on observed behavior.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by configuring deduplication mode on a model, deploying a device in range of multiple gateways, sending a test message, and verifying the system handles duplicates according to the configured mode. Delivers value by preventing data duplication issues.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am configuring a device model, <strong>When</strong> I set deduplication mode to "None", <strong>Then</strong> all messages received from multiple gateways are processed and stored</li>
+<li><strong>Given</strong> I am configuring a device model, <strong>When</strong> I set deduplication mode to "Drop", <strong>Then</strong> only the first message is processed and subsequent duplicates are discarded</li>
+<li><strong>Given</strong> I am configuring a device model, <strong>When</strong> I set deduplication mode to "Mark", <strong>Then</strong> all messages are processed but duplicates are flagged for identification</li>
+<li><strong>Given</strong> I am creating a new device model, <strong>When</strong> no deduplication mode is explicitly set, <strong>Then</strong> the default mode (None) is applied</li>
+</ol>
+<hr/>
+<h3 id="user-story-11-categorize-models-with-labels-priority-p3">User Story 11 - Categorize Models with Labels (Priority: P3)<a class="headerlink" href="#user-story-11-categorize-models-with-labels-priority-p3" title="Permanent link">¶</a></h3>
+<p>As a device administrator, I need to assign labels to device models for categorization so that I can organize large model catalogs by manufacturer, device type, deployment location, or custom criteria.</p>
+<p><strong>Why this priority</strong>: Labels improve organization and filtering in large deployments but are not essential for core model management functionality. This is a usability enhancement for scale.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating labels, assigning them to device models, filtering the model list by labels, and verifying labeled models are correctly categorized. Delivers value by enabling organized model management at scale.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am creating or editing a device model, <strong>When</strong> I assign one or more labels, <strong>Then</strong> the labels are saved and displayed as badges on the model</li>
+<li><strong>Given</strong> device models have labels assigned, <strong>When</strong> I view the device model list, <strong>Then</strong> I see label badges displayed for each labeled model</li>
+<li><strong>Given</strong> device models have labels, <strong>When</strong> I filter the list by a specific label, <strong>Then</strong> only models with that label are displayed</li>
+<li><strong>Given</strong> I am editing a device model, <strong>When</strong> I remove a label, <strong>Then</strong> the label is no longer associated with the model</li>
+<li><strong>Given</strong> I am deleting a device model, <strong>When</strong> the deletion is confirmed, <strong>Then</strong> all label associations are removed</li>
+</ol>
+<hr/>
+<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>What happens when a device model name conflicts with an existing model?</strong> System must validate uniqueness and prevent duplicate model names to avoid provisioning ambiguity.</p>
+</li>
+<li>
+<p><strong>How does the system handle OTAA/ABP mode immutability after model creation?</strong> The authentication mode toggle is disabled in the edit interface to prevent changes that would break device provisioning. Models must be recreated to change authentication mode.</p>
+</li>
+<li>
+<p><strong>What happens when attempting to delete a model that devices are actively using?</strong> The system queries the IoT platform for devices using the model and blocks deletion with a clear error message indicating which devices depend on the model.</p>
+</li>
+<li>
+<p><strong>How are built-in models protected from modification and deletion?</strong> Built-in models have the IsBuiltin flag set, which disables edit and delete actions in both the UI and API layer through validation checks.</p>
+</li>
+<li>
+<p><strong>What happens when frame counter values exceed the 32-bit maximum?</strong> Validation enforces the range 0-4294967295 (2^32-1) for all frame counter fields (FCntUpStart, FCntDownStart, FCntResetCounter).</p>
+</li>
+<li>
+<p><strong>How does the system handle invalid LoRaWAN command frames (non-hexadecimal)?</strong> Client-side validation prevents non-hexadecimal characters, and server-side validation with regex pattern ^[0-9a-fA-F]{0,255}$ rejects invalid frames.</p>
+</li>
+<li>
+<p><strong>What happens when a command frame exceeds 255 characters?</strong> Validation enforces maximum length to comply with LoRaWAN payload size limitations.</p>
+</li>
+<li>
+<p><strong>How does the system handle enrollment group creation failures in the cloud platform?</strong> If enrollment group creation fails during model creation, the transaction is rolled back and the model is not saved, maintaining consistency between the portal and cloud platform.</p>
+</li>
+<li>
+<p><strong>What happens when changing receive window settings on a model with existing devices?</strong> The updated configuration is rolled out to all devices via device twin desired properties, but active connections may need to be reset for changes to take effect.</p>
+</li>
+<li>
+<p><strong>How are sensor decoder URL errors handled?</strong> Decoder URL validation occurs at configuration time (URL format), but runtime decoder failures are logged and telemetry is passed through without processing to prevent message loss.</p>
+</li>
+<li>
+<p><strong>What happens when keep-alive timeout is set to 0 or negative values?</strong> Validation should prevent invalid timeout values; a null/empty value means no timeout (connection never expires).</p>
+</li>
+<li>
+<p><strong>How does the system handle concurrent edits to the same device model?</strong> Last write wins; no optimistic concurrency control is implemented. Consider adding version tracking for conflict detection.</p>
+</li>
+<li>
+<p><strong>What happens when a user lacks model:write permission but attempts to create a model?</strong> Authorization checks at the API layer return 403 Forbidden; UI elements for creation are hidden for users without permission.</p>
+</li>
+<li>
+<p><strong>How does the system handle class type changes for models with existing devices?</strong> Class type changes are applied to the model and rolled out via device configurations, but physical device firmware must also support the target class type or devices will not function correctly.</p>
+</li>
+<li>
+<p><strong>What happens when the LoRaWAN feature is disabled but models exist?</strong> The LoRaFeatureActiveFilter blocks all LoRaWAN API endpoints when the feature is disabled, preventing access to existing models until the feature is re-enabled.</p>
+</li>
+</ul>
+<hr/>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
+<h3 id="functional-requirements">Functional Requirements<a class="headerlink" href="#functional-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>FR-001</strong>: System MUST provide paginated listing of LoRaWAN device model templates filtered to models with LoRaWAN support enabled</li>
+<li><strong>FR-002</strong>: System MUST support full-text search filtering of device models by name or description</li>
+<li><strong>FR-003</strong>: System MUST support sorting device model lists by multiple columns in ascending or descending order</li>
+<li><strong>FR-004</strong>: System MUST allow authorized users to create new LoRaWAN device models with all protocol-specific configuration parameters</li>
+<li><strong>FR-005</strong>: System MUST validate device model name uniqueness before creation</li>
+<li><strong>FR-006</strong>: System MUST allow selection between OTAA (Over-The-Air Activation) and ABP (Activation By Personalization) authentication modes during model creation</li>
+<li><strong>FR-007</strong>: System MUST prevent modification of authentication mode (OTAA/ABP) after model creation to maintain provisioning consistency</li>
+<li><strong>FR-008</strong>: System MUST allow configuration of LoRaWAN device class types (A, B, or C) for receive window behavior</li>
+<li><strong>FR-009</strong>: System MUST allow configuration of message deduplication strategies (None, Drop, Mark) to control duplicate message handling from multiple gateways</li>
+<li><strong>FR-010</strong>: System MUST allow authorized users to view complete device model details including all LoRaWAN protocol parameters</li>
+<li><strong>FR-011</strong>: System MUST allow authorized users to update existing device model configurations except for immutable fields</li>
+<li><strong>FR-012</strong>: System MUST synchronize device model configuration changes to all devices using the model via cloud platform device twin updates</li>
+<li><strong>FR-013</strong>: System MUST allow authorized users to delete device models that are not in use by any devices</li>
+<li><strong>FR-014</strong>: System MUST prevent deletion of device models that are currently associated with one or more devices</li>
+<li><strong>FR-015</strong>: System MUST prevent deletion and modification of built-in device models to protect system-defined templates</li>
+<li><strong>FR-016</strong>: System MUST allow upload, update, and deletion of custom avatar images for device models</li>
+<li><strong>FR-017</strong>: System MUST provide default avatar images when custom images are not specified</li>
+<li><strong>FR-018</strong>: System MUST allow definition of custom LoRaWAN commands for device models with frame data, port configuration, and confirmation requirements</li>
+<li><strong>FR-019</strong>: System MUST validate LoRaWAN command frames to ensure hexadecimal encoding and enforce maximum frame length of 255 characters</li>
+<li><strong>FR-020</strong>: System MUST validate LoRaWAN port numbers to be within the valid range of 1-223</li>
+<li><strong>FR-021</strong>: System MUST allow specification of whether commands require device acknowledgment (confirmed) or not (unconfirmed)</li>
+<li><strong>FR-022</strong>: System MUST protect built-in commands from modification or deletion</li>
+<li><strong>FR-023</strong>: System MUST support OTAA-specific configuration including RX1 datarate offset and RX2 datarate for receive window optimization</li>
+<li><strong>FR-024</strong>: System MUST support ABP-specific configuration including frame counter start values (FCntUpStart, FCntDownStart) and relax mode</li>
+<li><strong>FR-025</strong>: System MUST validate frame counter values to be within the range 0-4294967295 (32-bit unsigned integer)</li>
+<li><strong>FR-026</strong>: System MUST support frame counter reset via FCntResetCounter for handling device resets</li>
+<li><strong>FR-027</strong>: System MUST allow enabling/disabling downlink (cloud-to-device) messaging capability for device models</li>
+<li><strong>FR-028</strong>: System MUST allow configuration of preferred receive window (RX1 or RX2) for downlink message delivery</li>
+<li><strong>FR-029</strong>: System MUST allow configuration of custom RX delay timing between device transmission and receive windows</li>
+<li><strong>FR-030</strong>: System MUST allow configuration of sensor decoder URL for custom payload processing before data storage</li>
+<li><strong>FR-031</strong>: System MUST allow configuration of keep-alive timeout for automatic connection expiration after inactivity</li>
+<li><strong>FR-032</strong>: System MUST allow assignment and removal of labels to device models for categorization and filtering</li>
+<li><strong>FR-033</strong>: System MUST create enrollment groups in the cloud IoT platform (Azure IoT Hub or AWS IoT Core) when device models are created</li>
+<li><strong>FR-034</strong>: System MUST delete enrollment groups from the cloud IoT platform when device models are deleted</li>
+<li><strong>FR-035</strong>: System MUST update enrollment groups and device configurations in the cloud platform when device models are modified</li>
+<li><strong>FR-036</strong>: System MUST translate device model configurations to cloud platform device twin desired properties for device synchronization</li>
+<li><strong>FR-037</strong>: System MUST support both Azure IoT Hub and AWS IoT Core as cloud platform backends</li>
+<li><strong>FR-038</strong>: System MUST enforce model:read permission for viewing device models and their properties</li>
+<li><strong>FR-039</strong>: System MUST enforce model:write permission for creating, updating, and deleting device models</li>
+<li><strong>FR-040</strong>: System MUST enforce LoRaWAN feature activation gate to block access when LoRaWAN functionality is disabled</li>
+<li><strong>FR-041</strong>: System MUST rollback device model creation if enrollment group creation fails to maintain consistency</li>
+<li><strong>FR-042</strong>: System MUST delete associated commands, labels, and images when a device model is deleted</li>
+</ul>
+<h3 id="key-entities">Key Entities<a class="headerlink" href="#key-entities" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Device Model</strong>: Template defining configuration and behavior for a category of LoRaWAN devices</li>
+<li>Attributes: ModelId, Name, Description, IsBuiltin, SupportLoRaFeatures, Image, Labels</li>
+<li>LoRaWAN-specific: UseOTAA, ClassType, Deduplication, PreferredWindow, Downlink, KeepAliveTimeout, SensorDecoder, ABPRelaxMode</li>
+<li>Frame counters: FCntUpStart, FCntDownStart, FCntResetCounter, Supports32BitFCnt</li>
+<li>
+<p>Receive windows: RXDelay, RX1DROffset, RX2DataRate</p>
+</li>
+<li>
+<p><strong>Device Model Command</strong>: Remote control instruction that can be sent to devices using a model</p>
+</li>
+<li>Attributes: Id, Name, Frame (hex-encoded payload), Confirmed, Port, IsBuiltin, DeviceModelId</li>
+<li>
+<p>Relationship: Many commands belong to one device model</p>
+</li>
+<li>
+<p><strong>Label</strong>: Categorization tag for organizing device models</p>
+</li>
+<li>Attributes: Name, Value, Color</li>
+<li>
+<p>Relationship: Many-to-many with device models</p>
+</li>
+<li>
+<p><strong>Enrollment Group</strong>: Cloud platform entity enabling automatic device provisioning based on model configuration</p>
+</li>
+<li>Created/deleted/updated by the system in response to model lifecycle operations</li>
+<li>Contains device twin desired properties derived from model configuration</li>
+</ul>
+<hr/>
+<h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes<a class="headerlink" href="#measurable-outcomes" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>SC-001</strong>: Administrators can browse and search the complete device model catalog in under 3 seconds regardless of catalog size (with pagination)</li>
+<li><strong>SC-002</strong>: Network engineers can create a new LoRaWAN device model with full protocol configuration in under 5 minutes</li>
+<li><strong>SC-003</strong>: Device model configuration changes are synchronized to all associated devices via cloud platform within 2 minutes</li>
+<li><strong>SC-004</strong>: System prevents 100% of attempted deletions of device models that are in use by active devices</li>
+<li><strong>SC-005</strong>: Command frame validation catches 100% of invalid hexadecimal formats before saving</li>
+<li><strong>SC-006</strong>: Authentication mode immutability is enforced 100% of the time after initial model creation</li>
+<li><strong>SC-007</strong>: Built-in models are protected from deletion/modification with 100% reliability</li>
+<li><strong>SC-008</strong>: Enrollment group creation and device model database operations maintain consistency in 100% of scenarios (all-or-nothing transaction)</li>
+<li><strong>SC-009</strong>: Users with only model:read permission are blocked from all write operations with 100% effectiveness</li>
+<li><strong>SC-010</strong>: Device model avatar images load and display in under 2 seconds</li>
+<li><strong>SC-011</strong>: Full-text search returns filtered results in under 1 second for catalogs with up to 1000 models</li>
+<li><strong>SC-012</strong>: 90% of device provisioning errors are reduced by using standardized device model templates instead of per-device configuration</li>
+<li><strong>SC-013</strong>: Network engineers can identify device types by avatar in under 2 seconds when selecting models</li>
+<li><strong>SC-014</strong>: Frame counter validation prevents 100% of values outside the valid range 0-4294967295</li>
+<li><strong>SC-015</strong>: System successfully creates enrollment groups in both Azure IoT Hub and AWS IoT Core with provider abstraction layer</li>
+</ul>
+<hr/>
+<h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">¶</a></h2>
+<h3 id="source-analysis">Source Analysis<a class="headerlink" href="#source-analysis" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Analysis Path</strong>: <code>specs/009-lorawan-device-model-management/analyze.md</code></li>
+<li><strong>Analyzed By</strong>: excavate.specifier</li>
+<li><strong>Analysis Date</strong>: 2025-01-30</li>
+</ul>
+<h3 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h3>
+<p><strong>Controllers &amp; Entry Points</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANDeviceModelsController.cs</code> (Lines 1-138)</li>
+<li>REST API for device model CRUD operations</li>
+<li>Authorization: model:read, model:write</li>
+<li>Feature gate: LoRaFeatureActiveFilter</li>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANCommandsController.cs</code> (Lines 1-65)</li>
+<li>REST API for command management</li>
+<li>Endpoints: GET/POST /api/lorawan/models/{id}/commands</li>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelControllerBase.cs</code> (Lines 1-138)</li>
+<li>Generic base controller shared with standard device models</li>
+</ul>
+<p><strong>Business Logic</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IDeviceModelService.cs</code> (Lines 1-26)</li>
+<li>Service interface: GetDeviceModels, GetDeviceModel, CreateDeviceModel, UpdateDeviceModel, DeleteDeviceModel</li>
+<li><code>src/IoTHub.Portal.Server/Services/DeviceModelService.cs</code> (Lines 1-190)</li>
+<li>Concrete implementation with enrollment group and configuration management</li>
+<li><code>src/IoTHub.Portal.Application/Services/ILoRaWANCommandService.cs</code></li>
+<li>Command service: GetDeviceModelCommandsFromModel, PostDeviceModelCommands</li>
+</ul>
+<p><strong>Data Layer</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Entities/DeviceModel.cs</code> (Lines 1-41)</li>
+<li>Core entity with SupportLoRaFeatures flag and LoRaWAN properties</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/DeviceModelCommand.cs</code> (Lines 1-20)</li>
+<li>Command entity: Name, Frame, Confirmed, Port, IsBuiltin</li>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IDeviceModelRepository.cs</code> (Lines 1-10)</li>
+<li>Repository interface: GetByNameAsync</li>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IDeviceModelCommandRepository.cs</code></li>
+<li>Command repository for persistence</li>
+</ul>
+<p><strong>Data Transfer Objects</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceModelDto.cs</code> (Lines 1-89)</li>
+<li>Complete LoRaWAN device model DTO with validation</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceBase.cs</code> (Lines 1-100)</li>
+<li>Base class with LoRaWAN protocol properties and defaults</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/DeviceModelCommandDto.cs</code></li>
+<li>Command DTO with frame validation regex</li>
+</ul>
+<p><strong>UI Components</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/DeviceModels/DeviceModelListPage.razor</code> (Lines 1-150+)</li>
+<li>Paginated list with search and sorting</li>
+<li><code>src/IoTHub.Portal.Client/Components/DeviceModels/LoRaWAN/CreateLoraDeviceModel.razor</code> (Lines 1-50+)</li>
+<li>Creation form with LoRaWAN configuration</li>
+<li><code>src/IoTHub.Portal.Client/Components/DeviceModels/LoRaWAN/EditLoraDeviceModel.razor</code> (Lines 1-100+)</li>
+<li>Edit form with OTAA/ABP sections and receive window configuration</li>
+</ul>
+<p><strong>Mappers</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Infrastructure/Mappers/IDeviceModelMapper.cs</code> (Lines 1-16)</li>
+<li>Generic mapper interface</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Mappers/LoRaDeviceModelMapper.cs</code> (Lines 1-79)</li>
+<li>LoRaWAN-specific mapper building device twin properties</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
+<p><strong>Depends On</strong> (Prerequisites):</p>
+<ul>
+<li>Standard Device Model Management - Generic base controller and service layer</li>
+<li>Label Management - Model categorization system</li>
+<li>Authentication &amp; Authorization - Permission enforcement (model:read, model:write)</li>
+<li>Configuration Management - Portal settings for CloudProvider selection</li>
+<li>Azure IoT Hub / AWS IoT Core - Enrollment group and device twin management</li>
+</ul>
+<p><strong>Depended On By</strong> (Features that need this):</p>
+<ul>
+<li>LoRaWAN Device Management - Devices must reference a LoRaWAN device model for provisioning</li>
+<li>Device Provisioning - Models provide templates for automatic device onboarding</li>
+<li>Command Execution - Commands defined on models are available to devices</li>
+</ul>
+<h3 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">¶</a></h3>
+<p><strong>Device Model Management</strong>:</p>
+<ul>
+<li><code>GET /api/lorawan/models</code> - List LoRaWAN device models (paginated, searchable, sortable)</li>
+<li><code>GET /api/lorawan/models/{id}</code> - Get device model details</li>
+<li><code>POST /api/lorawan/models</code> - Create new device model</li>
+<li><code>PUT /api/lorawan/models</code> - Update device model</li>
+<li><code>DELETE /api/lorawan/models/{id}</code> - Delete device model</li>
+</ul>
+<p><strong>Avatar Management</strong>:</p>
+<ul>
+<li><code>GET /api/lorawan/models/{id}/avatar</code> - Get avatar URL</li>
+<li><code>POST /api/lorawan/models/{id}/avatar</code> - Upload/update avatar</li>
+<li><code>DELETE /api/lorawan/models/{id}/avatar</code> - Delete avatar</li>
+</ul>
+<p><strong>Command Management</strong>:</p>
+<ul>
+<li><code>GET /api/lorawan/models/{id}/commands</code> - Get model commands</li>
+<li><code>POST /api/lorawan/models/{id}/commands</code> - Set model commands</li>
+</ul>
+<h3 id="lorawan-protocol-specifications">LoRaWAN Protocol Specifications<a class="headerlink" href="#lorawan-protocol-specifications" title="Permanent link">¶</a></h3>
+<p><strong>Authentication Modes</strong>:</p>
+<ul>
+<li>OTAA (Over-The-Air Activation): Secure activation using network and application keys</li>
+<li>ABP (Activation By Personalization): Pre-provisioned activation with fixed session keys</li>
+</ul>
+<p><strong>Device Classes</strong>:</p>
+<ul>
+<li>Class A: Bi-directional with scheduled receive windows after uplink (most power efficient)</li>
+<li>Class B: Bi-directional with scheduled receive windows (synchronized)</li>
+<li>Class C: Bi-directional with continuous receive windows (highest power consumption)</li>
+</ul>
+<p><strong>Deduplication Modes</strong>:</p>
+<ul>
+<li>None: Process all messages from all gateways</li>
+<li>Drop: Keep only first message, discard duplicates</li>
+<li>Mark: Process all messages but flag duplicates</li>
+</ul>
+<p><strong>Frame Counter Range</strong>: 0 to 4,294,967,295 (32-bit unsigned integer)</p>
+<p><strong>Command Port Range</strong>: 1 to 223 (LoRaWAN application ports)</p>
+<p><strong>Frame Length</strong>: Maximum 255 characters (hex-encoded)</p>
+<h3 id="cloud-platform-integration">Cloud Platform Integration<a class="headerlink" href="#cloud-platform-integration" title="Permanent link">¶</a></h3>
+<p><strong>Azure IoT Hub</strong>:</p>
+<ul>
+<li>Enrollment groups created via IDeviceRegistryProvider</li>
+<li>Device twin desired properties via IConfigService</li>
+<li>Multi-cloud abstraction via provider interfaces</li>
+</ul>
+<p><strong>AWS IoT Core</strong>:</p>
+<ul>
+<li>Alternative cloud backend with same provider interface</li>
+<li>Enrollment group equivalents via AWS IoT provisioning templates</li>
+</ul>
+<hr/>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
+<h3 id="implementation-considerations">Implementation Considerations<a class="headerlink" href="#implementation-considerations" title="Permanent link">¶</a></h3>
+<p>This specification is derived from comprehensive code analysis and represents the <strong>what</strong> and <strong>why</strong> of LoRaWAN Device Model Management. Implementation teams should note:</p>
+<ul>
+<li>
+<p><strong>Generic Architecture</strong>: The system uses generic base controllers and services (DeviceModelsControllerBase<tlistitem, tmodel="">, IDeviceModelService<tlistitem, tmodel="">) to share code between standard and LoRaWAN device models while maintaining type safety.</tlistitem,></tlistitem,></p>
+</li>
+<li>
+<p><strong>Immutability Pattern</strong>: OTAA/ABP authentication mode is immutable after creation to prevent provisioning inconsistencies. This is enforced at both UI (disabled toggle) and potentially API layers.</p>
+</li>
+<li>
+<p><strong>Transactional Consistency</strong>: Device model creation must be atomic - if enrollment group creation in the cloud platform fails, the model should not be persisted to maintain consistency.</p>
+</li>
+<li>
+<p><strong>Multi-Cloud Abstraction</strong>: The system abstracts cloud platform differences (Azure IoT Hub vs AWS IoT Core) through provider interfaces, enabling portability without code duplication.</p>
+</li>
+<li>
+<p><strong>Mapper Pattern</strong>: Device model configurations are translated to device twin desired properties via the mapper pattern, centralizing the logic for property transformation.</p>
+</li>
+<li>
+<p><strong>Feature Gating</strong>: All LoRaWAN endpoints are protected by LoRaFeatureActiveFilter, allowing the LoRaWAN feature to be disabled without affecting standard device model functionality.</p>
+</li>
+<li>
+<p><strong>Default Values</strong>: The LoRaDeviceBase and LoRaDeviceModelDto classes define sensible defaults (ClassType.A, PreferredWindow=1, Deduplication=None, ABPRelaxMode=true, Downlink=true) to simplify model creation.</p>
+</li>
+<li>
+<p><strong>Validation Strategy</strong>: Multi-layer validation occurs at DTO (data annotations), service (business rules), and repository (constraints) levels to ensure data integrity.</p>
+</li>
+<li>
+<p><strong>Permission Model</strong>: Coarse-grained permissions (model:read, model:write) provide role-based access control without excessive permission granularity.</p>
+</li>
+<li>
+<p><strong>Optimistic UI</strong>: UI likely uses optimistic updates with error handling for better user experience during model operations.</p>
+</li>
+</ul>
+<h3 id="business-value">Business Value<a class="headerlink" href="#business-value" title="Permanent link">¶</a></h3>
+<p>LoRaWAN Device Model Management delivers value through:</p>
+<ol>
+<li><strong>Standardization</strong>: Reusable templates eliminate per-device configuration errors</li>
+<li><strong>Scalability</strong>: Automatic provisioning via enrollment groups enables rapid device onboarding</li>
+<li><strong>Consistency</strong>: Centralized configuration management ensures uniform behavior across device fleets</li>
+<li><strong>Flexibility</strong>: Support for both OTAA and ABP authentication accommodates different security and deployment requirements</li>
+<li><strong>Optimization</strong>: Granular protocol configuration enables network performance tuning and power consumption optimization</li>
+<li><strong>Control</strong>: Command management provides standardized remote device control capabilities</li>
+<li><strong>Multi-Cloud</strong>: Provider abstraction protects against cloud platform lock-in</li>
+</ol>
+<h3 id="testing-strategy">Testing Strategy<a class="headerlink" href="#testing-strategy" title="Permanent link">¶</a></h3>
+<p>Comprehensive testing should cover:</p>
+<ul>
+<li><strong>Unit Tests</strong>: Controller actions, service methods, mappers, validators</li>
+<li><strong>Integration Tests</strong>: Cloud platform enrollment group operations, device twin updates</li>
+<li><strong>Authorization Tests</strong>: Permission enforcement for all read/write operations</li>
+<li><strong>Validation Tests</strong>: Frame format, frame counter ranges, port numbers, authentication mode immutability</li>
+<li><strong>Deletion Tests</strong>: In-use model protection, built-in model protection, cascade deletion</li>
+<li><strong>UI Tests</strong>: Search, filtering, pagination, conditional rendering based on permissions</li>
+<li><strong>Multi-Cloud Tests</strong>: Both Azure IoT Hub and AWS IoT Core provider implementations</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

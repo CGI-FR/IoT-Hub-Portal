@@ -1,0 +1,1570 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature: Device Model Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-device-model-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature: Device Model Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#description">
+<span class="md-ellipsis">
+      Description
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-locations">
+<span class="md-ellipsis">
+      Code Locations
+    </span>
+</a>
+<nav aria-label="Code Locations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entry-points-endpoints">
+<span class="md-ellipsis">
+      Entry Points / Endpoints
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-logic">
+<span class="md-ellipsis">
+      Business Logic
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-access">
+<span class="md-ellipsis">
+      Data Access
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-components">
+<span class="md-ellipsis">
+      UI Components
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-transfer-objects">
+<span class="md-ellipsis">
+      Data Transfer Objects
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#client-services">
+<span class="md-ellipsis">
+      Client Services
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validators">
+<span class="md-ellipsis">
+      Validators
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-endpoints">
+<span class="md-ellipsis">
+      API Endpoints
+    </span>
+</a>
+<nav aria-label="API Endpoints" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-management">
+<span class="md-ellipsis">
+      Device Model Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-avatar-management">
+<span class="md-ellipsis">
+      Device Model Avatar Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-properties">
+<span class="md-ellipsis">
+      Device Model Properties
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization">
+<span class="md-ellipsis">
+      Authorization
+    </span>
+</a>
+<nav aria-label="Authorization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#required-permissions">
+<span class="md-ellipsis">
+      Required Permissions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization-implementation">
+<span class="md-ellipsis">
+      Authorization Implementation
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+<nav aria-label="Dependencies" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#internal-feature-dependencies">
+<span class="md-ellipsis">
+      Internal Feature Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#service-dependencies">
+<span class="md-ellipsis">
+      Service Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-dependencies">
+<span class="md-ellipsis">
+      External Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-dependencies">
+<span class="md-ellipsis">
+      UI Dependencies
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-features-behaviors">
+<span class="md-ellipsis">
+      Key Features &amp; Behaviors
+    </span>
+</a>
+<nav aria-label="Key Features &amp; Behaviors" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#search-and-filtering">
+<span class="md-ellipsis">
+      Search and Filtering
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pagination">
+<span class="md-ellipsis">
+      Pagination
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#property-management">
+<span class="md-ellipsis">
+      Property Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#avatar-management">
+<span class="md-ellipsis">
+      Avatar Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-types">
+<span class="md-ellipsis">
+      Device Model Types
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#iot-hub-integration">
+<span class="md-ellipsis">
+      IoT Hub Integration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#built-in-models">
+<span class="md-ellipsis">
+      Built-in Models
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validation">
+<span class="md-ellipsis">
+      Validation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#label-management">
+<span class="md-ellipsis">
+      Label Management
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notes">
+<span class="md-ellipsis">
+      Notes
+    </span>
+</a>
+<nav aria-label="Notes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture-patterns">
+<span class="md-ellipsis">
+      Architecture Patterns
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#multi-cloud-support">
+<span class="md-ellipsis">
+      Multi-Cloud Support
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-considerations">
+<span class="md-ellipsis">
+      Performance Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-considerations">
+<span class="md-ellipsis">
+      Security Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testing-coverage">
+<span class="md-ellipsis">
+      Testing Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-points">
+<span class="md-ellipsis">
+      Integration Points
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-enhancement-opportunities">
+<span class="md-ellipsis">
+      Future Enhancement Opportunities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-device-model-management">Feature: Device Model Management<a class="headerlink" href="#feature-device-model-management" title="Permanent link">¶</a></h1>
+<p><strong>Category</strong>: Device Management<br/>
+<strong>Status</strong>: Analyzed  </p>
+<hr/>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">¶</a></h2>
+<p>The Device Model Management feature provides comprehensive CRUD (Create, Read, Update, Delete) operations for device model templates in the portal. Device models serve as blueprints for IoT devices, defining their properties, behaviors, and metadata. The feature includes:</p>
+<ul>
+<li>Paginated device model listing with search and filtering capabilities (by name and description)</li>
+<li>Device model creation with support for both standard and LoRaWAN device types</li>
+<li>Device model editing with real-time property and command management</li>
+<li>Device model deletion with validation to prevent deletion if models are in use by devices</li>
+<li>Device model avatar/image management (upload, change, delete)</li>
+<li>Device model property management (define properties with types, display names, order, and writability)</li>
+<li>Device model command management for LoRaWAN devices</li>
+<li>Label management for device model categorization</li>
+<li>Integration with Azure IoT Hub or AWS IoT Core for enrollment group and configuration management</li>
+<li>Support for built-in models that cannot be edited or deleted</li>
+<li>Automatic enrollment group creation in IoT Hub/AWS when creating device models</li>
+</ul>
+<p>This feature serves as the foundation for device lifecycle management, providing business value through:</p>
+<ul>
+<li>Standardized device templates for consistent device provisioning</li>
+<li>Reusable device configurations across multiple devices</li>
+<li>Centralized property definition and management</li>
+<li>Simplified device onboarding through model-based configuration</li>
+<li>Support for both standard IoT and LoRaWAN device types</li>
+</ul>
+<hr/>
+<h2 id="code-locations">Code Locations<a class="headerlink" href="#code-locations" title="Permanent link">¶</a></h2>
+<h3 id="entry-points-endpoints">Entry Points / Endpoints<a class="headerlink" href="#entry-points-endpoints" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelsController.cs</code> (Lines 1-133)</li>
+<li>
+<p><strong>Snippet</strong>: Main REST API controller inheriting from DeviceModelsControllerBase</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">[Authorize]</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="na">[ApiController]</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="na">[ApiVersion("1.0")]</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="na">[Route("api/models")]</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="na">[ApiExplorerSettings(GroupName = "Device Models")]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceModelsController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DeviceModelsControllerBase</span><span class="o">&lt;</span><span class="n">DeviceModelDto</span><span class="p">,</span><span class="w"> </span><span class="n">DeviceModelDto</span><span class="o">&gt;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="p">{</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="na">[HttpGet(Name = "GET Device model list")]</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">    </span><span class="na">[Authorize("model:read")]</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">PaginationResult</span><span class="o">&lt;</span><span class="n">DeviceModelDto</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">GetItems</span><span class="p">([</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="n">DeviceModelFilter</span><span class="w"> </span><span class="n">deviceModelFilter</span><span class="p">)</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="na">[HttpGet("{id}", Name = "GET Device model")]</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">    </span><span class="na">[Authorize("model:read")]</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">DeviceModelDto</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetItem</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span><span class="na">[HttpGet("{id}/avatar", Name = "GET Device model avatar URL")]</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">    </span><span class="na">[Authorize("model:read")]</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="na">[HttpPost("{id}/avatar", Name = "POST Update the device model avatar")]</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">    </span><span class="na">[Authorize("model:write")]</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ChangeAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">avatar</span><span class="p">)</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="na">[HttpDelete("{id}/avatar", Name = "DELETE Remove the device model avatar")]</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">    </span><span class="na">[Authorize("model:write")]</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">DeleteAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">    </span><span class="na">[HttpPost(Name = "POST Create a new device model")]</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="na">[Authorize("model:write")]</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Post</span><span class="p">(</span><span class="n">DeviceModelDto</span><span class="w"> </span><span class="n">deviceModel</span><span class="p">)</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">    </span><span class="na">[HttpPut(Name = "PUT Update the device model")]</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">    </span><span class="na">[Authorize("model:write")]</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Put</span><span class="p">(</span><span class="n">DeviceModelDto</span><span class="w"> </span><span class="n">deviceModel</span><span class="p">)</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">    </span><span class="na">[HttpDelete("{id}", Name = "DELETE Remove the device model")]</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="w">    </span><span class="na">[Authorize("model:write")]</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Delete</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelControllerBase.cs</code> (Lines 1-138)</p>
+</li>
+<li>Base controller implementation with shared logic for device model operations</li>
+<li>
+<p>Generic controller supporting both standard and LoRaWAN models</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesController.cs</code> (Lines 1-52)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Controller for device model property management</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span>
+<span class="normal"><a href="#__codelineno-1-11">11</a></span>
+<span class="normal"><a href="#__codelineno-1-12">12</a></span>
+<span class="normal"><a href="#__codelineno-1-13">13</a></span>
+<span class="normal"><a href="#__codelineno-1-14">14</a></span>
+<span class="normal"><a href="#__codelineno-1-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="na">[Authorize]</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="na">[ApiController]</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="na">[ApiVersion("1.0")]</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="na">[Route("api/models/{id}/properties")]</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="na">[ApiExplorerSettings(GroupName = "Device Models")]</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceModelPropertiesController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DeviceModelPropertiesControllerBase</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="p">{</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="na">[HttpGet(Name = "GET Device model properties")]</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="na">[Authorize("model:read")]</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">DeviceProperty</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">GetProperties</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">    </span><span class="na">[HttpPost(Name = "POST Device model properties")]</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">    </span><span class="na">[Authorize("model:write")]</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SetProperties</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">DeviceProperty</span><span class="o">&gt;</span><span class="w"> </span><span class="n">properties</span><span class="p">)</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h3 id="business-logic">Business Logic<a class="headerlink" href="#business-logic" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IDeviceModelService.cs</code> (Lines 1-26)</li>
+<li>
+<p><strong>Snippet</strong>: Core service interface</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span>
+<span class="normal"><a href="#__codelineno-2-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IDeviceModelService</span><span class="o">&lt;</span><span class="n">TListItem</span><span class="p">,</span><span class="w"> </span><span class="n">TModel</span><span class="o">&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">TListItem</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">class</span><span class="p">,</span><span class="w"> </span><span class="n">IDeviceModel</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">TModel</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">class</span><span class="p">,</span><span class="w"> </span><span class="n">IDeviceModel</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="p">{</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">PaginatedResult</span><span class="o">&lt;</span><span class="n">DeviceModelDto</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetDeviceModels</span><span class="p">(</span><span class="n">DeviceModelFilter</span><span class="w"> </span><span class="n">deviceModelFilter</span><span class="p">);</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">TModel</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetDeviceModel</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceModelId</span><span class="p">);</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">TModel</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CreateDeviceModel</span><span class="p">(</span><span class="n">TModel</span><span class="w"> </span><span class="n">deviceModel</span><span class="p">);</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">UpdateDeviceModel</span><span class="p">(</span><span class="n">TModel</span><span class="w"> </span><span class="n">deviceModel</span><span class="p">);</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">DeleteDeviceModel</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceModelId</span><span class="p">);</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetDeviceModelAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceModelId</span><span class="p">);</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">UpdateDeviceModelAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceModelId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">avatar</span><span class="p">);</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">DeleteDeviceModelAvatar</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceModelId</span><span class="p">);</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Server/Services/DeviceModelService.cs</code> (Lines 1-190)</p>
+</li>
+<li>Concrete implementation for device model operations</li>
+<li>Handles database operations for device model CRUD</li>
+<li>Manages device model properties, commands, and labels</li>
+<li>Coordinates with IoT Hub for enrollment group creation</li>
+<li>Validates device model usage before deletion</li>
+<li>
+<p><strong>Key Methods</strong>:</p>
+<ul>
+<li><code>GetDeviceModels</code>: Retrieves paginated list with search filtering</li>
+<li><code>GetDeviceModel</code>: Gets single model with labels</li>
+<li><code>CreateDeviceModel</code>: Creates model, sets default image, creates IoT Hub configuration</li>
+<li><code>UpdateDeviceModel</code>: Updates model and labels, recreates IoT Hub configuration</li>
+<li><code>DeleteDeviceModel</code>: Validates no devices use model, deletes enrollment groups, configurations, commands, labels, and image</li>
+<li>Avatar management methods</li>
+</ul>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Application/Services/IDeviceModelPropertiesService.cs</code> (Lines 1-13)</p>
+</li>
+<li>Service interface for device model property management</li>
+<li>
+<p>Methods: GetModelProperties, SavePropertiesForModel, GetAllPropertiesNames</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Infrastructure/Services/DeviceModelPropertiesService.cs</code></p>
+</li>
+<li>Manages device model properties stored in portal database</li>
+<li>Handles property CRUD operations</li>
+</ul>
+<h3 id="data-access">Data Access<a class="headerlink" href="#data-access" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IDeviceModelRepository.cs</code> (Lines 1-10)</li>
+<li>Generic repository interface for DeviceModel entity</li>
+<li>
+<p>Method: GetByNameAsync for name-based lookup</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Domain/Entities/DeviceModel.cs</code> (Lines 1-41)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Core device model entity</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceModel</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EntityBase</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">Description</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsBuiltin</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">SupportLoRaFeatures</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="c1">// LoRaWAN specific properties</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool?</span><span class="w"> </span><span class="n">UseOTAA</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int?</span><span class="w"> </span><span class="n">PreferredWindow</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DeduplicationMode</span><span class="o">?</span><span class="w"> </span><span class="n">Deduplication</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ClassType</span><span class="w"> </span><span class="n">ClassType</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool?</span><span class="w"> </span><span class="n">ABPRelaxMode</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool?</span><span class="w"> </span><span class="n">Downlink</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int?</span><span class="w"> </span><span class="n">KeepAliveTimeout</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int?</span><span class="w"> </span><span class="n">RXDelay</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">SensorDecoder</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">AppEUI</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19"></a>
+<a id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">    </span><span class="c1">// Navigation properties</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ICollection</span><span class="o">&lt;</span><span class="n">Label</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Labels</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Domain/Entities/DeviceModelProperty.cs</code> (Lines 1-45)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Device model property entity</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span>
+<span class="normal"><a href="#__codelineno-4-13">13</a></span>
+<span class="normal"><a href="#__codelineno-4-14">14</a></span>
+<span class="normal"><a href="#__codelineno-4-15">15</a></span>
+<span class="normal"><a href="#__codelineno-4-16">16</a></span>
+<span class="normal"><a href="#__codelineno-4-17">17</a></span>
+<span class="normal"><a href="#__codelineno-4-18">18</a></span>
+<span class="normal"><a href="#__codelineno-4-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceModelProperty</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EntityBase</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="p">{</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="na">[Required]</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DisplayName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">    </span><span class="na">[Required]</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsWritable</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">    </span><span class="na">[Required]</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Order</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13"></a>
+<a id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w">    </span><span class="na">[Required]</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DevicePropertyType</span><span class="w"> </span><span class="n">PropertyType</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16"></a>
+<a id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">    </span><span class="na">[Required]</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ModelId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Domain/Entities/DeviceModelCommand.cs</code> (Lines 1-20)</p>
+</li>
+<li>Device model command entity for LoRaWAN devices</li>
+<li>Properties: Name, Frame, Confirmed, Port, IsBuiltin, DeviceModelId</li>
+</ul>
+<h3 id="ui-components">UI Components<a class="headerlink" href="#ui-components" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/DeviceModels/DeviceModelListPage.razor</code> (Lines 1-211)</li>
+<li>Main device model listing page with search panel</li>
+<li>Server-side paginated table with sorting</li>
+<li>Implements search by name and description</li>
+<li>Displays model image, name, description, and labels</li>
+<li>Conditional rendering based on permissions (model:read, model:write)</li>
+<li>Built-in models cannot be deleted</li>
+<li>
+<p>Table columns: Image, Name, Description, Details button, Delete button</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/DeviceModels/DeviceModelDetailPage.razor</code> (Lines 1-411)</p>
+</li>
+<li>Device model detail view and editor</li>
+<li>Supports both standard and LoRaWAN device models</li>
+<li>Tabs: General (details, properties, labels), LoRaWAN (LoRa-specific configuration)</li>
+<li>Avatar upload/delete functionality with image preview</li>
+<li>Property management: add, edit, remove properties with validation</li>
+<li>Command management for LoRaWAN models</li>
+<li>Label editor integration</li>
+<li>Built-in models have edit restrictions</li>
+<li>Save and delete operations with validation</li>
+<li>
+<p>Permission checks for model:read, model:write</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/DeviceModels/CreateDeviceModelPage.razor</code> (Lines 1-357)</p>
+</li>
+<li>Device model creation page</li>
+<li>Similar structure to detail page but for new models</li>
+<li>Toggle for LoRaWAN support (when portal has LoRa enabled)</li>
+<li>Property and command management</li>
+<li>Avatar upload functionality</li>
+<li>Form validation before submission</li>
+<li>
+<p>Requires model:write permission</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/DeviceModels/DeleteDeviceModelPage.razor</code> (Lines 1-44)</p>
+</li>
+<li>Confirmation dialog for device model deletion</li>
+<li>Displays warning about irreversibility</li>
+<li>
+<p>Simple modal with cancel and delete actions</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Components/DeviceModels/DeviceModelSearch.razor</code> (Lines 1-39)</p>
+</li>
+<li>Search panel component with expansion panel</li>
+<li>Single text field for searching name or description</li>
+<li>Search and reset buttons</li>
+</ul>
+<h3 id="data-transfer-objects">Data Transfer Objects<a class="headerlink" href="#data-transfer-objects" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/DeviceModelDto.cs</code> (Lines 1-54)</li>
+<li>Complete device model DTO with validation attributes</li>
+<li>
+<p><strong>Snippet</strong>:</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span>
+<span class="normal"><a href="#__codelineno-5-12">12</a></span>
+<span class="normal"><a href="#__codelineno-5-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceModelDto</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IDeviceModel</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ModelId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The device model name is required.")]</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Description</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsBuiltin</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">SupportLoRaFeatures</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">LabelDto</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Labels</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/DeviceProperty.cs</code> (Lines 1-45)</p>
+</li>
+<li>Device property DTO for model properties</li>
+<li>
+<p><strong>Snippet</strong>:</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-6-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-6-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-6-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-6-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-6-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-6-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-6-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-6-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-6-10">10</a></span>
+<span class="normal"><a href="#__codelineno-6-11">11</a></span>
+<span class="normal"><a href="#__codelineno-6-12">12</a></span>
+<span class="normal"><a href="#__codelineno-6-13">13</a></span>
+<span class="normal"><a href="#__codelineno-6-14">14</a></span>
+<span class="normal"><a href="#__codelineno-6-15">15</a></span>
+<span class="normal"><a href="#__codelineno-6-16">16</a></span>
+<span class="normal"><a href="#__codelineno-6-17">17</a></span>
+<span class="normal"><a href="#__codelineno-6-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceProperty</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="p">{</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The property name is required.")]</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">    </span><span class="na">[RegularExpression(@"^([\w]</span><span class="o">+</span><span class="err">\</span><span class="p">.)</span><span class="o">+</span><span class="p">[</span><span class="err">\</span><span class="n">w</span><span class="p">]</span><span class="o">+|</span><span class="p">[</span><span class="err">\</span><span class="n">w</span><span class="p">]</span><span class="o">+</span><span class="s">$", ErrorMessage = "</span><span class="n">Property</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">formed</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">words</span><span class="w"> </span><span class="n">separated</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">dot</span><span class="s">")]</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The display name is required.")]</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DisplayName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The property should indicate whether it's writable or not.")]</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsWritable</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12"></a>
+<a id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The property should indicate whether it's writable or not.")]</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Order</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15"></a>
+<a id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The property should define the expected type.")]</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DevicePropertyType</span><span class="w"> </span><span class="n">PropertyType</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/Filters/DeviceModelFilter.cs</code> (Lines 1-11)</p>
+</li>
+<li>Filter DTO for device model search</li>
+<li>Properties: SearchText (name or description), plus inherited pagination properties</li>
+</ul>
+<h3 id="client-services">Client Services<a class="headerlink" href="#client-services" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Services/IDeviceModelsClientService.cs</code> (Lines 1-26)</li>
+<li>Client-side service interface for HTTP API calls</li>
+<li>Methods: GetDeviceModelsAsync, GetDeviceModel, CreateDeviceModelAsync, UpdateDeviceModel, DeleteDeviceModel, GetDeviceModelModelPropertiesAsync, SetDeviceModelModelProperties, GetAvatar, ChangeAvatarAsync</li>
+</ul>
+<h3 id="validators">Validators<a class="headerlink" href="#validators" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Validators/DeviceModelValidator.cs</code> (Lines 1-15)</li>
+<li>FluentValidation validator for DeviceModelDto</li>
+<li>
+<p>Validates: Name is required</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Validators/DevicePropertyValidator.cs</code></p>
+</li>
+<li>FluentValidation validator for DeviceProperty</li>
+<li>Validates property fields according to data annotations</li>
+</ul>
+<hr/>
+<h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">¶</a></h2>
+<h3 id="device-model-management">Device Model Management<a class="headerlink" href="#device-model-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/models</code> - Get paginated device model list</li>
+<li>Query parameters: searchText, pageSize, pageNumber, orderBy[]</li>
+<li>Returns: PaginationResult<devicemodeldto></devicemodeldto></li>
+<li>Authorization: model:read</li>
+<li>
+<p>Searches in name and description fields</p>
+</li>
+<li>
+<p><code>GET /api/models/{id}</code> - Get device model details</p>
+</li>
+<li>Returns: DeviceModelDto (or LoRaDeviceModelDto)</li>
+<li>Authorization: model:read</li>
+<li>
+<p>Includes labels</p>
+</li>
+<li>
+<p><code>POST /api/models</code> - Create new device model</p>
+</li>
+<li>Body: DeviceModelDto</li>
+<li>Returns: DeviceModelDto with ModelId</li>
+<li>Authorization: model:write</li>
+<li>
+<p>Creates model in database, sets default image, creates IoT Hub enrollment group and configuration</p>
+</li>
+<li>
+<p><code>PUT /api/models</code> - Update device model</p>
+</li>
+<li>Body: DeviceModelDto</li>
+<li>Returns: 200 OK</li>
+<li>Authorization: model:write</li>
+<li>
+<p>Updates model in database, recreates IoT Hub configuration</p>
+</li>
+<li>
+<p><code>DELETE /api/models/{id}</code> - Delete device model</p>
+</li>
+<li>Returns: 204 No Content</li>
+<li>Authorization: model:write</li>
+<li>Validates model is not in use by devices</li>
+<li>Removes enrollment group, configurations, commands, labels, and image</li>
+</ul>
+<h3 id="device-model-avatar-management">Device Model Avatar Management<a class="headerlink" href="#device-model-avatar-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/models/{id}/avatar</code> - Get device model avatar URL</li>
+<li>Returns: string (image URL)</li>
+<li>
+<p>Authorization: model:read</p>
+</li>
+<li>
+<p><code>POST /api/models/{id}/avatar</code> - Update device model avatar</p>
+</li>
+<li>Body: string (base64 image data)</li>
+<li>Returns: string (new image URL)</li>
+<li>Authorization: model:write</li>
+<li>Accepts JPG, JPEG, PNG formats</li>
+<li>
+<p>Resizes to 200x200</p>
+</li>
+<li>
+<p><code>DELETE /api/models/{id}/avatar</code> - Remove device model avatar</p>
+</li>
+<li>Returns: 204 No Content</li>
+<li>Authorization: model:write</li>
+<li>Resets to default avatar</li>
+</ul>
+<h3 id="device-model-properties">Device Model Properties<a class="headerlink" href="#device-model-properties" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/models/{id}/properties</code> - Get device model properties</li>
+<li>Returns: IEnumerable<deviceproperty></deviceproperty></li>
+<li>Authorization: model:read</li>
+<li>
+<p>Returns properties ordered by Order field</p>
+</li>
+<li>
+<p><code>POST /api/models/{id}/properties</code> - Set device model properties</p>
+</li>
+<li>Body: IEnumerable<deviceproperty></deviceproperty></li>
+<li>Returns: 200 OK</li>
+<li>Authorization: model:write</li>
+<li>Replaces all properties for the model</li>
+</ul>
+<hr/>
+<h2 id="authorization">Authorization<a class="headerlink" href="#authorization" title="Permanent link">¶</a></h2>
+<h3 id="required-permissions">Required Permissions<a class="headerlink" href="#required-permissions" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>model:read</strong> - View device model list, details, properties, and avatars</li>
+<li><strong>model:write</strong> - Create, update, delete device models, manage properties and avatars</li>
+</ul>
+<h3 id="authorization-implementation">Authorization Implementation<a class="headerlink" href="#authorization-implementation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Attribute-based authorization using <code>[Authorize("permission")]</code> attributes on controller methods</li>
+<li>Permission checks in UI components using <code>HasPermissionAsync(PortalPermissions.*)</code> for conditional rendering</li>
+<li>Base authorization requirement: <code>[Authorize]</code> on DeviceModelsController</li>
+<li>Built-in models have additional UI restrictions preventing edit/delete even with write permissions</li>
+</ul>
+<hr/>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h2>
+<h3 id="internal-feature-dependencies">Internal Feature Dependencies<a class="headerlink" href="#internal-feature-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Label Management</strong> - Device models can be tagged with labels for categorization</li>
+<li><strong>Device Management</strong> - Device models are referenced by devices; models cannot be deleted if in use</li>
+<li><strong>LoRaWAN Management</strong> - LoRaWAN device models have additional properties and commands</li>
+<li><strong>IoT Hub Integration</strong> - External device service for enrollment group and configuration management</li>
+</ul>
+<h3 id="service-dependencies">Service Dependencies<a class="headerlink" href="#service-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>IDeviceModelRepository</code> - Device model persistence</li>
+<li><code>IDeviceModelCommandRepository</code> - Device model command persistence (LoRaWAN)</li>
+<li><code>ILabelRepository</code> - Label persistence</li>
+<li><code>IDeviceRegistryProvider</code> - IoT Hub/AWS enrollment group management</li>
+<li><code>IConfigService</code> - IoT Hub/AWS configuration management</li>
+<li><code>IDeviceModelImageManager</code> - Device model image storage and retrieval</li>
+<li><code>IDeviceModelMapper</code> - Mapping between DTOs and entities</li>
+<li><code>IExternalDeviceService</code> - Query devices to validate model usage</li>
+<li><code>IUnitOfWork</code> - Transaction management</li>
+<li><code>IMapper</code> (AutoMapper) - Entity to DTO mapping</li>
+</ul>
+<h3 id="external-dependencies">External Dependencies<a class="headerlink" href="#external-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Azure IoT Hub</strong> or <strong>AWS IoT Core</strong> - Cloud IoT device enrollment and configuration service</li>
+<li><strong>Entity Framework Core</strong> - Database access via PortalDbContext</li>
+<li><strong>AutoMapper</strong> - Entity to DTO mapping</li>
+<li><strong>Azure Blob Storage</strong> or <strong>AWS S3</strong> - Image storage (via IDeviceModelImageManager)</li>
+</ul>
+<h3 id="ui-dependencies">UI Dependencies<a class="headerlink" href="#ui-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>MudBlazor</strong> - UI component library (MudTable, MudForm, MudTextField, MudExpansionPanel, etc.)</li>
+<li><strong>FluentValidation</strong> - Form validation</li>
+<li>LabelsEditor component - Label management</li>
+<li>EditLoraDeviceModel / CreateLoraDeviceModel components - LoRaWAN-specific UI</li>
+</ul>
+<hr/>
+<h2 id="key-features-behaviors">Key Features &amp; Behaviors<a class="headerlink" href="#key-features-behaviors" title="Permanent link">¶</a></h2>
+<h3 id="search-and-filtering">Search and Filtering<a class="headerlink" href="#search-and-filtering" title="Permanent link">¶</a></h3>
+<ul>
+<li>Full-text search by device model name or description (case-insensitive)</li>
+<li>Searches across both Name and Description fields simultaneously</li>
+<li>Server-side filtering for performance</li>
+</ul>
+<h3 id="pagination">Pagination<a class="headerlink" href="#pagination" title="Permanent link">¶</a></h3>
+<ul>
+<li>Server-side pagination with configurable page size</li>
+<li>Default page size: 10 items</li>
+<li>Uses cursor-based navigation with nextPage URL</li>
+<li>Sorting support on Name and Description columns</li>
+</ul>
+<h3 id="property-management">Property Management<a class="headerlink" href="#property-management" title="Permanent link">¶</a></h3>
+<ul>
+<li>Define custom properties for device models</li>
+<li>Property types: String, Integer, Double, Float, Long, Boolean, DateTime</li>
+<li>Properties can be writable (desired properties) or read-only (reported properties)</li>
+<li>Property order controls display sequence in device editor</li>
+<li>Properties are mapped to device twin properties in IoT Hub</li>
+<li>Validation: name must be word or dot-separated words, display name required, order required</li>
+</ul>
+<h3 id="avatar-management">Avatar Management<a class="headerlink" href="#avatar-management" title="Permanent link">¶</a></h3>
+<ul>
+<li>Upload custom images for device models (JPG, JPEG, PNG)</li>
+<li>Automatic image resizing to 200x200 pixels</li>
+<li>Default avatar assigned when no image uploaded</li>
+<li>Delete avatar to reset to default</li>
+<li>Images stored in blob storage (Azure or AWS)</li>
+</ul>
+<h3 id="device-model-types">Device Model Types<a class="headerlink" href="#device-model-types" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Standard Device Models</strong>: Basic IoT devices with properties</li>
+<li><strong>LoRaWAN Device Models</strong>: LoRaWAN devices with additional configuration (OTAA, class type, deduplication, etc.) and commands</li>
+<li>Type selection during creation (if LoRa is enabled in portal settings)</li>
+</ul>
+<h3 id="iot-hub-integration">IoT Hub Integration<a class="headerlink" href="#iot-hub-integration" title="Permanent link">¶</a></h3>
+<ul>
+<li>Automatic enrollment group creation when model is created</li>
+<li>Configuration rollout to all devices of the model type</li>
+<li>Enrollment group deletion when model is deleted</li>
+<li>Desired properties from model properties are pushed to device configurations</li>
+</ul>
+<h3 id="built-in-models">Built-in Models<a class="headerlink" href="#built-in-models" title="Permanent link">¶</a></h3>
+<ul>
+<li>System-defined models that cannot be edited or deleted</li>
+<li>Flagged with IsBuiltin property</li>
+<li>Edit/delete buttons disabled in UI</li>
+<li>Useful for default or template models</li>
+</ul>
+<h3 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device model name required</li>
+<li>Property name format validation (word or dot-separated words)</li>
+<li>Property display name required</li>
+<li>Cannot delete model if in use by any device</li>
+<li>Duplicate property names prevented</li>
+<li>LoRaWAN command validation (if applicable)</li>
+</ul>
+<h3 id="label-management">Label Management<a class="headerlink" href="#label-management" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device models can have multiple labels</li>
+<li>Labels provide categorization and filtering</li>
+<li>Labels are displayed in list view</li>
+<li>Label editor integrated in create/edit forms</li>
+</ul>
+<hr/>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
+<h3 id="architecture-patterns">Architecture Patterns<a class="headerlink" href="#architecture-patterns" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Generic Controller Base</strong> - DeviceModelsControllerBase<tlistitem, tmodel=""> allows reuse for different model types (standard, LoRaWAN)</tlistitem,></li>
+<li><strong>Generic Service Interface</strong> - IDeviceModelService<tlistitem, tmodel=""> enables polymorphic model handling</tlistitem,></li>
+<li><strong>Repository Pattern</strong> - Clean separation of data access concerns</li>
+<li><strong>Service Layer Abstraction</strong> - Business logic isolated from controllers</li>
+<li><strong>DTO Pattern</strong> - Clear separation between domain entities and API contracts</li>
+</ul>
+<h3 id="multi-cloud-support">Multi-Cloud Support<a class="headerlink" href="#multi-cloud-support" title="Permanent link">¶</a></h3>
+<ul>
+<li>Supports both Azure IoT Hub and AWS IoT Core</li>
+<li>Cloud provider selection via PortalSettings.CloudProvider</li>
+<li>Provider-specific implementations handle enrollment groups and configurations</li>
+<li>AWS provider has some restrictions (e.g., Name field disabled)</li>
+</ul>
+<h3 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Server-side pagination reduces data transfer</li>
+<li>Lazy loading with Include() for related entities (Labels)</li>
+<li>Image URLs retrieved asynchronously</li>
+<li>Query optimization with predicate building (PredicateBuilder)</li>
+<li>Parallel image retrieval during list loading</li>
+</ul>
+<h3 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Comprehensive authorization checks at controller and UI levels</li>
+<li>Built-in models protected from modification</li>
+<li>Input validation on all user-submitted data</li>
+<li>Device usage validation prevents orphaning devices</li>
+<li>XSS protection through Blazor's automatic encoding</li>
+<li>Image upload restricted to specific formats</li>
+</ul>
+<h3 id="testing-coverage">Testing Coverage<a class="headerlink" href="#testing-coverage" title="Permanent link">¶</a></h3>
+<ul>
+<li>Unit tests exist for controllers, services, validators, and UI components</li>
+<li>Test files: DeviceModelServiceTests.cs, DeviceModelsControllerTests.cs, DeviceModelValidatorTests.cs, DeviceModelPropertiesServiceTests.cs</li>
+</ul>
+<h3 id="integration-points">Integration Points<a class="headerlink" href="#integration-points" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device models are the foundation for device provisioning</li>
+<li>Properties defined in models are used in device twin synchronization</li>
+<li>Commands defined in models (LoRaWAN) are available for device execution</li>
+<li>Labels provide cross-cutting categorization</li>
+<li>Images stored in blob storage with model association</li>
+</ul>
+<h3 id="future-enhancement-opportunities">Future Enhancement Opportunities<a class="headerlink" href="#future-enhancement-opportunities" title="Permanent link">¶</a></h3>
+<ul>
+<li>Import/export device model templates</li>
+<li>Device model versioning</li>
+<li>Model inheritance or composition</li>
+<li>Bulk model operations</li>
+<li>Model usage statistics and reporting</li>
+<li>Property templates or presets</li>
+<li>Model validation rules (constraints on property values)</li>
+<li>Model search by labels</li>
+<li>Model duplication/cloning feature</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

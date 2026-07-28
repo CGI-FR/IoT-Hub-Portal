@@ -1,0 +1,1488 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature: Device Configurations Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-device-configurations-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature: Device Configurations Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#description">
+<span class="md-ellipsis">
+      Description
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-locations">
+<span class="md-ellipsis">
+      Code Locations
+    </span>
+</a>
+<nav aria-label="Code Locations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entry-points-endpoints">
+<span class="md-ellipsis">
+      Entry Points / Endpoints
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-logic">
+<span class="md-ellipsis">
+      Business Logic
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#core-service-integration">
+<span class="md-ellipsis">
+      Core Service Integration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#helper-classes">
+<span class="md-ellipsis">
+      Helper Classes
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-components">
+<span class="md-ellipsis">
+      UI Components
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-transfer-objects">
+<span class="md-ellipsis">
+      Data Transfer Objects
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#client-services">
+<span class="md-ellipsis">
+      Client Services
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-endpoints">
+<span class="md-ellipsis">
+      API Endpoints
+    </span>
+</a>
+<nav aria-label="API Endpoints" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-configuration-management">
+<span class="md-ellipsis">
+      Device Configuration Management
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization">
+<span class="md-ellipsis">
+      Authorization
+    </span>
+</a>
+<nav aria-label="Authorization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#required-permissions">
+<span class="md-ellipsis">
+      Required Permissions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization-implementation">
+<span class="md-ellipsis">
+      Authorization Implementation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#permission-mapping">
+<span class="md-ellipsis">
+      Permission Mapping
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conditional-ui-rendering">
+<span class="md-ellipsis">
+      Conditional UI Rendering
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+<nav aria-label="Dependencies" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#internal-feature-dependencies">
+<span class="md-ellipsis">
+      Internal Feature Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#service-dependencies">
+<span class="md-ellipsis">
+      Service Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-entities">
+<span class="md-ellipsis">
+      Related Entities
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-dependencies">
+<span class="md-ellipsis">
+      External Dependencies
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-features-behaviors">
+<span class="md-ellipsis">
+      Key Features &amp; Behaviors
+    </span>
+</a>
+<nav aria-label="Key Features &amp; Behaviors" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration-creation-and-updates">
+<span class="md-ellipsis">
+      Configuration Creation and Updates
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#target-condition-generation">
+<span class="md-ellipsis">
+      Target Condition Generation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#property-type-conversion">
+<span class="md-ellipsis">
+      Property Type Conversion
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-integration">
+<span class="md-ellipsis">
+      Device Model Integration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#metrics-tracking">
+<span class="md-ellipsis">
+      Metrics Tracking
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration-rollout-process">
+<span class="md-ellipsis">
+      Configuration Rollout Process
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-workflow">
+<span class="md-ellipsis">
+      UI Workflow
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#error-handling">
+<span class="md-ellipsis">
+      Error Handling
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notes">
+<span class="md-ellipsis">
+      Notes
+    </span>
+</a>
+<nav aria-label="Notes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture-patterns">
+<span class="md-ellipsis">
+      Architecture Patterns
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration-as-code">
+<span class="md-ellipsis">
+      Configuration as Code
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#azure-iot-hub-integration">
+<span class="md-ellipsis">
+      Azure IoT Hub Integration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#multi-cloud-support">
+<span class="md-ellipsis">
+      Multi-Cloud Support
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#property-type-safety">
+<span class="md-ellipsis">
+      Property Type Safety
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration-precedence">
+<span class="md-ellipsis">
+      Configuration Precedence
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#target-condition-limitations">
+<span class="md-ellipsis">
+      Target Condition Limitations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#metrics-accuracy">
+<span class="md-ellipsis">
+      Metrics Accuracy
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#uiux-considerations">
+<span class="md-ellipsis">
+      UI/UX Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-considerations">
+<span class="md-ellipsis">
+      Performance Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-considerations">
+<span class="md-ellipsis">
+      Security Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testing-coverage">
+<span class="md-ellipsis">
+      Testing Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-enhancement-opportunities">
+<span class="md-ellipsis">
+      Future Enhancement Opportunities
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-limitations">
+<span class="md-ellipsis">
+      Known Limitations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-device-configurations-management">Feature: Device Configurations Management<a class="headerlink" href="#feature-device-configurations-management" title="Permanent link">¶</a></h1>
+<p><strong>Category</strong>: IoT Device Management<br/>
+<strong>Status</strong>: Analyzed  </p>
+<hr/>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">¶</a></h2>
+<p>The Device Configurations Management feature enables administrators to create, update, and deploy batch configurations to multiple IoT devices simultaneously based on target conditions. This feature leverages Azure IoT Hub's automatic device configuration capabilities to push desired properties and settings to devices at scale. Key capabilities include:</p>
+<ul>
+<li>Creating device configurations targeting specific device models with tag-based targeting conditions</li>
+<li>Defining configuration properties based on writable device model properties</li>
+<li>Tag-based targeting to scope configurations to specific device cohorts</li>
+<li>Real-time metrics tracking (targeted, applied, success, failure counts)</li>
+<li>Priority-based configuration precedence when multiple configurations target the same device</li>
+<li>CRUD operations for device configurations through interactive UI pages</li>
+<li>Configuration lifecycle management (create, view, edit, delete)</li>
+<li>Integration with device models to ensure type-safe property configuration</li>
+<li>Automatic rollout to IoT Hub with synchronization of desired properties</li>
+</ul>
+<p>This feature provides business value by enabling centralized, scalable device fleet management. Organizations can deploy configuration updates to thousands of devices simultaneously without manual per-device intervention. Tag-based targeting ensures precise control over which devices receive specific configurations, while metrics provide visibility into deployment success rates.</p>
+<hr/>
+<h2 id="code-locations">Code Locations<a class="headerlink" href="#code-locations" title="Permanent link">¶</a></h2>
+<h3 id="entry-points-endpoints">Entry Points / Endpoints<a class="headerlink" href="#entry-points-endpoints" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/DeviceConfigurationsController.cs</code> (Lines 1-71)</li>
+<li>
+<p><strong>Snippet</strong>: Main REST API controller for device configurations</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">[Authorize]</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="na">[ApiController]</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="na">[ApiVersion("1.0")]</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="na">[Route("api/device-configurations")]</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="na">[ApiExplorerSettings(GroupName = "IoT Devices")]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceConfigurationsController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="p">{</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDeviceConfigurationsService</span><span class="w"> </span><span class="n">deviceConfigurationsService</span><span class="p">;</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="na">[HttpGet(Name = "GET Device configurations")]</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="na">[Authorize("device-configuration:read")]</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">ConfigListItem</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Get</span><span class="p">()</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">    </span><span class="na">[HttpGet("{configurationId}", Name = "GET Device configuration")]</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">    </span><span class="na">[Authorize("device-configuration:read")]</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">DeviceConfig</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Get</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">configurationId</span><span class="p">)</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">    </span><span class="na">[HttpGet("{configurationId}/metrics", Name = "GET Device configuration metrics")]</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">    </span><span class="na">[Authorize("device-configuration:read")]</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">ConfigurationMetrics</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetConfigurationMetrics</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">configurationId</span><span class="p">)</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="na">[HttpPost(Name = "POST Create Device configuration")]</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="na">[Authorize("device-configuration:write")]</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">CreateConfig</span><span class="p">(</span><span class="n">DeviceConfig</span><span class="w"> </span><span class="n">deviceConfig</span><span class="p">)</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">    </span><span class="na">[HttpPut(Name = "PUT Update Device configuration")]</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="w">    </span><span class="na">[Authorize("device-configuration:write")]</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">UpdateConfig</span><span class="p">(</span><span class="n">DeviceConfig</span><span class="w"> </span><span class="n">deviceConfig</span><span class="p">)</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">    </span><span class="na">[HttpDelete("{configurationId}", Name = "DELETE Device configuration")]</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="w">    </span><span class="na">[Authorize("device-configuration:write")]</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">DeleteConfig</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">configurationId</span><span class="p">)</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h3 id="business-logic">Business Logic<a class="headerlink" href="#business-logic" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IDeviceConfigurationsService.cs</code> (Lines 1-22)</li>
+<li>
+<p><strong>Snippet</strong>: Core service interface for device configuration operations</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span>
+<span class="normal"><a href="#__codelineno-1-7">7</a></span>
+<span class="normal"><a href="#__codelineno-1-8">8</a></span>
+<span class="normal"><a href="#__codelineno-1-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IDeviceConfigurationsService</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">ConfigListItem</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetDeviceConfigurationListAsync</span><span class="p">();</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">DeviceConfig</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetDeviceConfigurationAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">configurationId</span><span class="p">);</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ConfigurationMetrics</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetConfigurationMetricsAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">configurationId</span><span class="p">);</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">CreateConfigurationAsync</span><span class="p">(</span><span class="n">DeviceConfig</span><span class="w"> </span><span class="n">deviceConfig</span><span class="p">);</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">UpdateConfigurationAsync</span><span class="p">(</span><span class="n">DeviceConfig</span><span class="w"> </span><span class="n">deviceConfig</span><span class="p">);</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">DeleteConfigurationAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">configurationId</span><span class="p">);</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Server/Services/DeviceConfigurationsService.cs</code> (Lines 1-111)</p>
+</li>
+<li>Concrete implementation of IDeviceConfigurationsService</li>
+<li>Handles device configuration CRUD operations</li>
+<li>Transforms DeviceConfig DTOs to Azure IoT Hub Configuration objects</li>
+<li>Manages property type conversion (string to typed values)</li>
+<li>Coordinates with IConfigService for Azure IoT Hub interactions</li>
+<li>Integrates with IDeviceModelPropertiesService for property validation</li>
+</ul>
+<h3 id="core-service-integration">Core Service Integration<a class="headerlink" href="#core-service-integration" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IConfigService.cs</code> (Lines 1-36)</li>
+<li>Cloud provider abstraction for configuration management</li>
+<li>Key methods:<ul>
+<li><code>GetDevicesConfigurations()</code> - Retrieves all device configurations from IoT Hub</li>
+<li><code>GetConfigItem(string id)</code> - Gets specific configuration by ID</li>
+<li><code>RollOutDeviceConfiguration()</code> - Creates/updates configuration in IoT Hub</li>
+<li><code>DeleteConfiguration(string configId)</code> - Removes configuration from IoT Hub</li>
+</ul>
+</li>
+</ul>
+<h3 id="helper-classes">Helper Classes<a class="headerlink" href="#helper-classes" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Helpers/ConfigHelper.cs</code> (Lines 1-357)</li>
+<li>Static utility class for configuration transformations</li>
+<li><strong>Key Methods</strong>:<ul>
+<li><code>CreateConfigListItem(Configuration config)</code> - Converts Azure Configuration to list item DTO (Lines 59-74)</li>
+<li><code>CreateDeviceConfig(Configuration config)</code> - Converts Azure Configuration to DeviceConfig DTO (Lines 82-127)</li>
+<li>Parses target conditions using regex to extract tag values</li>
+<li>Extracts desired properties from configuration content</li>
+<li>Separates modelId from user-defined tags</li>
+<li><code>RetrieveMetricValue(Configuration item, string metricName)</code> - Extracts metric values safely (Lines 17-27)</li>
+</ul>
+</li>
+</ul>
+<h3 id="ui-components">UI Components<a class="headerlink" href="#ui-components" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/DeviceConfigurations/DeviceConfigurationListPage.razor</code> (Lines 1-117)</li>
+<li>Main listing page for device configurations</li>
+<li>Displays configurations in interactive MudTable</li>
+<li>Shows key metrics: targeted, applied, success, failure counts</li>
+<li>Features:<ul>
+<li>Refresh button to reload configurations</li>
+<li>Add button to create new configuration</li>
+<li>Row click navigation to detail page</li>
+<li>Visibility icon for explicit detail navigation</li>
+</ul>
+</li>
+<li>Route: <code>/device-configurations</code></li>
+<li>
+<p>Authorization: <code>PortalPermissions.DeviceConfigurationRead</code></p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/DeviceConfigurations/CreateDeviceConfigurationsPage.razor</code> (Lines 1-343)</p>
+</li>
+<li>Configuration creation wizard</li>
+<li>Three main sections:<ol>
+<li><strong>Configuration Info</strong> - Name and target device model selection</li>
+<li><strong>Target Conditions</strong> - Tag-based device filtering</li>
+<li><strong>Properties</strong> - Writable property values to configure</li>
+</ol>
+</li>
+<li>Features:<ul>
+<li>Device model autocomplete with description preview</li>
+<li>Dynamic tag selection from available device tags</li>
+<li>Dynamic property selection based on selected device model</li>
+<li>Type-aware property input fields (Boolean, Double, Float, Integer, Long, String)</li>
+<li>Add/remove tags and properties dynamically</li>
+<li>Input validation for property types</li>
+</ul>
+</li>
+<li>Route: <code>/device-configurations/new</code></li>
+<li>
+<p>Authorization: <code>PortalPermissions.DeviceConfigurationWrite</code></p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/DeviceConfigurations/DeviceConfigurationDetailPage.razor</code> (Lines 1-334)</p>
+</li>
+<li>Configuration detail and edit page</li>
+<li>Displays configuration metadata and metrics</li>
+<li>Features:<ul>
+<li>View-only display of device model name and description</li>
+<li>Real-time metrics display (creation date, targeted, applied counts)</li>
+<li>Editable target conditions (tags)</li>
+<li>Editable properties</li>
+<li>Save changes button</li>
+<li>Delete button with confirmation dialog</li>
+<li>Conditional UI elements based on write permissions</li>
+<li>Return to list navigation</li>
+</ul>
+</li>
+<li>Route: <code>/device-configurations/{ConfigId}</code></li>
+<li>
+<p>Authorization: <code>PortalPermissions.DeviceConfigurationRead</code> (write features require <code>DeviceConfigurationWrite</code>)</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/DeviceConfigurations/DeleteDeviceConfiguration.razor</code> (Lines 1-51)</p>
+</li>
+<li>Confirmation dialog for configuration deletion</li>
+<li>Modal dialog with warning message</li>
+<li>Executes delete API call on confirmation</li>
+<li>Success/error notification via Snackbar</li>
+</ul>
+<h3 id="data-transfer-objects">Data Transfer Objects<a class="headerlink" href="#data-transfer-objects" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/DeviceConfig.cs</code> (Lines 1-35)</li>
+<li>
+<p><strong>Snippet</strong>: Complete device configuration DTO</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceConfig</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ConfigurationId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ModelId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Tags</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Properties</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="na">[Range(0, Int32.MaxValue)]</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="na">[DefaultValue(100)]</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Priority</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/ConfigListItem.cs</code> (Lines 1-64)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Configuration list item with metrics</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ConfigListItem</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ConfigurationID</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Conditions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">MetricsTargeted</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">MetricsApplied</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">MetricsSuccess</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">MetricsFailure</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Priority</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DateTime</span><span class="w"> </span><span class="n">CreationDate</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IReadOnlyCollection</span><span class="o">&lt;</span><span class="n">IoTEdgeModule</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Modules</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/ConfigurationMetrics.cs</code> (Lines 1-33)</p>
+</li>
+<li>Detailed metrics for a specific configuration</li>
+<li>Contains targeted, applied, success, failure counts</li>
+<li>Includes creation date for timeline tracking</li>
+</ul>
+<h3 id="client-services">Client Services<a class="headerlink" href="#client-services" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Services/IDeviceConfigurationsClientService.cs</code></li>
+<li>Client-side service interface for HTTP API calls</li>
+<li>
+<p>Methods mirror controller endpoints</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Services/DeviceConfigurationsClientService.cs</code> (Lines 1-45)</p>
+</li>
+<li>Implementation using HttpClient for API communication</li>
+<li>GET endpoint for listing configurations</li>
+<li>GET endpoint for single configuration details</li>
+<li>GET endpoint for configuration metrics</li>
+<li>POST endpoint for creating configurations</li>
+<li>PUT endpoint for updating configurations</li>
+<li>DELETE endpoint for removing configurations</li>
+</ul>
+<hr/>
+<h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">¶</a></h2>
+<h3 id="device-configuration-management">Device Configuration Management<a class="headerlink" href="#device-configuration-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/device-configurations</code> - List all device configurations</li>
+<li>Returns: IEnumerable<configlistitem></configlistitem></li>
+<li>Authorization: device-configuration:read</li>
+<li>
+<p>Includes metrics summary in list view</p>
+</li>
+<li>
+<p><code>GET /api/device-configurations/{configurationId}</code> - Get specific configuration</p>
+</li>
+<li>Route Parameter: configurationId (string)</li>
+<li>Returns: DeviceConfig</li>
+<li>Authorization: device-configuration:read</li>
+<li>
+<p>Parses target conditions to extract tags and model ID</p>
+</li>
+<li>
+<p><code>GET /api/device-configurations/{configurationId}/metrics</code> - Get configuration metrics</p>
+</li>
+<li>Route Parameter: configurationId (string)</li>
+<li>Returns: ConfigurationMetrics</li>
+<li>Authorization: device-configuration:read</li>
+<li>
+<p>Provides detailed deployment metrics</p>
+</li>
+<li>
+<p><code>POST /api/device-configurations</code> - Create new configuration</p>
+</li>
+<li>Body: DeviceConfig</li>
+<li>Returns: 200 OK</li>
+<li>Authorization: device-configuration:write</li>
+<li>Validates properties against device model</li>
+<li>Converts property types appropriately</li>
+<li>
+<p>Rolls out configuration to IoT Hub</p>
+</li>
+<li>
+<p><code>PUT /api/device-configurations</code> - Update existing configuration</p>
+</li>
+<li>Body: DeviceConfig</li>
+<li>Returns: 200 OK</li>
+<li>Authorization: device-configuration:write</li>
+<li>
+<p>Uses same rollout logic as create (upsert operation)</p>
+</li>
+<li>
+<p><code>DELETE /api/device-configurations/{configurationId}</code> - Delete configuration</p>
+</li>
+<li>Route Parameter: configurationId (string)</li>
+<li>Returns: 200 OK</li>
+<li>Authorization: device-configuration:write</li>
+<li>Removes configuration from IoT Hub</li>
+</ul>
+<hr/>
+<h2 id="authorization">Authorization<a class="headerlink" href="#authorization" title="Permanent link">¶</a></h2>
+<h3 id="required-permissions">Required Permissions<a class="headerlink" href="#required-permissions" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>device-configuration:read</strong> - View device configurations and retrieve configuration details/metrics</li>
+<li><strong>device-configuration:write</strong> - Create, update, and delete device configurations</li>
+</ul>
+<h3 id="authorization-implementation">Authorization Implementation<a class="headerlink" href="#authorization-implementation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Attribute-based authorization using <code>[Authorize("permission")]</code> attributes on controller methods</li>
+<li>Permission strings defined in PortalPermissionsHelper</li>
+<li>Base authorization requirement: <code>[Authorize]</code> on DeviceConfigurationsController and UI pages</li>
+<li>Permissions managed through role-based access control (RBAC)</li>
+<li>Default Administrator role includes both device-configuration:read and device-configuration:write permissions</li>
+</ul>
+<h3 id="permission-mapping">Permission Mapping<a class="headerlink" href="#permission-mapping" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>PortalPermissions.DeviceConfigurationRead</code> → "device-configuration:read"</li>
+<li><code>PortalPermissions.DeviceConfigurationWrite</code> → "device-configuration:write"</li>
+</ul>
+<h3 id="conditional-ui-rendering">Conditional UI Rendering<a class="headerlink" href="#conditional-ui-rendering" title="Permanent link">¶</a></h3>
+<ul>
+<li>Detail page conditionally shows Save/Delete buttons based on write permission check</li>
+<li>Uses <code>HasPermissionAsync()</code> method to determine user capabilities</li>
+<li>Read-only view available when user has only read permission</li>
+</ul>
+<hr/>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h2>
+<h3 id="internal-feature-dependencies">Internal Feature Dependencies<a class="headerlink" href="#internal-feature-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Device Models</strong> - Configurations target specific device models and use their properties</li>
+<li><strong>Device Model Properties</strong> - Property definitions drive configuration schema validation</li>
+<li><strong>Device Tag Settings</strong> - Tags used for target condition filtering</li>
+<li><strong>IoT Hub Integration</strong> - Configurations synchronized to Azure IoT Hub/AWS IoT Core</li>
+<li><strong>Role-Based Access Control</strong> - Permissions enforced through RBAC system</li>
+</ul>
+<h3 id="service-dependencies">Service Dependencies<a class="headerlink" href="#service-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>IConfigService</code> - Cloud provider abstraction for configuration management</li>
+<li><code>IDeviceModelPropertiesService</code> - Retrieves device model properties for validation</li>
+<li><code>IDeviceModelsClientService</code> - Client-side device model data access</li>
+<li><code>IDeviceTagSettingsClientService</code> - Client-side device tag data access</li>
+</ul>
+<h3 id="related-entities">Related Entities<a class="headerlink" href="#related-entities" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Configuration</strong> (Azure.Devices) - Azure IoT Hub configuration object</li>
+<li><strong>DeviceModelProperty</strong> - Property definitions from device models</li>
+<li><strong>DeviceTag</strong> - Tag definitions for targeting</li>
+</ul>
+<h3 id="external-dependencies">External Dependencies<a class="headerlink" href="#external-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Microsoft.Azure.Devices</strong> - Azure IoT Hub SDK for configuration management</li>
+<li><strong>Azure IoT Hub</strong> - Cloud service for storing and applying configurations</li>
+<li><strong>MudBlazor</strong> - UI component library</li>
+<li>MudTable - Configuration list table</li>
+<li>MudForm - Form validation container</li>
+<li>MudAutocomplete - Device model selection</li>
+<li>MudSelect - Tag and property selection</li>
+<li>MudTextField - Text input with type validation</li>
+<li>MudCheckBox - Boolean property input</li>
+<li>MudDialog - Delete confirmation</li>
+<li>MudSnackbar - User feedback notifications</li>
+<li>MudExpansionPanel - Collapsible sections</li>
+</ul>
+<hr/>
+<h2 id="key-features-behaviors">Key Features &amp; Behaviors<a class="headerlink" href="#key-features-behaviors" title="Permanent link">¶</a></h2>
+<h3 id="configuration-creation-and-updates">Configuration Creation and Updates<a class="headerlink" href="#configuration-creation-and-updates" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Configuration ID</strong>: Unique identifier for the configuration</li>
+<li><strong>Model Targeting</strong>: Configurations associated with specific device models</li>
+<li><strong>Tag-Based Targeting</strong>: Devices selected by matching tag name/value pairs</li>
+<li><strong>Property Configuration</strong>: Only writable device model properties can be configured</li>
+<li><strong>Priority</strong>: Default priority of 100; higher priority wins when multiple configs match</li>
+</ul>
+<h3 id="target-condition-generation">Target Condition Generation<a class="headerlink" href="#target-condition-generation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Target conditions automatically constructed from tags and model ID</li>
+<li>Format: <code>tags.modelId='model123' AND tags.tagName='tagValue' AND tags.tag2='value2'</code></li>
+<li>Parsed using regex when retrieving configurations: <code>tags[.](?&lt;tagName&gt;\w*)[ ]?[=][ ]?\'(?&lt;tagValue&gt;[\w-]*)\'</code></li>
+<li>ModelId tag separated from user-defined tags in UI display</li>
+</ul>
+<h3 id="property-type-conversion">Property Type Conversion<a class="headerlink" href="#property-type-conversion" title="Permanent link">¶</a></h3>
+<ul>
+<li>UI stores all property values as strings in dictionaries</li>
+<li>Service layer converts strings to appropriate types before IoT Hub rollout:</li>
+<li><strong>Boolean</strong>: TryParse to bool</li>
+<li><strong>Double</strong>: TryParse to double</li>
+<li><strong>Float</strong>: TryParse to float</li>
+<li><strong>Integer</strong>: TryParse to int</li>
+<li><strong>Long</strong>: TryParse to long</li>
+<li><strong>String</strong>: Direct assignment</li>
+<li>Null values used for invalid conversions</li>
+<li>Properties prefixed with <code>properties.desired.</code> in IoT Hub configuration</li>
+</ul>
+<h3 id="device-model-integration">Device Model Integration<a class="headerlink" href="#device-model-integration" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device model selection drives available properties</li>
+<li>Only models without LoRaWAN features shown in autocomplete</li>
+<li>Properties filtered to show only writable properties</li>
+<li>Property metadata (name, display name, type) used for UI rendering</li>
+<li>Type-specific input validation based on property type</li>
+</ul>
+<h3 id="metrics-tracking">Metrics Tracking<a class="headerlink" href="#metrics-tracking" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>System Metrics</strong>:</li>
+<li><code>targetedCount</code> - Number of devices matching target conditions</li>
+<li><code>appliedCount</code> - Number of devices where configuration was applied</li>
+<li><strong>Device Metrics</strong>:</li>
+<li><code>reportedSuccessfulCount</code> - Devices reporting successful configuration</li>
+<li><code>reportedFailedCount</code> - Devices reporting configuration failure</li>
+<li>Metrics retrieved from Azure IoT Hub configuration object</li>
+<li>Safe retrieval with default value of 0 if metric doesn't exist</li>
+</ul>
+<h3 id="configuration-rollout-process">Configuration Rollout Process<a class="headerlink" href="#configuration-rollout-process" title="Permanent link">¶</a></h3>
+<ol>
+<li>Validate configuration name and model ID</li>
+<li>Retrieve device model properties for type validation</li>
+<li>Convert property string values to typed values</li>
+<li>Build target condition string from tags and model ID</li>
+<li>Create desired properties dictionary with correct types</li>
+<li>Call IConfigService.RollOutDeviceConfiguration with priority 100</li>
+<li>IoT Hub automatically applies configuration to matching devices</li>
+</ol>
+<h3 id="ui-workflow">UI Workflow<a class="headerlink" href="#ui-workflow" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>List View</strong>: Browse all configurations with summary metrics</li>
+<li><strong>Create View</strong>: Step-by-step configuration creation</li>
+<li>Select device model → loads available properties</li>
+<li>Add target tags → filters which devices receive config</li>
+<li>Set property values → configures desired state</li>
+<li><strong>Detail View</strong>: View/edit existing configuration</li>
+<li>Read-only model and metrics display</li>
+<li>Editable tags and properties</li>
+<li>Delete with confirmation</li>
+</ul>
+<h3 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">¶</a></h3>
+<ul>
+<li>ProblemDetailsException handling for API errors</li>
+<li>User-friendly error messages via Snackbar notifications</li>
+<li>Loading state management during async operations</li>
+<li>RequestFailedException caught during property retrieval</li>
+</ul>
+<hr/>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
+<h3 id="architecture-patterns">Architecture Patterns<a class="headerlink" href="#architecture-patterns" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Service Layer</strong> - Business logic abstraction from controllers</li>
+<li><strong>DTO Pattern</strong> - Data transfer between layers with validation</li>
+<li><strong>Cloud Abstraction</strong> - IConfigService hides Azure/AWS implementation details</li>
+<li><strong>Helper Pattern</strong> - ConfigHelper for data transformation logic</li>
+</ul>
+<h3 id="configuration-as-code">Configuration as Code<a class="headerlink" href="#configuration-as-code" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device configurations stored in Azure IoT Hub, not local database</li>
+<li>Portal acts as management interface over IoT Hub configurations</li>
+<li>Configuration ID can differ from Azure configuration ID (stored in labels)</li>
+<li>Priority determines precedence when multiple configs target same device</li>
+</ul>
+<h3 id="azure-iot-hub-integration">Azure IoT Hub Integration<a class="headerlink" href="#azure-iot-hub-integration" title="Permanent link">¶</a></h3>
+<ul>
+<li>Configurations leverage Azure's automatic device management</li>
+<li>Target conditions use IoT Hub query syntax</li>
+<li>Desired properties synchronized to device twins</li>
+<li>Metrics calculated by IoT Hub based on device reporting</li>
+</ul>
+<h3 id="multi-cloud-support">Multi-Cloud Support<a class="headerlink" href="#multi-cloud-support" title="Permanent link">¶</a></h3>
+<ul>
+<li>IConfigService abstraction enables Azure and AWS support</li>
+<li>Azure implementation uses Microsoft.Azure.Devices.Configuration</li>
+<li>AWS implementation would use Thing Groups and Fleet Provisioning</li>
+<li>DTOs cloud-agnostic</li>
+</ul>
+<h3 id="property-type-safety">Property Type Safety<a class="headerlink" href="#property-type-safety" title="Permanent link">¶</a></h3>
+<ul>
+<li>Type conversion ensures correct JSON serialization to IoT Hub</li>
+<li>Invalid type conversions result in null values (graceful degradation)</li>
+<li>Client-side validation prevents most type mismatches</li>
+<li>Server-side conversion provides final safety net</li>
+</ul>
+<h3 id="configuration-precedence">Configuration Precedence<a class="headerlink" href="#configuration-precedence" title="Permanent link">¶</a></h3>
+<ul>
+<li>Default priority: 100</li>
+<li>Higher priority configurations override lower priority</li>
+<li>Useful for exception handling (high-priority config for specific devices)</li>
+<li>Priority range: 0 to Int32.MaxValue</li>
+</ul>
+<h3 id="target-condition-limitations">Target Condition Limitations<a class="headerlink" href="#target-condition-limitations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Only AND operators between tags (no OR)</li>
+<li>Tag values must be alphanumeric with hyphens</li>
+<li>Regex parsing depends on specific format: <code>tags.name='value'</code></li>
+<li>No support for complex query expressions in UI</li>
+</ul>
+<h3 id="metrics-accuracy">Metrics Accuracy<a class="headerlink" href="#metrics-accuracy" title="Permanent link">¶</a></h3>
+<ul>
+<li>Metrics reflect IoT Hub's perspective</li>
+<li>Success/failure based on device twin reported properties</li>
+<li>Devices must report configuration status for accurate metrics</li>
+<li>Metrics may lag due to device connectivity/reporting delays</li>
+</ul>
+<h3 id="uiux-considerations">UI/UX Considerations<a class="headerlink" href="#uiux-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device model selection required before property configuration</li>
+<li>Tag selection shows only tags not already added</li>
+<li>Property selection shows only writable properties not already added</li>
+<li>Type-specific input controls improve data entry accuracy</li>
+<li>Inline validation prevents common errors</li>
+</ul>
+<h3 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>No pagination on configuration list (reasonable count expected)</li>
+<li>Device model properties loaded dynamically on selection</li>
+<li>Single API call to retrieve configuration details</li>
+<li>Separate metrics endpoint allows lazy loading</li>
+</ul>
+<h3 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Authorization required at both controller and UI levels</li>
+<li>Permission-based access control prevents unauthorized modifications</li>
+<li>Read-only view available for users without write permission</li>
+<li>Configuration IDs exposed in URLs (no sensitive data)</li>
+</ul>
+<h3 id="testing-coverage">Testing Coverage<a class="headerlink" href="#testing-coverage" title="Permanent link">¶</a></h3>
+<ul>
+<li>Unit tests: DeviceConfigurationsServiceTest.cs</li>
+<li>Controller tests: DeviceConfigurationsControllerTests.cs</li>
+<li>UI tests: DeviceConfigurationListPageTests.cs, DeviceConfigurationDetailPageTests.cs, CreateDeviceConfigurationsPageTests.cs</li>
+<li>Client service tests: DeviceConfigurationsClientServiceTests.cs</li>
+</ul>
+<h3 id="future-enhancement-opportunities">Future Enhancement Opportunities<a class="headerlink" href="#future-enhancement-opportunities" title="Permanent link">¶</a></h3>
+<ul>
+<li>Configuration templates for common scenarios</li>
+<li>Bulk configuration operations (copy, clone, batch create)</li>
+<li>Configuration version history and rollback</li>
+<li>Advanced target conditions (OR operators, nested conditions, tag wildcards)</li>
+<li>Property validation rules from device model schema</li>
+<li>Configuration impact analysis (preview affected devices before saving)</li>
+<li>Scheduled configuration rollouts (deploy at specific time)</li>
+<li>Configuration groups for organizing related configs</li>
+<li>A/B testing support (split device cohorts)</li>
+<li>Configuration dry-run mode (preview without applying)</li>
+<li>Export/import configurations (JSON/YAML)</li>
+<li>Configuration change audit trail</li>
+<li>Visual configuration editor (drag-and-drop)</li>
+<li>Property templates and presets</li>
+<li>Bulk property updates across configurations</li>
+<li>Configuration dependencies (require another config first)</li>
+</ul>
+<h3 id="known-limitations">Known Limitations<a class="headerlink" href="#known-limitations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Priority not editable in UI (fixed at 100)</li>
+<li>Cannot edit device model after creation (must recreate)</li>
+<li>No support for complex target condition queries</li>
+<li>No preview of affected devices before deployment</li>
+<li>Metrics refresh requires manual page reload</li>
+<li>Configuration ID cannot be changed after creation</li>
+<li>No validation of tag values against actual device tags</li>
+<li>Limited error feedback if IoT Hub rollout fails</li>
+<li>No pagination on properties/tags within a configuration</li>
+<li>Cannot filter or search configurations in list view</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

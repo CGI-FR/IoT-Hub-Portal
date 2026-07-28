@@ -1,0 +1,1444 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature Specification: Edge Device Model Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-specification-edge-device-model-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature Specification: Edge Device Model Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-scenarios-testing-mandatory">
+<span class="md-ellipsis">
+      User Scenarios &amp; Testing (mandatory)
+    </span>
+</a>
+<nav aria-label="User Scenarios &amp; Testing (mandatory)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-1-create-and-deploy-edge-device-model-priority-p1">
+<span class="md-ellipsis">
+      User Story 1 - Create and Deploy Edge Device Model (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-2-browse-and-search-edge-models-priority-p1">
+<span class="md-ellipsis">
+      User Story 2 - Browse and Search Edge Models (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-3-view-and-update-edge-model-configuration-priority-p1">
+<span class="md-ellipsis">
+      User Story 3 - View and Update Edge Model Configuration (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-4-manage-model-visual-identity-priority-p2">
+<span class="md-ellipsis">
+      User Story 4 - Manage Model Visual Identity (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-5-delete-obsolete-edge-models-priority-p2">
+<span class="md-ellipsis">
+      User Story 5 - Delete Obsolete Edge Models (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-6-leverage-public-module-catalog-priority-p3">
+<span class="md-ellipsis">
+      User Story 6 - Leverage Public Module Catalog (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-7-categorize-models-with-labels-priority-p3">
+<span class="md-ellipsis">
+      User Story 7 - Categorize Models with Labels (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-8-configure-azure-specific-features-priority-p2">
+<span class="md-ellipsis">
+      User Story 8 - Configure Azure-Specific Features (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-9-configure-aws-greengrass-deployments-priority-p2">
+<span class="md-ellipsis">
+      User Story 9 - Configure AWS Greengrass Deployments (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-cases">
+<span class="md-ellipsis">
+      Edge Cases
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements-mandatory">
+<span class="md-ellipsis">
+      Requirements (mandatory)
+    </span>
+</a>
+<nav aria-label="Requirements (mandatory)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#azure-iot-edge-specific-requirements">
+<span class="md-ellipsis">
+      Azure IoT Edge-Specific Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#aws-iot-greengrass-specific-requirements">
+<span class="md-ellipsis">
+      AWS IoT Greengrass-Specific Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-validation-requirements">
+<span class="md-ellipsis">
+      Data Validation Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#error-handling-requirements">
+<span class="md-ellipsis">
+      Error Handling Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-entities-include-if-feature-involves-data">
+<span class="md-ellipsis">
+      Key Entities (include if feature involves data)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-criteria-mandatory">
+<span class="md-ellipsis">
+      Success Criteria (mandatory)
+    </span>
+</a>
+<nav aria-label="Success Criteria (mandatory)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#measurable-outcomes">
+<span class="md-ellipsis">
+      Measurable Outcomes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#traceability">
+<span class="md-ellipsis">
+      Traceability
+    </span>
+</a>
+<nav aria-label="Traceability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#source-analysis">
+<span class="md-ellipsis">
+      Source Analysis
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+<nav aria-label="Code References" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#controllers">
+<span class="md-ellipsis">
+      Controllers
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-logic">
+<span class="md-ellipsis">
+      Business Logic
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-access">
+<span class="md-ellipsis">
+      Data Access
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-components">
+<span class="md-ellipsis">
+      UI Components
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dtos">
+<span class="md-ellipsis">
+      DTOs
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#client-services">
+<span class="md-ellipsis">
+      Client Services
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validators">
+<span class="md-ellipsis">
+      Validators
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mappers">
+<span class="md-ellipsis">
+      Mappers
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-features">
+<span class="md-ellipsis">
+      Related Features
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notes">
+<span class="md-ellipsis">
+      Notes
+    </span>
+</a>
+<nav aria-label="Notes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#multi-cloud-architecture">
+<span class="md-ellipsis">
+      Multi-Cloud Architecture
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#model-lifecycle-and-consistency">
+<span class="md-ellipsis">
+      Model Lifecycle and Consistency
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#module-commands-design-azure-specific">
+<span class="md-ellipsis">
+      Module Commands Design (Azure-Specific)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#label-management-pattern">
+<span class="md-ellipsis">
+      Label Management Pattern
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#route-validation">
+<span class="md-ellipsis">
+      Route Validation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-experience-considerations">
+<span class="md-ellipsis">
+      User Experience Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-optimization">
+<span class="md-ellipsis">
+      Performance Optimization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-considerations">
+<span class="md-ellipsis">
+      Future Considerations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-specification-edge-device-model-management">Feature Specification: Edge Device Model Management<a class="headerlink" href="#feature-specification-edge-device-model-management" title="Permanent link">¶</a></h1>
+<p><strong>Feature ID</strong>: 007<br/>
+<strong>Feature Branch</strong>: <code>007-edge-device-model-management</code><br/>
+<strong>Created</strong>: 2025-01-21<br/>
+<strong>Status</strong>: Draft<br/>
+<strong>Source</strong>: Analysis from <code>specs/007-edge-device-model-management/analyze.md</code></p>
+<hr/>
+<h2 id="user-scenarios-testing-mandatory">User Scenarios &amp; Testing <em>(mandatory)</em><a class="headerlink" href="#user-scenarios-testing-mandatory" title="Permanent link">¶</a></h2>
+<h3 id="user-story-1-create-and-deploy-edge-device-model-priority-p1">User Story 1 - Create and Deploy Edge Device Model (Priority: P1)<a class="headerlink" href="#user-story-1-create-and-deploy-edge-device-model-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to create standardized edge device model templates that define the complete configuration for edge devices, including modules, routes, and settings, so that I can deploy consistent configurations across multiple edge devices without manual setup.</p>
+<p><strong>Why this priority</strong>: This is the foundational capability that enables infrastructure-as-code for edge deployments. Without the ability to create models, no other functionality is possible. This directly addresses the critical business need to reduce manual configuration errors and ensure consistency across device fleets.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating a new edge model with modules and routes, saving it, and verifying the configuration is stored and deployed to the cloud provider. Delivers immediate value by establishing a reusable template.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> I am an authorized administrator with write permissions, <strong>When</strong> I navigate to create a new edge model and provide a unique name, description, and at least one custom module with a container image, <strong>Then</strong> the system creates the model, generates a unique identifier, deploys the configuration to the cloud provider, and displays a success confirmation.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am creating an Azure IoT Edge model, <strong>When</strong> I configure system modules (edgeAgent, edgeHub) with custom runtime images and define message routes between modules, <strong>Then</strong> the system validates the route syntax and includes both system modules and routes in the deployed configuration.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am creating an AWS IoT Greengrass model, <strong>When</strong> I configure custom components without system modules, <strong>Then</strong> the system creates a Greengrass deployment configuration with the specified components and their versions.</p>
+</li>
+<li>
+<p><strong>Given</strong> I attempt to create a model with a name that already exists, <strong>When</strong> I submit the form, <strong>Then</strong> the system prevents creation and displays an error message indicating the model already exists.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am configuring a module, <strong>When</strong> I add environment variables and module twin settings, <strong>Then</strong> the system stores these configurations and includes them in the deployment so they are injected into the container at runtime.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-2-browse-and-search-edge-models-priority-p1">User Story 2 - Browse and Search Edge Models (Priority: P1)<a class="headerlink" href="#user-story-2-browse-and-search-edge-models-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to view a searchable list of all edge device models with visual identification and categorization, so that I can quickly find and select the appropriate model for device provisioning.</p>
+<p><strong>Why this priority</strong>: This is essential for model discoverability and selection. Administrators must be able to locate existing models before they can be assigned to devices. Without this capability, model reuse becomes impractical.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by navigating to the edge model list, searching by keywords, and verifying that matching models are displayed with their names, descriptions, avatars, and labels. Delivers value by enabling efficient model discovery.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> multiple edge models exist in the system, <strong>When</strong> I navigate to the edge models list page, <strong>Then</strong> the system displays a paginated table showing model name, description, avatar image, and labels for each model.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am viewing the edge models list, <strong>When</strong> I enter a search keyword in the filter field, <strong>Then</strong> the system displays only models whose name or description contains the keyword (case-insensitive).</p>
+</li>
+<li>
+<p><strong>Given</strong> models have assigned labels for categorization, <strong>When</strong> I view the model list, <strong>Then</strong> each model displays its associated labels for quick visual categorization.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am viewing the model list, <strong>When</strong> I click on a model row, <strong>Then</strong> the system navigates to the detailed model view showing complete configuration.</p>
+</li>
+<li>
+<p><strong>Given</strong> I have read-only permissions, <strong>When</strong> I view the model list, <strong>Then</strong> I can browse and search models but action buttons for create and delete are hidden.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-3-view-and-update-edge-model-configuration-priority-p1">User Story 3 - View and Update Edge Model Configuration (Priority: P1)<a class="headerlink" href="#user-story-3-view-and-update-edge-model-configuration-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to view detailed edge model configurations and update them when requirements change, so that deployed devices receive updated configurations without manual reconfiguration.</p>
+<p><strong>Why this priority</strong>: Model configurations evolve over time. The ability to update models is critical for maintaining and improving deployments. This enables continuous improvement of edge device behavior.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by opening an existing model, modifying module settings or routes, saving the changes, and verifying the updated configuration is deployed. Delivers value by allowing model evolution.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> I am viewing an edge model detail page, <strong>When</strong> the page loads, <strong>Then</strong> the system displays all model properties including general details, modules (system and custom), routes, environment variables, twin settings, and labels in an organized tabbed interface.</p>
+</li>
+<li>
+<p><strong>Given</strong> I have write permissions and modify module environment variables, <strong>When</strong> I save the model, <strong>Then</strong> the system updates the database, redeploys the configuration to the cloud provider, and confirms successful update.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am updating an Azure model's message routes, <strong>When</strong> I modify route definitions with valid FROM/INTO syntax, <strong>Then</strong> the system validates the route format and updates the routing configuration in IoT Hub.</p>
+</li>
+<li>
+<p><strong>Given</strong> I add a new custom module to an existing model, <strong>When</strong> I provide the module name and container image URI, <strong>Then</strong> the system includes the new module in the model configuration and deploys it.</p>
+</li>
+<li>
+<p><strong>Given</strong> I update module commands for an Azure model, <strong>When</strong> I save changes, <strong>Then</strong> the system synchronizes the commands to the database for quick command lookup without cloud API calls.</p>
+</li>
+<li>
+<p><strong>Given</strong> I attempt to update a model that no longer exists, <strong>When</strong> I submit changes, <strong>Then</strong> the system displays a "not found" error and prevents the update.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-4-manage-model-visual-identity-priority-p2">User Story 4 - Manage Model Visual Identity (Priority: P2)<a class="headerlink" href="#user-story-4-manage-model-visual-identity-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to assign custom avatar images to edge models, so that I can quickly visually identify different model types in lists and dashboards.</p>
+<p><strong>Why this priority</strong>: Visual identification significantly improves user experience and reduces cognitive load when working with multiple models. While not critical for core functionality, it substantially improves operational efficiency.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by uploading an avatar image to a model, verifying it displays in the list view, and testing the delete functionality to revert to default. Delivers value through improved visual navigation.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> I am viewing an edge model detail page, <strong>When</strong> I upload a custom avatar image (JPG, JPEG, or PNG), <strong>Then</strong> the system stores the image and displays it in place of the default placeholder in both detail and list views.</p>
+</li>
+<li>
+<p><strong>Given</strong> a model has a custom avatar, <strong>When</strong> I delete the avatar, <strong>Then</strong> the system removes the custom image and reverts to displaying the default placeholder image.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am viewing the edge models list, <strong>When</strong> the page loads, <strong>Then</strong> each model displays its avatar image for quick visual identification.</p>
+</li>
+<li>
+<p><strong>Given</strong> I have read-only permissions, <strong>When</strong> I view a model, <strong>Then</strong> I can see the avatar but cannot upload or delete it.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-5-delete-obsolete-edge-models-priority-p2">User Story 5 - Delete Obsolete Edge Models (Priority: P2)<a class="headerlink" href="#user-story-5-delete-obsolete-edge-models-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to delete edge device models that are no longer needed, so that the model catalog remains clean and relevant.</p>
+<p><strong>Why this priority</strong>: Model lifecycle management is important for maintaining a clean system, but deletion is a less frequent operation compared to creation and updates. It's essential for long-term system hygiene but not for initial deployment.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by selecting a model for deletion, confirming the action, and verifying the model is removed from the database and cloud provider. Delivers value by preventing catalog bloat.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> I have write permissions, <strong>When</strong> I click the delete button for an edge model and confirm the deletion in the dialog, <strong>Then</strong> the system removes the model from the database, deletes the cloud configuration, removes associated labels and commands, and displays a success message.</p>
+</li>
+<li>
+<p><strong>Given</strong> I initiate model deletion, <strong>When</strong> the confirmation dialog appears, <strong>Then</strong> the dialog displays the model name and ID for verification before proceeding.</p>
+</li>
+<li>
+<p><strong>Given</strong> a model has associated module commands and labels, <strong>When</strong> I delete the model, <strong>Then</strong> the system cascades the deletion to all related records including commands, labels, and avatar images.</p>
+</li>
+<li>
+<p><strong>Given</strong> I cancel the deletion confirmation dialog, <strong>When</strong> I click cancel, <strong>Then</strong> the system closes the dialog without deleting the model.</p>
+</li>
+<li>
+<p><strong>Given</strong> devices are currently using a model, <strong>When</strong> I attempt to delete it, <strong>Then</strong> [NEEDS CLARIFICATION: Should deletion be blocked or should it proceed with devices retaining their current configuration?]</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-6-leverage-public-module-catalog-priority-p3">User Story 6 - Leverage Public Module Catalog (Priority: P3)<a class="headerlink" href="#user-story-6-leverage-public-module-catalog-priority-p3" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to import pre-configured modules from a public catalog when creating edge models, so that I can accelerate deployment with tested components and reduce configuration errors.</p>
+<p><strong>Why this priority</strong>: While valuable for accelerating deployments, this is an enhancement that builds on top of the core model creation capability. Organizations can still create models manually without catalog integration.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by accessing the public modules catalog during model creation, selecting a module, and verifying it's imported with all its configuration. Delivers value through time savings and reduced errors.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> I am creating a new edge model, <strong>When</strong> I access the public modules catalog, <strong>Then</strong> the system displays available pre-configured modules with their names, descriptions, and container images.</p>
+</li>
+<li>
+<p><strong>Given</strong> I select a module from the public catalog, <strong>When</strong> I import it, <strong>Then</strong> the system adds the module to my model configuration with all pre-configured settings including environment variables and twin settings.</p>
+</li>
+<li>
+<p><strong>Given</strong> the public catalog is unavailable or empty, <strong>When</strong> I attempt to access it, <strong>Then</strong> the system displays an appropriate message indicating no modules are available.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-7-categorize-models-with-labels-priority-p3">User Story 7 - Categorize Models with Labels (Priority: P3)<a class="headerlink" href="#user-story-7-categorize-models-with-labels-priority-p3" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to assign labels to edge models for categorization purposes, so that I can organize models by environment, version, purpose, or any other classification scheme.</p>
+<p><strong>Why this priority</strong>: Labels improve organization and filtering but are not required for core model functionality. This is a valuable enhancement for larger deployments with many models.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by assigning labels to a model, saving it, and verifying the labels display in the list view. Delivers value through improved organization.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> I am creating or editing an edge model, <strong>When</strong> I assign labels such as "production", "testing", or "v2.0", <strong>Then</strong> the system stores the label associations and displays them with the model.</p>
+</li>
+<li>
+<p><strong>Given</strong> a model has assigned labels, <strong>When</strong> I view the model in the list, <strong>Then</strong> the labels are displayed alongside the model name for quick categorization.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am updating a model's labels, <strong>When</strong> I remove existing labels and add new ones, <strong>Then</strong> the system replaces the old labels with the new ones (delete-all, insert-all operation).</p>
+</li>
+<li>
+<p><strong>Given</strong> I delete a model, <strong>When</strong> the deletion completes, <strong>Then</strong> the system cascades the deletion to remove all label associations.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-8-configure-azure-specific-features-priority-p2">User Story 8 - Configure Azure-Specific Features (Priority: P2)<a class="headerlink" href="#user-story-8-configure-azure-specific-features-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator working with Azure IoT Edge, I need to configure system modules (edgeAgent, edgeHub), message routes, and module commands, so that I can leverage Azure's full edge runtime capabilities.</p>
+<p><strong>Why this priority</strong>: Essential for Azure deployments but not applicable to AWS users. This is a high priority for Azure-based organizations but does not block AWS functionality.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating an Azure model, configuring system modules with custom runtime images, defining routes between modules, and adding module commands. Delivers value through Azure-specific edge orchestration.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> I am creating an Azure IoT Edge model, <strong>When</strong> the model initializes, <strong>Then</strong> the system automatically includes edgeAgent and edgeHub system modules with default configurations.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am configuring system modules, <strong>When</strong> I specify custom runtime images for edgeAgent or edgeHub, <strong>Then</strong> the system uses these images in the deployed configuration.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am defining message routes, <strong>When</strong> I create a route with the syntax "FROM /messages/modules/tempSensor/outputs/temperatureOutput INTO $upstream", <strong>Then</strong> the system validates the syntax and includes the route in the IoT Hub configuration.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am adding module commands, <strong>When</strong> I define a command name and associate it with a module, <strong>Then</strong> the system stores the command in the database for quick lookup during remote command execution.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am configuring a route with optional properties, <strong>When</strong> I set route priority (0-9) and time-to-live in seconds, <strong>Then</strong> the system validates the ranges and includes these properties in the route configuration.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="user-story-9-configure-aws-greengrass-deployments-priority-p2">User Story 9 - Configure AWS Greengrass Deployments (Priority: P2)<a class="headerlink" href="#user-story-9-configure-aws-greengrass-deployments-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator working with AWS IoT Greengrass, I need to define component-based edge models without system modules or routes, so that I can deploy Greengrass configurations that align with AWS's architecture.</p>
+<p><strong>Why this priority</strong>: Essential for AWS deployments but not applicable to Azure users. This is a high priority for AWS-based organizations but does not block Azure functionality.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating an AWS Greengrass model, configuring custom components with versions, and verifying the deployment is created in AWS IoT Core. Delivers value through AWS-specific edge deployment.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Given</strong> I am creating an AWS IoT Greengrass model, <strong>When</strong> I configure the model, <strong>Then</strong> the system does not include system modules or routes (AWS uses a different architecture).</p>
+</li>
+<li>
+<p><strong>Given</strong> I am defining Greengrass components, <strong>When</strong> I specify component names and versions, <strong>Then</strong> the system creates a Greengrass deployment configuration targeting the appropriate thing group.</p>
+</li>
+<li>
+<p><strong>Given</strong> I am configuring a Greengrass component, <strong>When</strong> I set component-specific settings, <strong>Then</strong> the system structures the configuration according to Greengrass component recipe format.</p>
+</li>
+<li>
+<p><strong>Given</strong> I save an AWS model, <strong>When</strong> the deployment is created, <strong>Then</strong> the system stores the AWS deployment ID as the external identifier for tracking.</p>
+</li>
+</ol>
+<hr/>
+<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>What happens when a model is created but cloud deployment fails?</strong> System should rollback the database record or mark the model as "deployment failed" to prevent orphaned records.</p>
+</li>
+<li>
+<p><strong>What happens when updating a model that is currently assigned to active devices?</strong> [NEEDS CLARIFICATION: Are devices automatically redeployed with the new configuration, or does update only affect future device provisioning?]</p>
+</li>
+<li>
+<p><strong>How does the system handle module container image URIs that are inaccessible or invalid?</strong> System should validate image URI format but may not be able to verify accessibility until deployment. Cloud provider will report deployment failures.</p>
+</li>
+<li>
+<p><strong>What happens when a model is deleted but the cloud configuration deletion fails?</strong> System should either rollback the database deletion or mark the model for retry to prevent inconsistent state.</p>
+</li>
+<li>
+<p><strong>What happens when a user attempts to create a route with invalid syntax?</strong> The regex validation should catch syntax errors and display inline error messages before submission.</p>
+</li>
+<li>
+<p><strong>How does the system handle concurrent updates to the same model by multiple administrators?</strong> Last-write-wins pattern with database-level concurrency control. Consider adding optimistic concurrency checks.</p>
+</li>
+<li>
+<p><strong>What happens when label associations fail during model update?</strong> Label updates are transactional within unit of work. Failure should rollback all changes.</p>
+</li>
+<li>
+<p><strong>How are container registry credentials managed for private images?</strong> [NEEDS CLARIFICATION: Current implementation doesn't expose credential management in UI. How are credentials configured at cloud provider level?]</p>
+</li>
+<li>
+<p><strong>What happens when importing a public module that conflicts with existing module names?</strong> System should allow the import and let the user resolve naming conflicts manually.</p>
+</li>
+<li>
+<p><strong>How does the system handle very large numbers of modules or routes in a single model?</strong> UI should handle pagination or virtual scrolling for large collections. Consider performance testing with 50+ modules.</p>
+</li>
+</ul>
+<hr/>
+<h2 id="requirements-mandatory">Requirements <em>(mandatory)</em><a class="headerlink" href="#requirements-mandatory" title="Permanent link">¶</a></h2>
+<h3 id="functional-requirements">Functional Requirements<a class="headerlink" href="#functional-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>FR-001</strong>: System MUST allow authorized administrators to create new edge device models with a unique name, description, and at least one custom module configuration.</p>
+</li>
+<li>
+<p><strong>FR-002</strong>: System MUST generate a unique model identifier (GUID) for each new edge model automatically.</p>
+</li>
+<li>
+<p><strong>FR-003</strong>: System MUST deploy edge model configurations to the configured cloud provider (Azure IoT Hub or AWS IoT Core) when models are created or updated.</p>
+</li>
+<li>
+<p><strong>FR-004</strong>: System MUST store an external identifier linking the local database record to the cloud provider's configuration or deployment ID.</p>
+</li>
+<li>
+<p><strong>FR-005</strong>: System MUST support filtering edge models by keyword search across model name and description fields (case-insensitive).</p>
+</li>
+<li>
+<p><strong>FR-006</strong>: System MUST display edge model avatars in list and detail views for visual identification.</p>
+</li>
+<li>
+<p><strong>FR-007</strong>: System MUST allow administrators to upload custom avatar images (JPG, JPEG, PNG) and delete them to revert to default placeholder.</p>
+</li>
+<li>
+<p><strong>FR-008</strong>: System MUST validate that edge model names are unique before creation.</p>
+</li>
+<li>
+<p><strong>FR-009</strong>: System MUST prevent creation of models with duplicate identifiers by throwing ResourceAlreadyExistsException.</p>
+</li>
+<li>
+<p><strong>FR-010</strong>: System MUST allow updating of existing edge models including modules, routes, labels, and configuration settings.</p>
+</li>
+<li>
+<p><strong>FR-011</strong>: System MUST cascade update operations to the cloud provider immediately upon save.</p>
+</li>
+<li>
+<p><strong>FR-012</strong>: System MUST allow deletion of edge models with confirmation, including removal of cloud configurations and cascade deletion of associated records.</p>
+</li>
+<li>
+<p><strong>FR-013</strong>: System MUST support assignment of multiple labels to edge models for categorization and organization.</p>
+</li>
+<li>
+<p><strong>FR-014</strong>: System MUST handle label updates by replacing all existing labels with the new set (delete-all, insert-all operation).</p>
+</li>
+<li>
+<p><strong>FR-015</strong>: System MUST enforce permission-based access control with "edge-model:read" for viewing and "edge-model:write" for modifications.</p>
+</li>
+<li>
+<p><strong>FR-016</strong>: System MUST display read-only views to users without write permissions, hiding action buttons and disabling form fields.</p>
+</li>
+<li>
+<p><strong>FR-017</strong>: System MUST provide a public modules catalog accessible during model creation for importing pre-configured modules.</p>
+</li>
+<li>
+<p><strong>FR-018</strong>: System MUST support configuration of custom edge modules with the following properties: module name, container image URI, container create options, startup order, status, and version.</p>
+</li>
+<li>
+<p><strong>FR-019</strong>: System MUST allow defining environment variables as key-value pairs for each module to be injected at container runtime.</p>
+</li>
+<li>
+<p><strong>FR-020</strong>: System MUST allow defining module twin settings (desired properties) for each module to be synchronized via cloud provider.</p>
+</li>
+<li>
+<p><strong>FR-021</strong>: System MUST validate module names are required and module image URIs are required for all custom modules.</p>
+</li>
+<li>
+<p><strong>FR-022</strong>: System MUST provide paginated list views for edge models with configurable page sizes.</p>
+</li>
+<li>
+<p><strong>FR-023</strong>: System MUST organize model detail and creation pages with tabbed interfaces for General, Modules, and Routes sections.</p>
+</li>
+<li>
+<p><strong>FR-024</strong>: System MUST display validation errors inline on form fields with user-friendly error messages.</p>
+</li>
+<li>
+<p><strong>FR-025</strong>: System MUST provide visual feedback during asynchronous operations with loading indicators and success/error notifications.</p>
+</li>
+</ul>
+<h3 id="azure-iot-edge-specific-requirements">Azure IoT Edge-Specific Requirements<a class="headerlink" href="#azure-iot-edge-specific-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>FR-026</strong>: System MUST automatically include edgeAgent and edgeHub system modules when creating Azure IoT Edge models.</p>
+</li>
+<li>
+<p><strong>FR-027</strong>: System MUST allow configuration of system module runtime images for edgeAgent and edgeHub.</p>
+</li>
+<li>
+<p><strong>FR-028</strong>: System MUST support defining message routes with syntax: "FROM <source/> [WHERE <condition>] INTO <sink>".</sink></condition></p>
+</li>
+<li>
+<p><strong>FR-029</strong>: System MUST validate route syntax using regex pattern: <code>^(?i)FROM [\S]+( WHERE (NOT )?[\S]+)? INTO [\S]+$</code>.</p>
+</li>
+<li>
+<p><strong>FR-030</strong>: System MUST support optional route properties: priority (0-9 range) and time-to-live (non-negative integer seconds).</p>
+</li>
+<li>
+<p><strong>FR-031</strong>: System MUST support module commands associated with specific modules for remote execution capabilities.</p>
+</li>
+<li>
+<p><strong>FR-032</strong>: System MUST store module commands in the database for quick lookup without cloud API calls.</p>
+</li>
+<li>
+<p><strong>FR-033</strong>: System MUST synchronize module commands during model create and update operations.</p>
+</li>
+<li>
+<p><strong>FR-034</strong>: System MUST create Azure IoT Hub automatic device configurations with module deployments and routes.</p>
+</li>
+</ul>
+<h3 id="aws-iot-greengrass-specific-requirements">AWS IoT Greengrass-Specific Requirements<a class="headerlink" href="#aws-iot-greengrass-specific-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>FR-035</strong>: System MUST support AWS IoT Greengrass models without system modules (component-based architecture).</p>
+</li>
+<li>
+<p><strong>FR-036</strong>: System MUST support AWS IoT Greengrass models without message routes (pub/sub communication model).</p>
+</li>
+<li>
+<p><strong>FR-037</strong>: System MUST create AWS IoT Greengrass deployment configurations targeting thing groups.</p>
+</li>
+<li>
+<p><strong>FR-038</strong>: System MUST store AWS deployment IDs as external identifiers for tracking.</p>
+</li>
+</ul>
+<h3 id="data-validation-requirements">Data Validation Requirements<a class="headerlink" href="#data-validation-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>FR-039</strong>: System MUST validate that model names are provided and not empty during creation and update.</p>
+</li>
+<li>
+<p><strong>FR-040</strong>: System MUST validate that module names are provided and not empty for all custom modules.</p>
+</li>
+<li>
+<p><strong>FR-041</strong>: System MUST validate that module image URIs are provided and not empty for all custom modules.</p>
+</li>
+<li>
+<p><strong>FR-042</strong>: System MUST validate route format matches the required syntax before saving.</p>
+</li>
+<li>
+<p><strong>FR-043</strong>: System MUST validate route priority is within 0-9 range when provided.</p>
+</li>
+<li>
+<p><strong>FR-044</strong>: System MUST validate route time-to-live is a non-negative integer when provided.</p>
+</li>
+<li>
+<p><strong>FR-045</strong>: System MUST validate uploaded avatar images are of supported file types (JPG, JPEG, PNG).</p>
+</li>
+</ul>
+<h3 id="error-handling-requirements">Error Handling Requirements<a class="headerlink" href="#error-handling-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>FR-046</strong>: System MUST throw ResourceAlreadyExistsException when attempting to create a model with an existing identifier.</p>
+</li>
+<li>
+<p><strong>FR-047</strong>: System MUST throw ResourceNotFoundException when attempting to retrieve, update, or delete a non-existent model.</p>
+</li>
+<li>
+<p><strong>FR-048</strong>: System MUST display user-friendly error messages via Snackbar notifications for API failures.</p>
+</li>
+<li>
+<p><strong>FR-049</strong>: System MUST maintain transactional consistency using Unit of Work pattern for database operations.</p>
+</li>
+<li>
+<p><strong>FR-050</strong>: System MUST rollback database changes if cloud provider deployment fails [NEEDS CLARIFICATION: Current implementation behavior].</p>
+</li>
+</ul>
+<h3 id="key-entities-include-if-feature-involves-data">Key Entities <em>(include if feature involves data)</em><a class="headerlink" href="#key-entities-include-if-feature-involves-data" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>EdgeDeviceModel</strong>: Represents an edge device model template with properties including unique identifier, name, description, external identifier (cloud deployment/configuration ID), and associated labels. Serves as the primary entity for edge model management.</p>
+</li>
+<li>
+<p><strong>EdgeDeviceModelCommand</strong>: Represents module commands associated with an edge model (Azure only). Contains command name, associated module name, and links to the parent EdgeDeviceModel. Used for remote command execution capabilities.</p>
+</li>
+<li>
+<p><strong>Label</strong>: Represents categorization tags with many-to-many relationship to EdgeDeviceModel. Used for organizing and filtering models by environment, version, purpose, or custom classifications.</p>
+</li>
+<li>
+<p><strong>EdgeDevice</strong>: References EdgeDeviceModel to determine deployment configuration. Edge devices use the model as a template for their module and route configuration.</p>
+</li>
+<li>
+<p><strong>IoTEdgeModel (DTO)</strong>: Complete data transfer object containing model details, custom modules list, routes list, system modules (Azure), and labels. Used for API communication between client and server.</p>
+</li>
+<li>
+<p><strong>IoTEdgeModule (DTO)</strong>: Represents a custom edge module with properties including module name, container image URI, container create options, startup order, status, version, environment variables, twin settings, and commands.</p>
+</li>
+<li>
+<p><strong>IoTEdgeRoute (DTO)</strong>: Represents a message route with properties including route name, route value (FROM/INTO syntax), optional priority (0-9), and optional time-to-live in seconds.</p>
+</li>
+</ul>
+<hr/>
+<h2 id="success-criteria-mandatory">Success Criteria <em>(mandatory)</em><a class="headerlink" href="#success-criteria-mandatory" title="Permanent link">¶</a></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes<a class="headerlink" href="#measurable-outcomes" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>SC-001</strong>: Administrators can create a complete edge device model including modules and routes in under 5 minutes.</p>
+</li>
+<li>
+<p><strong>SC-002</strong>: System reduces manual edge device configuration errors by 80% through standardized model-based deployment.</p>
+</li>
+<li>
+<p><strong>SC-003</strong>: Model configurations deploy to cloud provider (Azure or AWS) within 30 seconds of save operation.</p>
+</li>
+<li>
+<p><strong>SC-004</strong>: 95% of edge model searches return relevant results on first query attempt.</p>
+</li>
+<li>
+<p><strong>SC-005</strong>: Administrators can locate and open an existing model from the list in under 15 seconds.</p>
+</li>
+<li>
+<p><strong>SC-006</strong>: Model avatar images load and display in list views within 2 seconds per page load.</p>
+</li>
+<li>
+<p><strong>SC-007</strong>: System successfully validates and prevents creation of duplicate model names in 100% of cases.</p>
+</li>
+<li>
+<p><strong>SC-008</strong>: Model update operations complete with cloud provider synchronization in under 45 seconds.</p>
+</li>
+<li>
+<p><strong>SC-009</strong>: Public module catalog imports complete in under 10 seconds per module.</p>
+</li>
+<li>
+<p><strong>SC-010</strong>: System maintains 99.9% consistency between database records and cloud provider configurations.</p>
+</li>
+<li>
+<p><strong>SC-011</strong>: Edge model deletion operations complete with full cleanup (database, cloud, labels, commands) in under 30 seconds.</p>
+</li>
+<li>
+<p><strong>SC-012</strong>: Route syntax validation provides immediate feedback (under 1 second) on invalid route definitions.</p>
+</li>
+<li>
+<p><strong>SC-013</strong>: Users with read-only permissions can browse models without encountering authorization errors or broken functionality.</p>
+</li>
+<li>
+<p><strong>SC-014</strong>: System handles concurrent model updates by multiple administrators without data loss or corruption.</p>
+</li>
+<li>
+<p><strong>SC-015</strong>: Administrators can manage fleets of 100+ edge devices using 10-20 standardized models, reducing configuration complexity by 70%.</p>
+</li>
+</ul>
+<hr/>
+<h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">¶</a></h2>
+<h3 id="source-analysis">Source Analysis<a class="headerlink" href="#source-analysis" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Analysis Path</strong>: <code>specs/007-edge-device-model-management/analyze.md</code></li>
+<li><strong>Analyzed By</strong>: excavate.specifier</li>
+<li><strong>Analysis Date</strong>: 2025-01-21</li>
+</ul>
+<h3 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h3>
+<h4 id="controllers">Controllers<a class="headerlink" href="#controllers" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/EdgeModelsController.cs</code> - REST API endpoints for edge model CRUD operations, avatar management, and public catalog access</li>
+</ul>
+<h4 id="business-logic">Business Logic<a class="headerlink" href="#business-logic" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IEdgeModelService.cs</code> - Service interface defining core edge model operations</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Services/EdgeModelService.cs</code> - Service implementation with cloud provider integration, label management, and command synchronization</li>
+</ul>
+<h4 id="data-access">Data Access<a class="headerlink" href="#data-access" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceModelRepository.cs</code> - Repository interface for EdgeDeviceModel entity</li>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceModelCommandRepository.cs</code> - Repository interface for module commands</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/EdgeDeviceModel.cs</code> - Core entity definition with labels relationship</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/EdgeDeviceModelCommand.cs</code> - Module command entity (Azure-specific)</li>
+</ul>
+<h4 id="ui-components">UI Components<a class="headerlink" href="#ui-components" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/EdgeModels/EdgeModelListPage.razor</code> - Model list view with search, filtering, and pagination</li>
+<li><code>src/IoTHub.Portal.Client/Pages/EdgeModels/EdgeModelDetailPage.razor</code> - Detailed model view and editing with tabbed interface</li>
+<li><code>src/IoTHub.Portal.Client/Pages/EdgeModels/CreateEdgeModelsPage.razor</code> - Model creation page with full configuration wizard</li>
+<li><code>src/IoTHub.Portal.Client/Components/EdgeModels/EdgeModelSearch.razor</code> - Search component for filtering</li>
+<li><code>src/IoTHub.Portal.Client/Dialogs/EdgeModels/DeleteEdgeModelDialog.razor</code> - Deletion confirmation dialog</li>
+</ul>
+<h4 id="dtos">DTOs<a class="headerlink" href="#dtos" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModel.cs</code> - Complete edge model DTO with modules, routes, system modules, and labels</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModelListItem.cs</code> - List view DTO for model browsing</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModule.cs</code> - Edge module definition with environment variables and twin settings</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeRoute.cs</code> - Route definition with validation rules</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/EdgeModelSystemModule.cs</code> - System module DTO (Azure)</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeModuleCommand.cs</code> - Module command DTO</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/Filters/EdgeModelFilter.cs</code> - Filter DTO for search and filtering</li>
+</ul>
+<h4 id="client-services">Client Services<a class="headerlink" href="#client-services" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Services/IEdgeModelClientService.cs</code> - Client service interface for HTTP API calls</li>
+<li><code>src/IoTHub.Portal.Client/Services/EdgeModelClientService.cs</code> - HTTP client implementation</li>
+</ul>
+<h4 id="validators">Validators<a class="headerlink" href="#validators" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Validators/EdgeModelValidator.cs</code> - FluentValidation for edge model DTOs</li>
+</ul>
+<h4 id="mappers">Mappers<a class="headerlink" href="#mappers" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Mappers/EdgeDeviceModelProfile.cs</code> - AutoMapper profile for entity-DTO mapping</li>
+<li><code>src/IoTHub.Portal.Application/Mappers/EdgeDeviceModelCommandProfile.cs</code> - AutoMapper profile for command mapping</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
+<p><strong>This feature depends on:</strong></p>
+<ul>
+<li><strong>Label Management</strong> - Edge models use labels for categorization and filtering</li>
+<li><strong>Role-Based Access Control</strong> - Permissions enforced through RBAC system with edge-model:read and edge-model:write permissions</li>
+<li><strong>Azure/AWS Integration</strong> - Multi-cloud deployment orchestration via IConfigService</li>
+<li><strong>Configuration Management</strong> - Application configuration for cloud provider selection</li>
+<li><strong>Device Model Image Manager</strong> - Avatar/image storage and retrieval</li>
+</ul>
+<p><strong>Features that depend on this:</strong></p>
+<ul>
+<li><strong>Edge Device Management</strong> - Edge devices reference edge models for deployment configuration and module setup</li>
+<li><strong>Device Configurations</strong> - Edge models create automatic device configurations in cloud providers</li>
+<li><strong>Dashboard</strong> - May display edge model statistics and deployment metrics</li>
+<li><strong>Device Provisioning</strong> - New edge devices assigned to models during provisioning</li>
+</ul>
+<h3 id="related-features">Related Features<a class="headerlink" href="#related-features" title="Permanent link">¶</a></h3>
+<ul>
+<li>Feature 001: User Management (authorization)</li>
+<li>Feature 002: Authentication &amp; Authorization (permission enforcement)</li>
+<li>Feature 008: Device Management (edge device provisioning with models)</li>
+<li>Feature 016: Configuration Management (cloud provider settings)</li>
+</ul>
+<hr/>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
+<h3 id="multi-cloud-architecture">Multi-Cloud Architecture<a class="headerlink" href="#multi-cloud-architecture" title="Permanent link">¶</a></h3>
+<p>The feature implements a strategy pattern for multi-cloud support, abstracting Azure and AWS differences behind the IConfigService interface. Azure models include system modules (edgeAgent, edgeHub) and message routes, while AWS models use a component-based architecture without these concepts.</p>
+<h3 id="model-lifecycle-and-consistency">Model Lifecycle and Consistency<a class="headerlink" href="#model-lifecycle-and-consistency" title="Permanent link">¶</a></h3>
+<p>Edge models are stored in the local database and synchronized to cloud providers (Azure IoT Hub or AWS IoT Core). The external identifier field links the database record to the cloud configuration, maintaining consistency. Updates trigger immediate rollout to the cloud provider.</p>
+<h3 id="module-commands-design-azure-specific">Module Commands Design (Azure-Specific)<a class="headerlink" href="#module-commands-design-azure-specific" title="Permanent link">¶</a></h3>
+<p>Module commands are stored in the EdgeDeviceModelCommand entity for quick lookup without cloud API calls. This optimization enables faster command execution by pre-loading available commands during model retrieval.</p>
+<h3 id="label-management-pattern">Label Management Pattern<a class="headerlink" href="#label-management-pattern" title="Permanent link">¶</a></h3>
+<p>Labels use a replace-all strategy during updates (delete all existing, insert all new) rather than incremental updates. This simplifies the update logic but may have performance implications for models with many labels.</p>
+<h3 id="route-validation">Route Validation<a class="headerlink" href="#route-validation" title="Permanent link">¶</a></h3>
+<p>Azure IoT Edge routes use a specific query language syntax validated by regex. The system validates syntax but cannot verify semantic correctness (e.g., whether referenced modules exist) until cloud deployment.</p>
+<h3 id="user-experience-considerations">User Experience Considerations<a class="headerlink" href="#user-experience-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Name field is read-only after creation in the UI (technical limitation or business rule?)</li>
+<li>Tabbed interface reduces visual clutter for complex model configurations</li>
+<li>Expansion panels organize related settings logically</li>
+<li>Permission-based rendering ensures users only see actions they can perform</li>
+<li>Inline validation provides immediate feedback before submission</li>
+<li>Confirmation dialogs prevent accidental deletion</li>
+</ul>
+<h3 id="performance-optimization">Performance Optimization<a class="headerlink" href="#performance-optimization" title="Permanent link">¶</a></h3>
+<ul>
+<li>Pagination reduces initial page load for large model catalogs</li>
+<li>Server-side filtering reduces data transfer</li>
+<li>Avatar images loaded asynchronously to prevent blocking</li>
+<li>Repository queries use Include() for efficient label loading</li>
+</ul>
+<h3 id="future-considerations">Future Considerations<a class="headerlink" href="#future-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Model versioning and rollback capabilities for safer updates</li>
+<li>Configuration diff/comparison tools for troubleshooting</li>
+<li>Model cloning for rapid prototyping</li>
+<li>Import/export model configurations (JSON/YAML) for portability</li>
+<li>Module dependency validation and automatic ordering</li>
+<li>Draft/unpublished state for models under development</li>
+<li>Deployment success/failure tracking and analytics</li>
+<li>Automated rollback on deployment failure</li>
+<li>Container registry credential management in UI</li>
+<li>Visual route designer for complex routing scenarios</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>
