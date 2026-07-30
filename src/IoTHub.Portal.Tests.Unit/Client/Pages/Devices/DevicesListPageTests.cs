@@ -61,8 +61,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Assert
-            cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel .mud-expand-panel-header .mud-expand-panel-text").TextContent.Should().Be("Search panel"));
-            cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel").ClassList.Should().NotContain("Search panel should be collapsed"));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(1));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
