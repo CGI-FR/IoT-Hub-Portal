@@ -124,6 +124,7 @@ nav:
     - 'Project conception':
       - 'dev-guide/conception/diagrams.md'
   - Concepts: 'concepts.md'
+  - RBAC: 'rbac.md'
   - Web API Reference: 'open-api.md'
   - About:
     - 'Known Issues': 'about/issues.md'
