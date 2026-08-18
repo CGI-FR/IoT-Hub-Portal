@@ -1,0 +1,257 @@
+﻿@inject IDeviceClientService DeviceClientService
+@inject ILayerClientService LayerClientService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject IPlanningClientService PlanningClientService
+
+<MudDialog MaxWidth="800px" MaxHeight="600px">
+    <TitleContent>
+        <MudText Typo="Typo.h4">Edit layer @LayerName</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" Class="mb-4">
+                <MudTextField @bind-Value="LayerName" Label="Layer Name" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudDivider DividerType="DividerType.FullWidth" />
+            <MudItem xs="12">
+                @if (IsLoading)
+                {
+                    <MudContainer Class="d-flex justify-center align-center" Style="min-height: 80vh;">
+                        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+                    </MudContainer>
+                }
+                else
+                {
+                    @if (!string.IsNullOrEmpty(planningDeviceModelId))
+                    {
+                        <MudAlert Severity="Severity.Info"
+                                  Dense="true"
+                                  Class="my-2">
+                            This layer is linked to a planning that only accepts devices of the device model @DeviceModels.Single(x => x.ModelId == planningDeviceModelId)
+                        </MudAlert>
+                    }
+
+                    <MudDataGrid T="DeviceListItem" Items="@Devices"
+                                 Dense Hover Bordered Striped
+                                 FixedHeader FixedFooter
+                                 MultiSelection
+                                 SelectOnRowClick="true"
+                                 SelectedItems="selectedDevices"
+                                 RowsPerPage="10"
+                                 QuickFilter="QuickFilter">
+                        <Columns>
+                            <SelectColumn T="DeviceListItem" />
+                            <TemplateColumn Resizable="false">
+                                <CellTemplate>
+                                    <img src="@context.Item.Image" alt="@context.Item.DeviceName illustration" width="100%" />
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <PropertyColumn Property="device => DeviceModels.Single(model => model.ModelId == device.DeviceModelId).Name"
+                                            Title="Device model"
+                                            Sortable="true" />
+                            <TemplateColumn Title="Device name" Sortable="true">
+                                <CellTemplate>
+                                    <MudText Class="d-flex align-center">
+                                        @context.Item.DeviceName
+                                        @if (context.Item.LayerId != "None" && context.Item.LayerId != InitLayer.Id)
+                                        {
+                                            <MudTooltip RootClass="d-flex align-center ml-1"
+                                                        Text="This device is already on another layer">
+                                                <MudIcon Color="Color.Info" Icon="@Icons.Material.Filled.Info" />
+                                            </MudTooltip>
+                                        }
+                                    </MudText>
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                        <ColGroup>
+                            <col style="width: 5%;" />
+                            <col style="width: 10%;" />
+                            <col style="width: auto;" />
+                            <col style="width: auto;" />
+                        </ColGroup>
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Select devices for this layer</MudText>
+                            <MudSpacer />
+                            <MudSelect Label="Filter device models"
+                                       Variant="Variant.Outlined"
+                                       StretchItems="StretchItems.All"
+                                       Clearable Dense MultiSelection SelectAll="true"
+                                       MultiSelectionTextFunc="@(list => $"{list.Count} model(s) selected")"
+                                       SelectedValues="selectedModels"
+                                       SelectedValuesChanged="@((IEnumerable<string> v) => OnSelectedModelsChanged(v))"
+                                       Class="mx-2">
+                                @foreach (var deviceModel in DeviceModels)
+                                {
+                                    <MudSelectItem Value="@deviceModel.ModelId">
+                                        <img src="@deviceModel.Image" alt="@deviceModel.Name illustration" />
+                                        @deviceModel.Name
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                            <MudTextField Label="Filter device name"
+                                          Variant="Variant.Text"
+                                          Value="deviceNameFilter"
+                                          ValueChanged="@((string v) => OnDeviceNameFilterChanged(v))"
+                                          Immediate
+                                          Class="mx-2" />
+                        </ToolBarContent>
+                        <NoRecordsContent>
+                            <MudText>No matching device found</MudText>
+                        </NoRecordsContent>
+                        <PagerContent>
+                            <MudDataGridPager PageSizeOptions="new[] { 5, 10, 20, 50 }" />
+                        </PagerContent>
+                    </MudDataGrid>
+                }
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="cancel" Variant="Variant.Filled" ButtonType="ButtonType.Reset" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="save" Color="Color.Primary" Variant="Variant.Filled" ButtonType="ButtonType.Submit" OnClick="SaveDevice">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] public Error Error { get; set; } = null!;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public LayerDto InitLayer { get; set; } = null!;
+    [Parameter] public HashSet<LayerHash> LayerList { get; set; } = null!;
+
+    private string? planningDeviceModelId;
+
+    private IEnumerable<string> selectedModels = new List<string>();
+    private HashSet<DeviceListItem> selectedDevices = new();
+    private string deviceNameFilter = string.Empty;
+
+    private bool IsLoading { get; set; } = true;
+    public string LayerName { get; set; } = null!;
+    public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
+    public IEnumerable<DeviceListItem> Devices = new List<DeviceListItem>();
+
+    void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        LayerName = InitLayer.Name;
+
+        // Check if this layer is linked to a planning and get the planning's device model
+        if (!string.IsNullOrEmpty(InitLayer.Planning) && InitLayer.Planning != "None")
+        {
+            try
+            {
+                var planning = await PlanningClientService.GetPlanning(InitLayer.Planning);
+                planningDeviceModelId = planning.DeviceModelId;
+            }
+            catch (KeyNotFoundException)
+            {
+                // Planning might not exist anymore, ignore the error
+            }
+        }
+
+        var filter = new DeviceModelFilter
+        {
+            SearchText = "",
+            PageNumber = 0,
+            PageSize = 10000,
+            OrderBy = new[]
+            {
+                string.Empty
+            }
+        };
+
+        DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items;
+        Devices = (await DeviceClientService.GetDevices("api/devices?pageSize=10000")).Items;
+        selectedDevices = new HashSet<DeviceListItem>(Devices.Where(x => x.LayerId == InitLayer.Id));
+
+        // If the layer is linked to a planning with a specific device model, filter and auto-select that model
+        // if (!string.IsNullOrEmpty(planningDeviceModelId))
+        // {
+        //     var planningDeviceModel = DeviceModels.FirstOrDefault(dm => dm.ModelId == planningDeviceModelId);
+        //     if (planningDeviceModel != null)
+        //     {
+        //         SelectedModel = planningDeviceModel;
+        //         ModelIdLoad = true; // Auto-filter by this model
+        //     }
+        // }
+        // else
+        // {
+        //     var deviceModels = DeviceModels.ToList();
+        //     if (deviceModels.Count != 0)
+        //     {
+        //         SelectedModel = deviceModels.First();
+        //     }
+        // }
+
+        IsLoading = false;
+    }
+
+    private async Task SaveDevice()
+    {
+        try
+        {
+            InitLayer.Name = LayerName;
+            await LayerClientService.UpdateLayer(InitLayer);
+
+            foreach (var device in Devices)
+            {
+                // Device wasn't on any layer and is now selected to be on this layer
+                // or
+                // Device was on another layer and is now selected to be on this layer
+                if ((device.LayerId == "None" && selectedDevices.Contains(device)) || (device.LayerId != "None" && device.LayerId != InitLayer.Id && selectedDevices.Contains(device)))
+                {
+                    var deviceDetails = await FindDevice(device.DeviceID);
+                    deviceDetails.LayerId = InitLayer.Id;
+
+                    await DeviceClientService.UpdateDevice(deviceDetails);
+                }
+                // Device was on this layer and is now unselected
+                else if (device.LayerId == InitLayer.Id && !selectedDevices.Contains(device))
+                {
+                    var deviceDetails = await FindDevice(device.DeviceID);
+                    deviceDetails.LayerId = "None";
+
+                    await DeviceClientService.UpdateDevice(deviceDetails);
+                }
+
+            }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            MudDialog.Close(DialogResult.Ok(InitLayer.Name));
+        }
+    }
+
+    private async Task<DeviceDetails> FindDevice(string deviceId)
+    {
+        return await DeviceClientService.GetDevice(deviceId);
+    }
+
+    private void OnSelectedModelsChanged(IEnumerable<string> values)
+    {
+        selectedModels = values;
+        StateHasChanged();
+    }
+
+    private void OnDeviceNameFilterChanged(string value)
+    {
+        deviceNameFilter = value;
+        StateHasChanged();
+    }
+
+    private bool QuickFilter(DeviceListItem arg)
+    {
+        var matchesModel = !selectedModels.Any() || selectedModels.Contains(arg.DeviceModelId);
+        var matchesName = string.IsNullOrEmpty(deviceNameFilter)
+                          || arg?.DeviceName.Contains(deviceNameFilter, StringComparison.OrdinalIgnoreCase) == true;
+
+        return matchesModel && matchesName;
+    }
+}
