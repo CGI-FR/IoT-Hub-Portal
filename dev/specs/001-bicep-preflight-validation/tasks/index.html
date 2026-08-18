@@ -165,6 +165,16 @@
       </a>
 </li>
 <li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
 <a class="md-tabs__link" href="../../../open-api/">
         
   
@@ -356,6 +366,13 @@
 </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="../../../open-api/">
 <span class="md-ellipsis">
     Web API Reference
@@ -363,15 +380,15 @@
 </a>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
-<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
 <span class="md-ellipsis">
     About
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_7">
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
 <span class="md-nav__icon md-icon"></span>
             About
           </label>
@@ -637,18 +654,18 @@
 <h2 id="phase-1-setup-shared-infrastructure">Phase 1: Setup (Shared Infrastructure)<a class="headerlink" href="#phase-1-setup-shared-infrastructure" title="Permanent link">¶</a></h2>
 <p><strong>Purpose</strong>: Prepare Azure environment and credentials for validation</p>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T001 Document Azure service principal requirements in docs/azure-validation-setup.md (OIDC-based authentication with Reader role + deployment validation permissions)</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T002 Create GitHub repository secrets documentation in .github/workflows/README.md (AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID for OIDC)</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T003 [P] Create test template directory structure at templates/azure/tests/ for validation test cases</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T001 Document Azure service principal requirements in docs/azure-validation-setup.md (OIDC-based authentication with Reader role + deployment validation permissions)</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T002 Create GitHub repository secrets documentation in .github/workflows/README.md (AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID for OIDC)</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T003 [P] Create test template directory structure at templates/azure/tests/ for validation test cases</li>
 </ul>
 <hr/>
 <h2 id="phase-2-foundational-blocking-prerequisites">Phase 2: Foundational (Blocking Prerequisites)<a class="headerlink" href="#phase-2-foundational-blocking-prerequisites" title="Permanent link">¶</a></h2>
 <p><strong>Purpose</strong>: Core workflow infrastructure that MUST be complete before implementing user stories</p>
 <p><strong>⚠️ CRITICAL</strong>: No user story work can begin until this phase is complete</p>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T004 Create workflow helper script at .github/scripts/find-bicep-templates.sh to discover all Bicep templates in repository</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T005 Create workflow helper script at .github/scripts/parse-validation-errors.sh to extract and format Azure validation error messages</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T006 [P] Create test parameter file template at templates/azure/tests/azuredeploy.parameters.test.json with minimal valid parameters for validation</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T004 Create workflow helper script at .github/scripts/find-bicep-templates.sh to discover all Bicep templates in repository</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T005 Create workflow helper script at .github/scripts/parse-validation-errors.sh to extract and format Azure validation error messages</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T006 [P] Create test parameter file template at templates/azure/tests/azuredeploy.parameters.test.json with minimal valid parameters for validation</li>
 </ul>
 <p><strong>Checkpoint</strong>: Foundation ready - user story implementation can now begin in parallel</p>
 <hr/>
@@ -657,10 +674,10 @@
 <p><strong>Independent Test</strong>: Create a pull request with valid Bicep changes and observe the CI pipeline perform deployment validation with success status. Then create a PR with intentionally invalid Bicep (e.g., invalid SKU) and verify validation fails with error details.</p>
 <h3 id="implementation-for-user-story-1">Implementation for User Story 1<a class="headerlink" href="#implementation-for-user-story-1" title="Permanent link">¶</a></h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T007 [US1] Add Azure OIDC authentication step to .github/workflows/bicep-lint.yml using azure/login@v2 action with federated credentials</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T008 [US1] Add Azure CLI setup verification step in .github/workflows/bicep-lint.yml to ensure az cli is available and authenticated</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T009 [US1] Update main validation job in .github/workflows/bicep-lint.yml to use azure/arm-deploy@v2 action for templates/azure/azuredeploy.bicep with deploymentMode: Validate</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"><span class="task-list-indicator"></span></input></label> T010 [US1] Configure validation parameters in .github/workflows/bicep-lint.yml to pass test parameters file from templates/azure/tests/azuredeploy.parameters.test.json</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T007 [US1] Add Azure OIDC authentication step to .github/workflows/bicep-lint.yml using azure/login@v2 action with federated credentials</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T008 [US1] Add Azure CLI setup verification step in .github/workflows/bicep-lint.yml to ensure az cli is available and authenticated</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T009 [US1] Update main validation job in .github/workflows/bicep-lint.yml to use azure/arm-deploy@v2 action for templates/azure/azuredeploy.bicep with deploymentMode: Validate</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T010 [US1] Configure validation parameters in .github/workflows/bicep-lint.yml to pass test parameters file from templates/azure/tests/azuredeploy.parameters.test.json</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T011 [US1] Add validation timeout configuration in .github/workflows/bicep-lint.yml with timeout-minutes: 10 for validation job</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T012 [US1] Configure workflow to validate all main Bicep templates (portal_with_lorawan_and_starter_kit.bicep, portal_with_lorawan.bicep, portal_without_lorawan.bicep, azuredeploy.bicep) in templates/azure/</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> T013 [US1] Add status check reporting in .github/workflows/bicep-lint.yml to fail the workflow if any validation fails</li>

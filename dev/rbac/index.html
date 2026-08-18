@@ -6,22 +6,24 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="IoT Hub Portal for device management" name="description"/>
-<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<link href="../concepts/" rel="prev"/>
+<link href="../open-api/" rel="next"/>
+<link href="../assets/images/favicon.svg" rel="icon"/>
 <meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
-<title>Feature Specification: User Management - IoT Hub Portal</title>
-<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
-<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<title>RBAC - IoT Hub Portal</title>
+<link href="../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
 <body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
 <input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#feature-specification-user-management">
+<a class="md-skip" href="#role-based-access-control">
           Skip to content
         </a>
 </div>
@@ -31,8 +33,8 @@
 </div>
 <header class="md-header" data-md-component="header">
 <nav aria-label="Header" class="md-header__inner md-grid">
-<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
-<img alt="logo" src="../../../assets/images/logo.svg"/>
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href=".." title="IoT Hub Portal">
+<img alt="logo" src="../assets/images/logo.svg"/>
 </a>
 <label class="md-header__button md-icon" for="__drawer">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
@@ -47,7 +49,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Feature Specification: User Management
+              RBAC
             
           </span>
 </div>
@@ -115,7 +117,7 @@
 <div class="md-grid">
 <ul class="md-tabs__list">
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../..">
+<a class="md-tabs__link" href="..">
         
   
     
@@ -125,7 +127,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../azure/">
+<a class="md-tabs__link" href="../azure/">
         
   
     
@@ -135,7 +137,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../aws/">
+<a class="md-tabs__link" href="../aws/">
         
   
     
@@ -145,7 +147,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../dev-guide/">
+<a class="md-tabs__link" href="../dev-guide/">
           
   
     
@@ -155,7 +157,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../concepts/">
+<a class="md-tabs__link" href="../concepts/">
         
   
     
@@ -164,8 +166,8 @@
 
       </a>
 </li>
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../rbac/">
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="./">
         
   
     
@@ -175,7 +177,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../open-api/">
+<a class="md-tabs__link" href="../open-api/">
         
   
     
@@ -185,7 +187,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../about/issues/">
+<a class="md-tabs__link" href="../about/issues/">
           
   
     
@@ -204,8 +206,8 @@
 <div class="md-sidebar__inner">
 <nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
 <label class="md-nav__title" for="__drawer">
-<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
-<img alt="logo" src="../../../assets/images/logo.svg"/>
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href=".." title="IoT Hub Portal">
+<img alt="logo" src="../assets/images/logo.svg"/>
 </a>
     IoT Hub Portal
   </label>
@@ -221,21 +223,21 @@
 </div>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../..">
+<a class="md-nav__link" href="..">
 <span class="md-ellipsis">
     IoT Hub Portal
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../azure/">
+<a class="md-nav__link" href="../azure/">
 <span class="md-ellipsis">
     Azure
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../aws/">
+<a class="md-nav__link" href="../aws/">
 <span class="md-ellipsis">
     AWS
   </span>
@@ -256,7 +258,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../dev-guide/">
+<a class="md-nav__link" href="../dev-guide/">
 <span class="md-ellipsis">
     Developer Guide
   </span>
@@ -277,14 +279,14 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<a class="md-nav__link" href="../dev-guide/testing/unit-tests-common-practices/">
 <span class="md-ellipsis">
     Unit Tests Common Practices
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<a class="md-nav__link" href="../dev-guide/testing/unit-tests-on-blazor-components/">
 <span class="md-ellipsis">
     Unit Tests on Blazor components
   </span>
@@ -308,21 +310,21 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<a class="md-nav__link" href="../dev-guide/migrations/v3-to-v4/">
 <span class="md-ellipsis">
     Migrate from v3 to v4
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<a class="md-nav__link" href="../dev-guide/migrations/v4-to-v5/">
 <span class="md-ellipsis">
     Migrate from v4 to v5
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<a class="md-nav__link" href="../dev-guide/migrations/v5-to-v6/">
 <span class="md-ellipsis">
     Migrate from v5 to v6
   </span>
@@ -346,7 +348,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<a class="md-nav__link" href="../dev-guide/conception/diagrams/">
 <span class="md-ellipsis">
     Diagrams
   </span>
@@ -359,21 +361,103 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../concepts/">
+<a class="md-nav__link" href="../concepts/">
 <span class="md-ellipsis">
     Concepts
   </span>
 </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../../rbac/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
 <span class="md-ellipsis">
     RBAC
   </span>
 </a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rbac-model">
+<span class="md-ellipsis">
+      RBAC Model
+    </span>
+</a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../open-api/">
+<a class="md-nav__link" href="#initial-administrator">
+<span class="md-ellipsis">
+      Initial Administrator
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#managing-access">
+<span class="md-ellipsis">
+      Managing Access
+    </span>
+</a>
+<nav aria-label="Managing Access" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#create-a-role">
+<span class="md-ellipsis">
+      Create a role
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assign-a-role">
+<span class="md-ellipsis">
+      Assign a role
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#review-or-revoke-access">
+<span class="md-ellipsis">
+      Review or revoke access
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#permission-catalog">
+<span class="md-ellipsis">
+      Permission Catalog
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization-behavior">
+<span class="md-ellipsis">
+      Authorization Behavior
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-practices">
+<span class="md-ellipsis">
+      Security Practices
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../open-api/">
 <span class="md-ellipsis">
     Web API Reference
   </span>
@@ -394,28 +478,28 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../about/issues/">
+<a class="md-nav__link" href="../about/issues/">
 <span class="md-ellipsis">
     Known Issues
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../about/support/">
+<a class="md-nav__link" href="../about/support/">
 <span class="md-ellipsis">
     Support
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../about/credits/">
+<a class="md-nav__link" href="../about/credits/">
 <span class="md-ellipsis">
     Credits
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../about/license/">
+<a class="md-nav__link" href="../about/license/">
 <span class="md-ellipsis">
     License
   </span>
@@ -439,59 +523,45 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#user-scenarios-testing">
+<a class="md-nav__link" href="#rbac-model">
 <span class="md-ellipsis">
-      User Scenarios &amp; Testing
+      RBAC Model
     </span>
 </a>
-<nav aria-label="User Scenarios &amp; Testing" class="md-nav">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#initial-administrator">
+<span class="md-ellipsis">
+      Initial Administrator
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#managing-access">
+<span class="md-ellipsis">
+      Managing Access
+    </span>
+</a>
+<nav aria-label="Managing Access" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#user-story-1-view-user-directory-priority-p1">
+<a class="md-nav__link" href="#create-a-role">
 <span class="md-ellipsis">
-      User Story 1 - View User Directory (Priority: P1)
+      Create a role
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#user-story-2-view-user-details-priority-p1">
+<a class="md-nav__link" href="#assign-a-role">
 <span class="md-ellipsis">
-      User Story 2 - View User Details (Priority: P1)
+      Assign a role
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#user-story-3-create-new-user-priority-p2">
+<a class="md-nav__link" href="#review-or-revoke-access">
 <span class="md-ellipsis">
-      User Story 3 - Create New User (Priority: P2)
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#user-story-4-modify-user-information-priority-p2">
-<span class="md-ellipsis">
-      User Story 4 - Modify User Information (Priority: P2)
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#user-story-5-delete-user-account-priority-p3">
-<span class="md-ellipsis">
-      User Story 5 - Delete User Account (Priority: P3)
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#user-story-6-automatic-user-provisioning-priority-p1">
-<span class="md-ellipsis">
-      User Story 6 - Automatic User Provisioning (Priority: P1)
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#edge-cases">
-<span class="md-ellipsis">
-      Edge Cases
+      Review or revoke access
     </span>
 </a>
 </li>
@@ -499,79 +569,25 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#requirements">
+<a class="md-nav__link" href="#permission-catalog">
 <span class="md-ellipsis">
-      Requirements
-    </span>
-</a>
-<nav aria-label="Requirements" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#functional-requirements">
-<span class="md-ellipsis">
-      Functional Requirements
+      Permission Catalog
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#key-entities">
+<a class="md-nav__link" href="#authorization-behavior">
 <span class="md-ellipsis">
-      Key Entities
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#success-criteria">
-<span class="md-ellipsis">
-      Success Criteria
-    </span>
-</a>
-<nav aria-label="Success Criteria" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#measurable-outcomes">
-<span class="md-ellipsis">
-      Measurable Outcomes
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#traceability">
-<span class="md-ellipsis">
-      Traceability
-    </span>
-</a>
-<nav aria-label="Traceability" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#source-analysis">
-<span class="md-ellipsis">
-      Source Analysis
+      Authorization Behavior
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#code-references">
+<a class="md-nav__link" href="#security-practices">
 <span class="md-ellipsis">
-      Code References
+      Security Practices
     </span>
 </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#dependencies">
-<span class="md-ellipsis">
-      Dependencies
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 </ul>
 </nav>
@@ -580,157 +596,158 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="feature-specification-user-management">Feature Specification: User Management<a class="headerlink" href="#feature-specification-user-management" title="Permanent link">¶</a></h1>
-<p><strong>Feature ID</strong>: 013<br/>
-<strong>Feature Branch</strong>: <code>013-user-management</code><br/>
-<strong>Created</strong>: 2026-02-03<br/>
-<strong>Status</strong>: Draft<br/>
-<strong>Source</strong>: Analysis from <code>specs/013-user-management/analyze.md</code></p>
-<hr/>
-<h2 id="user-scenarios-testing">User Scenarios &amp; Testing<a class="headerlink" href="#user-scenarios-testing" title="Permanent link">¶</a></h2>
-<h3 id="user-story-1-view-user-directory-priority-p1">User Story 1 - View User Directory (Priority: P1)<a class="headerlink" href="#user-story-1-view-user-directory-priority-p1" title="Permanent link">¶</a></h3>
-<p>As an administrator, I need to view a paginated list of all portal users so that I can monitor who has access to the system and manage user accounts effectively.</p>
-<p><strong>Why this priority</strong>: User visibility is the foundation of user management - administrators must see who has access before they can manage accounts.</p>
-<p><strong>Independent Test</strong>: Can be fully tested by navigating to the user list page and verifying users are displayed with pagination, search, and sorting.</p>
-<p><strong>Acceptance Scenarios</strong>:</p>
-<ol>
-<li><strong>Given</strong> multiple users exist in the system, <strong>When</strong> I access the user directory, <strong>Then</strong> I see a paginated list showing user names, emails, and principal IDs.</li>
-<li><strong>Given</strong> I am viewing the user list, <strong>When</strong> I enter a name in the search field, <strong>Then</strong> the list filters to show only matching users.</li>
-<li><strong>Given</strong> I am viewing the user list, <strong>When</strong> I enter an email in the search field, <strong>Then</strong> the list filters to show only matching email addresses.</li>
-<li><strong>Given</strong> more users exist than the page size, <strong>When</strong> I navigate between pages, <strong>Then</strong> I can view all users across multiple pages.</li>
-<li><strong>Given</strong> I want to sort users, <strong>When</strong> I click on a column header, <strong>Then</strong> the list is sorted by that column.</li>
-</ol>
-<hr/>
-<h3 id="user-story-2-view-user-details-priority-p1">User Story 2 - View User Details (Priority: P1)<a class="headerlink" href="#user-story-2-view-user-details-priority-p1" title="Permanent link">¶</a></h3>
-<p>As an administrator, I need to view detailed information about a specific user so that I can understand their profile and current role assignments.</p>
-<p><strong>Why this priority</strong>: Detailed user information is essential for troubleshooting access issues and verifying correct role assignments.</p>
-<p><strong>Independent Test</strong>: Can be fully tested by selecting a user from the list and viewing their complete profile including role assignments.</p>
-<p><strong>Acceptance Scenarios</strong>:</p>
-<ol>
-<li><strong>Given</strong> I select a user from the directory, <strong>When</strong> the detail page loads, <strong>Then</strong> I see their full profile (given name, family name, email, avatar).</li>
-<li><strong>Given</strong> I am viewing a user's details, <strong>When</strong> I check their role assignments, <strong>Then</strong> I see all roles currently assigned to them with their scopes.</li>
-<li><strong>Given</strong> I am viewing a user without any role assignments, <strong>When</strong> I view their roles section, <strong>Then</strong> I see an empty state indicating no roles assigned.</li>
-</ol>
-<hr/>
-<h3 id="user-story-3-create-new-user-priority-p2">User Story 3 - Create New User (Priority: P2)<a class="headerlink" href="#user-story-3-create-new-user-priority-p2" title="Permanent link">¶</a></h3>
-<p>As an administrator, I need to create new user accounts manually so that I can pre-provision access for team members before their first login.</p>
-<p><strong>Why this priority</strong>: While most users are auto-provisioned on first OAuth login, pre-provisioning enables proactive access management.</p>
-<p><strong>Independent Test</strong>: Can be fully tested by filling out the new user form, submitting it, and verifying the user appears in the directory.</p>
-<p><strong>Acceptance Scenarios</strong>:</p>
-<ol>
-<li><strong>Given</strong> I have administrator privileges, <strong>When</strong> I complete the new user form with valid information, <strong>Then</strong> the user is created and appears in the directory.</li>
-<li><strong>Given</strong> I am creating a user, <strong>When</strong> I submit a duplicate username, <strong>Then</strong> an error indicates the name is already taken.</li>
-<li><strong>Given</strong> I have created a new user, <strong>When</strong> the creation succeeds, <strong>Then</strong> a principal is automatically created for role assignments.</li>
-</ol>
-<hr/>
-<h3 id="user-story-4-modify-user-information-priority-p2">User Story 4 - Modify User Information (Priority: P2)<a class="headerlink" href="#user-story-4-modify-user-information-priority-p2" title="Permanent link">¶</a></h3>
-<p>As an administrator, I need to update user profile information so that I can correct errors or update details as they change.</p>
-<p><strong>Why this priority</strong>: Maintaining accurate user information is important for communication and identification, but less frequent than viewing.</p>
-<p><strong>Independent Test</strong>: Can be fully tested by editing a user's profile, saving changes, and verifying the updates are persisted.</p>
-<p><strong>Acceptance Scenarios</strong>:</p>
-<ol>
-<li><strong>Given</strong> I am viewing a user's details, <strong>When</strong> I modify their profile fields and save, <strong>Then</strong> the changes are persisted.</li>
-<li><strong>Given</strong> I am editing a user, <strong>When</strong> I change their name to one already in use, <strong>Then</strong> an error prevents the duplicate.</li>
-</ol>
-<hr/>
-<h3 id="user-story-5-delete-user-account-priority-p3">User Story 5 - Delete User Account (Priority: P3)<a class="headerlink" href="#user-story-5-delete-user-account-priority-p3" title="Permanent link">¶</a></h3>
-<p>As an administrator, I need to remove user accounts so that I can revoke access for users who should no longer have portal access.</p>
-<p><strong>Why this priority</strong>: User deletion is less frequent but essential for security and access control compliance.</p>
-<p><strong>Independent Test</strong>: Can be fully tested by deleting a user and verifying they no longer appear in the directory and cannot access the system.</p>
-<p><strong>Acceptance Scenarios</strong>:</p>
-<ol>
-<li><strong>Given</strong> I select a user to delete, <strong>When</strong> I confirm the deletion, <strong>Then</strong> the user is removed from the directory.</li>
-<li><strong>Given</strong> I delete a user, <strong>When</strong> the deletion completes, <strong>Then</strong> their associated principal and access controls are also removed.</li>
-<li><strong>Given</strong> a deleted user attempts to log in via OAuth, <strong>When</strong> they authenticate, <strong>Then</strong> a new user record is created (fresh start).</li>
-</ol>
-<hr/>
-<h3 id="user-story-6-automatic-user-provisioning-priority-p1">User Story 6 - Automatic User Provisioning (Priority: P1)<a class="headerlink" href="#user-story-6-automatic-user-provisioning-priority-p1" title="Permanent link">¶</a></h3>
-<p>As a new user, I need to have my account automatically created when I first log in via OAuth so that I can immediately access the portal based on my authentication.</p>
-<p><strong>Why this priority</strong>: Auto-provisioning is critical for seamless user onboarding and reduces administrative overhead.</p>
-<p><strong>Independent Test</strong>: Can be fully tested by having a new user authenticate via OAuth and verifying their account is created with correct profile data.</p>
-<p><strong>Acceptance Scenarios</strong>:</p>
-<ol>
-<li><strong>Given</strong> I am a new user authenticating via OAuth, <strong>When</strong> I successfully authenticate, <strong>Then</strong> my user account is automatically created with profile data from OAuth claims.</li>
-<li><strong>Given</strong> I am the first user in an empty system, <strong>When</strong> I log in, <strong>Then</strong> I am automatically assigned administrator privileges.</li>
-<li><strong>Given</strong> my OAuth profile has email, name, and avatar, <strong>When</strong> my account is created, <strong>Then</strong> these fields are populated from my OAuth claims.</li>
-</ol>
-<hr/>
-<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<h1 id="role-based-access-control">Role-Based Access Control<a class="headerlink" href="#role-based-access-control" title="Permanent link">¶</a></h1>
+<p>The IoT Hub Portal uses role-based access control (RBAC) to decide which authenticated users can view or change portal resources. Access is granted by assigning one or more roles to a user's principal.</p>
+<h2 id="rbac-model">RBAC Model<a class="headerlink" href="#rbac-model" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    User --&gt; Principal
+    Principal --&gt; AccessControl[Access control entry]
+    AccessControl --&gt; Role
+    Role --&gt; Actions[Permissions]</code></pre>
 <ul>
-<li>What happens when a user's email changes in the OAuth provider? (User is matched by email claim; if email changes, a new account is created)</li>
-<li>How are duplicate emails handled if created manually vs. OAuth? (Email must be unique; manual creation should validate against existing accounts)</li>
-<li>What happens to a user's data and access when they are deleted? (All access controls are cascade deleted; user cannot access portal)</li>
-<li>How is the "first administrator" determined in a fresh installation? (First user to successfully authenticate becomes admin)</li>
+<li><strong>User</strong>: The authenticated portal account, identified by its email claim.</li>
+<li><strong>Principal</strong>: The identity anchor used by authorization. A user can have multiple access-control entries through its principal.</li>
+<li><strong>Role</strong>: A named collection of permissions, such as read or write capabilities.</li>
+<li><strong>Access control entry</strong>: Assigns a role to a principal.</li>
+<li><strong>Permission</strong>: A fixed <code>resource:action</code> identifier checked by the API and UI.</li>
 </ul>
-<hr/>
-<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
-<h3 id="functional-requirements">Functional Requirements<a class="headerlink" href="#functional-requirements" title="Permanent link">¶</a></h3>
+<p>Permissions are additive. If any assigned role grants the required permission, authorization succeeds. Removing the assignment that provided the permission revokes it on the next authorization check.</p>
+<h2 id="initial-administrator">Initial Administrator<a class="headerlink" href="#initial-administrator" title="Permanent link">¶</a></h2>
+<p>The first user to log in is granted the <code>Administrators</code> role when the database has no users. You can also configure email addresses that should receive this role automatically by setting <code>GlobalAdminEmails</code>.</p>
+<p>See the <a href="../admin-configuration/#administrators-role">Administrator Configuration Guide</a> for deployment-specific configuration and troubleshooting.</p>
+<h2 id="managing-access">Managing Access<a class="headerlink" href="#managing-access" title="Permanent link">¶</a></h2>
+<p>An administrator with the required access-control permissions can manage RBAC from the user and role management areas of the portal.</p>
+<h3 id="create-a-role">Create a role<a class="headerlink" href="#create-a-role" title="Permanent link">¶</a></h3>
+<ol>
+<li>Open role management.</li>
+<li>Create a role with a descriptive name.</li>
+<li>Select the permissions the role should contain.</li>
+<li>Save the role.</li>
+</ol>
+<p>Keep roles aligned with job responsibilities. For example, a monitoring role might contain <code>device:read</code> and <code>dashboard:read</code>, while an operations role might also contain <code>device:write</code>.</p>
+<h3 id="assign-a-role">Assign a role<a class="headerlink" href="#assign-a-role" title="Permanent link">¶</a></h3>
+<ol>
+<li>Open the user's details.</li>
+<li>Add an access-control entry.</li>
+<li>Select the role.</li>
+<li>Save the assignment.</li>
+</ol>
+<p>The user may have multiple assignments. Overlapping assignments do not conflict; their permissions are combined.</p>
+<h3 id="review-or-revoke-access">Review or revoke access<a class="headerlink" href="#review-or-revoke-access" title="Permanent link">¶</a></h3>
+<p>Review the access-control entries shown on the user's detail page or browse the access-control list. Update the role when responsibilities change, and delete the entry to revoke that assignment.</p>
+<h2 id="permission-catalog">Permission Catalog<a class="headerlink" href="#permission-catalog" title="Permanent link">¶</a></h2>
+<p>Permissions use the format <code>resource:action</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Permissions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Devices</td>
+<td><code>device:read</code>, <code>device:write</code>, <code>device:execute</code>, <code>device:import</code>, <code>device:export</code></td>
+</tr>
+<tr>
+<td>Device configurations</td>
+<td><code>device-configuration:read</code>, <code>device-configuration:write</code></td>
+</tr>
+<tr>
+<td>Device tags</td>
+<td><code>device-tag:read</code>, <code>device-tag:write</code></td>
+</tr>
+<tr>
+<td>Device models</td>
+<td><code>model:read</code>, <code>model:write</code></td>
+</tr>
+<tr>
+<td>Edge devices</td>
+<td><code>edge-device:read</code>, <code>edge-device:write</code>, <code>edge-device:execute</code></td>
+</tr>
+<tr>
+<td>Edge models</td>
+<td><code>edge-model:read</code>, <code>edge-model:write</code></td>
+</tr>
+<tr>
+<td>Concentrators</td>
+<td><code>concentrator:read</code>, <code>concentrator:write</code></td>
+</tr>
+<tr>
+<td>Users</td>
+<td><code>user:read</code>, <code>user:write</code></td>
+</tr>
+<tr>
+<td>Roles</td>
+<td><code>role:read</code>, <code>role:write</code></td>
+</tr>
+<tr>
+<td>Access control</td>
+<td><code>access-control:read</code>, <code>access-control:write</code></td>
+</tr>
+<tr>
+<td>Groups</td>
+<td><code>group:read</code>, <code>group:write</code></td>
+</tr>
+<tr>
+<td>Planning</td>
+<td><code>planning:read</code>, <code>planning:write</code></td>
+</tr>
+<tr>
+<td>Schedules</td>
+<td><code>schedule:read</code>, <code>schedule:write</code></td>
+</tr>
+<tr>
+<td>Layers</td>
+<td><code>layer:read</code>, <code>layer:write</code></td>
+</tr>
+<tr>
+<td>Dashboard</td>
+<td><code>dashboard:read</code></td>
+</tr>
+<tr>
+<td>Settings</td>
+<td><code>setting:read</code></td>
+</tr>
+<tr>
+<td>Ideas</td>
+<td><code>idea:write</code></td>
+</tr>
+</tbody>
+</table>
+<p>Read permissions are normally required to view a resource. Write permissions protect create, update, and delete operations. Some features also define execute, import, or export permissions.</p>
+<h2 id="authorization-behavior">Authorization Behavior<a class="headerlink" href="#authorization-behavior" title="Permanent link">¶</a></h2>
+<p>The server is authoritative. UI elements may be hidden when a user lacks a permission, but every protected API operation also performs authorization independently.</p>
+<p>The permissions service exposes:</p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Authentication</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /api/permissions</code></td>
+<td>Anonymous</td>
+<td>Returns the complete catalog of available permissions.</td>
+</tr>
+<tr>
+<td><code>GET /api/permissions/me</code></td>
+<td>Required</td>
+<td>Returns the authenticated user's effective permissions.</td>
+</tr>
+</tbody>
+</table>
+<p>Access-control management is exposed under <code>/api/access-controls</code> and requires <code>access-control:read</code> for read operations and <code>access-control:write</code> for create, update, and delete operations.</p>
+<p>If the authenticated token does not contain an email claim, the user-specific permissions request is rejected. New authenticated users are provisioned when their permissions are first queried; they still need a role assignment before they can use protected features.</p>
+<h2 id="security-practices">Security Practices<a class="headerlink" href="#security-practices" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>FR-001</strong>: System MUST display a paginated list of all users with configurable page sizes</li>
-<li><strong>FR-002</strong>: System MUST support searching users by name (given name, family name, or full name)</li>
-<li><strong>FR-003</strong>: System MUST support searching users by email address</li>
-<li><strong>FR-004</strong>: System MUST support sorting the user list by name and email columns</li>
-<li><strong>FR-005</strong>: System MUST display user details including given name, family name, email, and avatar</li>
-<li><strong>FR-006</strong>: System MUST allow creating new user accounts with profile information</li>
-<li><strong>FR-007</strong>: System MUST validate that usernames are unique across the system</li>
-<li><strong>FR-008</strong>: System MUST automatically create a principal entity when a new user is created</li>
-<li><strong>FR-009</strong>: System MUST allow updating user profile information</li>
-<li><strong>FR-010</strong>: System MUST allow deleting user accounts with cascade removal of associated data</li>
-<li><strong>FR-011</strong>: System MUST automatically provision new users on first OAuth authentication</li>
-<li><strong>FR-012</strong>: System MUST extract user profile from OAuth claims (email, name, avatar)</li>
-<li><strong>FR-013</strong>: System MUST assign administrator role to the first user in an empty system</li>
-</ul>
-<h3 id="key-entities">Key Entities<a class="headerlink" href="#key-entities" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>User</strong>: Core user account containing:</li>
-<li>Email (unique identifier, from OAuth claim)</li>
-<li>GivenName (first name)</li>
-<li>FamilyName (last name)</li>
-<li>Name (full display name)</li>
-<li>Avatar (profile image URL)</li>
-<li>
-<p>PrincipalId (link to RBAC principal)</p>
-</li>
-<li>
-<p><strong>Principal</strong>: RBAC identity for access control:</p>
-</li>
-<li>Associated User (one-to-one)</li>
-<li>AccessControls collection (role assignments)</li>
-</ul>
-<hr/>
-<h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
-<h3 id="measurable-outcomes">Measurable Outcomes<a class="headerlink" href="#measurable-outcomes" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>SC-001</strong>: Administrators can find any user in the directory within 30 seconds using search</li>
-<li><strong>SC-002</strong>: New users are automatically provisioned and can access appropriate features within 5 seconds of first OAuth login</li>
-<li><strong>SC-003</strong>: 100% of deleted users have their access immediately revoked</li>
-<li><strong>SC-004</strong>: User list pages load within 2 seconds even with 1000+ users</li>
-<li><strong>SC-005</strong>: First administrator auto-assignment occurs 100% of the time in fresh installations</li>
-</ul>
-<hr/>
-<h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">¶</a></h2>
-<h3 id="source-analysis">Source Analysis<a class="headerlink" href="#source-analysis" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Analysis Path</strong>: <code>specs/013-user-management/analyze.md</code></li>
-<li><strong>Analyzed By</strong>: excavator.specifier</li>
-</ul>
-<h3 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h3>
-<ul>
-<li>UsersController: User CRUD endpoints</li>
-<li>UserService: Business logic for user operations</li>
-<li>UserRepository: Data access for user entities</li>
-<li>UsersListPage.razor: User directory UI</li>
-<li>UserDetailPage.razor: User details and role management UI</li>
-</ul>
-<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Depends On</strong>:</li>
-<li>OAuth/OIDC Authentication (external identity provider)</li>
-<li>015-access-control-management (role assignments)</li>
-<li><strong>Depended By</strong>:</li>
-<li>014-role-management (roles are assigned to users)</li>
-<li>015-access-control-management (access controls reference user principals)</li>
-<li>016-permissions-management (permissions are checked against user context)</li>
+<li>Grant the smallest set of permissions required for each job.</li>
+<li>Keep the <code>Administrators</code> role limited to trusted operators.</li>
+<li>Review role assignments regularly and remove stale access promptly.</li>
+<li>Treat <code>GlobalAdminEmails</code> as sensitive configuration and protect it like other deployment settings.</li>
 </ul>
 </article>
 </div>
@@ -762,8 +779,8 @@
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
-<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../assets/javascripts/bundle.d7c377c4.min.js"></script>
 <script>document$.subscribe(() => {
             window.update_swagger_ui_iframe_height = function (id) {
                 var iFrameID = document.getElementById(id);
