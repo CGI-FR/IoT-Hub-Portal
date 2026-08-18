@@ -24,6 +24,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0.LoRaWAN
                 new FrequencyPlan { FrequencyPlanID = "AS_923_925_2",       Name = "Asia 923-925 MHz, Group 2"},
                 new FrequencyPlan { FrequencyPlanID = "AS_923_925_3",       Name = "Asia 923-925 MHz, Group 3"},
                 new FrequencyPlan { FrequencyPlanID = "EU_863_870",         Name = "Europe 863-870 MHz"},
+                new FrequencyPlan { FrequencyPlanID = "IN_865_867",         Name = "India 865-867 MHz"},
                 new FrequencyPlan { FrequencyPlanID = "CN_470_510_RP1",     Name = "China 470-510 MHz, RP 1"},
                 new FrequencyPlan { FrequencyPlanID = "CN_470_510_RP2",     Name = "China 470-510 MHz, RP 2"},
                 new FrequencyPlan { FrequencyPlanID = "US_902_928_FSB_1",   Name = "United States 902-928 MHz, FSB 1"},
