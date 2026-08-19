@@ -84,9 +84,11 @@
                                        Class="mx-2">
                                 @foreach (var deviceModel in DeviceModels)
                                 {
-                                    <MudSelectItem Value="@deviceModel.ModelId">
-                                        <img src="@deviceModel.Image" alt="@deviceModel.Name illustration" />
-                                        @deviceModel.Name
+                                    <MudSelectItem Value="@deviceModel.ModelId" Class="d-flex align-center">
+                                        <div class="d-flex align-center ml-1">
+                                            <img src="@deviceModel.Image" class="mr-2" alt="@deviceModel.Name illustration" style="max-width: 50px;"/>
+                                            @deviceModel.Name
+                                        </div>
                                     </MudSelectItem>
                                 }
                             </MudSelect>
