@@ -27,7 +27,7 @@
                         <MudAlert Severity="Severity.Info"
                                   Dense="true"
                                   Class="my-2">
-                            This layer is linked to a planning that only accepts devices of the device model @DeviceModels.Single(x => x.ModelId == planningDeviceModelId)
+                            This layer is linked to a planning that only accepts devices of the device model <b>@DeviceModels.Single(x => x.ModelId == planningDeviceModelId).Name</b>
                         </MudAlert>
                     }
 
