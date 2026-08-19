@@ -1,6 +1,7 @@
 ﻿@page "/device-models/{ModelID}"
 @inherits AuthorizedComponentBase
 @using IoTHub.Portal.Client.Validators
+@using IoTHub.Portal.Shared.Constants
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -23,8 +24,10 @@
             <MudItem xs="12" sm="4" md="3">
                 <MudCard>
                     <MudCardContent>
-                        <div class="d-flex justify-center mb-4">
-                            <MudAvatar Image="@imageData" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        <div class="d-flex justify-center">
+                            <MudAvatar Style="height:200px; width: auto; border-radius: 0; background: transparent ">
+                                <MudImage Src="@imageData" />
+                            </MudAvatar>
                         </div>
                     </MudCardContent>
                     @if (canWrite)
@@ -245,6 +248,11 @@
                 Properties.AddRange(await DeviceModelsClientService.GetDeviceModelModelPropertiesAsync(ModelID));
                 imageData = await DeviceModelsClientService.GetAvatar(ModelID);
             }
+
+            // The API returns a default placeholder image when no custom avatar has been set.
+            // Treat it as "no picture" so the UI offers to upload one instead of delete.
+            if (imageData == DeviceModelImageConstants.DefaultImage)
+                imageData = null;
 
             // Check if user has write permission for conditional UI elements
             canWrite = await HasPermissionAsync(PortalPermissions.ModelWrite);

@@ -34,6 +34,12 @@ namespace IoTHub.Portal.Domain.Entities
         public string? AppEUI { get; set; }
 
         /// <summary>
+        /// The device model image, stored as a base64 encoded string.
+        /// Only used when no Azure Storage Account is configured.
+        /// </summary>
+        public string? Image { get; set; }
+
+        /// <summary>
         /// Labels
         /// </summary>
         public ICollection<Label> Labels { get; set; } = default!;

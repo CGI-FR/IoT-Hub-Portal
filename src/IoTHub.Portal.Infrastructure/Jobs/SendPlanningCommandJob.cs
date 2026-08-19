@@ -102,7 +102,19 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
                 await SendCommand();
             }
-            catch (Exception e)
+            catch (TaskCanceledException e)
+            {
+                this.logger.LogError(e, "Send planning command has failed");
+            }
+            catch (HttpRequestException e)
+            {
+                this.logger.LogError(e, "Send planning command has failed");
+            }
+            catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Send planning command has failed");
+            }
+            catch (IOException e)
             {
                 this.logger.LogError(e, "Send planning command has failed");
             }
@@ -117,7 +129,12 @@ namespace IoTHub.Portal.Infrastructure.Jobs
                 plannings = await this.planningService.GetPlannings();
                 schedules = await this.scheduleService.GetSchedules();
             }
-            catch (Exception e)
+            catch (OperationCanceledException e)
+            {
+                this.logger.LogInformation(e, "Update API was canceled");
+                throw;
+            }
+            catch (HttpRequestException e)
             {
                 this.logger.LogError(e, "Update API has failed");
             }
@@ -125,9 +142,9 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public void UpdateDatabase()
         {
-            foreach (var device in this.devices.Data)
+            foreach (var device in this.devices.Data.Where(d => !string.IsNullOrWhiteSpace(d.LayerId)))
             {
-                if (!string.IsNullOrWhiteSpace(device.LayerId)) AddNewDevice(device);
+                AddNewDevice(device);
             }
         }
 
@@ -162,10 +179,10 @@ namespace IoTHub.Portal.Infrastructure.Jobs
                 addPlanningSchedule(planningData, planningCommand);
 
 
-                foreach (var schedule in schedules)
+                foreach (var schedule in schedules.Where(s => s.PlanningId == planningCommand.planningId))
                 {
                     // Add schedules to the planning
-                    if (schedule.PlanningId == planningCommand.planningId) addSchedule(schedule, planningCommand);
+                    addSchedule(schedule, planningCommand);
                 }
             }
         }
@@ -185,13 +202,10 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             if (planningData != null)
             {
-                foreach (var key in planning.commands.Keys)
+                foreach (var key in planning.commands.Keys.Where(k => (planningData.DayOff & k) == planningData.DayOff))
                 {
-                    if ((planningData.DayOff & key) == planningData.DayOff)
-                    {
-                        var newPayload = new PayloadCommand(getTimeSpan("0:00"), getTimeSpan("24:00"), planningData.CommandId);
-                        planning.commands[key].Add(newPayload);
-                    }
+                    var newPayload = new PayloadCommand(getTimeSpan("0:00"), getTimeSpan("24:00"), planningData.CommandId);
+                    planning.commands[key].Add(newPayload);
                 }
             }
         }
@@ -240,19 +254,17 @@ namespace IoTHub.Portal.Infrastructure.Jobs
             // Search for the appropriate command at the correct time from each plan.
             foreach (var planning in this.planningCommands)
             {
-                foreach (var schedule in planning.commands[DayConverter.Convert(currentDay)])
+                foreach (var schedule in planning.commands[DayConverter.Convert(currentDay)]
+                    .Where(schedule => schedule.start < currentHour && schedule.end > currentHour))
                 {
-                    if (schedule.start < currentHour && schedule.end > currentHour)
-                    {
-                        await SendDevicesCommand(planning.listDeviceId, schedule.payloadId);
-                    }
+                    await SendDevicesCommand(planning.listDeviceId, schedule.payloadId);
                 }
             }
         }
 
-        public async Task SendDevicesCommand(Collection<string> devices, string command)
+        public async Task SendDevicesCommand(Collection<string> deviceIds, string command)
         {
-            foreach (var device in devices) await loRaWANCommandService.ExecuteLoRaWANCommand(device, command);
+            foreach (var device in deviceIds) await loRaWANCommandService.ExecuteLoRaWANCommand(device, command);
         }
     }
 }

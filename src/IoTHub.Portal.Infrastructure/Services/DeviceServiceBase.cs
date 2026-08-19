@@ -108,7 +108,6 @@ namespace IoTHub.Portal.Infrastructure.Services
                             Color = x.Color,
                             Name = x.Name,
                         }),
-                    Image = this.deviceModelImageManager.GetDeviceModelImageAsync(device.DeviceModelId).Result,
                     LayerId = device.LayerId
                 })
                 .ToListAsync();

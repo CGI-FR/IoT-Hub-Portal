@@ -409,10 +409,10 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             var deviceId = Guid.NewGuid().ToString();
 
             // Act
-            var result = () => service.GetDeviceTwinWithModule(deviceId);
+            Task<Twin> Result() => service.GetDeviceTwinWithModule(deviceId);
 
             // Assert
-            Assert.IsNotNull(result);
+            Assert.IsNotNull((Func<Task<Twin>>)Result);
             this.mockRepository.VerifyAll();
         }
 

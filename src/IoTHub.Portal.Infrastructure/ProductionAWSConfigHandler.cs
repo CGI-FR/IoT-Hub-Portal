@@ -34,6 +34,8 @@ namespace IoTHub.Portal.Infrastructure
 
         public override string AzureStorageAccountConnectionString => throw new NotImplementedException();
 
+        public override bool IsStorageAccountConfigured => false;
+
         public override int StorageAccountDeviceModelImageMaxAge => this.config.GetValue(StorageAccountDeviceModelImageMaxAgeKey, 86400);
 
         public override bool UseSecurityHeaders => this.config.GetValue(UseSecurityHeadersKey, true);

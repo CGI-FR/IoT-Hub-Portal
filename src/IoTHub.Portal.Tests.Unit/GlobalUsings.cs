@@ -80,7 +80,7 @@ global using IoTHub.Portal.Client.Pages.DeviceModels;
 global using IoTHub.Portal.Client.Pages.Devices;
 global using IoTHub.Portal.Client.Pages.EdgeDevices;
 global using IoTHub.Portal.Client.Pages.EdgeModels;
-global using IoTHub.Portal.Client.Pages.Layer;
+global using IoTHub.Portal.Client.Pages.Layers;
 global using IoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
 global using IoTHub.Portal.Client.Pages.Planning;
 global using IoTHub.Portal.Client.Pages.Settings;
