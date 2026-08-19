@@ -1,5 +1,4 @@
 ﻿@page "/layers"
-@using IoTHub.Portal.Client.Dialogs.Layers
 @inherits AuthorizedComponentBase
 
 @attribute [Authorize]
@@ -21,11 +20,10 @@
                         <ItemTemplate Context="item">
                             <MudTreeViewItem Items="@item.Children"
                                              id="@($"layer-{item.LayerData.Id}")"
-                                             @onmouseover="() => PrintDetails = item.LayerData.Id"
                                              Expanded
                                              OnClick="() => OpenDevices(item.LayerData)" Style="cursor: pointer;">
                                 <BodyContent>
-                                    <MudGrid Spacing="0" Justify="Justify.SpaceBetween" Style="min-height: 48px">
+                                    <MudGrid Spacing="0" Justify="Justify.SpaceBetween" Style="min-height: 48px" @onmouseover="() => PrintDetails = item.LayerData.Id">
                                         <ChildContent>
                                             <MudItem xs="10" Class="align-content-center">
                                                 <MudText Class="pr-2" Inline>@item.LayerData.Name</MudText>

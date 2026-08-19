@@ -57,7 +57,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             var cut = RenderComponent<LayersListPage>();
 
             cut.WaitForAssertion(() => cut.FindAll("li[id^='layer-']").Count.Should().Be(1));
-            var editLayerMouseOver = cut.WaitForElement($"#layer-{expectedLayerDto.Id}");
+            var editLayerMouseOver = cut.WaitForElement($"#layer-{expectedLayerDto.Id} > .mud-treeview-item-content > div.mud-grid");
             editLayerMouseOver.MouseOver();
 
             var editLayerAddLayers = cut.WaitForElement($"#layer-{expectedLayerDto.Id}-AddLayer");
@@ -100,7 +100,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
 
             cut.WaitForAssertion(() => cut.FindAll("li[id^='layer-']").Count.Should().Be(3));
 
-            var editLayerMouseOver = cut.FindAll("li[id^='layer-']");
+            var editLayerMouseOver = cut.FindAll("li[id^='layer-'] > .mud-treeview-item-content > div.mud-grid");
             editLayerMouseOver[2].MouseOver();
 
             var editLayerDeleteLayer = cut.WaitForElement($"#layer-{expectedChildrenLayerDto2.Id}-DeleteLayer");
@@ -147,7 +147,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
 
             cut.WaitForAssertion(() => cut.FindAll("li[id^='layer-']").Count.Should().Be(3));
 
-            var editLayerMouseOver = cut.FindAll("li[id^='layer-']");
+            var editLayerMouseOver = cut.FindAll("li[id^='layer-'] > .mud-treeview-item-content > div.mud-grid");
             editLayerMouseOver[1].MouseOver();
 
             var editLayerDeleteLayer = cut.WaitForElement($"#layer-{expectedChildrenLayerDto1.Id}-DeleteLayer");
