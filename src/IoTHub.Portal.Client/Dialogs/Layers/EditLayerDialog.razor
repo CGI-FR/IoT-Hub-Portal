@@ -80,6 +80,7 @@
                                        MultiSelectionTextFunc="@(list => $"{list.Count} model(s) selected")"
                                        SelectedValues="selectedModels"
                                        SelectedValuesChanged="@((IEnumerable<string> v) => OnSelectedModelsChanged(v))"
+                                       Disabled="@(!string.IsNullOrEmpty(planningDeviceModelId))"
                                        Class="mx-2">
                                 @foreach (var deviceModel in DeviceModels)
                                 {
@@ -185,6 +186,9 @@
         //         SelectedModel = deviceModels.First();
         //     }
         // }
+
+        if (!string.IsNullOrEmpty(planningDeviceModelId))
+            selectedModels = new List<string> { planningDeviceModelId };
 
         IsLoading = false;
     }
