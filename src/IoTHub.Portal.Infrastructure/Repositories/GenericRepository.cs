@@ -32,6 +32,14 @@ namespace IoTHub.Portal.Infrastructure.Repositories
 
         public virtual async Task<T?> GetByIdAsync(object id, params Expression<Func<T, object>>[] includes)
         {
+            // When no includes are requested, prefer FindAsync: it first checks the
+            // DbContext's local change tracker (e.g. an entity just inserted/updated
+            // in the same scope) before issuing a query against the database.
+            if (includes.Length == 0)
+            {
+                return await this.context.Set<T>().FindAsync(id);
+            }
+
             IQueryable<T> query = this.context.Set<T>();
 
             query = query.Where(entity => entity.Id.Equals(id));

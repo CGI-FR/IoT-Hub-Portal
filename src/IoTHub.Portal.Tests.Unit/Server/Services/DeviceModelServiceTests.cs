@@ -162,7 +162,7 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.FromResult(Fixture.Create<string>()));
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
-                    manager.SetDefaultImageToModel(deviceModelDto.ModelId))
+                    manager.ChangeDeviceModelImageAsync(deviceModelDto.ModelId, deviceModelDto.Image))
                 .ReturnsAsync(expectedAvatarUrl);
 
             // Act
