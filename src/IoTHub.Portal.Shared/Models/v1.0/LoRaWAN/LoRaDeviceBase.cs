@@ -89,7 +89,6 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.
         /// The default is none, which causes the connection to not be dropped.
         /// </summary>
-        [DefaultValue(null)]
         public int? KeepAliveTimeout { get; set; }
 
         /// <summary>
