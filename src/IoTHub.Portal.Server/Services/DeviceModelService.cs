@@ -89,7 +89,14 @@ namespace IoTHub.Portal.Server.Services
             await this.deviceModelRepository.InsertAsync(deviceModelEntity);
             await this.unitOfWork.SaveAsync();
 
-            _ = this.deviceModelImageManager.SetDefaultImageToModel(deviceModel.ModelId);
+            if (string.IsNullOrEmpty(deviceModel.Image))
+            {
+                deviceModel.Image = await this.deviceModelImageManager.SetDefaultImageToModel(deviceModel.ModelId);
+            }
+            else
+            {
+                deviceModel.Image = await this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModel.ModelId, deviceModel.Image);
+            }
 
             await CreateDeviceModelConfiguration(deviceModel);
 
