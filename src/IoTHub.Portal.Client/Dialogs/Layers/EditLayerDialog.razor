@@ -27,7 +27,7 @@
                         <MudAlert Severity="Severity.Info"
                                   Dense="true"
                                   Class="my-2">
-                            This layer is linked to a planning that only accepts devices of the device model @DeviceModels.Single(x => x.ModelId == planningDeviceModelId)
+                            This layer is linked to a planning that only accepts devices of the device model <b>@DeviceModels.Single(x => x.ModelId == planningDeviceModelId).Name</b>
                         </MudAlert>
                     }
 
@@ -36,7 +36,7 @@
                                  FixedHeader FixedFooter
                                  MultiSelection
                                  SelectOnRowClick="true"
-                                 SelectedItems="selectedDevices"
+                                 @bind-SelectedItems="selectedDevices"
                                  RowsPerPage="10"
                                  QuickFilter="QuickFilter">
                         <Columns>
@@ -80,12 +80,15 @@
                                        MultiSelectionTextFunc="@(list => $"{list.Count} model(s) selected")"
                                        SelectedValues="selectedModels"
                                        SelectedValuesChanged="@((IEnumerable<string> v) => OnSelectedModelsChanged(v))"
+                                       Disabled="@(!string.IsNullOrEmpty(planningDeviceModelId))"
                                        Class="mx-2">
                                 @foreach (var deviceModel in DeviceModels)
                                 {
-                                    <MudSelectItem Value="@deviceModel.ModelId">
-                                        <img src="@deviceModel.Image" alt="@deviceModel.Name illustration" />
-                                        @deviceModel.Name
+                                    <MudSelectItem Value="@deviceModel.ModelId" Class="d-flex align-center">
+                                        <div class="d-flex align-center ml-1">
+                                            <img src="@deviceModel.Image" class="mr-2" alt="@deviceModel.Name illustration" style="max-width: 50px;"/>
+                                            @deviceModel.Name
+                                        </div>
                                     </MudSelectItem>
                                 }
                             </MudSelect>
@@ -185,6 +188,9 @@
         //         SelectedModel = deviceModels.First();
         //     }
         // }
+
+        if (!string.IsNullOrEmpty(planningDeviceModelId))
+            selectedModels = new List<string> { planningDeviceModelId };
 
         IsLoading = false;
     }
