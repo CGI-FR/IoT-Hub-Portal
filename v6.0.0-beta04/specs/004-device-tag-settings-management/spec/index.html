@@ -1,0 +1,900 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature Specification: Device Tag Settings Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-specification-device-tag-settings-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature Specification: Device Tag Settings Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-scenarios-testing">
+<span class="md-ellipsis">
+      User Scenarios &amp; Testing
+    </span>
+</a>
+<nav aria-label="User Scenarios &amp; Testing" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-1-view-all-device-tag-definitions-priority-p1">
+<span class="md-ellipsis">
+      User Story 1 - View All Device Tag Definitions (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-2-create-new-device-tag-definitions-priority-p1">
+<span class="md-ellipsis">
+      User Story 2 - Create New Device Tag Definitions (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-3-update-existing-device-tag-definitions-priority-p2">
+<span class="md-ellipsis">
+      User Story 3 - Update Existing Device Tag Definitions (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-4-delete-device-tag-definitions-priority-p2">
+<span class="md-ellipsis">
+      User Story 4 - Delete Device Tag Definitions (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-5-configure-required-tags-for-device-creation-priority-p2">
+<span class="md-ellipsis">
+      User Story 5 - Configure Required Tags for Device Creation (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-6-configure-searchable-tags-for-device-filtering-priority-p2">
+<span class="md-ellipsis">
+      User Story 6 - Configure Searchable Tags for Device Filtering (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-cases">
+<span class="md-ellipsis">
+      Edge Cases
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements">
+<span class="md-ellipsis">
+      Requirements
+    </span>
+</a>
+<nav aria-label="Requirements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-entities">
+<span class="md-ellipsis">
+      Key Entities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-criteria">
+<span class="md-ellipsis">
+      Success Criteria
+    </span>
+</a>
+<nav aria-label="Success Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#measurable-outcomes">
+<span class="md-ellipsis">
+      Measurable Outcomes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#traceability">
+<span class="md-ellipsis">
+      Traceability
+    </span>
+</a>
+<nav aria-label="Traceability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#source-analysis">
+<span class="md-ellipsis">
+      Source Analysis
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-specification-device-tag-settings-management">Feature Specification: Device Tag Settings Management<a class="headerlink" href="#feature-specification-device-tag-settings-management" title="Permanent link">¶</a></h1>
+<p><strong>Feature ID</strong>: 004<br/>
+<strong>Feature Branch</strong>: <code>004-device-tag-settings-management</code><br/>
+<strong>Created</strong>: 2026-01-30<br/>
+<strong>Status</strong>: Draft<br/>
+<strong>Source</strong>: Analysis from <code>specs/004-device-tag-settings-management/analyze.md</code></p>
+<hr/>
+<h2 id="user-scenarios-testing">User Scenarios &amp; Testing<a class="headerlink" href="#user-scenarios-testing" title="Permanent link">¶</a></h2>
+<h3 id="user-story-1-view-all-device-tag-definitions-priority-p1">User Story 1 - View All Device Tag Definitions (Priority: P1)<a class="headerlink" href="#user-story-1-view-all-device-tag-definitions-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to view all configured device tags with their properties (label, required, searchable) so that I understand what metadata fields are available for device organization.</p>
+<p><strong>Why this priority</strong>: Core functionality for understanding the device tagging system. Without this, users cannot see what tags exist or how they're configured.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by navigating to the device tag settings page and viewing the list of all tag definitions in a table. Delivers immediate value by providing tag visibility.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am an authorized user with device-tag:read permission, <strong>When</strong> I navigate to the device tag settings page, <strong>Then</strong> I see a table displaying all device tags with columns for Name, Label, Required, and Searchable</li>
+<li><strong>Given</strong> I am viewing the device tag list, <strong>When</strong> no tags have been configured, <strong>Then</strong> I see an empty table with a message indicating no tags exist</li>
+<li><strong>Given</strong> I am viewing the device tag list, <strong>When</strong> tags exist, <strong>Then</strong> each tag shows its name (alphanumeric identifier), label (display name), required flag (checkbox), and searchable flag (checkbox)</li>
+<li><strong>Given</strong> I am a user without device-tag:read permission, <strong>When</strong> I attempt to access the device tag settings page, <strong>Then</strong> I am denied access</li>
+</ol>
+<hr/>
+<h3 id="user-story-2-create-new-device-tag-definitions-priority-p1">User Story 2 - Create New Device Tag Definitions (Priority: P1)<a class="headerlink" href="#user-story-2-create-new-device-tag-definitions-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to create new device tag definitions so that I can add custom metadata fields to devices for organization and filtering.</p>
+<p><strong>Why this priority</strong>: Essential for adding new categorization dimensions. Without this, the tag system cannot be extended to meet new organizational needs.</p>
+<p><strong>Independent Test</strong>: Can be tested by clicking "Add Tag," entering name and label, setting required and searchable flags, and successfully creating a tag. Delivers value by enabling tag taxonomy expansion.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device-tag:write permission, <strong>When</strong> I click the "Add Tag" button, <strong>Then</strong> a new editable row appears in the table</li>
+<li><strong>Given</strong> I am creating a new tag, <strong>When</strong> I enter a tag name, <strong>Then</strong> the name must be alphanumeric only (regex validation: <code>^[a-zA-Z0-9]*$</code>)</li>
+<li><strong>Given</strong> I am creating a new tag, <strong>When</strong> I enter a tag label, <strong>Then</strong> the label is required and can contain any text</li>
+<li><strong>Given</strong> I am creating a new tag, <strong>When</strong> I check the "Required" checkbox, <strong>Then</strong> the tag will be mandatory during device creation</li>
+<li><strong>Given</strong> I am creating a new tag, <strong>When</strong> I check the "Searchable" checkbox, <strong>Then</strong> the tag will appear as a filter option in the device list</li>
+<li><strong>Given</strong> I have filled in valid tag information, <strong>When</strong> I click Save on the row, <strong>Then</strong> the tag is created in the database</li>
+<li><strong>Given</strong> I attempt to create a tag with a duplicate name, <strong>When</strong> I save, <strong>Then</strong> I see a validation error preventing the duplicate</li>
+<li><strong>Given</strong> I attempt to create a tag with an invalid name (contains special characters or spaces), <strong>When</strong> I save, <strong>Then</strong> I see a validation error</li>
+<li><strong>Given</strong> I create a required tag, <strong>When</strong> users later create devices, <strong>Then</strong> they must provide a value for this tag</li>
+</ol>
+<hr/>
+<h3 id="user-story-3-update-existing-device-tag-definitions-priority-p2">User Story 3 - Update Existing Device Tag Definitions (Priority: P2)<a class="headerlink" href="#user-story-3-update-existing-device-tag-definitions-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to update device tag properties (label, required, searchable) so that I can refine tag behavior as organizational needs evolve.</p>
+<p><strong>Why this priority</strong>: Important for maintaining accurate tag configurations but not required for initial setup. Enables tag refinement without recreating tags.</p>
+<p><strong>Independent Test</strong>: Can be tested by selecting an existing tag, modifying its label or flags, saving changes, and verifying updates are persisted. Delivers value by allowing tag evolution.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device-tag:write permission and am viewing the tags list, <strong>When</strong> I click Edit on a tag row, <strong>Then</strong> the label, required, and searchable fields become editable</li>
+<li><strong>Given</strong> I am editing a tag, <strong>When</strong> I change the label, <strong>Then</strong> the new label is validated as required</li>
+<li><strong>Given</strong> I am editing a tag, <strong>When</strong> I toggle the Required flag, <strong>Then</strong> future device creation will respect the updated requirement</li>
+<li><strong>Given</strong> I am editing a tag, <strong>When</strong> I toggle the Searchable flag, <strong>Then</strong> the tag will appear or disappear from device list filters accordingly</li>
+<li><strong>Given</strong> I am editing a tag, <strong>When</strong> the tag name field is displayed, <strong>Then</strong> it is read-only (names cannot be changed after creation)</li>
+<li><strong>Given</strong> I save tag updates, <strong>When</strong> the save succeeds, <strong>Then</strong> the row returns to read-only mode with updated values</li>
+<li><strong>Given</strong> I edit a tag and save invalid data, <strong>When</strong> validation fails, <strong>Then</strong> I see error messages and the row remains in edit mode</li>
+</ol>
+<hr/>
+<h3 id="user-story-4-delete-device-tag-definitions-priority-p2">User Story 4 - Delete Device Tag Definitions (Priority: P2)<a class="headerlink" href="#user-story-4-delete-device-tag-definitions-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to delete device tag definitions that are no longer needed so that I can maintain a clean tag taxonomy.</p>
+<p><strong>Why this priority</strong>: Important for housekeeping but not critical for operations. Most valuable when the tag system has evolved and obsolete tags need removal.</p>
+<p><strong>Independent Test</strong>: Can be tested by selecting a tag not in use by devices, clicking delete, confirming the action, and verifying removal. Delivers value through tag library maintenance.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device-tag:write permission, <strong>When</strong> I click the Delete button on a tag row, <strong>Then</strong> I see a confirmation dialog</li>
+<li><strong>Given</strong> I see the delete confirmation dialog, <strong>When</strong> I confirm deletion, <strong>Then</strong> the tag definition is removed from the database</li>
+<li><strong>Given</strong> I delete a tag, <strong>When</strong> devices have values for this tag, <strong>Then</strong> the existing tag values on devices are also deleted</li>
+<li><strong>Given</strong> I delete a required tag, <strong>When</strong> users later create devices, <strong>Then</strong> they no longer need to provide a value for this tag</li>
+<li><strong>Given</strong> I delete a searchable tag, <strong>When</strong> users view device filters, <strong>Then</strong> the tag no longer appears in filter options</li>
+<li><strong>Given</strong> I delete a tag, <strong>When</strong> the deletion completes, <strong>Then</strong> the tag is removed from the table immediately</li>
+</ol>
+<hr/>
+<h3 id="user-story-5-configure-required-tags-for-device-creation-priority-p2">User Story 5 - Configure Required Tags for Device Creation (Priority: P2)<a class="headerlink" href="#user-story-5-configure-required-tags-for-device-creation-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to mark tags as required so that device creation enforces consistent metadata across the device fleet.</p>
+<p><strong>Why this priority</strong>: Important for data quality and consistency but not essential for basic operations. Most valuable in regulated environments requiring complete device metadata.</p>
+<p><strong>Independent Test</strong>: Can be tested by marking a tag as required, attempting to create a device without that tag, and verifying validation prevents submission. Delivers value through enforced metadata standards.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have configured a tag as required, <strong>When</strong> a user creates a new device, <strong>Then</strong> the tag appears in the device creation form with a required field indicator</li>
+<li><strong>Given</strong> a required tag exists, <strong>When</strong> a user attempts to create a device without providing that tag value, <strong>Then</strong> validation prevents submission with an error message</li>
+<li><strong>Given</strong> I change a tag from required to optional, <strong>When</strong> users create devices, <strong>Then</strong> the tag becomes optional in the form</li>
+<li><strong>Given</strong> multiple required tags exist, <strong>When</strong> a user creates a device, <strong>Then</strong> all required tags must have values before submission succeeds</li>
+</ol>
+<hr/>
+<h3 id="user-story-6-configure-searchable-tags-for-device-filtering-priority-p2">User Story 6 - Configure Searchable Tags for Device Filtering (Priority: P2)<a class="headerlink" href="#user-story-6-configure-searchable-tags-for-device-filtering-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to mark tags as searchable so that users can filter the device list by specific tag values for quick device discovery.</p>
+<p><strong>Why this priority</strong>: Important for usability and device discoverability but not essential for basic operations. Most valuable for large device fleets requiring advanced filtering.</p>
+<p><strong>Independent Test</strong>: Can be tested by marking a tag as searchable, navigating to the device list, and verifying the tag appears as a filter option. Delivers value through enhanced device search capabilities.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have configured a tag as searchable, <strong>When</strong> a user views the device list page, <strong>Then</strong> the tag appears in the search/filter panel</li>
+<li><strong>Given</strong> a searchable tag exists, <strong>When</strong> a user selects a tag value in the filter, <strong>Then</strong> the device list filters to show only devices with that tag value</li>
+<li><strong>Given</strong> I change a tag from searchable to non-searchable, <strong>When</strong> users view the device list, <strong>Then</strong> the tag is removed from the filter panel</li>
+<li><strong>Given</strong> multiple searchable tags exist, <strong>When</strong> a user applies multiple tag filters, <strong>Then</strong> devices must match all selected tag values (AND logic)</li>
+</ol>
+<hr/>
+<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>What happens when deleting a tag that is currently in use by many devices?</strong><br/>
+  The system allows deletion and removes all associated tag values from devices. Users should see a confirmation warning about the number of affected devices.</p>
+</li>
+<li>
+<p><strong>How does the system handle duplicate tag names entered in different case (e.g., "Location" vs "location")?</strong><br/>
+  The alphanumeric regex validator is case-sensitive, so "Location" and "location" are treated as different tags. Organizations should establish naming conventions.</p>
+</li>
+<li>
+<p><strong>What happens when a tag is marked as required after devices already exist without that tag?</strong><br/>
+  Existing devices are not affected (no retroactive validation). Only new devices and device updates will require the tag value.</p>
+</li>
+<li>
+<p><strong>How does the system behave when a user edits a tag and another user simultaneously deletes it?</strong><br/>
+  The edit or delete operation may fail with a concurrency error. The UI should refresh to show current state.</p>
+</li>
+<li>
+<p><strong>What happens to device twin tags in Azure IoT Hub when a tag is deleted from the portal?</strong><br/>
+  The portal removes device tag values from its database, but the corresponding tags in Azure IoT Hub device twins may remain unless explicitly synchronized.</p>
+</li>
+<li>
+<p><strong>How does the system handle very long tag names or labels?</strong><br/>
+  The system should enforce reasonable length limits (e.g., 50 characters for names, 100 for labels) to prevent UI display issues.</p>
+</li>
+<li>
+<p><strong>What happens when searching devices by a tag that has been deleted?</strong><br/>
+  The tag no longer appears in filters. Any existing search links or bookmarks using that tag would fail or return empty results.</p>
+</li>
+<li>
+<p><strong>How does the system handle special characters in tag labels (e.g., emojis, non-Latin characters)?</strong><br/>
+  Labels accept any text, so special characters are allowed. The UI should display them correctly with proper encoding.</p>
+</li>
+<li>
+<p><strong>What happens when a searchable tag has thousands of unique values across devices?</strong><br/>
+  The filter UI may become unwieldy. The system should consider implementing autocomplete or limiting displayed values for usability.</p>
+</li>
+<li>
+<p><strong>How does validation behave when a user adds multiple new tags and one fails validation?</strong><br/>
+  Each tag row is independently validated. Failed validations prevent that specific row from saving, but other rows can save successfully.</p>
+</li>
+</ul>
+<hr/>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
+<h3 id="functional-requirements">Functional Requirements<a class="headerlink" href="#functional-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>FR-001</strong>: System MUST provide a list of all device tag definitions showing name, label, required flag, and searchable flag</li>
+<li><strong>FR-002</strong>: System MUST enable creation of new device tags with fields: name (alphanumeric only), label (required), required flag, and searchable flag</li>
+<li><strong>FR-003</strong>: System MUST validate tag names match the regex pattern: <code>^[a-zA-Z0-9]*$</code> (alphanumeric only, no spaces or special characters)</li>
+<li><strong>FR-004</strong>: System MUST validate tag labels are provided (required field)</li>
+<li><strong>FR-005</strong>: System MUST prevent creation of duplicate tag names</li>
+<li><strong>FR-006</strong>: System MUST allow updating of tag label, required flag, and searchable flag for existing tags</li>
+<li><strong>FR-007</strong>: System MUST prevent editing of tag names after creation (name is immutable)</li>
+<li><strong>FR-008</strong>: System MUST allow deletion of device tag definitions with confirmation</li>
+<li><strong>FR-009</strong>: System MUST delete all associated device tag values when a tag definition is deleted</li>
+<li><strong>FR-010</strong>: System MUST expose required tags in device creation and editing forms</li>
+<li><strong>FR-011</strong>: System MUST enforce validation requiring values for required tags during device creation</li>
+<li><strong>FR-012</strong>: System MUST display searchable tags in device list filter panels</li>
+<li><strong>FR-013</strong>: System MUST filter device lists by searchable tag values when filters are applied</li>
+<li><strong>FR-014</strong>: System MUST support multiple searchable tag filters with AND logic (devices must match all selected tags)</li>
+<li><strong>FR-015</strong>: System MUST persist device tag definitions in the portal database</li>
+<li><strong>FR-016</strong>: System MUST persist device-specific tag values in the portal database associated with device records</li>
+<li><strong>FR-017</strong>: System MUST provide API endpoints for retrieving all tags, all tag names, and all searchable tag names</li>
+<li><strong>FR-018</strong>: System MUST enforce authorization policies: device-tag:read for viewing, device-tag:write for modifications</li>
+<li><strong>FR-019</strong>: System MUST support inline editing of tags in the UI table with row-level save/cancel</li>
+<li><strong>FR-020</strong>: System MUST refresh the tag list after create, update, or delete operations</li>
+</ul>
+<h3 id="key-entities">Key Entities<a class="headerlink" href="#key-entities" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>DeviceTag</strong>: Tag definition entity with properties: ID (name), Label (display name), Required (boolean flag), and Searchable (boolean flag)</li>
+<li><strong>DeviceTagValue</strong>: Device-specific tag value entity with properties: ID, Name (tag name), and Value (tag value for specific device)</li>
+<li><strong>DeviceTagDto</strong>: Data transfer object for tag definitions with validation annotations including name regex and required label</li>
+</ul>
+<hr/>
+<h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes<a class="headerlink" href="#measurable-outcomes" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>SC-001</strong>: Users can view the complete list of device tags within 1 second</li>
+<li><strong>SC-002</strong>: Users can create a new device tag in under 30 seconds including validation</li>
+<li><strong>SC-003</strong>: Tag updates save within 2 seconds with immediate UI feedback</li>
+<li><strong>SC-004</strong>: Tag deletions complete within 3 seconds including cleanup of associated device tag values</li>
+<li><strong>SC-005</strong>: 100% of invalid tag names (with special characters or spaces) are rejected during creation</li>
+<li><strong>SC-006</strong>: Required tags enforce 100% compliance during device creation (no devices created without required tag values)</li>
+<li><strong>SC-007</strong>: Searchable tags appear in device list filters within 1 second of being marked searchable</li>
+<li><strong>SC-008</strong>: Device list filtering by searchable tags returns results in under 2 seconds for fleets up to 10,000 devices</li>
+<li><strong>SC-009</strong>: Users can configure a complete tag taxonomy (10+ tags) in under 10 minutes</li>
+<li><strong>SC-010</strong>: 98% of tag operations succeed without errors under normal database availability</li>
+</ul>
+<hr/>
+<h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">¶</a></h2>
+<h3 id="source-analysis">Source Analysis<a class="headerlink" href="#source-analysis" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Analysis Path</strong>: <code>specs/004-device-tag-settings-management/analyze.md</code></li>
+<li><strong>Analyzed By</strong>: excavator.analyze</li>
+<li><strong>Analysis Date</strong>: 2026-01-30</li>
+</ul>
+<h3 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h3>
+<p><strong>Controllers</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/DeviceTagSettingsController.cs</code> (Lines 1-89)</li>
+</ul>
+<p><strong>Business Logic</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IDeviceTagService.cs</code> (Lines 1-20)</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Services/DeviceTagService.cs</code> (Lines 1-114)</li>
+</ul>
+<p><strong>Data Access</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IDeviceTagRepository.cs</code> (Lines 1-9)</li>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IDeviceTagValueRepository.cs</code> (Lines 1-9)</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/DeviceTag.cs</code> (Lines 1-16)</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/DeviceTagValue.cs</code> (Lines 1-12)</li>
+</ul>
+<p><strong>UI Components</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/Settings/DeviceTagsPage.razor</code> (Lines 1-188)</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
+<p><strong>Depends On</strong>:</p>
+<ul>
+<li>None - This is a foundational configuration feature</li>
+</ul>
+<p><strong>Depended On By</strong>:</p>
+<ul>
+<li>Standard Device Management (001) - Uses tags for device metadata and filtering</li>
+<li>Edge Device Management (006) - Uses tags for edge device metadata and filtering</li>
+<li>LoRaWAN Device Management (008) - Uses tags for LoRaWAN device metadata</li>
+<li>Device Configurations Management (005) - Uses tags for targeting device configurations</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

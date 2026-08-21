@@ -1,0 +1,1448 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Evaluation Report: Bicep Template Preflight Validation on CI - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#evaluation-report-bicep-template-preflight-validation-on-ci">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Evaluation Report: Bicep Template Preflight Validation on CI
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#summary">
+<span class="md-ellipsis">
+      Summary
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#correctness-analysis">
+<span class="md-ellipsis">
+      Correctness Analysis
+    </span>
+</a>
+<nav aria-label="Correctness Analysis" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#accurate-specifications">
+<span class="md-ellipsis">
+      ✅ Accurate Specifications
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#inaccuracies-found">
+<span class="md-ellipsis">
+      ⚠️ Inaccuracies Found
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#correctness-score-breakdown">
+<span class="md-ellipsis">
+      Correctness Score Breakdown
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#completeness-analysis">
+<span class="md-ellipsis">
+      Completeness Analysis
+    </span>
+</a>
+<nav aria-label="Completeness Analysis" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#well-documented-areas">
+<span class="md-ellipsis">
+      ✅ Well-Documented Areas
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#missing-documentation">
+<span class="md-ellipsis">
+      🔴 Missing Documentation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#completeness-score-breakdown">
+<span class="md-ellipsis">
+      Completeness Score Breakdown
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#technical-quality-analysis">
+<span class="md-ellipsis">
+      Technical Quality Analysis
+    </span>
+</a>
+<nav aria-label="Technical Quality Analysis" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testability-assessment">
+<span class="md-ellipsis">
+      Testability Assessment
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#traceability-assessment">
+<span class="md-ellipsis">
+      Traceability Assessment
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#consistency-assessment">
+<span class="md-ellipsis">
+      Consistency Assessment
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#currency-assessment">
+<span class="md-ellipsis">
+      Currency Assessment
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#technical-quality-score-breakdown">
+<span class="md-ellipsis">
+      Technical Quality Score Breakdown
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#coverage-analysis">
+<span class="md-ellipsis">
+      Coverage Analysis
+    </span>
+</a>
+<nav aria-label="Coverage Analysis" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-coverage">
+<span class="md-ellipsis">
+      Security Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#error-handling-coverage">
+<span class="md-ellipsis">
+      Error Handling Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-coverage">
+<span class="md-ellipsis">
+      Performance Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-coverage">
+<span class="md-ellipsis">
+      Integration Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration-coverage">
+<span class="md-ellipsis">
+      Configuration Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#coverage-score-breakdown">
+<span class="md-ellipsis">
+      Coverage Score Breakdown
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#recommendations">
+<span class="md-ellipsis">
+      Recommendations
+    </span>
+</a>
+<nav aria-label="Recommendations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#critical-must-fix">
+<span class="md-ellipsis">
+      Critical (Must Fix)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#high-priority">
+<span class="md-ellipsis">
+      High Priority
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium-priority">
+<span class="md-ellipsis">
+      Medium Priority
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#low-priority">
+<span class="md-ellipsis">
+      Low Priority
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#detailed-findings">
+<span class="md-ellipsis">
+      Detailed Findings
+    </span>
+</a>
+<nav aria-label="Detailed Findings" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#finding-1-action-version-discrepancy">
+<span class="md-ellipsis">
+      Finding 1: Action Version Discrepancy
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#finding-2-resource-group-lifecycle-not-documented">
+<span class="md-ellipsis">
+      Finding 2: Resource Group Lifecycle Not Documented
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#finding-3-specific-templates-not-listed">
+<span class="md-ellipsis">
+      Finding 3: Specific Templates Not Listed
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#finding-4-test-parameters-file-undocumented">
+<span class="md-ellipsis">
+      Finding 4: Test Parameters File Undocumented
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="evaluation-report-bicep-template-preflight-validation-on-ci">Evaluation Report: Bicep Template Preflight Validation on CI<a class="headerlink" href="#evaluation-report-bicep-template-preflight-validation-on-ci" title="Permanent link">¶</a></h1>
+<p><strong>Evaluated</strong>: 2026-02-03
+<strong>Spec Version</strong>: 2026-01-31 (Draft)
+<strong>Evaluator</strong>: Excavator Evaluator Agent</p>
+<hr/>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Score</th>
+<th>Grade</th>
+<th>Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Correctness</td>
+<td>95/100</td>
+<td>A</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>Completeness</td>
+<td>90/100</td>
+<td>A</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>Technical Quality</td>
+<td>88/100</td>
+<td>B</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>Coverage</td>
+<td>85/100</td>
+<td>B</td>
+<td>20%</td>
+</tr>
+<tr>
+<td><strong>Overall</strong></td>
+<td><strong>90/100</strong></td>
+<td><strong>A</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Grade Scale</strong>: A (90-100), B (70-89), C (50-69), D (30-49), F (0-29)</p>
+<hr/>
+<h2 id="correctness-analysis">Correctness Analysis<a class="headerlink" href="#correctness-analysis" title="Permanent link">¶</a></h2>
+<h3 id="accurate-specifications">✅ Accurate Specifications<a class="headerlink" href="#accurate-specifications" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Spec Element</th>
+<th>Code Location</th>
+<th>Verification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR-001 - Validate Bicep using Azure deployment validation API</td>
+<td><code>bicep-lint.yml#L74-82</code></td>
+<td>Uses <code>azure/arm-deploy@v2</code> with <code>deploymentMode: Validate</code></td>
+</tr>
+<tr>
+<td>FR-002 - Run on PR with templates/azure/** paths</td>
+<td><code>bicep-lint.yml#L4-9</code></td>
+<td>Correct path filters configured</td>
+</tr>
+<tr>
+<td>FR-003 - Run on push to main branch</td>
+<td><code>bicep-lint.yml#L10-14</code></td>
+<td>Push trigger with same path filters</td>
+</tr>
+<tr>
+<td>FR-004 - Report success/failure as status check</td>
+<td><code>bicep-lint.yml#L139-158</code></td>
+<td>Validation status check step with exit 1 on failure</td>
+</tr>
+<tr>
+<td>FR-007 - Support all Bicep templates</td>
+<td><code>bicep-lint.yml#L74-123</code></td>
+<td>Validates 4 main templates</td>
+</tr>
+<tr>
+<td>FR-008 - Handle template parameters</td>
+<td><code>bicep-lint.yml#L81</code></td>
+<td>Uses test parameters file</td>
+</tr>
+<tr>
+<td>FR-009 - Complete within 10 minutes</td>
+<td><code>bicep-lint.yml#L19</code></td>
+<td><code>timeout-minutes: 10</code> configured</td>
+</tr>
+<tr>
+<td>FR-010 - Replace arm-ttk</td>
+<td>Workflow file name</td>
+<td>Workflow named "Validate Bicep templates"</td>
+</tr>
+<tr>
+<td>FR-011 - Use Azure credentials securely</td>
+<td><code>bicep-lint.yml#L45-51</code></td>
+<td>OIDC authentication via secrets</td>
+</tr>
+<tr>
+<td>FR-012 - Handle module references</td>
+<td><code>bicep-lint.yml#L40</code></td>
+<td><code>submodules: recursive</code> checkout</td>
+</tr>
+<tr>
+<td>A-001 - Azure credentials available</td>
+<td><code>bicep-lint.yml#L47-49</code></td>
+<td>Uses AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID</td>
+</tr>
+<tr>
+<td>A-002 - Validate mode</td>
+<td><code>bicep-lint.yml#L82</code></td>
+<td><code>deploymentMode: Validate</code></td>
+</tr>
+<tr>
+<td>User Story 1 - Validate before merge</td>
+<td>Workflow configuration</td>
+<td>Runs on pull_request event</td>
+</tr>
+<tr>
+<td>User Story 3 - Clear feedback</td>
+<td><code>bicep-lint.yml#L139-158</code></td>
+<td>Status output with icons</td>
+</tr>
+</tbody>
+</table>
+<h3 id="inaccuracies-found">⚠️ Inaccuracies Found<a class="headerlink" href="#inaccuracies-found" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Spec Element</th>
+<th>Issue</th>
+<th>Code Reality</th>
+<th>Severity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR-005 - Detect quota violations</td>
+<td>Not fully verifiable</td>
+<td>Validate mode may not catch all quota issues</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>FR-006 - Detailed error messages</td>
+<td>Partial</td>
+<td>Azure API errors shown but no custom formatting</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>A-005 - Uses arm-deploy@v1</td>
+<td>Version mismatch</td>
+<td>Actually uses <code>azure/arm-deploy@v2</code> (better)</td>
+<td>Low (improvement)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="correctness-score-breakdown">Correctness Score Breakdown<a class="headerlink" href="#correctness-score-breakdown" title="Permanent link">¶</a></h3>
+<ul>
+<li>User Stories: 3/3 correct</li>
+<li>Functional Requirements: 11/12 correct (1 minor limitation)</li>
+<li>Assumptions: 6/6 correct</li>
+<li>Triggers/Paths: 4/4 correct</li>
+</ul>
+<hr/>
+<h2 id="completeness-analysis">Completeness Analysis<a class="headerlink" href="#completeness-analysis" title="Permanent link">¶</a></h2>
+<h3 id="well-documented-areas">✅ Well-Documented Areas<a class="headerlink" href="#well-documented-areas" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Coverage</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User Stories</td>
+<td>Complete</td>
+<td>3 prioritized stories with acceptance criteria</td>
+</tr>
+<tr>
+<td>Functional Requirements</td>
+<td>Complete</td>
+<td>12 detailed requirements</td>
+</tr>
+<tr>
+<td>Assumptions</td>
+<td>Complete</td>
+<td>6 clear assumptions documented</td>
+</tr>
+<tr>
+<td>Success Criteria</td>
+<td>Complete</td>
+<td>7 measurable outcomes</td>
+</tr>
+<tr>
+<td>Edge Cases</td>
+<td>Documented</td>
+<td>5 edge cases identified</td>
+</tr>
+</tbody>
+</table>
+<h3 id="missing-documentation">🔴 Missing Documentation<a class="headerlink" href="#missing-documentation" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Missing Aspect</th>
+<th>Code Location</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Resource group creation/cleanup</td>
+<td><code>bicep-lint.yml#L63-71</code></td>
+<td>Low - Not mentioned in spec but implemented</td>
+</tr>
+<tr>
+<td>LoRaWAN starter kit submodule paths</td>
+<td><code>bicep-lint.yml#L8</code></td>
+<td>Low - Only templates/azure/ explicitly mentioned</td>
+</tr>
+<tr>
+<td>Azure CLI version verification</td>
+<td><code>bicep-lint.yml#L54-61</code></td>
+<td>Low - Verification step not in spec</td>
+</tr>
+<tr>
+<td>PR labeling step</td>
+<td><code>bicep-lint.yml#L26-36</code></td>
+<td>Low - Adds arm-templates label, not in spec</td>
+</tr>
+<tr>
+<td>Specific templates validated</td>
+<td><code>bicep-lint.yml#L74-123</code></td>
+<td>Medium - Spec says "all" but 4 specific ones validated</td>
+</tr>
+</tbody>
+</table>
+<h3 id="completeness-score-breakdown">Completeness Score Breakdown<a class="headerlink" href="#completeness-score-breakdown" title="Permanent link">¶</a></h3>
+<ul>
+<li>Workflow Steps: 8/10 documented</li>
+<li>Templates Covered: 4/4 (main templates)</li>
+<li>Security Configuration: 4/4 documented</li>
+<li>Error Handling: ¾ documented</li>
+<li>Configuration: 5/5 documented</li>
+</ul>
+<hr/>
+<h2 id="technical-quality-analysis">Technical Quality Analysis<a class="headerlink" href="#technical-quality-analysis" title="Permanent link">¶</a></h2>
+<h3 id="testability-assessment">Testability Assessment<a class="headerlink" href="#testability-assessment" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Acceptance criteria are specific</td>
+<td>✅</td>
+<td>Given/When/Then format consistently used</td>
+</tr>
+<tr>
+<td>Scenarios are measurable</td>
+<td>✅</td>
+<td>Clear pass/fail outcomes</td>
+</tr>
+<tr>
+<td>Test data requirements clear</td>
+<td>⚠️</td>
+<td>Test parameters file exists but not detailed in spec</td>
+</tr>
+<tr>
+<td>Success/failure conditions unambiguous</td>
+<td>✅</td>
+<td>Clear success criteria defined</td>
+</tr>
+</tbody>
+</table>
+<h3 id="traceability-assessment">Traceability Assessment<a class="headerlink" href="#traceability-assessment" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Requirements map to code</td>
+<td>✅</td>
+<td>All FRs map to workflow steps</td>
+</tr>
+<tr>
+<td>No orphan requirements</td>
+<td>✅</td>
+<td>All requirements implemented</td>
+</tr>
+<tr>
+<td>No orphan code</td>
+<td>⚠️</td>
+<td>PR labeling, resource group cleanup not in spec</td>
+</tr>
+<tr>
+<td>Dependencies documented</td>
+<td>✅</td>
+<td>Azure secrets, OIDC mentioned</td>
+</tr>
+</tbody>
+</table>
+<h3 id="consistency-assessment">Consistency Assessment<a class="headerlink" href="#consistency-assessment" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Terminology matches codebase</td>
+<td>✅</td>
+<td>"Bicep templates", "deployment validation" consistent</td>
+</tr>
+<tr>
+<td>File paths match implementation</td>
+<td>✅</td>
+<td>templates/azure/** matches</td>
+</tr>
+<tr>
+<td>Action versions accurate</td>
+<td>⚠️</td>
+<td>Spec says v1, code uses v2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="currency-assessment">Currency Assessment<a class="headerlink" href="#currency-assessment" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reflects latest code changes</td>
+<td>✅</td>
+<td>Spec dated 2026-01-31, workflow appears current</td>
+</tr>
+<tr>
+<td>No deprecated references</td>
+<td>⚠️</td>
+<td>Spec references arm-ttk (correctly as being replaced)</td>
+</tr>
+<tr>
+<td>Version info accurate</td>
+<td>⚠️</td>
+<td>Action version outdated in spec</td>
+</tr>
+</tbody>
+</table>
+<h3 id="technical-quality-score-breakdown">Technical Quality Score Breakdown<a class="headerlink" href="#technical-quality-score-breakdown" title="Permanent link">¶</a></h3>
+<ul>
+<li>Testability: ⅞ checks passed</li>
+<li>Traceability: ⅞ checks passed</li>
+<li>Consistency: ⅚ checks passed</li>
+<li>Currency: ⅚ checks passed</li>
+</ul>
+<hr/>
+<h2 id="coverage-analysis">Coverage Analysis<a class="headerlink" href="#coverage-analysis" title="Permanent link">¶</a></h2>
+<h3 id="security-coverage">Security Coverage<a class="headerlink" href="#security-coverage" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Documented</th>
+<th>Code Location</th>
+<th>Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Authentication</td>
+<td>✅</td>
+<td><code>bicep-lint.yml#L45-51</code></td>
+<td>OIDC with workload identity</td>
+</tr>
+<tr>
+<td>Credential Handling</td>
+<td>✅</td>
+<td>SC-007</td>
+<td>Secrets not exposed in logs</td>
+</tr>
+<tr>
+<td>Permissions</td>
+<td>✅</td>
+<td><code>bicep-lint.yml#L20-23</code></td>
+<td>id-token, contents, pull-requests</td>
+</tr>
+<tr>
+<td>Secret Management</td>
+<td>✅</td>
+<td>A-001</td>
+<td>Azure credentials as secrets</td>
+</tr>
+</tbody>
+</table>
+<h3 id="error-handling-coverage">Error Handling Coverage<a class="headerlink" href="#error-handling-coverage" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Documented</th>
+<th>Code Location</th>
+<th>Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Failure Scenarios</td>
+<td>✅</td>
+<td>Edge Cases section</td>
+<td>5 scenarios documented</td>
+</tr>
+<tr>
+<td>Error Reporting</td>
+<td>✅</td>
+<td>FR-006</td>
+<td>Detailed error messages required</td>
+</tr>
+<tr>
+<td>Cleanup on Failure</td>
+<td>⚠️</td>
+<td><code>bicep-lint.yml#L127-133</code></td>
+<td><code>if: always()</code> cleanup, not in spec</td>
+</tr>
+<tr>
+<td>Multiple Error Reporting</td>
+<td>✅</td>
+<td>User Story 3, Scenario 2</td>
+<td>All errors reported together</td>
+</tr>
+</tbody>
+</table>
+<h3 id="performance-coverage">Performance Coverage<a class="headerlink" href="#performance-coverage" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Documented</th>
+<th>Code Location</th>
+<th>Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Timeout</td>
+<td>✅</td>
+<td>FR-009, SC-002</td>
+<td>10 min max, 5 min target</td>
+</tr>
+<tr>
+<td>Concurrent Execution</td>
+<td>⚠️</td>
+<td>Edge Cases</td>
+<td>Question asked but not answered</td>
+</tr>
+<tr>
+<td>Rate Limiting</td>
+<td>✅</td>
+<td>A-003</td>
+<td>Azure API limits acknowledged</td>
+</tr>
+</tbody>
+</table>
+<h3 id="integration-coverage">Integration Coverage<a class="headerlink" href="#integration-coverage" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Documented</th>
+<th>Code Location</th>
+<th>Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GitHub Actions</td>
+<td>✅</td>
+<td>A-006</td>
+<td>Runner infrastructure mentioned</td>
+</tr>
+<tr>
+<td>Azure APIs</td>
+<td>✅</td>
+<td>FR-001, A-005</td>
+<td>Deployment validation API</td>
+</tr>
+<tr>
+<td>OIDC Federation</td>
+<td>✅</td>
+<td><code>bicep-lint.yml#L43</code></td>
+<td>Workload Identity Federation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuration-coverage">Configuration Coverage<a class="headerlink" href="#configuration-coverage" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Documented</th>
+<th>Code Location</th>
+<th>Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure Secrets</td>
+<td>✅</td>
+<td>A-001</td>
+<td>CLIENT_ID, TENANT_ID, SUBSCRIPTION_ID</td>
+</tr>
+<tr>
+<td>Path Filters</td>
+<td>✅</td>
+<td>FR-002, FR-003</td>
+<td>templates/azure/**</td>
+</tr>
+<tr>
+<td>Test Parameters</td>
+<td>⚠️</td>
+<td><code>bicep-lint.yml#L81</code></td>
+<td>File exists but not specified in spec</td>
+</tr>
+</tbody>
+</table>
+<h3 id="coverage-score-breakdown">Coverage Score Breakdown<a class="headerlink" href="#coverage-score-breakdown" title="Permanent link">¶</a></h3>
+<ul>
+<li>Security: 4/4 aspects documented</li>
+<li>Error Handling: ¾ aspects documented</li>
+<li>Performance: 3/3 aspects documented</li>
+<li>Integration: 4/4 aspects documented</li>
+<li>Configuration: ⅘ aspects documented</li>
+</ul>
+<hr/>
+<h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">¶</a></h2>
+<h3 id="critical-must-fix">Critical (Must Fix)<a class="headerlink" href="#critical-must-fix" title="Permanent link">¶</a></h3>
+<p>None - Spec is well-aligned with implementation.</p>
+<h3 id="high-priority">High Priority<a class="headerlink" href="#high-priority" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Update action version reference</strong>: Change A-005 from arm-deploy@v1 to arm-deploy@v2</li>
+</ol>
+<h3 id="medium-priority">Medium Priority<a class="headerlink" href="#medium-priority" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Document resource group lifecycle</strong>: Add FR for temporary resource group creation and cleanup</li>
+<li><strong>List specific templates validated</strong>: Document the 4 main templates being validated</li>
+<li><strong>Document test parameters file</strong>: Add reference to <code>azuredeploy.parameters.test.json</code></li>
+</ol>
+<h3 id="low-priority">Low Priority<a class="headerlink" href="#low-priority" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Answer edge case questions</strong>: Provide answers to the 5 edge case questions</li>
+<li><strong>Document PR labeling behavior</strong>: Add note about automatic arm-templates label</li>
+<li><strong>Add implementation notes</strong>: Document the actual workflow structure</li>
+</ol>
+<hr/>
+<h2 id="detailed-findings">Detailed Findings<a class="headerlink" href="#detailed-findings" title="Permanent link">¶</a></h2>
+<h3 id="finding-1-action-version-discrepancy">Finding 1: Action Version Discrepancy<a class="headerlink" href="#finding-1-action-version-discrepancy" title="Permanent link">¶</a></h3>
+<p><strong>Observation</strong>: Spec references v1, implementation uses v2
+<strong>Spec Says</strong>: A-005 "azure/arm-deploy@v1 GitHub Action"
+<strong>Code Shows</strong>: <code>azure/arm-deploy@v2</code> used in all validation steps
+<strong>File</strong>: <code>.github/workflows/bicep-lint.yml</code> (Lines 74, 86, 100, 114)
+<strong>Recommendation</strong>: Update spec assumption to reference v2 (improvement, not regression)</p>
+<h3 id="finding-2-resource-group-lifecycle-not-documented">Finding 2: Resource Group Lifecycle Not Documented<a class="headerlink" href="#finding-2-resource-group-lifecycle-not-documented" title="Permanent link">¶</a></h3>
+<p><strong>Observation</strong>: Implementation creates and cleans up a temporary resource group
+<strong>Spec Says</strong>: No mention of resource group management
+<strong>Code Shows</strong>: Creates <code>rg-bicep-validation-{run_id}</code> and deletes after validation
+<strong>File</strong>: <code>.github/workflows/bicep-lint.yml</code> (Lines 63-71, 127-133)
+<strong>Recommendation</strong>: Add functional requirement for resource group lifecycle</p>
+<h3 id="finding-3-specific-templates-not-listed">Finding 3: Specific Templates Not Listed<a class="headerlink" href="#finding-3-specific-templates-not-listed" title="Permanent link">¶</a></h3>
+<p><strong>Observation</strong>: Spec says "all Bicep templates" but 4 specific ones are validated
+<strong>Spec Says</strong>: FR-007 "support all Bicep templates in the repository"
+<strong>Code Shows</strong>: Only validates: azuredeploy.bicep, portal_with_lorawan_and_starter_kit.bicep, portal_with_lorawan.bicep, portal_without_lorawan.bicep
+<strong>File</strong>: <code>.github/workflows/bicep-lint.yml</code> (Lines 74-123)
+<strong>Recommendation</strong>: Either list specific templates or add dynamic template discovery</p>
+<h3 id="finding-4-test-parameters-file-undocumented">Finding 4: Test Parameters File Undocumented<a class="headerlink" href="#finding-4-test-parameters-file-undocumented" title="Permanent link">¶</a></h3>
+<p><strong>Observation</strong>: Validation uses a test parameters file
+<strong>Spec Says</strong>: FR-008 "handle template parameters" (generic)
+<strong>Code Shows</strong>: Uses <code>./templates/azure/tests/azuredeploy.parameters.test.json</code>
+<strong>File</strong>: <code>.github/workflows/bicep-lint.yml</code> (Line 81)
+<strong>Recommendation</strong>: Document the test parameters file and its purpose</p>
+<hr/>
+<h2 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Lines</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.github/workflows/bicep-lint.yml</code></td>
+<td>1-159</td>
+<td>Main CI workflow for Bicep validation</td>
+</tr>
+<tr>
+<td><code>templates/azure/tests/azuredeploy.parameters.test.json</code></td>
+<td>-</td>
+<td>Test parameters for validation</td>
+</tr>
+<tr>
+<td><code>templates/azure/azuredeploy.bicep</code></td>
+<td>-</td>
+<td>Main deployment template</td>
+</tr>
+<tr>
+<td><code>templates/azure/portal_with_lorawan.bicep</code></td>
+<td>-</td>
+<td>Portal with LoRaWAN template</td>
+</tr>
+<tr>
+<td><code>templates/azure/portal_with_lorawan_and_starter_kit.bicep</code></td>
+<td>-</td>
+<td>Full LoRaWAN template</td>
+</tr>
+<tr>
+<td><code>templates/azure/portal_without_lorawan.bicep</code></td>
+<td>-</td>
+<td>Portal without LoRaWAN template</td>
+</tr>
+</tbody>
+</table>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

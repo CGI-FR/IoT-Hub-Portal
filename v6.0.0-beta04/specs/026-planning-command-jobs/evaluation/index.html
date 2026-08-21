@@ -1,0 +1,1332 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Evaluation Report: Planning Command Jobs (026) - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#evaluation-report-planning-command-jobs-026">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Evaluation Report: Planning Command Jobs (026)
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#summary">
+<span class="md-ellipsis">
+      Summary
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#verified-specifications">
+<span class="md-ellipsis">
+      Verified Specifications ✅
+    </span>
+</a>
+<nav aria-label="Verified Specifications ✅" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-001-system-must-periodically-check-all-active-plannings-for-scheduled-command-execution">
+<span class="md-ellipsis">
+      FR-001: System MUST periodically check all active plannings for scheduled command execution
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-002-system-must-evaluate-schedules-against-current-time-in-configured-time-zone">
+<span class="md-ellipsis">
+      FR-002: System MUST evaluate schedules against current time in configured time zone
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-003-system-must-support-day-specific-commands-within-schedules">
+<span class="md-ellipsis">
+      FR-003: System MUST support day-specific commands within schedules
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-004-system-must-support-day-off-patterns-with-default-commands">
+<span class="md-ellipsis">
+      FR-004: System MUST support day-off patterns with default commands
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-005-system-must-only-process-plannings-within-their-active-date-range">
+<span class="md-ellipsis">
+      FR-005: System MUST only process plannings within their active date range
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-006-system-must-target-all-devices-in-layers-associated-with-active-plannings">
+<span class="md-ellipsis">
+      FR-006: System MUST target all devices in layers associated with active plannings
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-007-system-must-exclude-devices-without-layer-assignments-from-planning-automation">
+<span class="md-ellipsis">
+      FR-007: System MUST exclude devices without layer assignments from planning automation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-008-system-must-execute-lorawan-commands-via-the-lorawan-command-service">
+<span class="md-ellipsis">
+      FR-008: System MUST execute LoRaWAN commands via the LoRaWAN command service
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-009-system-must-refresh-device-layer-planning-and-schedule-data-each-cycle">
+<span class="md-ellipsis">
+      FR-009: System MUST refresh device, layer, planning, and schedule data each cycle
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-010-system-must-prevent-concurrent-job-execution">
+<span class="md-ellipsis">
+      FR-010: System MUST prevent concurrent job execution
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-011-system-must-log-command-execution-results-for-audit-purposes">
+<span class="md-ellipsis">
+      FR-011: System MUST log command execution results for audit purposes
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fr-012-system-must-use-europeparis-as-the-default-time-zone-for-scheduling">
+<span class="md-ellipsis">
+      FR-012: System MUST use Europe/Paris as the default time zone for scheduling
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-entity-verification">
+<span class="md-ellipsis">
+      Key Entity Verification
+    </span>
+</a>
+<nav aria-label="Key Entity Verification" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#planningcommand-internal-structure">
+<span class="md-ellipsis">
+      PlanningCommand Internal Structure
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#payloadcommand-structure">
+<span class="md-ellipsis">
+      PayloadCommand Structure
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#planning-command-workflow-verification">
+<span class="md-ellipsis">
+      Planning Command Workflow Verification
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#service-dependencies-verification">
+<span class="md-ellipsis">
+      Service Dependencies Verification
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#inaccuracies-found">
+<span class="md-ellipsis">
+      Inaccuracies Found ⚠️
+    </span>
+</a>
+<nav aria-label="Inaccuracies Found ⚠️" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-planningcommand-structure-differs-from-spec">
+<span class="md-ellipsis">
+      1. PlanningCommand Structure Differs from Spec
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-schedule-matching-logic-first-match-vs-first-time-slot">
+<span class="md-ellipsis">
+      2. Schedule Matching Logic - First Match vs First Time Slot
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-individual-command-logging">
+<span class="md-ellipsis">
+      3. Individual Command Logging
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-time-zone-hardcoded">
+<span class="md-ellipsis">
+      4. Time Zone Hardcoded
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-error-handling-for-network-failures">
+<span class="md-ellipsis">
+      5. Error Handling for Network Failures
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#job-scheduling-configuration">
+<span class="md-ellipsis">
+      Job Scheduling Configuration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#test-coverage">
+<span class="md-ellipsis">
+      Test Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#supporting-code-references">
+<span class="md-ellipsis">
+      Supporting Code References
+    </span>
+</a>
+<nav aria-label="Supporting Code References" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#daysenumflag-enum">
+<span class="md-ellipsis">
+      DaysEnumFlag Enum
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dayconverter-utility">
+<span class="md-ellipsis">
+      DayConverter Utility
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#recommendations">
+<span class="md-ellipsis">
+      Recommendations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependency-verification">
+<span class="md-ellipsis">
+      Dependency Verification
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="evaluation-report-planning-command-jobs-026">Evaluation Report: Planning Command Jobs (026)<a class="headerlink" href="#evaluation-report-planning-command-jobs-026" title="Permanent link">¶</a></h1>
+<p><strong>Evaluation Date</strong>: 2026-02-03<br/>
+<strong>Spec Version</strong>: Draft<br/>
+<strong>Evaluator</strong>: Excavate Evaluator Agent</p>
+<hr/>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Criteria</th>
+<th>Score</th>
+<th>Weight</th>
+<th>Weighted Score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Correctness</strong></td>
+<td>94%</td>
+<td>30%</td>
+<td>28.2%</td>
+</tr>
+<tr>
+<td><strong>Completeness</strong></td>
+<td>90%</td>
+<td>30%</td>
+<td>27.0%</td>
+</tr>
+<tr>
+<td><strong>Technical Quality</strong></td>
+<td>92%</td>
+<td>20%</td>
+<td>18.4%</td>
+</tr>
+<tr>
+<td><strong>Coverage</strong></td>
+<td>88%</td>
+<td>20%</td>
+<td>17.6%</td>
+</tr>
+<tr>
+<td><strong>Overall Score</strong></td>
+<td></td>
+<td></td>
+<td><strong>91.2%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verdict</strong>: ✅ <strong>Highly Accurate</strong> - The specification accurately captures the planning command job functionality with minor omissions.</p>
+<hr/>
+<h2 id="verified-specifications">Verified Specifications ✅<a class="headerlink" href="#verified-specifications" title="Permanent link">¶</a></h2>
+<h3 id="fr-001-system-must-periodically-check-all-active-plannings-for-scheduled-command-execution">FR-001: System MUST periodically check all active plannings for scheduled command execution<a class="headerlink" href="#fr-001-system-must-periodically-check-all-active-plannings-for-scheduled-command-execution" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L72-78">SendPlanningCommandJob.cs#L72-78</a></li>
+<li><strong>Code</strong>: Job executes via Quartz scheduler with configurable interval</li>
+<li><strong>Scheduling</strong>: <a href="src/IoTHub.Portal.Infrastructure/Startup/AzureServiceCollectionExtension.cs#L173-180">AzureServiceCollectionExtension.cs#L173-180</a></li>
+</ul>
+<h3 id="fr-002-system-must-evaluate-schedules-against-current-time-in-configured-time-zone">FR-002: System MUST evaluate schedules against current time in configured time zone<a class="headerlink" href="#fr-002-system-must-evaluate-schedules-against-current-time-in-configured-time-zone" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L232-239">SendPlanningCommandJob.cs#L232-239</a></li>
+<li><strong>Code</strong>:</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kt">var</span><span class="w"> </span><span class="n">timeZoneId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Europe/Paris"</span><span class="p">;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kt">var</span><span class="w"> </span><span class="n">timeZone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeZoneInfo</span><span class="p">.</span><span class="n">FindSystemTimeZoneById</span><span class="p">(</span><span class="n">timeZoneId</span><span class="p">);</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kt">var</span><span class="w"> </span><span class="n">currentTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeZoneInfo</span><span class="p">.</span><span class="n">ConvertTime</span><span class="p">(</span><span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">,</span><span class="w"> </span><span class="n">timeZone</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="fr-003-system-must-support-day-specific-commands-within-schedules">FR-003: System MUST support day-specific commands within schedules<a class="headerlink" href="#fr-003-system-must-support-day-specific-commands-within-schedules" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L10">SendPlanningCommandJob.cs#L10</a></li>
+<li><strong>Code</strong>: <code>Dictionary&lt;DaysEnumFlag.DaysOfWeek, List&lt;PayloadCommand&gt;&gt; commands</code> supports per-day command mapping</li>
+</ul>
+<h3 id="fr-004-system-must-support-day-off-patterns-with-default-commands">FR-004: System MUST support day-off patterns with default commands<a class="headerlink" href="#fr-004-system-must-support-day-off-patterns-with-default-commands" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L181-197">SendPlanningCommandJob.cs#L181-197</a></li>
+<li><strong>Code</strong>: <code>addPlanningSchedule()</code> method adds day-off commands for the full day (00:00-24:00)</li>
+</ul>
+<h3 id="fr-005-system-must-only-process-plannings-within-their-active-date-range">FR-005: System MUST only process plannings within their active date range<a class="headerlink" href="#fr-005-system-must-only-process-plannings-within-their-active-date-range" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L168-173">SendPlanningCommandJob.cs#L168-173</a></li>
+<li><strong>Code</strong>:</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">private</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">IsPlanningActive</span><span class="p">(</span><span class="n">PlanningDto</span><span class="w"> </span><span class="n">planning</span><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">startDay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">ParseExact</span><span class="p">(</span><span class="n">planning</span><span class="p">.</span><span class="n">Start</span><span class="p">,</span><span class="w"> </span><span class="s">"yyyy-MM-dd"</span><span class="p">,</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">.</span><span class="n">InvariantCulture</span><span class="p">);</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">endDay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">ParseExact</span><span class="p">(</span><span class="n">planning</span><span class="p">.</span><span class="n">End</span><span class="p">,</span><span class="w"> </span><span class="s">"yyyy-MM-dd"</span><span class="p">,</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">.</span><span class="n">InvariantCulture</span><span class="p">);</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">startDay</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">endDay</span><span class="p">;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="fr-006-system-must-target-all-devices-in-layers-associated-with-active-plannings">FR-006: System MUST target all devices in layers associated with active plannings<a class="headerlink" href="#fr-006-system-must-target-all-devices-in-layers-associated-with-active-plannings" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L119-145">SendPlanningCommandJob.cs#L119-145</a></li>
+<li><strong>Code</strong>: <code>UpdateDatabase()</code> and <code>AddNewDevice()</code> build device-to-layer-to-planning mappings</li>
+</ul>
+<h3 id="fr-007-system-must-exclude-devices-without-layer-assignments-from-planning-automation">FR-007: System MUST exclude devices without layer assignments from planning automation<a class="headerlink" href="#fr-007-system-must-exclude-devices-without-layer-assignments-from-planning-automation" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L121-124">SendPlanningCommandJob.cs#L121-124</a></li>
+<li><strong>Code</strong>:</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">devices</span><span class="p">.</span><span class="n">Data</span><span class="p">)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">device</span><span class="p">.</span><span class="n">LayerId</span><span class="p">))</span><span class="w"> </span><span class="n">AddNewDevice</span><span class="p">(</span><span class="n">device</span><span class="p">);</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="fr-008-system-must-execute-lorawan-commands-via-the-lorawan-command-service">FR-008: System MUST execute LoRaWAN commands via the LoRaWAN command service<a class="headerlink" href="#fr-008-system-must-execute-lorawan-commands-via-the-lorawan-command-service" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L253-256">SendPlanningCommandJob.cs#L253-256</a></li>
+<li><strong>Code</strong>:</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span>
+<span class="normal"><a href="#__codelineno-3-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">SendDevicesCommand</span><span class="p">(</span><span class="n">Collection</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">devices</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">command</span><span class="p">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">devices</span><span class="p">)</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">loRaWANCommandService</span><span class="p">.</span><span class="n">ExecuteLoRaWANCommand</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="n">command</span><span class="p">);</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="fr-009-system-must-refresh-device-layer-planning-and-schedule-data-each-cycle">FR-009: System MUST refresh device, layer, planning, and schedule data each cycle<a class="headerlink" href="#fr-009-system-must-refresh-device-layer-planning-and-schedule-data-each-cycle" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L106-115">SendPlanningCommandJob.cs#L106-115</a></li>
+<li><strong>Code</strong>: <code>UpdateAPI()</code> method fetches all required data at the start of each execution cycle</li>
+</ul>
+<h3 id="fr-010-system-must-prevent-concurrent-job-execution">FR-010: System MUST prevent concurrent job execution<a class="headerlink" href="#fr-010-system-must-prevent-concurrent-job-execution" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L38">SendPlanningCommandJob.cs#L38</a></li>
+<li><strong>Code</strong>: <code>[DisallowConcurrentExecution]</code> attribute on class</li>
+</ul>
+<h3 id="fr-011-system-must-log-command-execution-results-for-audit-purposes">FR-011: System MUST log command execution results for audit purposes<a class="headerlink" href="#fr-011-system-must-log-command-execution-results-for-audit-purposes" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ⚠️ Partially Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L76-84">SendPlanningCommandJob.cs#L76-84</a></li>
+<li><strong>Details</strong>: Logs job start/end and errors, but individual command execution results are not explicitly logged</li>
+</ul>
+<h3 id="fr-012-system-must-use-europeparis-as-the-default-time-zone-for-scheduling">FR-012: System MUST use Europe/Paris as the default time zone for scheduling<a class="headerlink" href="#fr-012-system-must-use-europeparis-as-the-default-time-zone-for-scheduling" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L232">SendPlanningCommandJob.cs#L232</a></li>
+<li><strong>Code</strong>: <code>var timeZoneId = "Europe/Paris";</code></li>
+</ul>
+<hr/>
+<h2 id="key-entity-verification">Key Entity Verification<a class="headerlink" href="#key-entity-verification" title="Permanent link">¶</a></h2>
+<h3 id="planningcommand-internal-structure">PlanningCommand Internal Structure<a class="headerlink" href="#planningcommand-internal-structure" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L6-22">SendPlanningCommandJob.cs#L6-22</a></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Spec</th>
+<th>Actual</th>
+<th>Match</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>planningId</td>
+<td>✅</td>
+<td><code>string planningId</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>listDeviceId</td>
+<td>✅</td>
+<td><code>Collection&lt;string&gt; listDeviceId</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>schedules</td>
+<td>❌</td>
+<td><code>Dictionary&lt;DaysOfWeek, List&lt;PayloadCommand&gt;&gt; commands</code></td>
+<td>⚠️ Named differently</td>
+</tr>
+<tr>
+<td>dayOffCommand</td>
+<td>❌</td>
+<td>Integrated into <code>commands</code> dictionary</td>
+<td>⚠️ Different structure</td>
+</tr>
+</tbody>
+</table>
+<h3 id="payloadcommand-structure">PayloadCommand Structure<a class="headerlink" href="#payloadcommand-structure" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status</strong>: ✅ Verified (not in spec)</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L24-35">SendPlanningCommandJob.cs#L24-35</a></li>
+<li><strong>Properties</strong>: <code>payloadId</code>, <code>start</code>, <code>end</code></li>
+</ul>
+<hr/>
+<h2 id="planning-command-workflow-verification">Planning Command Workflow Verification<a class="headerlink" href="#planning-command-workflow-verification" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Spec</th>
+<th>Implementation</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Refresh Data</td>
+<td>Load devices, layers, plannings, schedules</td>
+<td><code>UpdateAPI()</code> method</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>2. Build Planning Database</td>
+<td>Map devices → layers → plannings</td>
+<td><code>UpdateDatabase()</code> + <code>AddNewDevice()</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>3. Evaluate Schedules</td>
+<td>Check day-off and time windows</td>
+<td><code>SendCommand()</code> + <code>addPlanningSchedule()</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>4. Execute Commands</td>
+<td>Call LoRaWAN command service</td>
+<td><code>SendDevicesCommand()</code></td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="service-dependencies-verification">Service Dependencies Verification<a class="headerlink" href="#service-dependencies-verification" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Spec Reference</th>
+<th>Implementation</th>
+<th>Verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IDeviceService</td>
+<td>✅</td>
+<td>Injected in constructor</td>
+<td>✅ <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L56">Line 56</a></td>
+</tr>
+<tr>
+<td>ILayerService</td>
+<td>✅</td>
+<td>Injected in constructor</td>
+<td>✅ <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L57">Line 57</a></td>
+</tr>
+<tr>
+<td>IPlanningService</td>
+<td>✅</td>
+<td>Injected in constructor</td>
+<td>✅ <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L58">Line 58</a></td>
+</tr>
+<tr>
+<td>IScheduleService</td>
+<td>✅</td>
+<td>Injected in constructor</td>
+<td>✅ <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L59">Line 59</a></td>
+</tr>
+<tr>
+<td>ILoRaWANCommandService</td>
+<td>✅</td>
+<td>Injected in constructor</td>
+<td>✅ <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L60">Line 60</a></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="inaccuracies-found">Inaccuracies Found ⚠️<a class="headerlink" href="#inaccuracies-found" title="Permanent link">¶</a></h2>
+<h3 id="1-planningcommand-structure-differs-from-spec">1. PlanningCommand Structure Differs from Spec<a class="headerlink" href="#1-planningcommand-structure-differs-from-spec" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Severity</strong>: Low</li>
+<li><strong>Spec Says</strong>: <code>schedules</code> property and separate <code>dayOffCommand</code></li>
+<li><strong>Actual</strong>: Uses <code>commands</code> dictionary that integrates day-specific and day-off commands together</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L10">SendPlanningCommandJob.cs#L10</a></li>
+<li><strong>Impact</strong>: Spec documents a simplified view; actual implementation is more integrated</li>
+</ul>
+<h3 id="2-schedule-matching-logic-first-match-vs-first-time-slot">2. Schedule Matching Logic - First Match vs First Time Slot<a class="headerlink" href="#2-schedule-matching-logic-first-match-vs-first-time-slot" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Severity</strong>: Low</li>
+<li><strong>Spec Says</strong>: "First matching time slot wins" for overlapping schedules</li>
+<li><strong>Actual</strong>: All matching schedules within the time window are processed</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L244-250">SendPlanningCommandJob.cs#L244-250</a></li>
+<li><strong>Code</strong>: Loop iterates through all schedules, not breaking on first match</li>
+</ul>
+<h3 id="3-individual-command-logging">3. Individual Command Logging<a class="headerlink" href="#3-individual-command-logging" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Severity</strong>: Medium</li>
+<li><strong>Spec Says</strong>: FR-011 requires "100% of command executions are logged for audit purposes"</li>
+<li><strong>Actual</strong>: Only job-level logging exists; individual command executions are not logged</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L253-256">SendPlanningCommandJob.cs#L253-256</a></li>
+<li><strong>Impact</strong>: Audit trail may be incomplete for debugging specific device command issues</li>
+</ul>
+<h3 id="4-time-zone-hardcoded">4. Time Zone Hardcoded<a class="headerlink" href="#4-time-zone-hardcoded" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Severity</strong>: Low</li>
+<li><strong>Spec Says</strong>: "Use Europe/Paris as the default time zone"</li>
+<li><strong>Actual</strong>: Hardcoded to "Europe/Paris" with no configuration option</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L232">SendPlanningCommandJob.cs#L232</a></li>
+<li><strong>Impact</strong>: Cannot change time zone without code modification</li>
+</ul>
+<h3 id="5-error-handling-for-network-failures">5. Error Handling for Network Failures<a class="headerlink" href="#5-error-handling-for-network-failures" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Severity</strong>: Low</li>
+<li><strong>Spec Says</strong>: "Commands fail; errors logged; no automatic retry"</li>
+<li><strong>Actual</strong>: Errors are caught at job level but individual command failures may not be distinctly logged</li>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs#L82-84">SendPlanningCommandJob.cs#L82-84</a></li>
+</ul>
+<hr/>
+<h2 id="job-scheduling-configuration">Job Scheduling Configuration<a class="headerlink" href="#job-scheduling-configuration" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Configuration</th>
+<th>Source</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Job Scheduler</td>
+<td>Quartz.NET</td>
+<td><a href="src/IoTHub.Portal.Infrastructure/Startup/AzureServiceCollectionExtension.cs#L173-180">AzureServiceCollectionExtension.cs#L173-180</a></td>
+</tr>
+<tr>
+<td>Interval</td>
+<td><code>SendCommandsToDevicesIntervalInMinutes</code></td>
+<td>Configurable via ConfigHandler</td>
+</tr>
+<tr>
+<td>Concurrency</td>
+<td><code>[DisallowConcurrentExecution]</code></td>
+<td>Prevents overlapping executions</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="test-coverage">Test Coverage<a class="headerlink" href="#test-coverage" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Test Case</th>
+<th>Status</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Execute_PlanningActive_ShouldSendCommandToDevice</td>
+<td>✅</td>
+<td><a href="src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/SendPlanningCommandJobTests.cs#L41-111">SendPlanningCommandJobTests.cs#L41-111</a></td>
+</tr>
+<tr>
+<td>Execute_PlanningInactive_ShouldNotSendCommandToDevice</td>
+<td>✅</td>
+<td><a href="src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/SendPlanningCommandJobTests.cs#L113-189">SendPlanningCommandJobTests.cs#L113-189</a></td>
+</tr>
+<tr>
+<td>Day-off command handling</td>
+<td>⚠️</td>
+<td>Not explicitly tested</td>
+</tr>
+<tr>
+<td>Multiple devices in layer</td>
+<td>⚠️</td>
+<td>Not explicitly tested</td>
+</tr>
+<tr>
+<td>Time zone boundary conditions</td>
+<td>⚠️</td>
+<td>Not explicitly tested</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="supporting-code-references">Supporting Code References<a class="headerlink" href="#supporting-code-references" title="Permanent link">¶</a></h2>
+<h3 id="daysenumflag-enum">DaysEnumFlag Enum<a class="headerlink" href="#daysenumflag-enum" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Shared/Constants/DaysEnumFlag.cs">DaysEnumFlag.cs</a></li>
+<li><strong>Values</strong>: None, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday (flags enum)</li>
+</ul>
+<h3 id="dayconverter-utility">DayConverter Utility<a class="headerlink" href="#dayconverter-utility" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Evidence</strong>: <a href="src/IoTHub.Portal.Shared/Constants/DaysEnumFlag.cs#L21-37">DaysEnumFlag.cs#L21-37</a></li>
+<li><strong>Purpose</strong>: Converts <code>System.DayOfWeek</code> to <code>DaysEnumFlag.DaysOfWeek</code></li>
+</ul>
+<hr/>
+<h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Add individual command execution logging</strong>: Implement logging for each <code>ExecuteLoRaWANCommand</code> call with device ID and command ID to satisfy FR-011 fully.</p>
+</li>
+<li>
+<p><strong>Make time zone configurable</strong>: Move <code>"Europe/Paris"</code> to configuration to support multi-region deployments.</p>
+</li>
+<li>
+<p><strong>Clarify overlapping schedule behavior</strong>: Update spec to reflect that ALL matching schedules execute, not just the first.</p>
+</li>
+<li>
+<p><strong>Update PlanningCommand documentation</strong>: Spec should reflect the actual <code>commands</code> dictionary structure instead of the simplified view.</p>
+</li>
+<li>
+<p><strong>Add missing test cases</strong>:</p>
+</li>
+<li>Day-off command execution</li>
+<li>Multiple devices in a single layer</li>
+<li>Time zone edge cases (DST transitions)</li>
+<li>
+<p>Error handling for failed command execution</p>
+</li>
+<li>
+<p><strong>Document page size limit</strong>: The job fetches up to 10,000 devices (<code>pageSize: 10000</code>). This limit should be documented for large deployments.</p>
+</li>
+<li>
+<p><strong>Consider retry logic</strong>: For production resilience, consider adding retry logic for failed command executions.</p>
+</li>
+</ol>
+<hr/>
+<h2 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>File Path</th>
+<th>Lines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SendPlanningCommandJob</td>
+<td><a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs">src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs</a></td>
+<td>1-259</td>
+</tr>
+<tr>
+<td>PlanningCommand</td>
+<td><a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs">src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs</a></td>
+<td>6-22</td>
+</tr>
+<tr>
+<td>PayloadCommand</td>
+<td><a href="src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs">src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs</a></td>
+<td>24-35</td>
+</tr>
+<tr>
+<td>DaysEnumFlag</td>
+<td><a href="src/IoTHub.Portal.Shared/Constants/DaysEnumFlag.cs">src/IoTHub.Portal.Shared/Constants/DaysEnumFlag.cs</a></td>
+<td>1-37</td>
+</tr>
+<tr>
+<td>DayConverter</td>
+<td><a href="src/IoTHub.Portal.Shared/Constants/DaysEnumFlag.cs">src/IoTHub.Portal.Shared/Constants/DaysEnumFlag.cs</a></td>
+<td>21-37</td>
+</tr>
+<tr>
+<td>Job Configuration (Azure)</td>
+<td><a href="src/IoTHub.Portal.Infrastructure/Startup/AzureServiceCollectionExtension.cs">src/IoTHub.Portal.Infrastructure/Startup/AzureServiceCollectionExtension.cs</a></td>
+<td>168-180</td>
+</tr>
+<tr>
+<td>Job Configuration (AWS)</td>
+<td><a href="src/IoTHub.Portal.Infrastructure/Startup/AWSServiceCollectionExtension.cs">src/IoTHub.Portal.Infrastructure/Startup/AWSServiceCollectionExtension.cs</a></td>
+<td>118-125</td>
+</tr>
+<tr>
+<td>ILoRaWANCommandService</td>
+<td><a href="src/IoTHub.Portal.Application/Services/ILoRaWANCommandService.cs">src/IoTHub.Portal.Application/Services/ILoRaWANCommandService.cs</a></td>
+<td>-</td>
+</tr>
+<tr>
+<td>LoRaWANCommandService</td>
+<td><a href="src/IoTHub.Portal.Server/Services/LoRaWANCommandService.cs">src/IoTHub.Portal.Server/Services/LoRaWANCommandService.cs</a></td>
+<td>-</td>
+</tr>
+<tr>
+<td>Test File</td>
+<td><a href="src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/SendPlanningCommandJobTests.cs">src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/SendPlanningCommandJobTests.cs</a></td>
+<td>1-200</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="dependency-verification">Dependency Verification<a class="headerlink" href="#dependency-verification" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Spec Dependency</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>017-planning-management</td>
+<td>✅</td>
+<td>IPlanningService used for planning data</td>
+</tr>
+<tr>
+<td>018-schedule-management</td>
+<td>✅</td>
+<td>IScheduleService used for schedule data</td>
+</tr>
+<tr>
+<td>019-layer-management</td>
+<td>✅</td>
+<td>ILayerService used for layer data</td>
+</tr>
+<tr>
+<td>011-lorawan-commands-management</td>
+<td>✅</td>
+<td>ILoRaWANCommandService for command execution</td>
+</tr>
+<tr>
+<td>001-standard-device-management</td>
+<td>✅</td>
+<td>IDeviceService for device inventory</td>
+</tr>
+</tbody>
+</table>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>
