@@ -56,7 +56,17 @@ namespace IoTHub.Portal.Application.Services
             {
                 throw new ResourceAlreadyExistsException($"The User tis the name {user.Name} already exist !");
             }
+
+            var newPrincipal = new Principal
+            {
+                Id = Guid.NewGuid().ToString()
+            };
+
+            await this.principalRepository.InsertAsync(newPrincipal);
+            await this.unitOfWork.SaveAsync();
+
             var userEntity = this.mapper.Map<User>(user);
+            userEntity.PrincipalId = newPrincipal.Id;
             await userRepository.InsertAsync(userEntity);
 
             await unitOfWork.SaveAsync();
