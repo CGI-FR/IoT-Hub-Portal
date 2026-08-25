@@ -157,6 +157,31 @@ namespace IoTHub.Portal.Application.Services
         }
 
         /// <summary>
+        /// Returns the list of permissions that the specified principal (user) has.
+        /// </summary>
+        /// <param name="principalId">The identifier of the principal (user).</param>
+        /// <returns>A list of permission names.</returns>
+        public async Task<IEnumerable<string>> GetUserPermissionsAsync(string principalId)
+        {
+            var permissions = new List<string>();
+
+            // We retrieve the access controls of the principal including the role and its list of actions.
+            var accessControls = await this.accessControlRepository.GetAllAsync(
+                ac => ac.PrincipalId == principalId,
+                CancellationToken.None,
+                ac => ac.Role,
+                ac => ac.Role.Actions
+            );
+
+            foreach (var ac in accessControls)
+            {
+                permissions.AddRange(ac.Role.Actions.Select(a => a.Name));
+            }
+
+            return permissions.Distinct();
+        }
+
+        /// <summary>
         /// Verify if the principal (user) has the specified permission.
         /// For this, we retrieve all access controls related to the principal including the role and its actions,
         /// then we check if one of the role's actions matches (case insensitive) the requested permission.
