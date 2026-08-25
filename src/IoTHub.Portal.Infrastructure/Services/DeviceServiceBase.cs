@@ -112,9 +112,16 @@ namespace IoTHub.Portal.Infrastructure.Services
                 })
                 .ToListAsync();
 
+            var imagesByModelId = new Dictionary<string, string>();
+
+            foreach (var deviceModelId in devices.Select(device => device.DeviceModelId).Distinct())
+            {
+                imagesByModelId[deviceModelId] = await this.deviceModelImageManager.GetDeviceModelImageAsync(deviceModelId);
+            }
+
             devices.ForEach(device =>
             {
-                device.Image = this.deviceModelImageManager.GetDeviceModelImageAsync(device.DeviceModelId).Result;
+                device.Image = imagesByModelId[device.DeviceModelId];
             });
 
             return new PaginatedResult<DeviceListItem>(devices, resultCount);
