@@ -7,6 +7,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Shared.Extensions;
     using Shared.Helpers;
     using Shared.Security;
 
@@ -66,7 +67,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
             var user = await userManagementService.GetOrCreateUserByEmailAsync(emailClaim, User);
 
             userPermissions = (await this.accessControlService.GetUserPermissionsAsync(user.PrincipalId))
-                .Select(Enum.Parse<PortalPermissions>)
+                .Select(permission => permission.AsPermission())
                 .ToList();
 
             this.logger.LogInformation("User with principal ID {PrincipalId} has {Count} permissions", user.PrincipalId, userPermissions.Count);

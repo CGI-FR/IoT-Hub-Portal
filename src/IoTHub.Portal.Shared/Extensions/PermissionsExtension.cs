@@ -49,5 +49,47 @@ namespace IoTHub.Portal.Shared.Extensions
                 _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null)
             };
         }
+
+        public static PortalPermissions AsPermission(this string permission)
+        {
+            return permission switch
+            {
+                "access-control:read" => PortalPermissions.AccessControlRead,
+                "access-control:write" => PortalPermissions.AccessControlWrite,
+                "concentrator:read" => PortalPermissions.ConcentratorRead,
+                "concentrator:write" => PortalPermissions.ConcentratorWrite,
+                "dashboard:read" => PortalPermissions.DashboardRead,
+                "device:export" => PortalPermissions.DeviceExport,
+                "device:import" => PortalPermissions.DeviceImport,
+                "device:write" => PortalPermissions.DeviceWrite,
+                "device:read" => PortalPermissions.DeviceRead,
+                "device-configuration:read" => PortalPermissions.DeviceConfigurationRead,
+                "device-configuration:write" => PortalPermissions.DeviceConfigurationWrite,
+                "device-tag:read" => PortalPermissions.DeviceTagRead,
+                "device-tag:write" => PortalPermissions.DeviceTagWrite,
+                "edge-device:read" => PortalPermissions.EdgeDeviceRead,
+                "edge-device:write" => PortalPermissions.EdgeDeviceWrite,
+                "edge-device:execute" => PortalPermissions.EdgeDeviceExecute,
+                "edge-model:read" => PortalPermissions.EdgeModelRead,
+                "edge-model:write" => PortalPermissions.EdgeModelWrite,
+                "group:read" => PortalPermissions.GroupRead,
+                "group:write" => PortalPermissions.GroupWrite,
+                "idea:write" => PortalPermissions.IdeaWrite,
+                "layer:read" => PortalPermissions.LayerRead,
+                "layer:write" => PortalPermissions.LayerWrite,
+                "model:read" => PortalPermissions.ModelRead,
+                "model:write" => PortalPermissions.ModelWrite,
+                "planning:read" => PortalPermissions.PlanningRead,
+                "planning:write" => PortalPermissions.PlanningWrite,
+                "role:read" => PortalPermissions.RoleRead,
+                "role:write" => PortalPermissions.RoleWrite,
+                "schedule:read" => PortalPermissions.ScheduleRead,
+                "schedule:write" => PortalPermissions.ScheduleWrite,
+                "setting:read" => PortalPermissions.SettingRead,
+                "user:read" => PortalPermissions.UserRead,
+                "user:write" => PortalPermissions.UserWrite,
+                _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null)
+            };
+        }
     }
 }
