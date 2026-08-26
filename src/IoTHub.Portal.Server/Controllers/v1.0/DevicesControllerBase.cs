@@ -32,6 +32,7 @@ namespace IoTHub.Portal.Server.Controllers.V10
         /// <param name="orderBy"></param>
         /// <param name="modelId"></param>
         /// <param name="labels"></param>
+        /// <param name="layerId"></param>
         protected async Task<PaginationResult<DeviceListItem>> GetItems(
             string routeName = null,
             string searchText = null,
@@ -41,7 +42,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
             int pageNumber = 0,
             string[] orderBy = null,
             string modelId = null,
-            string[] labels = null)
+            string[] labels = null,
+            string layerId = null)
         {
 
             var paginatedDevices = await this.deviceService.GetDevices(
@@ -53,7 +55,8 @@ namespace IoTHub.Portal.Server.Controllers.V10
                 orderBy,
                 GetTagsFromQueryString(Request.Query),
                 modelId,
-                labels?.ToList());
+                labels?.ToList(),
+                layerId);
 
             var nextPage = string.Empty;
 

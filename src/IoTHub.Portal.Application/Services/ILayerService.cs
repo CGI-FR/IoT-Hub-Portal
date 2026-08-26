@@ -11,5 +11,6 @@ namespace IoTHub.Portal.Application.Services
         Task DeleteLayer(string levelId);
         Task<Layer> GetLayer(string levelId);
         Task<IEnumerable<LayerDto>> GetLayers();
+        Task<int> GetDeviceCountByLayer(string layerId);
     }
 }

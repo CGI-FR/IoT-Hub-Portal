@@ -92,5 +92,17 @@ namespace IoTHub.Portal.Server.Controllers.V10
         {
             return Ok(await this.levelService.GetLayers());
         }
+
+        /// <summary>
+        /// Gets the device count for the specified layer.
+        /// </summary>
+        /// <param name="levelId">The level identifier.</param>
+        [Authorize("layer:read")]
+        [HttpGet("{levelId}/device-count", Name = "GET Device count by layer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+        public async Task<ActionResult<int>> GetDeviceCountByLayer(string levelId)
+        {
+            return Ok(await this.levelService.GetDeviceCountByLayer(levelId));
+        }
     }
 }

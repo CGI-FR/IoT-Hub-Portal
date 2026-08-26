@@ -173,5 +173,15 @@ namespace IoTHub.Portal.Infrastructure.Services
                 })
                 .ToList();
         }
+
+        /// <summary>
+        /// Gets the device count for the specified layer.
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
+        /// <returns>The device count.</returns>
+        public async Task<int> GetDeviceCountByLayer(string layerId)
+        {
+            return await this.deviceRepository.CountAsync(device => device.LayerId == layerId);
+        }
     }
 }

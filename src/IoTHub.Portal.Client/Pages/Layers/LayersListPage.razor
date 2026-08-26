@@ -87,7 +87,6 @@
 
     public HashSet<LayerHash> Layers { get; set; } = new();
 
-    private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
     private IEnumerable<PlanningDto> Plannings { get; set; } = new List<PlanningDto>();
 
     private Dictionary<string, int> DeviceCountByLayerId { get; set; } = new();
@@ -100,12 +99,10 @@
         IsLoading = true;
 
         var listLayers = await LayerClientService.GetLayers();
-        var result = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
         Plannings = await PlanningClientService.GetPlannings();
         PlanningNameById = Plannings.ToDictionary(planning => planning.Id, planning => planning.Name);
 
-        Devices = result.Items;
-        RecomputeDeviceCountByLayerId();
+        DeviceCountByLayerId = await GetDeviceCountByLayerId(listLayers);
 
         if (listLayers.Count == 0)
         {
@@ -186,11 +183,9 @@
 
     private async Task DeleteLayerOnDevice(string delLayerId)
     {
-        var updatedDevices = Devices
-            .Where(device => device.LayerId == delLayerId)
-            .Select(MapToDeviceDetails);
+        var devicesInLayer = await DeviceClientService.GetDevices($"api/devices?pageNumber=0&pageSize=10000&layerId={delLayerId}");
 
-        var updateTasks = updatedDevices.Select(updatedDevice =>
+        var updateTasks = devicesInLayer.Items.Select(MapToDeviceDetails).Select(updatedDevice =>
         {
             updatedDevice.LayerId = null;
             return DeviceClientService.UpdateDevice(updatedDevice);
@@ -228,17 +223,17 @@
             layer.Name = updatedName;
         }
 
-        var newDeviceList = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
-        Devices = newDeviceList.Items;
-        RecomputeDeviceCountByLayerId();
+        var newDeviceCountByLayerId = await GetDeviceCountByLayerId(await LayerClientService.GetLayers());
+        DeviceCountByLayerId = newDeviceCountByLayerId;
         StateHasChanged();
     }
 
-    private void RecomputeDeviceCountByLayerId()
+    private async Task<Dictionary<string, int>> GetDeviceCountByLayerId(IEnumerable<LayerDto> listLayers)
     {
-        DeviceCountByLayerId = Devices
-            .Where(device => device.LayerId != null)
-            .GroupBy(device => device.LayerId!)
-            .ToDictionary(group => group.Key, group => group.Count());
+        var layerIds = listLayers.Select(layer => layer.Id).ToList();
+        var counts = await Task.WhenAll(layerIds.Select(layerId => LayerClientService.GetDeviceCountByLayer(layerId)));
+
+        return layerIds.Zip(counts, (layerId, count) => (layerId, count))
+            .ToDictionary(entry => entry.layerId, entry => entry.count);
     }
 }

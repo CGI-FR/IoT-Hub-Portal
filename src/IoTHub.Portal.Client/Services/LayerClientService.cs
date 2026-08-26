@@ -48,5 +48,10 @@ namespace IoTHub.Portal.Client.Services
         {
             return await this.http.GetFromJsonAsync<List<LayerDto>>(this.apiUrlBase) ?? new List<LayerDto>();
         }
+
+        public async Task<int> GetDeviceCountByLayer(string layerId)
+        {
+            return await this.http.GetFromJsonAsync<int>($"{this.apiUrlBase}/{layerId}/device-count");
+        }
     }
 }
