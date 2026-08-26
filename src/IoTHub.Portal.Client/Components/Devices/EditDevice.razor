@@ -239,7 +239,7 @@
 
                                         @if (Context.Equals(CreateEditMode.Create))
                                         {
-                                            <LabelsEditor ReadOnlyLabels="DeviceModel.Labels" Labels="Device.Labels" />
+                                            <LabelsEditor ReadOnlyLabels="DeviceModel?.Labels" Labels="Device.Labels" />
                                         }
                                         else if (Context.Equals(CreateEditMode.Edit))
                                         {
@@ -362,7 +362,7 @@
     public bool CanExec { get; set; }
 
     [CascadingParameter]
-    public Error Error { get; set; } = default!;
+    public Error? Error { get; set; } = default!;
 
     private LoRaDeviceModelDto? LoRaDeviceModelDto { get; set; }
     private IDeviceDetails Device { get; set; } = new DeviceDetails();
@@ -471,7 +471,7 @@
         }
         catch (ProblemDetailsException exception)
         {
-            Error.ProcessProblemDetails(exception);
+            Error?.ProcessProblemDetails(exception);
         }
     }
 
@@ -768,7 +768,7 @@
         }
         catch (ProblemDetailsException exception)
         {
-            Error.ProcessProblemDetails(exception);
+            Error?.ProcessProblemDetails(exception);
         }
         finally
         {
