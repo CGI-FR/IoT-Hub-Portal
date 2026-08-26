@@ -188,31 +188,26 @@
     {
         foreach (var updatedDevice in Devices
             .Where(device => device.LayerId == delLayerId)
-            .Select(device => FindDevice(device.DeviceID)))
+            .Select(MapToDeviceDetails))
         {
             updatedDevice.LayerId = null;
             await DeviceClientService.UpdateDevice(updatedDevice);
         }
     }
 
-    private DeviceDetails FindDevice(string deviceId)
+    private static DeviceDetails MapToDeviceDetails(DeviceListItem device)
     {
-        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceId);
-
-        var deviceDetails = new DeviceDetails();
-
-        if (device == null) return deviceDetails;
-
-        deviceDetails.DeviceID = device.DeviceID;
-        deviceDetails.DeviceName = device.DeviceName;
-        deviceDetails.ModelId = device.DeviceModelId;
-        deviceDetails.Image = device.Image;
-        deviceDetails.IsEnabled = device.IsEnabled;
-        deviceDetails.LastActivityTime = device.LastActivityTime;
-        deviceDetails.Labels = device.Labels.ToList();
-        deviceDetails.LayerId = device.LayerId;
-
-        return deviceDetails;
+        return new DeviceDetails
+        {
+            DeviceID = device.DeviceID,
+            DeviceName = device.DeviceName,
+            ModelId = device.DeviceModelId,
+            Image = device.Image,
+            IsEnabled = device.IsEnabled,
+            LastActivityTime = device.LastActivityTime,
+            Labels = device.Labels.ToList(),
+            LayerId = device.LayerId
+        };
     }
 
     private async Task OpenDevices(LayerDto layer)
