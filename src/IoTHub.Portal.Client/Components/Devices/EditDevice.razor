@@ -100,7 +100,7 @@
                                                                          id="@nameof(DeviceDetails.ModelId)"
                                                                          @bind-Value="DeviceModel"
                                                                          SearchFunc="@Search"
-                                                                         Label="Model*"
+                                                                         Label="Model *"
                                                                          Dense=true
                                                                          For=@(() => this.DeviceModel)
                                                                          Variant="Variant.Outlined"
@@ -375,6 +375,8 @@
 
     private IDeviceModel _deviceModel = default!;
 
+    private IEnumerable<IDeviceModel> DeviceModels { get; set; } = Array.Empty<DeviceModelDto>();
+
     private IDeviceModel DeviceModel
     {
         get
@@ -474,6 +476,8 @@
                 {
                     Device.Tags.TryAdd(tag.Name, string.Empty);
                 }
+
+                DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync()).Items.ToList<IDeviceModel>();
             }
             else if (context.Equals(CreateEditMode.Edit))
             {
@@ -718,17 +722,10 @@
 
     private async Task<IEnumerable<IDeviceModel>> Search(string value)
     {
-        var filter = new DeviceModelFilter
-        {
-            SearchText = value,
-            PageNumber = 0,
-            PageSize = 100,
-            OrderBy = new string[]
-                            {
-                    string.Empty
-                            }
-        };
-        return (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList<IDeviceModel>();
+        if (string.IsNullOrEmpty(value))
+            return DeviceModels;
+
+        return DeviceModels.Where(model => model.ModelId.Contains(value, StringComparison.OrdinalIgnoreCase));
     }
 
     private void SetSaveButtonText(DeviceSaveAction saveAction)
