@@ -186,13 +186,17 @@
 
     private async Task DeleteLayerOnDevice(string delLayerId)
     {
-        foreach (var updatedDevice in Devices
+        var updatedDevices = Devices
             .Where(device => device.LayerId == delLayerId)
-            .Select(MapToDeviceDetails))
+            .Select(MapToDeviceDetails);
+
+        var updateTasks = updatedDevices.Select(updatedDevice =>
         {
             updatedDevice.LayerId = null;
-            await DeviceClientService.UpdateDevice(updatedDevice);
-        }
+            return DeviceClientService.UpdateDevice(updatedDevice);
+        });
+
+        await Task.WhenAll(updateTasks);
     }
 
     private static DeviceDetails MapToDeviceDetails(DeviceListItem device)
