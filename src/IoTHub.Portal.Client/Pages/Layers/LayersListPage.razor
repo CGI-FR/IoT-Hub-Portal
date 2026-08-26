@@ -58,7 +58,7 @@
                                                                  Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")"
                                                                  Inline>
                                                             @*<MudIcon Icon="@Icons.Material.Filled.EventNote" />*@
-                                                            Covered by planning « @(Plannings.Single(x => x.Id == item.LayerData.Planning).Name) »
+                                                            Covered by planning « @(PlanningNameById.TryGetValue(item.LayerData.Planning, out var planningName) ? planningName : string.Empty) »
                                                         </MudText>
                                                     }
                                                 }
@@ -94,6 +94,8 @@
     private IEnumerable<PlanningDto> Plannings { get; set; } = new List<PlanningDto>();
 
     private Dictionary<string, int> DeviceCountByLayerId { get; set; } = new();
+    private Dictionary<string, string> PlanningNameById { get; set; } = new();
+
     private string? PrintDetails { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -105,6 +107,7 @@
         var listLayers = await LayerClientService.GetLayers();
         var result = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
         Plannings = await PlanningClientService.GetPlannings();
+        PlanningNameById = Plannings.ToDictionary(planning => planning.Id, planning => planning.Name);
 
         Devices = result.Items;
         RecomputeDeviceCountByLayerId();
