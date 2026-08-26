@@ -9,8 +9,8 @@ namespace IoTHub.Portal.Client.Services
 
         void RefreshDevice();
 
-        IDeviceDetails GetSharedDevice();
-        IDeviceModel GetSharedDeviceModel();
+        IDeviceDetails? GetSharedDevice();
+        IDeviceModel? GetSharedDeviceModel();
         TDevice ResetSharedDevice<TDevice>(List<DeviceTagDto>? tags = null)
             where TDevice : class, IDeviceDetails, new();
         TDeviceModel ResetSharedDeviceModel<TDeviceModel>()

@@ -291,7 +291,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EditDevice>(parameters => parameters
-                .Add(p => p.context, CreateEditMode.Create)
+                .Add(p => p.Context, CreateEditMode.Create)
                 .Add(p => p.CanWrite, true)
                 .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
@@ -369,8 +369,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EditDevice>(parameters => parameters
-                .Add(p => p.context, CreateEditMode.Edit)
-                .Add(p => p.DeviceID, expectedDeviceDetails.DeviceID)
+                .Add(p => p.Context, CreateEditMode.Edit)
+                .Add(p => p.DeviceId, expectedDeviceDetails.DeviceID)
                 .Add(p => p.CanWrite, true)
                 .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
@@ -712,7 +712,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             _ = this.mockLoRaWanDeviceClientService.Setup(service => service.GetGatewayIdList())
                 .ReturnsAsync(new LoRaGatewayIDList());
 
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Create));
+            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.Context, CreateEditMode.Create));
 
             await cut.Instance.ChangeModel(mockDeviceModel);
             cut.WaitForElement("div.mud-tooltip-root:nth-child(2) > div.mud-tab").Click();
@@ -741,7 +741,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .ReturnsAsync(new List<DeviceTagDto>());
 
             var page = RenderComponent<DeviceDetailPage>(parameters => parameters.Add(p => p.DeviceID, deviceId));
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, deviceId));
+            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.Context, CreateEditMode.Edit).Add(p => p.DeviceId, deviceId));
 
             _ = page.WaitForElement("#returnButton");
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
@@ -778,7 +778,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .ReturnsAsync(new List<DeviceTagDto>());
 
             var page = RenderComponent<DeviceDetailPage>(parameters => parameters.Add(p => p.DeviceID, deviceId));
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, deviceId).Add(p => p.IsLoRa, true));
+            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.Context, CreateEditMode.Edit).Add(p => p.DeviceId, deviceId).Add(p => p.IsLoRa, true));
 
             _ = page.WaitForElement("#returnButton");
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
@@ -806,7 +806,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 
 
             var page = RenderComponent<DeviceDetailPage>(parameters => parameters.Add(p => p.DeviceID, deviceId));
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, deviceId));
+            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.Context, CreateEditMode.Edit).Add(p => p.DeviceId, deviceId));
             var returnButton = page.WaitForElement("#returnButton");
 
             returnButton.Click();
@@ -866,8 +866,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
             var cut = RenderComponent<EditDevice>(parameters => parameters
-                .Add(p => p.context, CreateEditMode.Edit)
-                .Add(p => p.DeviceID, mockDeviceDetails.DeviceID)
+                .Add(p => p.Context, CreateEditMode.Edit)
+                .Add(p => p.DeviceId, mockDeviceDetails.DeviceID)
                 .Add(p => p.CanWrite, true)
                 .Add(p => p.CanExec, true));
 
@@ -929,7 +929,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             _ = this.mockDialogService.Setup(c => c.Show<ConnectionStringDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
 
-            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, mockDeviceDetails.DeviceID));
+            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.Context, CreateEditMode.Edit).Add(p => p.DeviceId, mockDeviceDetails.DeviceID));
 
             var connectButton = cut.WaitForElement("#connectButton");
             connectButton.Click();
@@ -990,8 +990,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Returns(mockDialogReference.Object);
 
             var cut = RenderComponent<EditDevice>(parameters => parameters
-                .Add(p => p.context, CreateEditMode.Edit)
-                .Add(p => p.DeviceID, mockDeviceDetails.DeviceID)
+                .Add(p => p.Context, CreateEditMode.Edit)
+                .Add(p => p.DeviceId, mockDeviceDetails.DeviceID)
                 .Add(p => p.CanWrite, true)
                 .Add(p => p.CanExec, true));
 
@@ -1054,8 +1054,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Returns(mockDialogReference.Object);
 
             var cut = RenderComponent<EditDevice>(parameters => parameters
-                .Add(p => p.context, CreateEditMode.Edit)
-                .Add(p => p.DeviceID, mockDeviceDetails.DeviceID)
+                .Add(p => p.Context, CreateEditMode.Edit)
+                .Add(p => p.DeviceId, mockDeviceDetails.DeviceID)
                 .Add(p => p.CanWrite, true)
                 .Add(p => p.CanExec, true));
 
@@ -1115,8 +1115,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EditDevice>(parameters => parameters
-                .Add(p => p.context, CreateEditMode.Edit)
-                .Add(p => p.DeviceID, mockDeviceDetails.DeviceID)
+                .Add(p => p.Context, CreateEditMode.Edit)
+                .Add(p => p.DeviceId, mockDeviceDetails.DeviceID)
                 .Add(p => p.CanWrite, true)
                 .Add(p => p.CanExec, true));
             cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModelDto.Name)}").InnerHtml.Should().NotBeEmpty());
