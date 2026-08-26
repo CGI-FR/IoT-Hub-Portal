@@ -28,7 +28,7 @@
                                             <MudItem xs="10" Class="align-content-center">
                                                 <MudText Class="pr-2" Inline>@item.LayerData.Name</MudText>
                                                 @{
-                                                    var devicesCount = Devices.Count(x => x.LayerId == item.LayerData.Id);
+                                                    var devicesCount = DeviceCountByLayerId.TryGetValue(item.LayerData.Id, out var count) ? count : 0;
                                                     if (devicesCount > 0)
                                                     {
 
@@ -93,6 +93,7 @@
     private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
     private IEnumerable<PlanningDto> Plannings { get; set; } = new List<PlanningDto>();
 
+    private Dictionary<string, int> DeviceCountByLayerId { get; set; } = new();
     private string? PrintDetails { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -106,6 +107,7 @@
         Plannings = await PlanningClientService.GetPlannings();
 
         Devices = result.Items;
+        RecomputeDeviceCountByLayerId();
 
         if (listLayers.Count == 0)
         {
@@ -231,6 +233,15 @@
 
         var newDeviceList = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
         Devices = newDeviceList.Items;
+        RecomputeDeviceCountByLayerId();
         StateHasChanged();
+    }
+
+    private void RecomputeDeviceCountByLayerId()
+    {
+        DeviceCountByLayerId = Devices
+            .Where(device => device.LayerId != null)
+            .GroupBy(device => device.LayerId!)
+            .ToDictionary(group => group.Key, group => group.Count());
     }
 }
