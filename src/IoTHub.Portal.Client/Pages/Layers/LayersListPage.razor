@@ -23,7 +23,7 @@
                                              Expanded
                                              OnClick="() => OpenDevices(item.LayerData)" Style="cursor: pointer;">
                                 <BodyContent>
-                                    <MudGrid Spacing="0" Justify="Justify.SpaceBetween" Style="min-height: 48px" @onmouseover="() => PrintDetails = item.LayerData.Id">
+                                    <MudGrid Spacing="0" Justify="Justify.SpaceBetween" Style="min-height: 48px" Class="layer-row">
                                         <ChildContent>
                                             <MudItem xs="10" Class="align-content-center">
                                                 <MudText Class="pr-2" Inline>@item.LayerData.Name</MudText>
@@ -63,12 +63,9 @@
                                                     }
                                                 }
                                             </MudItem>
-                                            <MudItem xs="2" Style="text-align: right;" Class="align-content-center">
-                                                @if (PrintDetails == item.LayerData.Id)
-                                                {
-                                                    <MudIconButton id="@($"layer-{item.LayerData.Id}-AddLayer")" Icon="@Icons.Material.Filled.PlaylistAdd" OnClick="() => AddLayer(item)" Title="Add a new layer" />
-                                                    <MudIconButton id="@($"layer-{item.LayerData.Id}-DeleteLayer")" Icon="@(item.LayerData.Father != null ? Icons.Material.Filled.Delete : Icons.Material.Outlined.Delete)" OnClick="() => DeleteLayer(item, Layers)" />
-                                                }
+                                            <MudItem xs="2" Style="text-align: right;" Class="align-content-center layer-row-actions">
+                                                <MudIconButton id="@($"layer-{item.LayerData.Id}-AddLayer")" Icon="@Icons.Material.Filled.PlaylistAdd" OnClick="() => AddLayer(item)" Title="Add a new layer" />
+                                                <MudIconButton id="@($"layer-{item.LayerData.Id}-DeleteLayer")" Icon="@(item.LayerData.Father != null ? Icons.Material.Filled.Delete : Icons.Material.Outlined.Delete)" OnClick="() => DeleteLayer(item, Layers)" />
                                             </MudItem>
                                         </ChildContent>
                                     </MudGrid>
@@ -95,8 +92,6 @@
 
     private Dictionary<string, int> DeviceCountByLayerId { get; set; } = new();
     private Dictionary<string, string> PlanningNameById { get; set; } = new();
-
-    private string? PrintDetails { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

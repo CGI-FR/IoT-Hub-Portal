@@ -41,3 +41,10 @@
     display: block;
 }
 
+.layer-row-actions {
+    visibility: hidden;
+}
+
+.layer-row:hover .layer-row-actions {
+    visibility: visible;
+}
