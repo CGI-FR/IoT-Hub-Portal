@@ -63,6 +63,7 @@ namespace IoTHub.Portal.Shared.Extensions
                 "device:import" => PortalPermissions.DeviceImport,
                 "device:write" => PortalPermissions.DeviceWrite,
                 "device:read" => PortalPermissions.DeviceRead,
+                "device:execute" => PortalPermissions.DeviceExecute,
                 "device-configuration:read" => PortalPermissions.DeviceConfigurationRead,
                 "device-configuration:write" => PortalPermissions.DeviceConfigurationWrite,
                 "device-tag:read" => PortalPermissions.DeviceTagRead,
