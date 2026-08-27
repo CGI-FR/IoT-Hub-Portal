@@ -357,26 +357,28 @@
             if (mode == "New") await PlanningClientService.CreatePlanning(planning);
             else await PlanningClientService.UpdatePlanning(planning);
 
-            // Save or update all Schedule
+            // Save or update all Schedule concurrently instead of one request at a time
+            var initScheduleIds = initScheduleList.Select(s => s.Id).ToHashSet();
+            var scheduleIds = scheduleList.Select(s => s.Id).ToHashSet();
+
+            var upsertTasks = new List<Task>();
             foreach (ScheduleDto schedule in scheduleList)
             {
                 schedule.PlanningId = planning.Id;
 
-                if (initScheduleList.Any(obj => obj.Id == schedule.Id))
-                {
-                    await ScheduleClientService.UpdateSchedule(schedule);
-                }
-                else
-                {
-                    await ScheduleClientService.CreateSchedule(schedule);
-                }
+                upsertTasks.Add(initScheduleIds.Contains(schedule.Id)
+                    ? ScheduleClientService.UpdateSchedule(schedule)
+                    : ScheduleClientService.CreateSchedule(schedule));
             }
 
-            // Remove deleted schedules
-            foreach (ScheduleDto schedule in initScheduleList.Where(schedule => !scheduleList.Contains(schedule)))
-            {
-                await ScheduleClientService.DeleteSchedule(schedule.Id);
-            }
+            await Task.WhenAll(upsertTasks);
+
+            // Remove deleted schedules concurrently
+            var deleteTasks = initScheduleList
+                .Where(schedule => !scheduleIds.Contains(schedule.Id))
+                .Select(schedule => ScheduleClientService.DeleteSchedule(schedule.Id));
+
+            await Task.WhenAll(deleteTasks);
         }
         catch (ProblemDetailsException exception)
         {
@@ -388,11 +390,14 @@
     {
         try
         {
-            foreach (LayerHash layer in saveLayers)
+            // Update each layer and recurse into its children concurrently
+            var tasks = saveLayers.Select(async layer =>
             {
                 await LayerClientService.UpdateLayer(layer.LayerData);
                 await SaveLayers(layer.Children);
-            }
+            });
+
+            await Task.WhenAll(tasks);
         }
         catch (ProblemDetailsException exception)
         {
@@ -424,10 +429,18 @@
     {
         DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync(new DeviceModelFilter())).Items.ToList<IDeviceModel>();
 
-        foreach (var deviceModel in DeviceModels)
+        // Load all commands for every Device Model concurrently instead of one request at a time
+        var deviceModelList = DeviceModels.ToList();
+        var commandListTasks = deviceModelList
+            .Select(deviceModel => LoRaWanDeviceModelsClientService.GetDeviceModelCommands(deviceModel.ModelId))
+            .ToList();
+
+        IList<DeviceModelCommandDto>[] commandListResults = await Task.WhenAll(commandListTasks);
+
+        for (var i = 0; i < deviceModelList.Count; i++)
         {
-            // Load all commands for a particular Device Model
-            IList<DeviceModelCommandDto> commandList = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(deviceModel.ModelId);
+            var deviceModel = deviceModelList[i];
+            var commandList = commandListResults[i];
 
             if (commandList.Count == 0) continue;
             CommandDictionary.Add(deviceModel.Name, new List<DeviceModelCommandDto>(commandList));
