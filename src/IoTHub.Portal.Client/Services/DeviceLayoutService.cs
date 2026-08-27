@@ -5,8 +5,8 @@ namespace IoTHub.Portal.Client.Services
 {
     public class DeviceLayoutService : IDeviceLayoutService
     {
-        private IDeviceDetails sharedDevice = default!;
-        private IDeviceModel sharedDeviceModel = default!;
+        private IDeviceDetails? sharedDevice;
+        private IDeviceModel? sharedDeviceModel;
 
         public event EventHandler RefreshDeviceOccurred = default!;
 
@@ -15,12 +15,12 @@ namespace IoTHub.Portal.Client.Services
             OnRefreshDeviceOccurred();
         }
 
-        public IDeviceDetails GetSharedDevice()
+        public IDeviceDetails? GetSharedDevice()
         {
             return this.sharedDevice;
         }
 
-        public IDeviceModel GetSharedDeviceModel()
+        public IDeviceModel? GetSharedDeviceModel()
         {
             return this.sharedDeviceModel;
         }

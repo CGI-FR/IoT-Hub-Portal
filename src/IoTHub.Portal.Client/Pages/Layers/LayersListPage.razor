@@ -23,12 +23,12 @@
                                              Expanded
                                              OnClick="() => OpenDevices(item.LayerData)" Style="cursor: pointer;">
                                 <BodyContent>
-                                    <MudGrid Spacing="0" Justify="Justify.SpaceBetween" Style="min-height: 48px" @onmouseover="() => PrintDetails = item.LayerData.Id">
+                                    <MudGrid Spacing="0" Justify="Justify.SpaceBetween" Style="min-height: 48px" Class="layer-row">
                                         <ChildContent>
                                             <MudItem xs="10" Class="align-content-center">
                                                 <MudText Class="pr-2" Inline>@item.LayerData.Name</MudText>
                                                 @{
-                                                    var devicesCount = Devices.Count(x => x.LayerId == item.LayerData.Id);
+                                                    var devicesCount = DeviceCountByLayerId.TryGetValue(item.LayerData.Id, out var count) ? count : 0;
                                                     if (devicesCount > 0)
                                                     {
 
@@ -58,17 +58,14 @@
                                                                  Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")"
                                                                  Inline>
                                                             @*<MudIcon Icon="@Icons.Material.Filled.EventNote" />*@
-                                                            Covered by planning « @(Plannings.Single(x => x.Id == item.LayerData.Planning).Name) »
+                                                            Covered by planning « @(PlanningNameById.TryGetValue(item.LayerData.Planning, out var planningName) ? planningName : string.Empty) »
                                                         </MudText>
                                                     }
                                                 }
                                             </MudItem>
-                                            <MudItem xs="2" Style="text-align: right;" Class="align-content-center">
-                                                @if (PrintDetails == item.LayerData.Id)
-                                                {
-                                                    <MudIconButton id="@($"layer-{item.LayerData.Id}-AddLayer")" Icon="@Icons.Material.Filled.PlaylistAdd" OnClick="() => AddLayer(item)" Title="Add a new layer" />
-                                                    <MudIconButton id="@($"layer-{item.LayerData.Id}-DeleteLayer")" Icon="@(item.LayerData.Father != null ? Icons.Material.Filled.Delete : Icons.Material.Outlined.Delete)" OnClick="() => DeleteLayer(item, Layers)" />
-                                                }
+                                            <MudItem xs="2" Style="text-align: right;" Class="align-content-center layer-row-actions">
+                                                <MudIconButton id="@($"layer-{item.LayerData.Id}-AddLayer")" Icon="@Icons.Material.Filled.PlaylistAdd" OnClick="() => AddLayer(item)" Title="Add a new layer" />
+                                                <MudIconButton id="@($"layer-{item.LayerData.Id}-DeleteLayer")" Icon="@(item.LayerData.Father != null ? Icons.Material.Filled.Delete : Icons.Material.Outlined.Delete)" OnClick="() => DeleteLayer(item, Layers)" />
                                             </MudItem>
                                         </ChildContent>
                                     </MudGrid>
@@ -90,10 +87,10 @@
 
     public HashSet<LayerHash> Layers { get; set; } = new();
 
-    private IEnumerable<DeviceListItem> Devices { get; set; } = new List<DeviceListItem>();
     private IEnumerable<PlanningDto> Plannings { get; set; } = new List<PlanningDto>();
 
-    private string? PrintDetails { get; set; }
+    private Dictionary<string, int> DeviceCountByLayerId { get; set; } = new();
+    private Dictionary<string, string> PlanningNameById { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,10 +99,10 @@
         IsLoading = true;
 
         var listLayers = await LayerClientService.GetLayers();
-        var result = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
         Plannings = await PlanningClientService.GetPlannings();
+        PlanningNameById = Plannings.ToDictionary(planning => planning.Id, planning => planning.Name);
 
-        Devices = result.Items;
+        DeviceCountByLayerId = await GetDeviceCountByLayerId(listLayers);
 
         if (listLayers.Count == 0)
         {
@@ -186,33 +183,30 @@
 
     private async Task DeleteLayerOnDevice(string delLayerId)
     {
-        foreach (var updatedDevice in Devices
-            .Where(device => device.LayerId == delLayerId)
-            .Select(device => FindDevice(device.DeviceID)))
+        var devicesInLayer = await DeviceClientService.GetDevices($"api/devices?pageNumber=0&pageSize=10000&layerId={delLayerId}");
+
+        var updateTasks = devicesInLayer.Items.Select(MapToDeviceDetails).Select(updatedDevice =>
         {
             updatedDevice.LayerId = null;
-            await DeviceClientService.UpdateDevice(updatedDevice);
-        }
+            return DeviceClientService.UpdateDevice(updatedDevice);
+        });
+
+        await Task.WhenAll(updateTasks);
     }
 
-    private DeviceDetails FindDevice(string deviceId)
+    private static DeviceDetails MapToDeviceDetails(DeviceListItem device)
     {
-        var device = Devices.FirstOrDefault(device => device.DeviceID == deviceId);
-
-        var deviceDetails = new DeviceDetails();
-
-        if (device == null) return deviceDetails;
-
-        deviceDetails.DeviceID = device.DeviceID;
-        deviceDetails.DeviceName = device.DeviceName;
-        deviceDetails.ModelId = device.DeviceModelId;
-        deviceDetails.Image = device.Image;
-        deviceDetails.IsEnabled = device.IsEnabled;
-        deviceDetails.LastActivityTime = device.LastActivityTime;
-        deviceDetails.Labels = device.Labels.ToList();
-        deviceDetails.LayerId = device.LayerId;
-
-        return deviceDetails;
+        return new DeviceDetails
+        {
+            DeviceID = device.DeviceID,
+            DeviceName = device.DeviceName,
+            ModelId = device.DeviceModelId,
+            Image = device.Image,
+            IsEnabled = device.IsEnabled,
+            LastActivityTime = device.LastActivityTime,
+            Labels = device.Labels.ToList(),
+            LayerId = device.LayerId
+        };
     }
 
     private async Task OpenDevices(LayerDto layer)
@@ -229,8 +223,17 @@
             layer.Name = updatedName;
         }
 
-        var newDeviceList = await DeviceClientService.GetDevices("api/devices?pageNumber=0&pageSize=10000");
-        Devices = newDeviceList.Items;
+        var newDeviceCountByLayerId = await GetDeviceCountByLayerId(await LayerClientService.GetLayers());
+        DeviceCountByLayerId = newDeviceCountByLayerId;
         StateHasChanged();
+    }
+
+    private async Task<Dictionary<string, int>> GetDeviceCountByLayerId(IEnumerable<LayerDto> listLayers)
+    {
+        var layerIds = listLayers.Select(layer => layer.Id).ToList();
+        var counts = await Task.WhenAll(layerIds.Select(layerId => LayerClientService.GetDeviceCountByLayer(layerId)));
+
+        return layerIds.Zip(counts, (layerId, count) => (layerId, count))
+            .ToDictionary(entry => entry.layerId, entry => entry.count);
     }
 }

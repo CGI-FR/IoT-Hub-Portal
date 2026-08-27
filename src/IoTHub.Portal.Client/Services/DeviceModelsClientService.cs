@@ -15,17 +15,26 @@ namespace IoTHub.Portal.Client.Services
 
         public async Task<PaginationResult<DeviceModelDto>> GetDeviceModelsAsync(DeviceModelFilter? deviceModelFilter = null)
         {
-            var query = new Dictionary<string, string>
-            {
-                { nameof(DeviceModelFilter.SearchText), deviceModelFilter?.SearchText ?? string.Empty },
-#pragma warning disable CA1305
-                { nameof(DeviceModelFilter.PageNumber), deviceModelFilter?.PageNumber.ToString() ?? string.Empty },
-                { nameof(DeviceModelFilter.PageSize), deviceModelFilter?.PageSize.ToString() ?? string.Empty },
-#pragma warning restore CA1305
-                { nameof(DeviceModelFilter.OrderBy), string.Join("", deviceModelFilter?.OrderBy!) ?? string.Empty }
-            };
+            string uri;
 
-            var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
+            if (deviceModelFilter != null)
+            {
+                var query = new Dictionary<string, string>
+                {
+                    { nameof(DeviceModelFilter.SearchText), deviceModelFilter.SearchText ?? string.Empty },
+#pragma warning disable CA1305
+                    { nameof(DeviceModelFilter.PageNumber), deviceModelFilter.PageNumber.ToString() },
+                    { nameof(DeviceModelFilter.PageSize), deviceModelFilter.PageSize.ToString() },
+#pragma warning restore CA1305
+                    { nameof(DeviceModelFilter.OrderBy), string.Join("", deviceModelFilter.OrderBy!) }
+                };
+
+                uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
+            }
+            else
+            {
+                uri = this.apiUrlBase;
+            }
 
             return await this.http.GetFromJsonAsync<PaginationResult<DeviceModelDto>>(uri) ?? new PaginationResult<DeviceModelDto>();
         }

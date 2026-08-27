@@ -66,14 +66,9 @@ namespace IoTHub.Portal.Server.Controllers.V10
 
             var user = await userManagementService.GetOrCreateUserByEmailAsync(emailClaim, User);
 
-            foreach (var permission in PortalPermissionsHelper.GetAllPermissions())
-            {
-                var hasPermission = await accessControlService.UserHasPermissionAsync(user.PrincipalId, permission.AsString());
-                if (hasPermission)
-                {
-                    userPermissions.Add(permission);
-                }
-            }
+            userPermissions = (await this.accessControlService.GetUserPermissionsAsync(user.PrincipalId))
+                .Select(permission => permission.AsPermission())
+                .ToList();
 
             this.logger.LogInformation("User with principal ID {PrincipalId} has {Count} permissions", user.PrincipalId, userPermissions.Count);
 

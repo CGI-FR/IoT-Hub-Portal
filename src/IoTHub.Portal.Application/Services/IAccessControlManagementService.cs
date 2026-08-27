@@ -20,6 +20,7 @@ namespace IoTHub.Portal.Application.Services
         Task<AccessControlModel?> UpdateAccessControl(string id, AccessControlModel accessControl);
         Task<bool> DeleteAccessControl(string id);
 
+        Task<IEnumerable<string>> GetUserPermissionsAsync(string principalId);
         Task<bool> UserHasPermissionAsync(string principalId, string permission);
     }
 }

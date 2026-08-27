@@ -302,5 +302,173 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Services
             // Assert
             _ = result.Should().BeFalse();
         }
+
+        [Test]
+        public void CreateAccessControl_PrincipalNotFound_ThrowsResourceNotFoundException()
+        {
+            // Arrange
+            var accessControlModel = Fixture.Create<AccessControlModel>();
+
+            _ = this.mockPrincipalRepository.Setup(x => x.GetByIdAsync(accessControlModel.PrincipalId))
+                .ReturnsAsync(value: null);
+
+            // Act
+            Func<Task> act = async () => await this.accessControlService.CreateAccessControl(accessControlModel);
+
+            // Assert
+            _ = act.Should().ThrowAsync<ResourceNotFoundException>();
+        }
+
+        [Test]
+        public void CreateAccessControl_RoleNotFound_ThrowsResourceNotFoundException()
+        {
+            // Arrange
+            var accessControlModel = Fixture.Create<AccessControlModel>();
+
+            var mockPrincipal = Fixture.Create<Principal>();
+            _ = this.mockPrincipalRepository.Setup(x => x.GetByIdAsync(accessControlModel.PrincipalId))
+                .ReturnsAsync(mockPrincipal);
+
+            _ = this.mockRoleRepository.Setup(x => x.GetByIdAsync(accessControlModel.Role.Id))
+                .ReturnsAsync(value: null);
+
+            // Act
+            Func<Task> act = async () => await this.accessControlService.CreateAccessControl(accessControlModel);
+
+            // Assert
+            _ = act.Should().ThrowAsync<ResourceNotFoundException>();
+        }
+
+        [Test]
+        public async Task UpdateAccessControlShouldUpdate()
+        {
+            // Arrange
+            var accessControlModel = Fixture.Create<AccessControlModel>();
+            var existingAccessControl = Mapper.Map<AccessControl>(accessControlModel);
+
+            _ = this.mockAccessControlRepository.Setup(x => x.GetByIdAsync(
+                accessControlModel.Id,
+                It.IsAny<Expression<Func<AccessControl, object>>[]>()
+            )).ReturnsAsync(existingAccessControl);
+
+            var mockPrincipal = Fixture.Create<Principal>();
+            _ = this.mockPrincipalRepository.Setup(x => x.GetByIdAsync(accessControlModel.PrincipalId))
+                .ReturnsAsync(mockPrincipal);
+
+            var mockRole = Fixture.Create<Role>();
+            _ = this.mockRoleRepository.Setup(x => x.GetByIdAsync(accessControlModel.Role.Id))
+                .ReturnsAsync(mockRole);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await this.accessControlService.UpdateAccessControl(accessControlModel.Id, accessControlModel);
+
+            // Assert
+            Assert.IsNotNull(result);
+            this.mockAccessControlRepository.Verify(x => x.Update(existingAccessControl), Times.Once);
+            this.mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
+        }
+
+        [Test]
+        public void UpdateAccessControl_PrincipalNotFound_ThrowsResourceNotFoundException()
+        {
+            // Arrange
+            var accessControlModel = Fixture.Create<AccessControlModel>();
+            var existingAccessControl = Mapper.Map<AccessControl>(accessControlModel);
+
+            _ = this.mockAccessControlRepository.Setup(x => x.GetByIdAsync(
+                accessControlModel.Id,
+                It.IsAny<Expression<Func<AccessControl, object>>[]>()
+            )).ReturnsAsync(existingAccessControl);
+
+            _ = this.mockPrincipalRepository.Setup(x => x.GetByIdAsync(accessControlModel.PrincipalId))
+                .ReturnsAsync(value: null);
+
+            // Act
+            Func<Task> act = async () => await this.accessControlService.UpdateAccessControl(accessControlModel.Id, accessControlModel);
+
+            // Assert
+            _ = act.Should().ThrowAsync<ResourceNotFoundException>();
+        }
+
+        [Test]
+        public void UpdateAccessControl_RoleNotFound_ThrowsResourceNotFoundException()
+        {
+            // Arrange
+            var accessControlModel = Fixture.Create<AccessControlModel>();
+            var existingAccessControl = Mapper.Map<AccessControl>(accessControlModel);
+
+            _ = this.mockAccessControlRepository.Setup(x => x.GetByIdAsync(
+                accessControlModel.Id,
+                It.IsAny<Expression<Func<AccessControl, object>>[]>()
+            )).ReturnsAsync(existingAccessControl);
+
+            var mockPrincipal = Fixture.Create<Principal>();
+            _ = this.mockPrincipalRepository.Setup(x => x.GetByIdAsync(accessControlModel.PrincipalId))
+                .ReturnsAsync(mockPrincipal);
+
+            _ = this.mockRoleRepository.Setup(x => x.GetByIdAsync(accessControlModel.Role.Id))
+                .ReturnsAsync(value: null);
+
+            // Act
+            Func<Task> act = async () => await this.accessControlService.UpdateAccessControl(accessControlModel.Id, accessControlModel);
+
+            // Assert
+            _ = act.Should().ThrowAsync<ResourceNotFoundException>();
+        }
+
+        [Test]
+        public async Task GetUserPermissionsAsyncShouldReturnDistinctPermissions()
+        {
+            // Arrange
+            var principalId = "principal-789";
+            var actionOne = new DomainAction { Name = "device:read" };
+            var actionTwo = new DomainAction { Name = "device:write" };
+            var duplicateAction = new DomainAction { Name = "device:read" };
+
+            var roleOne = new Role { Actions = new List<DomainAction> { actionOne, actionTwo } };
+            var roleTwo = new Role { Actions = new List<DomainAction> { duplicateAction } };
+
+            var accessControls = new List<AccessControl>
+            {
+                new AccessControl { PrincipalId = principalId, Role = roleOne },
+                new AccessControl { PrincipalId = principalId, Role = roleTwo }
+            };
+
+            _ = this.mockAccessControlRepository.Setup(repo => repo.GetAllAsync(
+                It.IsAny<Expression<Func<AccessControl, bool>>>(),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<Expression<Func<AccessControl, object>>[]>()
+            ))
+            .ReturnsAsync(accessControls);
+
+            // Act
+            var result = await this.accessControlService.GetUserPermissionsAsync(principalId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(new[] { "device:read", "device:write" });
+        }
+
+        [Test]
+        public async Task GetUserPermissionsAsyncShouldReturnEmptyWhenNoAccessControls()
+        {
+            // Arrange
+            var principalId = "principal-none";
+
+            _ = this.mockAccessControlRepository.Setup(repo => repo.GetAllAsync(
+                It.IsAny<Expression<Func<AccessControl, bool>>>(),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<Expression<Func<AccessControl, object>>[]>()
+            ))
+            .ReturnsAsync(new List<AccessControl>());
+
+            // Act
+            var result = await this.accessControlService.GetUserPermissionsAsync(principalId);
+
+            // Assert
+            _ = result.Should().BeEmpty();
+        }
     }
 }

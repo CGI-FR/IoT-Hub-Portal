@@ -32,6 +32,7 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
         /// <param name="orderBy"></param>
         /// <param name="modelId"></param>
         /// <param name="labels"></param>
+        /// <param name="layerId"></param>
         [HttpGet(Name = "GET Device list")]
         [Authorize("device:read")]
         public Task<PaginationResult<DeviceListItem>> SearchItems(
@@ -42,9 +43,10 @@ namespace IoTHub.Portal.Server.Controllers.v1._0
             int pageNumber = 0,
             [FromQuery] string[] orderBy = null,
             string modelId = null,
-            [FromQuery] string[] labels = null)
+            [FromQuery] string[] labels = null,
+            string layerId = null)
         {
-            return GetItems("GET Device list", searchText, searchStatus, searchState, pageSize, pageNumber, orderBy, modelId, labels);
+            return GetItems("GET Device list", searchText, searchStatus, searchState, pageSize, pageNumber, orderBy, modelId, labels, layerId);
         }
 
         /// <summary>

@@ -47,8 +47,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             _ = this.mockLayerClientService.Setup(service => service.CreateLayer(It.IsAny<LayerDto>()))
                 .ReturnsAsync(expectedLayerDtoChild.Id);
 
-            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(It.IsAny<string>()))
-                .ReturnsAsync(new PaginationResult<DeviceListItem>());
+            _ = this.mockLayerClientService.Setup(service => service.GetDeviceCountByLayer(It.IsAny<string>()))
+                .ReturnsAsync(0);
 
             _ = this.mockPlanningClientService.Setup(service => service.GetPlannings())
                 .ReturnsAsync(new List<PlanningDto>());
@@ -57,8 +57,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             var cut = RenderComponent<LayersListPage>();
 
             cut.WaitForAssertion(() => cut.FindAll("li[id^='layer-']").Count.Should().Be(1));
-            var editLayerMouseOver = cut.WaitForElement($"#layer-{expectedLayerDto.Id} > .mud-treeview-item-content > div.mud-grid");
-            editLayerMouseOver.MouseOver();
 
             var editLayerAddLayers = cut.WaitForElement($"#layer-{expectedLayerDto.Id}-AddLayer");
             editLayerAddLayers.Click();
@@ -92,6 +90,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             _ = this.mockDeviceClientService.Setup(service => service.GetDevices(It.IsAny<string>()))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>());
 
+            _ = this.mockLayerClientService.Setup(service => service.GetDeviceCountByLayer(It.IsAny<string>()))
+                .ReturnsAsync(0);
+
             _ = this.mockPlanningClientService.Setup(service => service.GetPlannings())
                 .ReturnsAsync(new List<PlanningDto>());
 
@@ -99,9 +100,6 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             var cut = RenderComponent<LayersListPage>();
 
             cut.WaitForAssertion(() => cut.FindAll("li[id^='layer-']").Count.Should().Be(3));
-
-            var editLayerMouseOver = cut.FindAll("li[id^='layer-'] > .mud-treeview-item-content > div.mud-grid");
-            editLayerMouseOver[2].MouseOver();
 
             var editLayerDeleteLayer = cut.WaitForElement($"#layer-{expectedChildrenLayerDto2.Id}-DeleteLayer");
             editLayerDeleteLayer.Click();
@@ -139,16 +137,16 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             _ = this.mockDeviceClientService.Setup(service => service.GetDevices(It.IsAny<string>()))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>());
 
+            _ = this.mockLayerClientService.Setup(service => service.GetDeviceCountByLayer(It.IsAny<string>()))
+                .ReturnsAsync(0);
+
             _ = this.mockPlanningClientService.Setup(service => service.GetPlannings())
                 .ReturnsAsync(new List<PlanningDto>());
 
-            // Act
+
             var cut = RenderComponent<LayersListPage>();
 
             cut.WaitForAssertion(() => cut.FindAll("li[id^='layer-']").Count.Should().Be(3));
-
-            var editLayerMouseOver = cut.FindAll("li[id^='layer-'] > .mud-treeview-item-content > div.mud-grid");
-            editLayerMouseOver[1].MouseOver();
 
             var editLayerDeleteLayer = cut.WaitForElement($"#layer-{expectedChildrenLayerDto1.Id}-DeleteLayer");
             editLayerDeleteLayer.Click();

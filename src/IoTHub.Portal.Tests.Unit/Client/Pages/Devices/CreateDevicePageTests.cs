@@ -55,6 +55,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     }
                 });
 
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(null))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto>()
+                });
+
             // Act
             var cut = RenderComponent<CreateDevicePage>();
 
