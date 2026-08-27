@@ -46,7 +46,7 @@
                                     <img src="@context.Item.Image" alt="@context.Item.DeviceName illustration" width="100%" />
                                 </CellTemplate>
                             </TemplateColumn>
-                            <PropertyColumn Property="device => DeviceModels.Single(model => model.ModelId == device.DeviceModelId).Name"
+                            <PropertyColumn Property="device => GetDeviceModelName(device.DeviceModelId)"
                                             Title="Device model"
                                             Sortable="true" />
                             <TemplateColumn Title="Device name" Sortable="true">
@@ -126,7 +126,7 @@
 
     private string? planningDeviceModelId;
 
-    private IEnumerable<string> selectedModels = new List<string>();
+    private HashSet<string> selectedModels = new();
     private HashSet<DeviceListItem> selectedDevices = new();
     private string deviceNameFilter = string.Empty;
 
@@ -134,6 +134,7 @@
     public string LayerName { get; set; } = null!;
     public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
     public IEnumerable<DeviceListItem> Devices = new List<DeviceListItem>();
+    private Dictionary<string, IDeviceModel> deviceModelsById = new();
 
     void Cancel() => MudDialog.Cancel();
 
@@ -167,6 +168,7 @@
         };
 
         DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items;
+        deviceModelsById = DeviceModels.ToDictionary(model => model.ModelId, model => model);
         Devices = (await DeviceClientService.GetDevices("api/devices?pageSize=10000")).Items;
         selectedDevices = new HashSet<DeviceListItem>(Devices.Where(x => x.LayerId == InitLayer.Id));
 
@@ -190,7 +192,7 @@
         // }
 
         if (!string.IsNullOrEmpty(planningDeviceModelId))
-            selectedModels = new List<string> { planningDeviceModelId };
+            selectedModels = new HashSet<string> { planningDeviceModelId };
 
         IsLoading = false;
     }
@@ -202,6 +204,9 @@
             InitLayer.Name = LayerName;
             await LayerClientService.UpdateLayer(InitLayer);
 
+            var devicesToAssign = new List<DeviceListItem>();
+            var devicesToUnassign = new List<DeviceListItem>();
+
             foreach (var device in Devices)
             {
                 // Device wasn't on any layer and is now selected to be on this layer
@@ -209,21 +214,19 @@
                 // Device was on another layer and is now selected to be on this layer
                 if ((device.LayerId == "None" && selectedDevices.Contains(device)) || (device.LayerId != "None" && device.LayerId != InitLayer.Id && selectedDevices.Contains(device)))
                 {
-                    var deviceDetails = await FindDevice(device.DeviceID);
-                    deviceDetails.LayerId = InitLayer.Id;
-
-                    await DeviceClientService.UpdateDevice(deviceDetails);
+                    devicesToAssign.Add(device);
                 }
                 // Device was on this layer and is now unselected
                 else if (device.LayerId == InitLayer.Id && !selectedDevices.Contains(device))
                 {
-                    var deviceDetails = await FindDevice(device.DeviceID);
-                    deviceDetails.LayerId = "None";
-
-                    await DeviceClientService.UpdateDevice(deviceDetails);
+                    devicesToUnassign.Add(device);
                 }
-
             }
+
+            var updateTasks = devicesToAssign.Select(device => UpdateDeviceLayerAsync(device.DeviceID, InitLayer.Id))
+                .Concat(devicesToUnassign.Select(device => UpdateDeviceLayerAsync(device.DeviceID, "None")));
+
+            await Task.WhenAll(updateTasks);
         }
         catch (ProblemDetailsException exception)
         {
@@ -240,9 +243,17 @@
         return await DeviceClientService.GetDevice(deviceId);
     }
 
+    private async Task UpdateDeviceLayerAsync(string deviceId, string layerId)
+    {
+        var deviceDetails = await FindDevice(deviceId);
+        deviceDetails.LayerId = layerId;
+
+        await DeviceClientService.UpdateDevice(deviceDetails);
+    }
+
     private void OnSelectedModelsChanged(IEnumerable<string> values)
     {
-        selectedModels = values;
+        selectedModels = new HashSet<string>(values);
         StateHasChanged();
     }
 
@@ -250,6 +261,11 @@
     {
         deviceNameFilter = value;
         StateHasChanged();
+    }
+
+    private string GetDeviceModelName(string deviceModelId)
+    {
+        return deviceModelsById.TryGetValue(deviceModelId, out var model) ? model.Name : string.Empty;
     }
 
     private bool QuickFilter(DeviceListItem arg)
