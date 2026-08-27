@@ -132,9 +132,9 @@
 
     private bool IsLoading { get; set; } = true;
     public string LayerName { get; set; } = null!;
-    public IEnumerable<IDeviceModel> DeviceModels = new List<IDeviceModel>();
-    public IEnumerable<DeviceListItem> Devices = new List<DeviceListItem>();
-    private Dictionary<string, IDeviceModel> deviceModelsById = new();
+    public List<DeviceModelDto> DeviceModels = new();
+    public List<DeviceListItem> Devices = new();
+    private Dictionary<string, DeviceModelDto> deviceModelsById = new();
 
     void Cancel() => MudDialog.Cancel();
 
@@ -167,9 +167,9 @@
             }
         };
 
-        DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items;
+        DeviceModels = (await DeviceModelsClientService.GetDeviceModelsAsync(filter)).Items.ToList();
         deviceModelsById = DeviceModels.ToDictionary(model => model.ModelId, model => model);
-        Devices = (await DeviceClientService.GetDevices("api/devices?pageSize=10000")).Items;
+        Devices = (await DeviceClientService.GetDevices("api/devices?pageSize=10000")).Items.ToList();
         selectedDevices = new HashSet<DeviceListItem>(Devices.Where(x => x.LayerId == InitLayer.Id));
 
         // If the layer is linked to a planning with a specific device model, filter and auto-select that model
@@ -270,7 +270,7 @@
 
     private bool QuickFilter(DeviceListItem arg)
     {
-        var matchesModel = !selectedModels.Any() || selectedModels.Contains(arg.DeviceModelId);
+        var matchesModel = selectedModels.Count == 0 || selectedModels.Contains(arg.DeviceModelId);
         var matchesName = string.IsNullOrEmpty(deviceNameFilter)
                           || arg?.DeviceName.Contains(deviceNameFilter, StringComparison.OrdinalIgnoreCase) == true;
 
