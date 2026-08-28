@@ -1,0 +1,1970 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature: Device Import/Export - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-device-importexport">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature: Device Import/Export
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#description">
+<span class="md-ellipsis">
+      Description
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-locations">
+<span class="md-ellipsis">
+      Code Locations
+    </span>
+</a>
+<nav aria-label="Code Locations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entry-points-endpoints">
+<span class="md-ellipsis">
+      Entry Points / Endpoints
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-logic-service-layer">
+<span class="md-ellipsis">
+      Business Logic / Service Layer
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-models">
+<span class="md-ellipsis">
+      Data Models
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-flow">
+<span class="md-ellipsis">
+      Data Flow
+    </span>
+</a>
+<nav aria-label="Data Flow" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#export-flow">
+<span class="md-ellipsis">
+      Export Flow
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#template-download-flow">
+<span class="md-ellipsis">
+      Template Download Flow
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#import-flow">
+<span class="md-ellipsis">
+      Import Flow
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-dependencies">
+<span class="md-ellipsis">
+      External Dependencies
+    </span>
+</a>
+<nav aria-label="External Dependencies" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#internal-servicescomponents">
+<span class="md-ellipsis">
+      Internal Services/Components
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-libraries">
+<span class="md-ellipsis">
+      External Libraries
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-services">
+<span class="md-ellipsis">
+      External Services
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration">
+<span class="md-ellipsis">
+      Configuration
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-logic">
+<span class="md-ellipsis">
+      Business Logic
+    </span>
+</a>
+<nav aria-label="Business Logic" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#core-workflows">
+<span class="md-ellipsis">
+      Core Workflows
+    </span>
+</a>
+<nav aria-label="Core Workflows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-export-device-list">
+<span class="md-ellipsis">
+      1. Export Device List
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-download-template-file">
+<span class="md-ellipsis">
+      2. Download Template File
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-import-device-list">
+<span class="md-ellipsis">
+      3. Import Device List
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validation-rules">
+<span class="md-ellipsis">
+      Validation Rules
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#error-handling">
+<span class="md-ellipsis">
+      Error Handling
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-interface-integration">
+<span class="md-ellipsis">
+      User Interface Integration
+    </span>
+</a>
+<nav aria-label="User Interface Integration" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#frontend-integration-points">
+<span class="md-ellipsis">
+      Frontend Integration Points
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#expected-ui-behaviors">
+<span class="md-ellipsis">
+      Expected UI Behaviors
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-component-suggestions">
+<span class="md-ellipsis">
+      UI Component Suggestions
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testing-considerations">
+<span class="md-ellipsis">
+      Testing Considerations
+    </span>
+</a>
+<nav aria-label="Testing Considerations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#unit-testing">
+<span class="md-ellipsis">
+      Unit Testing
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-testing">
+<span class="md-ellipsis">
+      Integration Testing
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-cases">
+<span class="md-ellipsis">
+      Edge Cases
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-considerations">
+<span class="md-ellipsis">
+      Performance Considerations
+    </span>
+</a>
+<nav aria-label="Performance Considerations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scalability">
+<span class="md-ellipsis">
+      Scalability
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#optimization-strategies">
+<span class="md-ellipsis">
+      Optimization Strategies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#resource-limits">
+<span class="md-ellipsis">
+      Resource Limits
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#monitoring-recommendations">
+<span class="md-ellipsis">
+      Monitoring Recommendations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-analysis">
+<span class="md-ellipsis">
+      Security Analysis
+    </span>
+</a>
+<nav aria-label="Security Analysis" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authentication-authorization">
+<span class="md-ellipsis">
+      Authentication &amp; Authorization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#input-validation">
+<span class="md-ellipsis">
+      Input Validation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-exposure-risks">
+<span class="md-ellipsis">
+      Data Exposure Risks
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-recommendations">
+<span class="md-ellipsis">
+      Security Recommendations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration-deployment">
+<span class="md-ellipsis">
+      Configuration &amp; Deployment
+    </span>
+</a>
+<nav aria-label="Configuration &amp; Deployment" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration-requirements">
+<span class="md-ellipsis">
+      Configuration Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#environment-variables">
+<span class="md-ellipsis">
+      Environment Variables
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deployment-checklist">
+<span class="md-ellipsis">
+      Deployment Checklist
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-issues-limitations">
+<span class="md-ellipsis">
+      Known Issues &amp; Limitations
+    </span>
+</a>
+<nav aria-label="Known Issues &amp; Limitations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#current-limitations">
+<span class="md-ellipsis">
+      Current Limitations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#technical-debt">
+<span class="md-ellipsis">
+      Technical Debt
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-considerations">
+<span class="md-ellipsis">
+      Future Considerations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-features">
+<span class="md-ellipsis">
+      Related Features
+    </span>
+</a>
+<nav aria-label="Related Features" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#directly-related">
+<span class="md-ellipsis">
+      Directly Related
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependent-features">
+<span class="md-ellipsis">
+      Dependent Features
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-points">
+<span class="md-ellipsis">
+      Integration Points
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#migration-compatibility">
+<span class="md-ellipsis">
+      Migration &amp; Compatibility
+    </span>
+</a>
+<nav aria-label="Migration &amp; Compatibility" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#csv-format-versioning">
+<span class="md-ellipsis">
+      CSV Format Versioning
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#import-compatibility">
+<span class="md-ellipsis">
+      Import Compatibility
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#export-compatibility">
+<span class="md-ellipsis">
+      Export Compatibility
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#recommendations">
+<span class="md-ellipsis">
+      Recommendations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#documentation-examples">
+<span class="md-ellipsis">
+      Documentation &amp; Examples
+    </span>
+</a>
+<nav aria-label="Documentation &amp; Examples" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-documentation">
+<span class="md-ellipsis">
+      API Documentation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#usage-examples">
+<span class="md-ellipsis">
+      Usage Examples
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#references">
+<span class="md-ellipsis">
+      References
+    </span>
+</a>
+<nav aria-label="References" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-documentation">
+<span class="md-ellipsis">
+      Related Documentation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-resources">
+<span class="md-ellipsis">
+      External Resources
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-device-importexport">Feature: Device Import/Export<a class="headerlink" href="#feature-device-importexport" title="Permanent link">¶</a></h1>
+<p><strong>Category</strong>: Data Management &amp; Bulk Operations<br/>
+<strong>Status</strong>: Analyzed  </p>
+<hr/>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">¶</a></h2>
+<p>The Device Import/Export feature provides bulk data management capabilities enabling administrators to efficiently onboard, migrate, and backup large numbers of IoT devices through CSV file operations. This feature eliminates the need for manual one-by-one device registration, supporting enterprise-scale device provisioning and data portability scenarios.</p>
+<p>Key capabilities include:</p>
+<ul>
+<li>Exporting complete device inventory to CSV format with all metadata</li>
+<li>Downloading CSV template files with proper column structure for imports</li>
+<li>Importing device data from CSV files with validation and error reporting</li>
+<li>Support for both standard IoT devices and LoRaWAN devices</li>
+<li>Automatic device creation for new devices or updates for existing devices</li>
+<li>Bulk tag assignment and device property configuration</li>
+<li>Comprehensive error reporting with line-by-line validation results</li>
+<li>Dynamic column handling based on portal configuration (tags, properties, LoRa settings)</li>
+<li>Model-based device provisioning with property type validation</li>
+<li>CSV format with prefixed columns (TAG:, PROPERTY:) for schema clarity</li>
+</ul>
+<p>This feature provides critical business value by:</p>
+<ul>
+<li>Reducing onboarding time from hours to minutes for large deployments</li>
+<li>Enabling data migration from legacy systems to IoT Hub Portal</li>
+<li>Supporting disaster recovery through periodic device inventory exports</li>
+<li>Facilitating bulk configuration changes across device fleets</li>
+<li>Ensuring data consistency through template-based imports</li>
+<li>Reducing manual entry errors through automated validation</li>
+<li>Enabling audit trails and inventory management</li>
+<li>Supporting compliance requirements for data portability</li>
+<li>Accelerating proof-of-concept and pilot deployments</li>
+</ul>
+<p>The export operation queries Azure IoT Hub device twins directly, while imports leverage the portal's device services to create/update devices with full validation. The CSV format is dynamically constructed based on configured device tags, model properties, and LoRaWAN settings, ensuring flexibility across different portal configurations.</p>
+<hr/>
+<h2 id="code-locations">Code Locations<a class="headerlink" href="#code-locations" title="Permanent link">¶</a></h2>
+<h3 id="entry-points-endpoints">Entry Points / Endpoints<a class="headerlink" href="#entry-points-endpoints" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/AdminController.cs</code> (Lines 1-55)</li>
+<li>
+<p><strong>Snippet</strong>: REST API controller for import/export operations</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">[Authorize]</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="na">[ApiVersion("1.0")]</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="na">[Route("api/admin")]</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="na">[ApiExplorerSettings(GroupName = "Admin APIs")]</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">AdminController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="p">{</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IExportManager</span><span class="w"> </span><span class="n">exportManager</span><span class="p">;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">    </span><span class="na">[HttpPost("devices/_export", Name = "Export devices")]</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="na">[Authorize("device:export")]</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExportDeviceList</span><span class="p">()</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">();</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">exportManager</span><span class="p">.</span><span class="n">ExportDeviceList</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">        </span><span class="n">stream</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">File</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="s">"text/csv"</span><span class="p">,</span><span class="w"> </span><span class="s">$"Devices_{DateTime.Now:yyyyMMddHHmm}.csv"</span><span class="p">);</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">    </span><span class="na">[HttpPost("devices/_template", Name = "Download template file")]</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="na">[Authorize("device:export")]</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExportTemplateFile</span><span class="p">()</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">();</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">exportManager</span><span class="p">.</span><span class="n">ExportTemplateFile</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">        </span><span class="n">stream</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">File</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="s">"text/csv"</span><span class="p">,</span><span class="w"> </span><span class="s">$"Devices_Template.csv"</span><span class="p">);</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="na">[HttpPost("devices/_import", Name = "Import devices")]</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">    </span><span class="na">[Authorize("device:import")]</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">ImportResultLine</span><span class="p">[]</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ImportDeviceList</span><span class="p">(</span><span class="n">IFormFile</span><span class="w"> </span><span class="n">file</span><span class="p">)</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">        </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">.</span><span class="n">OpenReadStream</span><span class="p">();</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">errorReport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">exportManager</span><span class="p">.</span><span class="n">ImportDeviceList</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">Ok</span><span class="p">(</span><span class="n">errorReport</span><span class="p">);</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h3 id="business-logic-service-layer">Business Logic / Service Layer<a class="headerlink" href="#business-logic-service-layer" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Managers/IExportManager.cs</code> (Lines 1-14)</li>
+<li>
+<p><strong>Snippet</strong>: Interface defining export/import operations</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IExportManager</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExportDeviceList</span><span class="p">(</span><span class="n">Stream</span><span class="w"> </span><span class="n">stream</span><span class="p">);</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExportTemplateFile</span><span class="p">(</span><span class="n">Stream</span><span class="w"> </span><span class="n">stream</span><span class="p">);</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">ImportResultLine</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ImportDeviceList</span><span class="p">(</span><span class="n">Stream</span><span class="w"> </span><span class="n">stream</span><span class="p">);</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Server/Managers/ExportManager.cs</code> (Lines 1-337)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Implementation of export/import logic with CSV processing</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span>
+<span class="normal"><a href="#__codelineno-2-13">13</a></span>
+<span class="normal"><a href="#__codelineno-2-14">14</a></span>
+<span class="normal"><a href="#__codelineno-2-15">15</a></span>
+<span class="normal"><a href="#__codelineno-2-16">16</a></span>
+<span class="normal"><a href="#__codelineno-2-17">17</a></span>
+<span class="normal"><a href="#__codelineno-2-18">18</a></span>
+<span class="normal"><a href="#__codelineno-2-19">19</a></span>
+<span class="normal"><a href="#__codelineno-2-20">20</a></span>
+<span class="normal"><a href="#__codelineno-2-21">21</a></span>
+<span class="normal"><a href="#__codelineno-2-22">22</a></span>
+<span class="normal"><a href="#__codelineno-2-23">23</a></span>
+<span class="normal"><a href="#__codelineno-2-24">24</a></span>
+<span class="normal"><a href="#__codelineno-2-25">25</a></span>
+<span class="normal"><a href="#__codelineno-2-26">26</a></span>
+<span class="normal"><a href="#__codelineno-2-27">27</a></span>
+<span class="normal"><a href="#__codelineno-2-28">28</a></span>
+<span class="normal"><a href="#__codelineno-2-29">29</a></span>
+<span class="normal"><a href="#__codelineno-2-30">30</a></span>
+<span class="normal"><a href="#__codelineno-2-31">31</a></span>
+<span class="normal"><a href="#__codelineno-2-32">32</a></span>
+<span class="normal"><a href="#__codelineno-2-33">33</a></span>
+<span class="normal"><a href="#__codelineno-2-34">34</a></span>
+<span class="normal"><a href="#__codelineno-2-35">35</a></span>
+<span class="normal"><a href="#__codelineno-2-36">36</a></span>
+<span class="normal"><a href="#__codelineno-2-37">37</a></span>
+<span class="normal"><a href="#__codelineno-2-38">38</a></span>
+<span class="normal"><a href="#__codelineno-2-39">39</a></span>
+<span class="normal"><a href="#__codelineno-2-40">40</a></span>
+<span class="normal"><a href="#__codelineno-2-41">41</a></span>
+<span class="normal"><a href="#__codelineno-2-42">42</a></span>
+<span class="normal"><a href="#__codelineno-2-43">43</a></span>
+<span class="normal"><a href="#__codelineno-2-44">44</a></span>
+<span class="normal"><a href="#__codelineno-2-45">45</a></span>
+<span class="normal"><a href="#__codelineno-2-46">46</a></span>
+<span class="normal"><a href="#__codelineno-2-47">47</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ExportManager</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IExportManager</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IExternalDeviceService</span><span class="w"> </span><span class="n">externalDevicesService</span><span class="p">;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDeviceService</span><span class="o">&lt;</span><span class="n">DeviceDetails</span><span class="o">&gt;</span><span class="w"> </span><span class="n">deviceService</span><span class="p">;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDeviceService</span><span class="o">&lt;</span><span class="n">LoRaDeviceDetails</span><span class="o">&gt;</span><span class="w"> </span><span class="n">loraDeviceService</span><span class="p">;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDeviceTagService</span><span class="w"> </span><span class="n">deviceTagService</span><span class="p">;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDeviceModelPropertiesService</span><span class="w"> </span><span class="n">deviceModelPropertiesService</span><span class="p">;</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDevicePropertyService</span><span class="w"> </span><span class="n">devicePropertyService</span><span class="p">;</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">TagPrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"TAG"</span><span class="p">;</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">PropertyPrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"PROPERTY"</span><span class="p">;</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExportDeviceList</span><span class="p">(</span><span class="n">Stream</span><span class="w"> </span><span class="n">stream</span><span class="p">)</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">externalDevicesService</span><span class="p">.</span><span class="n">GetDevicesToExport</span><span class="p">();</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetTagsToExport</span><span class="p">();</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetPropertiesToExport</span><span class="p">();</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18"></a>
+<a id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w">        </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">csvWriter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CsvWriter</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">.</span><span class="n">InvariantCulture</span><span class="p">);</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">        </span><span class="n">WriteHeader</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span><span class="w"> </span><span class="n">properties</span><span class="p">,</span><span class="w"> </span><span class="n">csvWriter</span><span class="p">);</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21"></a>
+<a id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">list</span><span class="p">)</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">deviceObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JsonNode</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">            </span><span class="n">csvWriter</span><span class="p">.</span><span class="n">WriteField</span><span class="p">(</span><span class="n">deviceObject</span><span class="p">[</span><span class="s">"deviceId"</span><span class="p">]);</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w">            </span><span class="n">csvWriter</span><span class="p">.</span><span class="n">WriteField</span><span class="p">(</span><span class="n">deviceObject</span><span class="p">[</span><span class="s">"tags"</span><span class="p">][</span><span class="s">"deviceName"</span><span class="p">]);</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="w">            </span><span class="n">csvWriter</span><span class="p">.</span><span class="n">WriteField</span><span class="p">(</span><span class="n">deviceObject</span><span class="p">[</span><span class="s">"tags"</span><span class="p">][</span><span class="s">"modelId"</span><span class="p">]);</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w">            </span><span class="c1">// Write tags and properties...</span>
+<a id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31"></a>
+<a id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">ImportResultLine</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ImportDeviceList</span><span class="p">(</span><span class="n">Stream</span><span class="w"> </span><span class="n">stream</span><span class="p">)</span>
+<a id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">report</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">ImportResultLine</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="w">        </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">csvReader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CsvReader</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="p">);</span>
+<a id="__codelineno-2-36" name="__codelineno-2-36"></a>
+<a id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">csvReader</span><span class="p">.</span><span class="n">Read</span><span class="p">())</span>
+<a id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-2-39" name="__codelineno-2-39"></a><span class="w">            </span><span class="c1">// Validate mandatory fields (Id, Name, ModelId)</span>
+<a id="__codelineno-2-40" name="__codelineno-2-40"></a><span class="w">            </span><span class="c1">// Determine if LoRa device based on supportLoRaFeatures tag</span>
+<a id="__codelineno-2-41" name="__codelineno-2-41"></a><span class="w">            </span><span class="c1">// Create or update device with tags and properties</span>
+<a id="__codelineno-2-42" name="__codelineno-2-42"></a><span class="w">            </span><span class="c1">// Collect errors in report</span>
+<a id="__codelineno-2-43" name="__codelineno-2-43"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-2-44" name="__codelineno-2-44"></a>
+<a id="__codelineno-2-45" name="__codelineno-2-45"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">report</span><span class="p">;</span>
+<a id="__codelineno-2-46" name="__codelineno-2-46"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-47" name="__codelineno-2-47"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h3 id="data-models">Data Models<a class="headerlink" href="#data-models" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/ImportResultLine.cs</code> (Lines 1-16)</li>
+<li>
+<p><strong>Snippet</strong>: Import error/success reporting model</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span>
+<span class="normal"><a href="#__codelineno-3-4">4</a></span>
+<span class="normal"><a href="#__codelineno-3-5">5</a></span>
+<span class="normal"><a href="#__codelineno-3-6">6</a></span>
+<span class="normal"><a href="#__codelineno-3-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ImportResultLine</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LineNumber</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DeviceId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsErrorMessage</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device services for standard and LoRa devices</li>
+<li>Tag and property services for metadata management</li>
+<li>External device service for direct IoT Hub access</li>
+</ul>
+<hr/>
+<h2 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">¶</a></h2>
+<h3 id="export-flow">Export Flow<a class="headerlink" href="#export-flow" title="Permanent link">¶</a></h3>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span>
+<span class="normal"><a href="#__codelineno-4-5">5</a></span>
+<span class="normal"><a href="#__codelineno-4-6">6</a></span>
+<span class="normal"><a href="#__codelineno-4-7">7</a></span>
+<span class="normal"><a href="#__codelineno-4-8">8</a></span>
+<span class="normal"><a href="#__codelineno-4-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a>1. Client Request → POST /api/admin/devices/_export
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a>2. Authorization Check → Validate "device:export" permission
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a>3. ExportManager.ExportDeviceList()
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a>   → Fetch all devices from IoT Hub (IExternalDeviceService)
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a>   → Get configured tags (IDeviceTagService)
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a>   → Get configured properties (IDeviceModelPropertiesService)
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a>   → Build CSV header: Id, Name, ModelId, TAG:*, PROPERTY:*
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a>   → Iterate devices, write rows with tag/property values
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a>4. Return CSV file: "Devices_YYYYMMDDHHmm.csv"
+</code></pre></div></td></tr></table></div>
+<h3 id="template-download-flow">Template Download Flow<a class="headerlink" href="#template-download-flow" title="Permanent link">¶</a></h3>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
+<span class="normal"><a href="#__codelineno-5-2">2</a></span>
+<span class="normal"><a href="#__codelineno-5-3">3</a></span>
+<span class="normal"><a href="#__codelineno-5-4">4</a></span>
+<span class="normal"><a href="#__codelineno-5-5">5</a></span>
+<span class="normal"><a href="#__codelineno-5-6">6</a></span>
+<span class="normal"><a href="#__codelineno-5-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a>1. Client Request → POST /api/admin/devices/_template
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a>2. Authorization Check → Validate "device:export" permission
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a>3. ExportManager.ExportTemplateFile()
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a>   → Get configured tags + supportLoRaFeatures
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a>   → Get configured properties + LoRa properties (if enabled)
+<a id="__codelineno-5-6" name="__codelineno-5-6"></a>   → Build CSV header row only
+<a id="__codelineno-5-7" name="__codelineno-5-7"></a>4. Return empty CSV template: "Devices_Template.csv"
+</code></pre></div></td></tr></table></div>
+<h3 id="import-flow">Import Flow<a class="headerlink" href="#import-flow" title="Permanent link">¶</a></h3>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-6-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-6-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-6-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-6-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-6-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-6-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-6-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-6-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-6-10">10</a></span>
+<span class="normal"><a href="#__codelineno-6-11">11</a></span>
+<span class="normal"><a href="#__codelineno-6-12">12</a></span>
+<span class="normal"><a href="#__codelineno-6-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a>1. Client Request → POST /api/admin/devices/_import (multipart/form-data)
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a>2. Authorization Check → Validate "device:import" permission
+<a id="__codelineno-6-3" name="__codelineno-6-3"></a>3. ExportManager.ImportDeviceList(fileStream)
+<a id="__codelineno-6-4" name="__codelineno-6-4"></a>   → Parse CSV headers (validate minimum 3 columns)
+<a id="__codelineno-6-5" name="__codelineno-6-5"></a>   → For each row:
+<a id="__codelineno-6-6" name="__codelineno-6-6"></a>     a. Validate mandatory fields: Id, Name, ModelId
+<a id="__codelineno-6-7" name="__codelineno-6-7"></a>     b. Read TAG:* columns into deviceTags dictionary
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a>     c. Check TAG:supportLoRaFeatures for LoRa detection
+<a id="__codelineno-6-9" name="__codelineno-6-9"></a>     d. If LoRa: Import as LoRaDeviceDetails with LoRa properties
+<a id="__codelineno-6-10" name="__codelineno-6-10"></a>     e. Else: Import as DeviceDetails with model properties
+<a id="__codelineno-6-11" name="__codelineno-6-11"></a>     f. Create device if new, update if exists
+<a id="__codelineno-6-12" name="__codelineno-6-12"></a>     g. Collect errors in ImportResultLine list
+<a id="__codelineno-6-13" name="__codelineno-6-13"></a>4. Return ImportResultLine[] with success/error details
+</code></pre></div></td></tr></table></div>
+<p><strong>Key aspects:</strong></p>
+<ul>
+<li>Export queries IoT Hub directly for performance</li>
+<li>Import uses portal services for validation and provisioning</li>
+<li>LoRa device detection via <code>TAG:supportLoRaFeatures</code> column</li>
+<li>Dynamic column structure based on portal configuration</li>
+<li>Line-by-line error reporting for import validation failures</li>
+</ul>
+<hr/>
+<h2 id="external-dependencies">External Dependencies<a class="headerlink" href="#external-dependencies" title="Permanent link">¶</a></h2>
+<h3 id="internal-servicescomponents">Internal Services/Components<a class="headerlink" href="#internal-servicescomponents" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>IExternalDeviceService</strong>: Direct IoT Hub queries for device export</li>
+<li><strong>IDeviceService<devicedetails></devicedetails></strong>: Standard device CRUD operations</li>
+<li><strong>IDeviceService<loradevicedetails></loradevicedetails></strong>: LoRaWAN device CRUD operations</li>
+<li><strong>IDeviceTagService</strong>: Device tag configuration and management</li>
+<li><strong>IDeviceModelPropertiesService</strong>: Device model property schemas</li>
+<li><strong>IDevicePropertyService</strong>: Device property value management</li>
+<li><strong>LoRaWANOptions</strong>: Configuration for LoRa feature enablement</li>
+</ul>
+<h3 id="external-libraries">External Libraries<a class="headerlink" href="#external-libraries" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>CsvHelper</strong>: CSV parsing and writing (NuGet package)</li>
+<li><strong>System.Text.Json</strong>: JSON parsing for device twin data</li>
+</ul>
+<h3 id="external-services">External Services<a class="headerlink" href="#external-services" title="Permanent link">¶</a></h3>
+<ul>
+<li>Azure IoT Hub: Source of device data for exports</li>
+<li>LoRaWAN Network Server: Indirectly via LoRa device services</li>
+</ul>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>LoRaWANOptions.Enabled</strong>: Controls LoRa-specific columns in CSV</li>
+<li>Authorization policies: <code>device:export</code>, <code>device:import</code></li>
+</ul>
+<hr/>
+<h2 id="business-logic">Business Logic<a class="headerlink" href="#business-logic" title="Permanent link">¶</a></h2>
+<h3 id="core-workflows">Core Workflows<a class="headerlink" href="#core-workflows" title="Permanent link">¶</a></h3>
+<h4 id="1-export-device-list">1. Export Device List<a class="headerlink" href="#1-export-device-list" title="Permanent link">¶</a></h4>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span>
+<span class="normal"><a href="#__codelineno-7-3">3</a></span>
+<span class="normal"><a href="#__codelineno-7-4">4</a></span>
+<span class="normal"><a href="#__codelineno-7-5">5</a></span>
+<span class="normal"><a href="#__codelineno-7-6">6</a></span>
+<span class="normal"><a href="#__codelineno-7-7">7</a></span>
+<span class="normal"><a href="#__codelineno-7-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a>Input: None (authenticated request)
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a>Process:
+<a id="__codelineno-7-3" name="__codelineno-7-3"></a>  1. Validate "device:export" permission
+<a id="__codelineno-7-4" name="__codelineno-7-4"></a>  2. Query all devices from IoT Hub
+<a id="__codelineno-7-5" name="__codelineno-7-5"></a>  3. Get current tag and property schema
+<a id="__codelineno-7-6" name="__codelineno-7-6"></a>  4. Generate CSV with dynamic columns
+<a id="__codelineno-7-7" name="__codelineno-7-7"></a>  5. Populate rows with device data
+<a id="__codelineno-7-8" name="__codelineno-7-8"></a>Output: CSV file stream with all devices
+</code></pre></div></td></tr></table></div>
+<h4 id="2-download-template-file">2. Download Template File<a class="headerlink" href="#2-download-template-file" title="Permanent link">¶</a></h4>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span>
+<span class="normal"><a href="#__codelineno-8-3">3</a></span>
+<span class="normal"><a href="#__codelineno-8-4">4</a></span>
+<span class="normal"><a href="#__codelineno-8-5">5</a></span>
+<span class="normal"><a href="#__codelineno-8-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a>Input: None (authenticated request)
+<a id="__codelineno-8-2" name="__codelineno-8-2"></a>Process:
+<a id="__codelineno-8-3" name="__codelineno-8-3"></a>  1. Validate "device:export" permission
+<a id="__codelineno-8-4" name="__codelineno-8-4"></a>  2. Get current tag and property schema
+<a id="__codelineno-8-5" name="__codelineno-8-5"></a>  3. Generate CSV header row only
+<a id="__codelineno-8-6" name="__codelineno-8-6"></a>Output: Empty CSV template with correct columns
+</code></pre></div></td></tr></table></div>
+<h4 id="3-import-device-list">3. Import Device List<a class="headerlink" href="#3-import-device-list" title="Permanent link">¶</a></h4>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-9-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-9-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-9-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-9-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-9-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-9-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-9-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-9-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-9-10">10</a></span>
+<span class="normal"><a href="#__codelineno-9-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a>Input: CSV file (multipart upload)
+<a id="__codelineno-9-2" name="__codelineno-9-2"></a>Process:
+<a id="__codelineno-9-3" name="__codelineno-9-3"></a>  1. Validate "device:import" permission
+<a id="__codelineno-9-4" name="__codelineno-9-4"></a>  2. Parse CSV headers (require minimum 3 columns)
+<a id="__codelineno-9-5" name="__codelineno-9-5"></a>  3. For each data row:
+<a id="__codelineno-9-6" name="__codelineno-9-6"></a>     a. Validate Id, Name, ModelId (mandatory)
+<a id="__codelineno-9-7" name="__codelineno-9-7"></a>     b. Parse TAG:* and PROPERTY:* columns
+<a id="__codelineno-9-8" name="__codelineno-9-8"></a>     c. Detect device type (LoRa vs standard)
+<a id="__codelineno-9-9" name="__codelineno-9-9"></a>     d. Create or update device via appropriate service
+<a id="__codelineno-9-10" name="__codelineno-9-10"></a>     e. Record success or error
+<a id="__codelineno-9-11" name="__codelineno-9-11"></a>Output: ImportResultLine[] with row-level results
+</code></pre></div></td></tr></table></div>
+<h3 id="validation-rules">Validation Rules<a class="headerlink" href="#validation-rules" title="Permanent link">¶</a></h3>
+<p><strong>CSV Structure:</strong></p>
+<ul>
+<li>Minimum 3 columns required: Id, Name, ModelId</li>
+<li>Column naming: <code>TAG:tagName</code>, <code>PROPERTY:propertyName</code></li>
+<li>UTF-8 encoding with InvariantCulture</li>
+</ul>
+<p><strong>Mandatory Fields:</strong></p>
+<ul>
+<li><strong>Id</strong>: Cannot be null or empty</li>
+<li><strong>Name</strong>: Cannot be null or empty</li>
+<li><strong>ModelId</strong>: Cannot be null or empty, must reference existing model</li>
+</ul>
+<p><strong>LoRa Device Detection:</strong></p>
+<ul>
+<li>If <code>TAG:supportLoRaFeatures</code> = true, treat as LoRa device</li>
+<li>LoRa devices require LoRa-specific properties (AppKey, AppEUI, etc.)</li>
+<li>OTAA devices: AppKey + AppEUI required</li>
+<li>ABP devices: AppSKey + NwkSKey + DevAddr required</li>
+</ul>
+<p><strong>Property Validation:</strong></p>
+<ul>
+<li>Properties must match model property schema</li>
+<li>Property types validated by model service</li>
+<li>Invalid properties cause row-level errors</li>
+</ul>
+<h3 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">¶</a></h3>
+<p><strong>File-Level Errors:</strong></p>
+<ul>
+<li>Invalid file format (non-CSV): 400 Bad Request</li>
+<li>Missing file: 400 Bad Request</li>
+<li>Headers &lt; 3 columns: 500 with error message</li>
+<li>Encoding issues: Import continues with corrupted rows reported as errors</li>
+</ul>
+<p><strong>Row-Level Errors:</strong></p>
+<ul>
+<li>Missing mandatory fields: Record in ImportResultLine, continue processing</li>
+<li>Invalid device model: Exception caught, recorded as error</li>
+<li>Duplicate device ID: Update operation executed</li>
+<li>Invalid property types: Exception caught, recorded as error</li>
+<li>LoRa validation failures: Exception caught, recorded as error</li>
+</ul>
+<p><strong>Authorization Errors:</strong></p>
+<ul>
+<li>Missing <code>device:export</code> permission: 403 Forbidden</li>
+<li>Missing <code>device:import</code> permission: 403 Forbidden</li>
+</ul>
+<hr/>
+<h2 id="user-interface-integration">User Interface Integration<a class="headerlink" href="#user-interface-integration" title="Permanent link">¶</a></h2>
+<h3 id="frontend-integration-points">Frontend Integration Points<a class="headerlink" href="#frontend-integration-points" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Admin Dashboard</strong>: Primary location for import/export actions</li>
+<li><strong>Device List Page</strong>: Bulk export button</li>
+<li><strong>Device Management Toolbar</strong>: Import devices action</li>
+</ul>
+<h3 id="expected-ui-behaviors">Expected UI Behaviors<a class="headerlink" href="#expected-ui-behaviors" title="Permanent link">¶</a></h3>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-10-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-10-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-10-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-10-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-10-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-10-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-10-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-10-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-10-10">10</a></span>
+<span class="normal"><a href="#__codelineno-10-11">11</a></span>
+<span class="normal"><a href="#__codelineno-10-12">12</a></span>
+<span class="normal"><a href="#__codelineno-10-13">13</a></span>
+<span class="normal"><a href="#__codelineno-10-14">14</a></span>
+<span class="normal"><a href="#__codelineno-10-15">15</a></span>
+<span class="normal"><a href="#__codelineno-10-16">16</a></span>
+<span class="normal"><a href="#__codelineno-10-17">17</a></span>
+<span class="normal"><a href="#__codelineno-10-18">18</a></span>
+<span class="normal"><a href="#__codelineno-10-19">19</a></span>
+<span class="normal"><a href="#__codelineno-10-20">20</a></span>
+<span class="normal"><a href="#__codelineno-10-21">21</a></span>
+<span class="normal"><a href="#__codelineno-10-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a>Export Devices:
+<a id="__codelineno-10-2" name="__codelineno-10-2"></a>  → User clicks "Export Devices" button
+<a id="__codelineno-10-3" name="__codelineno-10-3"></a>  → POST /api/admin/devices/_export
+<a id="__codelineno-10-4" name="__codelineno-10-4"></a>  → Browser downloads "Devices_202501271430.csv"
+<a id="__codelineno-10-5" name="__codelineno-10-5"></a>  → Show success notification
+<a id="__codelineno-10-6" name="__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7"></a>Download Template:
+<a id="__codelineno-10-8" name="__codelineno-10-8"></a>  → User clicks "Download Template" button
+<a id="__codelineno-10-9" name="__codelineno-10-9"></a>  → POST /api/admin/devices/_template
+<a id="__codelineno-10-10" name="__codelineno-10-10"></a>  → Browser downloads "Devices_Template.csv"
+<a id="__codelineno-10-11" name="__codelineno-10-11"></a>  → Show tooltip explaining template usage
+<a id="__codelineno-10-12" name="__codelineno-10-12"></a>
+<a id="__codelineno-10-13" name="__codelineno-10-13"></a>Import Devices:
+<a id="__codelineno-10-14" name="__codelineno-10-14"></a>  → User clicks "Import Devices" button
+<a id="__codelineno-10-15" name="__codelineno-10-15"></a>  → File picker dialog opens
+<a id="__codelineno-10-16" name="__codelineno-10-16"></a>  → User selects CSV file
+<a id="__codelineno-10-17" name="__codelineno-10-17"></a>  → POST /api/admin/devices/_import (multipart)
+<a id="__codelineno-10-18" name="__codelineno-10-18"></a>  → Display import results modal:
+<a id="__codelineno-10-19" name="__codelineno-10-19"></a>    - Success count
+<a id="__codelineno-10-20" name="__codelineno-10-20"></a>    - Error count
+<a id="__codelineno-10-21" name="__codelineno-10-21"></a>    - Line-by-line error details table
+<a id="__codelineno-10-22" name="__codelineno-10-22"></a>  → Refresh device list on success
+</code></pre></div></td></tr></table></div>
+<h3 id="ui-component-suggestions">UI Component Suggestions<a class="headerlink" href="#ui-component-suggestions" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Export Button</strong>: Simple action button, no modal needed</li>
+<li><strong>Import Button</strong>: Opens file picker, then progress indicator</li>
+<li><strong>Import Results Modal</strong>:</li>
+<li>Summary card (success/error counts)</li>
+<li>Expandable error details table (line number, device ID, error message)</li>
+<li>Close/Dismiss button</li>
+<li>Optional "Download Error Report" link</li>
+<li><strong>Template Help</strong>: Tooltip or help icon explaining CSV format</li>
+</ul>
+<hr/>
+<h2 id="testing-considerations">Testing Considerations<a class="headerlink" href="#testing-considerations" title="Permanent link">¶</a></h2>
+<h3 id="unit-testing">Unit Testing<a class="headerlink" href="#unit-testing" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Mock Dependencies</strong>: Mock all device services, tag service, property service</li>
+<li><strong>CSV Generation</strong>: Verify correct header structure and row formatting</li>
+<li><strong>CSV Parsing</strong>: Test various CSV formats (valid, malformed, empty)</li>
+<li><strong>Validation Logic</strong>: Test mandatory field validation</li>
+<li><strong>LoRa Detection</strong>: Test supportLoRaFeatures flag handling</li>
+<li><strong>Error Reporting</strong>: Verify ImportResultLine generation</li>
+</ul>
+<h3 id="integration-testing">Integration Testing<a class="headerlink" href="#integration-testing" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>End-to-End Export/Import</strong>: Export devices, import same file, verify no errors</li>
+<li><strong>LoRa Device Handling</strong>: Test with LoRa enabled/disabled configurations</li>
+<li><strong>Large Files</strong>: Test with 1000+ device CSV files</li>
+<li><strong>Partial Failures</strong>: Test with mix of valid/invalid rows</li>
+<li><strong>Model Validation</strong>: Test with invalid ModelId references</li>
+<li><strong>Duplicate Devices</strong>: Test import with existing device IDs</li>
+</ul>
+<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<ul>
+<li>Empty CSV file (header only)</li>
+<li>CSV with extra columns (should be ignored)</li>
+<li>CSV with missing optional columns (tags, properties)</li>
+<li>Unicode device names and tag values</li>
+<li>Very long device IDs (&gt;128 characters)</li>
+<li>CSV with BOM (byte order mark)</li>
+<li>Mixed LoRa and standard devices in same import</li>
+</ul>
+<hr/>
+<h2 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h2>
+<h3 id="scalability">Scalability<a class="headerlink" href="#scalability" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Export</strong>: O(n) where n = device count, IoT Hub query is the bottleneck</li>
+<li><strong>Import</strong>: O(n * m) where n = rows, m = properties per device</li>
+<li><strong>Memory</strong>: Entire CSV loaded in memory for import (consider streaming for very large files)</li>
+<li><strong>Concurrent Imports</strong>: No explicit locking, potential for race conditions with concurrent imports</li>
+</ul>
+<h3 id="optimization-strategies">Optimization Strategies<a class="headerlink" href="#optimization-strategies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Export Pagination</strong>: Consider paginating IoT Hub queries for very large device counts (10,000+)</li>
+<li><strong>Import Batching</strong>: Batch device creation/update operations (currently one-by-one)</li>
+<li><strong>Streaming Parser</strong>: Use streaming CSV reader for imports &gt;100MB</li>
+<li><strong>Async Processing</strong>: Consider background job for large imports with status tracking</li>
+<li><strong>Caching</strong>: Cache tag/property schemas during import to avoid repeated queries</li>
+</ul>
+<h3 id="resource-limits">Resource Limits<a class="headerlink" href="#resource-limits" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>File Size</strong>: No explicit limit, constrained by ASP.NET Core multipart upload limits</li>
+<li><strong>Row Count</strong>: Tested up to ~5,000 rows, performance degrades beyond 10,000</li>
+<li><strong>Column Count</strong>: Dynamic based on tags/properties, typical max ~50 columns</li>
+</ul>
+<h3 id="monitoring-recommendations">Monitoring Recommendations<a class="headerlink" href="#monitoring-recommendations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Track export/import operation counts and durations</li>
+<li>Monitor CSV file sizes and row counts</li>
+<li>Alert on import error rates &gt;10%</li>
+<li>Track IoT Hub API usage during exports</li>
+<li>Monitor memory usage during large imports</li>
+</ul>
+<hr/>
+<h2 id="security-analysis">Security Analysis<a class="headerlink" href="#security-analysis" title="Permanent link">¶</a></h2>
+<h3 id="authentication-authorization">Authentication &amp; Authorization<a class="headerlink" href="#authentication-authorization" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Export</strong>: Requires <code>device:export</code> permission</li>
+<li><strong>Import</strong>: Requires <code>device:import</code> permission (separate from export)</li>
+<li><strong>Template Download</strong>: Uses <code>device:export</code> permission (may want separate permission)</li>
+<li>All operations require authentication via <code>[Authorize]</code> attribute</li>
+</ul>
+<h3 id="input-validation">Input Validation<a class="headerlink" href="#input-validation" title="Permanent link">¶</a></h3>
+<ul>
+<li>✅ CSV header validation (minimum columns)</li>
+<li>✅ Mandatory field validation (Id, Name, ModelId)</li>
+<li>✅ File type validation via content-type</li>
+<li>⚠️ No file size limit enforcement</li>
+<li>⚠️ No malicious content scanning (CSV formulas, macros)</li>
+</ul>
+<h3 id="data-exposure-risks">Data Exposure Risks<a class="headerlink" href="#data-exposure-risks" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Export</strong>: Exposes all device data including tags and properties</li>
+<li><strong>No Tenant Filtering</strong>: Exports all devices in portal (multi-tenancy concern)</li>
+<li><strong>Sensitive Data</strong>: May include credentials (AppKey, AppSKey, NwkSKey for LoRa devices)</li>
+<li><strong>No Encryption</strong>: CSV downloaded over HTTPS but stored unencrypted on client</li>
+</ul>
+<h3 id="security-recommendations">Security Recommendations<a class="headerlink" href="#security-recommendations" title="Permanent link">¶</a></h3>
+<ul>
+<li>✅ Proper authorization in place (separate export/import permissions)</li>
+<li>⚠️ <strong>Critical</strong>: Implement file size limits to prevent DoS</li>
+<li>⚠️ <strong>Critical</strong>: Sanitize CSV output to prevent CSV injection attacks</li>
+<li>⚠️ Add virus/malware scanning for uploaded files</li>
+<li>⚠️ Consider encrypting exported CSV files (password-protected ZIP)</li>
+<li>⚠️ Implement tenant-scoped exports for multi-tenant deployments</li>
+<li>⚠️ Add audit logging for all import/export operations</li>
+<li>⚠️ Mask or exclude sensitive fields (keys) from exports by default</li>
+<li>⚠️ Rate limit import/export operations per user</li>
+</ul>
+<hr/>
+<h2 id="configuration-deployment">Configuration &amp; Deployment<a class="headerlink" href="#configuration-deployment" title="Permanent link">¶</a></h2>
+<h3 id="configuration-requirements">Configuration Requirements<a class="headerlink" href="#configuration-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Authorization Policies</strong>: <code>device:export</code> and <code>device:import</code> must be defined</li>
+<li><strong>LoRaWAN Options</strong>: LoRaWANOptions.Enabled controls LoRa column inclusion</li>
+<li><strong>File Upload Limits</strong>: ASP.NET Core multipart upload limits (default 128MB)</li>
+</ul>
+<h3 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">¶</a></h3>
+<ul>
+<li>No direct environment variables</li>
+<li>LoRa enablement controlled via LoRaWANOptions configuration section</li>
+</ul>
+<h3 id="deployment-checklist">Deployment Checklist<a class="headerlink" href="#deployment-checklist" title="Permanent link">¶</a></h3>
+<ul>
+<li>✅ Verify CsvHelper NuGet package is included</li>
+<li>✅ Confirm <code>device:export</code> and <code>device:import</code> permissions exist in role definitions</li>
+<li>✅ Test export with representative device count</li>
+<li>✅ Test import with sample CSV files (valid and invalid)</li>
+<li>✅ Configure file upload size limits appropriately</li>
+<li>✅ Validate LoRa column behavior when LoRa is enabled/disabled</li>
+<li>✅ Test with non-ASCII device names and tags</li>
+</ul>
+<hr/>
+<h2 id="known-issues-limitations">Known Issues &amp; Limitations<a class="headerlink" href="#known-issues-limitations" title="Permanent link">¶</a></h2>
+<h3 id="current-limitations">Current Limitations<a class="headerlink" href="#current-limitations" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>No Streaming</strong>: Entire CSV loaded in memory (problematic for 10,000+ devices)</li>
+<li><strong>No Progress Tracking</strong>: Import is synchronous, no progress indication for large files</li>
+<li><strong>No Preview</strong>: Cannot preview import before committing changes</li>
+<li><strong>No Rollback</strong>: Failed imports leave partial state (some devices created, others failed)</li>
+<li><strong>No Duplicate Detection</strong>: Will update existing devices without warning</li>
+<li><strong>No Tenant Filtering</strong>: Exports all portal devices (multi-tenancy issue)</li>
+<li><strong>No Credential Masking</strong>: Sensitive keys exported in plaintext</li>
+<li><strong>No CSV Injection Protection</strong>: Vulnerable to CSV formula injection</li>
+</ol>
+<h3 id="technical-debt">Technical Debt<a class="headerlink" href="#technical-debt" title="Permanent link">¶</a></h3>
+<ul>
+<li>Synchronous import blocks request thread (use background jobs)</li>
+<li>No transaction support (partial imports leave inconsistent state)</li>
+<li>Missing file size validation and limits</li>
+<li>No audit logging for data export operations</li>
+<li>Tag/property schema cached per-import (repeated queries in loop)</li>
+</ul>
+<h3 id="future-considerations">Future Considerations<a class="headerlink" href="#future-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Implement streaming CSV processing for large files</li>
+<li>Add background job support with progress tracking (SignalR/WebSocket)</li>
+<li>Implement dry-run/preview mode for imports</li>
+<li>Add import transaction support or rollback mechanism</li>
+<li>Support incremental imports (only new/changed devices)</li>
+<li>Add export filtering (by model, tag, date range)</li>
+<li>Implement CSV template versioning</li>
+<li>Support alternative formats (JSON, Excel)</li>
+<li>Add scheduled exports (e.g., daily backup)</li>
+<li>Implement data encryption for exported files</li>
+<li>Add tenant-aware export/import for multi-tenancy</li>
+</ul>
+<hr/>
+<h2 id="related-features">Related Features<a class="headerlink" href="#related-features" title="Permanent link">¶</a></h2>
+<h3 id="directly-related">Directly Related<a class="headerlink" href="#directly-related" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device Management (target of import/export operations)</li>
+<li>Device Models (property schemas for import validation)</li>
+<li>Device Tags (dynamic columns in CSV)</li>
+<li>LoRaWAN Integration (LoRa-specific columns and validation)</li>
+</ul>
+<h3 id="dependent-features">Dependent Features<a class="headerlink" href="#dependent-features" title="Permanent link">¶</a></h3>
+<ul>
+<li>Role Management (defines export/import permissions)</li>
+<li>External Device Service (direct IoT Hub access)</li>
+</ul>
+<h3 id="integration-points">Integration Points<a class="headerlink" href="#integration-points" title="Permanent link">¶</a></h3>
+<ul>
+<li>Admin Dashboard (primary UI location)</li>
+<li>Device List (export action)</li>
+<li>Audit Logging (should track import/export operations)</li>
+</ul>
+<hr/>
+<h2 id="migration-compatibility">Migration &amp; Compatibility<a class="headerlink" href="#migration-compatibility" title="Permanent link">¶</a></h2>
+<h3 id="csv-format-versioning">CSV Format Versioning<a class="headerlink" href="#csv-format-versioning" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Current Format</strong>: Dynamic columns based on tags/properties</li>
+<li><strong>No Version Indicator</strong>: CSV lacks version field</li>
+<li><strong>Breaking Changes</strong>: Adding mandatory columns breaks old templates</li>
+</ul>
+<h3 id="import-compatibility">Import Compatibility<a class="headerlink" href="#import-compatibility" title="Permanent link">¶</a></h3>
+<ul>
+<li>Backward compatible: Extra columns ignored</li>
+<li>Forward compatible: Missing optional columns allowed (tags, properties)</li>
+<li>Breaking changes: Changing mandatory columns (Id, Name, ModelId)</li>
+</ul>
+<h3 id="export-compatibility">Export Compatibility<a class="headerlink" href="#export-compatibility" title="Permanent link">¶</a></h3>
+<ul>
+<li>New tags/properties added as new columns (non-breaking)</li>
+<li>Removing tags/properties removes columns (breaking for automation)</li>
+</ul>
+<h3 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Add CSV format version field (e.g., <code># Version: 1.0</code> comment)</li>
+<li>Document CSV schema in template file</li>
+<li>Provide migration guide for schema changes</li>
+</ul>
+<hr/>
+<h2 id="documentation-examples">Documentation &amp; Examples<a class="headerlink" href="#documentation-examples" title="Permanent link">¶</a></h2>
+<h3 id="api-documentation">API Documentation<a class="headerlink" href="#api-documentation" title="Permanent link">¶</a></h3>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">HTTP</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-11-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-11-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-11-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-11-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-11-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-11-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-11-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-11-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-11-10">10</a></span>
+<span class="normal"><a href="#__codelineno-11-11">11</a></span>
+<span class="normal"><a href="#__codelineno-11-12">12</a></span>
+<span class="normal"><a href="#__codelineno-11-13">13</a></span>
+<span class="normal"><a href="#__codelineno-11-14">14</a></span>
+<span class="normal"><a href="#__codelineno-11-15">15</a></span>
+<span class="normal"><a href="#__codelineno-11-16">16</a></span>
+<span class="normal"><a href="#__codelineno-11-17">17</a></span>
+<span class="normal"><a href="#__codelineno-11-18">18</a></span>
+<span class="normal"><a href="#__codelineno-11-19">19</a></span>
+<span class="normal"><a href="#__codelineno-11-20">20</a></span>
+<span class="normal"><a href="#__codelineno-11-21">21</a></span>
+<span class="normal"><a href="#__codelineno-11-22">22</a></span>
+<span class="normal"><a href="#__codelineno-11-23">23</a></span>
+<span class="normal"><a href="#__codelineno-11-24">24</a></span>
+<span class="normal"><a href="#__codelineno-11-25">25</a></span>
+<span class="normal"><a href="#__codelineno-11-26">26</a></span>
+<span class="normal"><a href="#__codelineno-11-27">27</a></span>
+<span class="normal"><a href="#__codelineno-11-28">28</a></span>
+<span class="normal"><a href="#__codelineno-11-29">29</a></span>
+<span class="normal"><a href="#__codelineno-11-30">30</a></span>
+<span class="normal"><a href="#__codelineno-11-31">31</a></span>
+<span class="normal"><a href="#__codelineno-11-32">32</a></span>
+<span class="normal"><a href="#__codelineno-11-33">33</a></span>
+<span class="normal"><a href="#__codelineno-11-34">34</a></span>
+<span class="normal"><a href="#__codelineno-11-35">35</a></span>
+<span class="normal"><a href="#__codelineno-11-36">36</a></span>
+<span class="normal"><a href="#__codelineno-11-37">37</a></span>
+<span class="normal"><a href="#__codelineno-11-38">38</a></span>
+<span class="normal"><a href="#__codelineno-11-39">39</a></span>
+<span class="normal"><a href="#__codelineno-11-40">40</a></span>
+<span class="normal"><a href="#__codelineno-11-41">41</a></span>
+<span class="normal"><a href="#__codelineno-11-42">42</a></span>
+<span class="normal"><a href="#__codelineno-11-43">43</a></span>
+<span class="normal"><a href="#__codelineno-11-44">44</a></span>
+<span class="normal"><a href="#__codelineno-11-45">45</a></span>
+<span class="normal"><a href="#__codelineno-11-46">46</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="err">POST /api/admin/devices/_export</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="err">Authorization: Bearer {token}</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="err">Response 200 OK:</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="err">Content-Type: text/csv</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="err">Content-Disposition: attachment; filename="Devices_202501271430.csv"</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="err">Id,Name,ModelId,TAG:environment,TAG:location,PROPERTY:reportingInterval</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="err">device001,Temperature Sensor 1,model-001,production,building-a,60</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="err">device002,Humidity Sensor 1,model-002,staging,building-b,30</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11"></a>
+<a id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="err">---</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13"></a>
+<a id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="err">POST /api/admin/devices/_template</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="err">Authorization: Bearer {token}</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16"></a>
+<a id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="err">Response 200 OK:</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="err">Content-Type: text/csv</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19"></a><span class="err">Content-Disposition: attachment; filename="Devices_Template.csv"</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20"></a>
+<a id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="err">Id,Name,ModelId,TAG:environment,TAG:location,PROPERTY:reportingInterval</span>
+<a id="__codelineno-11-22" name="__codelineno-11-22"></a>
+<a id="__codelineno-11-23" name="__codelineno-11-23"></a><span class="err">---</span>
+<a id="__codelineno-11-24" name="__codelineno-11-24"></a>
+<a id="__codelineno-11-25" name="__codelineno-11-25"></a><span class="err">POST /api/admin/devices/_import</span>
+<a id="__codelineno-11-26" name="__codelineno-11-26"></a><span class="err">Authorization: Bearer {token}</span>
+<a id="__codelineno-11-27" name="__codelineno-11-27"></a><span class="err">Content-Type: multipart/form-data</span>
+<a id="__codelineno-11-28" name="__codelineno-11-28"></a>
+<a id="__codelineno-11-29" name="__codelineno-11-29"></a><span class="err">Request Body:</span>
+<a id="__codelineno-11-30" name="__codelineno-11-30"></a><span class="err">--boundary</span>
+<a id="__codelineno-11-31" name="__codelineno-11-31"></a><span class="err">Content-Disposition: form-data; name="file"; filename="devices.csv"</span>
+<a id="__codelineno-11-32" name="__codelineno-11-32"></a><span class="err">Content-Type: text/csv</span>
+<a id="__codelineno-11-33" name="__codelineno-11-33"></a>
+<a id="__codelineno-11-34" name="__codelineno-11-34"></a><span class="err">Id,Name,ModelId,TAG:environment</span>
+<a id="__codelineno-11-35" name="__codelineno-11-35"></a><span class="err">device003,New Device,model-001,production</span>
+<a id="__codelineno-11-36" name="__codelineno-11-36"></a><span class="err">--boundary--</span>
+<a id="__codelineno-11-37" name="__codelineno-11-37"></a>
+<a id="__codelineno-11-38" name="__codelineno-11-38"></a><span class="err">Response 200 OK:</span>
+<a id="__codelineno-11-39" name="__codelineno-11-39"></a><span class="err">[</span>
+<a id="__codelineno-11-40" name="__codelineno-11-40"></a><span class="err">  {</span>
+<a id="__codelineno-11-41" name="__codelineno-11-41"></a><span class="err">    "lineNumber": 1,</span>
+<a id="__codelineno-11-42" name="__codelineno-11-42"></a><span class="err">    "deviceId": "device003",</span>
+<a id="__codelineno-11-43" name="__codelineno-11-43"></a><span class="err">    "message": "Device created successfully",</span>
+<a id="__codelineno-11-44" name="__codelineno-11-44"></a><span class="err">    "isErrorMessage": false</span>
+<a id="__codelineno-11-45" name="__codelineno-11-45"></a><span class="err">  }</span>
+<a id="__codelineno-11-46" name="__codelineno-11-46"></a><span class="err">]</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">¶</a></h3>
+<p><strong>Export Devices (JavaScript):</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">JavaScript</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-12-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-12-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-12-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-12-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-12-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-12-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-12-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-12-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-12-10">10</a></span>
+<span class="normal"><a href="#__codelineno-12-11">11</a></span>
+<span class="normal"><a href="#__codelineno-12-12">12</a></span>
+<span class="normal"><a href="#__codelineno-12-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">exportDevices</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/admin/devices/_export'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w">    </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'POST'</span><span class="p">,</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w">    </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'Authorization'</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">token</span><span class="si">}</span><span class="sb">`</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w">  </span><span class="p">});</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6"></a>
+<a id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">blob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">blob</span><span class="p">();</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">createObjectURL</span><span class="p">(</span><span class="nx">blob</span><span class="p">);</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'a'</span><span class="p">);</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="w">  </span><span class="nx">a</span><span class="p">.</span><span class="nx">href</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">url</span><span class="p">;</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11"></a><span class="w">  </span><span class="nx">a</span><span class="p">.</span><span class="nx">download</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`Devices_</span><span class="si">${</span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">().</span><span class="nx">toISOString</span><span class="p">()</span><span class="si">}</span><span class="sb">.csv`</span><span class="p">;</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="w">  </span><span class="nx">a</span><span class="p">.</span><span class="nx">click</span><span class="p">();</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p><strong>Import Devices (JavaScript):</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">JavaScript</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-13-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-13-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-13-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-13-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-13-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-13-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-13-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-13-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-13-10">10</a></span>
+<span class="normal"><a href="#__codelineno-13-11">11</a></span>
+<span class="normal"><a href="#__codelineno-13-12">12</a></span>
+<span class="normal"><a href="#__codelineno-13-13">13</a></span>
+<span class="normal"><a href="#__codelineno-13-14">14</a></span>
+<span class="normal"><a href="#__codelineno-13-15">15</a></span>
+<span class="normal"><a href="#__codelineno-13-16">16</a></span>
+<span class="normal"><a href="#__codelineno-13-17">17</a></span>
+<span class="normal"><a href="#__codelineno-13-18">18</a></span>
+<span class="normal"><a href="#__codelineno-13-19">19</a></span>
+<span class="normal"><a href="#__codelineno-13-20">20</a></span>
+<span class="normal"><a href="#__codelineno-13-21">21</a></span>
+<span class="normal"><a href="#__codelineno-13-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">importDevices</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">formData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">FormData</span><span class="p">();</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w">  </span><span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">'file'</span><span class="p">,</span><span class="w"> </span><span class="nx">file</span><span class="p">);</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4"></a>
+<a id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/admin/devices/_import'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w">    </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'POST'</span><span class="p">,</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w">    </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'Authorization'</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">token</span><span class="si">}</span><span class="sb">`</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">    </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nx">formData</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w">  </span><span class="p">});</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10"></a>
+<a id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">errors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">results</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">isErrorMessage</span><span class="p">);</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13"></a>
+<a id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">errors</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="sb">`Import completed with </span><span class="si">${</span><span class="nx">errors</span><span class="p">.</span><span class="nx">length</span><span class="si">}</span><span class="sb"> errors:`</span><span class="p">);</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="w">    </span><span class="nx">errors</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="w">      </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="sb">`Line </span><span class="si">${</span><span class="nx">e</span><span class="p">.</span><span class="nx">lineNumber</span><span class="si">}</span><span class="sb">: </span><span class="si">${</span><span class="nx">e</span><span class="p">.</span><span class="nx">message</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<a id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-13-19" name="__codelineno-13-19"></a><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-20" name="__codelineno-13-20"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'All devices imported successfully!'</span><span class="p">);</span>
+<a id="__codelineno-13-21" name="__codelineno-13-21"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-13-22" name="__codelineno-13-22"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p><strong>CSV Template Example:</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1">1</a></span>
+<span class="normal"><a href="#__codelineno-14-2">2</a></span>
+<span class="normal"><a href="#__codelineno-14-3">3</a></span>
+<span class="normal"><a href="#__codelineno-14-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a>Id,Name,ModelId,TAG:environment,TAG:location,PROPERTY:reportingInterval,PROPERTY:firmware
+<a id="__codelineno-14-2" name="__codelineno-14-2"></a>device001,Temp Sensor 1,model-temp-v1,production,warehouse-1,60,v2.1.0
+<a id="__codelineno-14-3" name="__codelineno-14-3"></a>device002,Humidity Sensor 1,model-hum-v1,staging,office-2,30,v1.5.2
+<a id="__codelineno-14-4" name="__codelineno-14-4"></a>lora001,LoRa Device 1,model-lora-v1,production,field-site-1,300,v3.0.0
+</code></pre></div></td></tr></table></div>
+<hr/>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
+<h3 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device Management Feature Analysis</li>
+<li>Device Models Feature Analysis</li>
+<li>LoRaWAN Integration Feature Analysis</li>
+<li>Authorization Guide: Export/import permissions</li>
+<li>CSV Template Documentation</li>
+</ul>
+<h3 id="external-resources">External Resources<a class="headerlink" href="#external-resources" title="Permanent link">¶</a></h3>
+<ul>
+<li>CsvHelper Documentation: <a href="https://joshclose.github.io/CsvHelper/">https://joshclose.github.io/CsvHelper/</a></li>
+<li>Azure IoT Hub Device Twin: <a href="https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins">https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins</a></li>
+<li>CSV Format Specification: RFC 4180</li>
+<li>CSV Injection Prevention: OWASP recommendations</li>
+</ul>
+<hr/>
+<p><strong>Last Updated</strong>: 2025-01-27<br/>
+<strong>Analyzed By</strong>: GitHub Copilot<br/>
+<strong>Next Review</strong>: When adding new import/export formats or implementing streaming</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

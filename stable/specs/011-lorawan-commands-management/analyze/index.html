@@ -1,0 +1,2207 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature: LoRaWAN Commands Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-lorawan-commands-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature: LoRaWAN Commands Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#description">
+<span class="md-ellipsis">
+      Description
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-locations">
+<span class="md-ellipsis">
+      Code Locations
+    </span>
+</a>
+<nav aria-label="Code Locations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entry-points-endpoints">
+<span class="md-ellipsis">
+      Entry Points / Endpoints
+    </span>
+</a>
+<nav aria-label="Entry Points / Endpoints" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lorawan-commands-controller">
+<span class="md-ellipsis">
+      LoRaWAN Commands Controller
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lorawan-devices-controller-command-execution">
+<span class="md-ellipsis">
+      LoRaWAN Devices Controller - Command Execution
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-logic">
+<span class="md-ellipsis">
+      Business Logic
+    </span>
+</a>
+<nav aria-label="Business Logic" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lorawan-command-service">
+<span class="md-ellipsis">
+      LoRaWAN Command Service
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lorawan-management-service-command-execution">
+<span class="md-ellipsis">
+      LoRaWAN Management Service - Command Execution
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#planning-command-job-scheduled-execution">
+<span class="md-ellipsis">
+      Planning Command Job - Scheduled Execution
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-access">
+<span class="md-ellipsis">
+      Data Access
+    </span>
+</a>
+<nav aria-label="Data Access" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-command-repository">
+<span class="md-ellipsis">
+      Device Model Command Repository
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-command-entity">
+<span class="md-ellipsis">
+      Device Model Command Entity
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-transfer-objects-dtos">
+<span class="md-ellipsis">
+      Data Transfer Objects (DTOs)
+    </span>
+</a>
+<nav aria-label="Data Transfer Objects (DTOs)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-command-dto">
+<span class="md-ellipsis">
+      Device Model Command DTO
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lora-cloud-to-device-message">
+<span class="md-ellipsis">
+      LoRa Cloud to Device Message
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#client-layer">
+<span class="md-ellipsis">
+      Client Layer
+    </span>
+</a>
+<nav aria-label="Client Layer" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lorawan-device-client-service">
+<span class="md-ellipsis">
+      LoRaWAN Device Client Service
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-interface-components">
+<span class="md-ellipsis">
+      User Interface Components
+    </span>
+</a>
+<nav aria-label="User Interface Components" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-command-management-ui">
+<span class="md-ellipsis">
+      Device Model Command Management UI
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-command-execution-ui">
+<span class="md-ellipsis">
+      Device Command Execution UI
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#command-validator">
+<span class="md-ellipsis">
+      Command Validator
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#object-mapping">
+<span class="md-ellipsis">
+      Object Mapping
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature-workflow">
+<span class="md-ellipsis">
+      Feature Workflow
+    </span>
+</a>
+<nav aria-label="Feature Workflow" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#command-definition-workflow">
+<span class="md-ellipsis">
+      Command Definition Workflow
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#command-execution-workflow">
+<span class="md-ellipsis">
+      Command Execution Workflow
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scheduled-command-workflow">
+<span class="md-ellipsis">
+      Scheduled Command Workflow
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-points">
+<span class="md-ellipsis">
+      Integration Points
+    </span>
+</a>
+<nav aria-label="Integration Points" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lora-network-server-azure-functions">
+<span class="md-ellipsis">
+      LoRa Network Server (Azure Functions)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-management">
+<span class="md-ellipsis">
+      Device Model Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-management">
+<span class="md-ellipsis">
+      Device Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization">
+<span class="md-ellipsis">
+      Authorization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scheduling-system-quartznet">
+<span class="md-ellipsis">
+      Scheduling System (Quartz.NET)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-validation">
+<span class="md-ellipsis">
+      Security &amp; Validation
+    </span>
+</a>
+<nav aria-label="Security &amp; Validation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#input-validation">
+<span class="md-ellipsis">
+      Input Validation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization-controls">
+<span class="md-ellipsis">
+      Authorization Controls
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#error-handling">
+<span class="md-ellipsis">
+      Error Handling
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-integrity">
+<span class="md-ellipsis">
+      Data Integrity
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testing-approach">
+<span class="md-ellipsis">
+      Testing Approach
+    </span>
+</a>
+<nav aria-label="Testing Approach" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#unit-tests">
+<span class="md-ellipsis">
+      Unit Tests
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-testing-considerations">
+<span class="md-ellipsis">
+      Integration Testing Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#test-data-requirements">
+<span class="md-ellipsis">
+      Test Data Requirements
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+<nav aria-label="Dependencies" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-services">
+<span class="md-ellipsis">
+      External Services
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#internal-dependencies">
+<span class="md-ellipsis">
+      Internal Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#nuget-packages">
+<span class="md-ellipsis">
+      NuGet Packages
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration">
+<span class="md-ellipsis">
+      Configuration
+    </span>
+</a>
+<nav aria-label="Configuration" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#app-settings">
+<span class="md-ellipsis">
+      App Settings
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature-flags">
+<span class="md-ellipsis">
+      Feature Flags
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scheduling-configuration">
+<span class="md-ellipsis">
+      Scheduling Configuration
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-limitations-considerations">
+<span class="md-ellipsis">
+      Known Limitations &amp; Considerations
+    </span>
+</a>
+<nav aria-label="Known Limitations &amp; Considerations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-limitations">
+<span class="md-ellipsis">
+      Functional Limitations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#technical-constraints">
+<span class="md-ellipsis">
+      Technical Constraints
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#operational-considerations">
+<span class="md-ellipsis">
+      Operational Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-considerations">
+<span class="md-ellipsis">
+      Performance Considerations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-enhancement-opportunities">
+<span class="md-ellipsis">
+      Future Enhancement Opportunities
+    </span>
+</a>
+<nav aria-label="Future Enhancement Opportunities" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature-enhancements">
+<span class="md-ellipsis">
+      Feature Enhancements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#usability-improvements">
+<span class="md-ellipsis">
+      Usability Improvements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-enhancements">
+<span class="md-ellipsis">
+      Integration Enhancements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-optimizations">
+<span class="md-ellipsis">
+      Performance Optimizations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#monitoring-observability">
+<span class="md-ellipsis">
+      Monitoring &amp; Observability
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-value-summary">
+<span class="md-ellipsis">
+      Business Value Summary
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-lorawan-commands-management">Feature: LoRaWAN Commands Management<a class="headerlink" href="#feature-lorawan-commands-management" title="Permanent link">¶</a></h1>
+<p><strong>Category</strong>: LoRaWAN Device Management<br/>
+<strong>Status</strong>: Analyzed  </p>
+<hr/>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">¶</a></h2>
+<p>The LoRaWAN Commands Management feature provides comprehensive Cloud-to-Device (C2D) command execution capabilities for LoRaWAN devices. This feature enables administrators to define, manage, and execute commands on LoRaWAN devices remotely through the portal. Commands are defined at the device model level and can be executed on individual devices that use those models. The feature includes:</p>
+<ul>
+<li>Command definition and management for LoRaWAN device models</li>
+<li>Support for hexadecimal frame payloads with validation (0-255 characters)</li>
+<li>LoRaWAN-specific command parameters: port (1-223), confirmation mode, and frame data</li>
+<li>CRUD operations for commands associated with device models</li>
+<li>On-demand command execution from the device details page</li>
+<li>Built-in command protection (built-in commands cannot be modified or deleted)</li>
+<li>Command validation with port range checking and hexadecimal format enforcement</li>
+<li>Integration with LoRa Network Server through Azure Functions for command delivery</li>
+<li>Base64 payload encoding for transmission</li>
+<li>Support for confirmed/unconfirmed downlink messages</li>
+<li>Command scheduling through planning/scheduling jobs for automated execution</li>
+<li>Command execution only when downlink is enabled on the device model</li>
+<li>Visual command management UI with inline editing and execution controls</li>
+</ul>
+<p>This feature provides significant business value by:</p>
+<ul>
+<li>Enabling remote device control and configuration changes</li>
+<li>Supporting automated device management through scheduled commands</li>
+<li>Reducing operational costs by eliminating manual device access</li>
+<li>Providing standardized command templates at the model level</li>
+<li>Ensuring reliable command delivery through confirmation modes</li>
+<li>Supporting compliance requirements for device configuration management</li>
+</ul>
+<hr/>
+<h2 id="code-locations">Code Locations<a class="headerlink" href="#code-locations" title="Permanent link">¶</a></h2>
+<h3 id="entry-points-endpoints">Entry Points / Endpoints<a class="headerlink" href="#entry-points-endpoints" title="Permanent link">¶</a></h3>
+<h4 id="lorawan-commands-controller">LoRaWAN Commands Controller<a class="headerlink" href="#lorawan-commands-controller" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANCommandsController.cs</code> (Lines 1-65)</li>
+<li>
+<p><strong>Snippet</strong>: Main REST API controller for managing device model commands</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">[Authorize]</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="na">[ApiController]</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="na">[ApiVersion("1.0")]</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="na">[Route("api/lorawan/models/{id}/commands")]</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="na">[ApiExplorerSettings(GroupName = "LoRa WAN")]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="na">[LoRaFeatureActiveFilter]</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">LoRaWANCommandsController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="p">{</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ILoRaWANCommandService</span><span class="w"> </span><span class="n">loRaWANCommandService</span><span class="p">;</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="c1">// POST api/lorawan/models/{id}/commands</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="na">[HttpPost(Name = "POST Set device model commands")]</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">    </span><span class="na">[Authorize("model:write")]</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Post</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">DeviceModelCommandDto</span><span class="p">[]</span><span class="w"> </span><span class="n">commands</span><span class="p">)</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">        </span><span class="c1">// Updates all commands for a device model</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">loRaWANCommandService</span><span class="p">.</span><span class="n">PostDeviceModelCommands</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">commands</span><span class="p">);</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">Ok</span><span class="p">();</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">    </span><span class="c1">// GET api/lorawan/models/{id}/commands</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="na">[HttpGet(Name = "GET Device model commands")]</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="na">[Authorize("model:read")]</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">DeviceModelCommandDto</span><span class="p">[]</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Get</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">        </span><span class="c1">// Retrieves all commands for a device model</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">commands</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">loRaWANCommandService</span><span class="p">.</span><span class="n">GetDeviceModelCommandsFromModel</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">Ok</span><span class="p">(</span><span class="n">commands</span><span class="p">);</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h4 id="lorawan-devices-controller-command-execution">LoRaWAN Devices Controller - Command Execution<a class="headerlink" href="#lorawan-devices-controller-command-execution" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANDevicesController.cs</code> (Lines 104-111)</li>
+<li>
+<p><strong>Snippet</strong>: Endpoint for executing commands on devices</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span>
+<span class="normal"><a href="#__codelineno-1-7">7</a></span>
+<span class="normal"><a href="#__codelineno-1-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1">// POST api/lorawan/devices/{deviceId}/_command/{commandId}</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="na">[HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="na">[Authorize("device:execute")]</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteCommand</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">commandId</span><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="p">{</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">loRaWanCommandService</span><span class="p">.</span><span class="n">ExecuteLoRaWANCommand</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="n">commandId</span><span class="p">);</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nf">Ok</span><span class="p">();</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Executes a specific command on a LoRaWAN device</p>
+</li>
+<li>Requires device:execute permission</li>
+<li>Command ID must correspond to a valid command for the device's model</li>
+</ul>
+<h3 id="business-logic">Business Logic<a class="headerlink" href="#business-logic" title="Permanent link">¶</a></h3>
+<h4 id="lorawan-command-service">LoRaWAN Command Service<a class="headerlink" href="#lorawan-command-service" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/ILoRaWANCommandService.cs</code> (Lines 1-12)</li>
+<li>
+<p><strong>Snippet</strong>: Service interface defining command operations</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">ILoRaWANCommandService</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">DeviceModelCommandDto</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetDeviceModelCommandsFromModel</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">PostDeviceModelCommands</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">DeviceModelCommandDto</span><span class="p">[]</span><span class="w"> </span><span class="n">commands</span><span class="p">);</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteLoRaWANCommand</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">commandId</span><span class="p">);</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Server/Services/LoRaWANCommandService.cs</code> (Lines 1-86)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Concrete implementation of command service</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span>
+<span class="normal"><a href="#__codelineno-3-23">23</a></span>
+<span class="normal"><a href="#__codelineno-3-24">24</a></span>
+<span class="normal"><a href="#__codelineno-3-25">25</a></span>
+<span class="normal"><a href="#__codelineno-3-26">26</a></span>
+<span class="normal"><a href="#__codelineno-3-27">27</a></span>
+<span class="normal"><a href="#__codelineno-3-28">28</a></span>
+<span class="normal"><a href="#__codelineno-3-29">29</a></span>
+<span class="normal"><a href="#__codelineno-3-30">30</a></span>
+<span class="normal"><a href="#__codelineno-3-31">31</a></span>
+<span class="normal"><a href="#__codelineno-3-32">32</a></span>
+<span class="normal"><a href="#__codelineno-3-33">33</a></span>
+<span class="normal"><a href="#__codelineno-3-34">34</a></span>
+<span class="normal"><a href="#__codelineno-3-35">35</a></span>
+<span class="normal"><a href="#__codelineno-3-36">36</a></span>
+<span class="normal"><a href="#__codelineno-3-37">37</a></span>
+<span class="normal"><a href="#__codelineno-3-38">38</a></span>
+<span class="normal"><a href="#__codelineno-3-39">39</a></span>
+<span class="normal"><a href="#__codelineno-3-40">40</a></span>
+<span class="normal"><a href="#__codelineno-3-41">41</a></span>
+<span class="normal"><a href="#__codelineno-3-42">42</a></span>
+<span class="normal"><a href="#__codelineno-3-43">43</a></span>
+<span class="normal"><a href="#__codelineno-3-44">44</a></span>
+<span class="normal"><a href="#__codelineno-3-45">45</a></span>
+<span class="normal"><a href="#__codelineno-3-46">46</a></span>
+<span class="normal"><a href="#__codelineno-3-47">47</a></span>
+<span class="normal"><a href="#__codelineno-3-48">48</a></span>
+<span class="normal"><a href="#__codelineno-3-49">49</a></span>
+<span class="normal"><a href="#__codelineno-3-50">50</a></span>
+<span class="normal"><a href="#__codelineno-3-51">51</a></span>
+<span class="normal"><a href="#__codelineno-3-52">52</a></span>
+<span class="normal"><a href="#__codelineno-3-53">53</a></span>
+<span class="normal"><a href="#__codelineno-3-54">54</a></span>
+<span class="normal"><a href="#__codelineno-3-55">55</a></span>
+<span class="normal"><a href="#__codelineno-3-56">56</a></span>
+<span class="normal"><a href="#__codelineno-3-57">57</a></span>
+<span class="normal"><a href="#__codelineno-3-58">58</a></span>
+<span class="normal"><a href="#__codelineno-3-59">59</a></span>
+<span class="normal"><a href="#__codelineno-3-60">60</a></span>
+<span class="normal"><a href="#__codelineno-3-61">61</a></span>
+<span class="normal"><a href="#__codelineno-3-62">62</a></span>
+<span class="normal"><a href="#__codelineno-3-63">63</a></span>
+<span class="normal"><a href="#__codelineno-3-64">64</a></span>
+<span class="normal"><a href="#__codelineno-3-65">65</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">LoRaWANCommandService</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ILoRaWANCommandService</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IMapper</span><span class="w"> </span><span class="n">mapper</span><span class="p">;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IUnitOfWork</span><span class="w"> </span><span class="n">unitOfWork</span><span class="p">;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDeviceModelCommandRepository</span><span class="w"> </span><span class="n">deviceModelCommandRepository</span><span class="p">;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDeviceModelRepository</span><span class="w"> </span><span class="n">deviceModelRepository</span><span class="p">;</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ILoRaWanManagementService</span><span class="w"> </span><span class="n">loRaWanManagementService</span><span class="p">;</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ILogger</span><span class="o">&lt;</span><span class="n">LoRaWANCommandService</span><span class="o">&gt;</span><span class="w"> </span><span class="n">logger</span><span class="p">;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="c1">// Saves commands for a device model</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">PostDeviceModelCommands</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">DeviceModelCommandDto</span><span class="p">[]</span><span class="w"> </span><span class="n">commands</span><span class="p">)</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">        </span><span class="c1">// Validates device model exists</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">deviceModelEntity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">deviceModelRepository</span><span class="p">.</span><span class="n">GetByIdAsync</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">deviceModelEntity</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">ResourceNotFoundException</span><span class="p">(</span><span class="s">$"The device model {id} doesn't exist"</span><span class="p">);</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17"></a>
+<a id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">        </span><span class="c1">// Deletes existing commands</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">existingDeviceModelCommands</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">GetDeviceModelCommandsFromModel</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">deviceModelCommand</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">existingDeviceModelCommands</span><span class="p">)</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">deviceModelCommandRepository</span><span class="p">.</span><span class="n">Delete</span><span class="p">(</span><span class="n">deviceModelCommand</span><span class="p">.</span><span class="n">Id</span><span class="p">);</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22"></a>
+<a id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">        </span><span class="c1">// Inserts new commands</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">deviceModelCommand</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">commands</span><span class="p">)</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">deviceModelCommandEntity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">mapper</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">DeviceModelCommand</span><span class="o">&gt;</span><span class="p">(</span><span class="n">deviceModelCommand</span><span class="p">);</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">            </span><span class="n">deviceModelCommandEntity</span><span class="p">.</span><span class="n">DeviceModelId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w">            </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">deviceModelCommandRepository</span><span class="p">.</span><span class="n">InsertAsync</span><span class="p">(</span><span class="n">deviceModelCommandEntity</span><span class="p">);</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30"></a>
+<a id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">unitOfWork</span><span class="p">.</span><span class="n">SaveAsync</span><span class="p">();</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-33" name="__codelineno-3-33"></a>
+<a id="__codelineno-3-34" name="__codelineno-3-34"></a><span class="w">    </span><span class="c1">// Retrieves all commands for a device model</span>
+<a id="__codelineno-3-35" name="__codelineno-3-35"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">DeviceModelCommandDto</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetDeviceModelCommandsFromModel</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<a id="__codelineno-3-36" name="__codelineno-3-36"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-3-37" name="__codelineno-3-37"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Run</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">deviceModelCommandRepository</span><span class="p">.</span><span class="n">GetAll</span><span class="p">()</span>
+<a id="__codelineno-3-38" name="__codelineno-3-38"></a><span class="w">            </span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">command</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">command</span><span class="p">.</span><span class="n">DeviceModelId</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">Ordinal</span><span class="p">))</span>
+<a id="__codelineno-3-39" name="__codelineno-3-39"></a><span class="w">            </span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">command</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">mapper</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">DeviceModelCommandDto</span><span class="o">&gt;</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+<a id="__codelineno-3-40" name="__codelineno-3-40"></a><span class="w">            </span><span class="p">.</span><span class="n">ToArray</span><span class="p">());</span>
+<a id="__codelineno-3-41" name="__codelineno-3-41"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-42" name="__codelineno-3-42"></a>
+<a id="__codelineno-3-43" name="__codelineno-3-43"></a><span class="w">    </span><span class="c1">// Executes a command on a device</span>
+<a id="__codelineno-3-44" name="__codelineno-3-44"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteLoRaWANCommand</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">commandId</span><span class="p">)</span>
+<a id="__codelineno-3-45" name="__codelineno-3-45"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-3-46" name="__codelineno-3-46"></a><span class="w">        </span><span class="c1">// Retrieves command from database</span>
+<a id="__codelineno-3-47" name="__codelineno-3-47"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">commandEntity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">deviceModelCommandRepository</span><span class="p">.</span><span class="n">GetByIdAsync</span><span class="p">(</span><span class="n">commandId</span><span class="p">);</span>
+<a id="__codelineno-3-48" name="__codelineno-3-48"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">commandEntity</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<a id="__codelineno-3-49" name="__codelineno-3-49"></a><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">ResourceNotFoundException</span><span class="p">(</span><span class="s">$"The LoRaWAN command {commandId} for the device {deviceId} cannot be found"</span><span class="p">);</span>
+<a id="__codelineno-3-50" name="__codelineno-3-50"></a>
+<a id="__codelineno-3-51" name="__codelineno-3-51"></a><span class="w">        </span><span class="c1">// Sends command to device via LoRaWan Management Service</span>
+<a id="__codelineno-3-52" name="__codelineno-3-52"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">loRaWanManagementService</span><span class="p">.</span><span class="n">ExecuteLoRaDeviceMessage</span><span class="p">(</span>
+<a id="__codelineno-3-53" name="__codelineno-3-53"></a><span class="w">            </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span>
+<a id="__codelineno-3-54" name="__codelineno-3-54"></a><span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">mapper</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">DeviceModelCommandDto</span><span class="o">&gt;</span><span class="p">(</span><span class="n">commandEntity</span><span class="p">));</span>
+<a id="__codelineno-3-55" name="__codelineno-3-55"></a>
+<a id="__codelineno-3-56" name="__codelineno-3-56"></a><span class="w">        </span><span class="c1">// Handles response</span>
+<a id="__codelineno-3-57" name="__codelineno-3-57"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccessStatusCode</span><span class="p">)</span>
+<a id="__codelineno-3-58" name="__codelineno-3-58"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-3-59" name="__codelineno-3-59"></a><span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="s">$"{deviceId} - Execute command on device failed\n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}"</span><span class="p">);</span>
+<a id="__codelineno-3-60" name="__codelineno-3-60"></a><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InternalServerErrorException</span><span class="p">(</span><span class="s">$"Something went wrong when executing the command {commandEntity.Name}."</span><span class="p">);</span>
+<a id="__codelineno-3-61" name="__codelineno-3-61"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-3-62" name="__codelineno-3-62"></a>
+<a id="__codelineno-3-63" name="__codelineno-3-63"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">$"{deviceId} - Execute command: {(int)result.StatusCode} - {result.ReasonPhrase}"</span><span class="p">);</span>
+<a id="__codelineno-3-64" name="__codelineno-3-64"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-65" name="__codelineno-3-65"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h4 id="lorawan-management-service-command-execution">LoRaWAN Management Service - Command Execution<a class="headerlink" href="#lorawan-management-service-command-execution" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/ILoRaWanManagementService.cs</code> (Lines 1-12)</li>
+<li>
+<p><strong>Snippet</strong>: Interface for LoRa network operations</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span>
+<span class="normal"><a href="#__codelineno-4-5">5</a></span>
+<span class="normal"><a href="#__codelineno-4-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">ILoRaWanManagementService</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="p">{</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">HttpResponseMessage</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CheckAzureFunctionReturn</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">HttpResponseMessage</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteLoRaDeviceMessage</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="n">DeviceModelCommandDto</span><span class="w"> </span><span class="n">commandDto</span><span class="p">);</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">RouterConfig</span><span class="o">?&gt;</span><span class="w"> </span><span class="n">GetRouterConfig</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">loRaRegion</span><span class="p">);</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Infrastructure/Services/LoRaWanManagementService.cs</code> (Lines 20-45)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Implementation that sends commands to LoRa Network Server</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span>
+<span class="normal"><a href="#__codelineno-5-12">12</a></span>
+<span class="normal"><a href="#__codelineno-5-13">13</a></span>
+<span class="normal"><a href="#__codelineno-5-14">14</a></span>
+<span class="normal"><a href="#__codelineno-5-15">15</a></span>
+<span class="normal"><a href="#__codelineno-5-16">16</a></span>
+<span class="normal"><a href="#__codelineno-5-17">17</a></span>
+<span class="normal"><a href="#__codelineno-5-18">18</a></span>
+<span class="normal"><a href="#__codelineno-5-19">19</a></span>
+<span class="normal"><a href="#__codelineno-5-20">20</a></span>
+<span class="normal"><a href="#__codelineno-5-21">21</a></span>
+<span class="normal"><a href="#__codelineno-5-22">22</a></span>
+<span class="normal"><a href="#__codelineno-5-23">23</a></span>
+<span class="normal"><a href="#__codelineno-5-24">24</a></span>
+<span class="normal"><a href="#__codelineno-5-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">HttpResponseMessage</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteLoRaDeviceMessage</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="n">DeviceModelCommandDto</span><span class="w"> </span><span class="n">commandDto</span><span class="p">)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="n">ArgumentNullException</span><span class="p">.</span><span class="n">ThrowIfNull</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="k">nameof</span><span class="p">(</span><span class="n">deviceId</span><span class="p">));</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">    </span><span class="n">ArgumentNullException</span><span class="p">.</span><span class="n">ThrowIfNull</span><span class="p">(</span><span class="n">commandDto</span><span class="p">,</span><span class="w"> </span><span class="k">nameof</span><span class="p">(</span><span class="n">commandDto</span><span class="p">));</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">    </span><span class="c1">// Convert hex frame to byte array</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">hexFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enumerable</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">commandDto</span><span class="p">.</span><span class="n">Frame</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">                        </span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Convert</span><span class="p">.</span><span class="n">ToByte</span><span class="p">(</span><span class="n">commandDto</span><span class="p">.</span><span class="n">Frame</span><span class="p">.</span><span class="n">Substring</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="mi">16</span><span class="p">))</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">                        </span><span class="p">.</span><span class="n">ToArray</span><span class="p">();</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10"></a>
+<a id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="c1">// Convert byte array to base64 string</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">rawPayload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Convert</span><span class="p">.</span><span class="n">ToBase64String</span><span class="p">(</span><span class="n">hexFrame</span><span class="p">);</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">    </span><span class="c1">// Prepare C2D message</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">LoRaCloudToDeviceMessage</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w">        </span><span class="n">RawPayload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rawPayload</span><span class="p">,</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w">        </span><span class="n">Fport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">commandDto</span><span class="p">.</span><span class="n">Port</span><span class="p">,</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w">        </span><span class="n">Confirmed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">commandDto</span><span class="p">.</span><span class="n">Confirmed</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21"></a>
+<a id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">commandContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JsonContent</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">body</span><span class="p">);</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w">    </span><span class="c1">// Sends HTTP request to LoRa Network Server (Azure Functions)</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="w">    </span><span class="c1">// Returns HTTP response</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Converts hexadecimal frame to base64 payload</p>
+</li>
+<li>Creates LoRa C2D message with port and confirmation settings</li>
+<li>Communicates with Azure Functions for LoRa Network Server integration</li>
+</ul>
+<h4 id="planning-command-job-scheduled-execution">Planning Command Job - Scheduled Execution<a class="headerlink" href="#planning-command-job-scheduled-execution" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Infrastructure/Jobs/SendPlanningCommandJob.cs</code> (Lines 1-80+)</li>
+<li>
+<p><strong>Snippet</strong>: Background job for scheduled command execution</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-6-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-6-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-6-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-6-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-6-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-6-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-6-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-6-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-6-10">10</a></span>
+<span class="normal"><a href="#__codelineno-6-11">11</a></span>
+<span class="normal"><a href="#__codelineno-6-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="na">[DisallowConcurrentExecution]</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">SendPlanningCommandJob</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IJob</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="p">{</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ILoRaWANCommandService</span><span class="w"> </span><span class="n">loRaWANCommandService</span><span class="p">;</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">Execute</span><span class="p">(</span><span class="n">IJobExecutionContext</span><span class="w"> </span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">        </span><span class="c1">// Executes scheduled commands based on planning configuration</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">        </span><span class="c1">// Retrieves devices, layers, plannings, and schedules</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w">        </span><span class="c1">// Executes commands at configured times</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Uses Quartz.NET for job scheduling</p>
+</li>
+<li>Executes commands based on planning schedules</li>
+<li>Supports daily/weekly command scheduling</li>
+<li>Prevents concurrent execution with DisallowConcurrentExecution attribute</li>
+</ul>
+<h3 id="data-access">Data Access<a class="headerlink" href="#data-access" title="Permanent link">¶</a></h3>
+<h4 id="device-model-command-repository">Device Model Command Repository<a class="headerlink" href="#device-model-command-repository" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IDeviceModelCommandRepository.cs</code> (Lines 1-6)</li>
+<li>
+<p><strong>Snippet</strong>: Repository interface for command persistence</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span>
+<span class="normal"><a href="#__codelineno-7-3">3</a></span>
+<span class="normal"><a href="#__codelineno-7-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IDeviceModelCommandRepository</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IRepository</span><span class="o">&lt;</span><span class="n">DeviceModelCommand</span><span class="o">&gt;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="p">{</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">    </span><span class="c1">// Inherits standard CRUD operations from IRepository</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Infrastructure/Repositories/DeviceModelCommandRepository.cs</code></p>
+</li>
+<li>Concrete Entity Framework implementation</li>
+<li>Provides CRUD operations for DeviceModelCommand entities</li>
+<li>Handles database queries and updates</li>
+</ul>
+<h4 id="device-model-command-entity">Device Model Command Entity<a class="headerlink" href="#device-model-command-entity" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Entities/DeviceModelCommand.cs</code> (Lines 1-20)</li>
+<li>
+<p><strong>Snippet</strong>: Domain entity representing a command</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span>
+<span class="normal"><a href="#__codelineno-8-3">3</a></span>
+<span class="normal"><a href="#__codelineno-8-4">4</a></span>
+<span class="normal"><a href="#__codelineno-8-5">5</a></span>
+<span class="normal"><a href="#__codelineno-8-6">6</a></span>
+<span class="normal"><a href="#__codelineno-8-7">7</a></span>
+<span class="normal"><a href="#__codelineno-8-8">8</a></span>
+<span class="normal"><a href="#__codelineno-8-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceModelCommand</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EntityBase</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="p">{</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Frame</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span><span class="w">          </span><span class="c1">// Hex payload</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">Confirmed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">                     </span><span class="c1">// Requires acknowledgment</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Port</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">                      </span><span class="c1">// LoRaWAN port (1-223)</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsBuiltin</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">                     </span><span class="c1">// Protected from editing</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DeviceModelId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span><span class="w">   </span><span class="c1">// Foreign key</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Inherits Id from EntityBase</p>
+</li>
+<li>Frame contains hexadecimal string for payload</li>
+<li>Port must be between 1 and 223 (LoRaWAN standard)</li>
+<li>IsBuiltin flag prevents modification of system commands</li>
+</ul>
+<h3 id="data-transfer-objects-dtos">Data Transfer Objects (DTOs)<a class="headerlink" href="#data-transfer-objects-dtos" title="Permanent link">¶</a></h3>
+<h4 id="device-model-command-dto">Device Model Command DTO<a class="headerlink" href="#device-model-command-dto" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/DeviceModelCommandDto.cs</code> (Lines 1-47)</li>
+<li>
+<p><strong>Snippet</strong>: DTO for command data transfer and validation</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-9-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-9-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-9-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-9-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-9-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-9-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-9-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-9-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-9-10">10</a></span>
+<span class="normal"><a href="#__codelineno-9-11">11</a></span>
+<span class="normal"><a href="#__codelineno-9-12">12</a></span>
+<span class="normal"><a href="#__codelineno-9-13">13</a></span>
+<span class="normal"><a href="#__codelineno-9-14">14</a></span>
+<span class="normal"><a href="#__codelineno-9-15">15</a></span>
+<span class="normal"><a href="#__codelineno-9-16">16</a></span>
+<span class="normal"><a href="#__codelineno-9-17">17</a></span>
+<span class="normal"><a href="#__codelineno-9-18">18</a></span>
+<span class="normal"><a href="#__codelineno-9-19">19</a></span>
+<span class="normal"><a href="#__codelineno-9-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeviceModelCommandDto</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="p">{</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The command name is required.")]</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7"></a>
+<a id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The frame is required.")]</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">    </span><span class="na">[MaxLength(255, ErrorMessage = "The frame should be up to 255 characters long.")]</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="w">    </span><span class="na">[RegularExpression("^[0-9a-fA-F]</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">}</span><span class="s">$", ErrorMessage = "</span><span class="n">The</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">contain</span><span class="w"> </span><span class="n">hexadecimal</span><span class="w"> </span><span class="n">characters</span><span class="s">")]</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Frame</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12"></a>
+<a id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">Confirmed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14"></a>
+<a id="__codelineno-9-15" name="__codelineno-9-15"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The port number is required.")]</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="w">    </span><span class="na">[Range(1, 223, ErrorMessage = "The port number should be between 1 and 223.")]</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Port</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18"></a>
+<a id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsBuiltin</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Includes data annotations for validation</p>
+</li>
+<li>Frame validated as hexadecimal only</li>
+<li>Port restricted to valid LoRaWAN range (1-223)</li>
+<li>Default port value is 1</li>
+</ul>
+<h4 id="lora-cloud-to-device-message">LoRa Cloud to Device Message<a class="headerlink" href="#lora-cloud-to-device-message" title="Permanent link">¶</a></h4>
+<ul>
+<li>Used internally for Azure Functions communication</li>
+<li><strong>Properties</strong>:<ul>
+<li>RawPayload: Base64-encoded command data</li>
+<li>Fport: LoRaWAN port number</li>
+<li>Confirmed: Boolean for message acknowledgment requirement</li>
+</ul>
+</li>
+</ul>
+<h3 id="client-layer">Client Layer<a class="headerlink" href="#client-layer" title="Permanent link">¶</a></h3>
+<h4 id="lorawan-device-client-service">LoRaWAN Device Client Service<a class="headerlink" href="#lorawan-device-client-service" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Services/ILoRaWanDeviceClientService.cs</code> (Lines 1-22)</li>
+<li>
+<p><strong>Snippet</strong>: Client-side service interface</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-10-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-10-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-10-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-10-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-10-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-10-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-10-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-10-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-10-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">ILoRaWanDeviceClientService</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="p">{</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">LoRaDeviceDetails</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetDevice</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">);</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">CreateDevice</span><span class="p">(</span><span class="n">LoRaDeviceDetails</span><span class="w"> </span><span class="n">device</span><span class="p">);</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">UpdateDevice</span><span class="p">(</span><span class="n">LoRaDeviceDetails</span><span class="w"> </span><span class="n">device</span><span class="p">);</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">DeleteDevice</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">);</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteCommand</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">commandId</span><span class="p">);</span><span class="w">  </span><span class="c1">// Command execution</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">LoRaGatewayIDList</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetGatewayIdList</span><span class="p">();</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">LoRaDeviceTelemetryDto</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetDeviceTelemetry</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">);</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Services/LoRaWanDeviceClientService.cs</code></p>
+</li>
+<li>
+<p><strong>Snippet</strong>: HTTP client implementation</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span>
+<span class="normal"><a href="#__codelineno-11-2">2</a></span>
+<span class="normal"><a href="#__codelineno-11-3">3</a></span>
+<span class="normal"><a href="#__codelineno-11-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteCommand</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">commandId</span><span class="p">)</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="p">{</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">http</span><span class="p">.</span><span class="n">PostAsync</span><span class="p">(</span><span class="s">$"api/lorawan/devices/{deviceId}/_command/{commandId}"</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">);</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Makes HTTP POST to execute command endpoint</p>
+</li>
+<li>No request body required (command details retrieved server-side)</li>
+</ul>
+<h3 id="user-interface-components">User Interface Components<a class="headerlink" href="#user-interface-components" title="Permanent link">¶</a></h3>
+<h4 id="device-model-command-management-ui">Device Model Command Management UI<a class="headerlink" href="#device-model-command-management-ui" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Components/DeviceModels/LoRaWAN/EditLoraDeviceModel.razor</code> (Lines 63-110)</li>
+<li>
+<p><strong>Snippet</strong>: Command management table in device model editor</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-12-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-12-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-12-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-12-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-12-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-12-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-12-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-12-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-12-10">10</a></span>
+<span class="normal"><a href="#__codelineno-12-11">11</a></span>
+<span class="normal"><a href="#__codelineno-12-12">12</a></span>
+<span class="normal"><a href="#__codelineno-12-13">13</a></span>
+<span class="normal"><a href="#__codelineno-12-14">14</a></span>
+<span class="normal"><a href="#__codelineno-12-15">15</a></span>
+<span class="normal"><a href="#__codelineno-12-16">16</a></span>
+<span class="normal"><a href="#__codelineno-12-17">17</a></span>
+<span class="normal"><a href="#__codelineno-12-18">18</a></span>
+<span class="normal"><a href="#__codelineno-12-19">19</a></span>
+<span class="normal"><a href="#__codelineno-12-20">20</a></span>
+<span class="normal"><a href="#__codelineno-12-21">21</a></span>
+<span class="normal"><a href="#__codelineno-12-22">22</a></span>
+<span class="normal"><a href="#__codelineno-12-23">23</a></span>
+<span class="normal"><a href="#__codelineno-12-24">24</a></span>
+<span class="normal"><a href="#__codelineno-12-25">25</a></span>
+<span class="normal"><a href="#__codelineno-12-26">26</a></span>
+<span class="normal"><a href="#__codelineno-12-27">27</a></span>
+<span class="normal"><a href="#__codelineno-12-28">28</a></span>
+<span class="normal"><a href="#__codelineno-12-29">29</a></span>
+<span class="normal"><a href="#__codelineno-12-30">30</a></span>
+<span class="normal"><a href="#__codelineno-12-31">31</a></span>
+<span class="normal"><a href="#__codelineno-12-32">32</a></span>
+<span class="normal"><a href="#__codelineno-12-33">33</a></span>
+<span class="normal"><a href="#__codelineno-12-34">34</a></span>
+<span class="normal"><a href="#__codelineno-12-35">35</a></span>
+<span class="normal"><a href="#__codelineno-12-36">36</a></span>
+<span class="normal"><a href="#__codelineno-12-37">37</a></span>
+<span class="normal"><a href="#__codelineno-12-38">38</a></span>
+<span class="normal"><a href="#__codelineno-12-39">39</a></span>
+<span class="normal"><a href="#__codelineno-12-40">40</a></span>
+<span class="normal"><a href="#__codelineno-12-41">41</a></span>
+<span class="normal"><a href="#__codelineno-12-42">42</a></span>
+<span class="normal"><a href="#__codelineno-12-43">43</a></span>
+<span class="normal"><a href="#__codelineno-12-44">44</a></span>
+<span class="normal"><a href="#__codelineno-12-45">45</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a>@if (LoRaDeviceModel.Downlink.HasValue &amp;&amp; LoRaDeviceModel.Downlink.Value)
+<a id="__codelineno-12-2" name="__codelineno-12-2"></a>{
+<a id="__codelineno-12-3" name="__codelineno-12-3"></a>    &lt;MudExpansionPanel Text="Commands" IsInitiallyExpanded="true"&gt;
+<a id="__codelineno-12-4" name="__codelineno-12-4"></a>        &lt;MudTable Items="@Commands" Dense=true Hover=true Bordered=true Striped=true&gt;
+<a id="__codelineno-12-5" name="__codelineno-12-5"></a>            &lt;HeaderContent&gt;
+<a id="__codelineno-12-6" name="__codelineno-12-6"></a>                &lt;MudTh&gt;Name&lt;/MudTh&gt;
+<a id="__codelineno-12-7" name="__codelineno-12-7"></a>                &lt;MudTh&gt;Frame&lt;/MudTh&gt;
+<a id="__codelineno-12-8" name="__codelineno-12-8"></a>                &lt;MudTh&gt;Ack&lt;/MudTh&gt;
+<a id="__codelineno-12-9" name="__codelineno-12-9"></a>                &lt;MudTh&gt;Port&lt;/MudTh&gt;
+<a id="__codelineno-12-10" name="__codelineno-12-10"></a>                &lt;MudTh&gt;Delete&lt;/MudTh&gt;
+<a id="__codelineno-12-11" name="__codelineno-12-11"></a>            &lt;/HeaderContent&gt;
+<a id="__codelineno-12-12" name="__codelineno-12-12"></a>            &lt;RowTemplate Context="CommandContext"&gt;
+<a id="__codelineno-12-13" name="__codelineno-12-13"></a>                &lt;MudTd&gt;
+<a id="__codelineno-12-14" name="__codelineno-12-14"></a>                    &lt;MudTextField @bind-Value="@CommandContext.Name" 
+<a id="__codelineno-12-15" name="__codelineno-12-15"></a>                                 Label="Name" 
+<a id="__codelineno-12-16" name="__codelineno-12-16"></a>                                 Disabled="CommandContext.IsBuiltin" /&gt;
+<a id="__codelineno-12-17" name="__codelineno-12-17"></a>                &lt;/MudTd&gt;
+<a id="__codelineno-12-18" name="__codelineno-12-18"></a>                &lt;MudTd&gt;
+<a id="__codelineno-12-19" name="__codelineno-12-19"></a>                    &lt;MudTextField @bind-Value="@CommandContext.Frame" 
+<a id="__codelineno-12-20" name="__codelineno-12-20"></a>                                 Label="Frame" 
+<a id="__codelineno-12-21" name="__codelineno-12-21"></a>                                 Disabled="CommandContext.IsBuiltin"
+<a id="__codelineno-12-22" name="__codelineno-12-22"></a>                                 Mask="@(new RegexMask(@"^[0-9a-fA-F]{0,255}$"))" /&gt;
+<a id="__codelineno-12-23" name="__codelineno-12-23"></a>                &lt;/MudTd&gt;
+<a id="__codelineno-12-24" name="__codelineno-12-24"></a>                &lt;MudTd&gt;
+<a id="__codelineno-12-25" name="__codelineno-12-25"></a>                    &lt;MudCheckBox @bind-Checked="@CommandContext.Confirmed" 
+<a id="__codelineno-12-26" name="__codelineno-12-26"></a>                                Disabled="CommandContext.IsBuiltin" /&gt;
+<a id="__codelineno-12-27" name="__codelineno-12-27"></a>                &lt;/MudTd&gt;
+<a id="__codelineno-12-28" name="__codelineno-12-28"></a>                &lt;MudTd&gt;
+<a id="__codelineno-12-29" name="__codelineno-12-29"></a>                    &lt;MudNumericField @bind-Value="@CommandContext.Port" 
+<a id="__codelineno-12-30" name="__codelineno-12-30"></a>                                    Label="Port" 
+<a id="__codelineno-12-31" name="__codelineno-12-31"></a>                                    Disabled="CommandContext.IsBuiltin" /&gt;
+<a id="__codelineno-12-32" name="__codelineno-12-32"></a>                &lt;/MudTd&gt;
+<a id="__codelineno-12-33" name="__codelineno-12-33"></a>                &lt;MudTd&gt;
+<a id="__codelineno-12-34" name="__codelineno-12-34"></a>                    &lt;MudIconButton Icon="@Icons.Material.Filled.Delete" 
+<a id="__codelineno-12-35" name="__codelineno-12-35"></a>                                  Disabled="@CommandContext.IsBuiltin" 
+<a id="__codelineno-12-36" name="__codelineno-12-36"></a>                                  OnClick="@(() =&gt; DeleteCommand(CommandContext))" /&gt;
+<a id="__codelineno-12-37" name="__codelineno-12-37"></a>                &lt;/MudTd&gt;
+<a id="__codelineno-12-38" name="__codelineno-12-38"></a>            &lt;/RowTemplate&gt;
+<a id="__codelineno-12-39" name="__codelineno-12-39"></a>            &lt;FooterContent&gt;
+<a id="__codelineno-12-40" name="__codelineno-12-40"></a>                &lt;MudButton StartIcon="@Icons.Material.Filled.Add" 
+<a id="__codelineno-12-41" name="__codelineno-12-41"></a>                          OnClick="AddCommand"&gt;Add Command&lt;/MudButton&gt;
+<a id="__codelineno-12-42" name="__codelineno-12-42"></a>            &lt;/FooterContent&gt;
+<a id="__codelineno-12-43" name="__codelineno-12-43"></a>        &lt;/MudTable&gt;
+<a id="__codelineno-12-44" name="__codelineno-12-44"></a>    &lt;/MudExpansionPanel&gt;
+<a id="__codelineno-12-45" name="__codelineno-12-45"></a>}
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Commands section only visible when downlink is enabled</p>
+</li>
+<li>Inline editing of command properties</li>
+<li>Built-in commands are disabled for editing</li>
+<li>Add/Delete operations for command management</li>
+<li>Real-time validation with regex mask on frame input</li>
+</ul>
+<h4 id="device-command-execution-ui">Device Command Execution UI<a class="headerlink" href="#device-command-execution-ui" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Components/Devices/LoRaWAN/EditLoraDevice.razor</code></li>
+<li>
+<p><strong>Snippet</strong>: Command execution in device details</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-13-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-13-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-13-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-13-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-13-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-13-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-13-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-13-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-13-10">10</a></span>
+<span class="normal"><a href="#__codelineno-13-11">11</a></span>
+<span class="normal"><a href="#__codelineno-13-12">12</a></span>
+<span class="normal"><a href="#__codelineno-13-13">13</a></span>
+<span class="normal"><a href="#__codelineno-13-14">14</a></span>
+<span class="normal"><a href="#__codelineno-13-15">15</a></span>
+<span class="normal"><a href="#__codelineno-13-16">16</a></span>
+<span class="normal"><a href="#__codelineno-13-17">17</a></span>
+<span class="normal"><a href="#__codelineno-13-18">18</a></span>
+<span class="normal"><a href="#__codelineno-13-19">19</a></span>
+<span class="normal"><a href="#__codelineno-13-20">20</a></span>
+<span class="normal"><a href="#__codelineno-13-21">21</a></span>
+<span class="normal"><a href="#__codelineno-13-22">22</a></span>
+<span class="normal"><a href="#__codelineno-13-23">23</a></span>
+<span class="normal"><a href="#__codelineno-13-24">24</a></span>
+<span class="normal"><a href="#__codelineno-13-25">25</a></span>
+<span class="normal"><a href="#__codelineno-13-26">26</a></span>
+<span class="normal"><a href="#__codelineno-13-27">27</a></span>
+<span class="normal"><a href="#__codelineno-13-28">28</a></span>
+<span class="normal"><a href="#__codelineno-13-29">29</a></span>
+<span class="normal"><a href="#__codelineno-13-30">30</a></span>
+<span class="normal"><a href="#__codelineno-13-31">31</a></span>
+<span class="normal"><a href="#__codelineno-13-32">32</a></span>
+<span class="normal"><a href="#__codelineno-13-33">33</a></span>
+<span class="normal"><a href="#__codelineno-13-34">34</a></span>
+<span class="normal"><a href="#__codelineno-13-35">35</a></span>
+<span class="normal"><a href="#__codelineno-13-36">36</a></span>
+<span class="normal"><a href="#__codelineno-13-37">37</a></span>
+<span class="normal"><a href="#__codelineno-13-38">38</a></span>
+<span class="normal"><a href="#__codelineno-13-39">39</a></span>
+<span class="normal"><a href="#__codelineno-13-40">40</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a>&lt;MudExpansionPanel Text="Commands"&gt;
+<a id="__codelineno-13-2" name="__codelineno-13-2"></a>    &lt;MudTable Items="@AvailableCommands"&gt;
+<a id="__codelineno-13-3" name="__codelineno-13-3"></a>        &lt;HeaderContent&gt;
+<a id="__codelineno-13-4" name="__codelineno-13-4"></a>            &lt;MudTh&gt;Name&lt;/MudTh&gt;
+<a id="__codelineno-13-5" name="__codelineno-13-5"></a>            &lt;MudTh&gt;Execute&lt;/MudTh&gt;
+<a id="__codelineno-13-6" name="__codelineno-13-6"></a>        &lt;/HeaderContent&gt;
+<a id="__codelineno-13-7" name="__codelineno-13-7"></a>        &lt;RowTemplate Context="CommandContext"&gt;
+<a id="__codelineno-13-8" name="__codelineno-13-8"></a>            &lt;MudTd&gt;@CommandContext.Name&lt;/MudTd&gt;
+<a id="__codelineno-13-9" name="__codelineno-13-9"></a>            &lt;MudTd&gt;
+<a id="__codelineno-13-10" name="__codelineno-13-10"></a>                &lt;MudTooltip Text="Execute command"&gt;
+<a id="__codelineno-13-11" name="__codelineno-13-11"></a>                    &lt;MudIconButton id="ExecuteCommand" 
+<a id="__codelineno-13-12" name="__codelineno-13-12"></a>                                  Title="Execute" 
+<a id="__codelineno-13-13" name="__codelineno-13-13"></a>                                  Icon="@Icons.Material.Filled.Send" 
+<a id="__codelineno-13-14" name="__codelineno-13-14"></a>                                  OnClick="@(() =&gt; ExecuteMethod(CommandContext))"
+<a id="__codelineno-13-15" name="__codelineno-13-15"></a>                                  Disabled="@(!LoRaDevice.AlreadyLoggedInOnce || isProcessing || !CanExec)" /&gt;
+<a id="__codelineno-13-16" name="__codelineno-13-16"></a>                &lt;/MudTooltip&gt;
+<a id="__codelineno-13-17" name="__codelineno-13-17"></a>            &lt;/MudTd&gt;
+<a id="__codelineno-13-18" name="__codelineno-13-18"></a>        &lt;/RowTemplate&gt;
+<a id="__codelineno-13-19" name="__codelineno-13-19"></a>    &lt;/MudTable&gt;
+<a id="__codelineno-13-20" name="__codelineno-13-20"></a>&lt;/MudExpansionPanel&gt;
+<a id="__codelineno-13-21" name="__codelineno-13-21"></a>
+<a id="__codelineno-13-22" name="__codelineno-13-22"></a>@code {
+<a id="__codelineno-13-23" name="__codelineno-13-23"></a>    private async Task ExecuteMethod(DeviceModelCommandDto method)
+<a id="__codelineno-13-24" name="__codelineno-13-24"></a>    {
+<a id="__codelineno-13-25" name="__codelineno-13-25"></a>        isProcessing = true;
+<a id="__codelineno-13-26" name="__codelineno-13-26"></a>        try
+<a id="__codelineno-13-27" name="__codelineno-13-27"></a>        {
+<a id="__codelineno-13-28" name="__codelineno-13-28"></a>            await LoRaWanDeviceClientService.ExecuteCommand(LoRaDevice.DeviceID, method.Id);
+<a id="__codelineno-13-29" name="__codelineno-13-29"></a>            Snackbar.Add($"{method.Name} has been successfully executed!", Severity.Success);
+<a id="__codelineno-13-30" name="__codelineno-13-30"></a>        }
+<a id="__codelineno-13-31" name="__codelineno-13-31"></a>        catch (ProblemDetailsException exception)
+<a id="__codelineno-13-32" name="__codelineno-13-32"></a>        {
+<a id="__codelineno-13-33" name="__codelineno-13-33"></a>            Error?.ProcessProblemDetails(exception);
+<a id="__codelineno-13-34" name="__codelineno-13-34"></a>        }
+<a id="__codelineno-13-35" name="__codelineno-13-35"></a>        finally
+<a id="__codelineno-13-36" name="__codelineno-13-36"></a>        {
+<a id="__codelineno-13-37" name="__codelineno-13-37"></a>            isProcessing = false;
+<a id="__codelineno-13-38" name="__codelineno-13-38"></a>        }
+<a id="__codelineno-13-39" name="__codelineno-13-39"></a>    }
+<a id="__codelineno-13-40" name="__codelineno-13-40"></a>}
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Lists commands available for device's model</p>
+</li>
+<li>Execute button triggers command execution</li>
+<li>Disabled when device hasn't logged in, processing, or execution not permitted</li>
+<li>Success/error feedback via Snackbar notifications</li>
+</ul>
+<h4 id="command-validator">Command Validator<a class="headerlink" href="#command-validator" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Validators/LoRaDeviceModelCommandValidator.cs</code> (Lines 1-29)</li>
+<li>
+<p><strong>Snippet</strong>: FluentValidation rules for commands</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-14-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-14-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-14-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-14-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-14-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-14-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-14-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-14-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-14-10">10</a></span>
+<span class="normal"><a href="#__codelineno-14-11">11</a></span>
+<span class="normal"><a href="#__codelineno-14-12">12</a></span>
+<span class="normal"><a href="#__codelineno-14-13">13</a></span>
+<span class="normal"><a href="#__codelineno-14-14">14</a></span>
+<span class="normal"><a href="#__codelineno-14-15">15</a></span>
+<span class="normal"><a href="#__codelineno-14-16">16</a></span>
+<span class="normal"><a href="#__codelineno-14-17">17</a></span>
+<span class="normal"><a href="#__codelineno-14-18">18</a></span>
+<span class="normal"><a href="#__codelineno-14-19">19</a></span>
+<span class="normal"><a href="#__codelineno-14-20">20</a></span>
+<span class="normal"><a href="#__codelineno-14-21">21</a></span>
+<span class="normal"><a href="#__codelineno-14-22">22</a></span>
+<span class="normal"><a href="#__codelineno-14-23">23</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">LoRaDeviceModelCommandValidator</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">AbstractValidator</span><span class="o">&lt;</span><span class="n">DeviceModelCommandDto</span><span class="o">&gt;</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="p">{</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">LoRaDeviceModelCommandValidator</span><span class="p">()</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="w">        </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Name</span><span class="p">)</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="w">            </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">()</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"The command name is required."</span><span class="p">);</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8"></a>
+<a id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="w">        </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Frame</span><span class="p">)</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10"></a><span class="w">            </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">()</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11"></a><span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"The frame is required."</span><span class="p">)</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12"></a><span class="w">            </span><span class="p">.</span><span class="n">Length</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">)</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13"></a><span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"The frame should be up to 255 characters long."</span><span class="p">)</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14"></a><span class="w">            </span><span class="p">.</span><span class="n">Matches</span><span class="p">(</span><span class="s">"^[0-9a-fA-F]{0,255}$"</span><span class="p">)</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15"></a><span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"The frame should only contain hexadecimal characters"</span><span class="p">);</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16"></a>
+<a id="__codelineno-14-17" name="__codelineno-14-17"></a><span class="w">        </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Port</span><span class="p">)</span>
+<a id="__codelineno-14-18" name="__codelineno-14-18"></a><span class="w">            </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">()</span>
+<a id="__codelineno-14-19" name="__codelineno-14-19"></a><span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"The port number is required"</span><span class="p">)</span>
+<a id="__codelineno-14-20" name="__codelineno-14-20"></a><span class="w">            </span><span class="p">.</span><span class="n">InclusiveBetween</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">223</span><span class="p">)</span>
+<a id="__codelineno-14-21" name="__codelineno-14-21"></a><span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"The port number should be between 1 and 223."</span><span class="p">);</span>
+<a id="__codelineno-14-22" name="__codelineno-14-22"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-14-23" name="__codelineno-14-23"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Client-side validation using FluentValidation</p>
+</li>
+<li>Validates name, frame format, and port range</li>
+<li>Provides user-friendly error messages</li>
+</ul>
+<h3 id="object-mapping">Object Mapping<a class="headerlink" href="#object-mapping" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Infrastructure/Mappers/IDeviceModelCommandMapper.cs</code></li>
+<li>
+<p>AutoMapper profile for DeviceModelCommand entity to DTO mapping</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Infrastructure/Mappers/DeviceModelCommandMapper.cs</code></p>
+</li>
+<li>Implements mapping between DeviceModelCommand and DeviceModelCommandDto</li>
+</ul>
+<hr/>
+<h2 id="feature-workflow">Feature Workflow<a class="headerlink" href="#feature-workflow" title="Permanent link">¶</a></h2>
+<h3 id="command-definition-workflow">Command Definition Workflow<a class="headerlink" href="#command-definition-workflow" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Access Device Model</strong>: User navigates to LoRaWAN device model edit page</li>
+<li><strong>Enable Downlink</strong>: User enables "Support downstream messages" on device model</li>
+<li><strong>Commands Section Appears</strong>: Commands panel becomes visible when downlink is enabled</li>
+<li><strong>Add Command</strong>: User clicks "Add Command" button</li>
+<li><strong>Define Command</strong>:</li>
+<li>Enter command name (required)</li>
+<li>Enter hexadecimal frame data (required, 1-255 chars, hex only)</li>
+<li>Set confirmation mode (optional checkbox)</li>
+<li>Set LoRaWAN port (required, 1-223)</li>
+<li><strong>Validate</strong>: Client-side validation checks format and constraints</li>
+<li><strong>Save Model</strong>: User saves device model</li>
+<li><strong>Persist Commands</strong>: All commands sent to API via POST to /api/lorawan/models/{id}/commands</li>
+<li><strong>Database Update</strong>:</li>
+<li>Existing commands deleted for model</li>
+<li>New commands inserted with model association</li>
+<li>Transaction committed</li>
+</ol>
+<h3 id="command-execution-workflow">Command Execution Workflow<a class="headerlink" href="#command-execution-workflow" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Access Device Details</strong>: User opens LoRaWAN device details page</li>
+<li><strong>View Commands</strong>: Commands panel shows available commands from device's model</li>
+<li><strong>Verify Prerequisites</strong>:</li>
+<li>Device must have logged in at least once (AlreadyLoggedInOnce = true)</li>
+<li>User must have device:execute permission</li>
+<li>System not currently processing a command</li>
+<li><strong>Execute Command</strong>: User clicks execute button for specific command</li>
+<li><strong>API Call</strong>: Client calls POST /api/lorawan/devices/{deviceId}/_command/{commandId}</li>
+<li><strong>Retrieve Command</strong>: Server loads command definition from database by commandId</li>
+<li><strong>Validate Command</strong>: Checks command exists and belongs to device's model</li>
+<li><strong>Prepare Payload</strong>:</li>
+<li>Convert hexadecimal frame to byte array</li>
+<li>Encode bytes as base64 string</li>
+<li>Create LoRaCloudToDeviceMessage with payload, port, and confirmation flag</li>
+<li><strong>Send to LoRa Network Server</strong>: HTTP POST to Azure Functions endpoint</li>
+<li><strong>Handle Response</strong>:<ul>
+<li>Success: Log execution, return OK to client</li>
+<li>Failure: Log error, throw InternalServerErrorException</li>
+</ul>
+</li>
+<li><strong>User Feedback</strong>: Snackbar shows success or error message</li>
+</ol>
+<h3 id="scheduled-command-workflow">Scheduled Command Workflow<a class="headerlink" href="#scheduled-command-workflow" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Configure Planning</strong>: Administrator creates planning with scheduled commands</li>
+<li><strong>Job Trigger</strong>: Quartz.NET triggers SendPlanningCommandJob at configured interval</li>
+<li><strong>Load Configuration</strong>: Job loads devices, layers, plannings, and schedules</li>
+<li><strong>Check Schedule</strong>: Evaluates current time against command schedules</li>
+<li><strong>Execute Due Commands</strong>: For each scheduled command that's due:</li>
+<li>Calls ExecuteLoRaWANCommand with device ID and command ID</li>
+<li>Same execution flow as on-demand commands</li>
+<li><strong>Log Results</strong>: Records execution success/failure in logs</li>
+<li><strong>Continue</strong>: Job completes and waits for next trigger</li>
+</ol>
+<hr/>
+<h2 id="integration-points">Integration Points<a class="headerlink" href="#integration-points" title="Permanent link">¶</a></h2>
+<h3 id="lora-network-server-azure-functions">LoRa Network Server (Azure Functions)<a class="headerlink" href="#lora-network-server-azure-functions" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Purpose</strong>: Command delivery to LoRaWAN devices through LoRa gateways</li>
+<li><strong>Protocol</strong>: HTTP REST API</li>
+<li><strong>Message Format</strong>: JSON with base64-encoded payload</li>
+<li><strong>Configuration</strong>: HttpClient configured with Azure Functions endpoint</li>
+<li><strong>Request</strong>:</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">JSON</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1">1</a></span>
+<span class="normal"><a href="#__codelineno-15-2">2</a></span>
+<span class="normal"><a href="#__codelineno-15-3">3</a></span>
+<span class="normal"><a href="#__codelineno-15-4">4</a></span>
+<span class="normal"><a href="#__codelineno-15-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="p">{</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="w">  </span><span class="nt">"rawPayload"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;base64-encoded-command-data&gt;"</span><span class="p">,</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w">  </span><span class="nt">"fport"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">  </span><span class="nt">"confirmed"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li><strong>Response</strong>: HTTP status code indicating success/failure</li>
+</ul>
+<h3 id="device-model-management">Device Model Management<a class="headerlink" href="#device-model-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Relationship</strong>: Commands belong to device models (one-to-many)</li>
+<li><strong>Cascade Delete</strong>: When device model deleted, associated commands are removed</li>
+<li><strong>Validation</strong>: Device model must exist before commands can be added</li>
+<li><strong>Prerequisite</strong>: Downlink must be enabled on device model for commands to be defined</li>
+<li><strong>Storage</strong>: Commands persisted in portal database with DeviceModelId foreign key</li>
+</ul>
+<h3 id="device-management">Device Management<a class="headerlink" href="#device-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Command Availability</strong>: Device inherits commands from its associated model</li>
+<li><strong>Execution Requirement</strong>: Device must have connected at least once</li>
+<li><strong>Permission Check</strong>: User requires device:execute permission</li>
+<li><strong>Device Status</strong>: Execution state tracked to prevent concurrent commands</li>
+</ul>
+<h3 id="authorization">Authorization<a class="headerlink" href="#authorization" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Model Command Management</strong>: Requires model:read and model:write permissions</li>
+<li><strong>Command Execution</strong>: Requires device:execute permission</li>
+<li><strong>LoRa Feature</strong>: All endpoints protected by LoRaFeatureActiveFilter</li>
+<li><strong>Authentication</strong>: All endpoints require [Authorize] attribute</li>
+</ul>
+<h3 id="scheduling-system-quartznet">Scheduling System (Quartz.NET)<a class="headerlink" href="#scheduling-system-quartznet" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Job</strong>: SendPlanningCommandJob</li>
+<li><strong>Trigger</strong>: Configurable schedule (e.g., cron expression)</li>
+<li><strong>Concurrency</strong>: DisallowConcurrentExecution prevents overlapping runs</li>
+<li><strong>Dependencies</strong>: Integrates with planning and schedule services</li>
+</ul>
+<hr/>
+<h2 id="security-validation">Security &amp; Validation<a class="headerlink" href="#security-validation" title="Permanent link">¶</a></h2>
+<h3 id="input-validation">Input Validation<a class="headerlink" href="#input-validation" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Command Name</strong>: Required, non-empty string</li>
+<li><strong>Frame</strong>:</li>
+<li>Required</li>
+<li>1-255 characters maximum</li>
+<li>Must contain only hexadecimal characters (0-9, a-f, A-F)</li>
+<li>Validated by regex: <code>^[0-9a-fA-F]{0,255}$</code></li>
+<li><strong>Port</strong>:</li>
+<li>Required</li>
+<li>Must be integer between 1 and 223 (inclusive)</li>
+<li>Follows LoRaWAN specification</li>
+<li><strong>Device Model ID</strong>: Validated to exist in database</li>
+<li><strong>Command ID</strong>: Validated to exist before execution</li>
+</ul>
+<h3 id="authorization-controls">Authorization Controls<a class="headerlink" href="#authorization-controls" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Permission-Based Access</strong>:</li>
+<li>model:read - View device model commands</li>
+<li>model:write - Create/update/delete commands</li>
+<li>device:execute - Execute commands on devices</li>
+<li><strong>Built-in Command Protection</strong>: IsBuiltin flag prevents modification/deletion</li>
+<li><strong>Feature Flag</strong>: LoRaFeatureActiveFilter ensures LoRa feature is enabled</li>
+</ul>
+<h3 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>ResourceNotFoundException</strong>: Thrown when device model or command not found</li>
+<li><strong>InternalServerErrorException</strong>: Thrown when command execution fails at network level</li>
+<li><strong>Validation Errors</strong>: Returned as problem details with specific error messages</li>
+<li><strong>Logging</strong>: All command execution attempts logged with deviceId and outcome</li>
+</ul>
+<h3 id="data-integrity">Data Integrity<a class="headerlink" href="#data-integrity" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Transaction Management</strong>: UnitOfWork pattern ensures atomic command updates</li>
+<li><strong>Foreign Key Constraints</strong>: Commands linked to valid device models</li>
+<li><strong>Cascade Operations</strong>: Commands deleted when parent model deleted</li>
+<li><strong>Command Replacement</strong>: Existing commands fully replaced (not merged) on update</li>
+</ul>
+<hr/>
+<h2 id="testing-approach">Testing Approach<a class="headerlink" href="#testing-approach" title="Permanent link">¶</a></h2>
+<h3 id="unit-tests">Unit Tests<a class="headerlink" href="#unit-tests" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Tests.Unit/Server/Controllers/v1.0/LoRaWAN/LoRaWANCommandsControllerTests.cs</code></li>
+<li>Tests GET and POST endpoints</li>
+<li>Validates authorization requirements</li>
+<li>
+<p>Mocks service dependencies</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Tests.Unit/Server/Services/LoRaWANCommandServiceTests.cs</code></p>
+</li>
+<li>Tests PostDeviceModelCommands logic</li>
+<li>Tests GetDeviceModelCommandsFromModel retrieval</li>
+<li>Tests ExecuteLoRaWANCommand with various scenarios</li>
+<li>Validates error handling (ResourceNotFoundException, InternalServerErrorException)</li>
+<li>
+<p>Mocks repository, mapper, and LoRa management service</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Tests.Unit/Infrastructure/Services/LoRaWanManagementServiceTests.cs</code></p>
+</li>
+<li>Tests ExecuteLoRaDeviceMessage implementation</li>
+<li>Tests ArgumentNullException for null parameters</li>
+<li>Tests successful command delivery</li>
+<li>Validates payload encoding (hex to base64)</li>
+<li>
+<p>Mocks HttpClient responses</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Tests.Unit/Client/Services/LoRaWanDeviceClientServiceTests.cs</code></p>
+</li>
+<li>Tests client-side ExecuteCommand method</li>
+<li>Validates HTTP endpoint construction</li>
+<li>
+<p>Tests error handling and propagation</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Tests.Unit/Infrastructure/Jobs/SendPlanningCommandJobTests.cs</code></p>
+</li>
+<li>Tests scheduled command execution</li>
+<li>Validates planning and schedule integration</li>
+<li>Tests concurrent execution prevention</li>
+</ul>
+<h3 id="integration-testing-considerations">Integration Testing Considerations<a class="headerlink" href="#integration-testing-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>End-to-end command flow from UI to Azure Functions</li>
+<li>Database transaction rollback on command update failure</li>
+<li>Command execution with actual LoRa devices (requires test network)</li>
+<li>Permission enforcement across controller and service layers</li>
+<li>Command scheduling and automated execution</li>
+</ul>
+<h3 id="test-data-requirements">Test Data Requirements<a class="headerlink" href="#test-data-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li>Valid device model with downlink enabled</li>
+<li>Sample commands with various frame payloads</li>
+<li>Test devices registered and logged in</li>
+<li>Mock Azure Functions endpoint for command delivery</li>
+<li>Planning/schedule configurations for job testing</li>
+</ul>
+<hr/>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h2>
+<h3 id="external-services">External Services<a class="headerlink" href="#external-services" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Azure Functions (LoRa Network Server)</strong>: Required for command delivery to devices</li>
+<li><strong>LoRaWAN Network</strong>: Physical infrastructure for command transmission</li>
+<li><strong>IoT Hub/AWS IoT Core</strong>: Device registry and twin management</li>
+</ul>
+<h3 id="internal-dependencies">Internal Dependencies<a class="headerlink" href="#internal-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Device Model Management</strong>: Commands belong to device models</li>
+<li><strong>Device Management</strong>: Commands executed on specific devices</li>
+<li><strong>Authentication/Authorization</strong>: Permission checks for operations</li>
+<li><strong>Database</strong>: Command persistence and retrieval</li>
+<li><strong>Scheduling</strong>: Quartz.NET for automated command execution</li>
+</ul>
+<h3 id="nuget-packages">NuGet Packages<a class="headerlink" href="#nuget-packages" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>AutoMapper</strong>: Entity to DTO mapping</li>
+<li><strong>FluentValidation</strong>: Client-side validation</li>
+<li><strong>MudBlazor</strong>: UI components for command management</li>
+<li><strong>Quartz</strong>: Job scheduling</li>
+<li><strong>Entity Framework Core</strong>: Data access</li>
+</ul>
+<hr/>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
+<h3 id="app-settings">App Settings<a class="headerlink" href="#app-settings" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>LoRa:ApiEndpoint</strong>: Azure Functions URL for LoRa Network Server</li>
+<li><strong>LoRa:AuthToken</strong>: Authentication token for Azure Functions (if required)</li>
+<li><strong>LoRa:FeatureEnabled</strong>: Feature flag to enable/disable LoRa functionality</li>
+</ul>
+<h3 id="feature-flags">Feature Flags<a class="headerlink" href="#feature-flags" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>LoRaFeatureActiveFilter</strong>: Applied to all LoRa endpoints to check if feature enabled</li>
+<li>Prevents access when LoRa infrastructure not configured</li>
+</ul>
+<h3 id="scheduling-configuration">Scheduling Configuration<a class="headerlink" href="#scheduling-configuration" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>SendPlanningCommandJob</strong>: Quartz trigger configuration</li>
+<li>Frequency, start time, and timezone settings</li>
+<li>Job execution timeout and retry policies</li>
+</ul>
+<hr/>
+<h2 id="known-limitations-considerations">Known Limitations &amp; Considerations<a class="headerlink" href="#known-limitations-considerations" title="Permanent link">¶</a></h2>
+<h3 id="functional-limitations">Functional Limitations<a class="headerlink" href="#functional-limitations" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>No Command History</strong>: No tracking of which commands were executed or when</li>
+<li><strong>No Response Data</strong>: Command responses from devices not captured or displayed</li>
+<li><strong>Single Command Execution</strong>: Cannot batch multiple commands to one device</li>
+<li><strong>No Retry Logic</strong>: Failed command executions not automatically retried</li>
+<li><strong>Limited Feedback</strong>: Only success/failure status, no detailed device response</li>
+<li><strong>Port Restriction</strong>: Limited to LoRaWAN ports 1-223 (application ports only)</li>
+</ul>
+<h3 id="technical-constraints">Technical Constraints<a class="headerlink" href="#technical-constraints" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Frame Size</strong>: 255 character hex string limit (127.5 bytes payload)</li>
+<li><strong>Synchronous Execution</strong>: Commands processed one at a time per device</li>
+<li><strong>No Queueing</strong>: Commands not queued if device offline</li>
+<li><strong>Downlink Dependency</strong>: Commands only available when model has downlink enabled</li>
+<li><strong>Built-in Commands</strong>: Cannot be modified (limited customization)</li>
+</ul>
+<h3 id="operational-considerations">Operational Considerations<a class="headerlink" href="#operational-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Device State</strong>: Device must have connected at least once before accepting commands</li>
+<li><strong>Network Availability</strong>: Requires LoRa gateway coverage and Azure Functions availability</li>
+<li><strong>Execution Timing</strong>: No guarantee when device will receive command (depends on device class)</li>
+<li><strong>Confirmation Mode</strong>: Confirmed commands consume additional airtime and device battery</li>
+<li><strong>Rate Limiting</strong>: Should implement rate limiting to prevent command flooding</li>
+</ul>
+<h3 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Scheduling Overhead</strong>: Frequent planning job executions may impact performance</li>
+<li><strong>Database Load</strong>: Command updates delete and recreate all model commands</li>
+<li><strong>Concurrent Execution</strong>: DisallowConcurrentExecution may delay scheduled commands</li>
+<li><strong>HTTP Timeout</strong>: Long Azure Functions delays may cause timeout exceptions</li>
+</ul>
+<hr/>
+<h2 id="future-enhancement-opportunities">Future Enhancement Opportunities<a class="headerlink" href="#future-enhancement-opportunities" title="Permanent link">¶</a></h2>
+<h3 id="feature-enhancements">Feature Enhancements<a class="headerlink" href="#feature-enhancements" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Command History &amp; Audit Trail</strong>: Track all command executions with timestamps and results</li>
+<li><strong>Command Responses</strong>: Capture and display device responses to commands</li>
+<li><strong>Batch Commands</strong>: Execute multiple commands on single or multiple devices</li>
+<li><strong>Command Templates</strong>: Pre-defined command patterns with parameter substitution</li>
+<li><strong>Retry Mechanism</strong>: Automatic retry with exponential backoff for failed commands</li>
+<li><strong>Command Queue</strong>: Queue commands for offline devices with automatic delivery when online</li>
+<li><strong>Response Validation</strong>: Define expected responses and alert on anomalies</li>
+<li><strong>Command Macros</strong>: Chain multiple commands with conditional logic</li>
+</ol>
+<h3 id="usability-improvements">Usability Improvements<a class="headerlink" href="#usability-improvements" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Command Builder UI</strong>: Visual hex frame builder with byte-level editing</li>
+<li><strong>Command Testing</strong>: Test commands on specific devices before scheduling</li>
+<li><strong>Execution Status Dashboard</strong>: Real-time view of command execution status</li>
+<li><strong>Device Response Viewer</strong>: Display device responses in human-readable format</li>
+<li><strong>Command Favorites</strong>: Quick access to frequently used commands</li>
+<li><strong>Bulk Operations</strong>: Execute same command on multiple devices simultaneously</li>
+</ol>
+<h3 id="integration-enhancements">Integration Enhancements<a class="headerlink" href="#integration-enhancements" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Webhook Support</strong>: Trigger commands via external webhooks</li>
+<li><strong>API Gateway</strong>: Expose command execution through public API</li>
+<li><strong>Event Streaming</strong>: Stream command execution events to external systems</li>
+<li><strong>Third-Party Integration</strong>: Integrate with automation platforms (Zapier, Power Automate)</li>
+</ol>
+<h3 id="performance-optimizations">Performance Optimizations<a class="headerlink" href="#performance-optimizations" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Command Caching</strong>: Cache model commands to reduce database queries</li>
+<li><strong>Async Processing</strong>: Queue commands for background processing</li>
+<li><strong>Rate Limiting</strong>: Implement per-device and per-user rate limits</li>
+<li><strong>Batch Updates</strong>: Optimize command updates to avoid delete-all-insert-all pattern</li>
+</ol>
+<h3 id="monitoring-observability">Monitoring &amp; Observability<a class="headerlink" href="#monitoring-observability" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Execution Metrics</strong>: Track success rates, latency, and failure reasons</li>
+<li><strong>Alerting</strong>: Notify administrators of persistent command failures</li>
+<li><strong>Analytics</strong>: Usage patterns, popular commands, peak execution times</li>
+<li><strong>Diagnostics</strong>: Detailed logging of payload transformation and transmission</li>
+</ol>
+<hr/>
+<h2 id="business-value-summary">Business Value Summary<a class="headerlink" href="#business-value-summary" title="Permanent link">¶</a></h2>
+<p>The LoRaWAN Commands Management feature delivers significant business value through:</p>
+<ul>
+<li><strong>Remote Control</strong>: Enables remote device management without physical access, reducing operational costs</li>
+<li><strong>Automation</strong>: Supports scheduled command execution for routine device management tasks</li>
+<li><strong>Standardization</strong>: Model-based commands ensure consistent device control across fleet</li>
+<li><strong>Flexibility</strong>: Hexadecimal frame support allows arbitrary device-specific commands</li>
+<li><strong>Scalability</strong>: Centralized command management scales to large device deployments</li>
+<li><strong>Compliance</strong>: Audit-ready structure supports configuration management requirements</li>
+<li><strong>Efficiency</strong>: Reduces manual intervention and site visits for device configuration</li>
+<li><strong>Reliability</strong>: Confirmation mode ensures critical commands are acknowledged by devices</li>
+</ul>
+<p>This feature is essential for organizations managing distributed LoRaWAN device networks where remote configuration and control capabilities directly impact operational efficiency and total cost of ownership.</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>
