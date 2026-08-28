@@ -1,0 +1,1365 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature Specification: LoRaWAN Device Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-specification-lorawan-device-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature Specification: LoRaWAN Device Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-scenarios-testing">
+<span class="md-ellipsis">
+      User Scenarios &amp; Testing
+    </span>
+</a>
+<nav aria-label="User Scenarios &amp; Testing" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-1-register-new-lorawan-device-with-otaa-authentication-priority-p1">
+<span class="md-ellipsis">
+      User Story 1 - Register New LoRaWAN Device with OTAA Authentication (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-2-view-and-search-device-inventory-priority-p1">
+<span class="md-ellipsis">
+      User Story 2 - View and Search Device Inventory (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-3-update-device-configuration-and-lorawan-parameters-priority-p1">
+<span class="md-ellipsis">
+      User Story 3 - Update Device Configuration and LoRaWAN Parameters (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-4-delete-device-from-system-priority-p2">
+<span class="md-ellipsis">
+      User Story 4 - Delete Device from System (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-5-monitor-device-telemetry-and-activity-priority-p2">
+<span class="md-ellipsis">
+      User Story 5 - Monitor Device Telemetry and Activity (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-6-execute-commands-on-lorawan-devices-priority-p2">
+<span class="md-ellipsis">
+      User Story 6 - Execute Commands on LoRaWAN Devices (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-7-configure-abp-authentication-for-testing-devices-priority-p3">
+<span class="md-ellipsis">
+      User Story 7 - Configure ABP Authentication for Testing Devices (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-8-assign-gateway-routing-for-multi-gateway-deployments-priority-p3">
+<span class="md-ellipsis">
+      User Story 8 - Assign Gateway Routing for Multi-Gateway Deployments (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-9-manage-device-class-types-for-power-optimization-priority-p3">
+<span class="md-ellipsis">
+      User Story 9 - Manage Device Class Types for Power Optimization (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-10-configure-receive-window-parameters-for-network-optimization-priority-p3">
+<span class="md-ellipsis">
+      User Story 10 - Configure Receive Window Parameters for Network Optimization (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-11-configure-sensor-decoder-for-payload-interpretation-priority-p3">
+<span class="md-ellipsis">
+      User Story 11 - Configure Sensor Decoder for Payload Interpretation (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-12-organize-devices-with-tags-and-labels-priority-p4">
+<span class="md-ellipsis">
+      User Story 12 - Organize Devices with Tags and Labels (Priority: P4)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-13-view-adaptive-data-rate-adr-reported-values-priority-p4">
+<span class="md-ellipsis">
+      User Story 13 - View Adaptive Data Rate (ADR) Reported Values (Priority: P4)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-14-duplicate-device-configuration-for-rapid-deployment-priority-p4">
+<span class="md-ellipsis">
+      User Story 14 - Duplicate Device Configuration for Rapid Deployment (Priority: P4)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-cases">
+<span class="md-ellipsis">
+      Edge Cases
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements">
+<span class="md-ellipsis">
+      Requirements
+    </span>
+</a>
+<nav aria-label="Requirements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-entities">
+<span class="md-ellipsis">
+      Key Entities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-criteria">
+<span class="md-ellipsis">
+      Success Criteria
+    </span>
+</a>
+<nav aria-label="Success Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#measurable-outcomes">
+<span class="md-ellipsis">
+      Measurable Outcomes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#traceability">
+<span class="md-ellipsis">
+      Traceability
+    </span>
+</a>
+<nav aria-label="Traceability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#source-analysis">
+<span class="md-ellipsis">
+      Source Analysis
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-documentation">
+<span class="md-ellipsis">
+      Related Documentation
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notes">
+<span class="md-ellipsis">
+      Notes
+    </span>
+</a>
+<nav aria-label="Notes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lorawan-protocol-context">
+<span class="md-ellipsis">
+      LoRaWAN Protocol Context
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authentication-mode-guidance">
+<span class="md-ellipsis">
+      Authentication Mode Guidance
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-class-selection">
+<span class="md-ellipsis">
+      Device Class Selection
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#frame-counter-security">
+<span class="md-ellipsis">
+      Frame Counter Security
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#multi-gateway-scenarios">
+<span class="md-ellipsis">
+      Multi-Gateway Scenarios
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#telemetry-processing">
+<span class="md-ellipsis">
+      Telemetry Processing
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cloud-platform-integration">
+<span class="md-ellipsis">
+      Cloud Platform Integration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-and-scale">
+<span class="md-ellipsis">
+      Performance and Scale
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-experience-considerations">
+<span class="md-ellipsis">
+      User Experience Considerations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-specification-lorawan-device-management">Feature Specification: LoRaWAN Device Management<a class="headerlink" href="#feature-specification-lorawan-device-management" title="Permanent link">¶</a></h1>
+<p><strong>Feature ID</strong>: 008<br/>
+<strong>Feature Branch</strong>: <code>008-lorawan-device-management</code><br/>
+<strong>Created</strong>: January 30, 2025<br/>
+<strong>Status</strong>: Draft<br/>
+<strong>Source</strong>: Analysis from <code>specs/008-lorawan-device-management/analyze.md</code></p>
+<hr/>
+<h2 id="user-scenarios-testing">User Scenarios &amp; Testing<a class="headerlink" href="#user-scenarios-testing" title="Permanent link">¶</a></h2>
+<h3 id="user-story-1-register-new-lorawan-device-with-otaa-authentication-priority-p1">User Story 1 - Register New LoRaWAN Device with OTAA Authentication (Priority: P1)<a class="headerlink" href="#user-story-1-register-new-lorawan-device-with-otaa-authentication-priority-p1" title="Permanent link">¶</a></h3>
+<p>An IoT administrator needs to onboard a new LoRaWAN sensor to the network using Over-The-Air Activation (OTAA), which provides secure, dynamic key negotiation. The administrator enters the device's unique 16-character identifier, assigns a descriptive name, selects the device model, and configures the LoRaWAN authentication credentials (Application EUI and Application Key). The system validates the device ID format, stores the device configuration, and provisions it to the cloud platform for immediate connectivity.</p>
+<p><strong>Why this priority</strong>: Device registration is the foundational operation for any device management system. OTAA is the recommended production authentication method for LoRaWAN devices, providing enhanced security through dynamic session key negotiation. Without this capability, no devices can be managed.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by registering a single OTAA device with valid credentials and verifying the device appears in the device list with correct configuration, delivering immediate value for organizations deploying their first LoRaWAN sensors.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> an administrator has device credentials from the manufacturer, <strong>When</strong> they submit a new device with a valid 16-character hexadecimal device ID, device name, model selection, Application EUI, and Application Key, <strong>Then</strong> the system creates the device, provisions it to the cloud platform, and displays a success confirmation</li>
+<li><strong>Given</strong> an administrator attempts to register a device, <strong>When</strong> they provide an invalid device ID (not 16 hexadecimal characters), <strong>Then</strong> the system displays a validation error explaining the required format before submission</li>
+<li><strong>Given</strong> a device already exists in the system, <strong>When</strong> an administrator attempts to register another device with the same device ID, <strong>Then</strong> the system prevents duplicate registration and displays an error indicating the device already exists</li>
+<li><strong>Given</strong> an administrator is creating an OTAA device, <strong>When</strong> they omit the Application Key or Application EUI, <strong>Then</strong> the system displays validation errors indicating these fields are required for OTAA authentication</li>
+<li><strong>Given</strong> an administrator successfully creates a device, <strong>When</strong> the device connects to the network for the first time, <strong>Then</strong> the system records the first connection timestamp and updates the device status</li>
+</ol>
+<hr/>
+<h3 id="user-story-2-view-and-search-device-inventory-priority-p1">User Story 2 - View and Search Device Inventory (Priority: P1)<a class="headerlink" href="#user-story-2-view-and-search-device-inventory-priority-p1" title="Permanent link">¶</a></h3>
+<p>An IoT operations team needs to view all LoRaWAN devices in their fleet with the ability to search by name or identifier, filter by connection status (connected/disconnected), filter by enabled state, and filter by device model. The system displays a paginated list showing key information: device name, identifier, model, connection status, and last activity time. Users can navigate through pages of results and adjust the number of devices shown per page.</p>
+<p><strong>Why this priority</strong>: Visibility into the device fleet is essential for operations teams to monitor their IoT deployment. The ability to search and filter enables rapid troubleshooting and fleet management at scale. This is a core capability used daily by administrators.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by registering multiple devices with varying statuses and models, then verifying search, filtering, pagination, and sorting functions work correctly, providing immediate operational visibility.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> the system contains multiple LoRaWAN devices, <strong>When</strong> a user views the device list, <strong>Then</strong> the system displays devices in a paginated table showing device name, identifier, model, connection status, enabled state, and last activity time</li>
+<li><strong>Given</strong> a user is viewing the device list, <strong>When</strong> they enter a search term matching a device name or identifier, <strong>Then</strong> the system filters the list to show only matching devices in real-time</li>
+<li><strong>Given</strong> a user wants to find disconnected devices, <strong>When</strong> they filter by connection status "disconnected", <strong>Then</strong> the system shows only devices that are not currently connected to the network</li>
+<li><strong>Given</strong> a user is viewing many devices, <strong>When</strong> they change the page size setting, <strong>Then</strong> the system adjusts the number of devices displayed per page accordingly</li>
+<li><strong>Given</strong> a user has filtered the device list, <strong>When</strong> they navigate to subsequent pages, <strong>Then</strong> the filters remain applied across all pages</li>
+<li><strong>Given</strong> a device list contains devices from multiple models, <strong>When</strong> a user filters by a specific device model, <strong>Then</strong> the system shows only devices of that model type</li>
+</ol>
+<hr/>
+<h3 id="user-story-3-update-device-configuration-and-lorawan-parameters-priority-p1">User Story 3 - Update Device Configuration and LoRaWAN Parameters (Priority: P1)<a class="headerlink" href="#user-story-3-update-device-configuration-and-lorawan-parameters-priority-p1" title="Permanent link">¶</a></h3>
+<p>An IoT administrator needs to modify a device's configuration including changing the device name, updating tags for organization, adjusting LoRaWAN-specific parameters (device class, preferred receive window, frame counter settings), changing gateway assignments, or updating authentication credentials. The system retrieves the current device configuration, allows the administrator to modify editable fields through an intuitive interface, validates changes, and synchronizes the updated configuration to the cloud platform.</p>
+<p><strong>Why this priority</strong>: Device configurations need adjustment throughout the device lifecycle as network conditions change, devices are relocated, or operational requirements evolve. The ability to update LoRaWAN-specific parameters like class type and frame counters directly impacts device battery life and network performance.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by updating an existing device's configuration parameters, verifying the changes persist and synchronize correctly, and confirming the device operates with the new settings.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> an administrator is viewing a device's details, <strong>When</strong> they modify the device name and save, <strong>Then</strong> the system updates the device name and displays it throughout the interface</li>
+<li><strong>Given</strong> a device is configured for Class A operation, <strong>When</strong> an administrator changes the device class to Class C for continuous receive mode, <strong>Then</strong> the system updates the class type and synchronizes to the cloud platform</li>
+<li><strong>Given</strong> a device has specific frame counter values, <strong>When</strong> an administrator resets the frame counters, <strong>Then</strong> the system updates the uplink and downlink frame counter start values as specified</li>
+<li><strong>Given</strong> a device is assigned to one gateway, <strong>When</strong> an administrator changes the gateway assignment, <strong>Then</strong> the system updates the gateway routing configuration</li>
+<li><strong>Given</strong> an administrator updates multiple device parameters, <strong>When</strong> a validation error occurs on one field, <strong>Then</strong> the system displays the specific error without discarding other valid changes</li>
+<li><strong>Given</strong> a device is using OTAA authentication, <strong>When</strong> an administrator switches to ABP mode, <strong>Then</strong> the system prompts for required ABP credentials (Device Address, Application Session Key, Network Session Key) before allowing the save</li>
+<li><strong>Given</strong> an administrator modifies device tags, <strong>When</strong> they add, update, or remove custom tags, <strong>Then</strong> the system saves the tag changes and makes them available for filtering and search</li>
+</ol>
+<hr/>
+<h3 id="user-story-4-delete-device-from-system-priority-p2">User Story 4 - Delete Device from System (Priority: P2)<a class="headerlink" href="#user-story-4-delete-device-from-system-priority-p2" title="Permanent link">¶</a></h3>
+<p>An IoT administrator needs to permanently remove a device from the system when it is decommissioned, lost, or no longer needed. The system removes the device configuration from both the local database and the cloud platform, including all associated data such as device tags, labels, and historical telemetry. The operation is irreversible and requires appropriate permissions.</p>
+<p><strong>Why this priority</strong>: Device removal is important for maintaining an accurate device inventory and ensuring decommissioned devices cannot connect to the network. While critical for security and lifecycle management, it occurs less frequently than registration and updates, making it P2.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by deleting a previously registered device and verifying it no longer appears in the device list, cannot be retrieved via the API, and is removed from the cloud platform.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> an administrator has identified a device for decommissioning, <strong>When</strong> they delete the device and confirm the action, <strong>Then</strong> the system removes the device from the database and cloud platform and displays a success confirmation</li>
+<li><strong>Given</strong> a device has associated telemetry data, <strong>When</strong> the device is deleted, <strong>Then</strong> the system removes all related telemetry records to maintain data integrity</li>
+<li><strong>Given</strong> a device has custom tags and labels, <strong>When</strong> the device is deleted, <strong>Then</strong> the system removes all device-specific tag values and label associations</li>
+<li><strong>Given</strong> a user attempts to access a deleted device, <strong>When</strong> they navigate to the device's detail page or request it via the API, <strong>Then</strong> the system returns a "not found" error</li>
+<li><strong>Given</strong> a device deletion is requested, <strong>When</strong> the cloud platform synchronization fails, <strong>Then</strong> the system handles the error gracefully and informs the administrator of the issue</li>
+</ol>
+<hr/>
+<h3 id="user-story-5-monitor-device-telemetry-and-activity-priority-p2">User Story 5 - Monitor Device Telemetry and Activity (Priority: P2)<a class="headerlink" href="#user-story-5-monitor-device-telemetry-and-activity-priority-p2" title="Permanent link">¶</a></h3>
+<p>An IoT operations engineer needs to view telemetry data transmitted by LoRaWAN devices to verify sensor readings, troubleshoot connectivity issues, and monitor device health. The system displays recent telemetry messages with timestamps and decoded payload data. Engineers can view telemetry history for individual devices to identify patterns or anomalies.</p>
+<p><strong>Why this priority</strong>: Telemetry monitoring is essential for operational oversight and troubleshooting. While critical for maintaining device health, it's a monitoring function rather than a configuration function, making it P2. It's used regularly but not as frequently as device registration or updates.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by retrieving telemetry for a device that has sent messages, verifying the data displays correctly with timestamps and decoded values, and confirming the telemetry history is maintained.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a device has transmitted telemetry messages, <strong>When</strong> an engineer views the device's telemetry page, <strong>Then</strong> the system displays the recent telemetry entries with timestamps and decoded payload data</li>
+<li><strong>Given</strong> a device has a configured sensor decoder, <strong>When</strong> telemetry arrives with binary payload, <strong>Then</strong> the system decodes the payload into human-readable sensor values</li>
+<li><strong>Given</strong> telemetry history exceeds the retention limit, <strong>When</strong> new telemetry arrives, <strong>Then</strong> the system maintains only the most recent entries and removes older data</li>
+<li><strong>Given</strong> a device is in range of multiple gateways, <strong>When</strong> the same telemetry message is received by multiple gateways, <strong>Then</strong> the system applies the configured deduplication mode (none, drop, or mark) to handle duplicates</li>
+<li><strong>Given</strong> an engineer is troubleshooting connectivity, <strong>When</strong> they view a device's last activity time, <strong>Then</strong> the system displays the timestamp of the most recent communication</li>
+<li><strong>Given</strong> a device has never sent telemetry, <strong>When</strong> an engineer views the telemetry page, <strong>Then</strong> the system displays an appropriate message indicating no data is available yet</li>
+</ol>
+<hr/>
+<h3 id="user-story-6-execute-commands-on-lorawan-devices-priority-p2">User Story 6 - Execute Commands on LoRaWAN Devices (Priority: P2)<a class="headerlink" href="#user-story-6-execute-commands-on-lorawan-devices-priority-p2" title="Permanent link">¶</a></h3>
+<p>An IoT administrator needs to remotely execute commands on LoRaWAN devices to trigger actions such as configuration changes, sensor calibration, or device resets. The administrator selects a device, chooses from available commands defined in the device model, and sends the command. The system transmits the command as a cloud-to-device message through the LoRaWAN network.</p>
+<p><strong>Why this priority</strong>: Remote command execution enables critical device management without physical access, particularly important for devices in remote or hard-to-reach locations. It's essential for operational efficiency but not required for basic device connectivity, making it P2.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by executing a command on a connected device and verifying the command is transmitted through the cloud platform, providing immediate remote management capability.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a device model defines available commands, <strong>When</strong> an administrator views a device's command panel, <strong>Then</strong> the system displays all commands available for that device model</li>
+<li><strong>Given</strong> an administrator selects a command, <strong>When</strong> they execute it on a connected device, <strong>Then</strong> the system sends the command as a cloud-to-device message and displays a confirmation</li>
+<li><strong>Given</strong> a device is disconnected, <strong>When</strong> an administrator attempts to execute a command, <strong>Then</strong> the system warns that the device is offline and the command will be delivered when the device reconnects</li>
+<li><strong>Given</strong> a command execution fails due to network issues, <strong>When</strong> the error occurs, <strong>Then</strong> the system displays an error message with details about the failure</li>
+<li><strong>Given</strong> an administrator lacks command execution permissions, <strong>When</strong> they attempt to execute a command, <strong>Then</strong> the system denies the action and displays an authorization error</li>
+</ol>
+<hr/>
+<h3 id="user-story-7-configure-abp-authentication-for-testing-devices-priority-p3">User Story 7 - Configure ABP Authentication for Testing Devices (Priority: P3)<a class="headerlink" href="#user-story-7-configure-abp-authentication-for-testing-devices-priority-p3" title="Permanent link">¶</a></h3>
+<p>An IoT developer needs to quickly onboard test devices using Activation By Personalization (ABP) for faster initial connectivity during development and testing. The developer registers the device with ABP mode selected, provides the pre-configured Device Address, Application Session Key, and Network Session Key, and configures frame counter settings with relaxed validation for testing scenarios.</p>
+<p><strong>Why this priority</strong>: ABP authentication is valuable for testing and development scenarios where rapid device onboarding is prioritized over maximum security. Production deployments should use OTAA, making this a lower priority feature for specialized use cases.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by registering an ABP device with manual credentials, verifying it connects without a join procedure, and confirming frame counter configurations work in relaxed mode.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a developer has ABP credentials from a test device, <strong>When</strong> they create a device with ABP mode selected and provide Device Address, Application Session Key, and Network Session Key, <strong>Then</strong> the system creates the device with ABP authentication</li>
+<li><strong>Given</strong> an ABP device is registered, <strong>When</strong> it attempts to communicate, <strong>Then</strong> the device connects immediately without performing an OTAA join procedure</li>
+<li><strong>Given</strong> a developer is configuring an ABP test device, <strong>When</strong> they enable ABP relaxed mode, <strong>Then</strong> the system allows more flexible frame counter validation for testing purposes</li>
+<li><strong>Given</strong> an ABP device has frame counter issues, <strong>When</strong> a developer resets the frame counters, <strong>Then</strong> the system updates the starting frame counter values to resolve the issue</li>
+<li><strong>Given</strong> a developer creates an ABP device, <strong>When</strong> they omit required ABP credentials, <strong>Then</strong> the system displays validation errors for the missing fields</li>
+</ol>
+<hr/>
+<h3 id="user-story-8-assign-gateway-routing-for-multi-gateway-deployments-priority-p3">User Story 8 - Assign Gateway Routing for Multi-Gateway Deployments (Priority: P3)<a class="headerlink" href="#user-story-8-assign-gateway-routing-for-multi-gateway-deployments-priority-p3" title="Permanent link">¶</a></h3>
+<p>A network administrator managing a LoRaWAN deployment with multiple gateways needs to assign specific devices to preferred gateways for optimized routing or to isolate device traffic. The administrator views available gateways, selects a gateway for a device, and saves the configuration. The system routes the device's traffic through the assigned gateway.</p>
+<p><strong>Why this priority</strong>: Gateway assignment is important for advanced network optimization in multi-gateway deployments but is optional for basic device operation. Most devices can operate without explicit gateway assignment, making this a P3 enhancement feature.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by assigning a device to a specific gateway and verifying the routing configuration is applied, useful for network segmentation and optimization scenarios.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> the system has multiple configured gateways, <strong>When</strong> an administrator views the gateway assignment field, <strong>Then</strong> the system displays a list of available gateways to choose from</li>
+<li><strong>Given</strong> an administrator assigns a device to a specific gateway, <strong>When</strong> they save the configuration, <strong>Then</strong> the system routes the device's traffic through the assigned gateway</li>
+<li><strong>Given</strong> a device is assigned to a gateway, <strong>When</strong> the administrator removes the gateway assignment, <strong>Then</strong> the device can communicate through any available gateway</li>
+<li><strong>Given</strong> network conditions require device reassignment, <strong>When</strong> an administrator changes the gateway assignment, <strong>Then</strong> the system updates the routing configuration immediately</li>
+</ol>
+<hr/>
+<h3 id="user-story-9-manage-device-class-types-for-power-optimization-priority-p3">User Story 9 - Manage Device Class Types for Power Optimization (Priority: P3)<a class="headerlink" href="#user-story-9-manage-device-class-types-for-power-optimization-priority-p3" title="Permanent link">¶</a></h3>
+<p>An IoT operations engineer needs to configure device class types (Class A, B, or C) to balance power consumption with downlink communication requirements. Class A devices minimize power consumption with receive windows only after uplinks. Class B devices support scheduled downlink windows. Class C devices maintain continuous receive for immediate downlink but consume more power.</p>
+<p><strong>Why this priority</strong>: Device class configuration is important for optimizing battery life and downlink latency, but devices can operate with default Class A settings. Class reconfiguration is typically done during initial deployment or when requirements change, making it P3.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by changing a device's class type and verifying the cloud platform reflects the new class configuration, enabling power consumption optimization.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a device is configured as Class A, <strong>When</strong> an engineer changes it to Class C for continuous receive mode, <strong>Then</strong> the system updates the device class and synchronizes to the cloud platform</li>
+<li><strong>Given</strong> a battery-powered device needs power optimization, <strong>When</strong> an engineer sets it to Class A, <strong>Then</strong> the device operates with minimal power consumption and receive windows only after transmissions</li>
+<li><strong>Given</strong> a device requires scheduled downlinks, <strong>When</strong> an engineer configures it as Class B, <strong>Then</strong> the system enables synchronized receive windows based on network beacons</li>
+<li><strong>Given</strong> an engineer is selecting device class, <strong>When</strong> they view the options, <strong>Then</strong> the system displays descriptions of each class type to guide the selection</li>
+</ol>
+<hr/>
+<h3 id="user-story-10-configure-receive-window-parameters-for-network-optimization-priority-p3">User Story 10 - Configure Receive Window Parameters for Network Optimization (Priority: P3)<a class="headerlink" href="#user-story-10-configure-receive-window-parameters-for-network-optimization-priority-p3" title="Permanent link">¶</a></h3>
+<p>A network engineer needs to fine-tune receive window parameters including preferred window (RX1 or RX2), RX1 data rate offset, RX2 data rate, and receive delay to optimize network performance and reliability. These parameters control when and how devices receive downlink messages from the network.</p>
+<p><strong>Why this priority</strong>: Receive window tuning is an advanced feature for network optimization, typically needed only in specific deployment scenarios or to address network coverage issues. Default parameters work for most deployments, making this P3.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by configuring custom receive window parameters and verifying they synchronize to the cloud platform, providing advanced network tuning capabilities.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a device uses default receive window settings, <strong>When</strong> an engineer configures a custom RX2 data rate, <strong>Then</strong> the system updates the RX2 window data rate for OTAA devices</li>
+<li><strong>Given</strong> network conditions require receive window adjustment, <strong>When</strong> an engineer sets the RX1 data rate offset, <strong>Then</strong> the system configures the offset between RX and TX data rates</li>
+<li><strong>Given</strong> a device needs custom timing, <strong>When</strong> an engineer configures the receive delay, <strong>Then</strong> the system sets the wait time between receive and transmit per LoRaWAN specifications</li>
+<li><strong>Given</strong> an engineer is optimizing downlink reliability, <strong>When</strong> they select the preferred window (RX1 or RX2), <strong>Then</strong> the system prioritizes the selected window for downlink communication</li>
+</ol>
+<hr/>
+<h3 id="user-story-11-configure-sensor-decoder-for-payload-interpretation-priority-p3">User Story 11 - Configure Sensor Decoder for Payload Interpretation (Priority: P3)<a class="headerlink" href="#user-story-11-configure-sensor-decoder-for-payload-interpretation-priority-p3" title="Permanent link">¶</a></h3>
+<p>An IoT administrator needs to configure a sensor decoder URL for devices that transmit custom binary payloads. The decoder service converts the binary LoRaWAN payload into human-readable JSON telemetry data. The administrator enters the decoder service URL when creating or updating a device.</p>
+<p><strong>Why this priority</strong>: Sensor decoders enable interpretation of custom device payloads, essential for displaying meaningful telemetry data. However, devices can operate and transmit data without decoders (raw payload is still stored), making this a P3 enhancement feature.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by configuring a decoder URL and verifying that incoming telemetry is processed through the decoder service to produce human-readable values.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a device transmits binary sensor data, <strong>When</strong> an administrator configures a decoder URL, <strong>Then</strong> the system uses the decoder service to convert binary payloads to JSON telemetry</li>
+<li><strong>Given</strong> a device model has standard payload format, <strong>When</strong> an administrator assigns a device to that model, <strong>Then</strong> the system automatically applies the model's decoder configuration</li>
+<li><strong>Given</strong> a decoder service is unavailable, <strong>When</strong> telemetry arrives, <strong>Then</strong> the system stores the raw payload and attempts decoding on subsequent messages</li>
+<li><strong>Given</strong> an administrator updates a decoder URL, <strong>When</strong> new telemetry arrives, <strong>Then</strong> the system uses the updated decoder for payload interpretation</li>
+</ol>
+<hr/>
+<h3 id="user-story-12-organize-devices-with-tags-and-labels-priority-p4">User Story 12 - Organize Devices with Tags and Labels (Priority: P4)<a class="headerlink" href="#user-story-12-organize-devices-with-tags-and-labels-priority-p4" title="Permanent link">¶</a></h3>
+<p>An IoT administrator needs to organize devices using custom tags (name-value pairs) and labels (categorical markers) for filtering, searching, and reporting. Tags might include location, department, or custom metadata. Labels provide simple categorization. The administrator adds, updates, or removes tags and labels when creating or editing devices.</p>
+<p><strong>Why this priority</strong>: Tags and labels enhance device organization and enable advanced filtering, but are not required for core device operation. They provide operational efficiency improvements, making them P4 nice-to-have features.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by adding tags and labels to devices and verifying they can be used for filtering and searching in the device list.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> an administrator is editing a device, <strong>When</strong> they add custom tags with name-value pairs (e.g., "location: warehouse-A"), <strong>Then</strong> the system saves the tags and makes them searchable</li>
+<li><strong>Given</strong> devices have been tagged, <strong>When</strong> a user filters the device list by a specific tag, <strong>Then</strong> the system shows only devices matching that tag</li>
+<li><strong>Given</strong> an administrator assigns labels to devices, <strong>When</strong> they select from available labels, <strong>Then</strong> the system associates the labels with the device for categorization</li>
+<li><strong>Given</strong> multiple devices share common characteristics, <strong>When</strong> an administrator applies the same label to all, <strong>Then</strong> the system enables bulk filtering and reporting by that label</li>
+<li><strong>Given</strong> tag or label requirements change, <strong>When</strong> an administrator removes tags or labels from a device, <strong>Then</strong> the system updates the device's metadata immediately</li>
+</ol>
+<hr/>
+<h3 id="user-story-13-view-adaptive-data-rate-adr-reported-values-priority-p4">User Story 13 - View Adaptive Data Rate (ADR) Reported Values (Priority: P4)<a class="headerlink" href="#user-story-13-view-adaptive-data-rate-adr-reported-values-priority-p4" title="Permanent link">¶</a></h3>
+<p>A network engineer needs to view adaptive data rate (ADR) values reported by devices to understand how the network server has optimized transmission parameters. Reported values include current data rate, transmit power, number of repetitions, and receive window parameters. These values show the actual operating parameters negotiated between the device and network server.</p>
+<p><strong>Why this priority</strong>: ADR reported values provide visibility into network optimization but are read-only monitoring data. They're useful for advanced troubleshooting but not required for device operation, making them P4.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by viewing a device's details and verifying ADR reported values display correctly when present from the cloud platform.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a device has connected and negotiated ADR parameters, <strong>When</strong> an engineer views the device details, <strong>Then</strong> the system displays reported data rate, transmit power, and repetition values</li>
+<li><strong>Given</strong> ADR is actively optimizing device parameters, <strong>When</strong> reported values change, <strong>Then</strong> the system updates the displayed values from the cloud platform</li>
+<li><strong>Given</strong> a device has not yet reported ADR values, <strong>When</strong> an engineer views the device, <strong>Then</strong> the system indicates that ADR values are not yet available</li>
+<li><strong>Given</strong> an engineer is troubleshooting battery life, <strong>When</strong> they review reported transmit power levels, <strong>Then</strong> they can assess whether the network has optimized for power consumption</li>
+</ol>
+<hr/>
+<h3 id="user-story-14-duplicate-device-configuration-for-rapid-deployment-priority-p4">User Story 14 - Duplicate Device Configuration for Rapid Deployment (Priority: P4)<a class="headerlink" href="#user-story-14-duplicate-device-configuration-for-rapid-deployment-priority-p4" title="Permanent link">¶</a></h3>
+<p>An IoT administrator deploying multiple similar devices needs to duplicate an existing device's configuration to speed up registration of new devices with similar settings. The administrator selects "Save and Duplicate" when editing a device, which creates a new device form pre-filled with the current device's configuration except for unique identifiers.</p>
+<p><strong>Why this priority</strong>: Device duplication is a convenience feature that improves operational efficiency during bulk deployments but is not essential. Devices can always be registered individually, making this P4.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by duplicating a device configuration, updating the unique device ID, and verifying the new device is created with copied settings.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> an administrator has configured a device with specific settings, <strong>When</strong> they select "Save and Duplicate", <strong>Then</strong> the system opens a new device form with all settings copied except device ID and name</li>
+<li><strong>Given</strong> a duplicated device form is displayed, <strong>When</strong> the administrator updates the device ID and name with unique values, <strong>Then</strong> the system creates a new device with the duplicated configuration</li>
+<li><strong>Given</strong> multiple similar devices need deployment, <strong>When</strong> an administrator uses duplication repeatedly, <strong>Then</strong> they can rapidly onboard devices without re-entering common configuration parameters</li>
+</ol>
+<hr/>
+<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<p><strong>Device ID Validation</strong>:</p>
+<ul>
+<li>What happens when a user attempts to register a device with a device ID containing lowercase letters or special characters? The system must reject the registration and display a clear error message explaining the required format (16 uppercase hexadecimal characters).</li>
+<li>How does the system handle device IDs that are too short or too long? The system validates the exact 16-character length and provides specific feedback.</li>
+</ul>
+<p><strong>Authentication Mode Switching</strong>:</p>
+<ul>
+<li>What happens when a user switches from OTAA to ABP mode without providing ABP credentials? The system must validate that all required ABP fields (DevAddr, AppSKey, NwkSKey) are populated before allowing the save.</li>
+<li>How does the system handle switching from ABP to OTAA on a device that has already connected? The device will require a new join procedure, and frame counters will reset according to OTAA negotiation.</li>
+</ul>
+<p><strong>Frame Counter Boundaries</strong>:</p>
+<ul>
+<li>What happens when frame counters reach the maximum value (4,294,967,295 for 32-bit counters)? The system should allow frame counter reset or device re-provisioning to prevent counter exhaustion.</li>
+<li>How does the system handle frame counter resets in ABP mode? The ABP relaxed mode should be configured to prevent replay attack protection from blocking legitimate resets during testing.</li>
+</ul>
+<p><strong>Gateway Assignment</strong>:</p>
+<ul>
+<li>What happens when a device is assigned to a gateway that goes offline? The device should still be able to communicate through other available gateways if no explicit assignment is made.</li>
+<li>How does the system handle deletion of a gateway that has devices assigned to it? The system should either prevent gateway deletion or clear gateway assignments from affected devices.</li>
+</ul>
+<p><strong>Telemetry Deduplication</strong>:</p>
+<ul>
+<li>What happens when the same message is received by multiple gateways with deduplication set to "Drop"? The system processes the first message received and ignores subsequent duplicates based on sequence number.</li>
+<li>How does the system handle "Mark" deduplication mode? The system processes all messages but marks duplicates with metadata indicating they are duplicates.</li>
+</ul>
+<p><strong>Telemetry Storage Limits</strong>:</p>
+<ul>
+<li>What happens when telemetry history reaches the retention limit? The system automatically removes the oldest telemetry entries while retaining the most recent messages.</li>
+<li>How does the system handle high-frequency telemetry from devices? Rate limiting or aggregation may be necessary to prevent database growth.</li>
+</ul>
+<p><strong>Sensor Decoder Failures</strong>:</p>
+<ul>
+<li>What happens when the configured decoder URL is unreachable? The system stores the raw binary payload and logs the decoder failure, allowing retry or manual decoding later.</li>
+<li>How does the system handle decoder responses that return invalid JSON? Error handling should gracefully store the raw payload and alert administrators to the decoder issue.</li>
+</ul>
+<p><strong>Cloud Platform Synchronization</strong>:</p>
+<ul>
+<li>What happens when device creation succeeds locally but fails to provision to the cloud platform? The system should roll back the local creation or mark the device as pending synchronization for retry.</li>
+<li>How does the system handle cloud platform disconnections during device updates? Transactional integrity should ensure either both local and cloud updates succeed or both fail.</li>
+</ul>
+<p><strong>Permission Boundaries</strong>:</p>
+<ul>
+<li>What happens when a user with read-only permissions attempts to update a device? The system displays appropriate read-only interfaces and prevents modification attempts.</li>
+<li>How does the system handle users with device:write permission but not device:execute permission? Command execution buttons are hidden or disabled, and API attempts return authorization errors.</li>
+</ul>
+<p><strong>Device Model Dependencies</strong>:</p>
+<ul>
+<li>What happens when an administrator creates a device with a model that doesn't exist? The system validates model existence and prevents device creation with invalid model references.</li>
+<li>How does the system handle model deletion when devices are assigned to that model? The system should either prevent model deletion or handle orphaned device references gracefully.</li>
+</ul>
+<p><strong>Concurrent Modifications</strong>:</p>
+<ul>
+<li>What happens when two administrators simultaneously edit the same device? The system should detect concurrent modifications and either use optimistic locking to prevent conflicts or notify the second user their changes may overwrite the first.</li>
+</ul>
+<p><strong>Bulk Operations</strong>:</p>
+<ul>
+<li>How does the system handle requests to view or export large device lists (1000+ devices)? Pagination ensures only a subset loads at once, and export operations should handle large datasets efficiently.</li>
+</ul>
+<p><strong>Feature Toggle Scenarios</strong>:</p>
+<ul>
+<li>What happens when the LoRa feature is disabled while users are viewing LoRaWAN devices? The system returns "not found" errors for LoRa endpoints and displays appropriate messages.</li>
+</ul>
+<hr/>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
+<h3 id="functional-requirements">Functional Requirements<a class="headerlink" href="#functional-requirements" title="Permanent link">¶</a></h3>
+<p><strong>Device Registration</strong>:</p>
+<ul>
+<li><strong>FR-001</strong>: System MUST allow administrators to register new LoRaWAN devices with a unique 16-character hexadecimal device identifier (DevEUI)</li>
+<li><strong>FR-002</strong>: System MUST validate device identifiers are exactly 16 characters containing only uppercase letters A-F and numbers 0-9</li>
+<li><strong>FR-003</strong>: System MUST require a device name and device model selection for each registered device</li>
+<li><strong>FR-004</strong>: System MUST prevent registration of duplicate device identifiers</li>
+<li><strong>FR-005</strong>: System MUST provision registered devices to the cloud IoT platform for connectivity</li>
+</ul>
+<p><strong>Authentication Configuration</strong>:</p>
+<ul>
+<li><strong>FR-006</strong>: System MUST support Over-The-Air Activation (OTAA) authentication requiring Application EUI and Application Key</li>
+<li><strong>FR-007</strong>: System MUST support Activation By Personalization (ABP) authentication requiring Device Address, Application Session Key, and Network Session Key</li>
+<li><strong>FR-008</strong>: System MUST enforce that either OTAA or ABP credentials are provided based on the selected authentication mode</li>
+<li><strong>FR-009</strong>: System MUST default new devices to OTAA authentication mode as the recommended secure method</li>
+</ul>
+<p><strong>Device Inventory Management</strong>:</p>
+<ul>
+<li><strong>FR-010</strong>: System MUST display a paginated list of all registered LoRaWAN devices</li>
+<li><strong>FR-011</strong>: System MUST allow users to search devices by name or identifier</li>
+<li><strong>FR-012</strong>: System MUST allow users to filter devices by connection status (connected/disconnected)</li>
+<li><strong>FR-013</strong>: System MUST allow users to filter devices by enabled state (enabled/disabled)</li>
+<li><strong>FR-014</strong>: System MUST allow users to filter devices by device model</li>
+<li><strong>FR-015</strong>: System MUST display device name, identifier, model, connection status, enabled state, and last activity time for each device</li>
+<li><strong>FR-016</strong>: System MUST support configurable page sizes for device lists</li>
+<li><strong>FR-017</strong>: System MUST maintain filter and search criteria when navigating between pages</li>
+</ul>
+<p><strong>Device Configuration Updates</strong>:</p>
+<ul>
+<li><strong>FR-018</strong>: System MUST allow administrators to update device names</li>
+<li><strong>FR-019</strong>: System MUST allow administrators to change device model assignments</li>
+<li><strong>FR-020</strong>: System MUST allow administrators to modify LoRaWAN device class (Class A, B, or C)</li>
+<li><strong>FR-021</strong>: System MUST allow administrators to configure preferred receive window (RX1 or RX2)</li>
+<li><strong>FR-022</strong>: System MUST allow administrators to configure receive window parameters (RX1 data rate offset, RX2 data rate, receive delay)</li>
+<li><strong>FR-023</strong>: System MUST allow administrators to configure frame counter settings (uplink start, downlink start, reset counter, 32-bit support, relaxed mode)</li>
+<li><strong>FR-024</strong>: System MUST allow administrators to assign devices to specific gateways</li>
+<li><strong>FR-025</strong>: System MUST allow administrators to configure sensor decoder URLs for payload interpretation</li>
+<li><strong>FR-026</strong>: System MUST allow administrators to enable or disable downlink communication</li>
+<li><strong>FR-027</strong>: System MUST allow administrators to set keep-alive timeout values</li>
+<li><strong>FR-028</strong>: System MUST allow administrators to switch between OTAA and ABP authentication modes with appropriate credential updates</li>
+<li><strong>FR-029</strong>: System MUST synchronize configuration changes to the cloud IoT platform</li>
+<li><strong>FR-030</strong>: System MUST validate all configuration changes before persisting</li>
+</ul>
+<p><strong>Device Deletion</strong>:</p>
+<ul>
+<li><strong>FR-031</strong>: System MUST allow administrators to permanently delete devices</li>
+<li><strong>FR-032</strong>: System MUST remove deleted devices from both local storage and cloud IoT platform</li>
+<li><strong>FR-033</strong>: System MUST cascade deletion to remove associated device tags, labels, and telemetry data</li>
+<li><strong>FR-034</strong>: System MUST prevent access to deleted devices through any interface</li>
+</ul>
+<p><strong>Telemetry Management</strong>:</p>
+<ul>
+<li><strong>FR-035</strong>: System MUST receive and store telemetry messages transmitted by LoRaWAN devices</li>
+<li><strong>FR-036</strong>: System MUST display telemetry history for individual devices with timestamps</li>
+<li><strong>FR-037</strong>: System MUST decode telemetry payloads using configured sensor decoders</li>
+<li><strong>FR-038</strong>: System MUST handle duplicate telemetry messages using configured deduplication mode (none, drop, or mark)</li>
+<li><strong>FR-039</strong>: System MUST maintain a limited history of recent telemetry entries per device</li>
+<li><strong>FR-040</strong>: System MUST automatically remove oldest telemetry entries when retention limits are reached</li>
+<li><strong>FR-041</strong>: System MUST update device last activity time when telemetry is received</li>
+</ul>
+<p><strong>Command Execution</strong>:</p>
+<ul>
+<li><strong>FR-042</strong>: System MUST allow administrators to execute commands on LoRaWAN devices</li>
+<li><strong>FR-043</strong>: System MUST display available commands based on device model definitions</li>
+<li><strong>FR-044</strong>: System MUST transmit commands as cloud-to-device messages through the LoRaWAN network</li>
+<li><strong>FR-045</strong>: System MUST provide feedback on command execution success or failure</li>
+</ul>
+<p><strong>Gateway Management</strong>:</p>
+<ul>
+<li><strong>FR-046</strong>: System MUST provide a list of available gateways for device assignment</li>
+<li><strong>FR-047</strong>: System MUST allow optional gateway assignment to devices for traffic routing</li>
+<li><strong>FR-048</strong>: System MUST support devices operating without explicit gateway assignment (automatic routing)</li>
+</ul>
+<p><strong>Device Organization</strong>:</p>
+<ul>
+<li><strong>FR-049</strong>: System MUST allow administrators to add custom tags (name-value pairs) to devices</li>
+<li><strong>FR-050</strong>: System MUST allow administrators to assign labels to devices for categorization</li>
+<li><strong>FR-051</strong>: System MUST allow filtering and searching devices by tags and labels</li>
+<li><strong>FR-052</strong>: System MUST synchronize device tags to cloud IoT platform metadata</li>
+</ul>
+<p><strong>Adaptive Data Rate (ADR) Monitoring</strong>:</p>
+<ul>
+<li><strong>FR-053</strong>: System MUST display adaptive data rate values reported by devices including data rate, transmit power, and number of repetitions</li>
+<li><strong>FR-054</strong>: System MUST display reported receive window parameters from connected devices</li>
+<li><strong>FR-055</strong>: System MUST update displayed ADR values when they change on the cloud platform</li>
+</ul>
+<p><strong>Deduplication Configuration</strong>:</p>
+<ul>
+<li><strong>FR-056</strong>: System MUST allow administrators to configure deduplication mode (none, drop, or mark) for handling messages received by multiple gateways</li>
+<li><strong>FR-057</strong>: System MUST apply the configured deduplication strategy when processing telemetry</li>
+</ul>
+<p><strong>Frame Counter Management</strong>:</p>
+<ul>
+<li><strong>FR-058</strong>: System MUST support frame counter configuration with values from 0 to 4,294,967,295</li>
+<li><strong>FR-059</strong>: System MUST allow configuration of uplink and downlink frame counter start values</li>
+<li><strong>FR-060</strong>: System MUST support frame counter reset functionality</li>
+<li><strong>FR-061</strong>: System MUST support both 32-bit and 16-bit frame counter modes</li>
+<li><strong>FR-062</strong>: System MUST support ABP relaxed mode for flexible frame counter validation during testing</li>
+</ul>
+<p><strong>Connection Status</strong>:</p>
+<ul>
+<li><strong>FR-063</strong>: System MUST track and display device connection status (connected/disconnected)</li>
+<li><strong>FR-064</strong>: System MUST track and display device enabled status</li>
+<li><strong>FR-065</strong>: System MUST record device first connection timestamp</li>
+<li><strong>FR-066</strong>: System MUST update device status based on cloud platform state</li>
+</ul>
+<p><strong>Device Duplication</strong>:</p>
+<ul>
+<li><strong>FR-067</strong>: System MUST allow administrators to duplicate existing device configurations</li>
+<li><strong>FR-068</strong>: System MUST copy all device settings except unique identifiers when duplicating</li>
+<li><strong>FR-069</strong>: System MUST require unique device ID and name for duplicated devices</li>
+</ul>
+<p><strong>Authorization and Access Control</strong>:</p>
+<ul>
+<li><strong>FR-070</strong>: System MUST enforce read permission for viewing devices and telemetry</li>
+<li><strong>FR-071</strong>: System MUST enforce write permission for creating, updating, and deleting devices</li>
+<li><strong>FR-072</strong>: System MUST enforce execute permission for sending commands to devices</li>
+<li><strong>FR-073</strong>: System MUST restrict access to LoRaWAN features when LoRa support is disabled in configuration</li>
+</ul>
+<p><strong>Data Validation</strong>:</p>
+<ul>
+<li><strong>FR-074</strong>: System MUST validate device identifier format before allowing registration</li>
+<li><strong>FR-075</strong>: System MUST validate required fields are populated based on authentication mode</li>
+<li><strong>FR-076</strong>: System MUST validate frame counter values are within valid range</li>
+<li><strong>FR-077</strong>: System MUST validate receive window parameters are within specification limits</li>
+<li><strong>FR-078</strong>: System MUST provide clear error messages for validation failures</li>
+</ul>
+<p><strong>Cloud Platform Integration</strong>:</p>
+<ul>
+<li><strong>FR-079</strong>: System MUST create device twins in cloud IoT platform when devices are registered</li>
+<li><strong>FR-080</strong>: System MUST synchronize device configuration to cloud platform desired properties</li>
+<li><strong>FR-081</strong>: System MUST retrieve device reported properties from cloud platform</li>
+<li><strong>FR-082</strong>: System MUST support both Azure IoT Hub and AWS IoT Core platforms</li>
+<li><strong>FR-083</strong>: System MUST handle cloud platform communication failures gracefully</li>
+</ul>
+<hr/>
+<h3 id="key-entities">Key Entities<a class="headerlink" href="#key-entities" title="Permanent link">¶</a></h3>
+<p><strong>LoRaWAN Device</strong>: Represents a LoRaWAN IoT sensor or endpoint with a unique 16-character hexadecimal identifier (DevEUI). Contains authentication credentials (OTAA or ABP), LoRaWAN-specific configuration parameters (class type, frame counters, receive windows), connectivity information (connection status, last activity time), and organizational metadata (tags, labels). Inherits common device properties such as name, model, enabled state, and cloud platform provisioning details.</p>
+<p><strong>Device Model</strong>: Defines the template for a category of devices including available commands, sensor decoder configuration, default settings, and visual representation. Devices are assigned to models that determine their capabilities and interface.</p>
+<p><strong>Device Tag</strong>: Custom name-value pair metadata attached to devices for organization, filtering, and reporting purposes. Examples include location information, department ownership, or environment designation (production/test).</p>
+<p><strong>Device Label</strong>: Simple categorical marker for device classification enabling filtering and grouping. Multiple labels can be assigned to a single device.</p>
+<p><strong>Gateway</strong>: LoRaWAN concentrator or base station that provides network connectivity for devices. Devices can be optionally assigned to specific gateways for routing control in multi-gateway deployments.</p>
+<p><strong>Telemetry Entry</strong>: Time-series data point transmitted by a device containing timestamp, raw binary payload, and decoded sensor values. Multiple telemetry entries form the device's communication history.</p>
+<p><strong>Device Command</strong>: Executable action defined by a device model that can be remotely triggered on a device. Commands are transmitted as cloud-to-device messages through the LoRaWAN network.</p>
+<p><strong>Sensor Decoder</strong>: Service endpoint that converts binary LoRaWAN payloads to human-readable JSON telemetry data. Each device model can specify a decoder for its payload format.</p>
+<p><strong>Cloud Device Twin</strong>: Cloud platform representation of a device containing desired properties (configuration), reported properties (device state), and tags (metadata). The twin synchronizes device configuration between local database and cloud platform.</p>
+<hr/>
+<h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes<a class="headerlink" href="#measurable-outcomes" title="Permanent link">¶</a></h3>
+<p><strong>Device Onboarding Efficiency</strong>:</p>
+<ul>
+<li><strong>SC-001</strong>: Administrators can register a new LoRaWAN device with OTAA authentication in under 2 minutes including credential entry and model selection</li>
+<li><strong>SC-002</strong>: Device registration validation errors are displayed within 1 second of form submission with clear guidance on required corrections</li>
+<li><strong>SC-003</strong>: 95% of device registrations succeed on first attempt without validation errors</li>
+</ul>
+<p><strong>Operational Visibility</strong>:</p>
+<ul>
+<li><strong>SC-004</strong>: Device list displays 50+ devices with search, filter, and pagination in under 2 seconds</li>
+<li><strong>SC-005</strong>: Search and filter operations return results within 1 second of user input</li>
+<li><strong>SC-006</strong>: Administrators can locate a specific device by name or identifier in under 10 seconds regardless of fleet size</li>
+</ul>
+<p><strong>Configuration Management</strong>:</p>
+<ul>
+<li><strong>SC-007</strong>: Device configuration updates synchronize to cloud platform within 5 seconds of save operation</li>
+<li><strong>SC-008</strong>: LoRaWAN parameter changes (class type, receive windows, frame counters) take effect on next device communication</li>
+<li><strong>SC-009</strong>: 98% of device updates complete successfully without synchronization errors</li>
+</ul>
+<p><strong>Telemetry Monitoring</strong>:</p>
+<ul>
+<li><strong>SC-010</strong>: Telemetry data appears in device history within 30 seconds of device transmission</li>
+<li><strong>SC-011</strong>: Sensor decoder processes and displays human-readable telemetry values within 5 seconds of receipt</li>
+<li><strong>SC-012</strong>: System maintains telemetry history for at least the most recent 100 messages per device</li>
+</ul>
+<p><strong>Remote Device Management</strong>:</p>
+<ul>
+<li><strong>SC-013</strong>: Command execution requests transmit to connected devices within 10 seconds</li>
+<li><strong>SC-014</strong>: Administrators receive confirmation of command transmission within 15 seconds of execution request</li>
+<li><strong>SC-015</strong>: Command execution success rate exceeds 95% for connected devices</li>
+</ul>
+<p><strong>Fleet Management at Scale</strong>:</p>
+<ul>
+<li><strong>SC-016</strong>: System supports management of at least 1,000 LoRaWAN devices without performance degradation</li>
+<li><strong>SC-017</strong>: Bulk filtering operations (e.g., "show all disconnected devices") complete in under 3 seconds for fleets up to 1,000 devices</li>
+<li><strong>SC-018</strong>: Concurrent device updates by multiple administrators complete without data loss or conflicts</li>
+</ul>
+<p><strong>User Productivity</strong>:</p>
+<ul>
+<li><strong>SC-019</strong>: Duplicate device function reduces time to register similar devices by at least 50%</li>
+<li><strong>SC-020</strong>: Tag and label filtering reduces time to locate specific device categories by at least 60% compared to manual searching</li>
+<li><strong>SC-021</strong>: Reduce administrator training time for device management tasks to under 1 hour through intuitive interface design</li>
+</ul>
+<p><strong>Reliability and Data Integrity</strong>:</p>
+<ul>
+<li><strong>SC-022</strong>: Device data remains synchronized between local database and cloud platform with 99.9% accuracy</li>
+<li><strong>SC-023</strong>: Device deletion successfully removes all associated data (tags, labels, telemetry) in 100% of cases</li>
+<li><strong>SC-024</strong>: Telemetry deduplication prevents processing duplicate messages with 99% accuracy</li>
+</ul>
+<p><strong>Security and Access Control</strong>:</p>
+<ul>
+<li><strong>SC-025</strong>: Unauthorized access attempts to device management functions result in appropriate error responses in 100% of cases</li>
+<li><strong>SC-026</strong>: Device credentials (AppKey, AppSKey, NwkSKey) are stored and transmitted securely in all scenarios</li>
+<li><strong>SC-027</strong>: Frame counter security prevents replay attacks on ABP devices in production deployments</li>
+</ul>
+<hr/>
+<h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">¶</a></h2>
+<h3 id="source-analysis">Source Analysis<a class="headerlink" href="#source-analysis" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Analysis Path</strong>: <code>specs/008-lorawan-device-management/analyze.md</code></li>
+<li><strong>Analyzed By</strong>: excavator.specifier agent</li>
+<li><strong>Analysis Date</strong>: January 30, 2025</li>
+</ul>
+<h3 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h3>
+<p><strong>Controllers</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/LoRaWAN/LoRaWANDevicesController.cs</code> - REST API endpoints for LoRaWAN device CRUD operations, telemetry retrieval, command execution, and gateway management</li>
+</ul>
+<p><strong>Business Logic</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Infrastructure/Services/LoRaWanDeviceService.cs</code> - Core device service implementation with LoRa-specific business logic</li>
+<li><code>src/IoTHub.Portal.Application/Services/ILoRaWANCommandService.cs</code> - Command execution service interface</li>
+<li><code>src/IoTHub.Portal.Application/Services/IDeviceService.cs</code> - Generic device service interface</li>
+</ul>
+<p><strong>Data Access</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/ILorawanDeviceRepository.cs</code> - Device repository interface</li>
+<li><code>src/IoTHub.Portal.Domain/Repositories/ILoRaDeviceTelemetryRepository.cs</code> - Telemetry repository interface</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/LorawanDevice.cs</code> - Device entity with comprehensive LoRa properties</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/LoRaDeviceTelemetry.cs</code> - Telemetry entity</li>
+</ul>
+<p><strong>DTOs and Models</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceDetails.cs</code> - Complete device DTO with validation</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/LoRaWAN/LoRaDeviceBase.cs</code> - Base LoRa configuration properties</li>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/LoRaDeviceTelemetryDto.cs</code> - Telemetry DTO</li>
+</ul>
+<p><strong>UI Components</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/Devices/DeviceListPage.razor</code> - Device inventory list page</li>
+<li><code>src/IoTHub.Portal.Client/Components/Devices/EditDevice.razor</code> - Device create/edit form with LoRa-specific sections</li>
+<li><code>src/IoTHub.Portal.Client/Pages/Devices/DeviceDetailPage.razor</code> - Device detail view</li>
+</ul>
+<p><strong>Client Services</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Services/LoRaWanDeviceClientService.cs</code> - HTTP client service for API communication</li>
+</ul>
+<p><strong>Mappers</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Infrastructure/Mappers/LoRaDeviceTwinMapper.cs</code> - IoT Hub device twin mapper</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Mappers/LoRaDeviceMapper.cs</code> - Entity to DTO mapper</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
+<p><strong>Internal Feature Dependencies</strong>:</p>
+<ul>
+<li>Device Models - Define available commands, decoder settings, and device capabilities</li>
+<li>Device Tag Settings - Provide custom tag definitions for device organization</li>
+<li>Label Management - Supply label definitions for device categorization</li>
+<li>IoT Hub Integration - Cloud platform device twin synchronization</li>
+<li>Role-Based Access Control - Enforce device:read, device:write, and device:execute permissions</li>
+<li>LoRaWAN Commands - Enable remote command execution on devices</li>
+<li>Gateway Management - Provide gateway list for device routing</li>
+</ul>
+<p><strong>Features That Depend on This Feature</strong>:</p>
+<ul>
+<li>LoRaWAN Device Models - Use device instances to test model configurations</li>
+<li>Telemetry Analytics - Aggregate telemetry data across LoRaWAN device fleet</li>
+<li>Device Monitoring Dashboards - Display LoRaWAN device health and connectivity</li>
+<li>Alert Management - Trigger alerts based on LoRaWAN device conditions</li>
+<li>Reporting Systems - Generate reports on LoRaWAN device inventory and usage</li>
+</ul>
+<h3 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">¶</a></h3>
+<ul>
+<li>LoRaWAN 1.0.x Specification - Protocol standards for device communication</li>
+<li>Azure IoT Hub Documentation - Cloud platform integration patterns</li>
+<li>AWS IoT Core Documentation - Alternative cloud platform support</li>
+<li>Feature Analysis Master File - <code>docs/analyze.md</code> containing feature inventory</li>
+</ul>
+<hr/>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
+<h3 id="lorawan-protocol-context">LoRaWAN Protocol Context<a class="headerlink" href="#lorawan-protocol-context" title="Permanent link">¶</a></h3>
+<p>This feature implements comprehensive support for the LoRaWAN protocol, which is specifically designed for low-power, wide-area network (LPWAN) IoT devices. LoRaWAN devices typically operate on battery power for years, communicate over distances of several kilometers, and transmit small amounts of data infrequently. The protocol includes sophisticated power management through device classes, security through frame counters and encrypted keys, and network optimization through adaptive data rate algorithms.</p>
+<h3 id="authentication-mode-guidance">Authentication Mode Guidance<a class="headerlink" href="#authentication-mode-guidance" title="Permanent link">¶</a></h3>
+<p>OTAA (Over-The-Air Activation) is the recommended authentication method for production deployments because it provides dynamic session key generation during the join procedure, enhancing security. ABP (Activation By Personalization) uses pre-shared keys and is simpler but requires careful frame counter management to prevent replay attacks. ABP is suitable for testing and development scenarios where rapid connectivity is prioritized.</p>
+<h3 id="device-class-selection">Device Class Selection<a class="headerlink" href="#device-class-selection" title="Permanent link">¶</a></h3>
+<p>Class A devices open receive windows only after transmitting, minimizing power consumption and maximizing battery life. Class C devices maintain continuous receive mode, enabling immediate downlink but consuming significantly more power. Class B provides a middle ground with scheduled receive windows. The class selection directly impacts battery life, downlink latency, and operational costs.</p>
+<h3 id="frame-counter-security">Frame Counter Security<a class="headerlink" href="#frame-counter-security" title="Permanent link">¶</a></h3>
+<p>Frame counters are critical security features that prevent replay attacks where an attacker re-transmits captured messages. Each uplink and downlink message increments the respective counter, and the network validates counter progression. ABP relaxed mode loosens this validation for testing but should not be used in production. Devices should support 32-bit counters to prevent counter exhaustion over the device lifetime.</p>
+<h3 id="multi-gateway-scenarios">Multi-Gateway Scenarios<a class="headerlink" href="#multi-gateway-scenarios" title="Permanent link">¶</a></h3>
+<p>In LoRaWAN networks, devices often communicate with multiple gateways simultaneously due to the long-range nature of LoRa radio. The same message may be received by multiple gateways, requiring deduplication to prevent duplicate processing. The deduplication mode controls whether duplicates are dropped, marked, or all processed. Gateway assignment can force routing through a specific gateway for network optimization.</p>
+<h3 id="telemetry-processing">Telemetry Processing<a class="headerlink" href="#telemetry-processing" title="Permanent link">¶</a></h3>
+<p>Telemetry arrives as binary LoRaWAN payloads that require decoding based on device-specific formats. Sensor decoders convert these binary messages to human-readable JSON. The system maintains a limited telemetry history per device to prevent unbounded storage growth while providing recent operational visibility.</p>
+<h3 id="cloud-platform-integration">Cloud Platform Integration<a class="headerlink" href="#cloud-platform-integration" title="Permanent link">¶</a></h3>
+<p>The feature abstracts cloud platform integration to support both Azure IoT Hub and AWS IoT Core. Device twins (or Thing Shadows in AWS) provide bidirectional synchronization: desired properties contain configuration sent from the cloud to devices, reported properties contain device state sent from devices to the cloud, and tags contain metadata for organization and filtering.</p>
+<h3 id="performance-and-scale">Performance and Scale<a class="headerlink" href="#performance-and-scale" title="Permanent link">¶</a></h3>
+<p>The system is designed to manage fleets of thousands of LoRaWAN devices with pagination, efficient database queries, and cloud platform integration. Eager loading prevents N+1 query problems, telemetry retention limits prevent unbounded growth, and feature toggles allow disabling LoRa support when not needed.</p>
+<h3 id="user-experience-considerations">User Experience Considerations<a class="headerlink" href="#user-experience-considerations" title="Permanent link">¶</a></h3>
+<p>The interface provides a unified experience for both standard IoT devices and LoRaWAN devices, with LoRa-specific sections appearing contextually. Validation provides real-time feedback, and the tabbed interface organizes complex LoRaWAN parameters logically. Device duplication reduces repetitive data entry during bulk deployments.</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

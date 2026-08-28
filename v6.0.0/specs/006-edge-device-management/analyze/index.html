@@ -1,0 +1,1972 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature: Edge Device Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-edge-device-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature: Edge Device Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#description">
+<span class="md-ellipsis">
+      Description
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-locations">
+<span class="md-ellipsis">
+      Code Locations
+    </span>
+</a>
+<nav aria-label="Code Locations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entry-points-endpoints">
+<span class="md-ellipsis">
+      Entry Points / Endpoints
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#business-logic">
+<span class="md-ellipsis">
+      Business Logic
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-access">
+<span class="md-ellipsis">
+      Data Access
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-components">
+<span class="md-ellipsis">
+      UI Components
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-transfer-objects">
+<span class="md-ellipsis">
+      Data Transfer Objects
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#client-services">
+<span class="md-ellipsis">
+      Client Services
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mappers">
+<span class="md-ellipsis">
+      Mappers
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-endpoints">
+<span class="md-ellipsis">
+      API Endpoints
+    </span>
+</a>
+<nav aria-label="API Endpoints" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-device-management">
+<span class="md-ellipsis">
+      Edge Device Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-device-credentials-enrollment">
+<span class="md-ellipsis">
+      Edge Device Credentials &amp; Enrollment
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-module-management">
+<span class="md-ellipsis">
+      Edge Module Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#label-management">
+<span class="md-ellipsis">
+      Label Management
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization">
+<span class="md-ellipsis">
+      Authorization
+    </span>
+</a>
+<nav aria-label="Authorization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#required-permissions">
+<span class="md-ellipsis">
+      Required Permissions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization-implementation">
+<span class="md-ellipsis">
+      Authorization Implementation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#permission-mapping">
+<span class="md-ellipsis">
+      Permission Mapping
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+<nav aria-label="Dependencies" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#internal-feature-dependencies">
+<span class="md-ellipsis">
+      Internal Feature Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#service-dependencies">
+<span class="md-ellipsis">
+      Service Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-entities">
+<span class="md-ellipsis">
+      Related Entities
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-dependencies">
+<span class="md-ellipsis">
+      External Dependencies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ui-dependencies">
+<span class="md-ellipsis">
+      UI Dependencies
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-features-behaviors">
+<span class="md-ellipsis">
+      Key Features &amp; Behaviors
+    </span>
+</a>
+<nav aria-label="Key Features &amp; Behaviors" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-device-lifecycle-management">
+<span class="md-ellipsis">
+      Edge Device Lifecycle Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-module-capabilities">
+<span class="md-ellipsis">
+      Edge Module Capabilities
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gateway-functionality">
+<span class="md-ellipsis">
+      Gateway Functionality
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#search-and-filtering">
+<span class="md-ellipsis">
+      Search and Filtering
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-enrollment">
+<span class="md-ellipsis">
+      Device Enrollment
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-tags-and-labels">
+<span class="md-ellipsis">
+      Device Tags and Labels
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#multi-cloud-support">
+<span class="md-ellipsis">
+      Multi-Cloud Support
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-duplication">
+<span class="md-ellipsis">
+      Device Duplication
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#real-time-status-indicators">
+<span class="md-ellipsis">
+      Real-Time Status Indicators
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validation-and-error-handling">
+<span class="md-ellipsis">
+      Validation and Error Handling
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-optimizations">
+<span class="md-ellipsis">
+      Performance Optimizations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notes">
+<span class="md-ellipsis">
+      Notes
+    </span>
+</a>
+<nav aria-label="Notes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture-patterns">
+<span class="md-ellipsis">
+      Architecture Patterns
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-device-specialization">
+<span class="md-ellipsis">
+      Edge Device Specialization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#azure-iot-edge-integration">
+<span class="md-ellipsis">
+      Azure IoT Edge Integration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#aws-iot-greengrass-integration">
+<span class="md-ellipsis">
+      AWS IoT Greengrass Integration
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#device-model-relationship">
+<span class="md-ellipsis">
+      Device Model Relationship
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tag-management">
+<span class="md-ellipsis">
+      Tag Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#module-command-execution">
+<span class="md-ellipsis">
+      Module Command Execution
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#module-logs">
+<span class="md-ellipsis">
+      Module Logs
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#enrollment-script-generation">
+<span class="md-ellipsis">
+      Enrollment Script Generation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#connection-state-synchronization">
+<span class="md-ellipsis">
+      Connection State Synchronization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#label-system">
+<span class="md-ellipsis">
+      Label System
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pagination-implementation">
+<span class="md-ellipsis">
+      Pagination Implementation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-considerations">
+<span class="md-ellipsis">
+      Security Considerations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#database-schema">
+<span class="md-ellipsis">
+      Database Schema
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#background-synchronization">
+<span class="md-ellipsis">
+      Background Synchronization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testing-coverage">
+<span class="md-ellipsis">
+      Testing Coverage
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-enhancement-opportunities">
+<span class="md-ellipsis">
+      Future Enhancement Opportunities
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-limitations">
+<span class="md-ellipsis">
+      Known Limitations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#provider-specific-behaviors">
+<span class="md-ellipsis">
+      Provider-Specific Behaviors
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-considerations">
+<span class="md-ellipsis">
+      Performance Considerations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-edge-device-management">Feature: Edge Device Management<a class="headerlink" href="#feature-edge-device-management" title="Permanent link">¶</a></h1>
+<p><strong>Category</strong>: IoT Device Management<br/>
+<strong>Status</strong>: Analyzed  </p>
+<hr/>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">¶</a></h2>
+<p>The Edge Device Management feature provides comprehensive management capabilities for Azure IoT Edge and AWS IoT Greengrass devices within the IoT Hub Portal. IoT Edge devices are special gateway devices that can run containerized workloads (Edge modules) at the edge of the network and act as transparent gateways for downstream IoT devices. This feature includes:</p>
+<ul>
+<li>Creating and provisioning new edge devices with automatic cloud registration</li>
+<li>Listing and filtering edge devices with pagination, search, and status filtering</li>
+<li>Viewing detailed edge device information including runtime status, modules, and telemetry</li>
+<li>Updating edge device properties, tags, and labels</li>
+<li>Deleting edge devices with cleanup in both local database and cloud provider</li>
+<li>Monitoring edge device connectivity and runtime health status</li>
+<li>Managing edge modules deployed to devices</li>
+<li>Executing commands on edge modules (Azure only)</li>
+<li>Viewing edge module logs in real-time (Azure only)</li>
+<li>Generating enrollment credentials and scripts for device provisioning</li>
+<li>Filtering devices by model, labels, and connection status</li>
+<li>Tracking connected leaf devices and deployed modules count</li>
+<li>Supporting both Azure IoT Hub and AWS IoT Greengrass platforms</li>
+</ul>
+<p>This feature provides business value by enabling centralized management of edge computing infrastructure, allowing organizations to deploy intelligence at the edge, manage gateway devices that aggregate data from downstream devices, and monitor the health and status of distributed edge workloads. Edge devices reduce cloud bandwidth costs, enable offline operation, and provide low-latency processing for time-sensitive scenarios.</p>
+<hr/>
+<h2 id="code-locations">Code Locations<a class="headerlink" href="#code-locations" title="Permanent link">¶</a></h2>
+<h3 id="entry-points-endpoints">Entry Points / Endpoints<a class="headerlink" href="#entry-points-endpoints" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/EdgeDevicesController.cs</code> (Lines 1-277)</li>
+<li>
+<p><strong>Snippet</strong>: Main REST API controller for edge device management</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span>
+<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+<span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span>
+<span class="normal"><a href="#__codelineno-0-49">49</a></span>
+<span class="normal"><a href="#__codelineno-0-50">50</a></span>
+<span class="normal"><a href="#__codelineno-0-51">51</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">[Authorize]</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="na">[ApiController]</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="na">[ApiVersion("1.0")]</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="na">[Route("api/edge/devices")]</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="na">[ApiExplorerSettings(GroupName = "IoT Edge Devices")]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EdgeDevicesController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="p">{</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="na">[HttpGet(Name = "GET IoT Edge devices")]</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">    </span><span class="na">[Authorize("edge-device:read")]</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">PaginationResult</span><span class="o">&lt;</span><span class="n">IoTEdgeListItem</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Get</span><span class="p">(</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="n">searchText</span><span class="p">,</span><span class="w"> </span><span class="kt">bool?</span><span class="w"> </span><span class="n">searchStatus</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">pageSize</span><span class="p">,</span><span class="w"> </span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">pageNumber</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="n">orderBy</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">modelId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="n">labels</span><span class="p">)</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">    </span><span class="na">[HttpGet("{deviceId}", Name = "GET IoT Edge device")]</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">    </span><span class="na">[Authorize("edge-device:read")]</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Get</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">)</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">    </span><span class="na">[HttpPost(Name = "POST Create IoT Edge")]</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">    </span><span class="na">[Authorize("edge-device:write")]</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CreateEdgeDeviceAsync</span><span class="p">(</span><span class="n">IoTEdgeDevice</span><span class="w"> </span><span class="n">edgeDevice</span><span class="p">)</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="na">[HttpPut(Name = "PUT Update IoT Edge")]</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="na">[Authorize("edge-device:write")]</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">UpdateDeviceAsync</span><span class="p">(</span><span class="n">IoTEdgeDevice</span><span class="w"> </span><span class="n">edgeDevice</span><span class="p">)</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">    </span><span class="na">[HttpDelete("{deviceId}", Name = "DELETE Remove IoT Edge")]</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="w">    </span><span class="na">[Authorize("edge-device:write")]</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IActionResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">DeleteDeviceAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">)</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">    </span><span class="na">[HttpGet("{deviceId}/credentials", Name = "GET Device enrollment credentials")]</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="w">    </span><span class="na">[Authorize("edge-device:read")]</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">SymmetricCredentials</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetCredentials</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">)</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">    </span><span class="na">[HttpGet("{deviceId}/enrollementScript/{templateName}")]</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">    </span><span class="na">[Authorize("edge-device:read")]</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetEnrollementScriptUrl</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">templateName</span><span class="p">)</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="w">    </span><span class="na">[HttpGet("enroll", Name = "GET Device enrollment script")]</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="w">    </span><span class="na">[Authorize("edge-device:read")]</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetEnrollementScript</span><span class="p">([</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">code</span><span class="p">)</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="w">    </span><span class="na">[HttpPost("{deviceId}/{moduleName}/{methodName}", Name = "POST Execute module command")]</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="w">    </span><span class="na">[Authorize("edge-device:execute")]</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">C2Dresult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteModuleMethod</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">moduleName</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">methodName</span><span class="p">)</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="w">    </span><span class="na">[HttpPost("{deviceId}/logs", Name = "Get Edge Device logs")]</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="w">    </span><span class="na">[Authorize("edge-device:read")]</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">IoTEdgeDeviceLog</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetEdgeDeviceLogs</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="n">IoTEdgeModule</span><span class="w"> </span><span class="n">edgeModule</span><span class="p">)</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="w">    </span><span class="na">[HttpGet("available-labels", Name = "GET Available Labels on Edge Devices")]</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="w">    </span><span class="na">[Authorize("edge-device:read")]</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">LabelDto</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetAvailableLabels</span><span class="p">()</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h3 id="business-logic">Business Logic<a class="headerlink" href="#business-logic" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IEdgeDevicesService.cs</code> (Lines 1-33)</li>
+<li>
+<p><strong>Snippet</strong>: Core service interface for edge device operations</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span>
+<span class="normal"><a href="#__codelineno-1-11">11</a></span>
+<span class="normal"><a href="#__codelineno-1-12">12</a></span>
+<span class="normal"><a href="#__codelineno-1-13">13</a></span>
+<span class="normal"><a href="#__codelineno-1-14">14</a></span>
+<span class="normal"><a href="#__codelineno-1-15">15</a></span>
+<span class="normal"><a href="#__codelineno-1-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IEdgeDevicesService</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">PaginatedResult</span><span class="o">&lt;</span><span class="n">IoTEdgeListItem</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetEdgeDevicesPage</span><span class="p">(</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">        </span><span class="kt">string?</span><span class="w"> </span><span class="n">searchText</span><span class="p">,</span><span class="w"> </span><span class="kt">bool?</span><span class="w"> </span><span class="n">searchStatus</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">pageSize</span><span class="p">,</span><span class="w"> </span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">pageNumber</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="o">?</span><span class="w"> </span><span class="n">orderBy</span><span class="p">,</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">modelId</span><span class="p">,</span><span class="w"> </span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;?</span><span class="w"> </span><span class="n">labels</span><span class="p">);</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IoTEdgeDevice</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetEdgeDevice</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">edgeDeviceId</span><span class="p">);</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IoTEdgeDevice</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CreateEdgeDevice</span><span class="p">(</span><span class="n">IoTEdgeDevice</span><span class="w"> </span><span class="n">edgeDevice</span><span class="p">);</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IoTEdgeDevice</span><span class="o">&gt;</span><span class="w"> </span><span class="n">UpdateEdgeDevice</span><span class="p">(</span><span class="n">IoTEdgeDevice</span><span class="w"> </span><span class="n">edgeDevice</span><span class="p">);</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="nf">DeleteEdgeDeviceAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">);</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">C2Dresult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteModuleMethod</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">moduleName</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">methodName</span><span class="p">);</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">C2Dresult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteModuleCommand</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">moduleName</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">commandName</span><span class="p">);</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">LabelDto</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetAvailableLabels</span><span class="p">();</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetEdgeDeviceEnrollementScript</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">deviceId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">templateName</span><span class="p">);</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Infrastructure/Services/EdgeDevicesServiceBase.cs</code> (Lines 1-100+)</p>
+</li>
+<li>Base implementation shared across cloud providers</li>
+<li>Handles database operations for edge device CRUD</li>
+<li>Provides pagination with filtering by status, model, labels, and keyword</li>
+<li>Maps entities to DTOs with device model images</li>
+<li>Manages device tags and labels</li>
+<li>
+<p>Coordinates between database and cloud provider services</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Server/Services/AzureEdgeDevicesService.cs</code></p>
+</li>
+<li>Azure-specific implementation of IEdgeDevicesService</li>
+<li>Integrates with Azure IoT Hub for device twin operations</li>
+<li>Handles edge module management and command execution</li>
+<li>Retrieves module logs via IoT Hub APIs</li>
+<li>
+<p>Generates enrollment scripts for Azure IoT Edge runtime</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Infrastructure/Services/AWS/AWSEdgeDevicesService.cs</code></p>
+</li>
+<li>AWS-specific implementation for IoT Greengrass</li>
+<li>Integrates with AWS IoT Core for thing management</li>
+<li>Maps Greengrass core devices to edge device model</li>
+<li>Handles AWS-specific deployment and configuration</li>
+</ul>
+<h3 id="data-access">Data Access<a class="headerlink" href="#data-access" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IEdgeDeviceRepository.cs</code> (Lines 1-9)</li>
+<li>Generic repository interface for EdgeDevice entity</li>
+<li>Inherits from IRepository<edgedevice></edgedevice></li>
+<li>
+<p>Provides standard CRUD and query operations</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Domain/Entities/EdgeDevice.cs</code> (Lines 1-52)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Edge device entity definition</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span>
+<span class="normal"><a href="#__codelineno-2-13">13</a></span>
+<span class="normal"><a href="#__codelineno-2-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EdgeDevice</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EntityBase</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DeviceModelId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Version</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ConnectionState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsEnabled</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">Scope</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">NbDevices</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">           </span><span class="c1">// Connected leaf devices</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">NbModules</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">           </span><span class="c1">// Deployed modules</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ICollection</span><span class="o">&lt;</span><span class="n">DeviceTagValue</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Tags</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">EdgeDeviceModel</span><span class="w"> </span><span class="n">DeviceModel</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ICollection</span><span class="o">&lt;</span><span class="n">Label</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Labels</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h3 id="ui-components">UI Components<a class="headerlink" href="#ui-components" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/EdgeDevices/EdgeDeviceListPage.razor</code> (Lines 1-332)</li>
+<li>Main edge device list page with search and filtering</li>
+<li>Features:<ul>
+<li>Server-side pagination with MudTable</li>
+<li>Search panel with filters (name, status, model, labels)</li>
+<li>Real-time connection status indicators</li>
+<li>Count of connected leaf devices per edge device</li>
+<li>Delete device confirmation dialog</li>
+<li>Navigation to device details</li>
+<li>Conditional write operations based on permissions</li>
+<li>Label filtering with multi-select</li>
+</ul>
+</li>
+<li>Route: <code>/edge/devices</code></li>
+<li>
+<p>Authorization: <code>edge-device:read</code> required, <code>edge-device:write</code> for delete</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/EdgeDevices/EdgeDeviceDetailPage.razor</code> (Lines 1-494)</p>
+</li>
+<li>Comprehensive device details and management page</li>
+<li>Features:<ul>
+<li>Device information display (name, model, status)</li>
+<li>Runtime health status with visual indicators</li>
+<li>Connected devices and modules count</li>
+<li>Module list with status and actions (Azure only)</li>
+<li>Module command execution (reboot, custom commands)</li>
+<li>Module log viewer dialog</li>
+<li>Device tags editor with validation</li>
+<li>Labels editor</li>
+<li>Last deployment information</li>
+<li>Connection string/credentials dialog</li>
+<li>Device enable/disable toggle (Azure only)</li>
+<li>Save and duplicate functionality</li>
+<li>Delete device action</li>
+</ul>
+</li>
+<li>Route: <code>/edge/devices/{deviceId}</code></li>
+<li>
+<p>Authorization: <code>edge-device:read</code> required, <code>edge-device:write</code> for updates, <code>edge-device:execute</code> for commands</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Pages/EdgeDevices/CreateEdgeDevicePage.razor</code> (Lines 1-393)</p>
+</li>
+<li>Edge device creation wizard</li>
+<li>Features:<ul>
+<li>Model selection with autocomplete</li>
+<li>Device ID input (Azure) or auto-generation (AWS)</li>
+<li>Device name input with validation</li>
+<li>Status selection (enabled/disabled)</li>
+<li>Device tags with required field validation</li>
+<li>Labels assignment</li>
+<li>Save, Save and add new, Save and duplicate options</li>
+<li>Device duplication from existing device</li>
+</ul>
+</li>
+<li>Route: <code>/edge/devices/new</code></li>
+<li>Authorization: <code>edge-device:write</code> required</li>
+</ul>
+<h3 id="data-transfer-objects">Data Transfer Objects<a class="headerlink" href="#data-transfer-objects" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeDevice.cs</code> (Lines 1-96)</li>
+<li>
+<p><strong>Snippet</strong>: Complete edge device DTO</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span>
+<span class="normal"><a href="#__codelineno-3-23">23</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">IoTEdgeDevice</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DeviceId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The device should have a name.")]</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DeviceName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The device should use a model.")]</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ModelId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ConnectionState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Scope</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">RuntimeResponse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">NbDevices</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">NbModules</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ConfigItem</span><span class="w"> </span><span class="n">LastDeployment</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IReadOnlyCollection</span><span class="o">&lt;</span><span class="n">IoTEdgeModule</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Modules</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Tags</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsEnabled</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">LabelDto</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Labels</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Shared/Models/v1.0/IoTEdgeListItem.cs</code> (Lines 1-42)</p>
+</li>
+<li>
+<p><strong>Snippet</strong>: Lightweight DTO for device list</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">IoTEdgeListItem</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="p">{</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="na">[Required(ErrorMessage = "The device identifier is required.")]</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DeviceId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DeviceName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">NbDevices</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="o">!</span><span class="p">;</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">LabelDto</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Labels</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">LabelDto</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ul>
+<h3 id="client-services">Client Services<a class="headerlink" href="#client-services" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Services/IEdgeDeviceClientService.cs</code> (Lines 1-29)</li>
+<li>Client-side service interface for HTTP API calls</li>
+<li>Methods: GetDevices, GetDevice, CreateDevice, UpdateDevice, DeleteDevice</li>
+<li>Methods: GetEnrollmentCredentials, GetEnrollmentScriptUrl</li>
+<li>
+<p>Methods: GetEdgeDeviceLogs, ExecuteModuleMethod, GetAvailableLabels</p>
+</li>
+<li>
+<p><code>src/IoTHub.Portal.Client/Services/EdgeDeviceClientService.cs</code> (Lines 1-73)</p>
+</li>
+<li>Implementation using HttpClient for API communication</li>
+<li>GET /api/edge/devices with pagination URI</li>
+<li>POST /api/edge/devices for creation</li>
+<li>PUT /api/edge/devices/{deviceId} for updates</li>
+<li>DELETE /api/edge/devices/{deviceId} for deletion</li>
+<li>GET /api/edge/devices/{deviceId}/credentials for enrollment</li>
+<li>POST /api/edge/devices/{deviceId}/logs for log retrieval</li>
+<li>POST /api/edge/devices/{deviceId}/{moduleName}/{methodName} for command execution</li>
+</ul>
+<h3 id="mappers">Mappers<a class="headerlink" href="#mappers" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Mappers/EdgeDeviceProfile.cs</code> (Lines 1-78)</li>
+<li>AutoMapper profile for edge device entity to DTO mapping</li>
+<li>
+<p><strong>Snippet</strong>: Key mappings</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span>
+<span class="normal"><a href="#__codelineno-5-12">12</a></span>
+<span class="normal"><a href="#__codelineno-5-13">13</a></span>
+<span class="normal"><a href="#__codelineno-5-14">14</a></span>
+<span class="normal"><a href="#__codelineno-5-15">15</a></span>
+<span class="normal"><a href="#__codelineno-5-16">16</a></span>
+<span class="normal"><a href="#__codelineno-5-17">17</a></span>
+<span class="normal"><a href="#__codelineno-5-18">18</a></span>
+<span class="normal"><a href="#__codelineno-5-19">19</a></span>
+<span class="normal"><a href="#__codelineno-5-20">20</a></span>
+<span class="normal"><a href="#__codelineno-5-21">21</a></span>
+<span class="normal"><a href="#__codelineno-5-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1">// Azure Twin to EdgeDevice entity</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">CreateMap</span><span class="o">&lt;</span><span class="n">Twin</span><span class="p">,</span><span class="w"> </span><span class="n">EdgeDevice</span><span class="o">&gt;</span><span class="p">()</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(</span><span class="n">src</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">.</span><span class="n">DeviceId</span><span class="p">))</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">    </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(</span><span class="n">src</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">.</span><span class="n">Tags</span><span class="p">[</span><span class="s">"deviceName"</span><span class="p">]))</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">    </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">Tags</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(</span><span class="n">src</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">GetTags</span><span class="p">(</span><span class="n">src</span><span class="p">)))</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">    </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">NbDevices</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(...))</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">    </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">NbModules</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(...));</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="c1">// Entity to DTO</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="n">CreateMap</span><span class="o">&lt;</span><span class="n">EdgeDevice</span><span class="p">,</span><span class="w"> </span><span class="n">IoTEdgeDevice</span><span class="o">&gt;</span><span class="p">()</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">Tags</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">        </span><span class="n">src</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">.</span><span class="n">Tags</span><span class="p">.</span><span class="n">ToDictionary</span><span class="p">(</span><span class="n">tag</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">tag</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">tag</span><span class="p">.</span><span class="n">Value</span><span class="p">)));</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="c1">// DTO to Entity</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="n">CreateMap</span><span class="o">&lt;</span><span class="n">IoTEdgeDevice</span><span class="p">,</span><span class="w"> </span><span class="n">EdgeDevice</span><span class="o">&gt;</span><span class="p">()</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">    </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">Tags</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w">        </span><span class="n">src</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">.</span><span class="n">Tags</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">pair</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DeviceTagValue</span><span class="w"> </span><span class="p">{...})));</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18"></a>
+<a id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="c1">// Entity to List Item</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="n">CreateMap</span><span class="o">&lt;</span><span class="n">EdgeDevice</span><span class="p">,</span><span class="w"> </span><span class="n">IoTEdgeListItem</span><span class="o">&gt;</span><span class="p">()</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="w">    </span><span class="p">.</span><span class="n">ForMember</span><span class="p">(</span><span class="n">dest</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dest</span><span class="p">.</span><span class="n">Labels</span><span class="p">,</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">MapFrom</span><span class="p">(</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w">        </span><span class="n">src</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">.</span><span class="n">Labels</span><span class="p">.</span><span class="n">Union</span><span class="p">(</span><span class="n">src</span><span class="p">.</span><span class="n">DeviceModel</span><span class="p">.</span><span class="n">Labels</span><span class="p">)));</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Extracts connected devices count from device twin reported properties</p>
+</li>
+<li>Filters system tags (modelId, deviceName) from custom tags</li>
+<li>Merges device-specific and model-level labels</li>
+</ul>
+<hr/>
+<h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">¶</a></h2>
+<h3 id="edge-device-management">Edge Device Management<a class="headerlink" href="#edge-device-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/edge/devices</code> - Get paginated edge device list</li>
+<li>Query Parameters:<ul>
+<li>searchText (string): Filter by device ID or name</li>
+<li>searchStatus (bool?): Filter by connection status</li>
+<li>pageSize (int, default 10): Results per page</li>
+<li>pageNumber (int, default 0): Page number</li>
+<li>orderBy (string[]): Sort order (e.g., "Id asc", "NbDevices desc")</li>
+<li>modelId (string): Filter by device model ID</li>
+<li>labels (string[]): Filter by label names</li>
+</ul>
+</li>
+<li>Returns: PaginationResult<iotedgelistitem></iotedgelistitem></li>
+<li>Authorization: edge-device:read</li>
+<li>
+<p>Used for device list page with server-side filtering and pagination</p>
+</li>
+<li>
+<p><code>GET /api/edge/devices/{deviceId}</code> - Get specific edge device details</p>
+</li>
+<li>Route Parameter: deviceId (string)</li>
+<li>Returns: IoTEdgeDevice</li>
+<li>Authorization: edge-device:read</li>
+<li>Returns 404 if device not found</li>
+<li>
+<p>Includes modules, tags, labels, and deployment information</p>
+</li>
+<li>
+<p><code>POST /api/edge/devices</code> - Create new edge device</p>
+</li>
+<li>Body: IoTEdgeDevice</li>
+<li>Returns: IoTEdgeDevice (with generated IDs)</li>
+<li>Authorization: edge-device:write</li>
+<li>Provisions device in cloud provider (Azure IoT Hub or AWS IoT Core)</li>
+<li>Creates database entry with tags and labels</li>
+<li>
+<p>Returns 400 on validation errors</p>
+</li>
+<li>
+<p><code>PUT /api/edge/devices</code> - Update edge device</p>
+</li>
+<li>Body: IoTEdgeDevice (full object with DeviceId)</li>
+<li>Returns: IoTEdgeDevice</li>
+<li>Authorization: edge-device:write</li>
+<li>Updates both database and cloud provider device twin/thing</li>
+<li>
+<p>Synchronizes tags, labels, and device properties</p>
+</li>
+<li>
+<p><code>DELETE /api/edge/devices/{deviceId}</code> - Delete edge device</p>
+</li>
+<li>Route Parameter: deviceId (string)</li>
+<li>Returns: 200 OK with confirmation message</li>
+<li>Authorization: edge-device:write</li>
+<li>Removes device from cloud provider</li>
+<li>Deletes database entry with cascade delete for tags and labels</li>
+</ul>
+<h3 id="edge-device-credentials-enrollment">Edge Device Credentials &amp; Enrollment<a class="headerlink" href="#edge-device-credentials-enrollment" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/edge/devices/{deviceId}/credentials</code> - Get enrollment credentials</li>
+<li>Route Parameter: deviceId (string)</li>
+<li>Returns: SymmetricCredentials (primary/secondary keys)</li>
+<li>Authorization: edge-device:read</li>
+<li>Used for manual device configuration</li>
+<li>
+<p>Returns 404 if device not found</p>
+</li>
+<li>
+<p><code>GET /api/edge/devices/{deviceId}/enrollementScript/{templateName}</code> - Get enrollment script URL</p>
+</li>
+<li>Route Parameters: deviceId (string), templateName (string)</li>
+<li>Returns: Time-limited protected URL string</li>
+<li>Authorization: edge-device:read</li>
+<li>Generates secure URL valid for 15 minutes</li>
+<li>
+<p>Uses data protection to encrypt parameters</p>
+</li>
+<li>
+<p><code>GET /api/edge/devices/enroll</code> - Download enrollment script</p>
+</li>
+<li>Query Parameter: code (string, encrypted parameters)</li>
+<li>Returns: Shell script content for device provisioning</li>
+<li>Authorization: edge-device:read</li>
+<li>Decrypts and validates time-limited code</li>
+<li>Returns 400 on expired or invalid code</li>
+<li>Script configures IoT Edge runtime with connection string</li>
+</ul>
+<h3 id="edge-module-management">Edge Module Management<a class="headerlink" href="#edge-module-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>POST /api/edge/devices/{deviceId}/{moduleName}/{methodName}</code> - Execute module method</li>
+<li>Route Parameters: deviceId, moduleName, methodName (strings)</li>
+<li>Returns: C2Dresult (status code and payload)</li>
+<li>Authorization: edge-device:execute</li>
+<li>Invokes direct method on edge module via cloud provider</li>
+<li>Azure only: Custom commands defined in edge model</li>
+<li>Common methods: RestartModule, custom business logic</li>
+<li>
+<p>Returns command execution status and response payload</p>
+</li>
+<li>
+<p><code>POST /api/edge/devices/{deviceId}/logs</code> - Get edge module logs</p>
+</li>
+<li>Route Parameter: deviceId (string)</li>
+<li>Body: IoTEdgeModule (specifies which module)</li>
+<li>Returns: IEnumerable<iotedgedevicelog></iotedgedevicelog></li>
+<li>Authorization: edge-device:read</li>
+<li>Azure only: Retrieves logs via IoT Hub</li>
+<li>Returns recent log entries for specified module</li>
+<li>Used for troubleshooting and monitoring</li>
+</ul>
+<h3 id="label-management">Label Management<a class="headerlink" href="#label-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /api/edge/devices/available-labels</code> - Get all labels used by edge devices</li>
+<li>Returns: IEnumerable<labeldto></labeldto></li>
+<li>Authorization: edge-device:read</li>
+<li>Returns distinct labels across all edge devices</li>
+<li>Used for label filter in device list</li>
+</ul>
+<hr/>
+<h2 id="authorization">Authorization<a class="headerlink" href="#authorization" title="Permanent link">¶</a></h2>
+<h3 id="required-permissions">Required Permissions<a class="headerlink" href="#required-permissions" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>edge-device:read</strong> - View edge devices, device details, and retrieve credentials</li>
+<li><strong>edge-device:write</strong> - Create, update, and delete edge devices</li>
+<li><strong>edge-device:execute</strong> - Execute commands on edge modules</li>
+</ul>
+<h3 id="authorization-implementation">Authorization Implementation<a class="headerlink" href="#authorization-implementation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Attribute-based authorization using <code>[Authorize("permission")]</code> on controller methods</li>
+<li>Permission strings defined in PortalPermissionsHelper</li>
+<li>Base authorization: <code>[Authorize]</code> on EdgeDevicesController and all UI pages</li>
+<li>Permissions managed through RBAC system</li>
+<li>Default Administrator role includes all three edge device permissions</li>
+<li>UI conditionally renders action buttons based on user permissions</li>
+<li>Write operations hidden if user lacks edge-device:write</li>
+<li>Module commands disabled if user lacks edge-device:execute or device is disconnected</li>
+</ul>
+<h3 id="permission-mapping">Permission Mapping<a class="headerlink" href="#permission-mapping" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>PortalPermissions.EdgeDeviceRead</code> → "edge-device:read"</li>
+<li><code>PortalPermissions.EdgeDeviceWrite</code> → "edge-device:write"</li>
+<li><code>PortalPermissions.EdgeDeviceExecute</code> → "edge-device:execute"</li>
+</ul>
+<hr/>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h2>
+<h3 id="internal-feature-dependencies">Internal Feature Dependencies<a class="headerlink" href="#internal-feature-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Edge Device Models</strong> - Defines edge device capabilities, modules, and commands</li>
+<li><strong>Device Tag Settings</strong> - Custom metadata fields applied to edge devices</li>
+<li><strong>Label Management</strong> - Organizational labels for filtering and categorization</li>
+<li><strong>Role-Based Access Control</strong> - Permission enforcement through RBAC system</li>
+<li><strong>Device Model Images</strong> - Visual representation in UI via IDeviceModelImageManager</li>
+<li><strong>External Device Service</strong> - Cloud provider abstraction (Azure/AWS)</li>
+</ul>
+<h3 id="service-dependencies">Service Dependencies<a class="headerlink" href="#service-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>IEdgeDeviceRepository</code> - Edge device entity persistence</li>
+<li><code>IDeviceTagService</code> - Device tag definitions and retrieval</li>
+<li><code>IDeviceTagValueRepository</code> - Device-specific tag values</li>
+<li><code>ILabelRepository</code> - Label persistence and queries</li>
+<li><code>IExternalDeviceService</code> - Cloud provider device operations</li>
+<li><code>IDeviceModelImageManager</code> - Device model image resolution</li>
+<li><code>IMapper</code> (AutoMapper) - Entity to DTO mapping</li>
+<li><code>IUnitOfWork</code> - Transaction management for database operations</li>
+<li><code>IDataProtectionProvider</code> - Time-limited enrollment URL encryption</li>
+</ul>
+<h3 id="related-entities">Related Entities<a class="headerlink" href="#related-entities" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>EdgeDevice</strong> - Primary entity with navigation to DeviceModel, Tags, Labels</li>
+<li><strong>EdgeDeviceModel</strong> - Defines device capabilities and modules</li>
+<li><strong>DeviceTagValue</strong> - Custom tag values per device</li>
+<li><strong>Label</strong> - Organizational labels</li>
+<li><strong>IoTEdgeModule</strong> - Module deployed to edge device</li>
+<li><strong>ConfigItem</strong> - Last deployment configuration</li>
+</ul>
+<h3 id="external-dependencies">External Dependencies<a class="headerlink" href="#external-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Entity Framework Core</strong> - Database access via PortalDbContext</li>
+<li><strong>AutoMapper</strong> - Entity to DTO mapping</li>
+<li><strong>Azure IoT Hub SDK</strong> - Azure-specific device management</li>
+<li>Microsoft.Azure.Devices (Device Registry, Twin operations)</li>
+<li>Direct method invocation on modules</li>
+<li>Module log retrieval</li>
+<li><strong>AWS IoT SDK</strong> - AWS-specific device management</li>
+<li>Thing registry operations</li>
+<li>Greengrass core device management</li>
+<li><strong>Data Protection API</strong> - Secure enrollment URL generation</li>
+</ul>
+<h3 id="ui-dependencies">UI Dependencies<a class="headerlink" href="#ui-dependencies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>MudBlazor</strong> - UI component library</li>
+<li>MudTable - Paginated device list with server-side data</li>
+<li>MudExpansionPanel - Collapsible sections for device details</li>
+<li>MudAutocomplete - Model selection with search</li>
+<li>MudRadioGroup - Status and filter selections</li>
+<li>MudSelect - Multi-select for labels</li>
+<li>MudIconButton - Action buttons</li>
+<li>MudDialog - Confirmation dialogs and log viewer</li>
+<li>MudSnackbar - User notifications</li>
+<li>MudForm - Form validation</li>
+</ul>
+<hr/>
+<h2 id="key-features-behaviors">Key Features &amp; Behaviors<a class="headerlink" href="#key-features-behaviors" title="Permanent link">¶</a></h2>
+<h3 id="edge-device-lifecycle-management">Edge Device Lifecycle Management<a class="headerlink" href="#edge-device-lifecycle-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Device Provisioning</strong>: Creates device in cloud provider (Azure IoT Hub or AWS IoT Core) with automatic configuration</li>
+<li><strong>Device Twin Synchronization</strong>: Maintains device metadata in cloud provider device twin/thing shadow</li>
+<li><strong>Connection State Tracking</strong>: Real-time monitoring of device connectivity (Connected/Disconnected)</li>
+<li><strong>Runtime Health Monitoring</strong>: Tracks IoT Edge runtime status (running/stopped/unhealthy)</li>
+<li><strong>Soft Delete</strong>: Device removal from both database and cloud provider</li>
+</ul>
+<h3 id="edge-module-capabilities">Edge Module Capabilities<a class="headerlink" href="#edge-module-capabilities" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Module Discovery</strong>: Automatically lists modules deployed to edge device</li>
+<li><strong>Module Status</strong>: Shows runtime status of each module</li>
+<li><strong>Module Commands</strong>: Execute direct methods on modules (RestartModule, custom commands)</li>
+<li><strong>Module Logs</strong>: Real-time log retrieval for troubleshooting (Azure only)</li>
+<li><strong>Module Count</strong>: Tracks number of deployed modules per device</li>
+</ul>
+<h3 id="gateway-functionality">Gateway Functionality<a class="headerlink" href="#gateway-functionality" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Leaf Device Aggregation</strong>: Tracks number of downstream devices connected through edge device</li>
+<li><strong>Transparent Gateway</strong>: Edge devices act as gateways for devices without direct cloud connectivity</li>
+<li><strong>Client Count</strong>: Displays number of devices using edge device as gateway</li>
+<li><strong>Scope Management</strong>: Assigns device scope for hierarchical organization</li>
+</ul>
+<h3 id="search-and-filtering">Search and Filtering<a class="headerlink" href="#search-and-filtering" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Text Search</strong>: Filter by device ID or device name (case-insensitive, partial match)</li>
+<li><strong>Status Filter</strong>: Filter by connection status (Connected, Disconnected, All)</li>
+<li><strong>Model Filter</strong>: Filter by edge device model with autocomplete</li>
+<li><strong>Label Filter</strong>: Multi-select label filter with visual chips</li>
+<li><strong>Combined Filters</strong>: All filters work together (AND logic)</li>
+<li><strong>Server-Side Pagination</strong>: Efficient large dataset handling</li>
+<li><strong>Sortable Columns</strong>: Click headers to sort by device ID, status, or connected devices</li>
+</ul>
+<h3 id="device-enrollment">Device Enrollment<a class="headerlink" href="#device-enrollment" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Credential Generation</strong>: Provides symmetric keys for device authentication</li>
+<li><strong>Enrollment Scripts</strong>: Generates platform-specific installation scripts</li>
+<li><strong>Secure URLs</strong>: Time-limited (15 minutes) protected script download links</li>
+<li><strong>Template Support</strong>: Multiple enrollment templates for different scenarios</li>
+<li><strong>Connection String Dialog</strong>: Interactive UI for credential viewing</li>
+</ul>
+<h3 id="device-tags-and-labels">Device Tags and Labels<a class="headerlink" href="#device-tags-and-labels" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Custom Tags</strong>: User-defined metadata fields with validation</li>
+<li><strong>Required Tags</strong>: Enforced during device creation</li>
+<li><strong>Tag Synchronization</strong>: Tags stored in cloud provider device twin</li>
+<li><strong>Labels</strong>: Organizational labels inherited from model or device-specific</li>
+<li><strong>Label Filtering</strong>: Search devices by assigned labels</li>
+<li><strong>Tag Validation</strong>: Required field enforcement with visual error indicators</li>
+</ul>
+<h3 id="multi-cloud-support">Multi-Cloud Support<a class="headerlink" href="#multi-cloud-support" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Azure IoT Hub</strong>: Full feature support including module commands and logs</li>
+<li><strong>AWS IoT Greengrass</strong>: Core functionality with Greengrass-specific adaptations</li>
+<li><strong>Provider-Specific UI</strong>: Conditional rendering based on CloudProvider setting</li>
+<li><strong>Abstracted Service Layer</strong>: Common interface with provider-specific implementations</li>
+</ul>
+<h3 id="device-duplication">Device Duplication<a class="headerlink" href="#device-duplication" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Save and Duplicate</strong>: Creates new device from existing configuration</li>
+<li><strong>Template Reuse</strong>: Copies tags, labels, and model selection</li>
+<li><strong>ID Generation</strong>: Auto-generates new device ID for duplicate</li>
+<li><strong>Shared State</strong>: Uses layout service to pass device state between pages</li>
+</ul>
+<h3 id="real-time-status-indicators">Real-Time Status Indicators<a class="headerlink" href="#real-time-status-indicators" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Connection Status Icons</strong>: Visual indicators (checkmark/error icon) with tooltips</li>
+<li><strong>Runtime Status Icons</strong>: Health indicators for IoT Edge runtime</li>
+<li><strong>Color Coding</strong>: Success (green) for healthy, error (red) for issues</li>
+<li><strong>Tooltip Context</strong>: Hover tooltips explain status meanings</li>
+</ul>
+<h3 id="validation-and-error-handling">Validation and Error Handling<a class="headerlink" href="#validation-and-error-handling" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Form Validation</strong>: Required fields enforced (device name, model, required tags)</li>
+<li><strong>Tag Validation</strong>: Required tags checked before save</li>
+<li><strong>Model Validation</strong>: Edge device model must be selected</li>
+<li><strong>Error Messages</strong>: User-friendly Snackbar notifications</li>
+<li><strong>Problem Details</strong>: Structured error responses from API</li>
+<li><strong>Device Not Found</strong>: 404 handling with appropriate user messaging</li>
+</ul>
+<h3 id="performance-optimizations">Performance Optimizations<a class="headerlink" href="#performance-optimizations" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Pagination</strong>: Server-side pagination reduces data transfer</li>
+<li><strong>Image Caching</strong>: Device model images cached via IDeviceModelImageManager</li>
+<li><strong>Lazy Loading</strong>: Modules and logs loaded on-demand</li>
+<li><strong>Filtered Queries</strong>: Database queries filtered at repository level</li>
+<li><strong>Predicate Builder</strong>: Efficient dynamic query construction</li>
+</ul>
+<hr/>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
+<h3 id="architecture-patterns">Architecture Patterns<a class="headerlink" href="#architecture-patterns" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Repository Pattern</strong> - Clean separation of data access concerns</li>
+<li><strong>Unit of Work Pattern</strong> - Transactional consistency across operations</li>
+<li><strong>Service Layer Pattern</strong> - Business logic abstraction from controllers</li>
+<li><strong>DTO Pattern</strong> - Data transfer between layers with validation</li>
+<li><strong>Template Method Pattern</strong> - EdgeDevicesServiceBase with cloud-specific implementations</li>
+<li><strong>Adapter Pattern</strong> - IExternalDeviceService abstracts cloud provider differences</li>
+</ul>
+<h3 id="edge-device-specialization">Edge Device Specialization<a class="headerlink" href="#edge-device-specialization" title="Permanent link">¶</a></h3>
+<ul>
+<li>Edge devices are distinct from regular IoT devices (separate tables, controllers)</li>
+<li>Edge devices can run containerized modules (Docker containers)</li>
+<li>Edge devices act as gateways for downstream leaf devices</li>
+<li>Edge runtime provides offline capabilities and local processing</li>
+<li>Edge modules defined by edge device models (not device models)</li>
+</ul>
+<h3 id="azure-iot-edge-integration">Azure IoT Edge Integration<a class="headerlink" href="#azure-iot-edge-integration" title="Permanent link">¶</a></h3>
+<ul>
+<li>Device twin tags store device metadata (modelId, deviceName, custom tags)</li>
+<li>Reported properties contain runtime status and connected clients count</li>
+<li>Direct methods enable module command execution</li>
+<li>IoT Hub APIs provide module log streaming</li>
+<li>Symmetric key authentication for device provisioning</li>
+<li>Device scope enables hierarchical device relationships</li>
+</ul>
+<h3 id="aws-iot-greengrass-integration">AWS IoT Greengrass Integration<a class="headerlink" href="#aws-iot-greengrass-integration" title="Permanent link">¶</a></h3>
+<ul>
+<li>Thing registry stores device metadata and attributes</li>
+<li>Greengrass core devices map to edge devices</li>
+<li>Thing shadows used for state synchronization</li>
+<li>Component deployment via Greengrass deployment service</li>
+<li>Certificate-based authentication</li>
+<li>Limited command execution compared to Azure</li>
+</ul>
+<h3 id="device-model-relationship">Device Model Relationship<a class="headerlink" href="#device-model-relationship" title="Permanent link">¶</a></h3>
+<ul>
+<li>EdgeDevice references EdgeDeviceModel (not DeviceModel)</li>
+<li>EdgeDeviceModel defines available edge modules</li>
+<li>Each module can have custom commands</li>
+<li>Model determines device capabilities and image</li>
+<li>Labels can be inherited from model or device-specific</li>
+</ul>
+<h3 id="tag-management">Tag Management<a class="headerlink" href="#tag-management" title="Permanent link">¶</a></h3>
+<ul>
+<li>Tags stored as DeviceTagValue collection (many-to-many relationship)</li>
+<li>Tags defined globally in Device Tag Settings</li>
+<li>Tag values unique per device instance</li>
+<li>Required tags enforced during creation</li>
+<li>Tags synchronized to cloud provider twin/thing</li>
+<li>Tag validation occurs on both client and server</li>
+</ul>
+<h3 id="module-command-execution">Module Command Execution<a class="headerlink" href="#module-command-execution" title="Permanent link">¶</a></h3>
+<ul>
+<li>Commands defined in EdgeDeviceModel per module</li>
+<li>RestartModule is standard across all modules</li>
+<li>Custom commands specific to module type</li>
+<li>Commands disabled when device disconnected</li>
+<li>Command results include status code and payload</li>
+<li>Azure-specific feature (not available in AWS)</li>
+</ul>
+<h3 id="module-logs">Module Logs<a class="headerlink" href="#module-logs" title="Permanent link">¶</a></h3>
+<ul>
+<li>Real-time log retrieval from IoT Hub</li>
+<li>Logs specific to individual modules</li>
+<li>Used for troubleshooting runtime issues</li>
+<li>Azure-specific feature</li>
+<li>Displayed in modal dialog</li>
+<li>No persistent log storage in portal database</li>
+</ul>
+<h3 id="enrollment-script-generation">Enrollment Script Generation<a class="headerlink" href="#enrollment-script-generation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Scripts automate IoT Edge runtime installation</li>
+<li>Include connection string and configuration</li>
+<li>Template-based for different scenarios (bash, PowerShell)</li>
+<li>Secure time-limited URLs prevent unauthorized access</li>
+<li>Data protection ensures parameter integrity</li>
+<li>Scripts stored as embedded resources or templates</li>
+</ul>
+<h3 id="connection-state-synchronization">Connection State Synchronization<a class="headerlink" href="#connection-state-synchronization" title="Permanent link">¶</a></h3>
+<ul>
+<li>Connection state retrieved from cloud provider in real-time</li>
+<li>Stored in database for query performance</li>
+<li>Background jobs sync state periodically</li>
+<li>State change notifications via device twin updates</li>
+<li>Disconnected devices have limited available actions</li>
+</ul>
+<h3 id="label-system">Label System<a class="headerlink" href="#label-system" title="Permanent link">¶</a></h3>
+<ul>
+<li>Labels provide flexible categorization</li>
+<li>Devices can have multiple labels</li>
+<li>Labels filterable in device list</li>
+<li>Labels inherited from model</li>
+<li>Device-specific labels override model labels</li>
+<li>Labels stored in database (not cloud provider)</li>
+</ul>
+<h3 id="pagination-implementation">Pagination Implementation<a class="headerlink" href="#pagination-implementation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Server-side pagination via PaginatedResult<t></t></li>
+<li>Total count provided for UI page control</li>
+<li>NextPage URL generated by controller</li>
+<li>MudTable handles pagination UI</li>
+<li>Page size configurable per request</li>
+<li>Default page size: 10 items</li>
+</ul>
+<h3 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Authorization required at both controller and UI levels</li>
+<li>Permission-based access control prevents unauthorized operations</li>
+<li>Time-limited enrollment URLs prevent replay attacks</li>
+<li>Credentials encrypted via data protection API</li>
+<li>DeviceId validation prevents injection attacks</li>
+<li>Cloud provider credentials isolated in service implementations</li>
+</ul>
+<h3 id="database-schema">Database Schema<a class="headerlink" href="#database-schema" title="Permanent link">¶</a></h3>
+<ul>
+<li>EdgeDevice table with navigation properties</li>
+<li>Foreign key to EdgeDeviceModel</li>
+<li>Many-to-many with DeviceTagValue via collection</li>
+<li>Many-to-many with Label via collection</li>
+<li>Cascade delete configured for dependent entities</li>
+<li>Indexes on DeviceModelId, ConnectionState for query performance</li>
+</ul>
+<h3 id="background-synchronization">Background Synchronization<a class="headerlink" href="#background-synchronization" title="Permanent link">¶</a></h3>
+<ul>
+<li>SyncEdgeDeviceJob periodically syncs from cloud provider</li>
+<li>Updates connection state, module count, client count</li>
+<li>Handles new devices created outside portal</li>
+<li>Detects deleted devices in cloud</li>
+<li>Configurable sync interval via job scheduler</li>
+</ul>
+<h3 id="testing-coverage">Testing Coverage<a class="headerlink" href="#testing-coverage" title="Permanent link">¶</a></h3>
+<ul>
+<li>Unit tests: EdgeDeviceServiceTest.cs</li>
+<li>Controller tests: EdgeDevicesControllerTests.cs (integration)</li>
+<li>UI tests: EdgeDeviceListPageTests.cs, EdgeDeviceDetailPageTests.cs, CreateEdgeDevicePageTest.cs</li>
+<li>Client service tests: EdgeDeviceClientServiceTests.cs</li>
+<li>Mapper tests: EdgeDeviceProfileTests.cs</li>
+</ul>
+<h3 id="future-enhancement-opportunities">Future Enhancement Opportunities<a class="headerlink" href="#future-enhancement-opportunities" title="Permanent link">¶</a></h3>
+<ul>
+<li>Bulk device operations (delete, update tags)</li>
+<li>Device configuration management (desired properties)</li>
+<li>Deployment history tracking</li>
+<li>Module metrics and telemetry visualization</li>
+<li>Automatic alerts for device health issues</li>
+<li>Device groups for batch operations</li>
+<li>Export device list to CSV/Excel</li>
+<li>Import devices from CSV/Excel</li>
+<li>Device lifecycle events and audit trail</li>
+<li>Advanced filtering (by last seen, deployment status)</li>
+<li>Custom device dashboards per edge device</li>
+<li>Edge device geo-location on map</li>
+<li>Firmware/module update orchestration</li>
+<li>Device commissioning workflow</li>
+<li>Parent-child device relationships visualization</li>
+<li>Module restart scheduling</li>
+<li>Log export and archival</li>
+<li>Integration with external monitoring tools (Prometheus, Grafana)</li>
+<li>Device certificate management</li>
+<li>Role-based device access (not just feature access)</li>
+</ul>
+<h3 id="known-limitations">Known Limitations<a class="headerlink" href="#known-limitations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Module commands only available on Azure IoT Hub</li>
+<li>Module logs only available on Azure IoT Hub</li>
+<li>No real-time telemetry display on device details page</li>
+<li>Cannot edit device ID after creation</li>
+<li>No bulk device provisioning workflow</li>
+<li>Limited AWS IoT Greengrass feature parity</li>
+<li>No device hierarchy visualization</li>
+<li>Cannot manage module deployments from portal (use Azure/AWS consoles)</li>
+<li>No offline device synchronization queue</li>
+<li>Device scope management limited</li>
+<li>No device configuration templates</li>
+<li>Cannot filter by deployment status</li>
+<li>Limited module lifecycle management beyond restart</li>
+<li>No integration with edge device local APIs</li>
+<li>Cannot schedule commands for future execution</li>
+</ul>
+<h3 id="provider-specific-behaviors">Provider-Specific Behaviors<a class="headerlink" href="#provider-specific-behaviors" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Azure IoT Hub</th>
+<th>AWS IoT Greengrass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Module Commands</td>
+<td>✅ Supported</td>
+<td>❌ Not Supported</td>
+</tr>
+<tr>
+<td>Module Logs</td>
+<td>✅ Supported</td>
+<td>❌ Not Supported</td>
+</tr>
+<tr>
+<td>Device Status</td>
+<td>Enabled/Disabled</td>
+<td>Active only</td>
+</tr>
+<tr>
+<td>Authentication</td>
+<td>Symmetric Keys</td>
+<td>X.509 Certificates</td>
+</tr>
+<tr>
+<td>Device Scope</td>
+<td>Supported</td>
+<td>Not Supported</td>
+</tr>
+<tr>
+<td>Direct Methods</td>
+<td>Supported</td>
+<td>Limited</td>
+</tr>
+<tr>
+<td>Module Count</td>
+<td>From Desired Config</td>
+<td>From Deployed Components</td>
+</tr>
+<tr>
+<td>Client Count</td>
+<td>From Reported Properties</td>
+<td>Not Available</td>
+</tr>
+</tbody>
+</table>
+<h3 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h3>
+<ul>
+<li>Edge device list queries optimized with includes</li>
+<li>Device model images cached to reduce storage calls</li>
+<li>Pagination reduces memory footprint</li>
+<li>Background sync jobs prevent UI blocking</li>
+<li>Lazy loading of modules and logs</li>
+<li>Database indexes on frequently queried fields</li>
+<li>Predicate builder for efficient dynamic queries</li>
+<li>AutoMapper for efficient object mapping</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

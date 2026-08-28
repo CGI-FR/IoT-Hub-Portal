@@ -1,0 +1,915 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature Specification: Device Properties Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-specification-device-properties-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature Specification: Device Properties Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-scenarios-testing">
+<span class="md-ellipsis">
+      User Scenarios &amp; Testing
+    </span>
+</a>
+<nav aria-label="User Scenarios &amp; Testing" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-1-view-device-instance-properties-priority-p1">
+<span class="md-ellipsis">
+      User Story 1 - View Device Instance Properties (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-2-update-device-writable-properties-priority-p1">
+<span class="md-ellipsis">
+      User Story 2 - Update Device Writable Properties (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-3-define-model-property-templates-priority-p1">
+<span class="md-ellipsis">
+      User Story 3 - Define Model Property Templates (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-4-update-model-property-templates-priority-p2">
+<span class="md-ellipsis">
+      User Story 4 - Update Model Property Templates (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-5-support-hierarchical-properties-with-dot-notation-priority-p2">
+<span class="md-ellipsis">
+      User Story 5 - Support Hierarchical Properties with Dot Notation (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-6-retrieve-all-property-names-priority-p3">
+<span class="md-ellipsis">
+      User Story 6 - Retrieve All Property Names (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-cases">
+<span class="md-ellipsis">
+      Edge Cases
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements">
+<span class="md-ellipsis">
+      Requirements
+    </span>
+</a>
+<nav aria-label="Requirements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-entities">
+<span class="md-ellipsis">
+      Key Entities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-criteria">
+<span class="md-ellipsis">
+      Success Criteria
+    </span>
+</a>
+<nav aria-label="Success Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#measurable-outcomes">
+<span class="md-ellipsis">
+      Measurable Outcomes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#traceability">
+<span class="md-ellipsis">
+      Traceability
+    </span>
+</a>
+<nav aria-label="Traceability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#source-analysis">
+<span class="md-ellipsis">
+      Source Analysis
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-specification-device-properties-management">Feature Specification: Device Properties Management<a class="headerlink" href="#feature-specification-device-properties-management" title="Permanent link">¶</a></h1>
+<p><strong>Feature ID</strong>: 003<br/>
+<strong>Feature Branch</strong>: <code>003-device-properties-management</code><br/>
+<strong>Created</strong>: 2026-01-30<br/>
+<strong>Status</strong>: Draft<br/>
+<strong>Source</strong>: Analysis from <code>specs/003-device-properties-management/analyze.md</code></p>
+<hr/>
+<h2 id="user-scenarios-testing">User Scenarios &amp; Testing<a class="headerlink" href="#user-scenarios-testing" title="Permanent link">¶</a></h2>
+<h3 id="user-story-1-view-device-instance-properties-priority-p1">User Story 1 - View Device Instance Properties (Priority: P1)<a class="headerlink" href="#user-story-1-view-device-instance-properties-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to view current property values for a device retrieved from the cloud device twin so that I can understand the device's current configuration and telemetry state.</p>
+<p><strong>Why this priority</strong>: Core functionality for device monitoring and troubleshooting. Without this, users cannot see device configuration or status.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by navigating to a device detail page, viewing the Properties tab, and verifying that properties match the device model template with current values from the device twin. Delivers immediate value by providing device state visibility.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device:read permission and am viewing a device detail page, <strong>When</strong> I navigate to the Properties tab, <strong>Then</strong> I see all properties defined by the device model with their current values</li>
+<li><strong>Given</strong> I am viewing device properties, <strong>When</strong> a property is writable (IsWritable=true), <strong>Then</strong> I see it as an editable field with appropriate input control for its type</li>
+<li><strong>Given</strong> I am viewing device properties, <strong>When</strong> a property is read-only (IsWritable=false), <strong>Then</strong> I see it as a display-only field showing the reported value from the device</li>
+<li><strong>Given</strong> I am viewing device properties, <strong>When</strong> properties are defined with dot notation (e.g., "config.interval"), <strong>Then</strong> the values are correctly retrieved from nested JSON structures in the device twin</li>
+<li><strong>Given</strong> I am viewing device properties, <strong>When</strong> a property has not been set, <strong>Then</strong> I see an empty or default value</li>
+<li><strong>Given</strong> I am viewing device properties, <strong>When</strong> the device twin is unavailable, <strong>Then</strong> I see an error message indicating properties cannot be retrieved</li>
+<li><strong>Given</strong> I am viewing device properties for different types, <strong>When</strong> properties are Boolean, <strong>Then</strong> I see checkboxes; <strong>When</strong> properties are numeric, <strong>Then</strong> I see text fields with validation; <strong>When</strong> properties are String, <strong>Then</strong> I see text areas</li>
+</ol>
+<hr/>
+<h3 id="user-story-2-update-device-writable-properties-priority-p1">User Story 2 - Update Device Writable Properties (Priority: P1)<a class="headerlink" href="#user-story-2-update-device-writable-properties-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to update writable device properties so that I can send configuration changes to devices through the cloud device twin.</p>
+<p><strong>Why this priority</strong>: Critical for remote device configuration. Without this, users cannot update device settings remotely.</p>
+<p><strong>Independent Test</strong>: Can be tested by opening a device with writable properties, modifying values, saving, and verifying the device twin desired properties are updated in the cloud IoT service. Delivers value by enabling remote device configuration.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device:write permission and am viewing device properties, <strong>When</strong> I modify a writable property value, <strong>Then</strong> the new value is validated according to the property type</li>
+<li><strong>Given</strong> I am modifying an Integer property, <strong>When</strong> I enter a non-integer value, <strong>Then</strong> I see a validation error</li>
+<li><strong>Given</strong> I am modifying a Double property, <strong>When</strong> I enter a non-numeric value, <strong>Then</strong> I see a validation error</li>
+<li><strong>Given</strong> I am modifying a Boolean property, <strong>When</strong> I toggle the checkbox, <strong>Then</strong> the value changes between true and false</li>
+<li><strong>Given</strong> I have modified one or more writable properties, <strong>When</strong> I click Save, <strong>Then</strong> the changes are written to the device twin desired properties in the cloud IoT service</li>
+<li><strong>Given</strong> I attempt to modify a read-only property, <strong>When</strong> I view the property, <strong>Then</strong> it is not editable</li>
+<li><strong>Given</strong> I save property changes, <strong>When</strong> the cloud IoT service is unavailable, <strong>Then</strong> I see an error message and changes are not persisted</li>
+<li><strong>Given</strong> I save property changes successfully, <strong>When</strong> I reload the device properties, <strong>Then</strong> I see the updated values</li>
+</ol>
+<hr/>
+<h3 id="user-story-3-define-model-property-templates-priority-p1">User Story 3 - Define Model Property Templates (Priority: P1)<a class="headerlink" href="#user-story-3-define-model-property-templates-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to define property templates at the device model level so that all devices of a model share a consistent property schema.</p>
+<p><strong>Why this priority</strong>: Essential for model-driven device management. Property templates ensure consistency across device fleets.</p>
+<p><strong>Independent Test</strong>: Can be tested by creating or editing a device model, defining properties with name, type, and writability, saving, and verifying devices created from this model inherit the property definitions. Delivers value through standardized device schemas.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have model:write permission and am creating or editing a device model, <strong>When</strong> I add a property, <strong>Then</strong> I must provide property name, display name, type, order, and writability</li>
+<li><strong>Given</strong> I am defining a model property, <strong>When</strong> I select the property type, <strong>Then</strong> I can choose from: String, Integer, Long, Double, Float, Boolean, DateTime</li>
+<li><strong>Given</strong> I am defining a model property, <strong>When</strong> I enter a property name, <strong>Then</strong> it must match the format: single word or dot-separated words (validated by regex)</li>
+<li><strong>Given</strong> I am defining a model property, <strong>When</strong> I set IsWritable to true, <strong>Then</strong> the property will map to device twin desired properties (configuration)</li>
+<li><strong>Given</strong> I am defining a model property, <strong>When</strong> I set IsWritable to false, <strong>Then</strong> the property will map to device twin reported properties (telemetry)</li>
+<li><strong>Given</strong> I am defining a model property, <strong>When</strong> I set the order value, <strong>Then</strong> this determines the display sequence in device property forms</li>
+<li><strong>Given</strong> I have defined multiple properties, <strong>When</strong> I save the model, <strong>Then</strong> all properties are persisted in the portal database</li>
+<li><strong>Given</strong> I retrieve model properties, <strong>When</strong> I call the API, <strong>Then</strong> properties are returned ordered by the Order field</li>
+</ol>
+<hr/>
+<h3 id="user-story-4-update-model-property-templates-priority-p2">User Story 4 - Update Model Property Templates (Priority: P2)<a class="headerlink" href="#user-story-4-update-model-property-templates-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to update property definitions for a device model so that I can refine property schemas as requirements evolve.</p>
+<p><strong>Why this priority</strong>: Important for maintaining accurate property schemas but not required for initial deployment. Enables schema evolution.</p>
+<p><strong>Independent Test</strong>: Can be tested by editing a device model's properties, adding new properties, modifying existing ones, or removing properties, and verifying changes are saved. Delivers value by allowing property schema refinement.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have model:write permission and am editing a device model, <strong>When</strong> I modify property definitions, <strong>Then</strong> I can add, update, or remove properties</li>
+<li><strong>Given</strong> I am updating model properties, <strong>When</strong> I save changes, <strong>Then</strong> the system performs an upsert operation: adds new properties, updates existing ones, and removes properties not in the request</li>
+<li><strong>Given</strong> I remove a property from a model, <strong>When</strong> I save the model, <strong>Then</strong> the property template is deleted but existing device property values are not affected</li>
+<li><strong>Given</strong> I add a new property to a model, <strong>When</strong> I save the model, <strong>Then</strong> devices of this model will see the new property in their property forms (with empty values initially)</li>
+<li><strong>Given</strong> I change a property type, <strong>When</strong> I save the model, <strong>Then</strong> existing device values may not match the new type, requiring data migration or cleanup</li>
+<li><strong>Given</strong> the model does not exist, <strong>When</strong> I attempt to save properties, <strong>Then</strong> I receive a 404 Not Found error</li>
+</ol>
+<hr/>
+<h3 id="user-story-5-support-hierarchical-properties-with-dot-notation-priority-p2">User Story 5 - Support Hierarchical Properties with Dot Notation (Priority: P2)<a class="headerlink" href="#user-story-5-support-hierarchical-properties-with-dot-notation-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to use dot notation in property names to represent nested JSON structures in device twins so that I can organize related properties hierarchically.</p>
+<p><strong>Why this priority</strong>: Important for complex device configurations but not essential for basic operations. Most valuable for devices with many configuration parameters.</p>
+<p><strong>Independent Test</strong>: Can be tested by defining a property with dot notation (e.g., "config.telemetryInterval"), setting its value, and verifying it creates a nested JSON structure in the device twin. Delivers value through logical property grouping.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am defining a model property, <strong>When</strong> I use dot notation in the property name (e.g., "config.interval"), <strong>Then</strong> the system validates it matches the pattern for dot-separated words</li>
+<li><strong>Given</strong> I have defined a property with dot notation, <strong>When</strong> I retrieve the property value from the device twin, <strong>Then</strong> the system uses JSON path selection to navigate to the nested value</li>
+<li><strong>Given</strong> I have a property "config.interval" set to 30, <strong>When</strong> I view the device twin, <strong>Then</strong> I see the structure: <code>{ "config": { "interval": 30 } }</code></li>
+<li><strong>Given</strong> I update a property with dot notation, <strong>When</strong> I save the change, <strong>Then</strong> the nested JSON structure is updated in the device twin</li>
+<li><strong>Given</strong> I have conflicting property paths (e.g., "config" as both a property and a parent), <strong>When</strong> I attempt to use both, <strong>Then</strong> the system should handle conflicts gracefully or prevent this scenario through validation</li>
+</ol>
+<hr/>
+<h3 id="user-story-6-retrieve-all-property-names-priority-p3">User Story 6 - Retrieve All Property Names (Priority: P3)<a class="headerlink" href="#user-story-6-retrieve-all-property-names-priority-p3" title="Permanent link">¶</a></h3>
+<p>As a developer or administrator, I need to retrieve a list of all distinct property names used across all device models so that I can understand the property landscape and potentially standardize naming.</p>
+<p><strong>Why this priority</strong>: Useful for analysis and standardization but not required for operations. Most valuable in mature deployments with many models.</p>
+<p><strong>Independent Test</strong>: Can be tested by calling an API or viewing a report that shows all unique property names across models. Delivers value through property naming insights.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am an authorized user, <strong>When</strong> I request all property names, <strong>Then</strong> I receive a list of distinct property names used across all device models</li>
+<li><strong>Given</strong> multiple models use the same property name, <strong>When</strong> I retrieve all property names, <strong>Then</strong> each name appears only once in the result</li>
+<li><strong>Given</strong> no models have properties defined, <strong>When</strong> I retrieve all property names, <strong>Then</strong> I receive an empty list</li>
+</ol>
+<hr/>
+<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>What happens when a property value in the device twin doesn't match the expected type?</strong><br/>
+  The system performs client-side and server-side type validation. Invalid values are rejected with error messages. However, the device twin may contain non-conforming data from device-side updates, which should be handled gracefully with error indicators.</p>
+</li>
+<li>
+<p><strong>How does the system handle properties with dot notation that conflict (e.g., "config" and "config.interval")?</strong><br/>
+  This creates JSON structure conflicts where "config" cannot be both a value and an object. The system should validate and prevent this or document that properties should be consistently structured.</p>
+</li>
+<li>
+<p><strong>What happens when the cloud IoT service is unavailable during property retrieval?</strong><br/>
+  Property retrieval fails and users see an error message. The portal does not cache property values, so they cannot be viewed during cloud service outages.</p>
+</li>
+<li>
+<p><strong>What happens when updating properties for a device that has been deleted in the cloud IoT service but still exists in the portal?</strong><br/>
+  The update fails with an error indicating the device twin cannot be found. Users should delete the device from the portal.</p>
+</li>
+<li>
+<p><strong>How does the system handle very long property names or values?</strong><br/>
+  Property names are validated by regex but length limits depend on cloud service constraints. Very long values are transmitted as-is, subject to device twin size limits (typically 32KB for Azure IoT Hub).</p>
+</li>
+<li>
+<p><strong>What happens when a model property is deleted but devices still have values for that property in their twins?</strong><br/>
+  The property template is removed from the model, so the property won't appear in device property forms. However, the value remains in the device twin until explicitly removed or overwritten.</p>
+</li>
+<li>
+<p><strong>How does the system handle concurrent updates to the same device properties?</strong><br/>
+  The cloud IoT service handles concurrency with last-write-wins semantics. The portal does not implement optimistic concurrency for properties.</p>
+</li>
+<li>
+<p><strong>What happens when property ordering values are duplicated or non-sequential?</strong><br/>
+  Properties are sorted by the Order field. Duplicate order values result in undefined relative ordering between those properties. Gaps in numbering do not cause issues.</p>
+</li>
+<li>
+<p><strong>How does the system behave when a property type changes from Integer to String?</strong><br/>
+  Existing device values may not match the new type, causing validation errors when users attempt to edit. Type changes require careful data migration or device twin cleanup.</p>
+</li>
+<li>
+<p><strong>What happens when LoRaWAN devices access the properties feature?</strong><br/>
+  LoRaWAN devices do not support custom properties. The properties tab should not be shown for LoRaWAN devices, or should display a message indicating properties are not supported.</p>
+</li>
+</ul>
+<hr/>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
+<h3 id="functional-requirements">Functional Requirements<a class="headerlink" href="#functional-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>FR-001</strong>: System MUST retrieve device instance property values from cloud device twin (Azure IoT Hub or AWS IoT Core device shadow)</li>
+<li><strong>FR-002</strong>: System MUST display device properties with distinction between writable (desired) and read-only (reported) properties</li>
+<li><strong>FR-003</strong>: System MUST enable viewing of property values for devices with device:read permission</li>
+<li><strong>FR-004</strong>: System MUST enable updating of writable property values for devices with device:write permission</li>
+<li><strong>FR-005</strong>: System MUST validate property values according to their type before allowing updates</li>
+<li><strong>FR-006</strong>: System MUST write writable property changes to device twin desired properties in the cloud IoT service</li>
+<li><strong>FR-007</strong>: System MUST ignore read-only properties when updating device properties (they cannot be modified via portal)</li>
+<li><strong>FR-008</strong>: System MUST support property types: String, Integer, Long, Double, Float, Boolean, DateTime</li>
+<li><strong>FR-009</strong>: System MUST render type-specific input controls: checkboxes for Boolean, validated text fields for numeric types, text areas for String</li>
+<li><strong>FR-010</strong>: System MUST support dot notation in property names to represent nested JSON structures (e.g., "config.interval" maps to <code>{"config": {"interval": value}}</code>)</li>
+<li><strong>FR-011</strong>: System MUST use JSON path selection (JObject.SelectToken) to navigate nested properties in device twins</li>
+<li><strong>FR-012</strong>: System MUST define property templates at the device model level with fields: name, display name, type, order, writability, and model ID</li>
+<li><strong>FR-013</strong>: System MUST validate property names match the regex pattern: <code>^([\w]+\.)+[\w]+|[\w]+$</code> (single word or dot-separated words)</li>
+<li><strong>FR-014</strong>: System MUST persist model property templates in the portal database</li>
+<li><strong>FR-015</strong>: System MUST enable retrieval of model properties ordered by the Order field</li>
+<li><strong>FR-016</strong>: System MUST allow creation and update of model properties with model:write permission</li>
+<li><strong>FR-017</strong>: System MUST perform upsert operations when saving model properties: add new, update existing, delete properties not in request</li>
+<li><strong>FR-018</strong>: System MUST validate device model existence before allowing property operations</li>
+<li><strong>FR-019</strong>: System MUST return 404 Not Found when attempting property operations on non-existent models</li>
+<li><strong>FR-020</strong>: System MUST provide an endpoint to retrieve all distinct property names used across all device models</li>
+<li><strong>FR-021</strong>: System MUST handle both Azure IoT Hub device twins and AWS IoT Core device shadows with provider-specific implementations</li>
+<li><strong>FR-022</strong>: System MUST act as a thin management layer over cloud IoT services (no caching of property values)</li>
+<li><strong>FR-023</strong>: System MUST display validation errors when property values do not match expected types</li>
+<li><strong>FR-024</strong>: System MUST retrieve properties on-demand from cloud service (not cached in portal database)</li>
+<li><strong>FR-025</strong>: System MUST not apply custom properties feature to LoRaWAN devices</li>
+</ul>
+<h3 id="key-entities">Key Entities<a class="headerlink" href="#key-entities" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>DeviceModelProperty</strong>: Property template entity stored in portal database with fields: ID, Name, DisplayName, IsWritable, Order, PropertyType, and ModelId</li>
+<li><strong>DeviceProperty</strong>: Property definition DTO with fields: Name, DisplayName, IsWritable, Order, and PropertyType used for model property management</li>
+<li><strong>DevicePropertyValue</strong>: Property value DTO extending DeviceProperty with an additional Value field (string representation of the current value)</li>
+<li><strong>DevicePropertyType</strong>: Enumeration of supported types: String, Integer, Long, Double, Float, Boolean, DateTime</li>
+<li><strong>Device Twin (Azure) / Device Shadow (AWS)</strong>: Cloud IoT service entity storing device configuration (desired properties) and device-reported state (reported properties)</li>
+</ul>
+<hr/>
+<h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes<a class="headerlink" href="#measurable-outcomes" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>SC-001</strong>: Users can view device properties retrieved from cloud device twins within 3 seconds under normal conditions</li>
+<li><strong>SC-002</strong>: Users can update device writable properties with changes synchronized to cloud device twins within 5 seconds</li>
+<li><strong>SC-003</strong>: 98% of property updates succeed without errors under normal cloud service availability</li>
+<li><strong>SC-004</strong>: Property type validation catches 100% of type mismatches before submitting to cloud service</li>
+<li><strong>SC-005</strong>: Model property template changes save within 2 seconds</li>
+<li><strong>SC-006</strong>: Device property forms display properties in the correct order based on Order field 100% of the time</li>
+<li><strong>SC-007</strong>: Dot notation properties correctly map to nested JSON structures in device twins with 100% accuracy</li>
+<li><strong>SC-008</strong>: System handles concurrent device property updates by 10 users without data loss or corruption</li>
+<li><strong>SC-009</strong>: Property retrieval failures due to cloud service unavailability result in clear error messages 100% of the time</li>
+<li><strong>SC-010</strong>: Users can define model property templates with all required fields in under 2 minutes per property</li>
+</ul>
+<hr/>
+<h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">¶</a></h2>
+<h3 id="source-analysis">Source Analysis<a class="headerlink" href="#source-analysis" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Analysis Path</strong>: <code>specs/003-device-properties-management/analyze.md</code></li>
+<li><strong>Analyzed By</strong>: excavator.analyze</li>
+<li><strong>Analysis Date</strong>: 2026-01-30</li>
+</ul>
+<h3 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h3>
+<p><strong>Controllers</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesController.cs</code> (Lines 1-53)</li>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/DeviceModelPropertiesControllerBase.cs</code> (Lines 1-88)</li>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/DevicesController.cs</code> (Lines 111-126)</li>
+</ul>
+<p><strong>Business Logic</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IDeviceModelPropertiesService.cs</code> (Lines 1-13)</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Services/DeviceModelPropertiesService.cs</code> (Lines 1-64)</li>
+<li><code>src/IoTHub.Portal.Application/Services/IDevicePropertyService.cs</code> (Lines 1-12)</li>
+<li><code>src/IoTHub.Portal.Server/Services/DevicePropertyService.cs</code> (Lines 1-129)</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Services/AWS/AWSDevicePropertyService.cs</code> (Lines 1-130+)</li>
+</ul>
+<p><strong>Data Access</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IDeviceModelPropertiesRepository.cs</code> (Lines 1-11)</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Repositories/DeviceModelPropertiesRepository.cs</code> (Lines 1-49)</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/DeviceModelProperty.cs</code> (Lines 1-44)</li>
+</ul>
+<p><strong>UI Components</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/DeviceModels/DeviceModelDetailPage.razor</code> (Lines 78-141)</li>
+<li><code>src/IoTHub.Portal.Client/Components/Devices/EditDevice.razor</code> (Lines 252-317)</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
+<p><strong>Depends On</strong>:</p>
+<ul>
+<li>Device Model Management (002) - Properties are always associated with a device model</li>
+<li>Standard Device Management (001) - Device instance properties require device to exist with a model assigned</li>
+<li>Azure IoT Hub / AWS IoT Core - Device instance property values stored in and retrieved from cloud device twins/shadows</li>
+</ul>
+<p><strong>Depended On By</strong>:</p>
+<ul>
+<li>Device Configurations Management (005) - Configurations can reference and set device model properties</li>
+<li>Device Import Export (021) - Device exports include property values, imports can set property values</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>

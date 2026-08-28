@@ -1,0 +1,954 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="IoT Hub Portal for device management" name="description"/>
+<link href="../../../assets/images/favicon.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.2" name="generator"/>
+<title>Feature Specification: Standard Device Management - IoT Hub Portal</title>
+<link href="../../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#feature-specification-standard-device-management">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="IoT Hub Portal" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            IoT Hub Portal
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Feature Specification: Standard Device Management
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  IoT Hub Portal
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../azure/">
+        
+  
+    
+  
+  Azure
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../aws/">
+        
+  
+    
+  
+  AWS
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../dev-guide/">
+          
+  
+    
+  
+  Dev Guide
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../concepts/">
+        
+  
+    
+  
+  Concepts
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../rbac/">
+        
+  
+    
+  
+  RBAC
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../open-api/">
+        
+  
+    
+  
+  Web API Reference
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../about/issues/">
+          
+  
+    
+  
+  About
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="IoT Hub Portal" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="IoT Hub Portal">
+<img alt="logo" src="../../../assets/images/logo.svg"/>
+</a>
+    IoT Hub Portal
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/CGI-FR/IoT-Hub-Portal" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    CGI-FR/IoT-Hub-Portal
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    IoT Hub Portal
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../aws/">
+<span class="md-ellipsis">
+    AWS
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    Dev Guide
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Dev Guide
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/">
+<span class="md-ellipsis">
+    Developer Guide
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+<span class="md-ellipsis">
+    Testing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Testing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-common-practices/">
+<span class="md-ellipsis">
+    Unit Tests Common Practices
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/testing/unit-tests-on-blazor-components/">
+<span class="md-ellipsis">
+    Unit Tests on Blazor components
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+<span class="md-ellipsis">
+    Migrations
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Migrations
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v3-to-v4/">
+<span class="md-ellipsis">
+    Migrate from v3 to v4
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v4-to-v5/">
+<span class="md-ellipsis">
+    Migrate from v4 to v5
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/migrations/v5-to-v6/">
+<span class="md-ellipsis">
+    Migrate from v5 to v6
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+<span class="md-ellipsis">
+    Project conception
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            Project conception
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../dev-guide/conception/diagrams/">
+<span class="md-ellipsis">
+    Diagrams
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../open-api/">
+<span class="md-ellipsis">
+    Web API Reference
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+<span class="md-ellipsis">
+    About
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/issues/">
+<span class="md-ellipsis">
+    Known Issues
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/support/">
+<span class="md-ellipsis">
+    Support
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/credits/">
+<span class="md-ellipsis">
+    Credits
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../about/license/">
+<span class="md-ellipsis">
+    License
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-scenarios-testing">
+<span class="md-ellipsis">
+      User Scenarios &amp; Testing
+    </span>
+</a>
+<nav aria-label="User Scenarios &amp; Testing" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-1-view-and-search-device-inventory-priority-p1">
+<span class="md-ellipsis">
+      User Story 1 - View and Search Device Inventory (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-2-view-device-details-and-properties-priority-p1">
+<span class="md-ellipsis">
+      User Story 2 - View Device Details and Properties (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-3-create-new-devices-priority-p1">
+<span class="md-ellipsis">
+      User Story 3 - Create New Devices (Priority: P1)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-4-update-device-configuration-priority-p2">
+<span class="md-ellipsis">
+      User Story 4 - Update Device Configuration (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-5-delete-devices-priority-p2">
+<span class="md-ellipsis">
+      User Story 5 - Delete Devices (Priority: P2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-6-import-and-export-device-lists-priority-p3">
+<span class="md-ellipsis">
+      User Story 6 - Import and Export Device Lists (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-story-7-manage-device-labels-priority-p3">
+<span class="md-ellipsis">
+      User Story 7 - Manage Device Labels (Priority: P3)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-cases">
+<span class="md-ellipsis">
+      Edge Cases
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements">
+<span class="md-ellipsis">
+      Requirements
+    </span>
+</a>
+<nav aria-label="Requirements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-entities">
+<span class="md-ellipsis">
+      Key Entities
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-criteria">
+<span class="md-ellipsis">
+      Success Criteria
+    </span>
+</a>
+<nav aria-label="Success Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#measurable-outcomes">
+<span class="md-ellipsis">
+      Measurable Outcomes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#traceability">
+<span class="md-ellipsis">
+      Traceability
+    </span>
+</a>
+<nav aria-label="Traceability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#source-analysis">
+<span class="md-ellipsis">
+      Source Analysis
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-references">
+<span class="md-ellipsis">
+      Code References
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependencies">
+<span class="md-ellipsis">
+      Dependencies
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="feature-specification-standard-device-management">Feature Specification: Standard Device Management<a class="headerlink" href="#feature-specification-standard-device-management" title="Permanent link">¶</a></h1>
+<p><strong>Feature ID</strong>: 001<br/>
+<strong>Feature Branch</strong>: <code>001-standard-device-management</code><br/>
+<strong>Created</strong>: 2026-01-30<br/>
+<strong>Status</strong>: Draft<br/>
+<strong>Source</strong>: Analysis from <code>specs/001-standard-device-management/analyze.md</code></p>
+<hr/>
+<h2 id="user-scenarios-testing">User Scenarios &amp; Testing<a class="headerlink" href="#user-scenarios-testing" title="Permanent link">¶</a></h2>
+<h3 id="user-story-1-view-and-search-device-inventory-priority-p1">User Story 1 - View and Search Device Inventory (Priority: P1)<a class="headerlink" href="#user-story-1-view-and-search-device-inventory-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to view a comprehensive list of all devices in the system with search and filtering capabilities so that I can quickly locate specific devices for monitoring or troubleshooting.</p>
+<p><strong>Why this priority</strong>: Core functionality for device visibility and management. Without this, users cannot access or manage their device fleet.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by navigating to the device list page, performing searches by device name/ID, and applying filters by status, state, model, tags, or labels. Delivers immediate value by providing device visibility.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am an authorized user with device:read permission, <strong>When</strong> I navigate to the device list page, <strong>Then</strong> I see a paginated list of devices showing device ID, name, model, connection status, enabled state, and labels</li>
+<li><strong>Given</strong> I am viewing the device list, <strong>When</strong> I enter a device name or ID in the search field, <strong>Then</strong> the list filters to show only matching devices</li>
+<li><strong>Given</strong> I am viewing the device list, <strong>When</strong> I select a device model filter, <strong>Then</strong> only devices of that model are displayed</li>
+<li><strong>Given</strong> I am viewing the device list, <strong>When</strong> I select multiple labels, <strong>Then</strong> only devices with those labels are displayed</li>
+<li><strong>Given</strong> I am viewing the device list, <strong>When</strong> I select connection state filter (connected/disconnected), <strong>Then</strong> only devices in that state are displayed</li>
+<li><strong>Given</strong> I am viewing the device list, <strong>When</strong> I select status filter (enabled/disabled), <strong>Then</strong> only devices with that status are displayed</li>
+<li><strong>Given</strong> I am viewing the device list with more than 10 devices, <strong>When</strong> I navigate to the next page, <strong>Then</strong> I see the next set of results with consistent filtering applied</li>
+<li><strong>Given</strong> I am viewing the device list, <strong>When</strong> I click on a column header, <strong>Then</strong> the list sorts by that column in ascending or descending order</li>
+<li><strong>Given</strong> I am a user without device:read permission, <strong>When</strong> I attempt to access the device list page, <strong>Then</strong> I am denied access</li>
+</ol>
+<hr/>
+<h3 id="user-story-2-view-device-details-and-properties-priority-p1">User Story 2 - View Device Details and Properties (Priority: P1)<a class="headerlink" href="#user-story-2-view-device-details-and-properties-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to view detailed information about a specific device including its configuration, properties, and connection credentials so that I can understand device status and configuration.</p>
+<p><strong>Why this priority</strong>: Essential for device troubleshooting and configuration verification. Users need to access device details to diagnose issues and verify settings.</p>
+<p><strong>Independent Test</strong>: Can be tested by selecting a device from the list and viewing its detail page with tabs for general information, properties, tags, and labels. Delivers value by providing complete device context.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device:read permission, <strong>When</strong> I click on a device in the list, <strong>Then</strong> I see the device detail page showing device ID, name, model, image, connection status, enabled state, last activity time, and status update time</li>
+<li><strong>Given</strong> I am viewing a device detail page, <strong>When</strong> I navigate to the Properties tab, <strong>Then</strong> I see all device properties with their current values retrieved from the device twin</li>
+<li><strong>Given</strong> I am viewing device properties, <strong>When</strong> a property is marked as writable, <strong>Then</strong> I see it as an editable field</li>
+<li><strong>Given</strong> I am viewing device properties, <strong>When</strong> a property is marked as read-only, <strong>Then</strong> I see it as a display-only field</li>
+<li><strong>Given</strong> I am viewing a device detail page, <strong>When</strong> I click to view credentials, <strong>Then</strong> I see the device enrollment credentials required for connection</li>
+<li><strong>Given</strong> I am viewing a device detail page, <strong>When</strong> the device has tags, <strong>Then</strong> I see all tag names and values</li>
+<li><strong>Given</strong> I am viewing a device detail page, <strong>When</strong> the device has labels, <strong>Then</strong> I see all assigned labels</li>
+<li><strong>Given</strong> I am viewing a device detail page, <strong>When</strong> the device has a layer assignment, <strong>Then</strong> I see the layer information</li>
+</ol>
+<hr/>
+<h3 id="user-story-3-create-new-devices-priority-p1">User Story 3 - Create New Devices (Priority: P1)<a class="headerlink" href="#user-story-3-create-new-devices-priority-p1" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to create new devices in the system by selecting a device model and providing required information so that new devices can be registered and managed.</p>
+<p><strong>Why this priority</strong>: Critical for device onboarding. Without this capability, no new devices can be added to the system.</p>
+<p><strong>Independent Test</strong>: Can be tested by clicking "Create Device," selecting a model, filling in required fields, and successfully creating a device. Delivers value by enabling device fleet expansion.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device:write permission, <strong>When</strong> I click the "Create Device" button, <strong>Then</strong> I see a device creation form</li>
+<li><strong>Given</strong> I am on the device creation form, <strong>When</strong> I select a device model, <strong>Then</strong> the form displays all properties defined by that model with appropriate input controls</li>
+<li><strong>Given</strong> I am filling out the device creation form, <strong>When</strong> I provide a device ID, device name, and select a model, <strong>Then</strong> the form validates the required fields</li>
+<li><strong>Given</strong> I am filling out the device creation form, <strong>When</strong> I enter an invalid device ID format (not alphanumeric, exceeds 128 characters), <strong>Then</strong> I see a validation error</li>
+<li><strong>Given</strong> I have completed the device creation form with valid data, <strong>When</strong> I click Save, <strong>Then</strong> the device is created in both the portal database and the cloud IoT service (Azure IoT Hub or AWS IoT Core)</li>
+<li><strong>Given</strong> I have created a device, <strong>When</strong> I return to the device list, <strong>Then</strong> I see the newly created device in the list</li>
+<li><strong>Given</strong> I am creating a device, <strong>When</strong> I set writable properties, <strong>Then</strong> those properties are written to the device twin desired properties</li>
+<li><strong>Given</strong> I am creating a device, <strong>When</strong> I assign tags, <strong>Then</strong> those tags are saved with the device and synchronized to the IoT service</li>
+<li><strong>Given</strong> I am creating a device, <strong>When</strong> I assign labels, <strong>Then</strong> those labels are associated with the device</li>
+<li><strong>Given</strong> the device creation fails in the cloud IoT service, <strong>When</strong> I attempt to save, <strong>Then</strong> I see an error message and the device is not created in the portal database</li>
+</ol>
+<hr/>
+<h3 id="user-story-4-update-device-configuration-priority-p2">User Story 4 - Update Device Configuration (Priority: P2)<a class="headerlink" href="#user-story-4-update-device-configuration-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to update device properties, tags, and labels so that I can modify device configuration and categorization as requirements change.</p>
+<p><strong>Why this priority</strong>: Important for ongoing device management but not required for initial deployment. Enables configuration changes without recreating devices.</p>
+<p><strong>Independent Test</strong>: Can be tested by opening an existing device, modifying properties or tags, saving changes, and verifying updates in both the portal and device twin. Delivers value by enabling device reconfiguration.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device:write permission and am viewing a device, <strong>When</strong> I click Edit, <strong>Then</strong> I can modify device name, enabled state, properties, tags, and labels</li>
+<li><strong>Given</strong> I am editing a device, <strong>When</strong> I change a writable property value, <strong>Then</strong> the new value is validated according to the property type (integer, double, boolean, string, etc.)</li>
+<li><strong>Given</strong> I am editing a device, <strong>When</strong> I save changes with valid data, <strong>Then</strong> the device is updated in both the portal database and the device twin in the cloud IoT service</li>
+<li><strong>Given</strong> I am editing device properties, <strong>When</strong> I update a desired property, <strong>Then</strong> the change is written to the device twin and eventually synchronized to the physical device</li>
+<li><strong>Given</strong> I am editing a device, <strong>When</strong> I change tag values, <strong>Then</strong> the tags are updated in the portal and synchronized to the IoT service</li>
+<li><strong>Given</strong> I am editing a device, <strong>When</strong> I add or remove labels, <strong>Then</strong> the label associations are updated in the database</li>
+<li><strong>Given</strong> I am editing a device, <strong>When</strong> I change the device model, <strong>Then</strong> the property schema updates to match the new model</li>
+<li><strong>Given</strong> the device update fails in the cloud IoT service, <strong>When</strong> I attempt to save, <strong>Then</strong> I see an error message and changes are not persisted</li>
+</ol>
+<hr/>
+<h3 id="user-story-5-delete-devices-priority-p2">User Story 5 - Delete Devices (Priority: P2)<a class="headerlink" href="#user-story-5-delete-devices-priority-p2" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to delete devices from the system so that decommissioned or incorrectly configured devices can be removed.</p>
+<p><strong>Why this priority</strong>: Important for device lifecycle management but not required for initial setup. Enables cleanup and decommissioning.</p>
+<p><strong>Independent Test</strong>: Can be tested by selecting a device, clicking delete, confirming the action, and verifying removal from both the portal and cloud IoT service. Delivers value by enabling fleet cleanup.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device:write permission, <strong>When</strong> I click the delete button on a device in the list, <strong>Then</strong> I see a confirmation dialog warning about irreversibility</li>
+<li><strong>Given</strong> I see the delete confirmation dialog, <strong>When</strong> I confirm deletion, <strong>Then</strong> the device is removed from both the portal database and the cloud IoT service (Azure IoT Hub or AWS IoT Core)</li>
+<li><strong>Given</strong> I have deleted a device, <strong>When</strong> I return to the device list, <strong>Then</strong> the device no longer appears</li>
+<li><strong>Given</strong> I attempt to delete a device, <strong>When</strong> the deletion fails in the cloud IoT service, <strong>Then</strong> I see an error message and the device remains in the portal</li>
+<li><strong>Given</strong> I attempt to delete a device, <strong>When</strong> I am not authorized (missing device:write permission), <strong>Then</strong> I do not see the delete button</li>
+<li><strong>Given</strong> I delete a device, <strong>When</strong> the device has associated tags, labels, and properties, <strong>Then</strong> all related data is properly cleaned up</li>
+</ol>
+<hr/>
+<h3 id="user-story-6-import-and-export-device-lists-priority-p3">User Story 6 - Import and Export Device Lists (Priority: P3)<a class="headerlink" href="#user-story-6-import-and-export-device-lists-priority-p3" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to import devices from CSV/Excel files and export device lists so that I can manage devices in bulk and integrate with external systems.</p>
+<p><strong>Why this priority</strong>: Enhances operational efficiency for large-scale deployments but not required for basic operations. Most valuable for users managing hundreds or thousands of devices.</p>
+<p><strong>Independent Test</strong>: Can be tested by downloading a template file, filling it with device data, importing it, and verifying devices are created. Also by exporting the current device list and verifying the file contains correct data. Delivers value through bulk operations.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I have device:import permission, <strong>When</strong> I click the "Import Devices" button, <strong>Then</strong> I can download a template file and upload a populated CSV/Excel file</li>
+<li><strong>Given</strong> I upload a valid device import file, <strong>When</strong> the import processes, <strong>Then</strong> all devices in the file are created in the system with a progress indicator</li>
+<li><strong>Given</strong> I upload a device import file with errors, <strong>When</strong> the import processes, <strong>Then</strong> I see a report of errors with line numbers and reasons</li>
+<li><strong>Given</strong> I have device:export permission, <strong>When</strong> I click the "Export Devices" button, <strong>Then</strong> I receive a file containing all devices matching current filters</li>
+<li><strong>Given</strong> I export devices, <strong>When</strong> I open the export file, <strong>Then</strong> I see device ID, name, model, status, connection state, tags, labels, and layer information</li>
+<li><strong>Given</strong> I export devices with filters applied, <strong>When</strong> the export completes, <strong>Then</strong> only devices matching the filters are included in the export</li>
+</ol>
+<hr/>
+<h3 id="user-story-7-manage-device-labels-priority-p3">User Story 7 - Manage Device Labels (Priority: P3)<a class="headerlink" href="#user-story-7-manage-device-labels-priority-p3" title="Permanent link">¶</a></h3>
+<p>As an IoT administrator, I need to assign labels to devices for categorization and filtering so that I can organize devices logically across different dimensions (location, department, environment, etc.).</p>
+<p><strong>Why this priority</strong>: Useful for organization and filtering but not essential for basic device operations. Most valuable for large deployments requiring multi-dimensional categorization.</p>
+<p><strong>Independent Test</strong>: Can be tested by creating or selecting labels, assigning them to devices, and using label filters in the device list. Delivers value through improved device organization.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> I am creating or editing a device, <strong>When</strong> I access the labels section, <strong>Then</strong> I see a list of available labels to assign</li>
+<li><strong>Given</strong> I am managing device labels, <strong>When</strong> I select one or more labels, <strong>Then</strong> those labels are associated with the device</li>
+<li><strong>Given</strong> I am managing device labels, <strong>When</strong> I remove a label, <strong>Then</strong> the association is removed but the label remains available for other devices</li>
+<li><strong>Given</strong> I am on the device list page, <strong>When</strong> I filter by one or more labels, <strong>Then</strong> only devices with all selected labels are displayed</li>
+<li><strong>Given</strong> I am viewing the device list, <strong>When</strong> I look at a device row, <strong>Then</strong> I see all labels assigned to that device</li>
+<li><strong>Given</strong> I request available labels, <strong>When</strong> the system responds, <strong>Then</strong> I see only labels that are currently in use by at least one device</li>
+</ol>
+<hr/>
+<h3 id="edge-cases">Edge Cases<a class="headerlink" href="#edge-cases" title="Permanent link">¶</a></h3>
+<ul>
+<li>
+<p><strong>What happens when a device is created in the portal but fails to create in Azure IoT Hub or AWS IoT Core?</strong><br/>
+  The system should rollback the database transaction and display an error message to the user, preventing orphaned records.</p>
+</li>
+<li>
+<p><strong>How does the system handle concurrent updates to the same device?</strong><br/>
+  The system uses version tracking (Version property) to detect concurrent modifications. Last write wins, but users should see an error if the device was modified by another user.</p>
+</li>
+<li>
+<p><strong>What happens when searching with special characters or SQL injection attempts?</strong><br/>
+  Input is validated and parameterized queries are used to prevent SQL injection. Special characters in search terms are escaped properly.</p>
+</li>
+<li>
+<p><strong>How does the system behave when Azure IoT Hub or AWS IoT Core is unavailable?</strong><br/>
+  Device CRUD operations fail gracefully with error messages. The portal does not cache device twin data, so properties cannot be viewed or edited during cloud service outages.</p>
+</li>
+<li>
+<p><strong>What happens when filtering by a device model that is later deleted?</strong><br/>
+  The system prevents deletion of device models that are in use by devices. If somehow orphaned, the device list would show devices with invalid model references, requiring data cleanup.</p>
+</li>
+<li>
+<p><strong>How does the system handle devices with very long names or IDs?</strong><br/>
+  Device IDs are limited to 128 characters and validated. Device names have validation constraints. UI truncates long values with tooltips showing full text.</p>
+</li>
+<li>
+<p><strong>What happens when importing a file with duplicate device IDs?</strong><br/>
+  The import process validates for duplicates and reports errors. Existing devices are not overwritten unless explicitly configured.</p>
+</li>
+<li>
+<p><strong>How does pagination behave when devices are deleted while browsing?</strong><br/>
+  Server-side pagination may result in page shifts. Users may see inconsistent results if devices are added/removed during pagination. Refresh is recommended.</p>
+</li>
+<li>
+<p><strong>What happens when a device's connection state changes during viewing?</strong><br/>
+  The UI shows the state at the time of page load. Real-time updates require manual refresh or future SignalR integration.</p>
+</li>
+<li>
+<p><strong>How does the system handle device property values that don't match the expected type?</strong><br/>
+  Type validation occurs on the client and server. Invalid values are rejected with error messages. The device twin may contain non-conforming data from device-side updates.</p>
+</li>
+</ul>
+<hr/>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
+<h3 id="functional-requirements">Functional Requirements<a class="headerlink" href="#functional-requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>FR-001</strong>: System MUST provide a paginated list of all devices with device ID, name, model, image, connection status, enabled state, labels, and last activity time</li>
+<li><strong>FR-002</strong>: System MUST support full-text search of devices by device ID or device name with case-insensitive matching</li>
+<li><strong>FR-003</strong>: System MUST allow filtering devices by connection state (connected/disconnected)</li>
+<li><strong>FR-004</strong>: System MUST allow filtering devices by status (enabled/disabled)</li>
+<li><strong>FR-005</strong>: System MUST allow filtering devices by device model with single or multiple model selection</li>
+<li><strong>FR-006</strong>: System MUST allow filtering devices by custom tags where tag names are defined in tag settings</li>
+<li><strong>FR-007</strong>: System MUST allow filtering devices by labels with multiple label selection</li>
+<li><strong>FR-008</strong>: System MUST support sorting device lists by multiple columns with ascending and descending order</li>
+<li><strong>FR-009</strong>: System MUST enable creation of new devices with required fields: device ID, device name, and device model</li>
+<li><strong>FR-010</strong>: System MUST validate device ID format (alphanumeric with special characters, maximum 128 characters)</li>
+<li><strong>FR-011</strong>: System MUST create devices in both the portal database and the cloud IoT service (Azure IoT Hub or AWS IoT Core) atomically</li>
+<li><strong>FR-012</strong>: System MUST retrieve device details including device twin properties from the cloud IoT service</li>
+<li><strong>FR-013</strong>: System MUST display device properties with distinction between writable (desired) and read-only (reported) properties</li>
+<li><strong>FR-014</strong>: System MUST allow updating device name, enabled state, properties, tags, and labels for existing devices</li>
+<li><strong>FR-015</strong>: System MUST synchronize device updates to the cloud IoT service device twin</li>
+<li><strong>FR-016</strong>: System MUST allow deletion of devices with confirmation dialogs</li>
+<li><strong>FR-017</strong>: System MUST delete devices from both the portal database and the cloud IoT service</li>
+<li><strong>FR-018</strong>: System MUST provide device enrollment credentials for device connection configuration</li>
+<li><strong>FR-019</strong>: System MUST support import of devices from CSV/Excel files with validation and error reporting</li>
+<li><strong>FR-020</strong>: System MUST support export of device lists to CSV/Excel files with current filters applied</li>
+<li><strong>FR-021</strong>: System MUST provide a template file for device import with correct column structure</li>
+<li><strong>FR-022</strong>: System MUST allow assignment and removal of labels to devices for categorization</li>
+<li><strong>FR-023</strong>: System MUST retrieve available labels that are currently in use by at least one device</li>
+<li><strong>FR-024</strong>: System MUST display device images from the associated device model</li>
+<li><strong>FR-025</strong>: System MUST enforce authorization policies: device:read for viewing, device:write for modifications, device:import for imports, device:export for exports</li>
+<li><strong>FR-026</strong>: System MUST handle both Azure IoT Hub and AWS IoT Core as cloud providers based on configuration</li>
+<li><strong>FR-027</strong>: System MUST provide pagination controls with configurable page size (default 10 items)</li>
+<li><strong>FR-028</strong>: System MUST persist device tags in both the portal database and cloud IoT service tags</li>
+</ul>
+<h3 id="key-entities">Key Entities<a class="headerlink" href="#key-entities" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Device</strong>: Represents an IoT device with properties including ID, name, model reference, connection status, enabled state, status update time, last activity time, version, tags, labels, and optional layer assignment</li>
+<li><strong>DeviceDetails</strong>: Complete device information DTO including all properties, tags, labels, and model reference used for API communication</li>
+<li><strong>DeviceListItem</strong>: Lightweight device summary for list display including essential fields and image URL</li>
+<li><strong>DevicePropertyValue</strong>: Property name, display name, type, value, writability, and order used for device twin property management</li>
+<li><strong>DeviceCredentials</strong>: Enrollment credentials including authentication method and keys/certificates for device connection</li>
+<li><strong>Label</strong>: Categorization label that can be assigned to devices and device models</li>
+<li><strong>DeviceTagValue</strong>: Custom metadata key-value pair associated with a device</li>
+<li><strong>DeviceModel</strong>: Reference to the device model template defining properties and behavior</li>
+</ul>
+<hr/>
+<h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes<a class="headerlink" href="#measurable-outcomes" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>SC-001</strong>: Users can view a complete list of devices within 3 seconds for fleets of up to 1,000 devices with pagination</li>
+<li><strong>SC-002</strong>: Users can search and filter device lists with results appearing in under 2 seconds</li>
+<li><strong>SC-003</strong>: Device creation completes in under 10 seconds including cloud IoT service provisioning</li>
+<li><strong>SC-004</strong>: Device property updates synchronize to device twins within 5 seconds under normal conditions</li>
+<li><strong>SC-005</strong>: Users can import 100 devices in under 60 seconds with validation and error reporting</li>
+<li><strong>SC-006</strong>: 95% of device searches return relevant results on the first attempt without refinement</li>
+<li><strong>SC-007</strong>: Device deletion completes in under 5 seconds including cloud IoT service cleanup</li>
+<li><strong>SC-008</strong>: System handles concurrent access by 50 users viewing and modifying different devices without degradation</li>
+<li><strong>SC-009</strong>: 98% of device CRUD operations succeed without errors under normal cloud service availability</li>
+<li><strong>SC-010</strong>: Users with appropriate permissions can complete device onboarding (create device with properties) in under 3 minutes</li>
+</ul>
+<hr/>
+<h2 id="traceability">Traceability<a class="headerlink" href="#traceability" title="Permanent link">¶</a></h2>
+<h3 id="source-analysis">Source Analysis<a class="headerlink" href="#source-analysis" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Analysis Path</strong>: <code>specs/001-standard-device-management/analyze.md</code></li>
+<li><strong>Analyzed By</strong>: excavator.analyze</li>
+<li><strong>Analysis Date</strong>: 2026-01-30</li>
+</ul>
+<h3 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h3>
+<p><strong>Controllers</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/DevicesController.cs</code> (Lines 1-137)</li>
+<li><code>src/IoTHub.Portal.Server/Controllers/v1.0/DevicesControllerBase.cs</code> (Lines 1-185)</li>
+</ul>
+<p><strong>Business Logic</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Application/Services/IDeviceService.cs</code> (Lines 1-39)</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Services/DeviceService.cs</code> (Lines 1-134)</li>
+<li><code>src/IoTHub.Portal.Infrastructure/Services/DeviceServiceBase.cs</code> (Lines 1-220+)</li>
+<li><code>src/IoTHub.Portal.Server/Services/DevicePropertyService.cs</code> (Lines 1-129)</li>
+</ul>
+<p><strong>Data Access</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Domain/Repositories/IDeviceRepository.cs</code> (Lines 1-9)</li>
+<li><code>src/IoTHub.Portal.Domain/Entities/Device.cs</code> (Lines 1-63)</li>
+</ul>
+<p><strong>UI Components</strong>:</p>
+<ul>
+<li><code>src/IoTHub.Portal.Client/Pages/Devices/DeviceListPage.razor</code> (Lines 1-480)</li>
+<li><code>src/IoTHub.Portal.Client/Pages/Devices/DeviceDetailPage.razor</code> (Lines 1-41)</li>
+<li><code>src/IoTHub.Portal.Client/Pages/Devices/CreateDevicePage.razor</code> (Lines 1-13)</li>
+<li><code>src/IoTHub.Portal.Client/Components/Devices/EditDevice.razor</code> (Lines 1-150+)</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h3>
+<p><strong>Depends On</strong>:</p>
+<ul>
+<li>Device Model Management (002) - Devices must be associated with a model; model defines properties and behavior</li>
+<li>Device Tag Settings Management (004) - Custom searchable metadata fields for devices</li>
+<li>Layer Management (019) - Optional hierarchical organization of devices</li>
+<li>Azure IoT Hub / AWS IoT Core - External cloud IoT device management service</li>
+</ul>
+<p><strong>Depended On By</strong>:</p>
+<ul>
+<li>Edge Device Management (006) - Shares base functionality through DevicesControllerBase</li>
+<li>LoRaWAN Device Management (008) - Shares base functionality through DevicesControllerBase</li>
+<li>Device Import Export (021) - Bulk operations depend on device CRUD functionality</li>
+<li>Dashboard Metrics (020) - Device counts and status aggregation</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2026 CGI France
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.tooltips", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+<script>document$.subscribe(() => {
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        
+            const dark_scheme_name = "slate"
+            
+            window.scheme = document.body.getAttribute("data-md-color-scheme")
+            const options = {
+                attributeFilter: ['data-md-color-scheme'],
+            };
+            function color_scheme_callback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.attributeName === "data-md-color-scheme") {
+                        scheme = document.body.getAttribute("data-md-color-scheme")
+                        var iframe_list = document.getElementsByClassName("swagger-ui-iframe")
+                        for(var i = 0; i < iframe_list.length; i++) {
+                            var ele = iframe_list.item(i);
+                            if (ele) {
+                                if (scheme === dark_scheme_name) {
+                                    ele.contentWindow.enable_dark_mode();
+                                } else {
+                                    ele.contentWindow.disable_dark_mode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            observer = new MutationObserver(color_scheme_callback);
+            observer.observe(document.body, options);
+            })</script></body>
+</html>
