@@ -93,6 +93,7 @@
     <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP1.json" />
     <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP2.json" />
     <EmbeddedResource Include="RouterConfigFiles\EU_863_870.json" />
+    <EmbeddedResource Include="RouterConfigFiles\IN_865_867.json" />
     <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_1.json" />
     <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_2.json" />
     <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_3.json" />

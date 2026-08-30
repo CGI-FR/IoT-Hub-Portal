@@ -1,0 +1,162 @@
+{
+  "NetID": [
+    1
+  ],
+  "JoinEui": [
+    [
+      "0000000000000000",
+      "FFFFFFFFFFFFFFFF"
+    ]
+  ],
+  "region": "IN865",
+  "hwspec": "sx1301/1",
+  "freq_range": [
+    865000000,
+    867000000
+  ],
+  "DRs": [
+    [
+      12,
+      125,
+      0
+    ],
+    [
+      11,
+      125,
+      0
+    ],
+    [
+      10,
+      125,
+      0
+    ],
+    [
+      9,
+      125,
+      0
+    ],
+    [
+      8,
+      125,
+      0
+    ],
+    [
+      7,
+      125,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      6,
+      125,
+      0
+    ],
+    [
+      5,
+      125,
+      0
+    ]
+  ],
+  "sx1301_conf": 
+  [
+    {
+      "radio_0": {
+        "enable": true,
+        "freq": 865451250,
+        "tx_enable": true,
+        "tx_freq_min": 865000000,
+        "tx_freq_max": 867000000
+      },
+      "radio_1": {
+        "enable": true,
+        "freq": 866300000,
+        "tx_enable": false
+      },
+      "chan_multiSF_0": {
+        "desc": "LoRa, 125 kHz, SF 7-12, 865.0625 MHz",
+        "enable": true,
+        "radio": 0,
+        "if": -388750
+      },
+      "chan_multiSF_1": {
+        "desc": "LoRa, 125 kHz, SF 7-12, 865.2325 MHz",
+        "enable": true,
+        "radio": 0,
+        "if": -218750
+      },
+      "chan_multiSF_2": {
+        "desc": "LoRa, 125 kHz, SF 7-12, 865.4025 MHz",
+        "enable": true,
+        "radio": 0,
+        "if": -48750
+      },
+      "chan_multiSF_3": {
+        "desc": "LoRa, 125 kHz, SF 7-12, 865.5725 MHz",
+        "enable": true,
+        "radio": 0,
+        "if": 121250
+      },
+      "chan_multiSF_4": {
+        "desc": "LoRa, 125 kHz, SF 7-12, 865.84 MHz",
+        "enable": true,
+        "radio": 0,
+        "if": 388750
+      },
+      "chan_multiSF_5": {
+        "desc": "LoRa, 125 kHz, SF 7-12, 865.985 MHz",
+        "enable": true,
+        "radio": 1,
+        "if": -315000
+      },
+      "chan_multiSF_6": {
+        "desc": "LoRa, 125 kHz, SF 7-12, 866.13 MHz",
+        "enable": true,
+        "radio": 1,
+        "if": -170000
+      },
+      "chan_multiSF_7": {
+        "desc": "LoRa, 125 kHz, SF 7-12, 866.275 MHz",
+        "enable": true,
+        "radio": 1,
+        "if": -25000
+      },
+      "chan_FSK": {
+        "desc": "FSK, 125 kHz, 50kbps, 866.7 MHz",
+        "enable": true,
+        "radio": 1,
+        "if": 400000,
+        "bandwidth": 125000,
+        "datarate": 50000
+      }
+    }
+  ]
+}
