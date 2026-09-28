@@ -15,24 +15,24 @@ namespace IoTHub.Portal.Models.v10.LoRaWAN
         /// </summary>
         [Required]
         [RegularExpression("^[A-F0-9]{16}$", ErrorMessage = "DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")]
-        public string DeviceId { get; set; } = default!;
+        public string? DeviceId { get; set; }
 
         /// <summary>
         /// The name of the device.
         /// </summary>
         [Required]
-        public string DeviceName { get; set; } = default!;
+        public string? DeviceName { get; set; }
 
         /// <summary>
         /// The lora region.
         /// </summary>
         [Required]
-        public string LoraRegion { get; set; } = default!;
+        public string? LoraRegion { get; set; }
 
         /// <summary>
         /// The type of the device.
         /// </summary>
-        public string DeviceType { get; set; } = default!;
+        public string? DeviceType { get; set; }
 
         /// <summary>
         /// The client certificate thumbprint.

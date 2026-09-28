@@ -63,7 +63,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Helpers
             // Arrange
             var item = new Twin();
             const string expectedTagName = "myTagName";
-            var value = string.Empty;
+            var value = "tagvalue";
 
             // Act
             DeviceHelper.SetTagValue(item, registeredTagName, value);
