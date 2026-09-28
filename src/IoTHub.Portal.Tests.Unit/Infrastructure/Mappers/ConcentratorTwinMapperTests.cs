@@ -8,21 +8,10 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
     {
         private MockRepository mockRepository;
 
-#pragma warning disable CA2213 // Disposable fields should be disposed
-        private HttpClient mockHttpClient;
-#pragma warning restore CA2213 // Disposable fields should be disposed
-
-        private Mock<IConfiguration> mockConfiguration;
-        private Mock<HttpMessageHandler> httpMessageHandlerMock;
-
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
-
-            this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
-            this.httpMessageHandlerMock = this.mockRepository.Create<HttpMessageHandler>();
-            this.mockHttpClient = new HttpClient(this.httpMessageHandlerMock.Object);
         }
 
         private static ConcentratorTwinMapper CreateConcentratorTwinMapper()
@@ -123,7 +112,7 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             var concentratorTwinMapper = CreateConcentratorTwinMapper();
 
             var twin = new Twin();
-            twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()] = new List<string>() { Guid.NewGuid().ToString() };
+            twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()] = new List<string> { Guid.NewGuid().ToString() };
 
             var item = new ConcentratorDto();
 

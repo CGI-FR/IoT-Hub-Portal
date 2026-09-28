@@ -50,8 +50,11 @@ namespace IoTHub.Portal.Application.Helpers
         /// <param name="value">The tag value.</param>
         public static void SetTagValue(Twin item, string tagName, string value)
         {
-            ArgumentNullException.ThrowIfNull(item, nameof(item));
-            ArgumentNullException.ThrowIfNull(tagName, nameof(tagName));
+            if (string.IsNullOrEmpty(value))
+                return;
+
+            ArgumentNullException.ThrowIfNull(item);
+            ArgumentNullException.ThrowIfNull(tagName);
 
             var camelCasedTagName = tagName.ToCamelCase();
 
