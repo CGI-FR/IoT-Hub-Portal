@@ -12,6 +12,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
         private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
         private Mock<IDeviceClientService> mockDeviceClientService;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
+        private Mock<ILayerClientService> mockLayerClientService;
 
         private readonly string apiBaseUrl = "api/devices";
 
@@ -23,11 +24,13 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
             this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockLayerClientService = MockRepository.Create<ILayerClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockLayerClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
@@ -64,6 +67,72 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel .mud-expand-panel-header .mud-expand-panel-text").TextContent.Should().Be("Search panel"));
             cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel").ClassList.Should().NotContain("Search panel should be collapsed"));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(1));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void WhenDeviceHasLayerAndUserCanReadLayers_LayerNameIsDisplayedNextToDeviceId()
+        {
+            // Arrange
+            const string deviceId = "device-eui";
+            const string layerId = "layer-id";
+            const string layerName = "Production floor";
+
+            _ = this.mockPermissionsService.Setup(service => service.GetUserPermissions())
+                .ReturnsAsync(new[] { PortalPermissions.DeviceRead, PortalPermissions.LayerRead });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId, LayerId = layerId } }
+                });
+
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
+                .ReturnsAsync(new List<LayerDto> { new() { Id = layerId, Name = layerName } });
+
+            // Act
+            var cut = RenderComponent<DeviceListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().Contain(deviceId).And.Contain($"Layer: {layerName}"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void WhenDeviceHasLayerAndUserCannotReadLayers_LayerIsNotDisplayed()
+        {
+            // Arrange
+            const string deviceId = "device-eui";
+            const string layerId = "layer-id";
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId, LayerId = layerId } }
+                });
+
+            // Act
+            var cut = RenderComponent<DeviceListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().Contain(deviceId).And.NotContain("Layer:").And.NotContain(layerId));
+            this.mockLayerClientService.Verify(service => service.GetLayers(), Times.Never);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
