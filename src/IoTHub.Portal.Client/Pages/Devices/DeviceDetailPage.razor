@@ -9,11 +9,12 @@
 <MudTooltip Placement="Placement.Top">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Details</MudText>
 </MudTooltip>
-<EditDevice Context="CreateEditMode.Edit" IsLoRa="@IsLoRa" DeviceId="@DeviceID" CanWrite="@canWrite" CanExec="@canExec" />
+<EditDevice Context="CreateEditMode.Edit" IsLoRa="@IsLoRa" DeviceId="@DeviceID" CanWrite="@canWrite" CanReadLayers="@canReadLayers" CanExec="@canExec" />
 
 @code {
     protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.DeviceRead };
     private bool canWrite;
+    private bool canReadLayers;
     private bool canExec;
 
     [Parameter]
@@ -31,8 +32,9 @@
     {
         await base.OnInitializedAsync();
 
-        // Check if user has write permission for conditional UI elements
+        // Check permissions for conditional UI elements
         canWrite = await HasPermissionAsync(PortalPermissions.DeviceWrite);
+        canReadLayers = await HasPermissionAsync(PortalPermissions.LayerRead);
         canExec = await HasPermissionAsync(PortalPermissions.DeviceExecute);
     }
 

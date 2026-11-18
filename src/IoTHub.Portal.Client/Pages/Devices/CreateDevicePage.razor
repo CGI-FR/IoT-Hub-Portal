@@ -4,9 +4,16 @@
 <AuthorizedContent IsAuthorized="@IsAuthorized" IsLoading="@IsLoading">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
 
-    <EditDevice Context="CreateEditMode.Create" CanWrite="true"/>
+    <EditDevice Context="CreateEditMode.Create" CanWrite="true" CanReadLayers="@canReadLayers" />
 </AuthorizedContent>
 
 @code {
     protected override PortalPermissions[] RequiredPermissions { get; } = { PortalPermissions.DeviceWrite };
+    private bool canReadLayers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        canReadLayers = await HasPermissionAsync(PortalPermissions.LayerRead);
+    }
 }

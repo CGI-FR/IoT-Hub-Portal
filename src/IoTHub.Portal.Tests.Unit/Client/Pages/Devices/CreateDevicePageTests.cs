@@ -13,6 +13,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
         private Mock<IDeviceClientService> mockDeviceClientService;
         private Mock<ILoRaWanDeviceModelsClientService> mockLoRaWanDeviceModelsClientService;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
+        private Mock<ILayerClientService> mockLayerClientService;
 
         public override void Setup()
         {
@@ -23,12 +24,14 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
             this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockLayerClientService = MockRepository.Create<ILayerClientService>();
 
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockLayerClientService.Object);
 
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });

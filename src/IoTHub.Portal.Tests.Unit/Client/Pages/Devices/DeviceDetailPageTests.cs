@@ -17,6 +17,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
         private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
         private Mock<IDeviceClientService> mockDeviceClientService;
         private Mock<ILoRaWanDeviceClientService> mockLoRaWanDeviceClientService;
+        private Mock<ILayerClientService> mockLayerClientService;
 
         public override void Setup()
         {
@@ -29,6 +30,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
             this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
             this.mockLoRaWanDeviceClientService = MockRepository.Create<ILoRaWanDeviceClientService>();
+            this.mockLayerClientService = MockRepository.Create<ILayerClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
@@ -37,6 +39,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
+            _ = Services.AddSingleton(this.mockLayerClientService.Object);
 
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 

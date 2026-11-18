@@ -15,6 +15,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
         private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
         private Mock<IDeviceClientService> mockDeviceClientService;
         private Mock<ILoRaWanDeviceClientService> mockLoRaWanDeviceClientService;
+        private Mock<ILayerClientService> mockLayerClientService;
 
         public override void Setup()
         {
@@ -26,6 +27,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
             this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
             this.mockLoRaWanDeviceClientService = MockRepository.Create<ILoRaWanDeviceClientService>();
+            this.mockLayerClientService = MockRepository.Create<ILayerClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
@@ -33,6 +35,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
+            _ = Services.AddSingleton(this.mockLayerClientService.Object);
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
@@ -273,6 +276,57 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
         }
 
         [Test]
+        public void SelectedLayerShouldDisplayItsNameWhenDeviceDetailsLoad()
+        {
+            var deviceId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+            var layer = new LayerDto { Id = Guid.NewGuid().ToString(), Name = "Test layer" };
+
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
+                .ReturnsAsync(new List<LayerDto> { layer });
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevice(deviceId))
+                .ReturnsAsync(new DeviceDetails { DeviceID = deviceId, ModelId = modelId, LayerId = layer.Id });
+            _ = this.mockDeviceClientService.Setup(service => service.GetDeviceProperties(deviceId))
+                .ReturnsAsync(new List<DevicePropertyValue>());
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
+                .ReturnsAsync(new DeviceModelDto());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.Context, CreateEditMode.Edit)
+                .Add(p => p.DeviceId, deviceId)
+                .Add(p => p.CanReadLayers, true));
+
+            cut.WaitForAssertion(() => cut.FindComponent<MudSelect<string>>().Instance.Text.Should().Be(layer.Name));
+        }
+
+        [Test]
+        public void LayersShouldLoadWhenLayerReadPermissionBecomesAvailable()
+        {
+            var layer = new LayerDto { Id = Guid.NewGuid().ToString(), Name = "Test layer" };
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
+                .ReturnsAsync(new List<LayerDto> { layer });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(null))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
+
+            var cut = RenderComponent<EditDevice>(parameters => parameters
+                .Add(p => p.Context, CreateEditMode.Create)
+                .Add(p => p.CanReadLayers, false));
+
+            this.mockLayerClientService.Verify(service => service.GetLayers(), Times.Never);
+
+            cut.SetParametersAndRender(parameters => parameters.Add(p => p.CanReadLayers, true));
+
+            cut.WaitForAssertion(() => this.mockLayerClientService.Verify(service => service.GetLayers(), Times.Once));
+            _ = cut.FindComponents<MudSelectItem<string>>().Should().Contain(item => item.Instance.Value == layer.Id);
+        }
+
+        [Test]
         public async Task ClickOnSaveShouldCreateDeviceInEditDevice()
         {
             var mockDeviceModel = new DeviceModelDto
@@ -283,14 +337,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
+            var layerId = Guid.NewGuid().ToString();
             var expectedDeviceDetails = new DeviceDetails
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
                 DeviceID = Guid.NewGuid().ToString(),
+                LayerId = layerId
             };
 
-            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
+                .ReturnsAsync(new List<LayerDto> { new() { Id = layerId, Name = "Test layer" } });
+
+            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal) && expectedDeviceDetails.LayerId.Equals(details.LayerId, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -323,9 +382,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
             var cut = RenderComponent<EditDevice>(parameters => parameters
                 .Add(p => p.Context, CreateEditMode.Create)
                 .Add(p => p.CanWrite, true)
+                .Add(p => p.CanReadLayers, true)
                 .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
 
+            await cut.InvokeAsync(() => cut.FindComponent<MudSelect<string>>().Instance.ValueChanged.InvokeAsync(layerId));
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
@@ -357,12 +418,17 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
+            var layerId = Guid.NewGuid().ToString();
             var expectedDeviceDetails = new DeviceDetails
             {
                 DeviceName = Guid.NewGuid().ToString(),
                 ModelId = mockDeviceModel.ModelId,
                 DeviceID = Guid.NewGuid().ToString(),
+                LayerId = layerId
             };
+
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
+                .ReturnsAsync(new List<LayerDto> { new() { Id = layerId, Name = "Test layer" } });
 
             _ = this.mockDeviceClientService.Setup(service => service.GetDevice(It.IsAny<string>()))
                 .ReturnsAsync(new DeviceDetails());
@@ -374,7 +440,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Setup(service => service.GetDeviceModel(It.IsAny<string>()))
                 .ReturnsAsync(new DeviceModelDto());
 
-            _ = this.mockDeviceClientService.Setup(service => service.UpdateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockDeviceClientService.Setup(service => service.UpdateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal) && expectedDeviceDetails.LayerId.Equals(details.LayerId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -402,9 +468,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 .Add(p => p.Context, CreateEditMode.Edit)
                 .Add(p => p.DeviceId, expectedDeviceDetails.DeviceID)
                 .Add(p => p.CanWrite, true)
+                .Add(p => p.CanReadLayers, true)
                 .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
 
+            await cut.InvokeAsync(() => cut.FindComponent<MudSelect<string>>().Instance.ValueChanged.InvokeAsync(layerId));
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);
