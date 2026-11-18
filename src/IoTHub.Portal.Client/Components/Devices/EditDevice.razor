@@ -8,6 +8,7 @@
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
+@inject ILayerClientService LayerClientService
 @inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
 @inject IDeviceLayoutService DeviceLayoutService
 @inject NavigationManager NavigationManager
@@ -137,7 +138,7 @@
                                                                   For="@(() => Device.DeviceID)"
                                                                   Mask="@maskLoRaDeviceID"
                                                                   HelperText="Device EUI must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)"
-                                                                  Disabled="@(!CanWrite)"/>
+                                                                  Disabled="@(!CanWrite)" />
                                                 }
                                                 else
                                                 {
@@ -169,7 +170,20 @@
                                                               Variant="Variant.Outlined"
                                                               For="@(() => Device.DeviceName)"
                                                               Required="true"
-                                                              Disabled="@(!CanWrite)"/>
+                                                              Disabled="@(!CanWrite)" />
+                                            </MudItem>
+
+                                            <MudItem xs="12" md="6">
+                                                <MudSelect T="string" @bind-Value="selectedLayerId" ToStringFunc="GetLayerDisplayName" Label="Layer" Variant="Variant.Outlined" Disabled="@(!CanWrite)">
+                                                    <MudSelectItem T="string" Value="@("None")">No layer</MudSelectItem>
+                                                    <MudSelectItem T="string" Disabled="true" Class="pb-0 pt-0">
+                                                        <hr style="height:1px;background-color:#c4c4c4;" />
+                                                    </MudSelectItem>
+                                                    @foreach (var layer in FlattenLayerTree(LayerTree))
+                                                    {
+                                                        <MudSelectItem T="string" Value="@layer.LayerData.Id" Style="@($"padding-left: {16 + (layer.Level * 16)}px;")">@layer.LayerData.Name</MudSelectItem>
+                                                    }
+                                                </MudSelect>
                                             </MudItem>
 
                                             @if (Portal.CloudProvider.Equals(CloudProviders.Azure))
@@ -221,7 +235,7 @@
                                                         <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
                                                                       Required="@tag.Required"
                                                                       Variant="Variant.Outlined"
-                                                                      Disabled="@(!CanWrite)"/>
+                                                                      Disabled="@(!CanWrite)" />
                                                     </MudItem>
                                                 }
                                             }
@@ -336,7 +350,7 @@
                     {
                         <MudTabPanel Text="LoRaWAN" Style=@(CheckLoRaValidation() ? "color: red" : "")>
                             <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)"
-                                            Commands="@Commands" CanWrite="@CanWrite" CanExec="@CanExec"/>
+                                            Commands="@Commands" CanWrite="@CanWrite" CanExec="@CanExec" />
                         </MudTabPanel>
                     }
                 }
@@ -359,6 +373,9 @@
     public bool CanWrite { get; set; }
 
     [Parameter]
+    public bool CanReadLayers { get; set; }
+
+    [Parameter]
     public bool CanExec { get; set; }
 
     [CascadingParameter]
@@ -369,6 +386,10 @@
     private IEnumerable<IDeviceModel> DeviceModels { get; set; } = Array.Empty<DeviceModelDto>();
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
     private IEnumerable<DeviceModelCommandDto> Commands { get; set; } = Array.Empty<DeviceModelCommandDto>();
+    private IEnumerable<LayerDto> Layers { get; set; } = Array.Empty<LayerDto>();
+    private HashSet<LayerHash> LayerTree { get; set; } = new();
+    private string selectedLayerId = "None";
+    private bool layersLoaded;
 
     private IDeviceModel DeviceModel
     {
@@ -401,7 +422,7 @@
     private bool isLoaded;
     private bool isProcessing;
 
-    public readonly PatternMask maskLoRaDeviceID = new ("XXXXXXXXXXXXXXXX")
+    public readonly PatternMask maskLoRaDeviceID = new("XXXXXXXXXXXXXXXX")
     {
         MaskChars = new[] { new MaskChar('X', "[0-9a-fA-F]") },
         CleanDelimiters = false,
@@ -421,6 +442,7 @@
                 DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
                 Device = DeviceLayoutService.GetSharedDevice() ?? Device;
                 DeviceModel = DeviceLayoutService.GetSharedDeviceModel() ?? DeviceModel;
+                selectedLayerId = Device.LayerId ?? "None";
 
                 // Enable device by default
                 Device.IsEnabled = true;
@@ -465,9 +487,31 @@
                     TagList = await tagListTask;
                 }
 
+                selectedLayerId = Device.LayerId ?? "None";
                 isLoaded = true;
                 isProcessing = false;
             }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if (!CanReadLayers || layersLoaded)
+        {
+            return;
+        }
+
+        try
+        {
+            Layers = await LayerClientService.GetLayers();
+            LayerTree = BuildLayerTree(Layers);
+            layersLoaded = true;
         }
         catch (ProblemDetailsException exception)
         {
@@ -522,6 +566,8 @@
                     return;
                 }
 
+                ApplySelectedLayer();
+
                 if (IsLoRa)
                     await LoRaWanDeviceClientService.CreateDevice((Device as LoRaDeviceDetails)!);
                 else
@@ -547,6 +593,8 @@
 
                     return;
                 }
+
+                ApplySelectedLayer();
 
                 if (IsLoRa)
                 {
@@ -599,14 +647,51 @@
                 DeviceModel = DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel);
                 break;
         }
+
+        selectedLayerId = Device.LayerId ?? "None";
     }
 
     private void DeviceServiceOnRefreshDeviceOccurred(object sender, EventArgs e)
     {
         Device = DeviceLayoutService.GetSharedDevice();
         DeviceModel = DeviceLayoutService.GetSharedDeviceModel();
+        selectedLayerId = Device.LayerId ?? "None";
 
         StateHasChanged();
+    }
+
+    private void ApplySelectedLayer()
+    {
+        if (CanReadLayers)
+        {
+            Device.LayerId = selectedLayerId;
+        }
+    }
+
+    private string GetLayerDisplayName(string? layerId)
+    {
+        if (string.IsNullOrEmpty(layerId) || layerId == "None")
+        {
+            return "No layer";
+        }
+
+        return Layers.FirstOrDefault(layer => layer.Id == layerId)?.Name ?? layerId;
+    }
+
+    private static IEnumerable<LayerHash> FlattenLayerTree(IEnumerable<LayerHash> layers)
+    {
+        return layers.SelectMany(layer => new[] { layer }.Concat(FlattenLayerTree(layer.Children)));
+    }
+
+    private static HashSet<LayerHash> BuildLayerTree(IEnumerable<LayerDto> layers, string? parentId = null, int level = 0)
+    {
+        return layers
+            .Where(layer => layer.Father == parentId)
+            .Select(layer => new LayerHash(layer, level, level == 0)
+            {
+                Children = BuildLayerTree(layers, layer.Id, level + 1)
+            })
+            .ToHashSet();
     }
 
     private bool CheckTagsError()
