@@ -8,6 +8,7 @@
 @inject PortalSettings Portal
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
+@inject ILayerClientService LayerClientService
 @inject IJSRuntime JS
 @inject IDeviceModelsClientService DeviceModelsClientService
 
@@ -177,8 +178,16 @@
                     </MudTd>
                     <MudTd DataLabel="Device">
                         <MudItem>
-                            <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText>
-                            <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceID</MudText>
+                            <MudStack Row="true" Spacing="1" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center">
+                                <MudText Typo="Typo.body1">@context.DeviceName</MudText>
+                                <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")">@context.DeviceID</MudText>
+                                @if (canReadLayers && !string.IsNullOrEmpty(context.LayerId) && context.LayerId != "None")
+                                {
+                                    var layerName = layerNames.TryGetValue(context.LayerId, out var name) ? name : context.LayerId;
+                                    <MudText Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")">|</MudText>
+                                    <MudText Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")">@layerName</MudText>
+                                }
+                            </MudStack>
                         </MudItem>
                         <MudItem>
                             <Labels Items="@context.Labels" SearchedLabels="@labels" />
@@ -258,6 +267,8 @@
     private bool canWrite;
     private bool canImport;
     private bool canExport;
+    private bool canReadLayers;
+    private Dictionary<string, string> layerNames = new();
 
     [CascadingParameter]
     public Error? Error { get; set; }
@@ -290,6 +301,20 @@
                     searchTags.Add(tag.Name, "");
             }
             labels = await DeviceClientService.GetAvailableLabels();
+
+            canReadLayers = await HasPermissionAsync(PortalPermissions.LayerRead);
+            if (canReadLayers)
+            {
+                try
+                {
+                    var availableLayers = await LayerClientService.GetLayers();
+                    layerNames = availableLayers.ToDictionary(layer => layer.Id, layer => layer.Name);
+                }
+                catch (ProblemDetailsException exception)
+                {
+                    Error?.ProcessProblemDetails(exception);
+                }
+            }
 
             // Check if user has write permission for conditional UI elements
             canWrite = await HasPermissionAsync(PortalPermissions.DeviceWrite);
