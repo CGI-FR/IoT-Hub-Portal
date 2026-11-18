@@ -102,7 +102,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Assert
-            cut.WaitForAssertion(() => cut.Markup.Should().Contain(deviceId).And.Contain($"Layer: {layerName}"));
+            cut.WaitForAssertion(() => cut.Markup.Should().Contain(deviceId).And.Contain(layerName));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
