@@ -264,7 +264,17 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public async Task SendDevicesCommand(Collection<string> deviceIds, string command)
         {
-            foreach (var device in deviceIds) await loRaWANCommandService.ExecuteLoRaWANCommand(device, command);
+            foreach (var device in deviceIds)
+            {
+                try
+                {
+                    await loRaWANCommandService.ExecuteLoRaWANCommand(device, command);
+                }
+                catch (InternalServerErrorException ex)
+                {
+                    this.logger.LogError("Command {Command} failed to execute on device {DevEUI}: {ExceptionMessage}", command, device, ex.Message);
+                }
+            }
         }
     }
 }
