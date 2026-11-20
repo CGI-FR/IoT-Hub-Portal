@@ -1,36 +1,29 @@
-﻿<MudExpansionPanels>
-    <MudExpansionPanel Text="Search panel">
-        <MudGrid>
-            <MudItem xs="12" md="6">
-                <MudTextField @bind-Value="searchKeyword" Placeholder="DeviceID / DeviceName" id="searchKeyword"></MudTextField>
-            </MudItem>
-            <MudGrid>
-                <MudItem sm="12" md="6">
-                    <MudText>Status</MudText>
-                    <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
-                        <MudItem md="4" sm="12">
-                            <MudRadio Option=@("true") Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
-                        </MudItem>
-                        <MudItem md="4" sm="12">
-                            <MudRadio Option=@("false") Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
-                        </MudItem>
-                        <MudItem md="4" sm="12">
-                            <MudRadio Option=@("") Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
-                        </MudItem>
-                    </MudRadioGroup>
-
+﻿<MudGrid>
+    <MudItem xs="12" md="6">
+        <MudTextField @bind-Value="searchKeyword" Placeholder="DeviceID / DeviceName" id="searchKeyword"></MudTextField>
+    </MudItem>
+    <MudGrid>
+        <MudItem sm="12" md="6">
+            <MudText>Status</MudText>
+            <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
+                <MudItem md="4" sm="12">
+                    <MudRadio Option=@("true") Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
                 </MudItem>
-            </MudGrid>
+                <MudItem md="4" sm="12">
+                    <MudRadio Option=@("false") Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
+                </MudItem>
+                <MudItem md="4" sm="12">
+                    <MudRadio Option=@("") Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
+                </MudItem>
+            </MudRadioGroup>
+        </MudItem>
+    </MudGrid>
 
-            <MudItem xs="12">
-                <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton" OnClick=Search>Search</MudButton>
-                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset" id="resetSearch">Reset</MudButton>
-            </MudItem>
-
-        </MudGrid>
-
-    </MudExpansionPanel>
-</MudExpansionPanels>
+    <MudItem xs="12">
+        <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton" OnClick=Search>Search</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset" id="resetSearch">Reset</MudButton>
+    </MudItem>
+</MudGrid>
 
 @code {
     [Parameter]
