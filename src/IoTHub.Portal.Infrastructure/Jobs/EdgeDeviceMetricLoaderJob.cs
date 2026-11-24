@@ -21,13 +21,13 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            this.logger.LogInformation("Start loading edge devices metrics");
+            this.logger.LogDebug("Start loading edge devices metrics");
 
             await LoadEdgeDevicesCountMetric();
             await LoadConnectedEdgeDevicesCountMetric();
             await LoadFailedDeploymentsCountMetric();
 
-            this.logger.LogInformation("End loading edge devices metrics");
+            this.logger.LogDebug("End loading edge devices metrics");
 
         }
 

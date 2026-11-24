@@ -38,11 +38,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
         {
             try
             {
-                this.logger.LogInformation("Start of sync Thing Types job");
+                this.logger.LogDebug("Start of sync Thing Types job");
 
                 await SyncThingTypesAsDeviceModels();
 
-                this.logger.LogInformation("End of sync Thing Types job");
+                this.logger.LogDebug("End of sync Thing Types job");
             }
             catch (Exception e)
             {

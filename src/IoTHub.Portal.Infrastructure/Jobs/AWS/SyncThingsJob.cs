@@ -55,11 +55,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
         {
             try
             {
-                this.logger.LogInformation("Start of sync Things job");
+                this.logger.LogDebug("Start of sync Things job");
 
                 await SyncThingsAsDevices();
 
-                this.logger.LogInformation("End of sync Things job");
+                this.logger.LogDebug("End of sync Things job");
             }
             catch (Exception e)
             {

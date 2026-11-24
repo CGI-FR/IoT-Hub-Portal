@@ -21,14 +21,14 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public Task Execute(IJobExecutionContext context)
         {
-            this.logger.LogInformation("Start exporting edge devices metrics");
+            this.logger.LogDebug("Start exporting edge devices metrics");
 
             this.edgeDeviceCounter.IncTo(this.portalMetric.EdgeDeviceCount);
             this.connectedEdgeDeviceCounter.IncTo(this.portalMetric.ConnectedEdgeDeviceCount);
 
             this.failedDeploymentCount.IncTo(this.portalMetric.FailedDeploymentCount);
 
-            this.logger.LogInformation("End exporting edge devices metrics");
+            this.logger.LogDebug("End exporting edge devices metrics");
 
             return Task.CompletedTask;
         }

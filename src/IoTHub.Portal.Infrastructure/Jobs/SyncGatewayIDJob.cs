@@ -25,11 +25,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             try
             {
-                this.logger.LogInformation("Start of sync GatewayID job");
+                this.logger.LogDebug("Start of sync GatewayID job");
 
                 await SyncGatewayID();
 
-                this.logger.LogInformation("End of sync GatewayID job");
+                this.logger.LogDebug("End of sync GatewayID job");
             }
             catch (Exception e)
             {
