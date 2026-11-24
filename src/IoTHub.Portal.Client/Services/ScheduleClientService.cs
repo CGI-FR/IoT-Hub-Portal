@@ -34,6 +34,11 @@ namespace IoTHub.Portal.Client.Services
             return this.http.PutAsJsonAsync(this.apiUrlBase, schedule);
         }
 
+        public Task ReplacePlanningSchedules(string planningId, IReadOnlyCollection<ScheduleDto> schedules)
+        {
+            return this.http.PutAsJsonAsync($"{this.apiUrlBase}/planning/{planningId}", schedules);
+        }
+
         public Task DeleteSchedule(string scheduleId)
         {
             return this.http.DeleteAsync($"{this.apiUrlBase}/{scheduleId}");

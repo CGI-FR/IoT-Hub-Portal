@@ -48,6 +48,21 @@ namespace IoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
+        /// Replaces all business-day slots for a planning.
+        /// </summary>
+        /// <param name="planningId">The planning identifier.</param>
+        /// <param name="schedules">The complete set of business-day slots.</param>
+        [Authorize("schedule:write")]
+        [HttpPut("planning/{planningId}", Name = "PUT Replace planning schedules")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ReplacePlanningSchedules(string planningId, IReadOnlyCollection<ScheduleDto> schedules)
+        {
+            await this.scheduleService.ReplacePlanningSchedules(planningId, schedules);
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Delete the schedule.
         /// </summary>
         /// <param name="scheduleId">the schedule id.</param>

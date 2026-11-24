@@ -3,6 +3,7 @@
 
 namespace IoTHub.Portal.Infrastructure.Services
 {
+    using InvalidPlanningScheduleException = Domain.Exceptions.InvalidPlanningScheduleException;
     using ResourceNotFoundException = Domain.Exceptions.ResourceNotFoundException;
 
     public class ScheduleService : IScheduleService
@@ -27,6 +28,10 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <returns>Schedule object.</returns>
         public async Task<ScheduleDto> CreateSchedule(ScheduleDto schedule)
         {
+            var timeline = await this.GetPlanningScheduleDtos(schedule.PlanningId);
+            timeline.Add(schedule);
+            ValidateTimeline(timeline);
+
             var scheduleEntity = this.mapper.Map<Schedule>(schedule);
 
             await this.scheduleRepository.InsertAsync(scheduleEntity);
@@ -50,9 +55,74 @@ namespace IoTHub.Portal.Infrastructure.Services
                 throw new ResourceNotFoundException($"The schedule with id {schedule.Id} doesn't exist");
             }
 
+            if (schedule.PlanningId != scheduleEntity.PlanningId)
+            {
+                throw new InvalidPlanningScheduleException("A schedule cannot be moved to another planning.");
+            }
+
+            var timeline = await this.GetPlanningScheduleDtos(scheduleEntity.PlanningId);
+            var scheduleIndex = timeline.FindIndex(existingSchedule => existingSchedule.Id == schedule.Id);
+            if (scheduleIndex < 0)
+            {
+                throw new ResourceNotFoundException($"The schedule with id {schedule.Id} doesn't exist");
+            }
+
+            timeline[scheduleIndex] = schedule;
+            ValidateTimeline(timeline);
+
             _ = this.mapper.Map(schedule, scheduleEntity);
 
             this.scheduleRepository.Update(scheduleEntity);
+
+            await this.unitOfWork.SaveAsync();
+        }
+
+        /// <summary>
+        /// Replace all slots for a planning after validating their complete timeline.
+        /// </summary>
+        /// <param name="planningId">The planning identifier.</param>
+        /// <param name="schedules">The complete set of business-day slots.</param>
+        public async Task ReplacePlanningSchedules(string planningId, IReadOnlyCollection<ScheduleDto> schedules)
+        {
+            var validationError = PlanningScheduleValidator.ValidateTimeline(schedules);
+            if (validationError is not null)
+            {
+                throw new InvalidPlanningScheduleException(validationError);
+            }
+
+            var existingSchedules = (await this.scheduleRepository.GetAllAsync(schedule => schedule.PlanningId == planningId)).ToList();
+            var existingById = existingSchedules.ToDictionary(schedule => schedule.Id);
+            var submittedIds = new HashSet<string>();
+
+            foreach (var schedule in schedules)
+            {
+                if (!submittedIds.Add(schedule.Id))
+                {
+                    throw new InvalidPlanningScheduleException($"The schedule id {schedule.Id} is duplicated.");
+                }
+
+                if (existingById.TryGetValue(schedule.Id, out var scheduleEntity))
+                {
+                    _ = this.mapper.Map(schedule, scheduleEntity);
+                    scheduleEntity.PlanningId = planningId;
+                    this.scheduleRepository.Update(scheduleEntity);
+                    continue;
+                }
+
+                if (await this.scheduleRepository.GetByIdAsync(schedule.Id) is not null)
+                {
+                    throw new InvalidPlanningScheduleException($"The schedule id {schedule.Id} belongs to another planning.");
+                }
+
+                schedule.PlanningId = planningId;
+                var newSchedule = this.mapper.Map<Schedule>(schedule);
+                await this.scheduleRepository.InsertAsync(newSchedule);
+            }
+
+            foreach (var existingSchedule in existingSchedules.Where(schedule => !submittedIds.Contains(schedule.Id)))
+            {
+                this.scheduleRepository.Delete(existingSchedule.Id);
+            }
 
             await this.unitOfWork.SaveAsync();
         }
@@ -70,6 +140,10 @@ namespace IoTHub.Portal.Infrastructure.Services
             {
                 throw new ResourceNotFoundException($"The schedule with id {scheduleId} doesn't exist");
             }
+
+            var timeline = await this.GetPlanningScheduleDtos(scheduleEntity.PlanningId);
+            _ = timeline.RemoveAll(schedule => schedule.Id == scheduleId);
+            ValidateTimeline(timeline);
 
             this.scheduleRepository.Delete(scheduleId);
 
@@ -112,6 +186,21 @@ namespace IoTHub.Portal.Infrastructure.Services
                     return scheduleListItem;
                 })
                 .ToList();
+        }
+
+        private async Task<List<ScheduleDto>> GetPlanningScheduleDtos(string planningId)
+        {
+            var schedules = await this.scheduleRepository.GetAllAsync(schedule => schedule.PlanningId == planningId);
+            return schedules.Select(schedule => this.mapper.Map<ScheduleDto>(schedule)).ToList();
+        }
+
+        private static void ValidateTimeline(IReadOnlyCollection<ScheduleDto> schedules)
+        {
+            var validationError = PlanningScheduleValidator.ValidateTimeline(schedules);
+            if (validationError is not null)
+            {
+                throw new InvalidPlanningScheduleException(validationError);
+            }
         }
     }
 }

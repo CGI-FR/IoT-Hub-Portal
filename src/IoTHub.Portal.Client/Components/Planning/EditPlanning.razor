@@ -75,7 +75,7 @@
                                     <MudTextField @bind-Value="@ContextSchedule.Start" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start)" Variant="Variant.Outlined" Required="true" Disabled="@(scheduleList.IndexOf(ContextSchedule) == 0)"></MudTextField>
                                 </MudTd>
                                 <MudTd DataLabel="End" Style="word-break: break-all;">
-                                    <MudTextField @bind-Value="@ContextSchedule.End" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.Start)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                    <MudTextField @bind-Value="@ContextSchedule.End" Margin="Margin.Dense" T="string" Label="Time" InputType="InputType.Time" For="@(() => ContextSchedule.End)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                 </MudTd>
                                 <MudTd DataLabel="Command" Style="text-align: center;">
                                     <MudSelect @bind-Value="@ContextSchedule.CommandId" Label="Command" Margin="Margin.Dense" Variant="Variant.Outlined">
@@ -357,28 +357,12 @@
             if (mode == "New") await PlanningClientService.CreatePlanning(planning);
             else await PlanningClientService.UpdatePlanning(planning);
 
-            // Save or update all Schedule concurrently instead of one request at a time
-            var initScheduleIds = initScheduleList.Select(s => s.Id).ToHashSet();
-            var scheduleIds = scheduleList.Select(s => s.Id).ToHashSet();
-
-            var upsertTasks = new List<Task>();
-            foreach (ScheduleDto schedule in scheduleList)
+            foreach (var schedule in scheduleList)
             {
                 schedule.PlanningId = planning.Id;
-
-                upsertTasks.Add(initScheduleIds.Contains(schedule.Id)
-                    ? ScheduleClientService.UpdateSchedule(schedule)
-                    : ScheduleClientService.CreateSchedule(schedule));
             }
 
-            await Task.WhenAll(upsertTasks);
-
-            // Remove deleted schedules concurrently
-            var deleteTasks = initScheduleList
-                .Where(schedule => !scheduleIds.Contains(schedule.Id))
-                .Select(schedule => ScheduleClientService.DeleteSchedule(schedule.Id));
-
-            await Task.WhenAll(deleteTasks);
+            await ScheduleClientService.ReplacePlanningSchedules(planning.Id, scheduleList);
         }
         catch (ProblemDetailsException exception)
         {
@@ -459,44 +443,20 @@
         if (string.IsNullOrEmpty(planning.Start) || string.IsNullOrEmpty(planning.End)) errorMessage += " - Date of application are empty";
 
         var commandMissing = 0;
-        var scheduleStartEnd = new List<List<string>>();
         foreach (var schedule in scheduleList)
         {
             if (string.IsNullOrEmpty(schedule.CommandId)) commandMissing += 1;
-            scheduleStartEnd.Add(new List<string> { schedule.Start, schedule.End });
         }
 
         if (commandMissing != 0) errorMessage += commandMissing.ToString() + " - Buisiness day command missing";
 
-        errorMessage += CheckSceduleTimeline(scheduleStartEnd);
+        var timelineError = PlanningScheduleValidator.ValidateTimeline(scheduleList);
+        if (timelineError is not null) errorMessage += $" - {timelineError}";
 
         if (string.IsNullOrEmpty(errorMessage)) return true;
 
         Snackbar.Add($"Some data are missing{errorMessage}", Severity.Error, null);
         return false;
-    }
-
-    private string CheckSceduleTimeline(List<List<string>> listSchedule)
-    {
-        var connections = new Dictionary<string, string>();
-
-        foreach (var pair in listSchedule)
-        {
-            if (string.IsNullOrEmpty(pair[0]) || string.IsNullOrEmpty(pair[1])) return " - Business Day is not fully completed";
-            connections[pair[0]] = pair[1];
-        }
-
-        var start = listSchedule[0][0];
-        var end = listSchedule[0][1];
-        while (connections.ContainsKey(end))
-        {
-            connections[start] = connections[end];
-            connections.Remove(end);
-            end = connections[start];
-        }
-
-        if (connections.Count != 1) return " - Business Day is not fully completed";
-        return "";
     }
 
     /// <summary>

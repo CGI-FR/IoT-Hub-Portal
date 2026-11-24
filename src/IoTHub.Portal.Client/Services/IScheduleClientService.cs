@@ -7,6 +7,7 @@ namespace IoTHub.Portal.Client.Services
     {
         Task<string> CreateSchedule(ScheduleDto schedule);
         Task UpdateSchedule(ScheduleDto schedule);
+        Task ReplacePlanningSchedules(string planningId, IReadOnlyCollection<ScheduleDto> schedules);
         Task DeleteSchedule(string modelId);
         Task<ScheduleDto> GetSchedule(string scheduleId);
         Task<List<ScheduleDto>> GetSchedules();

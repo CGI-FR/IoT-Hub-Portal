@@ -732,8 +732,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             _ = this.mockPlanningClientService.Setup(service => service.CreatePlanning(It.Is<PlanningDto>(p => p.DeviceModelId == expectedDeviceModel.ModelId)))
                 .ReturnsAsync(planning.Id);
 
-            _ = this.mockScheduleClientService.Setup(service => service.CreateSchedule(It.IsAny<ScheduleDto>()))
-                .ReturnsAsync(firstSchedule.Id);
+            _ = this.mockScheduleClientService.Setup(service => service.ReplacePlanningSchedules(planning.Id, It.IsAny<IReadOnlyCollection<ScheduleDto>>()))
+                .Returns(Task.CompletedTask);
 
             // Act
             var cut = RenderComponent<EditPlanning>(
@@ -756,7 +756,46 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
                 this.mockPlanningClientService.Verify(
                     service => service.CreatePlanning(It.Is<PlanningDto>(p => p.DeviceModelId == expectedDeviceModel.ModelId)),
                     Times.Once());
+                this.mockScheduleClientService.Verify(
+                    service => service.ReplacePlanningSchedules(planning.Id, It.Is<IReadOnlyCollection<ScheduleDto>>(schedules => schedules.Count == 1 && schedules.First().Start == "00:00" && schedules.First().End == "23:59")),
+                    Times.Once());
             });
+        }
+
+        [Test]
+        public void SaveShouldRejectScheduleWhenEndPrecedesStart()
+        {
+            var planning = new PlanningDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Planning",
+                Start = "2026-01-01",
+                End = "2026-12-31",
+                CommandId = Guid.NewGuid().ToString()
+            };
+            var schedules = new List<ScheduleDto>
+            {
+                new() { Start = "15:00", End = "08:00", CommandId = Guid.NewGuid().ToString() }
+            };
+
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers())
+                .ReturnsAsync(new List<LayerDto>());
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModelsAsync(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
+
+            var cut = RenderComponent<EditPlanning>(parameters => parameters
+                .Add(component => component.mode, "New")
+                .Add(component => component.planning, planning)
+                .Add(component => component.scheduleList, schedules)
+                .Add(component => component.SelectedModel, "Choose a Device Model")
+                .Add(component => component.CanWrite, true));
+
+            cut.WaitForElement("#saveButton").Click();
+
+            this.mockPlanningClientService.Verify(service => service.CreatePlanning(It.IsAny<PlanningDto>()), Times.Never());
+            this.mockScheduleClientService.Verify(
+                service => service.ReplacePlanningSchedules(It.IsAny<string>(), It.IsAny<IReadOnlyCollection<ScheduleDto>>()),
+                Times.Never());
         }
     }
 }

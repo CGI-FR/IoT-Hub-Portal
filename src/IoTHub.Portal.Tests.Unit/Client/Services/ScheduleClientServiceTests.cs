@@ -65,6 +65,24 @@ namespace IoTHub.Portal.Tests.Unit.Client.Services
         }
 
         [Test]
+        public async Task ReplacePlanningSchedulesShouldPutCompleteTimeline()
+        {
+            var planningId = Guid.NewGuid().ToString();
+            var schedules = new List<ScheduleDto>
+            {
+                new() { Start = "00:00", End = "23:59" }
+            };
+
+            _ = MockHttpClient.When(HttpMethod.Put, $"/api/schedule/planning/{planningId}")
+                .Respond(HttpStatusCode.OK);
+
+            await this.scheduleClientService.ReplacePlanningSchedules(planningId, schedules);
+
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
         public async Task DeleteScheduleShouldDeleteSchedule()
         {
             var expectedScheduleDto = Fixture.Create<ScheduleDto>();
