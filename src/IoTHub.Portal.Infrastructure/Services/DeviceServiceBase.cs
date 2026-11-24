@@ -133,6 +133,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public virtual async Task<TDto> CreateDevice(TDto device)
         {
+            device.LayerId = DeviceHelper.NormalizeLayerId(device.LayerId);
             var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(device.DeviceID);
 
             this.deviceTwinMapper.UpdateTwin(newTwin, device);
@@ -147,6 +148,7 @@ namespace IoTHub.Portal.Infrastructure.Services
 
         public virtual async Task<TDto> UpdateDevice(TDto device)
         {
+            device.LayerId = DeviceHelper.NormalizeLayerId(device.LayerId);
             // Device status (enabled/disabled) has to be dealt with afterwards
             var currentDevice = await this.externalDevicesService.GetDevice(device.DeviceID);
             currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;

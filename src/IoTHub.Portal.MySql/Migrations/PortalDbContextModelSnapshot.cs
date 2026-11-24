@@ -485,7 +485,6 @@ namespace IoTHub.Portal.MySql.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Planning")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("hasSub")

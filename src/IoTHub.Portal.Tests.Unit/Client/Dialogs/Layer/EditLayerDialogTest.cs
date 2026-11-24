@@ -224,6 +224,11 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 {
                     Items = new List<DeviceModelDto> { mockDeviceModel }
                 });
+            _ = this.mockLayerClientService.Setup(service => service.UpdateLayer(expectedLayerDto)).Returns(Task.CompletedTask);
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevice(alreadyRegisteredDevice.DeviceID))
+                .ReturnsAsync(new DeviceDetails { DeviceID = alreadyRegisteredDevice.DeviceID, LayerId = expectedLayerDto.Id });
+            _ = this.mockDeviceClientService.Setup(service => service.UpdateDevice(It.Is<DeviceDetails>(device => device.DeviceID == alreadyRegisteredDevice.DeviceID && device.LayerId == null)))
+                .Returns(Task.CompletedTask);
 
             // Act
             var cut = RenderComponent<MudDialogProvider>();
@@ -255,6 +260,8 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
                 var updatedCheckbox = cut.Find("table tbody tr td:first-child input[type='checkbox']");
                 _ = updatedCheckbox.HasAttribute("checked").Should().BeFalse();
             });
+            cut.WaitForElement("#save").Click();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -432,7 +439,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Dialogs.Layer
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Test Layer",
-                Planning = "None"  // No planning linked
+                Planning = null
             };
 
             var mockDeviceModel = new DeviceModelDto

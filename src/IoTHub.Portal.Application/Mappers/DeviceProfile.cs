@@ -33,7 +33,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.Tags["modelId"]))
-                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.Tags.Contains("layerId") ? src.Tags["layerId"] : null))
+                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => DeviceHelper.NormalizeLayerId(DeviceHelper.RetrieveTagValue(src, "layerId"))))
                 .ForMember(dest => dest.Version, opts => opts.MapFrom(src => src.Version))
                 .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == Microsoft.Azure.Devices.DeviceConnectionState.Connected))
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
@@ -63,7 +63,7 @@ namespace IoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.Tags["modelId"]))
-                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => src.Tags.Contains("layerId") ? src.Tags["layerId"] : null))
+                .ForMember(dest => dest.LayerId, opts => opts.MapFrom(src => DeviceHelper.NormalizeLayerId(DeviceHelper.RetrieveTagValue(src, "layerId"))))
                 .ForMember(dest => dest.Version, opts => opts.MapFrom(src => src.Version))
                 .ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.ConnectionState == Microsoft.Azure.Devices.DeviceConnectionState.Connected))
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
@@ -104,7 +104,7 @@ namespace IoTHub.Portal.Application.Mappers
         private static ICollection<DeviceTagValue> GetTags(Twin twin)
         {
             return (JsonSerializer.Deserialize<Dictionary<string, object>>(twin.Tags.ToJson()) ?? new Dictionary<string, object>())
-                .Where(tag => tag.Key is not "modelId" and not "deviceName")
+                .Where(tag => tag.Key is not "modelId" and not "deviceName" and not "layerId")
                 .Select(tag => new DeviceTagValue
                 {
                     Name = tag.Key,

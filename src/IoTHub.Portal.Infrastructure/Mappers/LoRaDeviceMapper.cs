@@ -36,7 +36,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
-                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId)),
+                LayerId = DeviceHelper.NormalizeLayerId(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId))),
                 GatewayID = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.GatewayID)),
                 SensorDecoder =
                     DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.SensorDecoder)),
@@ -148,7 +148,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                     .GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!)
                     .Result,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
-                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId)),
+                LayerId = DeviceHelper.NormalizeLayerId(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LayerId))),
                 LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
                 SupportLoRaFeatures =
                     bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ??
@@ -166,8 +166,6 @@ namespace IoTHub.Portal.Infrastructure.Mappers
 
             DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
 
-            DeviceHelper.SetTagValue(twin, nameof(item.LayerId), item.LayerId ?? string.Empty);
-
             // Update OTAA settings
             DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI?.Trim());
             DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey?.Trim());
@@ -184,6 +182,8 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 foreach (var customTag in item.Tags)
                     DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value.Trim());
             }
+
+            DeviceHelper.SetLayerId(twin, item.LayerId);
         }
     }
 }

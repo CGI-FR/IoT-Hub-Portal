@@ -43,7 +43,7 @@
                                                     }
                                                 }
                                                 @{
-                                                    if (!string.IsNullOrEmpty(item.LayerData.Planning) && item.LayerData.Planning != "None")
+                                                    if (!string.IsNullOrEmpty(item.LayerData.Planning))
                                                     {
                                                         if (devicesCount > 0)
                                                         {
@@ -112,7 +112,7 @@
                 {
                     Name = "Main Layer",
                     Father = null,
-                    Planning = "None"
+                    Planning = null
                 };
                 newLayer.Id = await LayerClientService.CreateLayer(newLayer);
                 Layers.Add(new LayerHash(newLayer, 0, false));
@@ -136,7 +136,7 @@
             {
                 Name = "New Layer",
                 Father = layer.LayerData.Id,
-                Planning = layer.LayerData.Planning ?? "None"
+                Planning = layer.LayerData.Planning
             };
             newLayer.Id = await LayerClientService.CreateLayer(newLayer);
 

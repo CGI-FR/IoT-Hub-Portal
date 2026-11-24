@@ -43,6 +43,23 @@ namespace IoTHub.Portal.Application.Helpers
         }
 
         /// <summary>
+        /// Converts legacy or empty layer identifiers to an unassigned value.
+        /// </summary>
+        public static string? NormalizeLayerId(string? layerId)
+        {
+            return string.IsNullOrEmpty(layerId) || layerId == "None" ? null : layerId;
+        }
+
+        /// <summary>
+        /// Sets or clears the layer tag on a device twin.
+        /// </summary>
+        public static void SetLayerId(Twin twin, string? layerId)
+        {
+            ArgumentNullException.ThrowIfNull(twin);
+            twin.Tags["layerId"] = NormalizeLayerId(layerId);
+        }
+
+        /// <summary>
         /// Sets the twin tag value.
         /// </summary>
         /// <param name="item">The device Twin.</param>

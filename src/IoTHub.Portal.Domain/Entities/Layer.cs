@@ -16,9 +16,9 @@ namespace IoTHub.Portal.Domain.Entities
         public string? Father { get; set; } = default!;
 
         /// <summary>
-        /// The planning associat with the level.
+        /// The planning associated with the level.
         /// </summary>
-        public string Planning { get; set; } = default!;
+        public string? Planning { get; set; }
 
         /// <summary>
         /// The planning has a subLayer.

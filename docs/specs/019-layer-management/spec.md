@@ -127,6 +127,7 @@ As a facilities manager, I need to delete layers that are no longer needed so th
 - **FR-009**: System MUST allow deleting layers
 - **FR-010**: System MUST return 204 No Content on successful deletion
 - **FR-011**: Devices MUST be assignable to layers for spatial organization
+- **FR-012**: An unassigned device layer or layer planning is represented by `null`. Database migrations convert legacy `None` and empty assignments to `NULL`; legacy device twin values are normalized on synchronization.
 
 ### Key Entities
 

@@ -53,7 +53,7 @@
                                 <CellTemplate>
                                     <MudText Class="d-flex align-center">
                                         @context.Item.DeviceName
-                                        @if (context.Item.LayerId != "None" && context.Item.LayerId != InitLayer.Id)
+                                        @if (!string.IsNullOrEmpty(context.Item.LayerId) && context.Item.LayerId != InitLayer.Id)
                                         {
                                             <MudTooltip RootClass="d-flex align-center ml-1"
                                                         Text="This device is already on another layer">
@@ -143,7 +143,7 @@
         LayerName = InitLayer.Name;
 
         // Check if this layer is linked to a planning and get the planning's device model
-        if (!string.IsNullOrEmpty(InitLayer.Planning) && InitLayer.Planning != "None")
+        if (!string.IsNullOrEmpty(InitLayer.Planning))
         {
             try
             {
@@ -209,10 +209,8 @@
 
             foreach (var device in Devices)
             {
-                // Device wasn't on any layer and is now selected to be on this layer
-                // or
-                // Device was on another layer and is now selected to be on this layer
-                if ((device.LayerId == "None" && selectedDevices.Contains(device)) || (device.LayerId != "None" && device.LayerId != InitLayer.Id && selectedDevices.Contains(device)))
+                // Assign selected devices that were not already on this layer.
+                if (device.LayerId != InitLayer.Id && selectedDevices.Contains(device))
                 {
                     devicesToAssign.Add(device);
                 }
@@ -224,7 +222,7 @@
             }
 
             var updateTasks = devicesToAssign.Select(device => UpdateDeviceLayerAsync(device.DeviceID, InitLayer.Id))
-                .Concat(devicesToUnassign.Select(device => UpdateDeviceLayerAsync(device.DeviceID, "None")));
+                .Concat(devicesToUnassign.Select(device => UpdateDeviceLayerAsync(device.DeviceID, null)));
 
             await Task.WhenAll(updateTasks);
         }
@@ -243,7 +241,7 @@
         return await DeviceClientService.GetDevice(deviceId);
     }
 
-    private async Task UpdateDeviceLayerAsync(string deviceId, string layerId)
+    private async Task UpdateDeviceLayerAsync(string deviceId, string? layerId)
     {
         var deviceDetails = await FindDevice(deviceId);
         deviceDetails.LayerId = layerId;

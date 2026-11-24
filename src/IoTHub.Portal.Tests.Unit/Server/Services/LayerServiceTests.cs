@@ -62,6 +62,39 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
             MockRepository.VerifyAll();
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("None")]
+        public async Task CreateLayer_UnassignedPlanning_StoresNull(string planningId)
+        {
+            var layer = new LayerDto { Name = "Layer", Planning = planningId };
+            _ = this.mockLayerRepository.Setup(repository => repository.InsertAsync(It.Is<Layer>(entity => entity.Planning == null)))
+                .Returns(Task.CompletedTask);
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync()).Returns(Task.CompletedTask);
+
+            var result = await this.layerService.CreateLayer(layer);
+
+            Assert.IsNull(result.Planning);
+            MockRepository.VerifyAll();
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("None")]
+        public async Task UpdateLayer_UnassignedPlanning_StoresNull(string planningId)
+        {
+            var entity = new Layer { Id = "layer", Name = "Layer", Planning = "planning" };
+            var layer = new LayerDto { Id = entity.Id, Name = entity.Name, Planning = planningId };
+            _ = this.mockLayerRepository.Setup(repository => repository.GetByIdAsync(entity.Id)).ReturnsAsync(entity);
+            _ = this.mockLayerRepository.Setup(repository => repository.Update(It.Is<Layer>(updated => updated.Planning == null)));
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync()).Returns(Task.CompletedTask);
+
+            await this.layerService.UpdateLayer(layer);
+
+            Assert.IsNull(entity.Planning);
+            MockRepository.VerifyAll();
+        }
+
         [Test]
         public async Task UpdateShouldThrowResourceNotFoundException()
         {

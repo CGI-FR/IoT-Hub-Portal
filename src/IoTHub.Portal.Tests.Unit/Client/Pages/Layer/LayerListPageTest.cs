@@ -32,19 +32,32 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
         }
 
         [Test]
+        public void LayerListPage_NoLayers_CreatesRootWithoutPlanning()
+        {
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers()).ReturnsAsync(new List<LayerDto>());
+            _ = this.mockPlanningClientService.Setup(service => service.GetPlannings()).ReturnsAsync(new List<PlanningDto>());
+            _ = this.mockLayerClientService.Setup(service => service.CreateLayer(It.Is<LayerDto>(layer => layer.Name == "Main Layer" && layer.Father == null && layer.Planning == null)))
+                .ReturnsAsync("root");
+
+            var cut = RenderComponent<LayersListPage>();
+
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public void LayerListPageOnClickAddLayer()
         {
             var expectedLayerDto = Fixture.Create<LayerDto>();
             expectedLayerDto.Name = "Main Layer";
             expectedLayerDto.Father = null;
-            expectedLayerDto.Planning = "None";
+            expectedLayerDto.Planning = null;
 
             var expectedLayerDtoChild = Fixture.Create<LayerDto>();
 
             _ = this.mockLayerClientService.Setup(service => service.GetLayers())
                 .ReturnsAsync(new List<LayerDto>(new List<LayerDto> { expectedLayerDto }));
 
-            _ = this.mockLayerClientService.Setup(service => service.CreateLayer(It.IsAny<LayerDto>()))
+            _ = this.mockLayerClientService.Setup(service => service.CreateLayer(It.Is<LayerDto>(layer => layer.Father == expectedLayerDto.Id && layer.Planning == null)))
                 .ReturnsAsync(expectedLayerDtoChild.Id);
 
             _ = this.mockLayerClientService.Setup(service => service.GetDeviceCountByLayer(It.IsAny<string>()))
@@ -71,15 +84,15 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
             var expectedLayerDto = Fixture.Create<LayerDto>();
             expectedLayerDto.Name = "Main Layer";
             expectedLayerDto.Father = null;
-            expectedLayerDto.Planning = "None";
+            expectedLayerDto.Planning = null;
 
             var expectedChildrenLayerDto1 = Fixture.Create<LayerDto>();
             expectedChildrenLayerDto1.Father = expectedLayerDto.Id;
-            expectedChildrenLayerDto1.Planning = "None";
+            expectedChildrenLayerDto1.Planning = null;
 
             var expectedChildrenLayerDto2 = Fixture.Create<LayerDto>();
             expectedChildrenLayerDto2.Father = expectedChildrenLayerDto1.Id;
-            expectedChildrenLayerDto2.Planning = "None";
+            expectedChildrenLayerDto2.Planning = null;
 
             _ = this.mockLayerClientService.Setup(service => service.GetLayers())
                 .ReturnsAsync(new List<LayerDto>(new List<LayerDto> { expectedLayerDto, expectedChildrenLayerDto1, expectedChildrenLayerDto2 }));
@@ -117,16 +130,16 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Layer
                 Id = Guid.NewGuid().ToString(),
                 Name = "Main Layer",
                 Father = null,
-                Planning = "None"
+                Planning = null
             };
 
             var expectedChildrenLayerDto1 = Fixture.Create<LayerDto>();
             expectedChildrenLayerDto1.Father = expectedLayerDto.Id;
-            expectedChildrenLayerDto1.Planning = "None";
+            expectedChildrenLayerDto1.Planning = null;
 
             var expectedChildrenLayerDto2 = Fixture.Create<LayerDto>();
             expectedChildrenLayerDto2.Father = expectedChildrenLayerDto1.Id;
-            expectedChildrenLayerDto2.Planning = "None";
+            expectedChildrenLayerDto2.Planning = null;
 
             _ = this.mockLayerClientService.Setup(service => service.GetLayers())
                 .ReturnsAsync(new List<LayerDto>(new List<LayerDto> { expectedLayerDto, expectedChildrenLayerDto1, expectedChildrenLayerDto2 }));

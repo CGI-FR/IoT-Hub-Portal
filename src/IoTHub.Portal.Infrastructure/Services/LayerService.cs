@@ -35,6 +35,7 @@ namespace IoTHub.Portal.Infrastructure.Services
         /// <returns>Layer object.</returns>
         public async Task<LayerDto> CreateLayer(LayerDto layer)
         {
+            layer.Planning = NormalizePlanningId(layer.Planning);
             var layerEntity = this.mapper.Map<Layer>(layer);
 
             await this.layerRepository.InsertAsync(layerEntity);
@@ -58,9 +59,11 @@ namespace IoTHub.Portal.Infrastructure.Services
                 throw new ResourceNotFoundException($"The layer with id {layer.Id} doesn't exist");
             }
 
+            layer.Planning = NormalizePlanningId(layer.Planning);
+
             // Validate that if the layer is being linked to a planning with a device model,
             // all devices in the layer (and child layers) must have the same device model
-            if (!string.IsNullOrEmpty(layer.Planning) && layer.Planning != "None")
+            if (layer.Planning is not null)
             {
                 var planning = await this.planningRepository.GetByIdAsync(layer.Planning);
 
@@ -91,6 +94,11 @@ namespace IoTHub.Portal.Infrastructure.Services
             this.layerRepository.Update(layerEntity);
 
             await this.unitOfWork.SaveAsync();
+        }
+
+        private static string? NormalizePlanningId(string? planningId)
+        {
+            return string.IsNullOrEmpty(planningId) || planningId == "None" ? null : planningId;
         }
 
         /// <summary>
