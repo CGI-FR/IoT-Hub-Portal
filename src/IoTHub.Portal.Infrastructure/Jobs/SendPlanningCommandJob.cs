@@ -75,11 +75,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             try
             {
-                this.logger.LogInformation("Start of send planning commands job");
+                this.logger.LogDebug("Start of send planning commands job");
 
                 await DoWork(this.cancellationTokenSource.Token);
 
-                this.logger.LogInformation("End of send planning commands job");
+                this.logger.LogDebug("End of send planning commands job");
             }
             catch (Exception e)
             {

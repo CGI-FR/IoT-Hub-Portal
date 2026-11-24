@@ -19,11 +19,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            this.logger.LogInformation("Start loading concentrators metrics");
+            this.logger.LogDebug("Start loading concentrators metrics");
 
             await LoadConcentratorsCountMetric();
 
-            this.logger.LogInformation("End loading concentrators metrics");
+            this.logger.LogDebug("End loading concentrators metrics");
         }
 
         private async Task LoadConcentratorsCountMetric()

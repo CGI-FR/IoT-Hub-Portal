@@ -19,12 +19,12 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            this.logger.LogInformation("Start loading devices metrics");
+            this.logger.LogDebug("Start loading devices metrics");
 
             await LoadDevicesCountMetric();
             await LoadConnectedDevicesCountMetric();
 
-            this.logger.LogInformation("End loading devices metrics");
+            this.logger.LogDebug("End loading devices metrics");
         }
 
         private async Task LoadDevicesCountMetric()

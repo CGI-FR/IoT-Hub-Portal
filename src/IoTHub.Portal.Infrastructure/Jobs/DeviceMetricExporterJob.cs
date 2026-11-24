@@ -20,12 +20,12 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public Task Execute(IJobExecutionContext context)
         {
-            this.logger.LogInformation("Start exporting devices metrics");
+            this.logger.LogDebug("Start exporting devices metrics");
 
             this.deviceCounter.IncTo(this.portalMetric.DeviceCount);
             this.connectedDeviceCounter.IncTo(this.portalMetric.ConnectedDeviceCount);
 
-            this.logger.LogInformation("End exporting devices metrics");
+            this.logger.LogDebug("End exporting devices metrics");
 
             return Task.CompletedTask;
         }

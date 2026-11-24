@@ -37,11 +37,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs.AWS
         {
             try
             {
-                this.logger.LogInformation("Start of sync Greengrass Deployents job");
+                this.logger.LogDebug("Start of sync Greengrass Deployents job");
 
                 await SyncGreenGrassDeployments();
 
-                this.logger.LogInformation("End of sync Greengrass Deployents job");
+                this.logger.LogDebug("End of sync Greengrass Deployents job");
             }
             catch (Exception e)
             {

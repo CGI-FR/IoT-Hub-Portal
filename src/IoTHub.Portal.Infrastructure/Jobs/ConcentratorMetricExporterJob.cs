@@ -19,11 +19,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs
 
         public Task Execute(IJobExecutionContext context)
         {
-            this.logger.LogInformation("Start exporting concentrators metrics");
+            this.logger.LogDebug("Start exporting concentrators metrics");
 
             this.concentratorCounter.IncTo(this.portalMetric.ConcentratorCount);
 
-            this.logger.LogInformation("End exporting concentrators metrics");
+            this.logger.LogDebug("End exporting concentrators metrics");
 
             return Task.CompletedTask;
         }

@@ -30,11 +30,11 @@ namespace IoTHub.Portal.Infrastructure.Jobs
         {
             try
             {
-                this.logger.LogInformation("Start of sync concentrators job");
+                this.logger.LogDebug("Start of sync concentrators job");
 
                 await SyncConcentrators();
 
-                this.logger.LogInformation("End of sync concentrators job");
+                this.logger.LogDebug("End of sync concentrators job");
             }
             catch (Exception e)
             {
