@@ -181,7 +181,7 @@
                             <MudStack Row="true" Spacing="1" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center">
                                 <MudText Typo="Typo.body1">@context.DeviceName</MudText>
                                 <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")">@context.DeviceID</MudText>
-                                @if (canReadLayers && !string.IsNullOrEmpty(context.LayerId) && context.LayerId != "None")
+                                @if (canReadLayers && !string.IsNullOrEmpty(context.LayerId))
                                 {
                                     var layerName = layerNames.TryGetValue(context.LayerId, out var name) ? name : context.LayerId;
                                     <MudText Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")">|</MudText>

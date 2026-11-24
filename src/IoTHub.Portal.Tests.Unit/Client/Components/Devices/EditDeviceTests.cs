@@ -64,9 +64,10 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
                 DeviceID = Guid.NewGuid().ToString(),
             };
 
-            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal) && details.LayerId == null)))
                 .ReturnsAsync(expectedDeviceDetails.DeviceID);
 
+            _ = this.mockLayerClientService.Setup(service => service.GetLayers()).ReturnsAsync(new List<LayerDto> { new() { Id = "layer-1", Name = "Layer" } });
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
                 {
@@ -95,9 +96,12 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             var cut = RenderComponent<EditDevice>(parameters => parameters
                 .Add(p => p.CanWrite, true)
+                .Add(p => p.CanReadLayers, true)
                 .Add(p => p.CanExec, true));
             var saveButton = cut.WaitForElement("#SaveButton");
 
+            await cut.InvokeAsync(() => cut.FindComponent<MudSelect<string>>().Instance.ValueChanged.InvokeAsync("layer-1"));
+            await cut.InvokeAsync(() => cut.FindComponent<MudSelect<string>>().Instance.ValueChanged.InvokeAsync(string.Empty));
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
             cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
             await cut.Instance.ChangeModel(mockDeviceModel);

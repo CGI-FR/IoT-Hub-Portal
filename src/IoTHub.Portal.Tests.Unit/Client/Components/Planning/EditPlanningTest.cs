@@ -678,7 +678,9 @@ namespace IoTHub.Portal.Tests.Unit.Client.Components.Planning
             _ = tooltips[0].Instance.Text.Should().Be("Add layer");
             _ = tooltips[1].Instance.Text.Should().Be("Already registered");
             _ = tooltips[2].Instance.Text.Should().Be("Registered on other planning");
-            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+
+            tooltips[1].Find("button").Click();
+            Assert.IsNull(mockSubLayer1.Planning);
         }
 
         [Test]

@@ -37,7 +37,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 LastActivityTime = twin.LastActivityTime ?? DateTime.MinValue,
-                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.LayerId))
+                LayerId = DeviceHelper.NormalizeLayerId(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.LayerId)))
             };
 
             foreach (var item in customTags)
@@ -60,7 +60,7 @@ namespace IoTHub.Portal.Infrastructure.Mappers
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
                 Image = this.deviceModelImageManager.GetDeviceModelImageAsync(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!).Result,
                 SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false"),
-                LayerId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.LayerId))
+                LayerId = DeviceHelper.NormalizeLayerId(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.LayerId)))
             };
         }
 
@@ -72,17 +72,16 @@ namespace IoTHub.Portal.Infrastructure.Mappers
             // Update the twin properties
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName?.Trim());
             DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
-            DeviceHelper.SetTagValue(twin, nameof(item.LayerId), item.LayerId ?? string.Empty);
 
-            if (item.Tags == null)
+            if (item.Tags != null)
             {
-                return;
+                foreach (var customTag in item.Tags)
+                {
+                    DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+                }
             }
 
-            foreach (var customTag in item.Tags)
-            {
-                DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
-            }
+            DeviceHelper.SetLayerId(twin, item.LayerId);
         }
     }
 }

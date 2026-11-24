@@ -213,13 +213,13 @@
                                     <Content>
                                         <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@(context.Children.Count() != 0)" />
 
-                                        @if ((context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning == planning.Id))
+                                        @if (context.LayerData.Planning != null && context.LayerData.Planning == planning.Id)
                                         {
                                             <MudTooltip Text="Already registered">
                                                 <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.CheckBox" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
                                             </MudTooltip>
                                         }
-                                        else if (context.LayerData.Planning != null && context.LayerData.Planning != "None" && context.LayerData.Planning != planning.Id)
+                                        else if (context.LayerData.Planning != null && context.LayerData.Planning != planning.Id)
                                         {
                                             <MudTooltip Text="Registered on other planning">
                                                 <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.IndeterminateCheckBox" Size="Size.Medium" @onclick="() => CheckedChanged(context)"></MudIconButton>
@@ -400,7 +400,7 @@
         }
         else
         {
-            item.LayerData.Planning = "None";
+            item.LayerData.Planning = null;
         }
 
         foreach (LayerHash child in item.Children)

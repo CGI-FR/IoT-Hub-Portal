@@ -21,9 +21,9 @@ namespace IoTHub.Portal.Shared.Models.v10
         public string? Father { get; set; }
 
         /// <summary>
-        /// The planning associat with the level.
+        /// The planning associated with the level.
         /// </summary>
-        public string Planning { get; set; }
+        public string? Planning { get; set; }
 
         /// <summary>
         /// The planning has a subLayer.

@@ -139,6 +139,33 @@ namespace IoTHub.Portal.Tests.Unit.Infrastructure.Mappers
             this.mockRepository.VerifyAll();
         }
 
+        [TestCase(null, null)]
+        [TestCase("", null)]
+        [TestCase("None", null)]
+        [TestCase("layer-1", "layer-1")]
+        public void CreateDeviceDetails_LayerTag_ReturnsNormalizedId(string layerId, string expected)
+        {
+            var twin = new Twin("device");
+            twin.Tags["modelId"] = "model";
+            if (layerId != null) twin.Tags["layerId"] = layerId;
+            _ = this.mockDeviceModelImageManager.Setup(m => m.GetDeviceModelImageAsync("model")).ReturnsAsync("image");
+
+            var mapper = CreateLoRaDeviceTwinMapper();
+            Assert.AreEqual(expected, mapper.CreateDeviceDetails(twin, Array.Empty<string>()).LayerId);
+            Assert.AreEqual(expected, mapper.CreateDeviceListItem(twin).LayerId);
+        }
+
+        [Test]
+        public void UpdateTwin_ClearedLayer_SendsNullTag()
+        {
+            var twin = new Twin("device");
+            twin.Tags["layerId"] = "old-layer";
+
+            CreateLoRaDeviceTwinMapper().UpdateTwin(twin, new LoRaDeviceDetails { DeviceName = "device", LayerId = null });
+
+            StringAssert.Contains("\"layerId\":null", twin.Tags.ToJson().Replace(" ", ""));
+        }
+
         [Test]
         public void UpdateTwinStateUnderTestExpectedBehavior()
         {

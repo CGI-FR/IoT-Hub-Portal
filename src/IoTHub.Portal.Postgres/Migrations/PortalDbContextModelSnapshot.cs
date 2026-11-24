@@ -439,7 +439,6 @@ namespace IoTHub.Portal.Postgres.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Planning")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("hasSub")
