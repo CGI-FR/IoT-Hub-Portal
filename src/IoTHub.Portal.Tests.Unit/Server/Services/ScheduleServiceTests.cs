@@ -35,7 +35,12 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateNewEntity()
         {
             var expectedSchedule = Fixture.Create<Schedule>();
+            expectedSchedule.Start = "00:00";
+            expectedSchedule.End = "23:59";
             var expectedScheduleDto = Mapper.Map<ScheduleDto>(expectedSchedule);
+
+            _ = this.mockScheduleRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<Schedule, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Schedule>());
 
             _ = this.mockScheduleRepository.Setup(repository => repository.InsertAsync(It.IsAny<Schedule>()))
                 .Returns(Task.CompletedTask);
@@ -55,9 +60,50 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task ReplacePlanningSchedulesShouldSaveAValidTimeline()
+        {
+            var planningId = Guid.NewGuid().ToString();
+            var schedules = new List<ScheduleDto>
+            {
+                new() { Id = Guid.NewGuid().ToString(), Start = "00:00", End = "12:00" },
+                new() { Id = Guid.NewGuid().ToString(), Start = "12:00", End = "23:59" }
+            };
+
+            _ = this.mockScheduleRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<Schedule, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Schedule>());
+            _ = this.mockScheduleRepository.Setup(repository => repository.GetByIdAsync(It.IsAny<object>()))
+                .ReturnsAsync((Schedule)null);
+            _ = this.mockScheduleRepository.Setup(repository => repository.InsertAsync(It.IsAny<Schedule>()))
+                .Returns(Task.CompletedTask);
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            await this.scheduleService.ReplacePlanningSchedules(planningId, schedules);
+
+            Assert.That(schedules.All(schedule => schedule.PlanningId == planningId), Is.True);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ReplacePlanningSchedulesShouldRejectAnInvalidTimeline()
+        {
+            var schedules = new List<ScheduleDto>
+            {
+                new() { Start = "15:00", End = "08:00" }
+            };
+
+            var act = () => this.scheduleService.ReplacePlanningSchedules(Guid.NewGuid().ToString(), schedules);
+
+            _ = await act.Should().ThrowAsync<InvalidPlanningScheduleException>()
+                .WithMessage("Each slot's end time must be after its start time.");
+        }
+
+        [Test]
         public async Task UpdateShouldThrowResourceNotFoundException()
         {
             var expectedSchedule = Fixture.Create<Schedule>();
+            expectedSchedule.Start = "08:00";
+            expectedSchedule.End = "09:00";
             var expectedScheduleDto = Mapper.Map<ScheduleDto>(expectedSchedule);
 
             _ = this.mockScheduleRepository.Setup(repository => repository.GetByIdAsync(expectedScheduleDto.Id))
@@ -73,11 +119,27 @@ namespace IoTHub.Portal.Tests.Unit.Server.Services
         [Test]
         public async Task DeleteExistigScheduleSuccessfully()
         {
-            var expectedSchedule = Fixture.Create<Schedule>();
+            var planningId = Guid.NewGuid().ToString();
+            var expectedSchedule = new Schedule
+            {
+                Id = Guid.NewGuid().ToString(),
+                PlanningId = planningId,
+                Start = "01:00",
+                End = "02:00"
+            };
+            var remainingSchedule = new Schedule
+            {
+                Id = Guid.NewGuid().ToString(),
+                PlanningId = planningId,
+                Start = "00:00",
+                End = "23:59"
+            };
             var expectedScheduleDto = Mapper.Map<ScheduleDto>(expectedSchedule);
 
             _ = this.mockScheduleRepository.Setup(repository => repository.GetByIdAsync(expectedScheduleDto.Id))
                .ReturnsAsync(expectedSchedule);
+            _ = this.mockScheduleRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<Schedule, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Schedule> { expectedSchedule, remainingSchedule });
 
             this.mockScheduleRepository.Setup(repository => repository.Delete(expectedScheduleDto.Id))
                 .Verifiable();

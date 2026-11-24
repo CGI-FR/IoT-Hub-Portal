@@ -111,6 +111,23 @@ namespace IoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         }
 
         [Test]
+        public async Task ReplacePlanningSchedulesShouldDelegateToService()
+        {
+            var planningId = Guid.NewGuid().ToString();
+            var schedules = new List<ScheduleDto>
+            {
+                new() { Start = "00:00", End = "23:59" }
+            };
+
+            _ = this.mockScheduleService.Setup(service => service.ReplacePlanningSchedules(planningId, schedules))
+                .Returns(Task.CompletedTask);
+
+            _ = await this.schedulesController.ReplacePlanningSchedules(planningId, schedules);
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task DeleteShouldRemoveTheEntityCommandsAndAvatar()
         {
             // Arrange
