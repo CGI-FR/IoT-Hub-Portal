@@ -854,6 +854,7 @@
 <li><strong>FR-009</strong>: System MUST allow deleting layers</li>
 <li><strong>FR-010</strong>: System MUST return 204 No Content on successful deletion</li>
 <li><strong>FR-011</strong>: Devices MUST be assignable to layers for spatial organization</li>
+<li><strong>FR-012</strong>: An unassigned device layer or layer planning is represented by <code>null</code>. Database migrations convert legacy <code>None</code> and empty assignments to <code>NULL</code>; legacy device twin values are normalized on synchronization.</li>
 </ul>
 <h3 id="key-entities">Key Entities<a class="headerlink" href="#key-entities" title="Permanent link">¶</a></h3>
 <ul>
