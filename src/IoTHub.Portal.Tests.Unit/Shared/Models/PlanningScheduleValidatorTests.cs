@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace IoTHub.Portal.Tests.Unit
+namespace IoTHub.Portal.Tests.Unit.Shared.Models
 {
     [TestFixture]
     public class PlanningScheduleValidatorTests
@@ -13,6 +13,19 @@ namespace IoTHub.Portal.Tests.Unit
             {
                 new() { Start = "00:00", End = "12:00" },
                 new() { Start = "12:00", End = "23:59" }
+            };
+
+            var error = PlanningScheduleValidator.ValidateTimeline(schedules);
+
+            Assert.IsNull(error);
+        }
+
+        [Test]
+        public void ValidateTimeline_TimesWithSeconds_ReturnsNoError()
+        {
+            var schedules = new List<ScheduleDto>
+            {
+                new() { Start = "00:00:00", End = "23:59:00" }
             };
 
             var error = PlanningScheduleValidator.ValidateTimeline(schedules);

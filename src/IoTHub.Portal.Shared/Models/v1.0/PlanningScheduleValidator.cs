@@ -7,9 +7,8 @@ namespace IoTHub.Portal.Shared.Models.v10
     {
         private static readonly TimeSpan FirstSlotStart = TimeSpan.Zero;
         private static readonly TimeSpan LastSlotEnd = new(23, 59, 0);
-        private const string TimeFormat = @"hh\:mm";
 
-        public static string? ValidateTimeline(IReadOnlyCollection<ScheduleDto>? schedules)
+        public static string ValidateTimeline(IReadOnlyCollection<ScheduleDto> schedules)
         {
             if (schedules is null || schedules.Count == 0)
             {
@@ -21,7 +20,7 @@ namespace IoTHub.Portal.Shared.Models.v10
             {
                 if (schedule is null || !TryParseTime(schedule.Start, out var start) || !TryParseTime(schedule.End, out var end))
                 {
-                    return "Slot times must use the HH:mm format.";
+                    return "Slot times must be valid 24-hour times with minute precision.";
                 }
 
                 if (end <= start)
@@ -47,17 +46,17 @@ namespace IoTHub.Portal.Shared.Models.v10
                 }
             }
 
-            if (slots[^1].End != LastSlotEnd)
-            {
-                return "The last slot must end at 23:59.";
-            }
-
-            return null;
+            return slots[^1].End != LastSlotEnd
+                ? "The last slot must end at 23:59."
+                : null;
         }
 
         private static bool TryParseTime(string value, out TimeSpan time)
         {
-            return TimeSpan.TryParseExact(value, TimeFormat, System.Globalization.CultureInfo.InvariantCulture, out time);
+            return TimeSpan.TryParse(value, System.Globalization.CultureInfo.InvariantCulture, out time)
+                && time >= TimeSpan.Zero
+                && time < TimeSpan.FromDays(1)
+                && time.Ticks % TimeSpan.TicksPerMinute == 0;
         }
     }
 }
