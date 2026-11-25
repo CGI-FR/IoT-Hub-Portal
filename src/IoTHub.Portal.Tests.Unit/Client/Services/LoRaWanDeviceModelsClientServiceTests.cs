@@ -3,7 +3,7 @@
 
 namespace IoTHub.Portal.Tests.Unit.Client.Services
 {
-    using Shared.Security;
+    using Portal.Shared.Security;
 
     [TestFixture]
     public class LoRaWanDeviceModelsClientServiceTests : BlazorUnitTest
